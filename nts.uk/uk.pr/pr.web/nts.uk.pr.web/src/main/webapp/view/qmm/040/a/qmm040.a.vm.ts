@@ -184,7 +184,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 1:
@@ -198,7 +197,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 2:
@@ -212,7 +210,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 3:
@@ -226,7 +223,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 default:
@@ -242,6 +238,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
+            block.invisible();
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
                 if (data && data.length > 0) {
                     self.salIndAmountNames(data);
@@ -257,6 +254,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
             }).fail((err) => {
                 dialog.alertError({message: err.messageId});
+            }).always(() => {
+                block.clear();
             });
         }
 
