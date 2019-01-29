@@ -235,7 +235,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 			+ " 	),"
-			+ " IIF(qq.HIERARCHY_CD IS NULL OR s.END_DATE < ?baseDate, '999999999999999999999999999999',qq.HIERARCHY_CD) AS HIERARCHY_CD"
+			+ " HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -269,7 +269,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
-			+ "	 ORDER BY  s.HIERARCHY_CD  ";
+			+ "	 ORDER BY  CASE WHEN (s.HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC, s.HIERARCHY_CD  ";
 
 	
 	
@@ -551,7 +551,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 			+ " 	), "
-			+ " IIF(qq.HIERARCHY_CD IS NULL OR s.END_DATE < ?baseDate, '999999999999999999999999999999',qq.HIERARCHY_CD) AS HIERARCHY_CD"
+			+ " HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -585,7 +585,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
-			+ "	 ORDER BY s.HIERARCHY_CD";
+			+ "	 ORDER BY CASE WHEN (HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC , HIERARCHY_CD";
 
 	
 	
