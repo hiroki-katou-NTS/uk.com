@@ -2814,7 +2814,11 @@ button.nts-switch-button[disabled].selected {
 .ui-iggrid .nts-gridlist tbody td {
   white-space: pre;
 }
-
+.ui-iggrid-tooltip {
+  /* max-width: 500px !important; */
+  display: table;
+  max-width: none !important;
+}
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
