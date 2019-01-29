@@ -210,6 +210,9 @@ public class WorkTypeControlSheet extends JpaRepository{
 					name = type.getName();
 				}
 			}
+			if (name == null){
+				name = TextResource.localize("KSM011_75");
+			}
 		}
 		return name;
 	}
