@@ -609,11 +609,10 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 						formularItem.startsWith(CalFormulasItemColumn.add_Operator) && formularItem.length() > 2 ? 
 								formularItem.substring(2, formularItem.length()): formularItem
 								: "";
-				String valueTest1 = MessageFormat.format(value,'1');
-				String valueTest2 = I18NText.main(value).build().buildMessage();
+//				String valueTest1 = MessageFormat.format(value,'1');
 				data.put(CalFormulasItemColumn.KMK002_97,
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
-								.value(value)
+								.value(formatName(value))
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 				break;
 			case 1:
@@ -631,6 +630,17 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		return MasterData.builder().rowData(data).build();
 	}
 
+	private String formatName(String name) {
+		if (name.indexOf("{#") >= 0) {
+			int startLocation = name.indexOf("{");
+			int endLocation = name.indexOf("}");
+			name = name.replace(name.substring(startLocation, endLocation + 1),
+					TextResource.localize(name.substring(startLocation + 2, endLocation)));
+		}
+		return name;
+	}
+	
+	
 	private String formatTime(int source) {
 		int regularized = Math.abs(source);
 		int hourPart = (regularized / 60);
