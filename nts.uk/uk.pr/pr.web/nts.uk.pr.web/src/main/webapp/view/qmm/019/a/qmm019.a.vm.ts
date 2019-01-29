@@ -21,6 +21,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
     import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
     import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
 
@@ -900,7 +901,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
                     new nts.uk.ui.contextmenu.ContextMenuItem(
                         "Delete",
-                        "Xóa",
+                        getText('QMM019_235'),
                         () => { self.delete() },
                         "ui-icon ui-icon-trash",
                         true,
@@ -908,7 +909,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     ),
                     new nts.uk.ui.contextmenu.ContextMenuItem(
                         "Resume",
-                        "Bỏ xóa",
+                        getText('QMM019_234'),
                         () => { self.delete() },
                         "ui-icon ui-icon-clipboard",
                         false,
@@ -933,7 +934,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
                         new nts.uk.ui.contextmenu.ContextMenuItem(
                             "Delete",
-                            "Xóa",
+                            getText('QMM019_235')/*"Xóa"*/,
                             () => { self.delete() },
                             "ui-icon ui-icon-trash",
                             true,
@@ -941,7 +942,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         ),
                         new nts.uk.ui.contextmenu.ContextMenuItem(
                             "Resume",
-                            "Bỏ xóa",
+                            getText('QMM019_234')/*bỏ xóa*/,
                             () => { self.delete() },
                             "ui-icon ui-icon-clipboard",
                             false,
