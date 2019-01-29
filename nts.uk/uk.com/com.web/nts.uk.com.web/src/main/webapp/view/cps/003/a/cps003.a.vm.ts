@@ -518,6 +518,7 @@ module cps003.a.vm {
                 subWidth: "160px",
                 dataSource: self.gridOptions.dataSource,
                 primaryKey: "id",
+                useOptions: true,
                 virtualization: true,
                 virtualizationMode: "continuous",
                 enter: "right",
@@ -609,7 +610,7 @@ module cps003.a.vm {
 //                    { headerText: "印刷対象", key: "print", dataType: "boolean", width: "30px", ntsControl: "PrintCheckBox", bound: true },
                     { headerText: nts.uk.resource.getText("CPS003_114"), key: "showControl", dataType: "string", width: "40px", ntsControl: "ImageShow" },
                     { headerText: nts.uk.resource.getText("CPS003_28"), key: "employeeCode", dataType: "string", width: "100px", ntsControl: "Label" },
-                    { headerText: nts.uk.resource.getText("CPS003_29"), key: "employeeName", dataType: "string", width: "100px", ntsControl: "Label" },
+                    { headerText: nts.uk.resource.getText("CPS003_29"), key: "employeeName", dataType: "string", width: "140px", ntsControl: "Label" },
                     { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd", hidden: hideRowAdd },
                     { headerText: nts.uk.resource.getText("CPS003_30"), key: "deptName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.departmentATR === IUSE_SETTING.NOT_USE },
                     { headerText: nts.uk.resource.getText("CPS003_31"), key: "workplaceName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.workPlaceATR === IUSE_SETTING.NOT_USE },
@@ -726,7 +727,7 @@ module cps003.a.vm {
                 self.gridOptions.dataSource = [];
                 let states = [], workTimeCodes = [], nullWorkTimeCodes = [], workTimeItems = [], nullWorkTimeItems = [], codes = {}, displayItems = [];
                 _.forEach(self.gridOptions.columns, (column, i) => {
-                    if (column.hidden || i < 11) return;
+                    if (i < 11) return;
                     displayItems.push(column.key);
                 });
                 
@@ -1591,6 +1592,7 @@ module cps003.a.vm {
         print: boolean;
         
         constructor(data: IDataBody, rowNumber: number) {
+            if (!data) return this;
             this.rowNumber = rowNumber + 1;
             this.id = (data.items && data.items[0] && data.items[0].recordId) || nts.uk.util.randomId() + "_noData";
             this.personId = data.personId;

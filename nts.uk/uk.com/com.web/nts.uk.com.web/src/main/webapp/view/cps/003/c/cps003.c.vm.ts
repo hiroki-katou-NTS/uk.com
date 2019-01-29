@@ -31,6 +31,8 @@ module cps003.c.vm {
         
         constructor() {
             let self = this;
+            cps003.control.selectButton();
+            cps003.control.relateButton();
         }
 
         start() {
@@ -38,6 +40,7 @@ module cps003.c.vm {
             
             let param = getShared("CPS003G_PARAM"), paramB: GridDto = getShared("CPS003B_PARAM");
             
+            block();
             self.baseDate(param.baseDate);
             self.updateMode(param.updateMode);
             self.category.catId(param.catId);
@@ -48,6 +51,17 @@ module cps003.c.vm {
             if (paramB && paramB.headDatas) {
                 self.convertData(paramB).done(() => {
                     self.loadGrid();
+                    let $grid = $("#grid");
+                    $grid.mGrid("validate");
+                    let errors = $grid.mGrid("errors");
+                    if (errors.length > 0) {
+                        let errGroup = _.groupBy(errors, "rowId");
+                        _.forEach(_.keys(errGroup), id => {
+                            $grid.mGrid("updateCell", id, "status", "エラー(" + errGroup[id].length + "件)", true);
+                        });
+                    }
+                    
+                    unblock();
                 });
             }
         }
@@ -87,9 +101,9 @@ module cps003.c.vm {
                 
                 self.gridOptions.columns = [
                     { headerText: nts.uk.resource.getText("CPS003_50"), key: "register", dataType: "boolean", width: "30px", ntsControl: "RegCheckBox", bound: true },
-                    { headerText: nts.uk.resource.getText("CPS003_51"), key: "status", dataType: "string", width: "40px", ntsControl: "Label" },
+                    { headerText: nts.uk.resource.getText("CPS003_51"), key: "status", dataType: "string", width: "100px", ntsControl: "Label" },
                     { headerText: nts.uk.resource.getText("CPS003_52"), key: "employeeCode", dataType: "string", width: "100px", ntsControl: "Label" },
-                    { headerText: nts.uk.resource.getText("CPS003_53"), key: "employeeName", dataType: "string", width: "100px", ntsControl: "Label" },
+                    { headerText: nts.uk.resource.getText("CPS003_53"), key: "employeeName", dataType: "string", width: "140px", ntsControl: "Label" },
                     { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd", hidden: hideRowAdd }
                 ];
                 
@@ -175,7 +189,7 @@ module cps003.c.vm {
                 let states = [], workTimeCodes = [], nullWorkTimeCodes = [], workTimeItems = [], nullWorkTimeItems = [], codes = {}, displayItems = [];
                 
                 _.forEach(self.gridOptions.columns, (column, i) => {
-                    if (column.hidden || i < 5) return;
+                    if (i < 5) return;
                     displayItems.push(column.key);
                 });
                 
@@ -191,7 +205,7 @@ module cps003.c.vm {
                                 disabled = true;
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(item.value)) {
-                            record[item.itemCode] = nts.uk.time.minutesBased.clock.dayattr.create(item.value).shortText;
+                            record[item.itemCode] = nts.uk.time.minutesBased.clock.dayattr.create(Number(item.value)).shortText;
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(item.value)) {
                             record[item.itemCode] = nts.uk.time.parseTime(item.value, true).format();
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.READONLY) {
@@ -722,8 +736,8 @@ module cps003.c.vm {
                 width: "1000px",
                 height: "800px",
                 headerHeight: "80px",
-                subHeight: "380px",
-                subWidth: "160px",
+                subHeight: "140px",
+                subWidth: "100px",
                 dataSource: self.gridOptions.dataSource,
                 primaryKey: "id",
                 virtualization: true,
@@ -731,6 +745,19 @@ module cps003.c.vm {
                 enter: "right",
                 autoFitWindow: true,
                 errorColumns: [ "employeeCode", "employeeName" ],
+                idGen: (id) => id + "_" + nts.uk.util.randomId(),
+                notice: () => {
+                    let $grid = $("#grid");
+                    if (arguments[0] === true) {
+                        let matches = /(\d+)/.exec(arguments[3].status);
+                        if (matches) {
+                            $grid.mGrid("updateCell", arguments[1], "status", Number(matches[1]) - 1 == 0 ? "正常" : "エラー(" + (Number(matches[1]) - 1) + "件)", true);
+                        }
+                    } else {
+                        let matches = /(\d+)/.exec(arguments[2].status), status;
+                        $grid.mGrid("updateCell", arguments[0], "status", "エラー(" + (matches ? (Number(matches[1]) + 1) : 1) + "件)", true);
+                    }
+                },
                 columns: self.gridOptions.columns,
                 features: self.gridOptions.features,
                 ntsControls: self.gridOptions.ntsControls
@@ -741,60 +768,62 @@ module cps003.c.vm {
             let self = this,
                 command, employees = [], recId = {}, $grid = $("#grid");
             
-            $grid.mGrid("validate");
-            let itemErrors = $grid.mGrid("errors");
-            if (itemErrors && itemErrors.length > 0) {
-                setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
-                modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+            confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
+                $grid.mGrid("validate");
+                let itemErrors = $grid.mGrid("errors");
+                if (itemErrors && itemErrors.length > 0) {
+                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+                    modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                        
+                    });
                     
-                });
-                
-                return;
-            }
-            
-            let updates = $("#grid").mGrid("updatedCells");
-            if (updates.length === 0) return;
-            block();
-            _.forEach($("#grid").mGrid("dataSource"), d => recId[d.id] = d);
-            let cateName, cateType, regId = {};
-            if (self.category.cate()) {
-                cateName = self.category.cate().categoryName;
-                cateType = self.category.cate().categoryType;
-            }
-            
-            _.forEach(updates, item => {
-                if (item.columnKey === "register") return;
-                let recData: Record = recId[item.rowId];
-                let regEmp = regId[recData.id];
-                if (!regEmp) {
-                    regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
-                    regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
-                    regId[recData.id] = regEmp;
+                    return;
                 }
                 
-                let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
-                if (col) {
-                    let val = item.value;
-                    if (item.value instanceof Date) {
-                        val = moment(item.value).format("YYYY/MM/DD");
+                let updates = $("#grid").mGrid("updatedCells");
+                if (updates.length === 0) return;
+                block();
+                _.forEach($("#grid").mGrid("dataSource"), d => recId[d.id] = d);
+                let cateName, cateType, regId = {};
+                if (self.category.cate()) {
+                    cateName = self.category.cate().categoryName;
+                    cateType = self.category.cate().categoryType;
+                }
+                
+                _.forEach(updates, item => {
+                    if (item.columnKey === "register") return;
+                    let recData: Record = recId[item.rowId];
+                    let regEmp = regId[recData.id];
+                    if (!regEmp) {
+                        regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                        regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
+                        regId[recData.id] = regEmp;
                     }
                     
-                    regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
-                }
-                
-                employees.push(regEmp);
-            });
-            
-            command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
-            service.push.register(command).done((errorList) => {
-                info({ messageId: "Msg_15" }).then(() => {
-                    unblock();
-                    self.close();
+                    let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
+                    if (col) {
+                        let val = item.value;
+                        if (item.value instanceof Date) {
+                            val = moment(item.value).format("YYYY/MM/DD");
+                        }
+                        
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
+                    }
+                    
+                    employees.push(regEmp);
                 });
-            }).fail((res) => {
-                unblock();
-                alert(res.message);
-            });
+                
+                command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
+                service.push.register(command).done((errorList) => {
+                    info({ messageId: "Msg_15" }).then(() => {
+                        unblock();
+                        self.close();
+                    });
+                }).fail((res) => {
+                    unblock();
+                    alert(res.message);
+                });
+            }).ifNo(() => {});
         }
         
         checkError() {
@@ -835,14 +864,17 @@ module cps003.c.vm {
         employeeCode: string;
         employeeName: string;
         register: boolean;
+        status: string;
         
         constructor(data: EmployeeRowDto) {
+            if (!data) return this;
             this.id = (data.items && data.items[0] && data.items[0].recordId) || nts.uk.util.randomId() + "_noData";
             this.personId = data.personId;
             this.employeeId = data.employeeId;
             this.employeeCode = data.employeeCode;
             this.employeeName = data.employeeName;
             this.register = false;
+            this.status = "正常";
         }
     }
     
@@ -880,7 +912,7 @@ module cps003.c.vm {
         childs: Array<GridEmpHead>;
         itemCode: string;
         itemId: string;
-        itemName: string
+        itemName: string;
         itemOrder: number; 
         itemParentCode: string;
         itemTypeState: ISingleItem;
