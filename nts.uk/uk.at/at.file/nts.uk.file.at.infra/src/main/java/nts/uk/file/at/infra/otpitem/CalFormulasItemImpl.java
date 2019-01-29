@@ -2,6 +2,7 @@ package nts.uk.file.at.infra.otpitem;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -227,7 +229,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHEN 4 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis1.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 5 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis1.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 6 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis1.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO))))");
-	     exportSQL.append("       WHEN 7 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis1.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B.FRAME_NO ))))");
+	     exportSQL.append("       WHEN 7 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name8.DVGC_TIME_NAME FROM KRCST_DVGC_TIME name8 WHERE cis1.CID = name8.CID AND  name8.[NO] = B.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 8 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis1.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO)), '{1}', (SELECT ISNULL(name91.UNIT_OF_OPTIONAL_ITEM,'') FROM KRCST_OPTIONAL_ITEM name91 WHERE cis1.CID = name91.CID AND  name91.OPTIONAL_ITEM_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 10 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis1.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B.FRAME_NO))))");
 //	     exportSQL.append("       -- WHEN 11 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis1.CID = name12.CID AND  name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))");
@@ -267,7 +269,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHEN 4 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis2.CID = name5.CID AND  name5.PREMIUM_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 5 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis2.CID = name6.CID AND  name6.TIME_ITEM_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 6 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis2.CID = name7.CID AND  name7.TIME_ITEM_NO = B1.FRAME_NO ))))");
-	     exportSQL.append("       WHEN 7 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis2.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B1.FRAME_NO ))))");
+	     exportSQL.append("       WHEN 7 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name8.DVGC_TIME_NAME FROM KRCST_DVGC_TIME name8 WHERE cis2.CID = name8.CID AND  name8.[NO] = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 8 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(REPLACE(mai.M_ATD_ITEM_NAME, '{0}',(SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis2.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B1.FRAME_NO )), '{1}', (SELECT ISNULL(name9.UNIT_OF_OPTIONAL_ITEM,'') FROM KRCST_OPTIONAL_ITEM name9 WHERE cis2.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 10 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis2.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B1.FRAME_NO ))))");
 //	     exportSQL.append("       -- WHEN 11 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis.CID = name12.CID AND  name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))");
@@ -607,6 +609,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 						formularItem.startsWith(CalFormulasItemColumn.add_Operator) && formularItem.length() > 2 ? 
 								formularItem.substring(2, formularItem.length()): formularItem
 								: "";
+				String valueTest1 = MessageFormat.format(value,'1');
+				String valueTest2 = I18NText.main(value).build().buildMessage();
 				data.put(CalFormulasItemColumn.KMK002_97,
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
 								.value(value)
