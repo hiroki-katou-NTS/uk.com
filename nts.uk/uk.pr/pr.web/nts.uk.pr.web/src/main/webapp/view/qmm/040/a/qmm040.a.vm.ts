@@ -184,7 +184,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 1:
@@ -198,7 +197,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 2:
@@ -212,7 +210,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 3:
@@ -226,7 +223,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 default:
@@ -242,24 +238,24 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
+            block.invisible();
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
-                if (data) {
-                    self.salIndAmountNames(_.sortBy(data, function (o) {
-                        return o.individualPriceCode;
-                    }));
-                    if (data.length > 0) {
-                        self.isRegistrable(true);
-                        self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
-                    } else {
-                        self.isRegistrable(false);
-                        dialog.alertError({messageId: "MsgQ_169"});
-                        errors.clearAll();
-                        self.individualPriceCode('');
-                        self.individualPriceName('');
-                    }
+                if (data && data.length > 0) {
+                    self.salIndAmountNames(data);
+                    self.isRegistrable(true);
+                    self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
+                    self.salIndAmountNamesSelectedCode.valueHasMutated();
+                } else {
+                    self.isRegistrable(false);
+                    dialog.alertError({messageId: "MsgQ_169"});
+                    errors.clearAll();
+                    self.individualPriceCode('');
+                    self.individualPriceName('');
                 }
             }).fail((err) => {
                 dialog.alertError({message: err.messageId});
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -279,7 +275,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = _.find( self.employeeInfoImports, x => x.sid === personalAmount.empId);
+                    let employeeInfo = _.find(self.employeeInfoImports, x => x.sid === personalAmount.empId);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
