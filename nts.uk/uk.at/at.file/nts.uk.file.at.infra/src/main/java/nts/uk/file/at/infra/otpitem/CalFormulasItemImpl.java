@@ -631,7 +631,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	}
 
 	private String formatName(String name) {
-		if (name.indexOf("{#") >= 0) {
+		while (name.indexOf("{#") >= 0) {
 			int startLocation = name.indexOf("{");
 			int endLocation = name.indexOf("}");
 			name = name.replace(name.substring(startLocation, endLocation + 1),
