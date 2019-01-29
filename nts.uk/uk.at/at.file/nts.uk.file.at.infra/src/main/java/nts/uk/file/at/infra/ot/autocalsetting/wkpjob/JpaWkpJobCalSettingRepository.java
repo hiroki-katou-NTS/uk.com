@@ -53,7 +53,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("   FROM ");
         sql.append("     ( ");
         sql.append("      SELECT  ");
-        sql.append("         RROW_NUMBER() OVER (PARTITION BY wj.WPKID ORDER BY CASE WHEN HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, WPKID, HIERARCHY_CD, IIF(JOB_NAME IS NULL, 1, 0) ASC, JOB_CD) AS ROW_NUMBER,  ");
+        sql.append("         ROW_NUMBER() OVER (PARTITION BY wj.WPKID ORDER BY CASE WHEN HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, WPKID, HIERARCHY_CD, IIF(JOB_NAME IS NULL, 1, 0) ASC, JOB_CD) AS ROW_NUMBER,  ");
         sql.append("         wj.LEGAL_OT_TIME_ATR, ");
         sql.append("         wj.LEGAL_OT_TIME_LIMIT, ");
         sql.append("         wj.LEGAL_MID_OT_TIME_ATR, ");
