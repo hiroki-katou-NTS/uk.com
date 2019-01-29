@@ -142,7 +142,8 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("       ON ji.HIST_ID = jh.HIST_ID AND ji.JOB_ID = jh.JOB_ID AND ji.CID = jh.CID ) jn ");
         sql.append("  ON wj.JOB_ID = jn.JOB_ID  AND wj.CID = jn.CID ");
         sql.append("  ) temp ");
-        sql.append("  ORDER BY CASE WHEN temp.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
+        sql.append("  ORDER BY CASE WHEN temp.HIERARCHY_CD IS NULL  THEN 1 ELSE 0 END ASC, HIERARCHY_CD,");
+        sql.append("  CASE WHEN temp.JOB_CD IS NULL THEN 1 ELSE 0 END ASC , temp.JOB_CD");
 		GET_ALL_WORKPLACE_JOB = sql.toString();
 
 
