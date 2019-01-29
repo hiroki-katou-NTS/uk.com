@@ -35,8 +35,8 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
             self.endMonthNumber = null;
 
             self.itemHistoryEditList = ko.observableArray([
-                new shareModel.BoxModel(0, getText('QMM019_46')),
-                new shareModel.BoxModel(1, getText('QMM019_47'))
+                new shareModel.BoxModel(0, getText('QMM019_236')),
+                new shareModel.BoxModel(1, getText('QMM019_237'))
             ]);
             self.itemHistoryEdit = ko.observable(1);
 
