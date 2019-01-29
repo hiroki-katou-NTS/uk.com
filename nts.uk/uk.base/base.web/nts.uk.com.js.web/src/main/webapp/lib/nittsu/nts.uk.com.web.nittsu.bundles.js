@@ -1670,6 +1670,24 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
+            function today() {
+                var todayDate = "";
+                nts.uk.request.syncAjax("com", "server/time/today/").done(function (res) {
+                    todayDate = res;
+                }).fail(function () {
+                });
+                return moment.utc(todayDate, "yyyy/MM/dd");
+            }
+            time_1.today = today;
+            function now() {
+                var nowDateTime = "";
+                nts.uk.request.syncAjax("com", "server/time/now/").done(function (res) {
+                    nowDateTime = res;
+                }).fail(function () {
+                });
+                return moment.utc(nowDateTime);
+            }
+            time_1.now = now;
             var JapanYearMonth = (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
