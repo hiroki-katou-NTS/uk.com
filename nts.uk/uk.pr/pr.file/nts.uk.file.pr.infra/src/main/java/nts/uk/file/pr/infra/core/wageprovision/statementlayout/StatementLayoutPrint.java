@@ -36,14 +36,14 @@ public class StatementLayoutPrint {
 		this.reportRow = wsc.getRangeByName("reportRow");
 	}
 
-	public int printHeader(String code, String name, YearMonth ym, int offset) {
-		String statement = "【" + code + "　" + name + "】";
-		String processingDate = TextResource.localize("QMM019_204") + "：" + ym.year() + "年" + ym.month() + "月";
-		this.copyRange(this.header, offset);
-		this.printCell("statement", statement, offset);
-		this.printCell("processingDate", processingDate, offset);
-		return this.header.getFirstRow() + this.header.getRowCount() + offset;
-	}
+    public int printHeader(String code, String name, YearMonth ym, int offset) {
+        String statement = TextResource.localize("QMM019_245") + code + "　" + name + TextResource.localize("QMM019_246");
+        String processingDate = TextResource.localize("QMM019_204") + ym.year() + "年" + ym.month() + "月";
+        this.copyRange(this.header, offset);
+        this.printCell("statement", statement, offset);
+        this.printCell("processingDate", processingDate, offset);
+        return this.header.getFirstRow() + this.header.getRowCount() + offset;
+    }
 
 	public int printPaymentItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
 		this.copyRange(this.paymentRow, offset);
@@ -67,7 +67,7 @@ public class StatementLayoutPrint {
                 this.printCell("paymentItem" + item.getItemPosition() + "_info2", this.getA2_4_A2_9(payment), offset + 2);
 
 				// A2_5
-				String proportionalSet = "按分設定：";
+				String proportionalSet = TextResource.localize("QMM019_238");
 				switch (payment.getProportionalAtr()) {
 					case NOT_PROPORTIONAL:
 						proportionalSet += "なし";
@@ -84,19 +84,19 @@ public class StatementLayoutPrint {
 				String referInfo;
 				switch (payment.getCalcMethod()) {
 					case PERSON_INFO_REF:
-						referInfo = "参照：";
+						referInfo = TextResource.localize("QMM019_241");
 						referInfo += payment.getPersonAmountName();
 						break;
 					case CACL_FOMULA:
-						referInfo = "式：";
+						referInfo = TextResource.localize("QMM019_242");
 						referInfo += payment.getCalcFomulaName();
 						break;
 					case WAGE_TABLE:
-						referInfo = "表：";
+						referInfo = TextResource.localize("QMM019_243");
 						referInfo += payment.getWageTblName();
 						break;
 					case COMMON_AMOUNT:
-						referInfo = "金額：";
+						referInfo = TextResource.localize("QMM019_244");
 						referInfo += payment.getCommonAmount();
 						break;
 					default:
@@ -108,14 +108,14 @@ public class StatementLayoutPrint {
 			// A2_6, A2_7
 			if (payment.getItemRangeSet().isPresent()) {
 				ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet().get();
-				String errorSet = "エラー設定：";
+				String errorSet = TextResource.localize("QMM019_239");
 				if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
 					errorSet += "あり";
 				} else {
 					errorSet += "なし";
 				}
-				String alarmSet = "アラーム設定：";
+				String alarmSet = TextResource.localize("QMM019_240");
 				if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
 					alarmSet += "あり";
@@ -176,7 +176,7 @@ public class StatementLayoutPrint {
 				this.printCell("deductionItem" + item.getItemPosition() + "_info2", calcMethod, offset + 2);
 
 				// A3_5
-				String proportionalSet = "按分設定：";
+				String proportionalSet = TextResource.localize("QMM019_238");
 				switch (deduction.getProportionalAtr()) {
 					case NOT_PROPORTIONAL:
 						proportionalSet += "なし";
@@ -193,23 +193,23 @@ public class StatementLayoutPrint {
 				String referInfo;
 				switch (deduction.getCalcMethod()) {
 					case PERSON_INFO_REF:
-						referInfo = "参照：";
+                        referInfo = TextResource.localize("QMM019_241");
 						referInfo += deduction.getPersonAmountName();
 						break;
 					case CACL_FOMULA:
-						referInfo = "式：";
+                        referInfo = TextResource.localize("QMM019_242");
 						referInfo += deduction.getCalcFomulaName();
 						break;
 					case WAGE_TABLE:
-						referInfo = "表：";
+                        referInfo = TextResource.localize("QMM019_243");
 						referInfo += deduction.getWageTblName();
 						break;
 					case COMMON_AMOUNT:
-						referInfo = "金額：";
+                        referInfo = TextResource.localize("QMM019_244");
 						referInfo += deduction.getCommonAmount();
 						break;
 					case SUPPLY_OFFSET:
-						referInfo = "対象：";
+                        referInfo = TextResource.localize("QMM019_241");
 						referInfo += deduction.getSupplyOffsetName();
 						break;
 					default:
@@ -221,14 +221,14 @@ public class StatementLayoutPrint {
 			// A3_6, A3_7
             if (deduction.getItemRangeSet().isPresent()) {
                 ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet().get();
-                String errorSet = "エラー設定：";
+                String errorSet = TextResource.localize("QMM019_239");
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
                     errorSet += "あり";
                 } else {
                     errorSet += "なし";
                 }
-                String alarmSet = "アラーム設定：";
+                String alarmSet = TextResource.localize("QMM019_240");
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
                     alarmSet += "あり";
@@ -255,14 +255,14 @@ public class StatementLayoutPrint {
             // A4_3, A4_4
             if (attend.getItemRangeSet().isPresent()) {
                 ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet().get();
-                String errorSet = "エラー設定：";
+                String errorSet = TextResource.localize("QMM019_239");
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
                     errorSet += "あり";
                 } else {
                     errorSet += "なし";
                 }
-                String alarmSet = "アラーム設定：";
+                String alarmSet = TextResource.localize("QMM019_240");
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
 						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
                     alarmSet += "あり";
