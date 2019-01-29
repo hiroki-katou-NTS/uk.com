@@ -171,9 +171,13 @@ public class HolidaySettingExportImpl implements MasterListData{
 				putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","","",0);
 				
 				if(optPubHDSet.getPubHdSet().getDetermineStartD() == 0){
+					//6
 					putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"",TextResource.localize("KMF002_67"),0);
+					//7
 					putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),optPubHDSet.getPubHdSet().getFullDate(),1);
+					//8
 					putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",1);
+					//9
 					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
 					
 				}else{
@@ -196,6 +200,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 			}
 			//週間休日チェック
 			if(optPubHDSet.getPubHdSet().getIsWeeklyHdCheck() == 1){
+				//10
 				putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","○",0);
 			}else{
 				putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","-",0);
@@ -257,6 +262,31 @@ public class HolidaySettingExportImpl implements MasterListData{
 					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_71"), "", 1);
 				}
 			}
+		}else{
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","","","管理しない",0);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","",0);
+			putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_66"),"","","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","","",0);
+			putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"","",0);
+			putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","",0);
+			putDataCustom(datas,"","",TextResource.localize("KMF002_47"),TextResource.localize("KMF002_48"),"",0);
+			putDataCustom(datas,"","",TextResource.localize("KMF002_49"),"","",1);
+			putDataCustom(datas,"","",TextResource.localize("KMF002_50"),"","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_51"),TextResource.localize("KMF002_17"),"","",0);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
+			
+			putDataCustom(datas,"","",TextResource.localize("KMF002_18"),"","",0);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
+			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
 		}
 		return datas;
 	}
@@ -323,38 +353,52 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 	//会社
 	private List<MasterData> getMasterDataTwo(MasterListExportQuery query) {
-
+		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
 		List<MasterData> datas = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		Optional<CompanyMonthDaySetting> optional = companyMonthDaySettingFinder.findByYear(new CompanyId(companyId), new Year(endDate));
+		int year = endDate-startDate;
+		List<Integer> listYear = new ArrayList<>();
+
+		for(int i=0;i<year+1;i++){
+			listYear.add(startDate+i);
+		}
 
 		Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 		
-		if(optional.isPresent() && companyStartMonth.isPresent()){
-			int startMonth = companyStartMonth.get().getStartMonth();
-			for(int i=0; i<12;i++){
-				Map<String, Object> data = new HashMap<>();
-				putEmptyDataTwo(data);
-				if(i==0){
-					data.put(valueTwo1, optional.get().getManagementYear());
+		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		
+		if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+			if(!CollectionUtil.isEmpty(listYear)){
+				for(int y=0;y<listYear.size();y++){
+					Optional<CompanyMonthDaySetting> optional = companyMonthDaySettingFinder.findByYear(new CompanyId(companyId), new Year(listYear.get(y)));
+					if(optional.isPresent() && companyStartMonth.isPresent()){
+						int startMonth = companyStartMonth.get().getStartMonth();
+						for(int i=0; i<12;i++){
+							Map<String, Object> data = new HashMap<>();
+							putEmptyDataTwo(data);
+							if(i==0){
+								data.put(valueTwo1, listYear.get(y));
+							}
+							data.put(valueTwo2, startMonth+TextResource.localize("KMF002_12"));
+							data.put(valueTwo3, optional.get().getPublicHolidayMonthSettings().get(startMonth-1).getInLegalHoliday()+TextResource.localize("KMF002_8"));
+							MasterData masterData = new MasterData(data, null, "");	
+							masterData.cellAt(valueTwo1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueTwo2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueTwo3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							datas.add(masterData);
+							
+							if(startMonth<12){
+								startMonth++;
+							}else if(startMonth ==12){
+								startMonth = 1;
+							}
+						}
+					}
 				}
-				data.put(valueTwo2, startMonth+TextResource.localize("KMF002_12"));
-				data.put(valueTwo3, optional.get().getPublicHolidayMonthSettings().get(startMonth-1).getInLegalHoliday()+TextResource.localize("KMF002_8"));
-				MasterData masterData = new MasterData(data, null, "");	
-				masterData.cellAt(valueTwo1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt(valueTwo2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt(valueTwo3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				datas.add(masterData);
-				
-				if(startMonth<12){
-					startMonth++;
-				}else if(startMonth ==12){
-					startMonth = 1;
-				}
-
 			}
 		}
+
 		return datas;
 	}
 	
@@ -374,63 +418,71 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		List<MasterData> datas = new ArrayList<>();
 		int endDate = query.getEndDate().year();
+		int startDate = query.getStartDate().year();
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
 		wkpConfigInfoFindObject.setSystemType(2);
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
-		
+		int year = endDate-startDate;
+		List<Integer> listYear = new ArrayList<>();
+		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		for(int i=0;i<year+1;i++){
+			listYear.add(startDate+i);
+		}
+
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-	
-		List<String> lstWpk = workplaceMonthDaySettingRepository.findWkpRegisterByYear(new CompanyId(companyId), new Year(endDate));
 		
-		List<WorkplaceHierarchyDto> listWorkplace = getListWorkplaceHierarchyDto(workplaceHierarchyDtos, lstWpk);
-		
-		if(!CollectionUtil.isEmpty(listWorkplace)){  
+		for(int y=0;y<listYear.size();y++){
+			List<String> lstWpk = workplaceMonthDaySettingRepository.findWkpRegisterByYear(new CompanyId(companyId), new Year(listYear.get(y)));
+
+			List<WorkplaceHierarchyDto> listWorkplace = getListWorkplaceHierarchyDto(workplaceHierarchyDtos, lstWpk);
 			
-			for(int i=0;i<listWorkplace.size();i++){
-				
-				Map<String, Object> data = new HashMap<>();
+			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+				if(!CollectionUtil.isEmpty(listWorkplace)){  
+					for(int i=0;i<listWorkplace.size();i++){
+						Map<String, Object> data = new HashMap<>();
+						Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
+						int startMonthThree = companyStartMonth.get().getStartMonth();
+						for(int j=0;j<12; j++){
+							putEmptyDataThree(data);
+							if(i==0 && j==0){
+								data.put(valueThree1, listYear.get(y));
+							}
+							if(j==0){
+								data.put(valueThree2, listWorkplace.get(i).getCode());
+				                data.put(valueThree3,listWorkplace.get(i).getName());
+							}else{
+								data.put(valueThree2, "");
+				                data.put(valueThree3,"");
+							}
+							data.put(valueThree4, startMonthThree +TextResource.localize("KMF002_12"));
+							String workplaceId = listWorkplace.get(i).getWorkplaceId();
+							Optional<WorkplaceMonthDaySetting> optionalThree = workplaceMonthDaySettingRepository
+									.findByYear(new CompanyId(companyId), workplaceId ,new Year(listYear.get(y)));
 
-				Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
-				int startMonthThree = companyStartMonth.get().getStartMonth();
-
-				for(int j=0;j<12; j++){
-					putEmptyDataThree(data);
-					if(i==0 && j==0){
-						data.put(valueThree1, endDate);
+							data.put(valueThree5, optionalThree.get().getPublicHolidayMonthSettings().get(startMonthThree-1)
+									.getInLegalHoliday()+TextResource.localize("KMF002_8"));
+							
+							if (startMonthThree < 12) {
+								startMonthThree++;
+							} else if (startMonthThree == 12) {
+								startMonthThree = 1;
+							}
+							
+							MasterData masterData = new MasterData(data, null, "");	
+							masterData.cellAt(valueThree1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueThree2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueThree3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueThree4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueThree5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							datas.add(masterData);
+						}
 					}
-					if(j==0){
-						data.put(valueThree2, listWorkplace.get(i).getCode());
-		                data.put(valueThree3,listWorkplace.get(i).getName());
-					}else{
-						data.put(valueThree2, "");
-		                data.put(valueThree3,"");
-					}
-					data.put(valueThree4, startMonthThree +TextResource.localize("KMF002_12"));
-					String workplaceId = listWorkplace.get(i).getWorkplaceId();
-					Optional<WorkplaceMonthDaySetting> optionalThree = workplaceMonthDaySettingRepository.findByYear(new CompanyId(companyId), workplaceId ,new Year(endDate));
-
-					data.put(valueThree5, optionalThree.get().getPublicHolidayMonthSettings().get(startMonthThree-1).getInLegalHoliday()+TextResource.localize("KMF002_8"));
-					
-					if (startMonthThree < 12) {
-						startMonthThree++;
-					} else if (startMonthThree == 12) {
-						startMonthThree = 1;
-					}
-					
-					MasterData masterData = new MasterData(data, null, "");	
-					masterData.cellAt(valueThree1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueThree2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueThree3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueThree4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueThree5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					datas.add(masterData);
 				}
 			}
+			
 		}
-		
-		
 		return datas;
 	}
 	
@@ -453,6 +505,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	private List<MasterData> getMasterDataFour(MasterListExportQuery query) {
 		int endDate = query.getEndDate().year();
+		int startDate = query.getStartDate().year();
 		
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
@@ -465,60 +518,63 @@ public class HolidaySettingExportImpl implements MasterListData{
 			return dto;
 		}).collect(Collectors.toList());
 		
-		List<String> lstEmp = employmentMonthDaySettingRepository.findAllEmpRegister(new CompanyId(companyId), new Year(endDate));
-		
-		List<EmploymentDto> listEmployeeExport = getListEmploymentDto(listEmployee, lstEmp);
-		
+		int year = endDate-startDate;
+		List<Integer> listYear = new ArrayList<>();
+		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		for(int i=0;i<year+1;i++){
+			listYear.add(startDate+i);
+		}
 		Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 		
-		if (CollectionUtil.isEmpty(listEmployeeExport)) {
-			return null;
-		} else {
+		for(int y=0;y<listYear.size();y++){
+			List<String> lstEmp = employmentMonthDaySettingRepository.findAllEmpRegister(new CompanyId(companyId), new Year(listYear.get(y)));
+			List<EmploymentDto> listEmployeeExport = getListEmploymentDto(listEmployee, lstEmp);
+			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+				if (!CollectionUtil.isEmpty(listEmployeeExport)) {
+					Map<String, Object> data = new HashMap<>();
+					int startMonthFour = companyStartMonth.get().getStartMonth();
+					for (int i = 0; i < listEmployeeExport.size(); i++) {
+						for (int j = 0; j < 12; j++) {
+							putEmptyDataFour(data);
+							if (i == 0 && j == 0) {
+								data.put(valueFour1, listYear.get(y));
+							}
+							if (j == 0) {
+								data.put(valueFour2, listEmployeeExport.get(i).getCode());
+								data.put(valueFour3, listEmployeeExport.get(i).getName());
+							}
+							data.put(valueFour4, startMonthFour + TextResource.localize("KMF002_12"));
+							String wordCode = listEmployeeExport.get(i).getCode();
 
-			Map<String, Object> data = new HashMap<>();
-			int startMonthFour = companyStartMonth.get().getStartMonth();
-			for (int i = 0; i < listEmployeeExport.size(); i++) {
-				
+							Optional<EmploymentMonthDaySetting> optionalFour = employmentMonthDaySettingRepository
+									.findByYear(new CompanyId(companyId), wordCode, new Year(listYear.get(y)));
 
-				for (int j = 0; j < 12; j++) {
-					putEmptyDataFour(data);
-					if (i == 0 && j == 0) {
-						data.put(valueFour1, endDate);
+							data.put(valueFour5, optionalFour.get().getPublicHolidayMonthSettings().get(startMonthFour - 1)
+									.getInLegalHoliday() + TextResource.localize("KMF002_8"));
+
+							if (startMonthFour < 12) {
+								startMonthFour++;
+							} else if (startMonthFour == 12) {
+								startMonthFour = 1;
+							}
+
+							MasterData masterData = new MasterData(data, null, "");
+							masterData.cellAt(valueFour1)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueFour2)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueFour3)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueFour4)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueFour5)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							datas.add(masterData);
+						}
 					}
-					if (j == 0) {
-						data.put(valueFour2, listEmployeeExport.get(i).getCode());
-						data.put(valueFour3, listEmployeeExport.get(i).getName());
-					}
-					data.put(valueFour4, startMonthFour + TextResource.localize("KMF002_12"));
-					String wordCode = listEmployeeExport.get(i).getCode();
 
-					Optional<EmploymentMonthDaySetting> optionalFour = employmentMonthDaySettingRepository
-							.findByYear(new CompanyId(companyId), wordCode, new Year(endDate));
-
-					data.put(valueFour5, optionalFour.get().getPublicHolidayMonthSettings().get(startMonthFour - 1)
-							.getInLegalHoliday() + TextResource.localize("KMF002_8"));
-
-					if (startMonthFour < 12) {
-						startMonthFour++;
-					} else if (startMonthFour == 12) {
-						startMonthFour = 1;
-					}
-
-					MasterData masterData = new MasterData(data, null, "");
-					masterData.cellAt(valueFour1)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueFour2)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueFour3)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueFour4)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueFour5)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					datas.add(masterData);
 				}
 			}
-
 		}
 		return datas;
 	}
@@ -568,58 +624,67 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 		List<RegulationInfoEmployeeDto> listFind = regulationInfoEmployeeFinder.find(ccg);
 		int endDate = query.getEndDate().year();
-		
-		List<String> listEmployeeRegister = employeeMonthDaySettingFinder.findAllEmployeeRegister(endDate);
-		
-		List<RegulationInfoEmployeeDto> listmployee = getListRegulationInfoEmployeeDto(listFind,listEmployeeRegister);
+		int startDate = query.getStartDate().year();
 		
 		Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 		
-		if(CollectionUtil.isEmpty(listmployee)){
-			return null;
-		}else{
-			int startMonthFour = companyStartMonth.get().getStartMonth();
-			Map<String, Object> data = new HashMap<>();
-			for (int i = 0; i < listmployee.size(); i++) {
-				for (int j = 0; j < 12; j++) {
-					putEmptyDataFive(data);
-					if (i == 0 && j == 0) {
-						data.put(valueFive1, endDate);
-					}
-					if (j == 0) {
-						data.put(valueFive2, listmployee.get(i).getEmployeeCode());
-						data.put(valueFive3, listmployee.get(i).getEmployeeName());
-					}
-					
-					data.put(valueFive4, startMonthFour + TextResource.localize("KMF002_12"));
-					
-					String employeeId = listmployee.get(i).getEmployeeId();
-					Optional<EmployeeMonthDaySetting> optional = employeeMonthDaySettingRepository.findByYear(new CompanyId(companyId), employeeId ,new Year(endDate));
-					
-					data.put(valueFive5, optional.get().getPublicHolidayMonthSettings().get(startMonthFour - 1)
-							.getInLegalHoliday() + TextResource.localize("KMF002_8"));
-										
-					MasterData masterData = new MasterData(data, null, "");
-					masterData.cellAt(valueFive1)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueFive2)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueFive3)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueFive4)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					masterData.cellAt(valueFive5)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					datas.add(masterData);
-					
-					if (startMonthFour < 12) {
-						startMonthFour++;
-					} else if (startMonthFour == 12) {
-						startMonthFour = 1;
+		int year = endDate-startDate;
+		List<Integer> listYear = new ArrayList<>();
+		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		for(int i=0;i<year+1;i++){
+			listYear.add(startDate+i);
+		}
+		for(int y=0;y<listYear.size();y++){
+			List<String> listEmployeeRegister = employeeMonthDaySettingFinder.findAllEmployeeRegister(listYear.get(y));
+			List<RegulationInfoEmployeeDto> listmployee = getListRegulationInfoEmployeeDto(listFind,listEmployeeRegister);
+			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+				if(!CollectionUtil.isEmpty(listmployee)){
+					int startMonthFour = companyStartMonth.get().getStartMonth();
+					Map<String, Object> data = new HashMap<>();
+					for (int i = 0; i < listmployee.size(); i++) {
+						for (int j = 0; j < 12; j++) {
+							putEmptyDataFive(data);
+							if (i == 0 && j == 0) {
+								data.put(valueFive1, listYear.get(y));
+							}
+							if (j == 0) {
+								data.put(valueFive2, listmployee.get(i).getEmployeeCode());
+								data.put(valueFive3, listmployee.get(i).getEmployeeName());
+							}
+							
+							data.put(valueFive4, startMonthFour + TextResource.localize("KMF002_12"));
+							
+							String employeeId = listmployee.get(i).getEmployeeId();
+							Optional<EmployeeMonthDaySetting> optional = employeeMonthDaySettingRepository
+									.findByYear(new CompanyId(companyId), employeeId ,new Year(listYear.get(y)));
+							
+							data.put(valueFive5, optional.get().getPublicHolidayMonthSettings().get(startMonthFour - 1)
+									.getInLegalHoliday() + TextResource.localize("KMF002_8"));
+												
+							MasterData masterData = new MasterData(data, null, "");
+							masterData.cellAt(valueFive1)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueFive2)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueFive3)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt(valueFive4)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							masterData.cellAt(valueFive5)
+									.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							datas.add(masterData);
+							
+							if (startMonthFour < 12) {
+								startMonthFour++;
+							} else if (startMonthFour == 12) {
+								startMonthFour = 1;
+							}
+						}
 					}
 				}
 			}
 		}
+
 		return datas;
 	}
 
@@ -688,20 +753,21 @@ public class HolidaySettingExportImpl implements MasterListData{
 			
 			if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==0){
 				listSheetData.add(sheetDataTwo);
-				listSheetData.add(sheetDataThree);
+				listSheetData.add(sheetDataFour);
+				
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==1){
 				listSheetData.add(sheetDataTwo);
-				listSheetData.add(sheetDataFour);
+				listSheetData.add(sheetDataThree);
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==0){
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataFive);
 			}else if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==0){
 				listSheetData.add(sheetDataTwo);
-				listSheetData.add(sheetDataThree);
+				listSheetData.add(sheetDataFour);
 				listSheetData.add(sheetDataFive);
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==1){
 				listSheetData.add(sheetDataTwo);
-				listSheetData.add(sheetDataFour);
+				listSheetData.add(sheetDataThree);
 				listSheetData.add(sheetDataFive);
 			}
 			if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageWkpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==0){
