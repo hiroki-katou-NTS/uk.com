@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.DefaultAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.TaxAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.WorkingAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.RangeSettingEnum;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.*;
 import nts.uk.shr.com.i18n.TextResource;
@@ -138,11 +139,16 @@ public class StatementLayoutPrint {
         if (TaxAtr.COMMUTING_EXPENSES_MANUAL.equals(taxAtr) || TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.equals(taxAtr)) {
             if (PaymentCaclMethodAtr.PERSON_INFO_REF.equals(payment.getCalcMethod())) {
                 workingAtr += "　";
-                workingAtr += "交通費";
-            } else if (payment.getWorkingAtr().isPresent()) {
-                workingAtr += "　";
-                workingAtr += TextResource.localize(payment.getWorkingAtr().get().nameId);
-            }
+				workingAtr += TextResource.localize("QMM019_226");
+			} else if (payment.getWorkingAtr().isPresent()) {
+				workingAtr += "　";
+				WorkingAtr work = payment.getWorkingAtr().get();
+				if (WorkingAtr.TRANSPORT_FACILITIES.equals(work)) {
+					workingAtr += TextResource.localize("QMM019_227");
+				} else if (WorkingAtr.TRANSPORT_EQUIPMENT.equals(work)) {
+					workingAtr += TextResource.localize("QMM019_228");
+				}
+			}
         }
         return calcMethod + workingAtr;
     }
