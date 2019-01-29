@@ -181,7 +181,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
 					
 				}else{
-					putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"",TextResource.localize("KMF002_67"),0);
+					putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"",TextResource.localize("KMF002_74"),0);
 					
 					String getSub = optPubHDSet.getPubHdSet().getDayMonth().toString();
                     String subDay = "";
