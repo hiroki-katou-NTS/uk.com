@@ -53,7 +53,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("   FROM ");
         sql.append("     ( ");
         sql.append("      SELECT  ");
-        sql.append("         ROW_NUMBER() OVER (PARTITION BY wj.WKPCD ORDER BY wj.WKPCD , wj.JOB_CD) AS ROW_NUMBER, ");
+        sql.append("         RROW_NUMBER() OVER (PARTITION BY wj.WPKID ORDER BY CASE WHEN HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, WPKID, HIERARCHY_CD, IIF(JOB_NAME IS NULL, 1, 0) ASC, JOB_CD) AS ROW_NUMBER,  ");
         sql.append("         wj.LEGAL_OT_TIME_ATR, ");
         sql.append("         wj.LEGAL_OT_TIME_LIMIT, ");
         sql.append("         wj.LEGAL_MID_OT_TIME_ATR, ");
@@ -143,7 +143,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("       ON ji.HIST_ID = jh.HIST_ID AND ji.JOB_ID = jh.JOB_ID AND ji.CID = jh.CID ) jn ");
         sql.append("  ON wj.JOB_ID = jn.JOB_ID  AND wj.CID = jn.CID ");
         sql.append("  ) temp ");
-        sql.append("  ORDER BY CASE WHEN temp.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, temp.WPKID, HIERARCHY_CD, temp.JOB_CD");
+        sql.append("  ORDER BY CASE WHEN temp.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, temp.WPKID, HIERARCHY_CD, IIF(temp.JOB_NAME IS NULL, 1, 0) ASC, temp.JOB_CD");
 		GET_ALL_WORKPLACE_JOB = sql.toString();
 
 
