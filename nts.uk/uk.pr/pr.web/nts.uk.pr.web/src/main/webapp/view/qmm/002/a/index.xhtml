@@ -32,8 +32,8 @@
 				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-					<div data-bind="ntsPanel:{width: '450px', height: '450px', showIcon: true, visible: true}">
+				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
+					<div data-bind="ntsPanel:{width: '450px', height: '448px', showIcon: true, visible: true}">
 						<div tabindex="10" data-bind="ntsSearchBox: {
 							targetKey: 'id', mode:'igTree', comId:'A2_3', items: bankBranchList, 
 							selected: selectedCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
@@ -51,7 +51,7 @@
 								enable: true,
 								rows: 15,
 								showCheckBox: false}"></table>
-						<span class="label" style="padding: 10px 0px;" data-bind="text: totalBranchesDisplay"></span>
+						<span class="label" style="padding: 8px 0px;" data-bind="text: totalBranchesDisplay"></span>
 					</div>
 				</div>
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
@@ -105,7 +105,7 @@
 						<div data-bind="with: selectedBankBranch">
 							<div class="valign-top control-group">
 								<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>
-								<textarea style="height: 150px" tabindex="16" data-bind="ntsMultilineEditor: {
+								<textarea style="height: 164px" tabindex="16" data-bind="ntsMultilineEditor: {
 									value: memo,
 									name: '#[QMM002_14]',
 									constraint: 'Memo',
