@@ -19,6 +19,7 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 	private String companyId;
 	
 	// 雇用区分コード
+	// 雇用区分コード
 	/** The employment code. */
 	private EmploymentCode employmentCode;
 	

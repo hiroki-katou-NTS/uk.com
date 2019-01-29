@@ -12,6 +12,12 @@ module nts.uk.at.view.kmk004.c {
             saveEmploymentSetting: 'screen/at/kmk004/employment/save',
             removeEmploymentSetting: 'screen/at/kmk004/employment/delete'
         }
+        
+        export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
+                let domainType = "KMK004" + nts.uk.resource.getText("KMK004_194");
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 4, startDate: startDate, endDate: endDate});
+        }
+        
         // Find AlreadySetting for component KCP001
         
         export function findAllEmploymentSetting(): JQueryPromise<any> {

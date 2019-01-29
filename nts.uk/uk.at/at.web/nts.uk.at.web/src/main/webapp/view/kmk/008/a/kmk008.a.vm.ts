@@ -1,14 +1,45 @@
 module nts.uk.at.view.kmk008.a {
     export module viewmodel {
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
             constructor() {
 
             }
+            
+            
             startPage(): JQueryPromise<any> {
                 let dfd = $.Deferred();
                 dfd.resolve();
                 $("#button").focus();
                 return dfd.promise();
+            }
+            
+            private exportExcel(): void {
+                nts.uk.ui.block.grayout();
+                let self = this;
+                let params = {
+                   date: null,
+                   mode: 2
+                 };
+                
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                        let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
+                        new service.Service().saveAsExcel(langId, startDate, endDate).done(function() {
+                            
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }
+                });        
             }
 
             opendScreenBWithLaborSystemAtr0() {
