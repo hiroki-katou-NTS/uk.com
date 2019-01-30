@@ -271,20 +271,24 @@ module nts.custombinding {
                                         textView = vm.i18n('CPS003_88', [vm.itemNames()['IS00279']]);
                                         break;
                                     case '3':
-                                        switch (value) {
-                                            case "1":
-                                                textView = vm.i18n('CPS003_131') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
-                                                break;
-                                            case "2":
-                                                textView = vm.i18n('CPS003_132') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
-                                                break;
-                                            case "3":
-                                                textView = vm.i18n('CPS003_133') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
-                                                break;
+                                        if (value1) {
+                                            switch (value) {
+                                                case "1":
+                                                    textView = vm.i18n('CPS003_131') + nts.uk.time.formatMonthDayLocalized(value1);
+                                                    break;
+                                                case "2":
+                                                    textView = vm.i18n('CPS003_132') + nts.uk.time.formatMonthDayLocalized(value1);
+                                                    break;
+                                                case "3":
+                                                    textView = vm.i18n('CPS003_133') + nts.uk.time.formatMonthDayLocalized(value1);
+                                                    break;
+                                            }
                                         }
                                         break;
                                     case '4':
-                                        textView = moment.utc(value2).format('YYYY/MM/DD');
+                                        if (value2) {
+                                            textView = moment.utc(value2).format('YYYY/MM/DD');
+                                        }
                                         break;
                                 }
                             } else {
@@ -325,7 +329,7 @@ module nts.custombinding {
                                 } else {
                                     if (value2 && !isNaN(Number(value2))) {
                                         // format value
-                                        textView = (value1 == "plus" ? "+" : "-") + Number(value2).toLocaleString('ja-JP', { useGrouping: true });
+                                        textView = (value1 == "plus" ? "+" : "-") + Number(value2).toLocaleString('ja-JP', { useGrouping: true }) + vm.i18n('CPS003_122');
                                     }
                                 }
                             }

@@ -255,7 +255,7 @@ module cps003.f.vm {
                     let itemData = self.currentItem.itemData(),
                         rep: any = self.currentItem.value();
 
-                    if (itemData.amount && rep.mode == '2') {
+                    if (itemData.amount && rep.mode == 2) {
                         self.currentItem.textView(text('CPS003_95'));
                     } else {
                         self.currentItem.textView(text('CPS003_94'));
