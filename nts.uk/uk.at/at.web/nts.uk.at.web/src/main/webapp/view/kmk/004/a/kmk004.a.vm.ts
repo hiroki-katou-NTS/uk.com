@@ -261,15 +261,26 @@ module nts.uk.at.view.kmk004.a {
                    var result = getShared('CDL028_A_PARAMS');
                    if (result.status) {
                         nts.uk.ui.block.grayout();
-                        let langId = self.langId();
-                        let startDate = moment.utc(result.startDateFiscalYear ,"YYYY/MM/DD");
-                        let endDate = moment.utc(result.endDateFiscalYear ,"YYYY/MM/DD") ;
-                        service.saveAsExcel(langId, startDate, endDate).done(function() {
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                        }).always(function() {
+                       service.findprogramName("KMK004", "A").done(function(res:String ) {
+                           let domainType = "KMK002";
+                           res = res.split(" ");
+                           if (res.length > 1) {
+                               res.shift();
+                               domainType = domainType + res.join(" ");
+                           }
+                            let startDate = moment.utc(result.startDateFiscalYear ,"YYYY/MM/DD");
+                            let endDate = moment.utc(result.endDateFiscalYear ,"YYYY/MM/DD") ;
+                            service.saveAsExcel(domainType, startDate, endDate).done(function() {
+                            }).fail(function(error) {
+                                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                            }).always(function() {
+                                nts.uk.ui.block.clear();
+                            });
+                       
+                       }).always(function() {
                             nts.uk.ui.block.clear();
-                        });
+                       });
+                        
                    }           
                });
             }
