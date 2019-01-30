@@ -71,6 +71,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("    ,RESULT_FINAL.CALC_ATR_2");
 	     exportSQL.append("    ,RESULT_FINAL.ATTENDANCE_ITEM_NAME");
 	     exportSQL.append("    ,RESULT_FINAL.ATTENDANCE_ITEM_2");
+	     exportSQL.append("    , RESULT_FINAL.FORMULAR_FROM_FORMULAR");
+	     exportSQL.append("    , RESULT_FINAL.FORMULAR");
 	     exportSQL.append("   FROM");
 	     exportSQL.append("    (SELECT RESULT_TOTAL.DISPORDER");
 	     exportSQL.append("       ,RESULT_TOTAL.OPTIONAL_ITEM_NO");
@@ -97,6 +99,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       ,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.ATTENDANCE_ITEM_NAME, NULL) AS ATTENDANCE_ITEM_NAME");
 	     exportSQL.append("       ,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.ATTENDANCE_ITEM_2, NULL) AS ATTENDANCE_ITEM_2");
 	     exportSQL.append("       , ROW_NUMBER() OVER (PARTITION BY RESULT_TOTAL.OPTIONAL_ITEM_NO ORDER BY RESULT_TOTAL.DISPORDER ASC, RESULT_TOTAL.OPTIONAL_ITEM_NO ASC) AS ROW_NUMBER");
+	     exportSQL.append("       ,RESULT_TOTAL.FORMULAR_FROM_FORMULAR");
+	     exportSQL.append("       ,RESULT_TOTAL.FORMULAR");
 	     exportSQL.append("    FROM");
 	     exportSQL.append("    (SELECT RESULT_LEFT.OPTIONAL_ITEM_NO");
 	     exportSQL.append("     ,RESULT_LEFT.OPTIONAL_ITEM_NAME");
@@ -122,6 +126,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("     ,RESULT_RIGHT.ATTENDANCE_ITEM_NAME");
 	     exportSQL.append("     ,RESULT_RIGHT.ATTENDANCE_ITEM_2");
 	     exportSQL.append("     ,RESULT_RIGHT.DISPORDER");
+	     exportSQL.append("      , RESULT_RIGHT.FORMULAR_FROM_FORMULAR");
+	     exportSQL.append("      , RESULT_RIGHT.FORMULAR");
 	     exportSQL.append("    FROM");
 	     exportSQL.append("     (SELECT");
 	     exportSQL.append("     RESULT_ONE.OPTIONAL_ITEM_NO");
@@ -329,6 +335,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("   ( SELECT koiff.SYMBOL FROM KRCMT_OPT_ITEM_FORMULA koiff WHERE koiff.OPTIONAL_ITEM_NO = oi.OPTIONAL_ITEM_NO AND fs.RIGHT_FORMULA_ITEM_ID = koiff.FORMULA_ID)) ");
 	     exportSQL.append(" END)");
 	     exportSQL.append("    , NULL) AS ATTENDANCE_ITEM_2");
+	     exportSQL.append("      fs.MINUS_SEGMENT as  FORMULAR_FROM_FORMULAR,");
+	     exportSQL.append("      cis.MINUS_SEGMENT as FORMULAR");
 	     exportSQL.append("   FROM");
 	     exportSQL.append("    KRCST_OPTIONAL_ITEM oi");
 	     exportSQL.append("    LEFT JOIN KRCST_CALC_RESULT_RANGE crr ON oi.CID = crr.CID AND oi.OPTIONAL_ITEM_NO = crr.OPTIONAL_ITEM_NO");
@@ -343,7 +351,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("   WHERE");
 	     exportSQL.append("    oi.CID = ?companyId ");
 	     exportSQL.append("    ) AS RESULT_END");
-	     exportSQL.append("   GROUP BY OPTIONAL_ITEM_NO, SYMBOL, FORMULA_ATR, FORMULA_NAME, CALC_ATR, ATTENDANCE_ITEM_NAME, ATTENDANCE_ITEM_2, UPPER_LIMIT_ATR, UPPER_RANGE, LOWER_LIMIT_ATR, LOWER_RANGE, DAY_ROUNDING_UNIT, DAY_ROUNDING, MON_ROUNDING_UNIT, MON_ROUNDING, UPPER_LIMIT_ATR, CALC_ATR_2, DISPORDER) AS RESULT_RIGHT");
+	     exportSQL.append("   GROUP BY OPTIONAL_ITEM_NO, SYMBOL, FORMULA_ATR, FORMULA_NAME, CALC_ATR, ATTENDANCE_ITEM_NAME, ATTENDANCE_ITEM_2, UPPER_LIMIT_ATR, UPPER_RANGE, LOWER_LIMIT_ATR, LOWER_RANGE, DAY_ROUNDING_UNIT, DAY_ROUNDING, MON_ROUNDING_UNIT, MON_ROUNDING, UPPER_LIMIT_ATR, CALC_ATR_2, DISPORDER,FORMULAR_FROM_FORMULAR,FORMULAR) AS RESULT_RIGHT");
 	     exportSQL.append("   ON RESULT_LEFT.OPTIONAL_ITEM_NO = RESULT_RIGHT.OPTIONAL_ITEM_NO ) AS RESULT_TOTAL");
 	     exportSQL.append("   )AS RESULT_FINAL  ORDER BY RESULT_FINAL.OPTIONAL_ITEM_NO ASC");
 
@@ -595,11 +603,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     		}
             
             
-            data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
-                .columnId(CalFormulasItemColumn.KMK002_96)
-                .value(object[20] != null && optionalItemUse == 1 ? ((BigDecimal) object[20]).intValue() == 1 ? "○" : "-" : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
+            
             
 		if (object[20] != null) {
 			switch (((BigDecimal) object[20]).intValue()) {
@@ -614,14 +618,30 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
 								.value(formatName(value))
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				
+				// Minus 
+				data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
+		                .columnId(CalFormulasItemColumn.KMK002_96)
+		                .value(optionalItemUse == 1 && object[22] != null ? ((BigDecimal) object[22]).intValue() == 1 ? "○" : "-" : "")
+		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+		                .build());
 				break;
 			case 1:
 				data.put(CalFormulasItemColumn.KMK002_97,
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
 								.value(object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "")
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				
+				// Minus 
+				data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
+		                .columnId(CalFormulasItemColumn.KMK002_96)
+		                .value(optionalItemUse == 1 && object[23] != null ? ((BigDecimal) object[23]).intValue() == 1 ? "○" : "-" : "")
+		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+		                .build());
 				break;
 			}
+			
+			
 		} else {
 			data.put(CalFormulasItemColumn.KMK002_97, MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
 					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
