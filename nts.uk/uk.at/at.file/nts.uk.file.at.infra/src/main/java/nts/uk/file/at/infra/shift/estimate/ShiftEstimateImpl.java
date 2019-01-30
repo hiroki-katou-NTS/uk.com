@@ -434,23 +434,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_153,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_153)
-						.value(object[12] != null ? formatDays(((BigDecimal) object[12]).intValue()) : "")
+						.value(object[12] != null ? formatDays(((BigDecimal) object[12]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_154,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_154)
-						.value(object[13] != null ? formatDays(((BigDecimal) object[13]).intValue()) : "")
+						.value(object[13] != null ? formatDays(((BigDecimal) object[13]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_155,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_155)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_156,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_156)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_157,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_157)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -516,23 +516,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_172,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_172)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_173,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_173)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_174,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_174)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_175,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_175)
-						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).intValue()) : "")
+						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_176,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_176)
-						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).intValue()) : "")
+						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -598,23 +598,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_191,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_191)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_192,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_192)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_193,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_193)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_194,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_194)
-						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).intValue()) : "")
+						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_195,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_195)
-						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).intValue()) : "")
+						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -626,8 +626,8 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		return result;
 	}
 
-	private String formatDays(int day) {
-		String result = String.format("%d.0", day);
+	private String formatDays(Double day) {
+		String result = String.format("%1$.1f", day);
 		return result;
 	}
 
