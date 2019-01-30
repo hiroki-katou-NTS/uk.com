@@ -463,7 +463,7 @@ public class ErrorAlarmWorkRecordExportImpl {
 							if (conditionAtr == 3) {
 								mapListAttItemDto = mapListAttItemDto3;
 							}
-							
+							if(conditionType!=2){
 							List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 							List<Integer> listKeySub = erro.getCountableSubAtdItems();
 							List<String> listStringAttNameAdd = new ArrayList<>();
@@ -492,6 +492,12 @@ public class ErrorAlarmWorkRecordExportImpl {
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 									: String.join("+", listStringAttNameAdd) + "-" + subString;
+							}else {
+								AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+								if (attItem != null) {
+									targetName = attItem.getAttendanceItemName();
+								}
+							}
 							break;
 						case 2:
 							AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -542,10 +548,14 @@ public class ErrorAlarmWorkRecordExportImpl {
 								/** 入力されている */
 								// INPUT_DONE(1,
 								// "Enum_ConditionType_AttendanceItem");
+								/**
+								 * fix tam theo man hinh : KDW007_107 = 入力されている
+								 * 							KDW007_108 = 入力されていない	
+								 */
 								conditonName = erro.getInputCheckCondition() == 0
-										? TextResource.localize("Enum_ConditionType_FixedValue")
-										: TextResource.localize("Enum_ConditionType_AttendanceItem");
-								alarmDescription = targetName + conditonName;
+										? TextResource.localize("KDW007_108")
+										: TextResource.localize("KDW007_107");
+								alarmDescription = targetName +" "+ conditonName;
 								break;
 							default:
 								break;
@@ -614,6 +624,7 @@ public class ErrorAlarmWorkRecordExportImpl {
 								if (conditionAtr == 3) {
 									mapListAttItemDto = mapListAttItemDto3;
 								}
+								if(conditionType!=2){
 								List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 								List<Integer> listKeySub = erro.getCountableSubAtdItems();
 								List<String> listStringAttNameAdd = new ArrayList<>();
@@ -636,10 +647,19 @@ public class ErrorAlarmWorkRecordExportImpl {
 										}
 									}
 								}
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 										: String.join("+", listStringAttNameAdd) + "-" + subString;
+								}
+								else {
+									AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+									if (attItem != null) {
+										targetName = attItem.getAttendanceItemName();
+									}
+								}
 								break;
 							case 2:
 								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -662,16 +682,18 @@ public class ErrorAlarmWorkRecordExportImpl {
 											alarmDescription = startValue + compareOpera.getCompareLeft() + targetName
 													+ compareOpera.getCompareright() + endValue;
 										} else {
-											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue
-													+ "," + endValue + compareOpera.getCompareright() + targetName;
+											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue + ","
+													+ endValue + compareOpera.getCompareright() + targetName;
 										}
 									}
 									break;
 								case 1:
 									String singleAttName = "";
 									if (conditionAtr == 2) {
-										singleAttName = mapListAttItemDto6.get(erro.getSingleAtdItem())
-												.getAttendanceItemName();
+										AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
+										if (at != null) {
+											singleAttName = at.getAttendanceItemName();
+										}
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
 										if (attItem != null) {
@@ -689,9 +711,9 @@ public class ErrorAlarmWorkRecordExportImpl {
 									// INPUT_DONE(1,
 									// "Enum_ConditionType_AttendanceItem");
 									conditonName = erro.getInputCheckCondition() == 0
-											? TextResource.localize("Enum_ConditionType_FixedValue")
-											: TextResource.localize("Enum_ConditionType_AttendanceItem");
-									alarmDescription = targetName + conditonName;
+											? TextResource.localize("KDW007_108")
+											: TextResource.localize("KDW007_107");
+									alarmDescription = targetName +" "+ conditonName;
 									break;
 								default:
 									break;
