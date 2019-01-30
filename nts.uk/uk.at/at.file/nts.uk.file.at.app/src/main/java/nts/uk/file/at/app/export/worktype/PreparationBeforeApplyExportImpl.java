@@ -902,10 +902,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
     private Object[] getDataA8Center(List<Object[]> obj, HolidayAppType holidayType){
         Optional<Object[]> temp = obj.stream().filter(item -> item[39] != null ? holidayType.value == ((BigDecimal) item[39]).intValue() : holidayType.value == -1).findFirst();
-        if(temp.isPresent()) {
-            return temp.get();
-        }
-        return null;
+        return temp.orElse(null);
     }
 
     private String getValueA8Center(int line, Object obj[]){

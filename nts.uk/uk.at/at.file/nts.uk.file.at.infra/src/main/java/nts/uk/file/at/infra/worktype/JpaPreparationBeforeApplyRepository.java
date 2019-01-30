@@ -557,19 +557,21 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		List<Object[]> resultQuery = null;
 		StringBuilder selectJob = new StringBuilder();
 		selectJob.append("SELECT k.JOB_CD, w.JOB_NAME, k.SEARCH_SET_FLG ");
-		selectJob.append("FROM (");
-		selectJob.append("SELECT HIST_ID, JOB_ID, CID ");
-		selectJob.append("FROM BSYMT_JOB_HIST ");
-		selectJob.append("WHERE END_DATE >= ?baseDate AND CID = ?cid) h ");
-		selectJob.append("INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID  ");
-		selectJob.append("FROM BSYMT_JOB_INFO ) w  ");
-		selectJob.append("ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID ");
-		selectJob.append("RIGHT JOIN (SELECT  i.JOB_CD, i.JOB_ID, i.CID, j.SEARCH_SET_FLG ");
-		selectJob.append("FROM (SELECT DISTINCT JOB_ID, JOB_CD, CID ");
-		selectJob.append("FROM BSYMT_JOB_INFO WHERE CID = ?cid) i ");
-		selectJob.append("INNER JOIN WWFST_JOBTITLE_SEARCH_SET j ON j.CID = i.CID AND j.JOB_ID = i.JOB_ID ) k ");
-		selectJob.append("ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
-		selectJob.append("ORDER BY CASE WHEN k.JOB_CD IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD ");
+		selectJob.append("  FROM (");
+		selectJob.append("  SELECT HIST_ID, JOB_ID, CID ");
+		selectJob.append("  FROM BSYMT_JOB_HIST ");
+		selectJob.append("  WHERE END_DATE >= ?baseDate AND CID = ?cid) h ");
+		selectJob.append("  INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID  ");
+		selectJob.append("  FROM BSYMT_JOB_INFO ) w  ");
+		selectJob.append("  ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID ");
+		selectJob.append("  RIGHT JOIN (SELECT  i.JOB_CD, i.JOB_ID, i.CID, j.SEARCH_SET_FLG ");
+		selectJob.append("  FROM (SELECT DISTINCT JOB_ID, JOB_CD, CID ");
+		selectJob.append("  FROM BSYMT_JOB_INFO WHERE CID = ?cid) i ");
+		selectJob.append("  RIGHT JOIN (SELECT * FROM ");
+		selectJob.append("        WWFST_JOBTITLE_SEARCH_SET");
+		selectJob.append("        WHERE CID = ?cid) j ON j.CID = i.CID AND j.JOB_ID = i.JOB_ID ) k ");
+		selectJob.append("  ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
+		selectJob.append("  ORDER BY CASE WHEN k.JOB_CD IS NULL OR w.JOB_NAME IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD ");
 		try {
 			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(selectJob.toString())
 					.setParameter("cid", cid)

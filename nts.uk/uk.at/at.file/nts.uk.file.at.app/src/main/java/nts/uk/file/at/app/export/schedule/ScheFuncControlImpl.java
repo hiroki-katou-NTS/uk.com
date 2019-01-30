@@ -244,7 +244,6 @@ public class ScheFuncControlImpl implements MasterListData {
 		    	} else {
 		    		AtomicInteger i = new AtomicInteger(0); 
 		    		for (String child : listChilds) {
-		    			boolean _check = false;
 		    			Map<String, Object> data = new HashMap<>();
 						putEmptyData(data); 
 						if (i.get() == 0){
@@ -269,43 +268,25 @@ public class ScheFuncControlImpl implements MasterListData {
 										}
 									}
 									data.put("値", conditionText);
-									_check = true;
 								} else {
 									String value = getScheFuncControlValue(parent, child, scheFuncControl);
-									if (value != null){
-										data.put("値", value);
-										_check = true;
-									} else {
-										_check = false;
-									}
+									data.put("値", value);
 								}
 							} else {
-								_check = false;
+								data.put("値", null);
 							}
 						} else if (child.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
 							if (scheFuncControl.getSearchMethod().value == 0){
-								_check = false;
+								data.put("値", null);
 							} else {
 								String value = getScheFuncControlValue(parent, child, scheFuncControl);
-								if (value != null){
-									data.put("値", value);
-									_check = true;
-								} else {
-									_check = false;
-								}
+								data.put("値", value);
 							}
 						} else {
 							String value = getScheFuncControlValue(parent, child, scheFuncControl);
-							if (value != null){
-								data.put("値", value);
-								_check = true;
-							} else {
-								_check = false;
-							}
+							data.put("値", value);
 						}
-						if (_check){
-							datas.add(data);
-						}
+						datas.add(data);
 						i.getAndIncrement();
 					}
 		    	}
