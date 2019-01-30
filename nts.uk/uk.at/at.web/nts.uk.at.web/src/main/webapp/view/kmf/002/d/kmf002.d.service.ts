@@ -50,7 +50,11 @@ module nts.uk.at.view.kmf002.d {
             let programName = program[1] != null ? program[1] : "";
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
-                    domainId: "HolidaySetting", domainType: "KMF002" + programName,
+                    domainId: "HolidaySetting",
+                    domainType: "KMF002" + if (program.length > 1) {
+                        program.shift();
+                        domainType = domainType + program.join(" ");
+                    },
                     languageId: 'ja', reportType: 0,
                     mode: mode,
                     startDate: moment.utc(startDate).format(),

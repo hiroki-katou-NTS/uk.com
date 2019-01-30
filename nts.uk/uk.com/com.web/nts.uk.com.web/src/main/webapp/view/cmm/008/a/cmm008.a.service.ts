@@ -36,8 +36,14 @@ module nts.uk.com.view.cmm008.a {
         
         export function saveAsExcel(languageId: String): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1]!=null?program[1]:"";
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Employment", domainType: "CMM008" + programName, languageId: languageId, reportType: 0 });
+            let programName = program[1] != null ? program[1] : "";
+            return nts.uk.request.exportFile('/masterlist/report/print', {
+                domainId: "Employment",
+                domainType: "CMM008" + if (program.length > 1) {
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }, languageId: languageId, reportType: 0
+            });
         }
         
         /**
