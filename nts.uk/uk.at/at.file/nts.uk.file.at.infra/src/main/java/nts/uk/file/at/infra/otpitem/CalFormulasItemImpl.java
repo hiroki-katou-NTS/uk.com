@@ -2,7 +2,6 @@ package nts.uk.file.at.infra.otpitem;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -334,7 +332,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("   CONVERT (VARCHAR,");
 	     exportSQL.append("   ( SELECT koiff.SYMBOL FROM KRCMT_OPT_ITEM_FORMULA koiff WHERE koiff.OPTIONAL_ITEM_NO = oi.OPTIONAL_ITEM_NO AND fs.RIGHT_FORMULA_ITEM_ID = koiff.FORMULA_ID)) ");
 	     exportSQL.append(" END)");
-	     exportSQL.append("    , NULL) AS ATTENDANCE_ITEM_2");
+	     exportSQL.append("    , NULL) AS ATTENDANCE_ITEM_2,");
 	     exportSQL.append("      fs.MINUS_SEGMENT as  FORMULAR_FROM_FORMULAR,");
 	     exportSQL.append("      cis.MINUS_SEGMENT as FORMULAR");
 	     exportSQL.append("   FROM");
@@ -373,14 +371,14 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				if (!Objects.isNull(objects[4])) {
 					optionalItemUse = ((BigDecimal) objects[4]).intValue();
 				}
-				if(ObjectUtils.anyNotNull(objects) == true){
-					datas.add(dataContentTable(objects, optionalItemAtr, optionalItemUse));
+				if(ObjectUtils.anyNotNull(objects) == true && optionalItemUse == 1){
+					datas.add(dataContentTable(objects, optionalItemAtr));
 				}
 			}
 			return datas;
 	}
 
-	private MasterData dataContentTable(Object[] object, Integer optionalItemAtr, Integer optionalItemUse) {
+	private MasterData dataContentTable(Object[] object, Integer optionalItemAtr) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(CalFormulasItemColumn.KMK002_76, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_76)
@@ -404,27 +402,27 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
                 .build());
             data.put(CalFormulasItemColumn.KMK002_80, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_80)
-                .value(object[4] != null ? EnumAdaptor.valueOf(((BigDecimal) object[4]).intValue(), OptionalItemUsageAtr.class).description : "")
+                .value(object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? TextResource.localize("KMK002_14") : TextResource.localize("KMK002_15") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_81, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_81)
-                .value(object[5] != null && optionalItemUse == 1 ? EnumAdaptor.valueOf(((BigDecimal) object[5]).intValue(), PerformanceAtr.class).description : "")
+                .value(object[5] != null ? EnumAdaptor.valueOf(((BigDecimal) object[5]).intValue(), PerformanceAtr.class).description : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_82, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_82)
-                .value(object[6] != null && optionalItemUse == 1 ? EnumAdaptor.valueOf(((BigDecimal) object[6]).intValue(), EmpConditionAtr.class).description : "")
+                .value(object[6] != null ? EnumAdaptor.valueOf(((BigDecimal) object[6]).intValue(), EmpConditionAtr.class).description : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_83, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_83)
-                .value(object[7] != null && optionalItemUse == 1 ? (String) object[7] : "")
+                .value(object[7] != null ? (String) object[7] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_84, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_84)
-                .value(object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "-" : "")
+                .value(object[8] != null ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
          // Upper value
@@ -432,21 +430,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 0:
     				data.put(CalFormulasItemColumn.KMK002_85, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_85)
-    		                .value(object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatTime(((BigDecimal) object[9]).intValue()) : "")
+    		                .value(object[9] != null && ((BigDecimal) object[8]).intValue() == 1 ? formatTime(((BigDecimal) object[9]).intValue()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_85, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_85)
-    		                .value(object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatNumber(((BigDecimal) object[9]).toString()) : "")
+    		                .value(object[9] != null && ((BigDecimal) object[8]).intValue() == 1 ? formatNumber(((BigDecimal) object[9]).toString()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_85, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_85)
-    		                .value(object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatAmount(((BigDecimal) object[9]).toString()) : "")
+    		                .value(object[9] != null && ((BigDecimal) object[8]).intValue() == 1 ? formatAmount(((BigDecimal) object[9]).toString()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
@@ -454,7 +452,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             data.put(CalFormulasItemColumn.KMK002_86, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_86)
-                .value(object[10] != null && optionalItemUse == 1 ? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "-" : "")
+                .value(object[10] != null ? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
          // Lower value
@@ -462,21 +460,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 0:
     				data.put(CalFormulasItemColumn.KMK002_87, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_87)
-    		                .value(object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1 ? formatTime(((BigDecimal) object[11]).intValue()) : "")
+    		                .value(object[11] != null && ((BigDecimal) object[10]).intValue() == 1 ? formatTime(((BigDecimal) object[11]).intValue()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_87, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_87)
-    		                .value(object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1 ? formatNumber(((BigDecimal) object[11]).toString()) : "")
+    		                .value(object[11] != null && ((BigDecimal) object[10]).intValue() == 1 ? formatNumber(((BigDecimal) object[11]).toString()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_87, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_87)
-    		                .value(object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1 ? formatAmount(((BigDecimal) object[11]).toString()) : "")
+    		                .value(object[11] != null && ((BigDecimal) object[10]).intValue() == 1 ? formatAmount(((BigDecimal) object[11]).toString()) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     		                .build());
     				break;
@@ -484,22 +482,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             data.put(CalFormulasItemColumn.KMK002_88, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_88)
-                .value(object[12] != null && optionalItemUse == 1 ? (String) object[12] : "")
+                .value(object[12] != null ? (String) object[12] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_89, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_89)
-                .value(object[13] != null && optionalItemUse == 1 ? EnumAdaptor.valueOf(((BigDecimal) object[13]).intValue(), OptionalItemAtr.class).description : "")
+                .value(object[13] != null ? EnumAdaptor.valueOf(((BigDecimal) object[13]).intValue(), OptionalItemAtr.class).description : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_90, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_90)
-                .value(object[14] != null && optionalItemUse == 1 ? (String) object[14] : "")
+                .value(object[14] != null ? (String) object[14] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(CalFormulasItemColumn.KMK002_91, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_91)
-                .value(object[15] != null && optionalItemUse == 1 ? EnumAdaptor.valueOf(((BigDecimal) object[15]).intValue(), CalculationAtr.class).description : "")
+                .value(object[15] != null ? EnumAdaptor.valueOf(((BigDecimal) object[15]).intValue(), CalculationAtr.class).description : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             
@@ -507,21 +505,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				case 0:
 					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
 			                .columnId(CalFormulasItemColumn.KMK002_93)
-			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId) : "")
+			                .value(object[17] != null ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 1:
 					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
 			                .columnId(CalFormulasItemColumn.KMK002_93)
-			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId) : "")
+			                .value(object[17] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 2:
 					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
 			                .columnId(CalFormulasItemColumn.KMK002_93)
-			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
+			                .value(object[17] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
@@ -532,21 +530,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 0:
     				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_92)
-    		                .value(object[16] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "")
+    		                .value(object[16] != null ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_92)
-    		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId) : "")
+    		                .value(object[16] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_92)
-    		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
+    		                .value(object[16] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
@@ -557,21 +555,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 0:
     				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_95)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_95)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_95)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
@@ -582,21 +580,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 0:
     				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_94)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_94)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_94)
-    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId) : "")
+    		                .value(object[19] != null ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
@@ -609,10 +607,9 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			switch (((BigDecimal) object[20]).intValue()) {
 			case 0:
 				String formularItem = Objects.toString(object[21], "");
-				String value = optionalItemUse == 1 ? 
-						formularItem.startsWith(CalFormulasItemColumn.add_Operator) && formularItem.length() > 2 ? 
-								formularItem.substring(2, formularItem.length()): formularItem
-								: "";
+				String value = 	formularItem.startsWith(CalFormulasItemColumn.add_Operator) && formularItem.length() > 2 ? 
+								formularItem.substring(2, formularItem.length()): formularItem;
+								
 //				String valueTest1 = MessageFormat.format(value,'1');
 				data.put(CalFormulasItemColumn.KMK002_97,
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
@@ -622,20 +619,20 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				// Minus 
 				data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
 		                .columnId(CalFormulasItemColumn.KMK002_96)
-		                .value(optionalItemUse == 1 && object[22] != null ? ((BigDecimal) object[22]).intValue() == 1 ? "○" : "-" : "")
+		                .value(object[24] != null ? ((BigDecimal) object[24]).intValue() == 1 ? "○" : "-" : "")
 		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 		                .build());
 				break;
 			case 1:
 				data.put(CalFormulasItemColumn.KMK002_97,
 						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
-								.value(object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "")
+								.value(object[22] != null ? ((String) object[22]) : "")
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 				
 				// Minus 
 				data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
 		                .columnId(CalFormulasItemColumn.KMK002_96)
-		                .value(optionalItemUse == 1 && object[23] != null ? ((BigDecimal) object[23]).intValue() == 1 ? "○" : "-" : "")
+		                .value(object[23] != null ? ((BigDecimal) object[23]).intValue() == 1 ? "○" : "-" : "")
 		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 		                .build());
 				break;
@@ -643,6 +640,11 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			
 			
 		} else {
+			data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
+	                .columnId(CalFormulasItemColumn.KMK002_96)
+	                .value("")
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+	                .build());
 			data.put(CalFormulasItemColumn.KMK002_97, MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
 					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
