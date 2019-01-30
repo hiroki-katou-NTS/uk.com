@@ -747,11 +747,11 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     }
 
     export class SystemType {
-        static PERSONAL_INFORMATION = 1;
-        static EMPLOYMENT = 2;
-        static SALARY = 3;
-        static HUMAN_RESOURCES = 4;
-        static ADMINISTRATOR = 5;
+        static EMPLOYMENT = 1;
+        static SALARY = 2;
+        static PERSONNEL = 3;
+        static ACCOUNTING = 4;
+        static OH = 6;
     }
 
     export class EmployeeKcp009 {
