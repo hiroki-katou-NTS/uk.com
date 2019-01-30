@@ -100,7 +100,7 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString(i+ROW_START_FUNCTION_NO).equals(TRUE+"")? "○" : "-")
+                    .value(r.getString(i+ROW_START_FUNCTION_NO) != null && r.getString(i+ROW_START_FUNCTION_NO).equals(TRUE+"")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }

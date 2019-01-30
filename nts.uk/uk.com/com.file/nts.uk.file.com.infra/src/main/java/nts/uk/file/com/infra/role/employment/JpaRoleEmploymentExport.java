@@ -69,7 +69,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString("REF_RANGE").equals(EmployeeReferenceRange_ONLY_MYSELF+"") ? null : r.getString(i+ROW_START_FUNCTION_NO).equals("1")? "○" : "-")
+                    .value(r.getString("REF_RANGE")!= null && r.getString("REF_RANGE").equals(EmployeeReferenceRange_ONLY_MYSELF+"") ? null : r.getString(i+ROW_START_FUNCTION_NO) != null && r.getString(i+ROW_START_FUNCTION_NO).equals("1")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }
