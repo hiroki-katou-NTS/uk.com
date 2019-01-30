@@ -47,14 +47,15 @@ module nts.uk.at.view.kmf002.d {
         
         export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1] != null ? program[1] : "";
+            let domainType = "KMF002";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
                     domainId: "HolidaySetting",
-                    domainType: "KMF002" + if (program.length > 1) {
-                        program.shift();
-                        domainType = domainType + program.join(" ");
-                    },
+                    domainType: domainType,
                     languageId: 'ja', reportType: 0,
                     mode: mode,
                     startDate: moment.utc(startDate).format(),

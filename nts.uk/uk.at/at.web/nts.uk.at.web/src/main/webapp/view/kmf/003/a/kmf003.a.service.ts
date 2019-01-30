@@ -60,13 +60,14 @@ module nts.uk.at.view.kmf003.a.service {
     
     export function saveAsExcel(languageId: String): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1] != null ? program[1] : "";
-        return nts.uk.request.exportFile('/masterlist/report/print', {
-            domainId: "YearHoliday",
-            domainType: "KMF003" + if (program.length > 1) {
+        let domainType = "KMF002";
+            if (program.length > 1) {
                 program.shift();
                 domainType = domainType + program.join(" ");
-            }, languageId: languageId, reportType: 0
+            }
+        return nts.uk.request.exportFile('/masterlist/report/print', {
+            domainId: "YearHoliday",
+            domainType: domainType, languageId: languageId, reportType: 0
         });
     }
 
