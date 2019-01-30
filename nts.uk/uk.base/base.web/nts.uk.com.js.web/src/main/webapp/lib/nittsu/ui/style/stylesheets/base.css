@@ -4772,6 +4772,7 @@ div .ex-area-line.x-stay {
   padding: 5px;
   z-index: 120100;
   word-break: break-all;
+  max-width: 50vw;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */
