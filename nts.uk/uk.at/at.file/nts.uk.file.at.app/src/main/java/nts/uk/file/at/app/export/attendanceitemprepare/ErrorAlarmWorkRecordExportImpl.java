@@ -44,7 +44,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -102,7 +101,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
           //16
-         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, GeneralDate.today());
+         GeneralDate lastDate =  GeneralDate.ymd(9999, 12, 31);
+         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, lastDate);
           //18
 	     List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
          //22
@@ -172,12 +172,12 @@ public class ErrorAlarmWorkRecordExportImpl {
                            //5,6
                           if (c.getFixedAtr() != 1 && c.getTypeAtr() != 2) {       
 	                           if(c.getRemarkCancelErrorInput() == 1){
-	                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                                  data.put(header.get(5), TextResource.localize("KDW007_109"));
 	                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
 	                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
 	                                  
 	                           }else{
-	                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                        	   	data.put(header.get(5), TextResource.localize("KDW007_110"));
 	                                  data.put(header.get(6), "");
 	                           }
                           }
@@ -264,20 +264,30 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   }
                                   //16
                                   String sValues16 = "";
-                                  List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
-                                  Collections.sort(lstJobTitleCode);
+                                  List<String> lstJobTitleId= c.getAlCheckTargetCondition().getLstJobTitle();
+//                                  Collections.sort(lstJobTitleCode);
+                                  List<JobTitleItemDto> listJobTitleItemDto = new ArrayList<>();
+                                  List<String> lstJobTitleIdDeleted = new ArrayList<>();
+                                  for (String key : lstJobTitleId) {
+                                      JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
+                                      if(jobTitleItemDto!=null){
+                                    	  listJobTitleItemDto.add(jobTitleItemDto);
+                                      }else {
+                                    	  lstJobTitleIdDeleted.add(key);
+										}
+                                  }
+                                  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
                                   List<String> codeAndNameJobTitle = new ArrayList<>();
-                                  for (String key : lstJobTitleCode) {
-                                         JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
+                                  for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
                                          if(jobTitleItemDto!=null){
                                         	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
-                                         }else {
-                                        	 codeAndNameJobTitle.add(key+TextResource.localize("KDW006_226"));
-										}
-                                               
+                                         }
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
                                          sValues16 = String.join(",", codeAndNameJobTitle);
+                                         for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
+                                        	 sValues16+=TextResource.localize("KDW006_226");
+										}
                                          data.put(header.get(16), sValues16);
                                   }
                            }
