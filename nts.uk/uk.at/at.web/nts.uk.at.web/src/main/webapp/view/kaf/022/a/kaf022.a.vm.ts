@@ -2157,6 +2157,23 @@ module nts.uk.at.view.kmf022 {
                     self.enableE18(data.weight2);
                 }
             }
+
+            private exportExcel(domainId: string) {
+                nts.uk.ui.block.grayout();
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = "KAF022";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
+                service.exportExcel('ja', domainId, domainType).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
             initDataG(allData: any): void {
                 let self = this;
                 let data = allData.wdApp;

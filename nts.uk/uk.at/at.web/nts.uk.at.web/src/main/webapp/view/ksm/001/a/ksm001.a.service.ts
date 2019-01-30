@@ -15,6 +15,24 @@ module nts.uk.at.view.ksm001.a {
             deletePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/delete"
         }
 
+        export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KSM001";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            let _params = {
+                domainId: "ShiftEstimate",
+                domainType: domainType,
+                languageId: languageId,
+                reportType: 0,              
+                startDate: startDate,
+                endDate: endDate
+            };
+            return nts.uk.request.exportFile('/masterlist/report/print', _params);
+        }
+        
         /**
          * call service get all monthly estimate time of company
          */

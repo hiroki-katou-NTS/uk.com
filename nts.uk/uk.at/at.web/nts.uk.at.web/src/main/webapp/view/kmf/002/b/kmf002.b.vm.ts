@@ -225,6 +225,42 @@ module nts.uk.at.view.kmf002.b {
                 _self.commonTableMonthDaySet().infoSelect2('');
                 _self.commonTableMonthDaySet().infoSelect3('');
             }
+            
+             // excle
+           public opencdl028Dialog2() {
+                var self = this;
+                let params = {
+                    date: moment(new Date()).toDate(),
+                    mode: 5
+                };
+    
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+    
+                nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                    var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                    console.log(params);
+                    
+                    if (params.status) {
+                        let startDate = moment.utc(params.startDateFiscalYear ,"YYYY/MM/DD");
+                        let endDate = moment.utc(params.endDateFiscalYear ,"YYYY/MM/DD") ;
+                        self.exportExcel(params.mode, startDate, endDate);
+                     }
+                });
+            }                                                           
+        
+            /**
+             * Print file excel
+             */
+            exportExcel(mode: string, startDate: string, endDate: string) : void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                service.saveAsExcel(mode, startDate, endDate).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
        }
     
         class SystemType {

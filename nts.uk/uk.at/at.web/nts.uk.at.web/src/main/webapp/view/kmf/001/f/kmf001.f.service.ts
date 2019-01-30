@@ -108,6 +108,7 @@ module nts.uk.pr.view.kmf001.f {
         export function findAllEmploymentSetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findAllEmploymentSetting);
         }
+
         /**
         * Model namespace.
         */

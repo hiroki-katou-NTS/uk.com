@@ -3,6 +3,8 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.export.PersonSelectionItemExportData;
+
 /**
  * 
  * @author tuannv
@@ -35,5 +37,9 @@ public interface IPerInfoSelectionItemRepository {
 	Optional<PerInfoSelectionItem> getSelectionItemByHistId(String histId);
 
 	// Lanlt
+
+	List<SelectionItemReportData> findByContractCd(String contractCd);
+
+	List<PersonSelectionItemExportData> findAllSelection(String contractCd);
 
 }
