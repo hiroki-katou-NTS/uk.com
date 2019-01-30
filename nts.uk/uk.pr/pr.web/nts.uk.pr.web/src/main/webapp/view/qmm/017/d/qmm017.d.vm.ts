@@ -501,7 +501,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
             let formulaElements:any = formula.split(regex).filter(item => {return item && item.length});
             let self = this, index = 0, currentChar, nextChar, operators = self.operators;
-            if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('Formula cannot start with {0}', [formulaElements[0]]);
+            if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_234', []);
             if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
             for(index = 0 ; index < formulaElements.length; index ++){
                 currentChar = formulaElements[index];
@@ -570,7 +570,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
             }
             if (formula.split(conditionRegex).length > 1) {
-                self.setErrorToFormula('Condition operator can not be use outside of logic function', []);
+                self.setErrorToFormula('MsgQ_235', []);
             }
         }
 
@@ -653,18 +653,18 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else {
                     if (functionParameters[0] != '"TRUE"' && functionParameters[0] != '"FALSE"' && functionParameters[0].split(conditionRegex).length != 2) {
-                        self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
+                        self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                     }
                 }
                 return 0;
             }
             if (functionName == self.OR || functionName == self.AND) {
-                functionParameters.forEach(function(functionParameter) {
+                functionParameters.forEach(function(functionParameter, index) {
                     functionParameter.split(conditionRegex).forEach(function(item) {
                         self.checkBracket(item);
                     })
                     if (functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
-                        self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
+                        self.setErrorToFormula('MsgQ_240', [functionName, index + 1]);
                     }
                 })
                 return '"TRUE"';
@@ -673,7 +673,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
                 if (functionParameters.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
                 if (!self.checkNumberDataType(functionParameters)){
-                    self.setErrorToFormula('MsgQ_240', [functionName]);
+                    self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return 0;
             }
@@ -682,7 +682,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     if (functionParameters.length < 2) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else if (!self.checkDateDataType(functionParameters[0])){
-                    self.setErrorToFormula('MsgQ_240', [functionName]);
+                    self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return '"' + moment().format("YYYY/MM/DD") + '"';
             }
@@ -690,11 +690,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (functionParameters.length > 1) {
                     self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else if (!self.checkDateDataType(functionParameters[0])){
-                    self.setErrorToFormula('MsgQ_240', [functionName]);
+                    self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return 0;
             }
-            return functionSyntax;
+            return 0;
         }
         indexOfEndFunction (startFunctionIndex, formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
@@ -788,7 +788,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent.startsWith(elementType)}) [0];
             if (elementType.startsWith("0000_0")) {
                 selectedItem =  _.find(self.paymentItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
 
