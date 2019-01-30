@@ -170,29 +170,33 @@ public class ErrorAlarmWorkRecordExportImpl {
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
-                           if(c.getRemarkCancelErrorInput() == 1){
-                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
-                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                                  
-                           }else{
-                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  data.put(header.get(6), "");
-                           }
+                          if (c.getFixedAtr() != 1 && c.getTypeAtr() != 2) {       
+	                           if(c.getRemarkCancelErrorInput() == 1){
+	                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
+	                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                                  
+	                           }else{
+	                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                                  data.put(header.get(6), "");
+	                           }
+                          }
                            //7
-                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
-                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                           String color = c.getMessageColor();
-                           if(color!=null){
-                    	   data.put(header.get(8), color = color.replace("#", ""));
-                           }
-                           data.put(header.get(9), c.getDisplayMessage());
-                           
-                           if(c.getBoldAtr() ==0){
-                                  data.put(header.get(10), "-");
-                           }else{
-                                  data.put(header.get(10), "○");
-                           }
+                          if (c.getTypeAtr() != 2){
+	                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
+	                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                           String color = c.getMessageColor();
+	                           if(color!=null){
+	                    	   data.put(header.get(8), color = color.replace("#", ""));
+	                           }
+	                           data.put(header.get(9), c.getDisplayMessage());
+	                           
+	                           if(c.getBoldAtr() ==0){
+	                                  data.put(header.get(10), "-");
+	                           }else{
+	                                  data.put(header.get(10), "○");
+	                           }
+                          }
                            //11
                             if(c.getAlCheckTargetCondition().isFilterByEmployment() == false){
                                   data.put(header.get(11), "-");
@@ -753,7 +757,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                            MasterData masterData = new MasterData(data, null, "");
                            for (int i=1;i< header.size();i++) {
 //                        	   String tempTest = header.get(i);
-                        	   if(i==8){
+                        	   if(i==8&& c.getTypeAtr() != 2){
                         		   masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(c.getMessageColor())); 
                         	   }else {
                         		  masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));

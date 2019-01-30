@@ -141,7 +141,16 @@ public class RoleMonthlyExportExcelImpl  {
     }
     
     public List<MasterData> getMasterDatas(MasterListExportQuery query, List<EmployeeRoleDto> listEmployeeRoleDto, Map<String, List<AttItemName>> authSeting, List<AttItemName> listAttItemNameNoAuth) {
-        List<MasterData> datas = new ArrayList<>();
+    	List<String> listAuthSetingCode = new ArrayList<String>(authSeting.keySet());
+		Map<String, EmployeeRoleDto> mapListEmployeeRoleDto =
+				listEmployeeRoleDto.stream().collect(Collectors.toMap(EmployeeRoleDto::getRoleId,
+        	                                              Function.identity()));
+		for (String key : listAuthSetingCode) {
+			if(mapListEmployeeRoleDto.get(key)==null){
+				listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+			}
+		}
+    	List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listEmployeeRoleDto)) {
             return null;
         } else {
