@@ -24,10 +24,11 @@ module nts.uk.at.view.kml002.h.service {
     **/
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
         let program= nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:"";  
-        if (programName == "" || programName == null) {
-            programName = __viewContext.program.programName==null?"":__viewContext.program.programName;
+        let domainType = "KML002";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
         }
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SettingScheVerticalScale", domainType: "KML002"+programName,languageId: 'ja', reportType: 0});    
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SettingScheVerticalScale", domainType: domainType,languageId: 'ja', reportType: 0}); 
     }
 }
