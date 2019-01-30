@@ -145,9 +145,11 @@ public class RoleMonthlyExportExcelImpl  {
 		Map<String, EmployeeRoleDto> mapListEmployeeRoleDto =
 				listEmployeeRoleDto.stream().collect(Collectors.toMap(EmployeeRoleDto::getRoleId,
         	                                              Function.identity()));
-		for (String key : listAuthSetingCode) {
-			if(mapListEmployeeRoleDto.get(key)==null){
-				listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+		if(!CollectionUtil.isEmpty(listAuthSetingCode)){
+			for (String key : listAuthSetingCode) {
+				if(mapListEmployeeRoleDto.get(key)==null){
+					listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+				}
 			}
 		}
     	List<MasterData> datas = new ArrayList<>();
@@ -352,10 +354,11 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	        Map<String, BusinessTypeDto> maplistBzMonthly =
 	        		listBzMonthly.stream().collect(Collectors.toMap(BusinessTypeDto::getBusinessTypeCode,
 	        	                                              Function.identity()));
-	        Collections.sort(listWorkTypeCode);
+	       
 	        if (CollectionUtil.isEmpty(listWorkTypeCode)) {
 	            return null;
 	        } else {
+	        	Collections.sort(listWorkTypeCode);
 	        	listWorkTypeCode.stream().forEach(c -> {
 	                Map<String, Object> data = new HashMap<>();
 	                putDataEmptySheet3(data,mode);

@@ -235,9 +235,11 @@ public class RoleDailyExportExcelImpl {
 		Map<String, EmployeeRoleDto> mapListEmployeeRoleDto =
 				listEmployeeRoleDto.stream().collect(Collectors.toMap(EmployeeRoleDto::getRoleId,
         	                                              Function.identity()));
-		for (String key : listAuthSetingCode) {
-			if(mapListEmployeeRoleDto.get(key)==null){
-				listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+		if(!CollectionUtil.isEmpty(listAuthSetingCode)){
+			for (String key : listAuthSetingCode) {
+				if(mapListEmployeeRoleDto.get(key)==null){
+					listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+				}
 			}
 		}
         List<MasterData> datas = new ArrayList<>();
@@ -445,11 +447,12 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
     		Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, String companyId, Map<Integer, AttItemName> mapAttNameMonthlys2, int mode, Map<String, BusinessTypeDto> mapBz) {
     	if(mode==1){
     		List<String> listBusinessTypeDailyCode = new ArrayList<String>(maplistBzDaily.keySet());
-    		Collections.sort(listBusinessTypeDailyCode);
+    		
 	        List<MasterData> datas = new ArrayList<>();
 	        if (CollectionUtil.isEmpty(listBusinessTypeDailyCode)) {
 	            return null;
 	        } else {
+	        	Collections.sort(listBusinessTypeDailyCode);
 	        	listBusinessTypeDailyCode.stream().forEach(c -> {
 	                Map<String, Object> data = new HashMap<>();
 	                putDataEmptySheet3(data);
@@ -808,7 +811,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                     
                 }
                 data.put("コード",empCode);
-                data.put("名称",mapbyGroupNo.get(listGroupNo.get(0)).get(0).getNameEmp());
+                data.put("名称",mapbyGroupNo.get(listGroupNo.get(0)).get(0).getNameEmp()==null?TextResource.localize("KDW006_226"):mapbyGroupNo.get(listGroupNo.get(0)).get(0).getNameEmp());
                 datas.add(alignMasterDataSheet6(data,headerSheet6));
             }
         }

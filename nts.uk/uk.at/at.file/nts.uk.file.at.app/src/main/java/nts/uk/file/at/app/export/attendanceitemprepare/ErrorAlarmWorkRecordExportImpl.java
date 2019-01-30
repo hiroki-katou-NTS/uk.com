@@ -268,21 +268,26 @@ public class ErrorAlarmWorkRecordExportImpl {
 //                                  Collections.sort(lstJobTitleCode);
                                   List<JobTitleItemDto> listJobTitleItemDto = new ArrayList<>();
                                   List<String> lstJobTitleIdDeleted = new ArrayList<>();
-                                  for (String key : lstJobTitleId) {
-                                      JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
-                                      if(jobTitleItemDto!=null){
-                                    	  listJobTitleItemDto.add(jobTitleItemDto);
-                                      }else {
-                                    	  lstJobTitleIdDeleted.add(key);
-										}
-                                  }
-                                  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
-                                  List<String> codeAndNameJobTitle = new ArrayList<>();
-                                  for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
+                                  if(!CollectionUtil.isEmpty(lstJobTitleId)){
+                            	     for (String key : lstJobTitleId) {
+                                         JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
                                          if(jobTitleItemDto!=null){
-                                        	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
-                                         }
+                                       	  listJobTitleItemDto.add(jobTitleItemDto);
+                                         }else {
+                                       	  lstJobTitleIdDeleted.add(key);
+   										}
+                            	     }
                                   }
+                                  List<String> codeAndNameJobTitle = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(listJobTitleItemDto)){
+                                	  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
+                                      for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
+                                          if(jobTitleItemDto!=null){
+                                         	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                          }
+                                   }
+                                  }
+                                  
                                   if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
                                          sValues16 = String.join(",", codeAndNameJobTitle);
                                          for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
