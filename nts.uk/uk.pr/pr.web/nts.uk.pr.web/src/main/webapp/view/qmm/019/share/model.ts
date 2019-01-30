@@ -773,19 +773,26 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getLayoutPatternContent(e: StatementLayoutPattern): string {
         switch (e) {
             case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
-                return "30行";
+                // return "30行";
+                return getText('QMM019_229');
             case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
-                return "17行";
+                // return "17行";
+                return getText('QMM019_230');
             case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
-                return "10行";
+                // return "10行";
+                return getText('QMM019_231');
             case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
-                return "10行";
+                // return "10行";
+                return getText('QMM019_231');
             case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
-                return "17行";
+                // return "17行";
+                return getText('QMM019_230');
             case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
-                return "各カテゴリにつき6行 　52項目まで（記事項目は2行まで）";
+                // return "各カテゴリにつき6行 　52項目まで（記事項目は2行まで）";
+                return getText('QMM019_232');
             case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
-                return "印刷できる行数は固定";
+                // return "印刷できる行数は固定";
+                return getText('QMM019_233');
             default:
                 return "";
         }
