@@ -137,6 +137,48 @@
                         </div>
                     </div>
                     <hr/>
+                    <com:ko-if bind="$vm.screenControl().visibleD7()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D7_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_137')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_2-->
+                                <button id="D7_2"
+                                        data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_3-->
+                                <div class="label" data-bind="text: formulaCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_4-->
+                                <div class="label limited-label" data-bind="text: formulaName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD8()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D8_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_140')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_2-->
+                                <button id="D8_2"
+                                        data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_3-->
+                                <div class="label" data-bind="text: wageTableCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_4-->
+                                <div class="label limited-label" data-bind="text: wageTableName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
                     <com:ko-if bind="$vm.screenControl().visibleD5()">
                         <div class="table table-col-2">
                             <div class="cell valign-center">
@@ -181,48 +223,7 @@
                             </div>
                         </div>
                     </com:ko-if>
-                    <com:ko-if bind="$vm.screenControl().visibleD7()">
-                        <div class="table table-col-4">
-                            <div class="cell valign-center">
-                                <!--D7_1-->
-                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_137')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D7_2-->
-                                <button id="D7_2"
-                                        data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D7_3-->
-                                <div class="label" data-bind="text: formulaCode"/>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D7_4-->
-                                <div class="label limited-label" data-bind="text: formulaName"/>
-                            </div>
-                        </div>
-                    </com:ko-if>
-                    <com:ko-if bind="$vm.screenControl().visibleD8()">
-                        <div class="table table-col-4">
-                            <div class="cell valign-center">
-                                <!--D8_1-->
-                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_140')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D8_2-->
-                                <button id="D8_2"
-                                        data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D8_3-->
-                                <div class="label" data-bind="text: wageTableCode"/>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D8_4-->
-                                <div class="label limited-label" data-bind="text: wageTableName"/>
-                            </div>
-                        </div>
-                    </com:ko-if>
+
                     <com:ko-if bind="$vm.screenControl().visibleD9()">
                         <div class="table table-col-2">
                             <div class="cell valign-center">
