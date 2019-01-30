@@ -32,8 +32,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
 
         yearMonthFilter: KnockoutObservable<number>;
-        onTab: KnockoutObservable<number> = ko.observable(0);
-        titleTab: KnockoutObservable<string> = ko.observable('');
         itemClassification: KnockoutObservable<string> = ko.observable('');
         individualPriceCode: KnockoutObservable<string>;
         individualPriceName: KnockoutObservable<string>;
@@ -52,7 +50,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.selectedEmployeeCode = ko.observable('1');
             self.individualPriceCode = ko.observable('');
             self.individualPriceName = ko.observable('');
-            self.onSelectTab(self.onTab);
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
                 self.personalDisplay = [];
@@ -175,60 +172,50 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             switch (param) {
                 case 0:
                     //TODO
-                    self.onTab(0);
-                    self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    $("#sidebar").ntsSideBar("active", param);
+                    // $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 1:
                     //TODO
-                    self.onTab(1);
-                    self.titleTab(getText('QMM040_4'));
                     self.itemClassification(getText('QMM040_4'));
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    $("#sidebar").ntsSideBar("active", param);
+                    // $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 2:
                     //TODO
-                    self.onTab(2);
+                    self.itemClassification(getText('QMM040_5'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    self.titleTab(getText('QMM040_5'));
-                    self.itemClassification(getText('QMM040_5'));
-                    $("#sidebar").ntsSideBar("active", param);
+                    // $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 3:
                     //TODO
-                    self.onTab(3);
-                    self.titleTab(getText('QMM040_6'));
                     self.itemClassification(getText('QMM040_6'));
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    $("#sidebar").ntsSideBar("active", param);
+                    // $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 default:
                     //TODO
-                    self.onTab(0);
-                    self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     $("#sidebar").ntsSideBar("active", 0);
