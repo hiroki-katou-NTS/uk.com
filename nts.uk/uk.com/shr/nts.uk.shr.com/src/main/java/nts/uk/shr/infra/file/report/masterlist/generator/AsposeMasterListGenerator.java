@@ -80,7 +80,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private static final String YYYY_MM_DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
 
-	private static final String COMPANY = "Com_Company";
+	private static final String COMPANY = "FND_MASLST_COMPANY";
 
 	private static final String FEATURE_TYPE = "FND_MASLST_TYPE";
 

@@ -78,7 +78,7 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 		columns.add(new MasterHeaderColumn(column_7, TextResource.localize("KML002_18"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_8, TextResource.localize("KML002_19"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_9, TextResource.localize("KML002_20"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(column_10, "", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(column_10, TextResource.localize("KML002_156"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_11, TextResource.localize("KML002_21"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_12, TextResource.localize("KML002_22"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_13, TextResource.localize("KML002_23"), ColumnTextAlign.LEFT, "", true));
@@ -397,7 +397,7 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 				masterData.cellAt(column_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt(column_6).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(column_6).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt(column_7).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_8).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));

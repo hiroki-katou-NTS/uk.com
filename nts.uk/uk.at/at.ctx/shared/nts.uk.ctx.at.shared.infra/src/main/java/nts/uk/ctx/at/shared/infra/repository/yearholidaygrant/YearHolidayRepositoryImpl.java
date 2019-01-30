@@ -129,16 +129,28 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                     	  data.put("一斉付与 3", "○");
                           String getSub = c.getSimultaneousGrandMonthDays().toString();
                           String subDay = "";
+                          String subDays = "";
                           String subMonth = "";
                           if(getSub.length()==3){
                                  subMonth = getSub.substring(0, 1);
                                  subDay = getSub.substring(1,3);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(2,3);
+                                 }else{
+                                	 subDays = getSub.substring(1,3);
+                                 }
+                                 
                           }else{
                                  subMonth = getSub.substring(0,2);
                                  subDay = getSub.substring(2,4);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(3,4);
+                                 }else{
+                                	 subDays = getSub.substring(2,4);
+                                 }
                           }
                           data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
-                          data.put("付与日 5", subDay+""+TextResource.localize("KMF003_77"));
+                          data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
                     }
                     if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
                           data.put("年間労働日数の計算基準 6", "付与日");
@@ -304,9 +316,6 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 					masterData.cellAt("基準設定５ 45").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt("基準設定下限５ 46").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt("上限５ 47").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-					
-					
-					
 					datas.add(masterData);
 				}else{
 					for(int i=0 ; i<maxYearHoliday; i++){
@@ -320,16 +329,28 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                        	  data.put("一斉付与 3", "○");
 	                              String getSub = c.getSimultaneousGrandMonthDays().toString();
 	                              String subDay = "";
+	                              String subDays = "";
 	                              String subMonth = "";
 	                              if(getSub.length()==3){
 	                                     subMonth = getSub.substring(0, 1);
 	                                     subDay = getSub.substring(1,3);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(2,3);
+	                                     }else{
+	                                    	 subDays = getSub.substring(1,3);
+	                                     }
+	                                     
 	                              }else{
 	                                     subMonth = getSub.substring(0,2);
 	                                     subDay = getSub.substring(2,4);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(3,4);
+	                                     }else{
+	                                    	 subDays = getSub.substring(2,4);
+	                                     }
 	                              }
 	                              data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
-	                              data.put("付与日 5", subDay+""+TextResource.localize("KMF003_77"));
+	                              data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
 	                        }
 	                        if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
 	                              data.put("年間労働日数の計算基準 6", "付与日");

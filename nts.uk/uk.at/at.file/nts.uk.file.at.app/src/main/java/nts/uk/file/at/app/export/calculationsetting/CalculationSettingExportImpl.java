@@ -2197,7 +2197,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     	columns.add(new MasterHeaderColumn(column1Sheet9,TextResource.localize("KMK013_351"),ColumnTextAlign.LEFT, "", true));				
     	columns.add(new MasterHeaderColumn(column2Sheet9,TextResource.localize("KMK013_356"),ColumnTextAlign.LEFT, "", true));
     	columns.add(new MasterHeaderColumn(column3Sheet9,TextResource.localize("KMK013_361"),ColumnTextAlign.LEFT, "", true));
-    	columns.add(new MasterHeaderColumn(column4Sheet9,"名称",ColumnTextAlign.LEFT, "", true));	
+    	columns.add(new MasterHeaderColumn(column4Sheet9,TextResource.localize("KMK013_473"),ColumnTextAlign.LEFT, "", true));	
     	return columns;
     }
     
@@ -2519,29 +2519,29 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	    	
 	    	List<MasterHeaderColumn> columns = new ArrayList<>();
 	    	columns.add(new MasterHeaderColumn(column1Sheet10,TextResource.localize("KMK013_89"),ColumnTextAlign.LEFT, "", true));				
-	    	columns.add(new MasterHeaderColumn(column2Sheet10,TextResource.localize("KMK013_500"),ColumnTextAlign.LEFT, "", true));
-	    	columns.add(new MasterHeaderColumn(column3Sheet10,TextResource.localize("KMK013_501"),ColumnTextAlign.LEFT, "", true));
-	    	columns.add(new MasterHeaderColumn(column4Sheet10,TextResource.localize("KMK013_502"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column5Sheet10,TextResource.localize("KMK013_503"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column6Sheet10,TextResource.localize("KMK013_504"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column7Sheet10,TextResource.localize("KMK013_505"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column8Sheet10,TextResource.localize("KMK013_506"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column09Sheet10,TextResource.localize("KMK013_507"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column10Sheet10,TextResource.localize("KMK013_508"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column11Sheet10,TextResource.localize("KMK013_509"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column12Sheet10,TextResource.localize("KMK013_510"),ColumnTextAlign.LEFT, "", true));
-	    	columns.add(new MasterHeaderColumn(column13Sheet10,TextResource.localize("KMK013_511"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column2Sheet10,TextResource.localize("KMK013_450"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column3Sheet10,TextResource.localize("KMK013_451"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column4Sheet10,TextResource.localize("KMK013_452"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column5Sheet10,TextResource.localize("KMK013_453"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column6Sheet10,TextResource.localize("KMK013_454"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column7Sheet10,TextResource.localize("KMK013_455"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column8Sheet10,TextResource.localize("KMK013_456"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column09Sheet10,TextResource.localize("KMK013_457"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column10Sheet10,TextResource.localize("KMK013_458"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column11Sheet10,TextResource.localize("KMK013_459"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column12Sheet10,TextResource.localize("KMK013_460"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column13Sheet10,TextResource.localize("KMK013_461"),ColumnTextAlign.LEFT, "", true));
 	    	//
-	    	columns.add(new MasterHeaderColumn(column14Sheet10,TextResource.localize("KMK013_512"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column15Sheet10,TextResource.localize("KMK013_513"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column16Sheet10,TextResource.localize("KMK013_514"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column17Sheet10,TextResource.localize("KMK013_515"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column18Sheet10,TextResource.localize("KMK013_516"),ColumnTextAlign.LEFT, "", true));		
+	    	columns.add(new MasterHeaderColumn(column14Sheet10,TextResource.localize("KMK013_462"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column15Sheet10,TextResource.localize("KMK013_463"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column16Sheet10,TextResource.localize("KMK013_464"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column17Sheet10,TextResource.localize("KMK013_465"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column18Sheet10,TextResource.localize("KMK013_466"),ColumnTextAlign.LEFT, "", true));		
 	    	columns.add(new MasterHeaderColumn(column19Sheet10,"",ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column20Sheet10,TextResource.localize("KMK013_517"),ColumnTextAlign.LEFT, "", true));
-	    	columns.add(new MasterHeaderColumn(column21Sheet10,TextResource.localize("KMK013_518"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column22Sheet10,TextResource.localize("KMK013_519"),ColumnTextAlign.LEFT, "", true));	
-	    	columns.add(new MasterHeaderColumn(column23Sheet10,TextResource.localize("KMK013_520"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column20Sheet10,TextResource.localize("KMK013_467"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column21Sheet10,TextResource.localize("KMK013_468"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column22Sheet10,TextResource.localize("KMK013_469"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column23Sheet10,TextResource.localize("KMK013_470"),ColumnTextAlign.LEFT, "", true));	
 	    
 	    	
 	    	return columns;
@@ -2952,9 +2952,11 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 		NotUseAtr notUseAtr = NotUseAtr.valueOf(attr);
 		switch (notUseAtr) {
 		case NOT_USE:
-			return TextResource.localize("Enum_UseClassificationAtr_NOT_USE");
+			//return TextResource.localize("Enum_UseClassificationAtr_NOT_USE");
+			return TextResource.localize("KMK013_210");
 		case USE:
-			return TextResource.localize("Enum_UseClassificationAtr_USE");		
+			return TextResource.localize("KMK013_209");
+		//	return TextResource.localize("Enum_UseClassificationAtr_USE");		
 		default:
 			return "";
 		}

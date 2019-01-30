@@ -379,14 +379,14 @@ public class OperationExcelRepoImpl implements MasterListData {
             }
             data.put("コード", roleExport.getCodeRole());
             data.put("名称", roleExport.getNameRole());
-            datas.add(alignMasterDataSheetRole(data));
+            datas.add(alignMasterDataSheetRole(data,header));
             putDataEmptyRole(data, header);
         }
         boolean checkAvailable = false;
         for (int i = 0 ; i < listRoleExport.size(); i ++) {
             RoleExport roleExport = listRoleExport.get(i);
             if(i>0 && !roleExport.getCodeRole().equals(listRoleExport.get(i-1).getCodeRole())){
-            	datas.add(alignMasterDataSheetRole(data));
+            	datas.add(alignMasterDataSheetRole(data,header));
             	checkAvailable = false;
             }
             if(checkAvailable == false){
@@ -400,7 +400,7 @@ public class OperationExcelRepoImpl implements MasterListData {
                 data.put(roleExport.getDescription(),"○");
             }
             if(i==(listRoleExport.size()-1)){
-            	datas.add(alignMasterDataSheetRole(data));
+            	datas.add(alignMasterDataSheetRole(data,header));
             	checkAvailable = false;
             }
         }
@@ -416,10 +416,11 @@ public class OperationExcelRepoImpl implements MasterListData {
 			}
         }
     }
-    private MasterData alignMasterDataSheetRole(Map<String, Object> data) {
+    private MasterData alignMasterDataSheetRole(Map<String, Object> data, List<String> header) {
         MasterData masterData = new MasterData(data, null, "");
-        masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        for (String string : header) {
+        	masterData.cellAt(string).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		}
         return masterData;
     }
 }
