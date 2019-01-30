@@ -286,7 +286,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
                                          sValues16 = String.join(",", codeAndNameJobTitle);
                                          for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
-                                        	 sValues16+=TextResource.localize("KDW006_226");
+                                        	 sValues16+=","+TextResource.localize("KDW006_226");
 										}
                                          data.put(header.get(16), sValues16);
                                   }
