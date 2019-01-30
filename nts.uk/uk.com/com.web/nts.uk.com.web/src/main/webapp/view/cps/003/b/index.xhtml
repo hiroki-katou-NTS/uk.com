@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 450,
-					height : 450
+					width : 480,
+					height : 500
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -40,9 +40,11 @@
 				<div class="valign-center distance">
 					<div id="B1_005" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
 						<span data-bind="text: '#{i18n.getText('CPS003_38')}' "></span>
-						<button data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right top'}">？</button>
+						
 					</div>
-					<div class="cf" data-bind="ntsSwitchButton: {
+					<button  align="center" style="margin-left:-60px;width:25px;" data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right top'}">?</button>
+					
+					<div style="margin-left:-5px;" class="cf" data-bind="ntsSwitchButton: {
 						name: '#CPS003_17',
 						options: roundingRules,
 						optionsValue: 'id',
