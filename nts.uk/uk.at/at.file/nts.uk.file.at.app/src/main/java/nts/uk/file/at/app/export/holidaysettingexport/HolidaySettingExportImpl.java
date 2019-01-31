@@ -321,7 +321,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KMF002_30");
+		return TextResource.localize("KMF002_1");
 	}
 
 	@Override
