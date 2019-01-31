@@ -1,4 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
+//import com.aspose.cells.Workbook;
+//import com.aspose.cells.Worksheet;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -121,6 +123,10 @@ public class DetailFormulaCalculationService {
         calculationFormulaDictionary.put(FORMULA, "calc_00");
         calculationFormulaDictionary.put(WAGE_TABLE, "wage_00");
     }
+
+//    Workbook workbook = new Workbook();
+//    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
+
     /**
      *
      * @param formulaElements  must be sort asc
@@ -205,7 +211,7 @@ public class DetailFormulaCalculationService {
         }
         formula = calculateSystemVariable(type, formula);
         formula = calculateFunction(formula);
-        formula = calculateSuffixFormula(formula) + "";
+        formula = calculateSuffixFormulaViaAsposeCell(formula) + "";
         if (isNaN(formula)) throw new BusinessException("MsgQ_235");
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
     }
@@ -327,6 +333,12 @@ public class DetailFormulaCalculationService {
         return 0;
     }
 
+    private String calculateSuffixFormulaViaAsposeCell (String formulaContent) {
+        if (!isNaN(formulaContent)) return formulaContent;
+        return ";";
+        //return virtualWorksheet.calculateFormula(formulaContent).toString();
+    }
+    
     private String calculateSuffixFormula (String formulaContent) {
         String currentChar, operand1, operand2;
         Stack<String> operands = new Stack();
@@ -389,13 +401,13 @@ public class DetailFormulaCalculationService {
         }
         try {
             if (functionName.equals(ROUND_OFF))
-                return Math.round(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+                return Math.round(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
             if (functionName.equals(ROUND_UP))
-                return Math.ceil(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+                return Math.ceil(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
             if (functionName.equals(TRUNCATION))
-                return Math.floor(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+                return Math.floor(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
         } catch (NumberFormatException e) {
-            throw new BusinessException("MsgQ_240", functionName);
+            throw new BusinessException("MsgQ_240", functionName, "1");
         }
 
         if (functionName.equals(MAX_VALUE))
@@ -416,7 +428,7 @@ public class DetailFormulaCalculationService {
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
                 if (functionParameters[i].split(conditionRegex).length < 2 && !isConditionOperator(functionParameters[i])) {
-                    functionParameters[i] = calculateSuffixFormula(functionParameters[i]) + "";
+                    functionParameters[i] = calculateSuffixFormulaViaAsposeCell(functionParameters[i]) + "";
                 }
             }
         }
@@ -457,14 +469,13 @@ public class DetailFormulaCalculationService {
         String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         String [] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
         if (conditionParameters.length == 1) {
-            if (!conditionParameters[0].toUpperCase().equals("0") && !conditionParameters[0].toUpperCase().equals("1") &&
-                !conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
-                    throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+            if (!conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
+                    throw new BusinessException("MsgQ_240", functionName, "1");
             }
             return conditionParameters[0];
         } else {
             if (conditionParameters.length !=3 ) {
-                throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+                throw new BusinessException("MsgQ_240", functionName, "1");
             }
             Comparable operand1 = conditionParameters[0], operand2 = conditionParameters[2];
             String operator = conditionParameters[1];
@@ -484,7 +495,7 @@ public class DetailFormulaCalculationService {
                 return operand1.compareTo(operand2) == 0 ? "TRUE" : "FALSE";
             if (operator.equals(DIFFERENCE) || operator.equals(PROGRAMMING_DIFFERENCE))
                 return operand1.compareTo(operand2) != 0 ? "TRUE" : "FALSE";
-            if (mustBeBoolean) throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+            if (mustBeBoolean) throw new BusinessException("MsgQ_240", functionName, "1");
         }
         return conditionFormula;
     }
@@ -502,10 +513,9 @@ public class DetailFormulaCalculationService {
                 if (operand1Value == 0) throw new BusinessException("MsgQ_234");
                 return operand2Value / operand1Value + "";
             }
-
             if (operator.equals(POW))
                 return Math.pow(operand2Value, operand1Value) + "";
-            throw new RuntimeException("Condition operator can't be use to calculate: " + operand1 + operator + operand2);
+            throw new BusinessException("MsgQ_235");
         } catch (NumberFormatException e) {
             throw new BusinessException("MsgQ_235");
         }
@@ -538,7 +548,7 @@ public class DetailFormulaCalculationService {
         Double minValue = Double.MAX_VALUE, valueInDouble;
         try {
             for (String value: values) {
-                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
+                valueInDouble = Double.parseDouble(calculateSuffixFormulaViaAsposeCell(value));
                 if (valueInDouble < minValue) {
                     minValue = valueInDouble;
                 }
@@ -553,7 +563,7 @@ public class DetailFormulaCalculationService {
         Double minValue = Double.MIN_VALUE, valueInDouble;
         try{
             for (String value: values) {
-                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
+                valueInDouble = Double.parseDouble(calculateSuffixFormulaViaAsposeCell(value));
                 if (valueInDouble > minValue) {
                     minValue = valueInDouble;
                 }

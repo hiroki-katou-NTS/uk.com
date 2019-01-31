@@ -35,6 +35,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
             " AND f.startYearMonth = (SELECT MAX(o.startYearMonth) FROM QpbmtStatementLayoutHist o " +
             " WHERE o.statementLayoutHistPk.cid = :cid AND o.statementLayoutHistPk.statementCd = :statementCd) ";
     private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth ASC";
+    private static final String ORDER_BY_START_DATE_HISTORY_TREE = " ORDER BY f.startYearMonth DESC";
 
     private static final String SELECT_BY_CID_KEY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f Where f.startYearMonth <= :startYearMonth AND f.endYearMonth >= :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
 
@@ -65,7 +66,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     @Override
     public List<YearMonthHistoryItem> getAllHistByCidAndCode(String cid, String code) {
-        return this.queryProxy().query(SELECT_BY_CID_AND_CODE + ORDER_BY_START_DATE, QpbmtStatementLayoutHist.class)
+        return this.queryProxy().query(SELECT_BY_CID_AND_CODE + ORDER_BY_START_DATE_HISTORY_TREE, QpbmtStatementLayoutHist.class)
                 .setParameter("cid", cid).setParameter("statementCd", code)
                 .getList(c -> toYearMonthDomain(c));
     }
