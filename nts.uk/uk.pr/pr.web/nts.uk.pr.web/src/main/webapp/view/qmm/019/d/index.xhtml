@@ -137,50 +137,6 @@
                         </div>
                     </div>
                     <hr/>
-                    <com:ko-if bind="$vm.screenControl().visibleD5()">
-                        <div class="table table-col-2">
-                            <div class="cell valign-center">
-                                <!--D5_1-->
-                                <div data-bind="ntsFormLabel: {  }">#{i18n.getText('QMM019_132')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D5_2-->
-                                <div id="D5_2" data-bind="ntsComboBox: {
-                                    name: '#[QMM019_132]',
-                                    options: $vm.workingAtrs,
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 2,
-                                    value: workingAtr,
-                                    optionsText: 'name',
-                                    required: true,
-                                    selectFirstIfNull: false,
-                                    columns: [
-                                        { prop: 'name', length: 10 },
-                                    ]}"/>
-                            </div>
-                        </div>
-                    </com:ko-if>
-                    <com:ko-if bind="$vm.screenControl().visibleD6()">
-                        <div class="table table-col-4">
-                            <div class="cell valign-center">
-                                <!--D6_1-->
-                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_133')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D6_2-->
-                                <button id="D6_2"
-                                        data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D6_3-->
-                                <div class="label" data-bind="text: perValCode"/>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D6_4-->
-                                <div class="label limited-label" data-bind="text: perValName"/>
-                            </div>
-                        </div>
-                    </com:ko-if>
                     <com:ko-if bind="$vm.screenControl().visibleD7()">
                         <div class="table table-col-4">
                             <div class="cell valign-center">
@@ -223,6 +179,7 @@
                             </div>
                         </div>
                     </com:ko-if>
+
                     <com:ko-if bind="$vm.screenControl().visibleD9()">
                         <div class="table table-col-2">
                             <div class="cell valign-center">
@@ -240,6 +197,53 @@
                             </div>
                         </div>
                     </com:ko-if>
+
+                    <com:ko-if bind="$vm.screenControl().visibleD5()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D5_1-->
+                                <div data-bind="ntsFormLabel: {  }">#{i18n.getText('QMM019_132')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D5_2-->
+                                <div id="D5_2" data-bind="ntsComboBox: {
+                                    name: '#[QMM019_132]',
+                                    options: $vm.workingAtrs,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 2,
+                                    value: workingAtr,
+                                    optionsText: 'name',
+                                    required: false,
+                                    selectFirstIfNull: false,
+                                    columns: [
+                                        { prop: 'name', length: 10 },
+                                    ]}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD6()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D6_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_133')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_2-->
+                                <button id="D6_2"
+                                        data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_3-->
+                                <div class="label" data-bind="text: perValCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_4-->
+                                <div class="label limited-label" data-bind="text: perValName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+
+
                     <div class="table table-col-2">
                         <div class="cell valign-center">
                             <!--D3_1-->

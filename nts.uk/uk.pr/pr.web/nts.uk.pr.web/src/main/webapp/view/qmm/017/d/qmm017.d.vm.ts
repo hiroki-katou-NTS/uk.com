@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         HALF_SIZE_LESS_OR_EQUAL = '≤'; HALF_SIZE_GREATER_OR_EQUAL = '≥'; HALF_SIZE_EQUAL = '=';
         PROGRAMING_MULTIPLICITY = '*'; PROGRAMING_DIVIDE = '/'; PROGRAMMING_DIFFERENCE = '#';
 
-        operators: Array<any>
+        operators: Array<any>;
         separators: Array<any>;
         conditionSeparators: Array<any>;
         // for build formula
@@ -413,26 +413,26 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             } else {
                 appendFormula = self.ATTENDANCE;
             }
-            self.addToFormulaByPosition(self.combineElementTypeAndName(appendFormula, selectedStatementItemName));
+            self.addToFormulaByPosition(self.combineElementTypeAndName(appendFormula, _.unescape(selectedStatementItemName)));
         }
 
         addUnitPriceItem () {
             let self = this, selectedUnitPriceValue = self.selectedPriceItemCategoryValue(), appendFormula = "";
             let selectedUnitPrice:any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
             if (selectedUnitPriceValue == model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM) {
-                appendFormula = self.combineElementTypeAndName(self.COMPANY_UNIT_PRICE, (selectedUnitPrice ? selectedUnitPrice.name : ""));
+                appendFormula = self.combineElementTypeAndName(self.COMPANY_UNIT_PRICE, (selectedUnitPrice ? _.unescape(selectedUnitPrice.name) : ""));
             } else {
-                appendFormula = self.combineElementTypeAndName(self.INDIVIDUAL_UNIT_PRICE, (selectedUnitPrice ? selectedUnitPrice.name : ""));
+                appendFormula = self.combineElementTypeAndName(self.INDIVIDUAL_UNIT_PRICE, (selectedUnitPrice ? _.unescape(selectedUnitPrice.name) : ""));
             }
             self.addToFormulaByPosition(appendFormula);
         }
         addFunctionItem () {
             let self = this, selectedFunctionItem:any = _.find(self.functionListItem(), {value: Number(self.selectedFunctionListValue())});
-            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FUNCTION, selectedFunctionItem.name));
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FUNCTION, _.unescape(selectedFunctionItem.name)));
         }
         addVariableItem () {
             let self = this, selectedSystemVariableItem:any = _.find(self.systemVariableListItem(), {value: Number(self.selectedSystemVariableListValue())});
-            self.addToFormulaByPosition(self.combineElementTypeAndName(self.VARIABLE, selectedSystemVariableItem.name));
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.VARIABLE, _.unescape(selectedSystemVariableItem.name)));
         }
         addFormulaItem () {
             let self = this;
@@ -440,7 +440,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         addWageTableItem () {
             let self = this;
-            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, self.selectedWageTable().name()));
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
         }
 
         addToFormulaByPosition (formulaToAdd: string) {

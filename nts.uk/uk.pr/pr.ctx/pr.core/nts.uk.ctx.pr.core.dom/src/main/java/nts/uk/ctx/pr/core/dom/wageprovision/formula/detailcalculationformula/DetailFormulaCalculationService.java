@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
+//import com.aspose.cells.Workbook;
+//import com.aspose.cells.Worksheet;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -124,8 +124,8 @@ public class DetailFormulaCalculationService {
         calculationFormulaDictionary.put(WAGE_TABLE, "wage_00");
     }
 
-    Workbook workbook = new Workbook();
-    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
+//    Workbook workbook = new Workbook();
+//    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
 
     /**
      *
@@ -335,7 +335,8 @@ public class DetailFormulaCalculationService {
 
     private String calculateSuffixFormulaViaAsposeCell (String formulaContent) {
         if (!isNaN(formulaContent)) return formulaContent;
-        return virtualWorksheet.calculateFormula(formulaContent).toString();
+        return ";";
+        //return virtualWorksheet.calculateFormula(formulaContent).toString();
     }
     
     private String calculateSuffixFormula (String formulaContent) {

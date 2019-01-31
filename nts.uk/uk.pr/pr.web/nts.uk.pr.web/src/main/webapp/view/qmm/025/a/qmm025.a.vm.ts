@@ -551,6 +551,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteTaxPayAmount(new DeleteCommand(self.getSidSelected(), self.formatYear(self.year()))).done(() => {
                     info({messageId: "Msg_16"}).then(() => {
+                        self.enableA2_8(false);
                         self.getEmpAmount();
                     });
                 }).always(() => {

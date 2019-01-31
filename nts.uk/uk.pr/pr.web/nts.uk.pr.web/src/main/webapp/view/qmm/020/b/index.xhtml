@@ -25,13 +25,13 @@
                     </div>
                         <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                                 <div>
-                                        <button id="B1_3" tabindex="1" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">#{i18n.getText('QMM020_13')}</button>
+                                        <button id="B1_3" tabindex="5" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">#{i18n.getText('QMM020_13')}</button>
 
-                                        <button id="B1_4" tabindex="2" data-bind="click: openScreenK, enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                                        <button id="B1_4" tabindex="6" data-bind="click: openScreenK, enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                                 </div>
 
                                 <div style="margin-top: 10px">
-                                        <table  id="B1_5"  tabindex="3" data-bind="ntsGridList: {
+                                        <table  id="B1_5"  tabindex="7" data-bind="ntsGridList: {
                                             height: 250,
                                             name: '#{i18n.getText('QMM020_14')}',
                                             dataSource: listStateCorrelationHis,
@@ -55,14 +55,14 @@
 
                         <div class="control-group" style="margin-top: 40px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button id="B2_5" tabindex="4" style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
+                                <button id="B2_5" tabindex="8" style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: salaryLayoutName"></span>
                         </div>
 
                         <div class="control-group" style="margin-top: 15px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_22')}</div>
-                                <button id="B2_9" tabindex="5" style="margin-left: 15px;" data-bind="click: openScreenM1">#{i18n.getText('QMM020_21')}</button>
+                                <button id="B2_9" tabindex="9" style="margin-left: 15px;" data-bind="click: openScreenM1">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: bonusLayoutName"></span>
                         </div>
