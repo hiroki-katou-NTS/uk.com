@@ -551,7 +551,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 								data.put(valueFour1, listYear.get(y));
 							}
 							if (j == 0) {
-								data.put(valueFour2, listEmployeeExport.get(i).getCode());
+								data.put(valueFour2, listEmployeeExport.get(i).getCode()==null?"":listEmployeeExport.get(i).getCode());
 								data.put(valueFour3, listEmployeeExport.get(i).getName());
 							}
 							data.put(valueFour4, startMonthFour + TextResource.localize("KMF002_12"));
@@ -659,7 +659,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 								data.put(valueFive1, listYear.get(y));
 							}
 							if (j == 0) {
-								data.put(valueFive2, listmployee.get(i).getEmployeeCode());
+								data.put(valueFive2, listmployee.get(i).getEmployeeCode()==null?"":listmployee.get(i).getEmployeeCode());
 								data.put(valueFive3, listmployee.get(i).getEmployeeName());
 							}
 							
@@ -921,6 +921,15 @@ public class HolidaySettingExportImpl implements MasterListData{
 					}
 				}
 			}
+			if(lstEmp.size()!=0){
+				for(int i=0;i<lstEmp.size();i++){
+					EmploymentDto temp = new EmploymentDto();
+					temp.setCode(lstEmp.get(i));
+					temp.setName("マスタ未登録");
+					listEmployeeExport.add(temp);
+					lstEmp.remove(i);
+				}
+			}
 		}
 		return listEmployeeExport;
 	}
@@ -937,11 +946,15 @@ public class HolidaySettingExportImpl implements MasterListData{
 					}
 				}
 			}
-
+			if(listEmployeeRegister.size()!=0){
+				for(int i=0;i<listEmployeeRegister.size();i++){
+					RegulationInfoEmployeeDto temp = RegulationInfoEmployeeDto.builder()
+							.employeeId(listEmployeeRegister.get(i)).employeeName("マスタ未登録").build();
+					lististRegulationInfoEmployee.add(temp);
+					listEmployeeRegister.remove(i);
+				}
+			}
 		}
-		
-
-		
 		return lististRegulationInfoEmployee;
 	}
 
