@@ -90,6 +90,10 @@ module nts.uk.ui.koExtentions {
             
             if(!nts.uk.util.isNullOrEmpty(rows)){
                 height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
+                if (window.navigator.userAgent.indexOf("MSIE") > -1 || window.navigator.userAgent.match(/trident/i)
+                    || window.navigator.userAgent.indexOf("Edge") > -1) {
+                    height += rows * 0.4;
+                }
                 
                 let colSettings = [];
                 _.forEach(displayColumns, function (c){
