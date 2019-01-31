@@ -89,6 +89,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	@Inject
 	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepository;
 	
+	
 	//設定 
 	public static String value1= "項目";
 	public static String value2= "column2";
@@ -453,6 +454,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 						Map<String, Object> data = new HashMap<>();
 						Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 						int startMonthThree = companyStartMonth.get().getStartMonth();
+						
 						for(int j=0;j<12; j++){
 							putEmptyDataThree(data);
 							if(i==0 && j==0){
@@ -893,8 +895,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 				}
 			}
 			
-			if(lstWpk.size()>0){
-				for(int i=0;i<lstWpk.size();i++){
+			if(lstWpk.size()!=0){
+				for(int i=0;i<=lstWpk.size();i++){
 					WorkplaceHierarchyDto temp = new WorkplaceHierarchyDto();
 					temp.setWorkplaceId(lstWpk.get(i));
 					temp.setName("マスタ未登録");
