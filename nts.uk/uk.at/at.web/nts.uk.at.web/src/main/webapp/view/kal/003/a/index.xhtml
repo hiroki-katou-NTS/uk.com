@@ -46,6 +46,8 @@
 					<button tabindex="4"
 						data-bind="click: deleteAlarmCheckCondition, enable: screenMode() == 1"
 						class="danger">#{i18n.getText('KAL003_8')}</button>
+						
+					<button id="print-button_1" tabindex="5" data-bind="click: exportExcel">#{i18n.getText('KAL003_300')}</button>
 				</div>
 			</div>
 			<div class="contents-area">
@@ -55,7 +57,7 @@
 							data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: false, visible: true}">
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
-								<div tabindex="5" id="combo-box"
+								<div tabindex="6" id="combo-box"
 									data-bind="ntsComboBox: {
 									options: cbbItemList,
 									optionsValue: 'code',
@@ -70,7 +72,7 @@
 										{ prop: 'name', length: 8 },
 									]}"></div>
 							</div>
-							<table id="single-list" tabindex="6"
+							<table id="single-list" tabindex="7"
 								data-bind="ntsGridList: {								
  									height: 350,
  									name: '#[KAL003_10]', 
@@ -90,10 +92,10 @@
 							<div class="valign-center control-group">
 								<div class="flabel" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_11')}</div>
 								<input
-									tabindex="7" id="A3_2" style = "margin-right: 30px"
+									tabindex="8" id="A3_2" style = "margin-right: 30px"
 									data-bind="ntsTextEditor: {name: '#[KAL003_11]', value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" />
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_12')}</div>
-								<input tabindex="8" id="A3_4"  style = "margin-left: 35px"
+								<input tabindex="9" id="A3_4"  style = "margin-left: 35px"
 									data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">

@@ -81,4 +81,13 @@ module nts.uk.at.view.kal003.a.service {
         return ajax("at", paths.getAllFixedExtraItemMon); 
 
     }
+    
+   
+     export function saveAsExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', 
+                {domainId: 'AlarmCheckCondition', domainType: 'KAL003' + programName, 
+                languageId: 'ja', reportType: 0});
+        }
 }
