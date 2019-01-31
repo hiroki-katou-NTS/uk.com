@@ -10,8 +10,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 1060,
-                height: 870
+                width: 1070,
+                height: 880
             };
         </script>
         <com:ValidatorScript>
@@ -37,7 +37,7 @@
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div id="content-left" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{width: '240px', height: '450px', direction: 'right', showIcon: true, visible: true}"
+                <div data-bind="ntsPanel:{width: '240px', height: '420px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 240px"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'qualificationGroupCode', comId: 'H2_3',
@@ -88,15 +88,15 @@
                     </div>
                 </div>
                 <div class="panel panel-frame">
-                	<div class="pull-left control-group" style="width: 40%; padding-left: 20px">
+                	<div class="pull-left control-group" style="width: 43%; padding-left: 10px">
                 		<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_64')}</div>
                 		<hr/>
                 	</div>
-                	<div class="pull-right control-group" style="width: 40%; padding-right: 31px">
+                	<div class="pull-right control-group" style="width: 43%; padding-right: 10px">
                 		<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_65')}</div>
                 		<hr/>
                 	</div>
-                    <div class="flex valign-center row" style="clear: both; padding-left: 20px">
+                    <div class="flex valign-center row" style="clear: both; padding-left: 10px; padding-right: 10px">
                         <div id="swap-list" data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
                             height: 330,
