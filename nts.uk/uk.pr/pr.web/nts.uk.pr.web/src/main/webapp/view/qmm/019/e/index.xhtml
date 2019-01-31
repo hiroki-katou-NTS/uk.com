@@ -378,8 +378,10 @@
                             </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--E3_21-->
-                            <div class="label">#{i18n.getText('QMM019_129')}</div>
+                            <com:ko-if bind="$vm.screenControl().visibleE3_21()">
+                                <!--E3_21-->
+                                <div class="label">#{i18n.getText('QMM019_129')}</div>
+                            </com:ko-if>
                         </div>
                     </div>
                     <com:ko-if bind="$vm.screenControl().visibleE3_22()">
