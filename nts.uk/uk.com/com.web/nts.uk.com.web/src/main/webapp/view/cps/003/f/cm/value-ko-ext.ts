@@ -57,7 +57,7 @@ module nts.custombinding {
                                     <div id="pk-amount" class="pk-amount" data-bind="ntsComboBox: {
                                         width: '60px',
                                         name: i18n('CPS003_84'),
-                                        options: ko.observableArray([{ optionValue: 'plus', optionText: '+' }, { optionValue: 'minus', optionText: '-' }]),
+                                        options: ko.observableArray([{ optionValue: '+', optionText: '+' }, { optionValue: '-', optionText: '-' }]),
                                         optionsValue: 'optionValue',
                                         visibleItemsCount: 5,
                                         value: value1,
@@ -313,7 +313,7 @@ module nts.custombinding {
                             break;
                         case ITEM_SINGLE_TYPE.TIMEPOINT:
                             if (value && !isNaN(Number(value))) {
-                                textView = parseTimeWidthDay(Number(value)).fullText;
+                                textView = timewd(Number(value)).fullText;
                             }
                             break;
                         case ITEM_SINGLE_TYPE.NUMERIC:
@@ -329,7 +329,7 @@ module nts.custombinding {
                                 } else {
                                     if (value2 && !isNaN(Number(value2))) {
                                         // format value
-                                        textView = (value1 == "plus" ? "+" : "-") + Number(value2).toLocaleString('ja-JP', { useGrouping: true }) + vm.i18n('CPS003_122');
+                                        textView = value1 + Number(value2).toLocaleString('ja-JP', { useGrouping: true }) + vm.i18n('CPS003_122');
                                     }
                                 }
                             }
