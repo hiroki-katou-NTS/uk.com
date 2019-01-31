@@ -1,10 +1,12 @@
 package nts.uk.file.at.app.export.holidaysettingexport;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -433,10 +435,17 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 		
+		
+		
+		
 		for(int y=0;y<listYear.size();y++){
 			List<String> lstWpk = workplaceMonthDaySettingRepository.findWkpRegisterByYear(new CompanyId(companyId), new Year(listYear.get(y)));
 
 			List<WorkplaceHierarchyDto> listWorkplace = getListWorkplaceHierarchyDto(workplaceHierarchyDtos, lstWpk);
+
+			listWorkplace = listWorkplace.stream().sorted(
+					Comparator.comparing(WorkplaceHierarchyDto::getCode, Comparator.nullsLast(String::compareTo)))
+					.collect(Collectors.toList());
 			
 			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
 				if(!CollectionUtil.isEmpty(listWorkplace)){  
@@ -450,8 +459,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 								data.put(valueThree1, listYear.get(y));
 							}
 							if(j==0){
-								data.put(valueThree2, listWorkplace.get(i).getCode());
-				                data.put(valueThree3,listWorkplace.get(i).getName());
+								data.put(valueThree2, listWorkplace.get(i).getCode()==null?"":listWorkplace.get(i).getCode());
+				                data.put(valueThree3, listWorkplace.get(i).getName());
 							}else{
 								data.put(valueThree2, "");
 				                data.put(valueThree3,"");
@@ -874,13 +883,23 @@ public class HolidaySettingExportImpl implements MasterListData{
 	private List<WorkplaceHierarchyDto> getListWorkplaceHierarchyDto(List<WorkplaceHierarchyDto> workplaceHierarchyDtos, List<String> lstWpk){
 		List<WorkplaceHierarchyDto> listWorkplace = new ArrayList<>();
 		
-		if(workplaceHierarchyDtos.size()!=0){
+		if(workplaceHierarchyDtos.size()>0){
 			for(int i =0;i<workplaceHierarchyDtos.size();i++){
 				for(int j =0; j<lstWpk.size();j++){
 					if(lstWpk.get(j).equals(workplaceHierarchyDtos.get(i).getWorkplaceId())){
 						listWorkplace.add(workplaceHierarchyDtos.get(i));
 						lstWpk.remove(j);
 					}
+				}
+			}
+			
+			if(lstWpk.size()>0){
+				for(int i=0;i<lstWpk.size();i++){
+					WorkplaceHierarchyDto temp = new WorkplaceHierarchyDto();
+					temp.setWorkplaceId(lstWpk.get(i));
+					temp.setName("マスタ未登録");
+					listWorkplace.add(temp);
+					lstWpk.remove(i);
 				}
 			}
 		}
@@ -916,7 +935,11 @@ public class HolidaySettingExportImpl implements MasterListData{
 					}
 				}
 			}
+
 		}
+		
+
+		
 		return lististRegulationInfoEmployee;
 	}
 
