@@ -44,7 +44,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -102,7 +101,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
           //16
-         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, GeneralDate.today());
+         GeneralDate lastDate =  GeneralDate.ymd(9999, 12, 31);
+         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, lastDate);
           //18
 	     List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
          //22
@@ -170,29 +170,33 @@ public class ErrorAlarmWorkRecordExportImpl {
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
-                           if(c.getRemarkCancelErrorInput() == 1){
-                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
-                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                                  
-                           }else{
-                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  data.put(header.get(6), "");
-                           }
+                          if (c.getFixedAtr() != 1 && c.getTypeAtr() != 2) {       
+	                           if(c.getRemarkCancelErrorInput() == 1){
+	                                  data.put(header.get(5), TextResource.localize("KDW007_109"));
+	                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
+	                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                                  
+	                           }else{
+	                        	   	data.put(header.get(5), TextResource.localize("KDW007_110"));
+	                                  data.put(header.get(6), "");
+	                           }
+                          }
                            //7
-                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
-                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                           String color = c.getMessageColor();
-                           if(color!=null){
-                    	   data.put(header.get(8), color = color.replace("#", ""));
-                           }
-                           data.put(header.get(9), c.getDisplayMessage());
-                           
-                           if(c.getBoldAtr() ==0){
-                                  data.put(header.get(10), "-");
-                           }else{
-                                  data.put(header.get(10), "○");
-                           }
+                          if (c.getTypeAtr() != 2){
+	                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
+	                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                           String color = c.getMessageColor();
+	                           if(color!=null){
+	                    	   data.put(header.get(8), color = color.replace("#", ""));
+	                           }
+	                           data.put(header.get(9), c.getDisplayMessage());
+	                           
+	                           if(c.getBoldAtr() ==0){
+	                                  data.put(header.get(10), "-");
+	                           }else{
+	                                  data.put(header.get(10), "○");
+	                           }
+                          }
                            //11
                             if(c.getAlCheckTargetCondition().isFilterByEmployment() == false){
                                   data.put(header.get(11), "-");
@@ -260,20 +264,35 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   }
                                   //16
                                   String sValues16 = "";
-                                  List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
-                                  Collections.sort(lstJobTitleCode);
-                                  List<String> codeAndNameJobTitle = new ArrayList<>();
-                                  for (String key : lstJobTitleCode) {
+                                  List<String> lstJobTitleId= c.getAlCheckTargetCondition().getLstJobTitle();
+//                                  Collections.sort(lstJobTitleCode);
+                                  List<JobTitleItemDto> listJobTitleItemDto = new ArrayList<>();
+                                  List<String> lstJobTitleIdDeleted = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(lstJobTitleId)){
+                            	     for (String key : lstJobTitleId) {
                                          JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
                                          if(jobTitleItemDto!=null){
-                                        	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                       	  listJobTitleItemDto.add(jobTitleItemDto);
                                          }else {
-                                        	 codeAndNameJobTitle.add(key+TextResource.localize("KDW006_226"));
-										}
-                                               
+                                       	  lstJobTitleIdDeleted.add(key);
+   										}
+                            	     }
                                   }
+                                  List<String> codeAndNameJobTitle = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(listJobTitleItemDto)){
+                                	  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
+                                      for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
+                                          if(jobTitleItemDto!=null){
+                                         	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                          }
+                                   }
+                                  }
+                                  
                                   if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
                                          sValues16 = String.join(",", codeAndNameJobTitle);
+                                         for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
+                                        	 sValues16+=","+TextResource.localize("KDW006_226");
+										}
                                          data.put(header.get(16), sValues16);
                                   }
                            }
@@ -463,7 +482,7 @@ public class ErrorAlarmWorkRecordExportImpl {
 							if (conditionAtr == 3) {
 								mapListAttItemDto = mapListAttItemDto3;
 							}
-							
+							if(conditionType!=2){
 							List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 							List<Integer> listKeySub = erro.getCountableSubAtdItems();
 							List<String> listStringAttNameAdd = new ArrayList<>();
@@ -492,6 +511,12 @@ public class ErrorAlarmWorkRecordExportImpl {
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 									: String.join("+", listStringAttNameAdd) + "-" + subString;
+							}else {
+								AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+								if (attItem != null) {
+									targetName = attItem.getAttendanceItemName();
+								}
+							}
 							break;
 						case 2:
 							AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -542,10 +567,14 @@ public class ErrorAlarmWorkRecordExportImpl {
 								/** 入力されている */
 								// INPUT_DONE(1,
 								// "Enum_ConditionType_AttendanceItem");
+								/**
+								 * fix tam theo man hinh : KDW007_107 = 入力されている
+								 * 							KDW007_108 = 入力されていない	
+								 */
 								conditonName = erro.getInputCheckCondition() == 0
-										? TextResource.localize("Enum_ConditionType_FixedValue")
-										: TextResource.localize("Enum_ConditionType_AttendanceItem");
-								alarmDescription = targetName + conditonName;
+										? TextResource.localize("KDW007_108")
+										: TextResource.localize("KDW007_107");
+								alarmDescription = targetName +" "+ conditonName;
 								break;
 							default:
 								break;
@@ -614,6 +643,7 @@ public class ErrorAlarmWorkRecordExportImpl {
 								if (conditionAtr == 3) {
 									mapListAttItemDto = mapListAttItemDto3;
 								}
+								if(conditionType!=2){
 								List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 								List<Integer> listKeySub = erro.getCountableSubAtdItems();
 								List<String> listStringAttNameAdd = new ArrayList<>();
@@ -636,10 +666,19 @@ public class ErrorAlarmWorkRecordExportImpl {
 										}
 									}
 								}
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 										: String.join("+", listStringAttNameAdd) + "-" + subString;
+								}
+								else {
+									AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+									if (attItem != null) {
+										targetName = attItem.getAttendanceItemName();
+									}
+								}
 								break;
 							case 2:
 								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -662,16 +701,18 @@ public class ErrorAlarmWorkRecordExportImpl {
 											alarmDescription = startValue + compareOpera.getCompareLeft() + targetName
 													+ compareOpera.getCompareright() + endValue;
 										} else {
-											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue
-													+ "," + endValue + compareOpera.getCompareright() + targetName;
+											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue + ","
+													+ endValue + compareOpera.getCompareright() + targetName;
 										}
 									}
 									break;
 								case 1:
 									String singleAttName = "";
 									if (conditionAtr == 2) {
-										singleAttName = mapListAttItemDto6.get(erro.getSingleAtdItem())
-												.getAttendanceItemName();
+										AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
+										if (at != null) {
+											singleAttName = at.getAttendanceItemName();
+										}
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
 										if (attItem != null) {
@@ -689,9 +730,9 @@ public class ErrorAlarmWorkRecordExportImpl {
 									// INPUT_DONE(1,
 									// "Enum_ConditionType_AttendanceItem");
 									conditonName = erro.getInputCheckCondition() == 0
-											? TextResource.localize("Enum_ConditionType_FixedValue")
-											: TextResource.localize("Enum_ConditionType_AttendanceItem");
-									alarmDescription = targetName + conditonName;
+											? TextResource.localize("KDW007_108")
+											: TextResource.localize("KDW007_107");
+									alarmDescription = targetName +" "+ conditonName;
 									break;
 								default:
 									break;
@@ -731,7 +772,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                            MasterData masterData = new MasterData(data, null, "");
                            for (int i=1;i< header.size();i++) {
 //                        	   String tempTest = header.get(i);
-                        	   if(i==8){
+                        	   if(i==8&& c.getTypeAtr() != 2){
                         		   masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(c.getMessageColor())); 
                         	   }else {
                         		  masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));

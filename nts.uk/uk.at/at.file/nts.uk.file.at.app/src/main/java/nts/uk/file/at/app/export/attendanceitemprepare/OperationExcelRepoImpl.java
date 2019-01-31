@@ -370,6 +370,9 @@ public class OperationExcelRepoImpl implements MasterListData {
         if(CollectionUtil.isEmpty(listRoleExport)){
         	return null;
         }
+        listRoleExport = listRoleExport.stream().sorted(
+				Comparator.comparing(RoleExport::getCodeRole, Comparator.nullsLast(String::compareTo)))
+				.collect(Collectors.toList());
         Map<String,Object> data = new HashMap<>();
         if(listRoleExport.size()==1){
             RoleExport roleExport = listRoleExport.get(0);
@@ -377,23 +380,23 @@ public class OperationExcelRepoImpl implements MasterListData {
             if(roleExport.getAvailability()==1){
                 data.put(roleExport.getDescription(),"○");
             }
-            data.put("コード", roleExport.getCodeRole());
-            data.put("名称", roleExport.getNameRole());
+            data.put("コード", roleExport.getCodeRole()==null?"":roleExport.getCodeRole());
+            data.put("名称", roleExport.getNameRole()==null?TextResource.localize("KDW006_226"):roleExport.getNameRole());
             datas.add(alignMasterDataSheetRole(data,header));
             putDataEmptyRole(data, header);
         }
         boolean checkAvailable = false;
         for (int i = 0 ; i < listRoleExport.size(); i ++) {
             RoleExport roleExport = listRoleExport.get(i);
-            if(i>0 && !roleExport.getCodeRole().equals(listRoleExport.get(i-1).getCodeRole())){
+            if(i>0 &&!roleExport.getRoleId().equals(listRoleExport.get(i-1).getRoleId())){
             	datas.add(alignMasterDataSheetRole(data,header));
             	checkAvailable = false;
             }
             if(checkAvailable == false){
             	data = new HashMap<>();
             	putDataEmptyRole(data, header);
-            	 data.put("コード", roleExport.getCodeRole());
-                 data.put("名称", roleExport.getNameRole());
+            	data.put("コード", roleExport.getCodeRole()==null?"":roleExport.getCodeRole());
+                data.put("名称", roleExport.getNameRole()==null?TextResource.localize("KDW006_226"):roleExport.getNameRole());
                  checkAvailable=true;
             }
             if(roleExport.getAvailability()==1){

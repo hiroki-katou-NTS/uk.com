@@ -133,9 +133,10 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" ORDER BY KSHST_COM_NORMAL_SET.[YEAR] ";
 	
 	private static final String GET_EMPLOYMENT = "SELECT "
-											+" KSHST_EMP_NORMAL_SET.[YEAR], "
+											+" ROW_NUMBER() OVER(PARTITION BY KSHST_EMP_NORMAL_SET.EMP_CD ORDER BY KSHST_EMP_NORMAL_SET.EMP_CD ASC) AS ROW_NUMBER_CODE, "
 											+" KSHST_EMP_NORMAL_SET.EMP_CD AS CODE,  "
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
+											+" KSHST_EMP_NORMAL_SET.[YEAR], "
 											+" KSHST_EMP_NORMAL_SET.JAN_TIME AS M1, "
 											+" KSHST_EMP_NORMAL_SET.FEB_TIME AS M2, "
 											+" KSHST_EMP_NORMAL_SET.MAR_TIME AS M3, "
@@ -232,14 +233,14 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = BSYMT_EMPLOYMENT.CODE "
 											+" 		INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID "
 											+" WHERE KSHST_EMP_NORMAL_SET.CID = ?  "
-											+" ORDER BY KSHST_EMP_NORMAL_SET.[YEAR], KSHST_EMP_NORMAL_SET.EMP_CD ";
+											+" ORDER BY KSHST_EMP_NORMAL_SET.EMP_CD, KSHST_EMP_NORMAL_SET.[YEAR]";
 	
 	private static final String GET_WORKPLACE = "SELECT * FROM ("
-						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, "
-						 +  "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL AND BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
-						 +  "KSHST_WKP_NORMAL_SET.[YEAR], "
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , '') AS WKPCD, " 
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
+						 + "SELECT ROW_NUMBER() OVER(PARTITION BY BSYMT_WORKPLACE_INFO.WKPCD ORDER BY BSYMT_WORKPLACE_INFO.WKPCD DESC) AS rk, "
+						 +" IIF(BSYMT_WORKPLACE_INFO.WKPCD IS NOT NULL, BSYMT_WORKPLACE_INFO.WKPCD, 'zzzzzzzzzz') AS rk2, "
+						 + "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
+						 + "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , null) AS WKPCD, "
+						 + "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, KSHST_WKP_NORMAL_SET.[YEAR], "	 
 						 +  "KSHST_WKP_NORMAL_SET.JAN_TIME AS N1, " 
 						 +  "KSHST_WKP_NORMAL_SET.FEB_TIME AS N2, " 
 						 +  "KSHST_WKP_NORMAL_SET.MAR_TIME AS N3, " 
@@ -344,12 +345,13 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +	"  	    AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID "		
 						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  "
 						 +	") TBL "
-						 +  "WHERE rk = 1 ORDER BY TBL.[YEAR] ASC, TBL.HIERARCHY_CD";
+						 +  "ORDER BY rk2, TBL.HIERARCHY_CD, TBL.[YEAR] ASC";
 	
 	private static final String GET_EMPLOYEE = " SELECT  " 
-			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
+			 + "ROW_NUMBER() OVER(PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC) AS ROW_NUMBER, "
 			 + "BSYMT_EMP_DTA_MNG_INFO.SCD, " 
-			 + "BPSMT_PERSON.BUSINESS_NAME, " 
+			 + "BPSMT_PERSON.BUSINESS_NAME, "
+			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
 			 + "KSHST_SHA_NORMAL_SET.JAN_TIME AS S1, " 
 			 + "KSHST_SHA_NORMAL_SET.FEB_TIME AS S2, " 
 			 + "KSHST_SHA_NORMAL_SET.MAR_TIME AS S3, " 
@@ -457,7 +459,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			 + "INNER JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
 			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
 			 + "WHERE  KSHST_SHA_NORMAL_SET.CID = ? "
-			 + "ORDER BY KSHST_SHA_NORMAL_SET.[YEAR], BSYMT_EMP_DTA_MNG_INFO.SCD  " ;
+			 + "ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD, KSHST_SHA_NORMAL_SET.[YEAR] ASC  " ;
 	
 	private static final String GET_USAGE = "SELECT s.IS_EMP, s.IS_WKP, s.IS_EMPT FROM KUWST_USAGE_UNIT_WT_SET s WHERE s.CID = ?cid ";
 	
@@ -922,11 +924,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 		datas.add(buildEmploymentARow(
 				//R12_1
-				r.getString(("YEAR")),
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("CODE") : null,
 				//R12_2
-				r.getString("CODE"),
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("NAME") : null,
 				//R12_3
-				r.getString("NAME"),
+			     r.getString("YEAR"),
 				//R12_4 R12_5
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
 				//R12_6
@@ -1355,11 +1357,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildWorkPlaceARow(
 					//R14_1
-					r.getString("YEAR"),
+					r.getString("WKPCD") != null && r.getInt("rk") == 1 ? r.getString("WKPCD") : null,
 					//R14_2
-					r.getString("WKPCD"),
+					r.getInt("rk") == 1 ? r.getString("WKP_NAME") : null,
 					//R14_3
-					r.getString("WKP_NAME"),
+					r.getString("YEAR"),
 					//R14_4 R14_5
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
 					//R14_6
@@ -1822,11 +1824,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildEmployeeARow(
 				// R10_1
-				r.getString("YEAR"),
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("SCD") : null,
 				// R10_2
-				r.getString("SCD"),
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("BUSINESS_NAME") : null,
 				// R10_3
-				r.getString("BUSINESS_NAME"),
+			    r.getString("YEAR"),
 				// R10_4 R10_5
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				// R10_6
