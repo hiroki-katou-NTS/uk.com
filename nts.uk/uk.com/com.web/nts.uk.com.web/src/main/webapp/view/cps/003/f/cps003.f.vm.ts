@@ -387,7 +387,12 @@ module cps003.f.vm {
                                 });
                             }
                         } else { // 加減算（F1_027）が選択されている場合
-                            debugger;
+                            if (value.replaceValue1) {
+                                confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue1 > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue1)] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            }
                         }
                     } else {
                     }
@@ -408,20 +413,64 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
+                            if (value.replaceFormat == 1) { // 通常置換（F1_026）が選択されている場合
+                                if (value.replaceValue1) {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    confirm({ messageId: 'Msg_636', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
+                            } else { // 加減算（F1_027）が選択されている場合
+                                if (value.replaceValue1) {
+                                    confirm({ messageId: 'Msg_714', messageParams: [item.name, text(value.replaceValue1 > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue1)] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
+                            }
                         } else {
                         }
                     }
                 } else {
-                    if (value.replaceValue1) {
-                        confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
-                            setShared('CPS003F_VALUE', value);
-                            close();
-                        });
+                    if (!value.replaceFormat) {
+                        if (value.replaceValue1) {
+                            confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                setShared('CPS003F_VALUE', value);
+                                close();
+                            });
+                        } else {
+                            alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                setShared('CPS003F_VALUE', null);
+                                //close();
+                            });
+                        }
                     } else {
-                        alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).ifYes(() => {
-                            setShared('CPS003F_VALUE', value);
-                            close();
-                        });
+                        if (item.itemData.amount) {
+                            if (value.matchValue) {
+                                if (value.replaceFormat == 1) {
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                        setShared('CPS003F_VALUE', null);
+                                        //close();
+                                    });
+                                }
+                            } else {
+                                alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
+                                    setShared('CPS003F_VALUE', null);
+                                    //close();
+                                });
+                            }
+                        } else {
+                        }
                     }
                 }
             }
