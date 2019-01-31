@@ -38,18 +38,9 @@ module cps003.b.vm {
             }
             block.invisible();
             service.checkColums(params).done(data =>{
-                if (data) {
-                    if (data.messageId === "Msg_723" || data.messageId === "Msg_724") {
-                        alertError({ messageId: data.messageId, messageParams: [self.currentMode().categoryName] });
-                        block.clear();
-                        return;
-                    } else {
-                        setShared('CPS003C_VALUE', data);
-                        block.clear();
-                        close();
-                    }
-                }
-                
+                setShared('CPS003C_VALUE', data);
+                block.clear();
+                close();
 
             }).fail((res) =>{
                 alertError({ messageId: res.messageId });

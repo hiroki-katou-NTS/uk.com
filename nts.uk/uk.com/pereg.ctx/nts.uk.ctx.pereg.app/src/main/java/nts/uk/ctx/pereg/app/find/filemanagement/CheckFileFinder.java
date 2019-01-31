@@ -144,6 +144,7 @@ public class CheckFileFinder {
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	} 
 	
+	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
 	
 	private static final String JP_SPACE = "　";
@@ -163,16 +164,15 @@ public class CheckFileFinder {
 	private static final List<String> usedDaysList = Arrays.asList("IS00393","IS00405");
 	private static final List<String> remainDaysList = Arrays.asList("IS00396","IS00408");
 	
-	public Object processingFile(CheckFileParams params) {
+	public GridDto processingFile(CheckFileParams params) throws Exception {
 		try {
 			return processFile(params);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
-		return new GridDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}
 	
-	public Object processFile(CheckFileParams params) throws Exception {
+	public GridDto processFile(CheckFileParams params) throws Exception {
 		try {
 			String cid = AppContexts.user().companyId();
 			String contractCd = AppContexts.user().contractCode();
@@ -190,28 +190,18 @@ public class CheckFileFinder {
 			
 			// columns
 			List<String> colums = this.getColumsChange(header, headerDb);
-			List<EmployeeDataMngInfo> employees = new ArrayList<>();
-			try {
-				employees.addAll(this.getEmployeeIds(rows));
-			}catch(Throwable t) {
-				BusinessException exp = (BusinessException) t.getCause();
-				return exp;
-			}
-			
-			
+			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows);
 			String startCode = startDateItemCodes.get(ctgOptional.get().getCategoryCode().toString());
 			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, startCode, updateMode); 
-			
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
-				return new BusinessException("Msg_723");
+				throw new BusinessException("Msg_723");
 			}
 			return dto;
 		} catch (ExcelFileTypeException e1) {
-			e1.printStackTrace();
+			throw new BusinessException("Msg_723");
 		}
-		return new GridDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}
 	
 	// get ColumnsFixed

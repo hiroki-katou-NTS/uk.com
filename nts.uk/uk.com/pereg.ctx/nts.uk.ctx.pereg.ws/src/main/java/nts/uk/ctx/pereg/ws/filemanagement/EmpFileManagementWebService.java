@@ -121,7 +121,12 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@POST
 	@Path("find/checkFile")
-	public Object checkFile(CheckFileParams params) {
-		return this.checkFileFinder.processingFile(params);
+	public GridDto checkFile(CheckFileParams params) throws Exception {
+		try {
+			return this.checkFileFinder.processingFile(params);
+		}catch(Exception e){
+			throw e;
+		}
+		
 	}
 }
