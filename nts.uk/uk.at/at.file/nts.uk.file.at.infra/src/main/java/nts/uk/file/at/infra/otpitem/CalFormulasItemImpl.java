@@ -255,7 +255,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHERE");
 	     exportSQL.append("        fr_day.FORMULA_ID = cis1.FORMULA_ID  AND cis1.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO AND cis1.CID = cis.CID");
 	     exportSQL.append("       ORDER BY");
-	     exportSQL.append("        fd1.DISPORDER,cis1.ATTENDANCE_ITEM_ID FOR XML PATH ('')");
+	     exportSQL.append("        fd1.DISPORDER,dai.DISPLAY_NUMBER FOR XML PATH ('')");
 	     exportSQL.append("        ),");
 	     exportSQL.append("       1,");
 	     exportSQL.append("       1,");
@@ -296,7 +296,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHERE");
 	     exportSQL.append("        fr_month.FORMULA_ID = cis2.FORMULA_ID  AND cis2.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO");
 	     exportSQL.append("       ORDER BY");
-	     exportSQL.append("        fd2.DISPORDER, cis2.ATTENDANCE_ITEM_ID FOR XML PATH ('')");
+	     exportSQL.append("        fd2.DISPORDER, mai.DISP_NO FOR XML PATH ('')");
 	     exportSQL.append("        ),");
 	     exportSQL.append("       1,");
 	     exportSQL.append("       1,");
