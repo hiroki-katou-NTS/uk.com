@@ -56,17 +56,21 @@ module nts.uk.com.view.cmm013.a {
             return nts.uk.request.ajax(servicePath.findAllSequenceMaster);
         }
         
-        
+
         export function saveAsExcel(mode: string, baseDate: string): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1] != null ? program[1] : "";
+            let domainType = "CMM013";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
-                    domainId: 'Sequence', 
-                    domainType: 'CMM013' + programName,
-                    languageId: 'ja', reportType: 0, 
+                    domainId: 'Sequence',
+                    domainType: domainType,
+                    languageId: 'ja', reportType: 0,
                     baseDate: moment.utc(baseDate).format()
-                   
+
                 });
         }
         

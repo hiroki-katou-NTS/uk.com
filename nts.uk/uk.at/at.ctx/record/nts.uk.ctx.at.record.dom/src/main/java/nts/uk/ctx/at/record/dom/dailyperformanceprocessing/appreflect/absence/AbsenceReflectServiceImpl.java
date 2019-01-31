@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -34,16 +35,17 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Inject
 	private BasicScheduleService basicScheService;
 	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
-	@Inject
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
 	private WorkTypeIsClosedService workTypeRepo;
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Override
-	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
+	public boolean absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
 		try {
+			CommonReflectParameter absencePara = param.getCommon();
 			for(int i = 0; absencePara.getStartDate().daysTo(absencePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = absencePara.getStartDate().addDays(i);
 				WorkInfoOfDailyPerformance dailyInfor = workRepository.find(absencePara.getEmployeeId(), loopDate).get();
@@ -64,6 +66,11 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				dailyInfor = this.reflectScheStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), isRecordWorkType, dailyInfor);			
 				//勤種の反映
 				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), false, dailyInfor);
+				//就業時間帯
+				if(param.getExcludeHolidayAtr() != 0) {
+					dailyInfor = workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), true, dailyInfor);
+					dailyInfor = workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), false, dailyInfor);
+				}
 				workRepository.updateByKeyFlush(dailyInfor);
 				//開始終了時刻の反映
 				this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode());					
@@ -111,33 +118,10 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
 				if(optTimeLeavingOfDaily.isPresent()) {
 					TimeLeavingOfDailyPerformance timeLeavingOfDaily = optTimeLeavingOfDaily.get();
-					List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getTimeLeavingWorks().stream()
-							.filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
-					if(!timeLeavingWorks.isEmpty()) {
-						TimeLeavingWork timeLeaving1 = timeLeavingWorks.get(0);
-						Optional<TimeActualStamp> optAttendanceStamp = timeLeaving1.getAttendanceStamp();
-						if(optAttendanceStamp.isPresent()) {
-							TimeActualStamp attendanceStamp = optAttendanceStamp.get();
-							Optional<WorkStamp> optWorkStamp = attendanceStamp.getStamp();
-							if(optWorkStamp.isPresent()) {
-								WorkStamp workStamp = optWorkStamp.get();
-								if(workStamp.getStampSourceInfo() == StampSourceInfo.SPR) {
-									return false;
-								}
-							}
-						}
-						 Optional<TimeActualStamp> optLeaveStamp = timeLeaving1.getLeaveStamp();
-						 if(optLeaveStamp.isPresent()) {
-							 TimeActualStamp leaveStamp = optLeaveStamp.get();
-							 Optional<WorkStamp> optStamp = leaveStamp.getStamp();
-							 if(optStamp.isPresent()) {
-								 WorkStamp stamp = optStamp.get();
-								 if(stamp.getStampSourceInfo() == StampSourceInfo.SPR) {
-									 return false;
-								 }
-							 }
-						 }
-						
+					if(checkReflectNenkyuTokkyu(timeLeavingOfDaily, 1)) {
+						return checkReflectNenkyuTokkyu(timeLeavingOfDaily, 2);
+					} else {
+						return false;
 					}
 				}
 			}
@@ -145,6 +129,43 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * 打刻元情報をチェックする
+	 * @param timeLeavingOfDaily
+	 * @param workNo
+	 * @return
+	 */
+	private boolean checkReflectNenkyuTokkyu(TimeLeavingOfDailyPerformance timeLeavingOfDaily, int workNo) {
+		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getTimeLeavingWorks().stream()
+				.filter(x -> x.getWorkNo().v() == workNo).collect(Collectors.toList());
+		if(!timeLeavingWorks.isEmpty()) {
+			TimeLeavingWork timeLeaving1 = timeLeavingWorks.get(0);
+			Optional<TimeActualStamp> optAttendanceStamp = timeLeaving1.getAttendanceStamp();
+			if(optAttendanceStamp.isPresent()) {
+				TimeActualStamp attendanceStamp = optAttendanceStamp.get();
+				Optional<WorkStamp> optWorkStamp = attendanceStamp.getStamp();
+				if(optWorkStamp.isPresent()) {
+					WorkStamp workStamp = optWorkStamp.get();
+					if(workStamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+						return false;
+					}
+				}
+			}
+			Optional<TimeActualStamp> optLeaveStamp = timeLeaving1.getLeaveStamp();
+			if(optLeaveStamp.isPresent()) {
+				TimeActualStamp leaveStamp = optLeaveStamp.get();
+				Optional<WorkStamp> optStamp = leaveStamp.getStamp();
+				if(optStamp.isPresent()) {
+					WorkStamp stamp = optStamp.get();
+					if(stamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+						return false;
+					}
+				}
+			}
+			
+		}
+		return true;
 	}
 	
 

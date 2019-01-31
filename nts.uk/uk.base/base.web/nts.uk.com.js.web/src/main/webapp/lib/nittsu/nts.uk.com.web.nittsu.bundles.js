@@ -1670,6 +1670,24 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
+            function today() {
+                var todayDate = "";
+                nts.uk.request.syncAjax("com", "server/time/today/").done(function (res) {
+                    todayDate = res;
+                }).fail(function () {
+                });
+                return moment.utc(todayDate, "yyyy/MM/dd");
+            }
+            time_1.today = today;
+            function now() {
+                var nowDateTime = "";
+                nts.uk.request.syncAjax("com", "server/time/now/").done(function (res) {
+                    nowDateTime = res;
+                }).fail(function () {
+                });
+                return moment.utc(nowDateTime);
+            }
+            time_1.now = now;
             var JapanYearMonth = (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
@@ -1685,60 +1703,74 @@ var nts;
                 JapanYearMonth.prototype.getMonth = function () {
                     return this.month;
                 };
+                JapanYearMonth.prototype.removeMonth = function () {
+                    this.month = null;
+                    return this;
+                };
                 JapanYearMonth.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire)
-                        + (this.year === undefined || this.year === "" ? "" : this.year + "年")
-                        + (this.month === undefined || this.month === "" ? "" : this.month + "月");
+                    return (_.isEmpty(this.getEmpire()) ? "" : this.getEmpire())
+                        + (_.isNil(this.getYear()) ? "" : this.getYear() + "年")
+                        + (_.isNil(this.getMonth()) ? "" : this.getMonth() + "月");
                 };
                 return JapanYearMonth;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
-            function yearInJapanEmpire(date) {
-                return yearmonthInJapanEmpire(date, true);
-            }
-            time_1.yearInJapanEmpire = yearInJapanEmpire;
-            function yearmonthInJapanEmpire(yearmonth, onlyYear) {
-                if (!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)) {
+            var JapanDateMoment = (function (_super) {
+                __extends(JapanDateMoment, _super);
+                function JapanDateMoment(empire, year, month, date) {
+                    var _this = _super.call(this, empire, year, month) || this;
+                    _this.day = date;
+                    return _this;
+                }
+                JapanDateMoment.prototype.getDate = function () {
+                    return this.day;
+                };
+                JapanDateMoment.prototype.removeDate = function () {
+                    this.day = null;
+                    return this;
+                };
+                JapanDateMoment.prototype.toString = function () {
+                    return _super.prototype.toString.call(this) + (_.isNil(this.getDate()) ? "" : this.getDate() + " 日");
+                };
+                return JapanDateMoment;
+            }(JapanYearMonth));
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                if (!nts.uk.ntsNumber.isNumber(date) && _.isEmpty(date)) {
                     return null;
                 }
-                var dateString = yearmonth.toString(), seperator = (dateString.match(/\//g) || []).length;
-                if (seperator > 2 || seperator < 0) {
+                var dateString = date.toString(), seperator = (dateString.match(/\//g) || []).length;
+                if (seperator > 2) {
                     return null;
                 }
-                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
-                if (onlyYear && dateString.length < 5) {
-                    formattedYear = Number(dateString);
-                }
+                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true);
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
-                    var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
-                    if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
-                        var diff = formattedYear - startEraYear + 1;
-                        return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+                    var startEra = moment(i.start), endEraYear = moment(i.end);
+                    if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
+                        var diff = formatted.year() - startEra.year() + 1;
+                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
             }
-            time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = (function () {
-                function JapanDateMoment(date, outputFormat) {
-                    var MomentResult = parseMoment(date, outputFormat);
-                    var year = MomentResult.momentObject.year();
-                    var month = MomentResult.momentObject.month() + 1;
-                }
-                JapanDateMoment.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire + " ")
-                        + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月")
-                        + (this.day === undefined ? "" : this.day + " ");
-                };
-                return JapanDateMoment;
-            }());
-            time_1.JapanDateMoment = JapanDateMoment;
-            function dateInJapanEmpire(date) {
-                return new JapanDateMoment(date);
-            }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
+            function yearInJapanEmpire(date) {
+                var formatted = yearmonthInJapanEmpire(date);
+                if (formatted !== null) {
+                    formatted.month = null;
+                }
+                return formatted;
+            }
+            time_1.yearInJapanEmpire = yearInJapanEmpire;
+            function yearmonthInJapanEmpire(yearmonth) {
+                var formatted = dateInJapanEmpire(yearmonth);
+                if (formatted !== null) {
+                    formatted.day = null;
+                }
+                return formatted;
+            }
+            time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             /**
             * Format by pattern
             * @param  {number} [seconds]	  Input seconds
@@ -4334,6 +4366,7 @@ var nts;
                  * Get program.
                  */
                 function getProgram() {
+                    initPgArea();
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
                         var programName = "";
                         var queryString = __viewContext.program.queryString;
@@ -4360,22 +4393,30 @@ var nts;
                             programName = pg[0].name;
                         }
                         // show program name on title of browser
-                        ui.viewModelBuilt.add(function () {
+                        if (_.isNil(ui._viewModel)) {
+                            ui.viewModelBuilt.add(function () {
+                                ui._viewModel.kiban.programName(programName);
+                            });
+                        }
+                        else {
                             ui._viewModel.kiban.programName(programName);
-                        });
-                        var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        //            $manualBtn.on(constants.CLICK, function() {
-                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                        //                window.open(path);
-                        //            });
-                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                        $tglBtn.on(constants.CLICK, function () {
-                            // TODO
-                        });
+                        }
+                        $("#pg-name").text(programName);
+                    });
+                }
+                function initPgArea() {
+                    var $pgArea = $("#pg-area");
+                    $("<div/>").attr("id", "pg-name").appendTo($pgArea);
+                    var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+                    //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                    //            $manualBtn.on(constants.CLICK, function() {
+                    //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                    //                window.open(path);
+                    //            });
+                    var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+                    $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+                    $tglBtn.on(constants.CLICK, function () {
+                        // TODO
                     });
                 }
                 /**
@@ -15757,36 +15798,38 @@ var nts;
                                 },
                                 dropDownClosed: function (evt, ui) {
                                     var data = $element.data(DATA);
-                                    // check flag changed for validate
-                                    $element.trigger(CHANGED, [CHANGED, true]);
-                                    var sto = setTimeout(function () {
-                                        var data = $element.data(DATA);
-                                        // select first if !select and !editable
-                                        if (!data[EDITABLE] && _.isNil(data[VALUE])) {
-                                            $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
-                                            //reload data
-                                            data = $element.data(DATA);
-                                        }
-                                        // not match any filter value
-                                        if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
-                                            $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
-                                            //reload data
-                                            data = $element.data(DATA);
-                                        }
-                                        // set value on select
-                                        accessor.value(data[VALUE]);
-                                        // validate if required
-                                        $element
-                                            .trigger(VALIDATE, [true])
-                                            .trigger(SHOWVALUE);
-                                        clearTimeout(sto);
-                                    }, 10);
-                                    if (data[ENABLE]) {
-                                        var f = $(':focus');
-                                        if (f.hasClass('ui-igcombo-field')
-                                            || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
-                                            || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
-                                            $element.focus();
+                                    if (data) {
+                                        // check flag changed for validate
+                                        $element.trigger(CHANGED, [CHANGED, true]);
+                                        var sto_1 = setTimeout(function () {
+                                            var data = $element.data(DATA);
+                                            // select first if !select and !editable
+                                            if (!data[EDITABLE] && _.isNil(data[VALUE])) {
+                                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                                //reload data
+                                                data = $element.data(DATA);
+                                            }
+                                            // not match any filter value
+                                            if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                                $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                                //reload data
+                                                data = $element.data(DATA);
+                                            }
+                                            // set value on select
+                                            accessor.value(data[VALUE]);
+                                            // validate if required
+                                            $element
+                                                .trigger(VALIDATE, [true])
+                                                .trigger(SHOWVALUE);
+                                            clearTimeout(sto_1);
+                                        }, 10);
+                                        if (data[ENABLE]) {
+                                            var f = $(':focus');
+                                            if (f.hasClass('ui-igcombo-field')
+                                                || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                                || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                                $element.focus();
+                                            }
                                         }
                                     }
                                 },
@@ -18189,7 +18232,7 @@ var nts;
                     if (handlesEnterKey) {
                         $input.addClass("enterkey")
                             .onkey("down", uk.KeyCodes.Enter, function (e) {
-                            if ($(".blockUI").length <= 0) {
+                            if ($(".blockUI").length > 0) {
                                 return;
                             }
                             $input.change();
@@ -33043,17 +33086,7 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            // for performance when select all
-                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.isEqual(selectedId, baseID)) {
-                                var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                if (chk[0].getAttribute("data-chk") == "off") {
-                                    chk.click();
-                                }
-                            }
-                            else {
-                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
-                            }
+                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -43,16 +44,23 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
 				Optional<List<WorkMonthlySettingReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
 				if (listDataPerOneWp.isPresent()) {
-					Map<String, List<WorkMonthlySettingReportData>> mapDataByYearMonth = 
-					listDataPerOneWp.get().stream().collect(Collectors.groupingBy(WorkMonthlySettingReportData::getYearMonth));
-					List<String> yearMonthKeys = mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList());
-					for(int i = 0; i < yearMonthKeys.size(); i++) {
-						String yearMonth = yearMonthKeys.get(i);
-						List<WorkMonthlySettingReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
-						Optional<MasterData> row = newWorkSetMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow));
-						if (row.isPresent()) {
-							datas.add(row.get());
+					if (listDataPerOneWp.get().get(0).getDate().isPresent()) {
+						Map<String, List<WorkMonthlySettingReportData>> mapDataByYearMonth = listDataPerOneWp.get()
+								.stream().collect(Collectors.groupingBy(WorkMonthlySettingReportData::getYearMonth));
+						List<String> yearMonthKeys = mapDataByYearMonth.keySet().stream().sorted()
+								.collect(Collectors.toList());
+						for (int i = 0; i < yearMonthKeys.size(); i++) {
+							String yearMonth = yearMonthKeys.get(i);
+							List<WorkMonthlySettingReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
+							Optional<MasterData> row = newWorkSetMasterData(i, yearMonth,
+									Optional.ofNullable(listDataPerOneRow));
+							if (row.isPresent()) {
+								datas.add(row.get());
+							}
 						}
+					}
+					else {
+//						datas.add(newWSWithCodeNameMasterData(listDataPerOneWp.get().get(0)));
 					}
 				}
 			});
@@ -60,6 +68,19 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 
 		return datas;
 	}
+	
+//	private MasterData newWSWithCodeNameMasterData(WorkMonthlySettingReportData setWorkplaceReportData) {
+//		
+//		Map<String, Object> data = new HashMap<>();
+//		// put empty to columns
+//		putEmptyToColumWorkSet(data);
+//		data.put("コード", setWorkplaceReportData.getPattenCode());
+//		data.put("名称", setWorkplaceReportData.getPatternName());
+//
+//		MasterData masterData = new MasterData(data, null, "");
+//		alignDataWorkSet(masterData.getRowData());
+//		return masterData;
+//	}
 
 	/**
 	 * create row data for WorkPlace sheet
@@ -114,6 +135,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	private void putEmptyToColumWorkSet(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
+		data.put("年月", "");
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
 			data.put(key, "");
@@ -126,8 +148,10 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	 * @param setReportData
 	 */
 	private void putDataToColumnsWorkSet(Map<String, Object> data, WorkMonthlySettingReportData setReportData) {
-		String key = setReportData.getDay() + "日";
-		data.put(key, setReportData.getWorkSetName());
+		if(setReportData.getWorkSetName().isPresent()) {
+			String key = setReportData.getDay() + "日";
+			data.put(key, setReportData.getWorkSetName().get());
+		}
 	}
 	
 	@Override
@@ -168,11 +192,17 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM005_77"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM005_78"), ColumnTextAlign.LEFT, "", true));
 
+		 //TODO temp
+		GeneralDate endDate = query.getEndDate();
+		if (endDate.month() != 12) {
+			query.setEndDate(endDate.addYears(-1));
+		}
 		return columns;
 	}
 
 	@Override
 	public String mainSheetName() {
+		
 		return TextResource.localize("KSM005_3");
 	}
 	
@@ -189,6 +219,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		 SheetData sheetPersionSet = new SheetData(getMasterDatasForPersionSet(query), 
 				 getHeaderColumnsForPersionSet(query),null, null, TextResource.localize("KSM005_6"), MasterListMode.BASE_DATE);
 		 sheetDatas.add(sheetPersionSet);
+		 
 		return sheetDatas;
 	}
 	
