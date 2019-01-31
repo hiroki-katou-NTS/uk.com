@@ -30,7 +30,8 @@ module cps003.b.vm {
                     fileName: self.currentFile().filename(),
                     categoryId: self.currentMode().categoryId,
                     modeUpdate: self.currentMode().mode(),
-                    columnChange: self.currentMode().columnChange    
+                    columnChange: self.currentMode().columnChange,
+                    sids:  self.currentMode().sids
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
@@ -85,7 +86,7 @@ module cps003.b.vm {
             self.mode(data.mode);
             self.updateModeEnable(data.updateModeEnable);
             self.columnChange = data.columnChange;
-            self.sids = data.systemDate;
+            self.sids = data.sids;
         }
     }
     

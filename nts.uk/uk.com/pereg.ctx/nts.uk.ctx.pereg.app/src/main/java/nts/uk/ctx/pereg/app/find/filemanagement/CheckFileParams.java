@@ -15,4 +15,5 @@ public class CheckFileParams {
 	private String categoryId;
 	private int modeUpdate;
 	private List<GridEmpHead> columnChange;
+	private List<String> sids;
 }
