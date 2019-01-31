@@ -262,7 +262,7 @@ module nts.uk.at.view.kmk004.a {
                    if (result.status) {
                         nts.uk.ui.block.grayout();
                        service.findprogramName("KMK004", "A").done(function(res:String ) {
-                           let domainType = "KMK002";
+                           let domainType = "KMK004";
                            res = res.split(" ");
                            if (res.length > 1) {
                                res.shift();
