@@ -40,8 +40,8 @@ module nts.uk.ui.jqueryExtentions {
                 displayColumns = extColumns;
             } else {
                 displayColumns = [
-                    { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                    { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                    { headerText: toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                    { headerText: toBeResource.codeAndName, key: optionsText, dataType: "string" }
                 ];
             }
             

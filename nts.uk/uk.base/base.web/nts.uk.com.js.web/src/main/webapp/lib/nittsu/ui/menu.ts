@@ -25,7 +25,7 @@ module nts.uk.ui.menu {
         let $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
         let $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
         let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-        $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
+        $menuItems.append($("<li class='menu-item'/>").text(toBeResource.selectMenu));
         $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
         _.forEach(menuSet, function(item, i) {
             $menuItems.append($("<li class='menu-item'/>")
@@ -168,8 +168,8 @@ module nts.uk.ui.menu {
                     let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                     $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                     let userOptions;
-                    if (show) userOptions = [ /*new MenuItem("個人情報の設定"),*/ new MenuItem("マニュアル"), new MenuItem("ログアウト") ];
-                    else userOptions = [ /*new MenuItem("個人情報の設定"),*/ new MenuItem("ログアウト") ];
+                    if (show) userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.manual), new MenuItem(toBeResource.logout) ];
+                    else userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.logout) ];
                     let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                     _.forEach(userOptions, function(option: any, i: number) {
                         let $li = $("<li class='menu-item'/>").text(option.name);

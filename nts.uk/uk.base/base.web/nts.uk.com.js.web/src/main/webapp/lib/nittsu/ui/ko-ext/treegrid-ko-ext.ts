@@ -45,8 +45,8 @@ module nts.uk.ui.koExtentions {
                 var displayColumns = extColumns;
             } else {
                 var displayColumns: Array<any> = [
-                    { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                    { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                    { headerText: toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                    { headerText: toBeResource.codeAndName, key: optionsText, dataType: "string" }
                 ];
             }
             

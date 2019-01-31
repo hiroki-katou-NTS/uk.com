@@ -7145,7 +7145,7 @@ module nts.uk.ui.mgrid {
         export const PICKED = "picked";
         export const YM = "YYYY年MM月";
         export const Y = "YYYY年";
-        export const WEEK_DAYS = [ "日", "月", "火", "水", "木", "金", "土" ];
+        export const WEEK_DAYS = toBeResource.weekDaysShort;
 
         /**
          * Get control.

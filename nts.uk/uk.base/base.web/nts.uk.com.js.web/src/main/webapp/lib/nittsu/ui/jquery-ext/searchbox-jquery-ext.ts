@@ -106,10 +106,10 @@ module nts.uk.ui.jqueryExtentions {
             let minusWidth = 0;
             let fields = options.fields;
             
-            let placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・"; 
+            let placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : toBeResource.searchByCodeName; 
             
             let searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
-            let defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+            let defaultSearchText = (searchMode === 'highlight') ? toBeResource.search : toBeResource.filter
             let searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
             let label = (options.label !== undefined) ? options.label : "";
             let enable = options.enable;

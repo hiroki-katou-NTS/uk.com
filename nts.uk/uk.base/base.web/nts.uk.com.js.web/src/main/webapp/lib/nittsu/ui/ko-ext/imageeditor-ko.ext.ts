@@ -111,7 +111,7 @@ module nts.uk.ui.koExtentions {
             let $editContainer = this.$root.find(".edit-action-container");
             $editContainer.append($checkboxHolder);
 
-            this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
+            this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: toBeResource.selectViewArea });
             let $comment = $("<div>", { "class": "crop-description cf" });
             $checkboxHolder.append(this.$checkbox);
             $checkboxHolder.append($comment);
@@ -121,8 +121,8 @@ module nts.uk.ui.koExtentions {
             let $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
             let $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
 
-            $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
-            $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
+            $("<label>", { "class": "info-label", "text": toBeResource.showInsideAreaToMain }).appendTo($cropText);
+            $("<label>", { "class": "info-label", "text": toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
 
             $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
 
@@ -165,7 +165,7 @@ module nts.uk.ui.koExtentions {
 
         buildUploadAction() {
             let self = this;
-            self.$uploadBtn.text("参照").click(function(evt) {
+            self.$uploadBtn.text(toBeResource.refer).click(function(evt) {
                 self.$inputFile.click();
             });
         }
@@ -310,7 +310,7 @@ module nts.uk.ui.koExtentions {
         
         destroyImg(query?: SrcChangeQuery){
             let self = this;
-            nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function(){
+            nts.uk.ui.dialog.alert(toBeResource.invalidImageData).then(function(){
                 //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                 self.changeStatus(ImageStatus.FAIL);
                 self.backupData(null, "", "", 0);

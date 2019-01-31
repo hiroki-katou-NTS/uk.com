@@ -799,6 +799,13 @@ var nts;
                 return message.replace(/\\r\\n/g, '\r\n');
             }
             resource.getMessage = getMessage;
+            function getMessageObj(messageId, params) {
+                return {
+                    message: getMessage(messageId, params),
+                    messageId: messageId
+                };
+            }
+            resource.getMessageObj = getMessageObj;
             function formatCompCustomizeResource(message) {
                 var compDependceParamRegex = /{#(\w*)}/;
                 var matches;
@@ -4155,7 +4162,7 @@ var nts;
                     var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
                     var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
                     var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
+                    $menuItems.append($("<li class='menu-item'/>").text(ui.toBeResource.selectMenu));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
                         $menuItems.append($("<li class='menu-item'/>")
@@ -4294,9 +4301,9 @@ var nts;
                                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                                 var userOptions;
                                 if (show)
-                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("マニュアル"), new MenuItem("ログアウト")];
+                                    userOptions = [/*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(ui.toBeResource.manual), new MenuItem(ui.toBeResource.logout)];
                                 else
-                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("ログアウト")];
+                                    userOptions = [/*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(ui.toBeResource.logout)];
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4689,13 +4696,13 @@ var nts;
                     return result;
                 }
                 function autoConvertText(inputText, charType) {
-                    if (charType.viewName === '半角英数字') {
+                    if (charType.viewName === ui.toBeResource.alphaNumeric) {
                         inputText = uk.text.toUpperCase(inputText);
                     }
-                    else if (charType.viewName === 'カタカナ') {
+                    else if (charType.viewName === ui.toBeResource.katakana) {
                         inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                     }
-                    else if (charType.viewName === 'カナ') {
+                    else if (charType.viewName === ui.toBeResource.kana) {
                         inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                     }
                     return inputText;
@@ -4884,13 +4891,13 @@ var nts;
                         var validateResult;
                         // Check CharType
                         if (!util.isNullOrUndefined(this.charType)) {
-                            if (this.charType.viewName === '半角英数字') {
+                            if (this.charType.viewName === ui.toBeResource.alphaNumeric) {
                                 inputText = uk.text.toUpperCase(inputText);
                             }
-                            else if (this.charType.viewName === 'カタカナ') {
+                            else if (this.charType.viewName === ui.toBeResource.katakana) {
                                 inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                             }
-                            else if (this.charType.viewName === 'カナ') {
+                            else if (this.charType.viewName === ui.toBeResource.kana) {
                                 inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                             }
                             validateResult = this.charType.validate(inputText);
@@ -5229,7 +5236,7 @@ var nts;
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
-                        this.title = "エラー一覧";
+                        this.title = ui.toBeResource.errorList;
                         this.errors = ko.observableArray([]);
                         this.errors.extend({ rateLimit: 1 });
                         this.gridErrors = ko.observableArray([]);
@@ -5529,10 +5536,37 @@ var nts;
                 toBeResource.errorContent = "エラー内容";
                 toBeResource.errorCode = "エラーコード";
                 toBeResource.errorList = "エラー一覧";
+                toBeResource.errorPoint = "エラー箇所";
+                toBeResource.errorDetail = "エラー詳細";
+                toBeResource.tab = "タブ";
                 toBeResource.plzWait = "お待ちください";
                 toBeResource.targetNotFound = "対象データがありません";
                 toBeResource.clear = "解除";
                 toBeResource.searchBox = "検索テキストボックス";
+                toBeResource.addNewRow = "新規行の追加";
+                toBeResource.deleteRow = "行の削除";
+                toBeResource.selectMenu = "メニュー選択";
+                toBeResource.manual = "マニュアル";
+                toBeResource.logout = "ログアウト";
+                toBeResource.settingPersonal = "個人情報の設定";
+                toBeResource.weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
+                toBeResource.searchByCodeName = "コード・名称で検索・・・";
+                toBeResource.search = "検索";
+                toBeResource.filter = "絞り込み";
+                toBeResource.code = "コード";
+                toBeResource.codeAndName = "コード／名称";
+                toBeResource.alphaNumeric = "半角英数字";
+                toBeResource.katakana = "カタカナ";
+                toBeResource.kana = "カナ";
+                toBeResource.otherColors = "その他の色";
+                toBeResource.hide = "隠す";
+                toBeResource.decide = "確定";
+                toBeResource.refer = "参照";
+                toBeResource.selectViewArea = "表示エリアを選択する";
+                toBeResource.showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
+                toBeResource.dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
+                toBeResource.invalidImageData = "不正な画像データです。";
+                toBeResource.legendExample = "凡例";
             })(toBeResource = ui.toBeResource || (ui.toBeResource = {}));
             function localize(textId) {
                 return textId;
@@ -6714,7 +6748,7 @@ var nts;
                         _this.buttons = [];
                         // Add OK Button
                         _this.buttons.push({
-                            text: "はい",
+                            text: ui_2.toBeResource.yes,
                             "class": "yes ",
                             size: "large",
                             color: "danger",
@@ -6725,7 +6759,7 @@ var nts;
                         });
                         // Add Cancel Button
                         _this.buttons.push({
-                            text: "いいえ",
+                            text: ui_2.toBeResource.no,
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -6748,7 +6782,7 @@ var nts;
                         _this.buttons = [];
                         // Add OK Button
                         _this.buttons.push({
-                            text: "はい",
+                            text: ui_2.toBeResource.yes,
                             "class": "yes ",
                             size: "large",
                             color: "proceed",
@@ -6759,7 +6793,7 @@ var nts;
                         });
                         // Add Cancel Button
                         _this.buttons.push({
-                            text: "いいえ",
+                            text: ui_2.toBeResource.no,
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -6779,8 +6813,8 @@ var nts;
                         var _this = _super.call(this) || this;
                         // Default value
                         _this.headers = (option && option.headers) ? option.headers : [
-                            new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
-                            new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
+                            new nts.uk.ui.errors.ErrorHeader("messageText", ui_2.toBeResource.errorContent, "auto", true),
+                            new nts.uk.ui.errors.ErrorHeader("errorCode", ui_2.toBeResource.errorCode, 150, true)
                         ];
                         _this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         _this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -6789,7 +6823,7 @@ var nts;
                         _this.buttons = [];
                         // Add Close Button
                         _this.buttons.push({
-                            text: "閉じる",
+                            text: ui_2.toBeResource.close,
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -6809,9 +6843,9 @@ var nts;
                         var _this = _super.call(this) || this;
                         // Default value
                         _this.headers = (option && option.headers) ? option.headers : [
-                            new ui_2.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_2.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_2.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_2.errors.ErrorHeader("tab", ui_2.toBeResource.tab, 90, true),
+                            new ui_2.errors.ErrorHeader("location", ui_2.toBeResource.errorPoint, 115, true),
+                            new ui_2.errors.ErrorHeader("message", ui_2.toBeResource.errorDetail, 250, true)
                         ];
                         _this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         _this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -6820,7 +6854,7 @@ var nts;
                         _this.buttons = [];
                         // Add Close Button
                         _this.buttons.push({
-                            text: "閉じる",
+                            text: ui_2.toBeResource.close,
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -7354,8 +7388,8 @@ var nts;
                                 update.deleteRows(self.$container);
                             });
                             $area.appendChild($rowDel);
-                            var dftRowAddTxt = "新規行の追加";
-                            var dftRowDelTxt = "行の削除";
+                            var dftRowAddTxt = ui_3.toBeResource.addNewRow;
+                            var dftRowDelTxt = ui_3.toBeResource.deleteRow;
                             if (updateF.addNew) {
                                 $rowAdd.classList.add(updateF.addNew.buttonClass || "proceed");
                                 $rowAdd.textContent = updateF.addNew.buttonText || dftRowAddTxt;
@@ -19690,9 +19724,9 @@ var nts;
                         var minusWidth = 0;
                         var data = ko.unwrap(valueAccessor());
                         var fields = ko.unwrap(data.fields);
-                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : ui_9.toBeResource.searchByCodeName;
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
-                        var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+                        var defaultSearchText = (searchMode === 'highlight') ? ui_9.toBeResource.search : ui_9.toBeResource.filter;
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : defaultSearchText;
                         var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
                         var enable = ko.unwrap(data.enable);
@@ -19953,7 +19987,7 @@ var nts;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
                         var enableRowNumbering = false;
-                        var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : ui_10.toBeResource.searchByCodeName;
                         var beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
                         var beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
                         var beforeAllL = nts.uk.util.isNullOrUndefined(data.beforeAllLeft) ? $.noop : data.beforeAllLeft;
@@ -19998,14 +20032,14 @@ var nts;
                                     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
                                     $SearchArea.find(".ntsClearButtonContainer")
                                         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");
-                                    $SearchArea.find(".clear-btn").text("解除");
+                                    $SearchArea.find(".clear-btn").text(ui_10.toBeResource.clear);
                                 }
                                 $SearchArea.find(".ntsSearchTextContainer")
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                                 $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
-                                $SearchArea.find(".search-btn").text("検索");
+                                $SearchArea.find(".search-btn").text(ui_10.toBeResource.search);
                             };
                             var searchAreaId = elementId + "-search-area";
                             $swap.append("<div class = 'nts-searchbbox-wrapper ntsSearchArea' id = " + searchAreaId + "/>");
@@ -21258,8 +21292,8 @@ var nts;
                         }
                         else {
                             var displayColumns = [
-                                { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                                { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                                { headerText: ui_13.toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                                { headerText: ui_13.toBeResource.codeAndName, key: optionsText, dataType: "string" }
                             ];
                         }
                         var $treegrid = $(element);
@@ -21981,7 +22015,7 @@ var nts;
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
-                        $container.text('■ 凡例');
+                        $container.text("■ " + ui.toBeResource.legendExample);
                         $container.click(function () {
                             showLegendPanel($container, data);
                         });
@@ -29424,7 +29458,7 @@ var nts;
                     dkn.PICKED = "picked";
                     dkn.YM = "YYYY年MM月";
                     dkn.Y = "YYYY年";
-                    dkn.WEEK_DAYS = ["日", "月", "火", "水", "木", "金", "土"];
+                    dkn.WEEK_DAYS = ui_17.toBeResource.weekDaysShort;
                     /**
                      * Get control.
                      */
@@ -32791,20 +32825,20 @@ var nts;
                                     // 413はnginxが返す
                                     // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
-                                        dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                                        dfd.reject(uk.resource.getMessageObj("Msg_1494"));
                                     }
                                     else {
                                         // Client Exception
-                                        dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                                        dfd.reject(uk.resource.getMessageObj("Msg_1495"));
                                     }
                                 });
                             }
                             else {
-                                dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
+                                dfd.reject(uk.resource.getMessageObj("Msg_1496"));
                             }
                         }
                         else {
-                            dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
+                            dfd.reject(uk.resource.getMessageObj("Msg_1497"));
                         }
                         return dfd.promise();
                     }
@@ -39611,9 +39645,9 @@ var nts;
                         }
                         var minusWidth = 0;
                         var fields = options.fields;
-                        var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・";
+                        var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : ui_24.toBeResource.searchByCodeName;
                         var searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
-                        var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+                        var defaultSearchText = (searchMode === 'highlight') ? ui_24.toBeResource.search : ui_24.toBeResource.filter;
                         var searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
                         var label = (options.label !== undefined) ? options.label : "";
                         var enable = options.enable;
@@ -39980,8 +40014,8 @@ var nts;
                         }
                         else {
                             displayColumns = [
-                                { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                                { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                                { headerText: ui_26.toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                                { headerText: ui_26.toBeResource.codeAndName, key: optionsText, dataType: "string" }
                             ];
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty($treegrid.attr("tabindex")) ? "0" : $treegrid.attr("tabindex");
@@ -40833,15 +40867,15 @@ var nts;
                             preferredFormat: "name",
                             showPaletteOnly: true,
                             togglePaletteOnly: true,
-                            togglePaletteMoreText: 'その他の色',
-                            togglePaletteLessText: '隠す',
+                            togglePaletteMoreText: ui_29.toBeResource.otherColors,
+                            togglePaletteLessText: ui_29.toBeResource.hide,
                             color: color,
                             disabled: !enable,
                             showInput: true,
                             showSelectionPalette: true,
                             showInitial: true,
-                            chooseText: "確定",
-                            cancelText: "キャンセル",
+                            chooseText: ui_29.toBeResource.decide,
+                            cancelText: ui_29.toBeResource.cancel,
                             allowEmpty: true,
                             showAlpha: false,
                             palette: [
@@ -41674,7 +41708,7 @@ var nts;
                         var fileName = ko.unwrap(data.filename);
                         var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : ui.toBeResource.refer;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var $container = $(element)
                             .data(CONTROL_NAME, ko.unwrap(data.name))
@@ -42077,7 +42111,7 @@ var nts;
                         var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
                         var $editContainer = this.$root.find(".edit-action-container");
                         $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: ui_32.toBeResource.selectViewArea });
                         var $comment = $("<div>", { "class": "crop-description cf" });
                         $checkboxHolder.append(this.$checkbox);
                         $checkboxHolder.append($comment);
@@ -42085,8 +42119,8 @@ var nts;
                         var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
                         var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
                         var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
+                        $("<label>", { "class": "info-label", "text": ui_32.toBeResource.showInsideAreaToMain }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": ui_32.toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
                         $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
                         var checkboxId = nts.uk.util.randomId();
                         ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
@@ -42119,7 +42153,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildUploadAction = function () {
                         var self = this;
-                        self.$uploadBtn.text("参照").click(function (evt) {
+                        self.$uploadBtn.text(ui_32.toBeResource.refer).click(function (evt) {
                             self.$inputFile.click();
                         });
                     };
@@ -42256,7 +42290,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
-                        nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function () {
+                        nts.uk.ui.dialog.alert(ui_32.toBeResource.invalidImageData).then(function () {
                             //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                             self.changeStatus(ImageStatus.FAIL);
                             self.backupData(null, "", "", 0);
