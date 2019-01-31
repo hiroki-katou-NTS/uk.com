@@ -134,7 +134,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
 			//1
-			putDataCustom(datas,TextResource.localize("KMF002_61"),"","","",TextResource.localize("KMF002_62"),0);
+			putDataCustom(datas,TextResource.localize("KMF002_75")+TextResource.localize("KMF002_61"),"","","",TextResource.localize("KMF002_62"),0);
 			int carryOverDeadline = optPubHDSet.getForwardSetOfPubHd().getCarryOverDeadline();
 			//2
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","",getCarryOverDeadline(carryOverDeadline),1);
@@ -263,7 +263,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 				}
 			}
 		}else{
-			putDataCustom(datas,TextResource.localize("KMF002_61"),"","","","管理しない",0);
+			putDataCustom(datas,TextResource.localize("KMF002_75")+TextResource.localize("KMF002_61"),"","","","管理しない",0);
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","","",1);
 			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","",0);
 			putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_66"),"","","",1);
@@ -744,10 +744,10 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		PublicHolidayManagementUsageUnitFindDto findData = finderPublicHolidayManagement.findData();
 		
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("Com_Company"));
-		SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("Com_Workplace"));
-		SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("Com_Employment"));
-		SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("Com_Person"));
+		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"));
+		SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("KMF002_76"));
+		SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"));
+		SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"));
 		
 		if(optPubHDSet.getPubHdSet().getPublicHdManagementClassification() ==0){//1ヵ月
 			
