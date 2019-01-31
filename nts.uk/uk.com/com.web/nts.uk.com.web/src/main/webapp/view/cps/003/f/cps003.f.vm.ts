@@ -9,7 +9,7 @@ module cps003.f.vm {
 
     const __viewContext: any = window['__viewContext'] || {},
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
-        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create']
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export class ViewModel {
         currentItem: ICurrentItem = {
@@ -262,8 +262,6 @@ module cps003.f.vm {
                     }
                 }
             });
-
-            //self.currentItem.value.subscribe(v => console.log(v));
         }
 
         pushData() {
@@ -274,83 +272,18 @@ module cps003.f.vm {
                     targetItem: item.id,
                     matchValue: item.filter,
                     replaceFormat: Number(item.value.mode),
-                    replaceValue1: '',
-                    replaceValue2: ''
+                    replaceValue1: undefined,
+                    replaceValue2: undefined
                 };
 
             switch (item.itemData.dataType) {
                 default:
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
-                    if ([
-                        'IS00279', 'IS00295',
-                        'IS00302', 'IS00309',
-                        'IS00316', 'IS00323',
-                        'IS00330', 'IS00337',
-                        'IS00344', 'IS00351',
-                        'IS00358', 'IS00559',
-                        'IS00566', 'IS00573',
-                        'IS00580', 'IS00587',
-                        'IS00594', 'IS00601',
-                        'IS00608', 'IS00615',
-                        'IS00622'].indexOf(item.itemData.itemCode) > -1) {
-                        switch (item.value.mode) {
-                            case '1':
-                                break;
-                            case '2':
-                                break;
-                            case '3':
-                                value.replaceValue1 = item.value.value0;
-                                value.replaceValue2 = item.value.value1;
-                                break;
-                            case '4':
-                                value.replaceValue1 = item.value.value2;
-                                break;
-                        }
-                    } else {
-                        value.replaceValue1 = item.value.value0;
+                    if (value.matchValue) {
+                        value.matchValue = moment.utc(value.matchValue).format('YYYY/MM/DD');
                     }
-                    break;
-                case ITEM_SINGLE_TYPE.STRING:
-                    value.replaceValue1 = item.value.value0;
-                    break;
-                case ITEM_SINGLE_TYPE.TIME:
-                    if (item.itemData.itemCode == 'IS00287') {
-                        if (item.value.mode == '1') {
-                            value.replaceValue1 = item.value.value0;
-                        } else {
-                            value.replaceValue1 = item.value.value1;
-                        }
-                    } else {
-                        value.replaceValue1 = item.value.value0;
-                    }
-                    break;
-                case ITEM_SINGLE_TYPE.TIMEPOINT:
-                    value.replaceValue1 = item.value.value0;
-                    break;
-                case ITEM_SINGLE_TYPE.NUMERIC:
-                    if (!item.itemData.amount) {
-                        value.replaceValue1 = item.value.value0;
-                    } else {
-                        if (item.value.mode == '1') {
-                            value.replaceValue1 = item.value.value0;
-                        } else {
-                            value.replaceValue1 = item.value.value1;
-                        }
-                    }
-                    break;
-                case ITEM_SINGLE_TYPE.SELECTION:
-                case ITEM_SINGLE_TYPE.SEL_RADIO:
-                case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                    value.replaceValue1 = item.value.value0;
-                    break;
-            }
 
-            // show message confirm ?
-            switch (item.itemData.dataType) {
-                default:
-                    break;
-                case ITEM_SINGLE_TYPE.DATE:
                     if ([
                         'IS00279', 'IS00295',
                         'IS00302', 'IS00309',
@@ -373,11 +306,15 @@ module cps003.f.vm {
                                 value.replaceValue2 = item.value.value1;
                                 break;
                             case 4:
-                                value.replaceValue1 = item.value.value2;
+                                if (item.value.value2) {
+                                    value.replaceValue1 = moment.utc(item.value.value2).format('YYYY/MM/DD');
+                                }
                                 break;
                         }
                     } else {
-                        value.replaceValue1 = item.value.value0;
+                        if (item.value.value0) {
+                            value.replaceValue1 = moment.utc(item.value.value0).format('YYYY/MM/DD');
+                        }
                     }
                     break;
                 case ITEM_SINGLE_TYPE.STRING:
@@ -399,16 +336,18 @@ module cps003.f.vm {
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     if (!item.itemData.amount) {
-                        value.replaceValue1 = item.value.value0;
+                        if (item.value.value0) {
+                            value.replaceValue1 = Number(item.value.value0);
+                        }
                     } else {
                         if (value.replaceFormat == 1) {
-                            if (value.replaceAll) {
-
-                            } else {
+                            if (item.value.value0) {
+                                value.replaceValue1 = Number(item.value.value0);
                             }
-                            value.replaceValue1 = item.value.value0;
                         } else {
-                            value.replaceValue1 = item.value.value1;
+                            if (item.value.value2) {
+                                value.replaceValue1 = Number(item.value.value1 + item.value.value2);
+                            }
                         }
                     }
                     break;
@@ -419,9 +358,73 @@ module cps003.f.vm {
                     break;
             }
 
-
-            setShared('CPS003F_VALUE', value);
-            //self.close();
+            // 画面項目「対象者選択（F1_007）」の状態をチェックする
+            if (value.replaceAll) { // 全員（F1_008）が選択されている場合
+                if (!value.replaceFormat) {
+                    if (value.replaceValue1) {
+                        confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                            setShared('CPS003F_VALUE', value);
+                            close();
+                        });
+                    } else {
+                        confirm({ messageId: 'Msg_634', messageParams: [item.name] }).ifYes(() => {
+                            setShared('CPS003F_VALUE', value);
+                            close();
+                        });
+                    }
+                } else {
+                    if (item.itemData.amount) { // 画面モード＝金額モードの場合
+                        if (value.replaceFormat == 1) { // 通常置換（F1_026）が選択されている場合
+                            if (value.replaceValue1) {
+                                confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            } else {
+                                confirm({ messageId: 'Msg_634', messageParams: [item.name] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            }
+                        } else { // 加減算（F1_027）が選択されている場合
+                            debugger;
+                        }
+                    } else {
+                    }
+                }
+            } else { // 一致する社員のみ（F1_009）が選択されている場合
+                if (value.matchValue) {
+                    if (!value.replaceFormat) {
+                        if (value.replaceValue1) {
+                            confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                setShared('CPS003F_VALUE', value);
+                                close();
+                            });
+                        } else {
+                            confirm({ messageId: 'Msg_636', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                setShared('CPS003F_VALUE', value);
+                                close();
+                            });
+                        }
+                    } else {
+                        if (item.itemData.amount) {
+                        } else {
+                        }
+                    }
+                } else {
+                    if (value.replaceValue1) {
+                        confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                            setShared('CPS003F_VALUE', value);
+                            close();
+                        });
+                    } else {
+                        alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                            setShared('CPS003F_VALUE', value);
+                            close();
+                        });
+                    }
+                }
+            }
         }
 
         close() {

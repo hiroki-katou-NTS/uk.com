@@ -39,8 +39,10 @@
 	background-color: #eee;
 }
 
-#contents-area .form-group.filter-box button+label.value-text {
+#contents-area .form-group.filter-box button+label.value-text,
+#contents-area .form-group.change-box button+label.value-text {
 	padding-left: 15px;
+	line-height: 32px;
 }
 
 #contents-area .form-group.radio-wrapper>.ntsRadioBox {
@@ -78,7 +80,7 @@
 	max-width: 300px !important;
 }
 
-#contents-area .form-group.change-box .v-top>* {
+#contents-area .form-group.change-box .v-top>*:not(.value-text) {
 	vertical-align: top;
 }
 
