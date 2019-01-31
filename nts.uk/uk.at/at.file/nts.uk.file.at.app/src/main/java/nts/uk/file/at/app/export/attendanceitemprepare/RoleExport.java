@@ -13,4 +13,5 @@ public class RoleExport {
 	private String displayName;
 	private String description;
 	private int availability;
+	private String roleId;
 }

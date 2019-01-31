@@ -5,8 +5,10 @@
 package nts.uk.ctx.at.schedule.app.find.shift.estimate.employment;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -119,6 +121,11 @@ public class EmploymentEstablishmentFinder {
 				EstimateTimeDto monthly = new EstimateTimeDto();
 				estimateTimeSetting.saveToMemento(monthly);
 				monthlyTimes.add(monthly);
+				List<EstimateTimeDto> listMonthlyTimes = new ArrayList<>();
+				listMonthlyTimes = monthlyTimes.stream().sorted(Comparator.comparing(EstimateTimeDto::getMonth))
+						.collect(Collectors.toList());
+				monthlyTimes.clear();
+				monthlyTimes.addAll(listMonthlyTimes);
 			}
 		});
 		
@@ -150,6 +157,11 @@ public class EmploymentEstablishmentFinder {
 				EstimatePriceDto monthly = new EstimatePriceDto();
 				estimatePriceSetting.saveToMemento(monthly);
 				monthlyPrices.add(monthly);
+				List<EstimatePriceDto> listMonthlyTimes = new ArrayList<>();
+				listMonthlyTimes = monthlyPrices.stream().sorted(Comparator.comparing(EstimatePriceDto::getMonth))
+						.collect(Collectors.toList());
+				monthlyPrices.clear();
+				monthlyPrices.addAll(listMonthlyTimes);
 			}
 		});
 		
@@ -182,6 +194,11 @@ public class EmploymentEstablishmentFinder {
 				EstimateNumberOfDayDto monthly = new EstimateNumberOfDayDto();
 				estimateDaysSetting.saveToMemento(monthly);
 				monthlyDays.add(monthly);
+				List<EstimateNumberOfDayDto> listMonthlyTimes = new ArrayList<>();
+				listMonthlyTimes = monthlyDays.stream().sorted(Comparator.comparing(EstimateNumberOfDayDto::getMonth))
+						.collect(Collectors.toList());
+				monthlyDays.clear();
+				monthlyDays.addAll(listMonthlyTimes);
 			}
 		});
 		

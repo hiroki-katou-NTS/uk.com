@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.TotalTimesFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -55,7 +56,6 @@ public class SettingScheVerticalScale implements MasterListData {
 	private static final String column_1 = "対象項目";
 	private static final String column_2 = "利用区分";
 	private static final String column_3 = "詳細設定";
-	private static final String thatDayStr = TextResource.localize("KML002_155");
 	
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -119,46 +119,54 @@ public class SettingScheVerticalScale implements MasterListData {
 			break;
 		}
 		// column 3
-		StringBuffer column3Content = new StringBuffer();
-		switch (rowData.getFixedItemAtr()) {
-		case 0:
-			// 0- 時間帯 - TIME_ZONE
-			List<VerticalTime> listVerTimes = fixedVerticalSettingRepository.findAllVerticalTime(companyId, rowData.getFixedItemAtr());
-			for (VerticalTime time : listVerTimes) {
-				if (column3Content.length() <= 0) {
-					column3Content.append(thatDayStr);
-					column3Content.append(formatTime(time.getStartClock().v()));
-				} else {
-					column3Content.append(",");
-					column3Content.append(thatDayStr);
-					column3Content.append(formatTime(time.getStartClock().v()));
-				}
-			}
-			break;
-		case 1:
-			// 1- 回数集計 - TOTAL_COUNT
-			List<VerticalCntSettingDto> listCnts = verticalCntSettingFinder.findAll(rowData.getFixedItemAtr());
-			listCnts = listCnts.stream().sorted((object1, object2) -> object1.getVerticalCountNo() - object2.getVerticalCountNo()).collect(Collectors.toList());
-			for (VerticalCntSettingDto cnt : listCnts) {
-				int no = cnt.getVerticalCountNo();
-				TotalTimesDetailDto detail = totalTimesFinder.getTotalTimesDetails(no);
-				if (detail.getUseAtr() == 1){
-					if (column3Content.length() <= 0) {
-						column3Content.append(detail.getTotalTimesName());
-					} else {
-						column3Content.append(",");
-						column3Content.append(detail.getTotalTimesName());
+		if (rowData.getUseAtr() == 0){
+			StringBuffer column3Content = new StringBuffer();
+			switch (rowData.getFixedItemAtr()) {
+			case 0:
+				// 0- 時間帯 - TIME_ZONE
+				
+				List<VerticalTime> listVerTimes = fixedVerticalSettingRepository.findAllVerticalTime(companyId, rowData.getFixedItemAtr());
+				for (VerticalTime time : listVerTimes) {
+					if (time.getDisplayAtr().value == 0){
+						TimeWithDayAttr _time = new TimeWithDayAttr(time.getStartClock().v());
+						if (column3Content.length() <= 0) {
+							column3Content.append(_time.getFullText());
+						} else {
+							column3Content.append(",");
+							column3Content.append(_time.getFullText());
+						}
 					}
 				}
+				break;
+			case 1:
+				// 1- 回数集計 - TOTAL_COUNT
+				List<VerticalCntSettingDto> listCnts = verticalCntSettingFinder.findAll(rowData.getFixedItemAtr());
+				listCnts = listCnts.stream().sorted((object1, object2) -> object1.getVerticalCountNo() - object2.getVerticalCountNo()).collect(Collectors.toList());
+				for (VerticalCntSettingDto cnt : listCnts) {
+					int no = cnt.getVerticalCountNo();
+					TotalTimesDetailDto detail = totalTimesFinder.getTotalTimesDetails(no);
+					if (detail.getUseAtr() == 1){
+						if (column3Content.length() <= 0) {
+							column3Content.append(detail.getTotalCountNo());
+							column3Content.append(detail.getTotalTimesName());
+						} else {
+							column3Content.append(",");
+							column3Content.append(detail.getTotalCountNo());
+							column3Content.append(detail.getTotalTimesName());
+						}
+					}
+				}
+				break;
+			case 6:
+				// 6- 役割 - ROLE
+				break;
+			default:
+				break;
 			}
-			break;
-		case 6:
-			// 6- 役割 - ROLE
-			break;
-		default:
-			break;
+			data.put(column_3, column3Content.toString());
+		} else {
+			data.put(column_3, "");
 		}
-		data.put(column_3, column3Content.toString());
 		
 		MasterData masterData = new MasterData(data, null, "");
 		
@@ -168,16 +176,6 @@ public class SettingScheVerticalScale implements MasterListData {
 		masterData.cellAt(column_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 			
 		return masterData;
-	}
-	
-	/**
-	 * format time HH:mm
-	 * @param att
-	 * @return
-	 */
-	private String formatTime(int att) {
-		int hours = att / 60, minutes = att % 60;
-		return String.join("", hours < 10 ? "0" : "", String.valueOf(hours), ":", minutes < 10 ? "0" : "", String.valueOf(minutes));
 	}
 	
 	/* Sheet name */

@@ -250,26 +250,42 @@ public class ScheFuncControlImpl implements MasterListData {
 							data.put("項目", parent);
 						}
 						data.put(sheet1_column2, child);
-						if (child.equals(TextResource.localize("KSM011_44")) && parent.equals(TextResource.localize("KSM011_43"))){
-							List<ScheFuncCond> listScheFuncConds = scheFuncControl.getScheFuncCond();
-							listScheFuncConds = listScheFuncConds.stream().sorted((object1, object2) -> object1.getConditionNo() - (object2.getConditionNo())).collect(Collectors.toList());
-							String conditionText = null;
-							if (listScheFuncConds.isEmpty()){
-								conditionText = TextResource.localize("KSM011_75");
-							} else {
-								for (ScheFuncCond scheFuncCond : listScheFuncConds) {
-									if (conditionText == null){
-										conditionText = getShiftConditionName(scheFuncCond.getConditionNo(), listShipConditions);
+						if (parent.equals(TextResource.localize("KSM011_43"))) {
+							if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1) {
+								if (child.equals(TextResource.localize("KSM011_44")) && scheFuncControl.getExecutionMethod().value == 1 && scheFuncControl.getAlarmCheckCls().value == 0){
+									List<ScheFuncCond> listScheFuncConds = scheFuncControl.getScheFuncCond();
+									listScheFuncConds = listScheFuncConds.stream().sorted((object1, object2) -> object1.getConditionNo() - (object2.getConditionNo())).collect(Collectors.toList());
+									String conditionText = null;
+									if (listScheFuncConds.isEmpty()){
+										conditionText = TextResource.localize("KSM011_75");
 									} else {
-										conditionText = conditionText.concat(", ").concat(getShiftConditionName(scheFuncCond.getConditionNo(), listShipConditions));
+										for (ScheFuncCond scheFuncCond : listScheFuncConds) {
+											if (conditionText == null){
+												conditionText = String.valueOf(scheFuncCond.getConditionNo()) + getShiftConditionName(scheFuncCond.getConditionNo(), listShipConditions);
+											} else {
+												conditionText = conditionText.concat(", ").concat(String.valueOf(scheFuncCond.getConditionNo())).concat(getShiftConditionName(scheFuncCond.getConditionNo(), listShipConditions));
+											}
+										}
 									}
+									data.put("値", conditionText);
+								} else {
+									String value = getScheFuncControlValue(parent, child, scheFuncControl);
+									data.put("値", value);
 								}
+							} else {
+								data.put("値", null);
 							}
-							data.put("値", conditionText);
+						} else if (child.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
+							if (scheFuncControl.getSearchMethod().value == 0){
+								data.put("値", null);
+							} else {
+								String value = getScheFuncControlValue(parent, child, scheFuncControl);
+								data.put("値", value);
+							}
 						} else {
-							data.put("値", getScheFuncControlValue(parent, child, scheFuncControl));
+							String value = getScheFuncControlValue(parent, child, scheFuncControl);
+							data.put("値", value);
 						}
-						
 						datas.add(data);
 						i.getAndIncrement();
 					}
@@ -407,7 +423,7 @@ public class ScheFuncControlImpl implements MasterListData {
 			}
 		} else if (key.equals(TextResource.localize("KSM011_17")) && parent.equals(TextResource.localize("KSM011_16"))){
 			switch (scheFuncControl.getShortNameDisp().value) {
-			case 0:
+			case 0:	
 				value = TextResource.localize("KSM011_8");
 				break;
 			case 1:
@@ -582,37 +598,45 @@ public class ScheFuncControlImpl implements MasterListData {
 				break;
 			}
 		} else if (key.equals(TextResource.localize("KSM011_40")) && parent.equals(TextResource.localize("KSM011_38"))){
-			switch (scheFuncControl.getHowToComplete().value) {
-			case 0:
-				value = TextResource.localize("KSM011_41");
-				break;
-			case 1:
-				value = TextResource.localize("KSM011_42");
-				break;
-			default:
-				break;
+			if (scheFuncControl.getCompletedFuncCls().value == 0) {
+				switch (scheFuncControl.getHowToComplete().value) {
+				case 0:
+					value = TextResource.localize("KSM011_41");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_42");
+					break;
+				default:
+					break;
+				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_7")) && parent.equals(TextResource.localize("KSM011_43"))){
-			switch (scheFuncControl.getAlarmCheckCls().value) {
-			case 0:
-				value = TextResource.localize("KSM011_8");
-				break;
-			case 1:
+			if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1) {
+				switch (scheFuncControl.getAlarmCheckCls().value) {
+				case 0:
+					value = TextResource.localize("KSM011_8");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_9");
+					break;
+				default:
+					break;
+				}
+			} else {
 				value = TextResource.localize("KSM011_9");
-				break;
-			default:
-				break;
 			}
 		} else if (key.equals(TextResource.localize("KSM011_77")) && parent.equals(TextResource.localize("KSM011_43"))){
-			switch (scheFuncControl.getExecutionMethod().value) {
-			case 0:
-				value = TextResource.localize("KSM011_41");
-				break;
-			case 1:
-				value = TextResource.localize("KSM011_42");
-				break;
-			default:
-				break;
+			if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1 && scheFuncControl.getAlarmCheckCls().value == 0) {
+				switch (scheFuncControl.getExecutionMethod().value) {
+				case 0:
+					value = TextResource.localize("KSM011_41");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_42");
+					break;
+				default:
+					break;
+				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_46")) && parent.equals(TextResource.localize("KSM011_43"))){
 			switch (scheFuncControl.getHandleRepairAtr().value) {
@@ -639,24 +663,26 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_49")) && parent.equals(TextResource.localize("KSM011_48"))){
 			switch (scheFuncControl.getSearchMethod().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
 			}
 		} else if (key.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
-			switch (scheFuncControl.getSearchMethodDispCls().value) {
-			case 0:
-				value = TextResource.localize("KSM011_51");
-				break;
-			case 1:
-				value = TextResource.localize("KSM011_52");
-				break;
-			default:
-				break;
+			if (scheFuncControl.getSearchMethod().value == 1){
+				switch (scheFuncControl.getSearchMethodDispCls().value) {
+				case 0:
+					value = TextResource.localize("KSM011_51");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_52");
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		

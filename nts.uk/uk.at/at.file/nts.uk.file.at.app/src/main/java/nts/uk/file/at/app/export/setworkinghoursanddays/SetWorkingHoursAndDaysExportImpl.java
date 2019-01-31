@@ -97,11 +97,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderEmploymentColumns() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_185, TextResource.localize("KMK004_185"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_186, TextResource.localize("KMK004_186"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));
@@ -172,11 +172,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderWorkPlaceColumns() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_187, TextResource.localize("KMK004_187"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_188, TextResource.localize("KMK004_188"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));
@@ -248,11 +248,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderEmployeeColumns(){
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_183, TextResource.localize("KMK004_183"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_184, TextResource.localize("KMK004_184"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));

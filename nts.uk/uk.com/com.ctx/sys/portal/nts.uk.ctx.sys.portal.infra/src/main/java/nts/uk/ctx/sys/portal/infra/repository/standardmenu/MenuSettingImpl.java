@@ -46,6 +46,7 @@ public class MenuSettingImpl implements MasterListData {
 	
 	private static final String commonTitle = TextResource.localize("CCG013_128").concat(" ");
 	private static final String separatorLine = TextResource.localize("CCG013_135");
+	private static final String line = TextResource.localize("CCG013_136");
 	
 	/** 
 	 * get header columns text
@@ -256,9 +257,18 @@ public class MenuSettingImpl implements MasterListData {
 			if (treeMenu.getCode().equals(menu.getCode()) && treeMenu.getClassification().equals(menu.getClassification()) && treeMenu.getSystem().equals(menu.getSystem())) {
 				String displayName = menu.getDisplayName().v();
 				if (displayName != null){
-					if (displayName.equals(TextResource.localize("CCG013_134"))) return separatorLine;
+					if (displayName.trim().equals(TextResource.localize("CCG013_134"))) {
+						displayName = displayName.replaceAll(TextResource.localize("CCG013_134"), separatorLine);
+						return displayName;
+					}
+					if (displayName.contains(line)){
+						String str = displayName.trim().replaceAll(line, "");
+						if (displayName.equals(line) || str.length() <= 0){
+							return separatorLine;
+						}
+					}
+					return displayName;
 				}
-				return displayName;
 			}
 		}
 		return null;

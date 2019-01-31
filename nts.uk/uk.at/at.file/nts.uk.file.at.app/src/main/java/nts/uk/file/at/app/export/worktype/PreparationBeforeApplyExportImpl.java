@@ -870,7 +870,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     private String convertToTime(int param){
         int m = param / 60;
         int s = param % 60;
-        return String.format("%02d:%02d", m, s);
+        return m > 9 ? String.format("%02d:%02d", m, s) : String.format("%2d:%02d", m, s);
     }
 
     private String getValueA8Top(int i, Object[] obj){
@@ -902,10 +902,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
     private Object[] getDataA8Center(List<Object[]> obj, HolidayAppType holidayType){
         Optional<Object[]> temp = obj.stream().filter(item -> item[39] != null ? holidayType.value == ((BigDecimal) item[39]).intValue() : holidayType.value == -1).findFirst();
-        if(temp.isPresent()) {
-            return temp.get();
-        }
-        return null;
+        return temp.orElse(null);
     }
 
     private String getValueA8Center(int line, Object obj[]){

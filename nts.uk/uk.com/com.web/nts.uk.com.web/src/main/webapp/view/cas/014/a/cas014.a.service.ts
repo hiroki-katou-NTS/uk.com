@@ -8,8 +8,12 @@ module nts.uk.com.view.cas014.a {
         }
         export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1]!=null?program[1]:"";   
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014"+programName, languageId: languageId, reportType: 0, baseDate: date});
+            let domainType = "CAS014";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType:domainType, languageId: languageId, reportType: 0, baseDate: date});
         }
 
         export function getAllData(refDate: any): JQueryPromise<any> {

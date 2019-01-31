@@ -1,6 +1,5 @@
 package nts.uk.file.at.infra.setworkinghoursanddays;
 
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,8 +29,13 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+
 @Stateless
 public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorkingHoursAndDaysExRepository {
+	  
+	
+	
+	
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -129,9 +133,10 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" ORDER BY KSHST_COM_NORMAL_SET.[YEAR] ";
 	
 	private static final String GET_EMPLOYMENT = "SELECT "
-											+" KSHST_EMP_NORMAL_SET.[YEAR], "
+											+" ROW_NUMBER() OVER(PARTITION BY KSHST_EMP_NORMAL_SET.EMP_CD ORDER BY KSHST_EMP_NORMAL_SET.EMP_CD ASC) AS ROW_NUMBER_CODE, "
 											+" KSHST_EMP_NORMAL_SET.EMP_CD AS CODE,  "
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
+											+" KSHST_EMP_NORMAL_SET.[YEAR], "
 											+" KSHST_EMP_NORMAL_SET.JAN_TIME AS M1, "
 											+" KSHST_EMP_NORMAL_SET.FEB_TIME AS M2, "
 											+" KSHST_EMP_NORMAL_SET.MAR_TIME AS M3, "
@@ -228,124 +233,132 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = BSYMT_EMPLOYMENT.CODE "
 											+" 		INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID "
 											+" WHERE KSHST_EMP_NORMAL_SET.CID = ?  "
-											+" ORDER BY KSHST_EMP_NORMAL_SET.[YEAR], KSHST_EMP_NORMAL_SET.EMP_CD ";
+											+" ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), KSHST_EMP_NORMAL_SET.EMP_CD, KSHST_EMP_NORMAL_SET.[YEAR]";
 	
-	private static final String GET_WORKPLACE = "SELECT * FROM ("
-						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, "
-						 +  "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
-						 +  "KSHST_WKP_NORMAL_SET.[YEAR], " 
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , 'マスタ未登録') AS WKPCD, " 
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
-						 +  "KSHST_WKP_NORMAL_SET.JAN_TIME AS N1, " 
-						 +  "KSHST_WKP_NORMAL_SET.FEB_TIME AS N2, " 
-						 +  "KSHST_WKP_NORMAL_SET.MAR_TIME AS N3, " 
-						 +  "KSHST_WKP_NORMAL_SET.APR_TIME AS N4, " 
-						 +  "KSHST_WKP_NORMAL_SET.MAY_TIME AS N5, " 
-						 +  "KSHST_WKP_NORMAL_SET.JUN_TIME AS N6, " 
-						 +  "KSHST_WKP_NORMAL_SET.JUL_TIME AS N7, " 
-						 +  "KSHST_WKP_NORMAL_SET.AUG_TIME AS N8, " 
-						 +  "KSHST_WKP_NORMAL_SET.SEP_TIME AS N9, " 
-						 +  "KSHST_WKP_NORMAL_SET.OCT_TIME AS N10, " 
-						 +  "KSHST_WKP_NORMAL_SET.NOV_TIME AS N11, " 
-						 +  "KSHST_WKP_NORMAL_SET.DEC_TIME AS N12, " 
-						 +  "KSHST_WKP_REG_LABOR_TIME .DAILY_TIME, " 
-						 +  "KSHST_WKP_REG_LABOR_TIME.WEEKLY_TIME, " 
-						 +  "KSHST_WKP_REG_LABOR_TIME.WEEK_STR, " 
-						 +  "KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, " 
-						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR, " 
-						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR, " 
-						 +  "KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT, " 
-						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, " 
-						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, " 
-						 +  "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_JAN_TIME AS S1, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_FEB_TIME AS S2, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_MAR_TIME AS S3, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_APR_TIME AS S4, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_MAY_TIME AS S5, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_JUN_TIME AS S6, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_JUL_TIME AS S7, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_AUG_TIME AS S8, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_SEP_TIME AS S9, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_OCT_TIME AS S10, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_NOV_TIME AS S11, " 
-						 +  "KSHST_WKP_FLEX_SET.STAT_DEC_TIME AS S12, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JAN_TIME, NULL) AS M1, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_FEB_TIME, NULL) AS M2, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAR_TIME, NULL) AS M3, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_APR_TIME, NULL) AS M4, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAY_TIME, NULL) AS M5, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUN_TIME, NULL) AS M6, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUL_TIME, NULL) AS M7, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_AUG_TIME, NULL) AS M8, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_SEP_TIME, NULL) AS M9, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_OCT_TIME, NULL) AS M10, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_NOV_TIME, NULL) AS M11, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_DEC_TIME, NULL) AS M12, " 
-						 +  "KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD, " 
-						 +  "IIF(KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_WKP_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, " 
-						 +  "KRCST_WKP_FLEX_M_CAL_SET.INSUFFIC_SET, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.JAN_TIME AS T1, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.FEB_TIME AS T2, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.MAR_TIME AS T3, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.APR_TIME AS T4, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.MAY_TIME AS T5, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.JUN_TIME AS T6, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.JUL_TIME AS T7, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.AUG_TIME AS T8, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.SEP_TIME AS T9, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.OCT_TIME AS T10, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.NOV_TIME AS T11, " 
-						 +  "KSHST_WKP_DEFOR_LAR_SET.DEC_TIME AS T12, " 
-						 +  "KSHST_WKP_TRANS_LAB_TIME.DAILY_TIME AS LAB_DAILY_TIME, " 
-						 +  "KSHST_WKP_TRANS_LAB_TIME.WEEKLY_TIME AS LAB_WEEKLY_TIME, " 
-						 +  "KSHST_WKP_TRANS_LAB_TIME.WEEK_STR AS LAB_WEEK_STR, " 
-						 +  "KRCST_WKP_DEFOR_M_CAL_SET.STR_MONTH, " 
-						 +  "KRCST_WKP_DEFOR_M_CAL_SET.PERIOD, " 
-						 +  "KRCST_WKP_DEFOR_M_CAL_SET.REPEAT_ATR, " 
-						 +  "KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, " 
-						 +  "IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS DEFOR_INCLUDE_LEGAL_AGGR, " 
-						 +  "IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS DEFOR_INCLUDE_HOLIDAY_AGGR, " 
-						 +  "KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, " 
-						 +  "IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS DEFOR_INCLUDE_LEGAL_OT, " 
-						 +  "IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS DEFOR_INCLUDE_HOLIDAY_OT " 
-						 +  "FROM KSHST_WKP_NORMAL_SET  " 
-						 +  "	INNER JOIN KSHST_WKP_FLEX_SET ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_FLEX_SET.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_FLEX_SET.WKP_ID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.[YEAR] >= ? " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.[YEAR] <= ? " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.[YEAR] = KSHST_WKP_FLEX_SET.[YEAR] " 
-						 +  "	INNER JOIN KSHST_WKP_DEFOR_LAR_SET ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_DEFOR_LAR_SET.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_DEFOR_LAR_SET.WKP_ID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.[YEAR] = KSHST_WKP_DEFOR_LAR_SET.[YEAR] " 
-						 +  "	INNER JOIN KSHST_WKP_TRANS_LAB_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_TRANS_LAB_TIME.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID " 
-						 +  "	INNER JOIN KSHST_WKP_REG_LABOR_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_REG_LABOR_TIME.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_REG_LABOR_TIME.WKP_ID	 " 
-						 +  "	INNER JOIN KRCST_WKP_DEFOR_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_DEFOR_M_CAL_SET.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_DEFOR_M_CAL_SET.WKP_ID " 
-						 +  "	INNER JOIN KRCST_WKP_FLEX_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_FLEX_M_CAL_SET.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_FLEX_M_CAL_SET.WKP_ID " 
-						 +  "	INNER JOIN KRCST_WKP_REG_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_REG_M_CAL_SET.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_REG_M_CAL_SET.WKPID " 
-						 +  "	LEFT JOIN BSYMT_WORKPLACE_INFO ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_INFO.CID " 
-						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = BSYMT_WORKPLACE_INFO.WKPID " 
-						 +  "	LEFT JOIN BSYMT_WORKPLACE_HIST ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_HIST.CID " 
-						 +  "		AND BSYMT_WORKPLACE_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID " 
-						 +  "		AND BSYMT_WORKPLACE_INFO.HIST_ID = BSYMT_WORKPLACE_HIST.HIST_ID " 
-						 +  "	INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
-						 +  "   INNER JOIN BSYMT_WKP_CONFIG ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID "
-						 +  "   	AND BSYMT_WKP_CONFIG.END_DATE = '9999-12-31 00:00:00' "
-						 +  "   LEFT JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID "
-						 +	"  	    AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID "		
-						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  "
-						 +	") TBL "
-						 +  "WHERE rk = 1 ORDER BY TBL.[YEAR] ASC, TBL.HIERARCHY_CD";
+	private static final String GET_WORKPLACE;
+	  static {
+	      StringBuilder exportSQL = new StringBuilder();
+	     exportSQL.append("  SELECT * FROM ( ");
+	     exportSQL.append("             SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk,  ");
+	     exportSQL.append("             IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL AND BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD,  ");
+	     exportSQL.append("             ROW_NUMBER() OVER(PARTITION BY IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , 'ZZZZZZZ') ORDER BY IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL AND BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120),0,1),BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD  ASC, KSHST_WKP_NORMAL_SET.[YEAR] ASC) AS rk2,  ");
+	     exportSQL.append("             IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , '') AS WKPCD,   ");
+	     exportSQL.append("             IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.[YEAR],  ");
+	     exportSQL.append("          KSHST_WKP_NORMAL_SET.JAN_TIME AS N1,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.FEB_TIME AS N2,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.MAR_TIME AS N3,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.APR_TIME AS N4,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.MAY_TIME AS N5,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.JUN_TIME AS N6,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.JUL_TIME AS N7,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.AUG_TIME AS N8,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.SEP_TIME AS N9,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.OCT_TIME AS N10,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.NOV_TIME AS N11,   ");
+	     exportSQL.append("             KSHST_WKP_NORMAL_SET.DEC_TIME AS N12,   ");
+	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME .DAILY_TIME,   ");
+	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEKLY_TIME,   ");
+	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEK_STR,   ");
+	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR,   ");
+	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR,   ");
+	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR,   ");
+	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT,   ");
+	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT,   ");
+	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT,   ");
+	     exportSQL.append("             KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_JAN_TIME AS S1,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_FEB_TIME AS S2,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_MAR_TIME AS S3,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_APR_TIME AS S4,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_MAY_TIME AS S5,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_JUN_TIME AS S6,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_JUL_TIME AS S7,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_AUG_TIME AS S8,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_SEP_TIME AS S9,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_OCT_TIME AS S10,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_NOV_TIME AS S11,   ");
+	     exportSQL.append("             KSHST_WKP_FLEX_SET.STAT_DEC_TIME AS S12,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JAN_TIME, NULL) AS M1,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_FEB_TIME, NULL) AS M2,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAR_TIME, NULL) AS M3,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_APR_TIME, NULL) AS M4,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAY_TIME, NULL) AS M5,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUN_TIME, NULL) AS M6,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUL_TIME, NULL) AS M7,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_AUG_TIME, NULL) AS M8,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_SEP_TIME, NULL) AS M9,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_OCT_TIME, NULL) AS M10,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_NOV_TIME, NULL) AS M11,   ");
+	     exportSQL.append("             IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_DEC_TIME, NULL) AS M12,   ");
+	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD,   ");
+	     exportSQL.append("             IIF(KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_WKP_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT,   ");
+	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.INSUFFIC_SET,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.JAN_TIME AS T1,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.FEB_TIME AS T2,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.MAR_TIME AS T3,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.APR_TIME AS T4,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.MAY_TIME AS T5,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.JUN_TIME AS T6,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.JUL_TIME AS T7,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.AUG_TIME AS T8,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.SEP_TIME AS T9,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.OCT_TIME AS T10,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.NOV_TIME AS T11,   ");
+	     exportSQL.append("             KSHST_WKP_DEFOR_LAR_SET.DEC_TIME AS T12,   ");
+	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.DAILY_TIME AS LAB_DAILY_TIME,   ");
+	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEKLY_TIME AS LAB_WEEKLY_TIME,   ");
+	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEK_STR AS LAB_WEEK_STR,   ");
+	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.STR_MONTH,   ");
+	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.PERIOD,   ");
+	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.REPEAT_ATR,   ");
+	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR,   ");
+	     exportSQL.append("             IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS DEFOR_INCLUDE_LEGAL_AGGR,   ");
+	     exportSQL.append("             IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS DEFOR_INCLUDE_HOLIDAY_AGGR,   ");
+	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT,   ");
+	     exportSQL.append("             IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS DEFOR_INCLUDE_LEGAL_OT,   ");
+	     exportSQL.append("             IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS DEFOR_INCLUDE_HOLIDAY_OT   ");
+	     exportSQL.append("             FROM KSHST_WKP_NORMAL_SET    ");
+	     exportSQL.append("              INNER JOIN KSHST_WKP_FLEX_SET ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_FLEX_SET.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_FLEX_SET.WKP_ID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.[YEAR] >= ?  ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.[YEAR] <= ?   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.[YEAR] = KSHST_WKP_FLEX_SET.[YEAR]   ");
+	     exportSQL.append("              INNER JOIN KSHST_WKP_DEFOR_LAR_SET ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_DEFOR_LAR_SET.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_DEFOR_LAR_SET.WKP_ID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.[YEAR] = KSHST_WKP_DEFOR_LAR_SET.[YEAR]   ");
+	     exportSQL.append("              INNER JOIN KSHST_WKP_TRANS_LAB_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
+	     exportSQL.append("              INNER JOIN KSHST_WKP_REG_LABOR_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_WKP_REG_LABOR_TIME.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KSHST_WKP_REG_LABOR_TIME.WKP_ID    ");
+	     exportSQL.append("              INNER JOIN KRCST_WKP_DEFOR_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_DEFOR_M_CAL_SET.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_DEFOR_M_CAL_SET.WKP_ID   ");
+	     exportSQL.append("              INNER JOIN KRCST_WKP_FLEX_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_FLEX_M_CAL_SET.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_FLEX_M_CAL_SET.WKP_ID   ");
+	     exportSQL.append("              INNER JOIN KRCST_WKP_REG_M_CAL_SET ON KSHST_WKP_NORMAL_SET.CID = KRCST_WKP_REG_M_CAL_SET.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = KRCST_WKP_REG_M_CAL_SET.WKPID   ");
+	     exportSQL.append("              LEFT JOIN BSYMT_WORKPLACE_INFO ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_INFO.CID   ");
+	     exportSQL.append("               AND KSHST_WKP_NORMAL_SET.WKP_ID = BSYMT_WORKPLACE_INFO.WKPID   ");
+	     exportSQL.append("              LEFT JOIN BSYMT_WORKPLACE_HIST ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_HIST.CID   ");
+	     exportSQL.append("               AND BSYMT_WORKPLACE_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID   ");
+	     exportSQL.append("               AND BSYMT_WORKPLACE_INFO.HIST_ID = BSYMT_WORKPLACE_HIST.HIST_ID   ");
+	     exportSQL.append("              INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID   ");
+	     exportSQL.append("              INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG) AS BSYMT_WKP_CONFIG  ");
+	     exportSQL.append("             ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID AND BSYMT_WKP_CONFIG.RN = 1  ");
+	     exportSQL.append("                LEFT JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID  ");
+	     exportSQL.append("                   AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID    ");
+	     exportSQL.append("             WHERE KSHST_WKP_NORMAL_SET.CID = ?  ");
+	     exportSQL.append("            ) TBL  ");
+	     exportSQL.append("             WHERE rk = 1 ORDER BY TBL.HIERARCHY_CD, TBL.[YEAR] ASC");
+
+	     GET_WORKPLACE = exportSQL.toString();
+	  }
 	
 	private static final String GET_EMPLOYEE = " SELECT  " 
-			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
+			 + "ROW_NUMBER() OVER(PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC) AS ROW_NUMBER, "
 			 + "BSYMT_EMP_DTA_MNG_INFO.SCD, " 
-			 + "BPSMT_PERSON.BUSINESS_NAME, " 
+			 + "BPSMT_PERSON.BUSINESS_NAME, "
+			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
 			 + "KSHST_SHA_NORMAL_SET.JAN_TIME AS S1, " 
 			 + "KSHST_SHA_NORMAL_SET.FEB_TIME AS S2, " 
 			 + "KSHST_SHA_NORMAL_SET.MAR_TIME AS S3, " 
@@ -453,7 +466,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			 + "INNER JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
 			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
 			 + "WHERE  KSHST_SHA_NORMAL_SET.CID = ? "
-			 + "ORDER BY KSHST_SHA_NORMAL_SET.[YEAR], BSYMT_EMP_DTA_MNG_INFO.SCD  " ;
+			 + "ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD, KSHST_SHA_NORMAL_SET.[YEAR] ASC  " ;
 	
 	private static final String GET_USAGE = "SELECT s.IS_EMP, s.IS_WKP, s.IS_EMPT FROM KUWST_USAGE_UNIT_WT_SET s WHERE s.CID = ?cid ";
 	
@@ -727,11 +740,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			String value31, String value32, String value33) {
 		
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(CompanyColumn.KMK004_154, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_154)
-                .value(value1)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
             data.put(CompanyColumn.KMK004_155, MasterCellData.builder()
                 .columnId(CompanyColumn.KMK004_155)
                 .value(value2)
@@ -742,6 +750,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
+            data.put(CompanyColumn.KMK004_154, MasterCellData.builder()
+                    .columnId(CompanyColumn.KMK004_154)
+                    .value(value1)
+                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                    .build());
             data.put(CompanyColumn.KMK004_157, MasterCellData.builder()
                 .columnId(CompanyColumn.KMK004_157)
                 .value(value4)
@@ -917,12 +930,12 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private List<MasterData> buildEmploymentRow(NtsResultRecord r, int month){
 		List<MasterData> datas = new ArrayList<>();
 		datas.add(buildEmploymentARow(
-				//R12_1
-				r.getString(("YEAR")),
-				//R12_2
-				r.getString("CODE"),
 				//R12_3
-				r.getString("NAME"),
+			     r.getString("YEAR"),
+				//R12_1
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("CODE") : null,
+				//R12_2
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("NAME") : null,
 				//R12_4 R12_5
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
 				//R12_6
@@ -1148,7 +1161,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			String value31, String value32, String value33, String value34, String value35) {
 		
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(EmploymentColumn.KMK004_154, MasterCellData.builder()
+			data.put(EmploymentColumn.KMK004_154, MasterCellData.builder()
                 .columnId(EmploymentColumn.KMK004_154)
                 .value(value1)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
@@ -1350,12 +1363,12 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, int month){
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildWorkPlaceARow(
-					//R14_1
 					r.getString("YEAR"),
+					//R14_1
+					r.getInt("rk2") == 1 ? r.getString("WKPCD") : null,
 					//R14_2
-					r.getString("WKPCD"),
+					r.getInt("rk2") == 1 ? r.getString("WKP_NAME") : null,
 					//R14_3
-					r.getString("WKP_NAME"),
 					//R14_4 R14_5
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
 					//R14_6
@@ -1817,12 +1830,12 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private List<MasterData> buildEmployeeRow(NtsResultRecord r, int month) {
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildEmployeeARow(
-				// R10_1
 				r.getString("YEAR"),
+				// R10_1
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("SCD") : null,
 				// R10_2
-				r.getString("SCD"),
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("BUSINESS_NAME") : null,
 				// R10_3
-				r.getString("BUSINESS_NAME"),
 				// R10_4 R10_5
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				// R10_6

@@ -78,7 +78,7 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 		columns.add(new MasterHeaderColumn(column_7, TextResource.localize("KML002_18"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_8, TextResource.localize("KML002_19"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_9, TextResource.localize("KML002_20"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(column_10, "", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(column_10, TextResource.localize("KML002_156"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_11, TextResource.localize("KML002_21"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_12, TextResource.localize("KML002_22"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(column_13, TextResource.localize("KML002_23"), ColumnTextAlign.LEFT, "", true));
@@ -255,17 +255,21 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 				break;
 			}
 			
-			switch (item.getCumulativeAtr()) {
-			case 0:
-				data.put(column_12, TextResource.localize("Enum_CumulativeAtr_NOT_ACCUMULATE"));
-				break;
-			case 1:
-				data.put(column_12, TextResource.localize("Enum_CumulativeAtr_ACCUMULATE"));
-				break;
-				
-			default:
+			if (item.getAttributes() != 4) {
+				switch (item.getCumulativeAtr()) {
+				case 0:
+					data.put(column_12, TextResource.localize("Enum_CumulativeAtr_NOT_ACCUMULATE"));
+					break;
+				case 1:
+					data.put(column_12, TextResource.localize("Enum_CumulativeAtr_ACCUMULATE"));
+					break;
+					
+				default:
+					data.put(column_12, "");
+					break;
+				}
+			} else {
 				data.put(column_12, "");
-				break;
 			}
 			
 			if (item.getAttributes() == 0) {
@@ -316,6 +320,57 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 			} else {
 				switch (item.getRounding()) {
 				case 0:
+					data.put(column_13, TextResource.localize("Enum_Unit_NONE"));
+					break;
+				case 1:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_1_Digits"));
+					break;
+				case 2:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_2_Digits"));
+					break;
+				case 3:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_3_Digits"));
+					break;
+				case 4:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_4_Digits"));
+					break;
+				case 5:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_5_Digits"));
+					break;
+				case 6:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_6_Digits"));
+					break;
+				case 7:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_7_Digits"));
+					break;
+				case 8:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_8_Digits"));
+					break;
+				case 9:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_9_Digits"));
+					break;
+				case 10:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_10_Digits"));
+					break;
+				case 11:
+					data.put(column_13, TextResource.localize("Enum_Unit_Int_11_Digits"));
+					break;
+				case 12:
+					data.put(column_13, TextResource.localize("Enum_Unit_Decimal_1st"));
+					break;
+				case 13:
+					data.put(column_13, TextResource.localize("Enum_Unit_Decimal_2nd"));
+					break;
+				case 14:
+					data.put(column_13, TextResource.localize("Enum_Unit_Decimal_3rd"));
+					break;
+				default:
+					data.put(column_13, "");
+					break;
+				}
+				
+				switch (item.getRoundingProcessing()) {
+				case 0:
 					data.put(column_14, TextResource.localize("Enum_Rounding_Truncation"));
 					break;
 				case 1:
@@ -342,7 +397,7 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 				masterData.cellAt(column_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt(column_6).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(column_6).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt(column_7).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_8).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(column_9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
