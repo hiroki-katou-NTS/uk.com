@@ -896,7 +896,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 			}
 			
 			if(lstWpk.size()!=0){
-				for(int i=0;i<=lstWpk.size();i++){
+				for(int i=0;i<lstWpk.size();i++){
 					WorkplaceHierarchyDto temp = new WorkplaceHierarchyDto();
 					temp.setWorkplaceId(lstWpk.get(i));
 					temp.setName("マスタ未登録");
