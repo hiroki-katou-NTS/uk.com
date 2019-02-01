@@ -70,12 +70,14 @@ public class StatementLayoutPrint {
 				String proportionalSet = TextResource.localize("QMM019_238");
 				switch (payment.getProportionalAtr()) {
 					case NOT_PROPORTIONAL:
-						proportionalSet += "なし";
+						proportionalSet += TextResource.localize("QMM019_116");
 						break;
 					case PROPORTIONAL:
+                        proportionalSet += TextResource.localize("QMM019_117");
+                        break;
 					case PAYMENT_ONE_A_MONTH:
-						proportionalSet += "あり";
-						break;
+                        proportionalSet += TextResource.localize("QMM019_118");
+                        break;
 				}
 				this.printCell("paymentItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
@@ -179,12 +181,14 @@ public class StatementLayoutPrint {
 				String proportionalSet = TextResource.localize("QMM019_238");
 				switch (deduction.getProportionalAtr()) {
 					case NOT_PROPORTIONAL:
-						proportionalSet += "なし";
+                        proportionalSet += TextResource.localize("QMM019_116");
 						break;
 					case PROPORTIONAL:
+                        proportionalSet += TextResource.localize("QMM019_117");
+                        break;
 					case DEDUCTION_ONCE_A_MONTH:
-						proportionalSet += "あり";
-						break;
+                        proportionalSet += TextResource.localize("QMM019_162");
+                        break;
 				}
 				this.printCell("deductionItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
