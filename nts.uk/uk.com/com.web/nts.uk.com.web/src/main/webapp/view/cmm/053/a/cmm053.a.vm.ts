@@ -118,15 +118,17 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             });
             //focus out
             $(document).on('blur', '#A2_7, #A2_10', (evt: Event) => {
-                if ($(evt.target).attr('id') == 'A2_7') {
-                    if (evt.target.value == self.settingManager().departmentCode()) {
-                        self.settingManager().departmentCode.valueHasMutated();
+                setTimeout(function() {
+                    if ($(evt.target).attr('id') == 'A2_7') {
+                        if (evt.target.value == self.settingManager().departmentCode()) {
+                            self.settingManager().departmentCode.valueHasMutated();
+                        }
+                    } else if ($(evt.target).attr('id') == 'A2_10') {
+                        if (evt.target.value == self.settingManager().dailyApprovalCode()) {
+                            self.settingManager().dailyApprovalCode.valueHasMutated();
+                        }
                     }
-                } else if ($(evt.target).attr('id') == 'A2_10') {
-                    if (evt.target.value == self.settingManager().dailyApprovalCode()) {
-                        self.settingManager().dailyApprovalCode.valueHasMutated();
-                    }
-                }
+                }, 100);
             });
 
             //社員コードを入力する
