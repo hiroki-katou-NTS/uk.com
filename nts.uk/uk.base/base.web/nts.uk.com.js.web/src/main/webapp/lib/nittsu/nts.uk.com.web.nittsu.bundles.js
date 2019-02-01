@@ -5558,7 +5558,7 @@ var nts;
                 toBeResource.errorDetail = "エラー詳細";
                 toBeResource.tab = "タブ";
                 toBeResource.plzWait = "お待ちください";
-                toBeResource.targetNotFound = "対象データがありません";
+                toBeResource.targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
                 toBeResource.clear = "解除";
                 toBeResource.searchBox = "検索テキストボックス";
                 toBeResource.addNewRow = "新規行の追加";
@@ -5792,6 +5792,40 @@ var nts;
                     });
                 });
             })(keyboardStream = ui.keyboardStream || (ui.keyboardStream = {}));
+            var buttonExtension;
+            (function (buttonExtension) {
+                // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
+                // clickイベントが発生しなくなる不具合がある。
+                // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+                $(function () {
+                    $("body").on("mousedown", "button", function (e) {
+                        var $button = $(e.target);
+                        var $dammy = $("<div>")
+                            .css({
+                            background: "white",
+                            position: "absolute",
+                            width: $button.outerWidth(),
+                            height: parseInt($button.css("top"), 10),
+                            cursor: "pointer",
+                            opacity: 100
+                        })
+                            .appendTo("body")
+                            .position({
+                            my: "left bottom",
+                            at: "left top",
+                            of: e.target
+                        })
+                            .on("mouseup", function (eup) {
+                            $dammy.remove();
+                            $button.click();
+                        });
+                        $(window).on("mouseup.dammyevent", function () {
+                            $dammy.remove();
+                            $(window).off("mouseup.dammyevent");
+                        });
+                    });
+                });
+            })(buttonExtension || (buttonExtension = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -16159,7 +16193,7 @@ var nts;
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
                         var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
+                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "' autocomplete='off'/>").addClass(inputClass);
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
                         $input.data("required", required);
