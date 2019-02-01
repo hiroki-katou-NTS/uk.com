@@ -231,7 +231,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KRCST_EMP_REG_M_CAL_SET.EMP_CD "
 											+" 		LEFT JOIN BSYMT_EMPLOYMENT ON KSHST_EMP_NORMAL_SET.CID = BSYMT_EMPLOYMENT.CID  "
 											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = BSYMT_EMPLOYMENT.CODE "
-											+" 		INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID "
+											+" 		LEFT JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID "
 											+" WHERE KSHST_EMP_NORMAL_SET.CID = ?  "
 											+" ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), KSHST_EMP_NORMAL_SET.EMP_CD, KSHST_EMP_NORMAL_SET.[YEAR]";
 	
@@ -342,11 +342,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     exportSQL.append("              LEFT JOIN BSYMT_WORKPLACE_HIST ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_HIST.CID   ");
 	     exportSQL.append("               AND BSYMT_WORKPLACE_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID   ");
 	     exportSQL.append("               AND BSYMT_WORKPLACE_INFO.HIST_ID = BSYMT_WORKPLACE_HIST.HIST_ID   ");
-	     exportSQL.append("              INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID   ");
 	     exportSQL.append("              INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG) AS BSYMT_WKP_CONFIG  ");
 	     exportSQL.append("             ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID AND BSYMT_WKP_CONFIG.RN = 1  ");
 	     exportSQL.append("                LEFT JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID  ");
 	     exportSQL.append("                   AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID    ");
+	     exportSQL.append("              LEFT JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID   ");
 	     exportSQL.append("             WHERE KSHST_WKP_NORMAL_SET.CID = ?  ");
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             WHERE rk = 1 ORDER BY TBL.HIERARCHY_CD, TBL.[YEAR] ASC");
@@ -463,7 +463,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			 + "	AND KSHST_SHA_NORMAL_SET.SID = BSYMT_EMP_DTA_MNG_INFO.SID " 
 			 + "INNER JOIN BPSMT_PERSON ON " 
 			 + "	BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID " 
-			 + "INNER JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
+			 + "LEFT JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
 			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
 			 + "WHERE  KSHST_SHA_NORMAL_SET.CID = ? "
 			 + "ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD, KSHST_SHA_NORMAL_SET.[YEAR] ASC  " ;
@@ -929,6 +929,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	
 	private List<MasterData> buildEmploymentRow(NtsResultRecord r, int month){
 		List<MasterData> datas = new ArrayList<>();
+		
+		String refPreTime = r.getString("REFERENCE_PRED_TIME");
+		
 		datas.add(buildEmploymentARow(
 				//R12_3
 			     r.getString("YEAR"),
@@ -959,11 +962,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R12_17
 				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null, 
 				//R12_18
-				getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+				refPreTime == null? null : getFlexType(r.getInt("REFERENCE_PRED_TIME")),
 				//R12_19 R12_20
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				//R12_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))) : null,
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))) : null,
 				//R12_22
 				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))),
 				//R12_23
@@ -1036,7 +1039,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R12_19 R12_20
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 				//R12_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))) : null,
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))) : null,
 				//R12_22
 				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))),
 				//R12_23
@@ -1109,7 +1112,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R12_19 R12_20
 					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 					//R12_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))) : null,
+					refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))) : null,
 					//R12_22
 					convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))),
 					//R12_23
@@ -1362,6 +1365,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	
 	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, int month){
 		List<MasterData> datas = new ArrayList<>();
+		String refPreTime = r.getString("REFERENCE_PRED_TIME");
 			datas.add(buildWorkPlaceARow(
 					r.getString("YEAR"),
 					//R14_1
@@ -1392,11 +1396,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_17
 					r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null, 
 					//R14_18
-					getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+					refPreTime == null? null : getFlexType(r.getInt("REFERENCE_PRED_TIME")),
 					//R14_19 R14_20
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 					//R14_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 1)))) : null,
+					refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 1)))) : null,
 					//R14_22
 					convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))),
 					//R14_23
@@ -1468,7 +1472,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_19 R14_20
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 					//R14_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 2)))) : null,
+					refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 2)))) : null,
 					//R14_22
 					convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))),
 					//R14_23
@@ -1541,7 +1545,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R14_19 R14_20
 						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 						//R14_21
-						r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month + i) % 12 + 1)))) : null,
+						refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month + i) % 12 + 1)))) : null,
 						//R14_22
 						convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))),
 						//R14_23
@@ -1829,6 +1833,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	
 	private List<MasterData> buildEmployeeRow(NtsResultRecord r, int month) {
 		List<MasterData> datas = new ArrayList<>();
+		String refPreTime = r.getString("REFERENCE_PRED_TIME");
 			datas.add(buildEmployeeARow(
 				r.getString("YEAR"),
 				// R10_1
@@ -1859,11 +1864,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				// R10_17
 				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
 				// R10_18
-				getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+				refPreTime == null? null :getFlexType(r.getInt("REFERENCE_PRED_TIME")),
 				// R10_19 R10_20
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				// R10_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))) : null,
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))) : null,
 				// R10_22
 				convertTime(r.getInt(("F" + ((month - 1) % 12 + 1)))),
 				// R10_23
@@ -1935,7 +1940,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				// R10_19 R10_20
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 				// R10_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))) : null,
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))) : null,
 				// R10_22
 				convertTime(r.getInt(("F" + ((month - 1) % 12 + 2)))),
 				// R10_23
@@ -2008,7 +2013,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					// R10_19 R10_20
 					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 					// R10_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month + i) % 12 + 1)))) : null,
+					refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month + i) % 12 + 1)))) : null,
 					// R10_22
 					convertTime(r.getInt(("F" + ((month + i) % 12 + 1)))),
 					// R10_23
