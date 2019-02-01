@@ -95,7 +95,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 showJobTitle: true,
                 showWorktype: true,
                 isMutipleCheck: true,
-
                 /**
                  * Self-defined function: Return data from CCG001
                  * @param: data: the data return from CCG001
@@ -160,7 +159,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = getText("KCP009_3");
-            self.tabindex = 1;
+            self.tabindex = 6;
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),

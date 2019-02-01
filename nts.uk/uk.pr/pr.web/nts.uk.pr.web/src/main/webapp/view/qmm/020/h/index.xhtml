@@ -2,23 +2,23 @@
     <div class="sidebar-content-header" style = "min-width: 1000px;">
 
             <span class = "title" style="margin-left: 4px;font-size: 25px;">#{i18n.getText('QMM020_11')}</span>
-            <button id="A1_1" tabindex="1" class="proceed"
+            <button id="A1_1" tabindex="2" class="proceed"
                     data-bind="click: registerHisIndividual, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
-            <button id="A1_2" tabindex="2"
+            <button id="A1_2" tabindex="3"
                     data-bind="click: $vm.viewmodelA.openScreenI, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
-        <button id="A1_3" tabindex="3"
+        <button id="A1_3" tabindex="4"
                 data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
 
-            <button id="A1_4" tabindex="4"
+            <button id="A1_4" tabindex="5"
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
 
     </div>
     <div style="margin-top: 15px; min-width: 1000px;" class="contents-area " >
         <div id="com-ccg001"></div>
         <div id = "H1_1" style="margin-left: 70px; ">
-            <div tabindex="1" id="emp-component" style="margin-left: 10px;"></div>
+            <div  tabindex = "6" id="emp-component" style="margin-left: 10px;"></div>
         </div>
   <!--      <div id="H1_2">
 

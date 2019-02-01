@@ -44,6 +44,14 @@
     margin-bottom: 10px;
 }
 
+#grid .ntsCheckBox {
+    padding: 2px 5px 3px 4px;
+}
+
+#grid .ntsCheckBox span.box {
+    height: 20px;
+}
+
 #grid .delete {
     background-color: #ff0000;
 }

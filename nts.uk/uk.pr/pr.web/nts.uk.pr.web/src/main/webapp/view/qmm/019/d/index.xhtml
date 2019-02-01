@@ -7,6 +7,10 @@
 <body>
 <ui:composition template="/master/dialog.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.monthlysalary.payrolldata.DetailAmountType
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.CommonAmount
+        </com:ValidatorScript>
         <script type='text/javascript'>
             var dialogSize = {
                 width: 1250,
@@ -179,6 +183,25 @@
                             </div>
                         </div>
                     </com:ko-if>
+
+                    <com:ko-if bind="$vm.screenControl().visibleD9()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D9_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_143')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D9_2-->
+                                <input id="D9_2" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_143]',
+                                    value: commonAmount,
+                                    required: true,
+                                    option: $vm.option,
+                                    constraint: 'CommonAmount'}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+
                     <com:ko-if bind="$vm.screenControl().visibleD5()">
                         <div class="table table-col-2">
                             <div class="cell valign-center">
@@ -194,7 +217,7 @@
                                     visibleItemsCount: 2,
                                     value: workingAtr,
                                     optionsText: 'name',
-                                    required: true,
+                                    required: false,
                                     selectFirstIfNull: false,
                                     columns: [
                                         { prop: 'name', length: 10 },
@@ -224,23 +247,7 @@
                         </div>
                     </com:ko-if>
 
-                    <com:ko-if bind="$vm.screenControl().visibleD9()">
-                        <div class="table table-col-2">
-                            <div class="cell valign-center">
-                                <!--D9_1-->
-                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_143')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!--D9_2-->
-                                <input id="D9_2" data-bind="ntsNumberEditor: {
-                                    name: '#[QMM019_143]',
-                                    value: commonAmount,
-                                    required: true,
-                                    option: $vm.option,
-                                    constraint: 'CommonAmount'}"/>
-                            </div>
-                        </div>
-                    </com:ko-if>
+
                     <div class="table table-col-2">
                         <div class="cell valign-center">
                             <!--D3_1-->

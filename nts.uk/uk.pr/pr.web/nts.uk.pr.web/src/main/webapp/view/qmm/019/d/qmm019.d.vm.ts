@@ -118,7 +118,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.condition14(value);
                 self.condition15(value);
                 self.condition16(value);
-                self.condition43(value, self.paymentItemSet().taxAtr());
             });
 
             self.dataScreen().itemRangeSet.errorUpperLimitSetAtr.subscribe(value => {
