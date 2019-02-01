@@ -279,4 +279,39 @@ module nts.uk.ui {
             
         });
     }
+
+    module buttonExtension {
+        // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
+        // clickイベントが発生しなくなる不具合がある。
+        // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+        $(() => {
+            $("body").on("mousedown", "button", e => {
+                var $button = $(e.target);
+                var $dammy = $("<div>")
+                    .css({
+                        background: "white",
+                        position: "absolute",
+                        width: $button.outerWidth(),
+                        height: parseInt($button.css("top"), 10),
+                        cursor: "pointer",
+                        opacity: 100
+                    })
+                    .appendTo("body")
+                    .position({
+                        my: "left bottom",
+                        at: "left top",
+                        of: e.target
+                    })
+                    .on("mouseup", eup => {
+                        $dammy.remove();
+                        $button.click();
+                    });
+
+                $(window).on("mouseup.dammyevent", () => {
+                    $dammy.remove();
+                    $(window).off("mouseup.dammyevent");
+                });
+            });
+        });
+    }
 }
