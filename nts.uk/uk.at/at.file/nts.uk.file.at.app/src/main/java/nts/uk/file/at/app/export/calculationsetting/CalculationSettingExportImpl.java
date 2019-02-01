@@ -2094,7 +2094,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	if(!CollectionUtil.isEmpty(rs) && !CollectionUtil.isEmpty(rsName) && rs.size()>=rsName.size()){
 	
 			 for( int i=0;i<rsName.size(); i++){
-				RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
+				/*RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
 				 if(i==0){
 					 Map<String, Object> data = new HashMap<>();
 					 data.put(column1Sheet8,TextResource.localize("KMK013_383"));
@@ -2113,35 +2113,115 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 					Map<String, MasterCellData> rowData = masterData.getRowData();
 					getAlignLeftsheet8(rowData);
 					datas.add(masterData);
+				 }*/
+				 OvertimeWorkFrameFindDto overtimeWorkFrameFindDto =rsName.get(i);
+			//	 RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
+				 if(i==0){
+					
+					 for(RoleOvertimeWorkDto roleOvertimeWorkDto:rs){
+						 if(roleOvertimeWorkDto.getOvertimeFrNo()==overtimeWorkFrameFindDto.getOvertimeWorkFrNo()){
+							 Map<String, Object> data = new HashMap<>();
+							 data.put(column1Sheet8,TextResource.localize("KMK013_383"));					 
+							 data.put(column2Sheet8,TextResource.localize("KMK013_152")+overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+							 data.put(column3Sheet8,getNameRoleOTWork(roleOvertimeWorkDto.getRoleOTWork()));
+							 MasterData masterData = new MasterData(data, null, "");
+							Map<String, MasterCellData> rowData = masterData.getRowData();
+							getAlignLeftsheet8(rowData);
+							datas.add(masterData);
+							break;
+						 }
+						
+					 }
+					
+				 }else{
+					 for(RoleOvertimeWorkDto roleOvertimeWorkDto:rs){
+						 if(roleOvertimeWorkDto.getOvertimeFrNo()==overtimeWorkFrameFindDto.getOvertimeWorkFrNo()){
+							 Map<String, Object> data = new HashMap<>();
+							 data.put(column1Sheet8,"");
+							 data.put(column2Sheet8,TextResource.localize("KMK013_152")+overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+							 data.put(column3Sheet8,getNameRoleOTWork(roleOvertimeWorkDto.getRoleOTWork()));
+							MasterData masterData = new MasterData(data, null, "");
+							Map<String, MasterCellData> rowData = masterData.getRowData();
+							getAlignLeftsheet8(rowData);
+							datas.add(masterData);
+							break;
+						 }
+					 } 
+					
 				 }
 				
 			}
 		 //
 			 if(!CollectionUtil.isEmpty(rsworkday) && !CollectionUtil.isEmpty(listRoleOpen) && listRoleOpen.size()>=rsworkday.size() ){
 				 
-				 for( int i=0;i<rsworkday.size(); i++){
+			 for( int i=0;i<rsworkday.size(); i++){
 					 WorkdayoffFrameFindDto workdayoffFrameFindDto=rsworkday.get(i);
 						 if(i==0){
-							 Map<String, Object> data = new HashMap<>();
-							 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
-							 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
-							 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
-							 MasterData masterData = new MasterData(data, null, "");
-							Map<String, MasterCellData> rowData = masterData.getRowData();
-							getAlignLeftsheet8(rowData);
-							datas.add(masterData);
+							 for(RoleOfOpenPeriodDto roleOfOpenPeriodDto:listRoleOpen){
+								 if(roleOfOpenPeriodDto.getBreakoutFrNo()==workdayoffFrameFindDto.getWorkdayoffFrNo()){
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(roleOfOpenPeriodDto.getRoleOfOpenPeriod()));
+									 MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+									break;
+								 }
+							 }
+						
 						 }else{
-							 Map<String, Object> data = new HashMap<>();
-							 data.put(column1Sheet8,"");
-							 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
-							 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
-							MasterData masterData = new MasterData(data, null, "");
-							Map<String, MasterCellData> rowData = masterData.getRowData();
-							getAlignLeftsheet8(rowData);
-							datas.add(masterData);
+							 for(RoleOfOpenPeriodDto roleOfOpenPeriodDto:listRoleOpen){
+								 if(roleOfOpenPeriodDto.getBreakoutFrNo()==workdayoffFrameFindDto.getWorkdayoffFrNo()){
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,"");
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(roleOfOpenPeriodDto.getRoleOfOpenPeriod()));
+									MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+									break;
+								 }
+							 }
+							 
+							
 						 }
 						
 					}
+				 
+				/* for( int i=0;i<rsworkday.size(); i++){
+					 WorkdayoffFrameFindDto workdayoffFrameFindDto=rsworkday.get(i);
+						 if(i==0){
+						
+							
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
+									 MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+								
+								 
+							 
+						
+						 }else{
+								
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,"");
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
+									MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+							
+						 }
+						
+					}*/
 				 
 			 }
 		
@@ -2730,7 +2810,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 				  	//	 List<WeekdayHolidayDto> listWeekdayHolidayDto=zeroTimeDto.getWeekdayHoliday(); //1
 				  	//	zeroTimeDto.getOverdayHolidayAtten(); //2
 				  	//	zeroTimeDto.getOverdayCalcHoliday(); //3
-						
+					if(!CollectionUtil.isEmpty(rs)){
 						ZeroTimeDto zeroTimeDto=rs.get(0);
 				  		List<WeekdayHolidayDto> listWeekdayHolidayDto=zeroTimeDto.getWeekdayHoliday(); //1
 				  		List<HdFromWeekdayDto> listHdFromWeekdayDto=zeroTimeDto.getOverdayHolidayAtten(); //2
@@ -2803,6 +2883,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 		        		 getAlignsheet10(rowData);
 		        		 datas.add(masterData);
 						
+					}
 					}
 				}
 			}
