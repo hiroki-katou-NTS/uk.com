@@ -131,12 +131,12 @@ module nts.custombinding {
                                             defaultValue: 0,
                                             unitID: 'DAYS'
                                         },
-                                        required: m1,
+                                        required: false,
                                         enable: m1
                                     }" />
                                 </div>
                                 <div class="text-box-a">
-                                    <input data-bind="ntsTimeEditor: { value: value1, constraint: constraint, inputFormat: 'time', mode: 'time', enable: m2, required: m2 }" />
+                                    <input data-bind="ntsTimeEditor: { value: value1, constraint: constraint, inputFormat: 'time', mode: 'time', enable: m2, required: false }" />
                                 </div>
                             </div>`,
                     timep: `<input data-bind="ntsTimeWithDayEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: true }" />`,

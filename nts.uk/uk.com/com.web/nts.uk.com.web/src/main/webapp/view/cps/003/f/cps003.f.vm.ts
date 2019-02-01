@@ -55,6 +55,10 @@ module cps003.f.vm {
 
             // get info of current item
             self.currentItem.id.subscribe(id => {
+                if (!id) {
+                    return;
+                }
+
                 service.fetch.getItemsById(id).done(item => {
                     if (item && item.itemTypeState.dataTypeState) {
                         let dts = item.itemTypeState.dataTypeState,
@@ -395,6 +399,28 @@ module cps003.f.vm {
                             }
                         }
                     } else {
+                        // 画面モード＝時間年休上限モードの場合
+                        if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME && item.itemData.itemCode == 'IS00287') {
+                            if (value.replaceFormat == 1) {
+                                confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            } else {
+                                if (value.replaceValue1) {
+                                    confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    confirm({ messageId: 'Msg_634', messageParams: [item.name] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
+                            }
+                        } else {
+                        }
                     }
                 }
             } else { // 一致する社員のみ（F1_009）が選択されている場合
@@ -470,6 +496,49 @@ module cps003.f.vm {
                                 });
                             }
                         } else {
+                            // 画面モード＝時間年休上限モードの場合
+                            if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME && item.itemData.itemCode == 'IS00287') {
+                                if (value.matchValue) {
+                                    if (value.replaceFormat == 1) {
+                                        confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                            setShared('CPS003F_VALUE', value);
+                                            close();
+                                        });
+                                    } else {
+                                        if (value.replaceValue1) {
+                                            confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                                setShared('CPS003F_VALUE', value);
+                                                close();
+                                            });
+                                        } else {
+                                            confirm({ messageId: 'Msg_636', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                                setShared('CPS003F_VALUE', value);
+                                                close();
+                                            });
+                                        }
+                                    }
+                                } else {
+                                    if (value.replaceFormat == 1) {
+                                        confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                            setShared('CPS003F_VALUE', value);
+                                            close();
+                                        });
+                                    } else {
+                                        if (value.replaceValue1) {
+                                            confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                                setShared('CPS003F_VALUE', value);
+                                                close();
+                                            });
+                                        } else {
+                                            alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                                setShared('CPS003F_VALUE', null);
+                                                //close();
+                                            });
+                                        }
+                                    }
+                                }
+                            } else {
+                            }
                         }
                     }
                 }
