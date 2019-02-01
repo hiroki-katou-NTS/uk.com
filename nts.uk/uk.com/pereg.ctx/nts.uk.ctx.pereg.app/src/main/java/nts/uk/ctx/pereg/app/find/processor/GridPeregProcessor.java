@@ -207,8 +207,8 @@ public class GridPeregProcessor {
 			SingleItemDto sidto = (SingleItemDto) item.getItemTypeState();
 			SelectionItemDto slidto = (SelectionItemDto) sidto.getDataTypeState();
 
-			return cbxFactory.getComboBox(slidto, null, query.getBaseDate(), true,
-					EnumAdaptor.valueOf(ctgItem.getPersonEmployeeType(), PersonEmployeeType.class), false,
+			return cbxFactory.getComboBox(slidto, null, query.getBaseDate(), false,
+					EnumAdaptor.valueOf(ctgItem.getPersonEmployeeType(), PersonEmployeeType.class), true,
 					ctgItem.getCategoryCode(), null, true);
 		} catch (Exception ex) {
 			return Arrays.asList();
