@@ -117,7 +117,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         index: KnockoutObservable<number> = ko.observable(1);
         constructor() {
             var self = this;
-            self.initTabPanel();
             self.changeDataByLineItemCategory();
             self.changeDataByUnitPriceItem();
             self.changeDataByFunctionItem();
@@ -194,7 +193,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.unitPriceItemList([]);
                     self.selectedUnitPriceItemCode(null);
                 }
-            })
+            });
             self.selectedUnitPriceItemCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0){
                     self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
@@ -301,13 +300,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 self.selectedWageTableCode(null);
             }
         }
-
-        initTabPanel () {
-
-        }
         // tab 1
         showListStatementItemData (categoryAtr) {
             let self = this;
+            self.statementItemList().map(item => item.name = _.unescape(item.name));
             let statementItemList = self.paymentItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) statementItemList = self.deductionItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.ATTENDANCE_ITEM) statementItemList = self.attendanceItemList;
@@ -440,7 +436,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         addWageTableItem () {
             let self = this;
-            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
+            // 「賃金テーブル」was not subject to processing. Value returned 1.
+            //self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
+            self.addToFormulaByPosition('1');
         }
 
         addToFormulaByPosition (formulaToAdd: string) {
@@ -729,7 +727,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (messageId == "MsgQ_231") {
                 isHasUniqueMessage = _.some(nts.uk.ui.errors.getErrorList(), {errorCode: 'MsgQ_231'})
             }
-            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams});
+            let messageParam = messageParams[0].replace('{','\\{').replace('}', '\\}');
+            //if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams[0].replace('{','\\\{')});
+            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: 'MsgQ_233', messageParams: ['\{文字0qqq\}']});
         }
 
         extractFormulaElement () {
@@ -780,7 +780,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, elementType = formulaElement.substring(0, 6), selectedItem;
             let elementCode = formulaElement.substring(6, formulaElement.length);
             if (!elementCode) return formulaElement;
-            let calculationFormulaTransfer
+            let calculationFormulaTransfer;
             if (elementType.startsWith("Func") || elementType.startsWith("vari")){
                 calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent == formulaElement}) [0];
                 return calculationFormulaTransfer.displayContent;
@@ -788,40 +788,40 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent.startsWith(elementType)}) [0];
             if (elementType.startsWith("0000_0")) {
                 selectedItem =  _.find(self.paymentItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{' + elementCode + '}']);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{0000_0' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
 
             if (elementType.startsWith("0001_0")) {
                 selectedItem =  _.find(self.deductionItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233',[calculationFormulaTransfer.displayContent + '{0001_0' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("0002_0")) {
                 selectedItem = _.find(self.attendanceItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{0002_0' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U000_0")) {
                 selectedItem = _.find(self.companyUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{U000_0' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U001_0")) {
                 selectedItem =_.find(self.individualUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{U001_0' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.formulaList), {formulaCode: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{calc_' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.formulaName);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.wageTableList), {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{wage_' + elementCode + '}']);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             return formulaElement;

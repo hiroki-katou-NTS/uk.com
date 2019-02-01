@@ -30,6 +30,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         ].join("|");
 
         processYearMonthAndReferenceTime: any;
+
         constructor() {
             block.invisible();
             let self = this;
@@ -77,7 +78,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             trialCalculationValue: ko.observable(null)
                         })
                 }
-            })
+            });
             self.calculationFormulaList(calculationFormulaData);
         }
 
