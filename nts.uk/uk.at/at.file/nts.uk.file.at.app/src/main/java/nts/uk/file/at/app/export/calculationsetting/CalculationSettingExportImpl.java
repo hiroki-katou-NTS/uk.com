@@ -926,42 +926,42 @@ public class CalculationSettingExportImpl implements MasterListData {
 				// block 2
 				
 				//
-				Map<String, Object> line31 = new HashMap<>();
-				line31.put(column1Sheet2,"");
-				line31.put(column2Sheet2,TextResource.localize("KMK013_29"));
-				line31.put(column3Sheet2,"");
-				line31.put(column4Sheet2,"");
+				Map<String, Object> line31_1 = new HashMap<>();
+				line31_1.put(column1Sheet2,"");
+				line31_1.put(column2Sheet2,TextResource.localize("KMK013_29"));
+				line31_1.put(column3Sheet2,"");
+				line31_1.put(column4Sheet2,"");
 				if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet()) && !Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation())
 						&& holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation()==1){
-					line31.put(column5Sheet2,TextResource.localize("KMK013_42"));
+					line31_1.put(column5Sheet2,TextResource.localize("KMK013_42"));
 				}else{
-					line31.put(column5Sheet2,TextResource.localize("KMK013_43"));
+					line31_1.put(column5Sheet2,TextResource.localize("KMK013_43"));
 				}
-				MasterData masterData31 = new MasterData(line31, null, "");
-				Map<String, MasterCellData> rowData31 = masterData31.getRowData();
-				getAlignsheet2(rowData31);
-				datas.add(masterData31);
+				MasterData masterData31_1 = new MasterData(line31_1, null, "");
+				Map<String, MasterCellData> rowData31_1 = masterData31_1.getRowData();
+				getAlignsheet2(rowData31_1);
+				datas.add(masterData31_1);
 				//
 				
 				if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet()) && !Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation())
 						&& holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation()==1){
 					// if check
-					Map<String, Object> line32 = new HashMap<>();
-					line32.put(column1Sheet2,"");
-					line32.put(column2Sheet2,"");
-					line32.put(column3Sheet2,TextResource.localize("KMK013_44"));
-					line32.put(column4Sheet2,"");
+					Map<String, Object> line32_1 = new HashMap<>();
+					line32_1.put(column1Sheet2,"");
+					line32_1.put(column2Sheet2,"");
+					line32_1.put(column3Sheet2,TextResource.localize("KMK013_44"));
+					line32_1.put(column4Sheet2,"");
 					if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getAddition2())
 							&& holidayAddtionDto.getHourlyPaymentAdditionSet().getAddition2()==1){
 						
-						line32.put(column5Sheet2,select);
+						line32_1.put(column5Sheet2,select);
 					}else{
-						line32.put(column5Sheet2,unselect);
+						line32_1.put(column5Sheet2,unselect);
 					}
-					MasterData masterData32 = new MasterData(line32, null, "");
-					Map<String, MasterCellData> rowData32 = masterData32.getRowData();
-					getAlignsheet2(rowData32);
-					datas.add(masterData32);
+					MasterData masterData32_1 = new MasterData(line32_1, null, "");
+					Map<String, MasterCellData> rowData32_1 = masterData32_1.getRowData();
+					getAlignsheet2(rowData32_1);
+					datas.add(masterData32_1);
 					//
 					Map<String, Object> line33 = new HashMap<>();
 					line33.put(column1Sheet2,"");
@@ -1362,20 +1362,26 @@ public class CalculationSettingExportImpl implements MasterListData {
 					getAlignsheet2(rowDatatab4block1line2);
 					datas.add(masterDatatab4block1line2);
 					//
-					Map<String, Object> tab4block1line3 = new HashMap<>();
-					tab4block1line3.put(column1Sheet2,"");
-					tab4block1line3.put(column2Sheet2,"");
-					tab4block1line3.put(column3Sheet2,"");
-					tab4block1line3.put(column4Sheet2,TextResource.localize("KMK013_34"));
-					if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getDeformatExcValue()==1){
-						tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_37"));
-					}else{
-						tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_36"));
+					
+					if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getAdditionTimePre()==1){
+						Map<String, Object> tab4block1line3 = new HashMap<>();
+						tab4block1line3.put(column1Sheet2,"");
+						tab4block1line3.put(column2Sheet2,"");
+						tab4block1line3.put(column3Sheet2,"");
+						tab4block1line3.put(column4Sheet2,TextResource.localize("KMK013_34"));
+						if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getDeformatExcValue()==1){
+							tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_37"));
+						}else{
+							tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_36"));
+						}
+						MasterData masterDatatab4block1line3 = new MasterData(tab4block1line3, null, "");
+						Map<String, MasterCellData> rowDatatab4block1line3 = masterDatatab4block1line3.getRowData();
+						getAlignsheet2(rowDatatab4block1line3);
+						datas.add(masterDatatab4block1line3);
 					}
-					MasterData masterDatatab4block1line3 = new MasterData(tab4block1line3, null, "");
-					Map<String, MasterCellData> rowDatatab4block1line3 = masterDatatab4block1line3.getRowData();
-					getAlignsheet2(rowDatatab4block1line3);
-					datas.add(masterDatatab4block1line3);
+				
+					
+					
 					//
 					Map<String, Object> tab4block1line4 = new HashMap<>();
 					tab4block1line4.put(column1Sheet2,"");
