@@ -1685,7 +1685,7 @@ private List<MasterData> getDataEmbossSetting (MasterListExportQuery query){
 			data4.put(column2Sheet4,"");
 			if(!Objects.isNull(stampReflectionManagementDto.getAutoStampReflectionClass())){
 					
-				data4.put(column3Sheet4,stampReflectionManagementDto.getAutoStampReflectionClass()==1?TextResource.localize("KMK013_279"):TextResource.localize("KMK013_280"));			
+				data4.put(column3Sheet4,stampReflectionManagementDto.getAutoStampReflectionClass()==1?TextResource.localize("KMK013_280"):TextResource.localize("KMK013_279"));			
 				}else{
 					data4.put(column3Sheet4,"");
 				}
@@ -2002,9 +2002,9 @@ private List<MasterData> getDataFlexWorkSetting(MasterListExportQuery query){
 		data5.put(column2Sheet7,"");
 		if( !Objects.isNull(flexSetDto.getFlexNonworkingDayCalc()) ){
 			if(flexSetDto.getFlexNonworkingDayCalc()==1){
-				data5.put(column3Sheet7,TextResource.localize("KMK013_269"));
-			}else if(flexSetDto.getFlexNonworkingDayCalc()==0){
 				data5.put(column3Sheet7,TextResource.localize("KMK013_268"));
+			}else if(flexSetDto.getFlexNonworkingDayCalc()==0){
+				data5.put(column3Sheet7,TextResource.localize("KMK013_269"));
 			}else{
 				data5.put(column3Sheet7,"");
 			}
