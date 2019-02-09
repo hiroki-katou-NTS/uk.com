@@ -1752,7 +1752,7 @@ private List<MasterData> getDataEmbossSetting (MasterListExportQuery query){
 			data9.put(column1Sheet4, TextResource.localize("KMK013_302"));
 			data9.put(column2Sheet4,"");
 			if(!Objects.isNull(stampReflectionManagementDto.getBreakSwitchClass())){					
-				data9.put(column3Sheet4,stampReflectionManagementDto.getBreakSwitchClass()==1?TextResource.localize("KMK013_304"):TextResource.localize("KMK013_305"));			
+				data9.put(column3Sheet4,stampReflectionManagementDto.getBreakSwitchClass()==1?TextResource.localize("KMK013_305"):TextResource.localize("KMK013_304"));			
 				}else{
 					data9.put(column3Sheet4,"");
 				}
