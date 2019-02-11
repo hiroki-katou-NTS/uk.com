@@ -32,8 +32,14 @@ module nts.uk.com.view.cas012.a.service {
     }
 
     export function exportExcel(date: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = "CAS012";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "GrantAdminRole",
-            domainType: "CAS012ロールの付与（システム管理者）",
+            domainType: domainType,
             languageId: 'ja',
             reportType: 0,
             mode: 1,

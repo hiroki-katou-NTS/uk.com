@@ -22,3 +22,8 @@
 .ui-iggrid .nts-gridlist tbody td {
    white-space: pre; 
 }
+.ui-iggrid-tooltip {
+  /* max-width: 500px !important; */
+  display: table;
+  max-width: none !important;
+}

@@ -12,7 +12,13 @@ module nts.uk.at.view.kmk002.a {
         };
 
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: "KMK002計算式の登録", languageId: languageId, reportType: 0 });
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMK002";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: domainType, languageId: languageId, reportType: 0 });
         }
 
         /**

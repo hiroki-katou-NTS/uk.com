@@ -113,7 +113,13 @@ module nts.uk.at.view.kmk003.a {
         }
         
         export function saveAsExcel(): JQueryPromise<any> {
-            return nts.uk.request.exportFile(servicePath.saveAsExcel, {});
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMK003";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile( servicePath.saveAsExcel + "/" + domainType);
         }
         
         export module model {

@@ -14,11 +14,14 @@
    			<button class="proceed" tabindex="1" data-bind="click: save, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
    			<!-- D1_2 -->
    			<button class="danger" tabindex="2" data-bind="click: remove, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>
+   			
+   			<button tabindex="3" id="print-button_d" data-bind="click: opencdl028Dialog3">#{i18n.getText('KSM004_100')}</button>
+   			
 		</div>
 		
 		<div id="scrD" class="contents-area fixed-flex-layout" >
 			<!-- D2_1 -->
-			<div tabindex="3" id="empt-list-setting" class="fixed-flex-layout-left"></div>
+			<div tabindex="4" id="empt-list-setting" class="fixed-flex-layout-left"></div>
 			<div id="includeTableMonthlyDay" data-bind="with: commonTableMonthDaySet" class="fixed-flex-layout-right">
 				<ui:include src="../base.xhtml"/>
 			</div>

@@ -97,11 +97,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderEmploymentColumns() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_185, TextResource.localize("KMK004_185"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_186, TextResource.localize("KMK004_186"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmploymentColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));
@@ -172,11 +172,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderWorkPlaceColumns() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_187, TextResource.localize("KMK004_187"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_188, TextResource.localize("KMK004_188"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(WorkPlaceColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));
@@ -248,11 +248,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	public List<MasterHeaderColumn> getHeaderEmployeeColumns(){
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_154, TextResource.localize("KMK004_154"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_183, TextResource.localize("KMK004_183"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_184, TextResource.localize("KMK004_184"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_154, TextResource.localize("KMK004_154"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(EmployeeColumn.KMK004_155, TextResource.localize("KMK004_155"),
 				ColumnTextAlign.LEFT, "", true));
@@ -361,27 +361,29 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
     	Object[] usage = repo.getUsage();
         List<SheetData> sheetDatas = new ArrayList<>();
         // Sheet Employment
-		if (Integer.valueOf(usage[2].toString()) == 1) {
-			SheetData sheetDataEmployment = SheetData.builder().mainData(this.getMasterDatasEmployment(query))
-					.mainDataColumns(this.getHeaderEmploymentColumns()).sheetName(TextResource.localize("KMK004_191"))
-					.build();
-			sheetDatas.add(sheetDataEmployment);
-		}
-        
-		// Sheet WorkPlace
-		if (Integer.valueOf(usage[1].toString()) == 1) {
-			SheetData sheetDataWorkPlace = SheetData.builder().mainData(this.getMasterDatasWorkPlace(query))
-					.mainDataColumns(this.getHeaderWorkPlaceColumns()).sheetName(TextResource.localize("KMK004_192"))
-					.build();
-			sheetDatas.add(sheetDataWorkPlace);
-		}
-		
-		// Sheet Employee
-		if (Integer.valueOf(usage[0].toString()) == 1) {
-			SheetData sheetDataEmployee = SheetData.builder().mainData(this.getMasterDatasEmployee(query))
-					.mainDataColumns(this.getHeaderEmployeeColumns()).sheetName(TextResource.localize("KMK004_190"))
-					.build();
-			sheetDatas.add(sheetDataEmployee);
+		if (usage != null) {
+			if (Integer.valueOf(usage[2].toString()) == 1) {
+				SheetData sheetDataEmployment = SheetData.builder().mainData(this.getMasterDatasEmployment(query))
+						.mainDataColumns(this.getHeaderEmploymentColumns())
+						.sheetName(TextResource.localize("KMK004_191")).build();
+				sheetDatas.add(sheetDataEmployment);
+			}
+
+			// Sheet WorkPlace
+			if (Integer.valueOf(usage[1].toString()) == 1) {
+				SheetData sheetDataWorkPlace = SheetData.builder().mainData(this.getMasterDatasWorkPlace(query))
+						.mainDataColumns(this.getHeaderWorkPlaceColumns())
+						.sheetName(TextResource.localize("KMK004_192")).build();
+				sheetDatas.add(sheetDataWorkPlace);
+			}
+
+			// Sheet Employee
+			if (Integer.valueOf(usage[0].toString()) == 1) {
+				SheetData sheetDataEmployee = SheetData.builder().mainData(this.getMasterDatasEmployee(query))
+						.mainDataColumns(this.getHeaderEmployeeColumns()).sheetName(TextResource.localize("KMK004_190"))
+						.build();
+				sheetDatas.add(sheetDataEmployee);
+			}
 		}
         
         return sheetDatas;

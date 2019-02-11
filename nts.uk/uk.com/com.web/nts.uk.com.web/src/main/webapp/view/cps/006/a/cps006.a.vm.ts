@@ -114,9 +114,15 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
         }
 
-        private exportExcel(domainId: string, domainType: string) {
+        private exportExcel(domainId: string) {
             var self = this;
             nts.uk.ui.block.grayout();
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "CPS006";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             service.exportExcel(self.langId(), domainId, domainType)
                 .fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);

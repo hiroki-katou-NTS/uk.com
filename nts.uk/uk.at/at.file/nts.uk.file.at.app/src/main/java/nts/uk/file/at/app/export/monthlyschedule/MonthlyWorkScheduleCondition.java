@@ -48,7 +48,7 @@ public class MonthlyWorkScheduleCondition {
 	 */
 	public Boolean isShowWorkplace() {
 		return this.totalOutputSetting.isDetails() || this.totalOutputSetting.isWorkplaceTotal()
-				|| this.totalOutputSetting.isCumulativeWorkplace();
+				|| this.totalOutputSetting.isCumulativeWorkplace() || this.totalOutputSetting.isPersonalTotal();
 	}
 
 	/**

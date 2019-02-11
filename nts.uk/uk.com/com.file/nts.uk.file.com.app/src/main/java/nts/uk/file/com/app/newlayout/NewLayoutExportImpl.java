@@ -4,19 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
-import nts.uk.file.com.app.maintenance.MaintenanceLayoutData;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -31,6 +24,8 @@ public class NewLayoutExportImpl implements MasterListData{
 	
 	public static String value1= "value1";
 	public static String value2= "value2";
+	public static String value3= "value3";
+	
 	
 	@Inject
 	private NewLayoutExportRepository newLayoutExportRepository;
@@ -40,88 +35,81 @@ public class NewLayoutExportImpl implements MasterListData{
 		
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
-
-		int forAttendance = NotUseAtr.NOT_USE.value;
-		int forPayroll = NotUseAtr.NOT_USE.value;
-		int forPersonnel = NotUseAtr.NOT_USE.value;
-		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
-		for (InstalledProduct productType : installProduct) {
-			switch (productType.getProductType()) {
-			case ATTENDANCE:
-				forAttendance = NotUseAtr.USE.value;
-				break;
-			case PAYROLL:
-				forPayroll = NotUseAtr.USE.value;
-				break;
-			case PERSONNEL:
-				forPersonnel = NotUseAtr.USE.value;
-				break;
-			default:
-				break;
-			}
-		}
+		List<NewLayoutExportData> listNewLayoutS = new ArrayList<>();
+		
 		
 		List<MasterData> datas = new ArrayList<>();
-		List<NewLayoutExportData> listNewLayout = newLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode,
-				forAttendance, forPayroll,forPersonnel);
+		List<NewLayoutExportData> listNewLayout = newLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode);
 		
-		if(CollectionUtil.isEmpty(listNewLayout)){
+
+		if (CollectionUtil.isEmpty(listNewLayout)) {
 			return null;
-		}else{
-			
-			
-			Map<Integer, List<NewLayoutExportData>> mapData = 
-					listNewLayout.stream().collect(Collectors.groupingBy(NewLayoutExportData::getDispoder));
-			
-			mapData.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(c->{
-				List<NewLayoutExportData> itemsForLayout = c.getValue();
-				if (itemsForLayout.size() > 1) {
-					itemsForLayout.stream().filter( x-> x.getCategoryName() != null).collect(Collectors.groupingBy(NewLayoutExportData::getCategoryName))
-						.entrySet().stream().forEach(x ->{
-							AtomicInteger rowCategory = new AtomicInteger(0);
-							x.getValue().stream().forEach(y-> {
-								datas.add(createMasterDateForRow(y, rowCategory));
-							});
-						});
-				}else{
-					if(itemsForLayout.size() ==1){
-						NewLayoutExportData newLayoutExportData = itemsForLayout.get(0);
-						Map<String, Object> data = new HashMap<>();
-						putEmptyData(data);
-						
-						if (newLayoutExportData.getCategoryName() != null) {
-							data.put(value1, newLayoutExportData.getCategoryName());
-							data.put(value2, newLayoutExportData.getItemName());
+		} else {
+			for (int i = 0; i < listNewLayout.size(); i++) {
+				// 5:時刻(TimePoint)
+				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
+					// 3:日付(Date)
+					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listNewLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
+						listNewLayoutS.add(listNewLayout.get(i));
+					}else{
+						if(listNewLayout.get(i).getItemParentCD()==null){
+							listNewLayoutS.add(listNewLayout.get(i));
 						}
-						MasterData masterData = new MasterData(data, null, "");
-						masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						
-						datas.add(masterData);
 					}
 				}
-			});
+			}
+			for (int i = 0; i < listNewLayoutS.size(); i++) {
+				Map<String, Object> data = new HashMap<>();
+				putEmptyData(data);
+				String cateName = listNewLayoutS.get(i).getCategoryName();
+				String itemName = listNewLayoutS.get(i).getItemName();
+				String itemParentCD = listNewLayoutS.get(i).getItemParentCD();
+				String itemNameC = listNewLayoutS.get(i).getItemNameC();
+
+				if (cateName == null) {
+					data.put(value1, "----------");
+					data.put(value2, "----------");
+					data.put(value3, "----------");
+				} else {
+					if (i == 0) {
+						data.put(value1, cateName);
+						data.put(value2, itemName);
+						data.put(value3, "");
+					} else {
+						if (listNewLayoutS.get(i).getCategoryName().equals(listNewLayoutS.get(i - 1).getCategoryName())) {
+							data.put(value1, "");
+							
+							if(itemParentCD ==null){
+								data.put(value2, itemName);
+								data.put(value3, "");
+							}else{
+								data.put(value2, "");
+								
+								data.put(value3, itemNameC);
+							}
+						} else {
+							data.put(value1, cateName);
+							if(itemParentCD ==null){
+								data.put(value2, itemName);
+								data.put(value3, "");
+							}else{
+								data.put(value2, "");
+								data.put(value3, itemNameC);
+							}
+							
+						}
+					}
+				}
+
+
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				datas.add(masterData);
+			}
 		}
 		return datas;
-	}
-	
-	private MasterData createMasterDateForRow(NewLayoutExportData row,  AtomicInteger rowCategory) {
-		Map<String, Object> data = new HashMap<>();
-		putEmptyData(data);
-
-		
-		if (rowCategory.get() == 0) {
-			data.put(value1, row.getCategoryName());
-		}
-		data.put(value2, row.getItemName());
-		
-		MasterData masterData = new MasterData(data, null, "");
-		masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		
-		rowCategory.getAndIncrement();
-		
-		return masterData;
 	}
 	
 	@Override
@@ -133,6 +121,8 @@ public class NewLayoutExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value2, TextResource.localize("CPS007_23"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value3, TextResource.localize("CPS007_26"),
+				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 	}
@@ -140,6 +130,7 @@ public class NewLayoutExportImpl implements MasterListData{
 	private void putEmptyData (Map<String, Object> data){
 		data.put(value1, "");
 		data.put(value2, "");
+		data.put(value3, "");
 	}
 	
 	@Override

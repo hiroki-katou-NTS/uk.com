@@ -31,8 +31,14 @@ module nts.uk.com.view.cas001.a.service {
        return ajax(paths.getAllItemIdRequired);
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = "CAS001";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "PersonRole", 
-                        domainType: "CAS001個人情報アクセス権限の設定", 
+                        domainType:domainType,
                         languageId: languageId, reportType: 0};
         return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }

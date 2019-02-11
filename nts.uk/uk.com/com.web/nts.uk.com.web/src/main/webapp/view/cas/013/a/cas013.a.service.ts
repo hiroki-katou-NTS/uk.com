@@ -15,7 +15,13 @@ module nts.uk.com.view.cas013.a {
             constructor() {}
             
             saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "CAS013担当ロールの付与", languageId: languageId, reportType: 0, baseDate: date});
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = "CAS013";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: domainType, languageId: languageId, mode: 1, reportType: 0, baseDate: date});
         }
             
             getRoleTypes(): JQueryPromise<any> {
