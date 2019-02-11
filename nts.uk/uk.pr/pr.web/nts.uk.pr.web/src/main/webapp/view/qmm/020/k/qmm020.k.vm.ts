@@ -57,8 +57,13 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                     close();
                 });
             }).fail((err) =>{
-                if(err)
-                    dialog.alertError(err);
+                if(err){
+                    dialog.alertError(err).then(()=>{
+                        $('#K1_7').focus();
+                    });
+
+                }
+
             });
         }
         innitView(params:any){
