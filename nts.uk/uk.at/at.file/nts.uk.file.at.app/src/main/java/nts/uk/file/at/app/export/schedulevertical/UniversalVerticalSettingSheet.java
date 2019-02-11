@@ -485,6 +485,8 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
                                 String externalItem = getAttendanceItem(listDailyItems, "externalBudgetCd", data);
                                 if (externalItem != null) {
                                     formulaResult += operator + " " + externalItem + " ";
+                                } else {
+                                	formulaResult += operator + " " + TextResource.localize("KML002_153") + " ";
                                 }
                             }
                         }
@@ -625,6 +627,8 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
                                 String externalItem = getAttendanceItem(listDailyItems, "externalBudgetCd", data);
                                 if (externalItem != null) {
                                     formulaResult += operator + " " + externalItem + " ";
+                                } else {
+                                	formulaResult += operator + " " + TextResource.localize("KML002_153") + " ";
                                 }
                             }
                         }
