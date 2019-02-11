@@ -36,7 +36,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
  *
  */
 @Stateless
-@DomainID(value = "BasicWorkrRegister")
+@DomainID(value = "BasicWorkRegister")
 public class BasicWorkRegisterExportImpl implements MasterListData {
 
 	@Inject
