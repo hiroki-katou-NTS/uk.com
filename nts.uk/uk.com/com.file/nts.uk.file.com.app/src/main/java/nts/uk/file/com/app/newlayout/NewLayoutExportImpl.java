@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -34,21 +35,36 @@ public class NewLayoutExportImpl implements MasterListData{
 		
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
-
+		List<NewLayoutExportData> listNewLayoutS = new ArrayList<>();
+		
 		
 		List<MasterData> datas = new ArrayList<>();
 		List<NewLayoutExportData> listNewLayout = newLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode);
+		
 
 		if (CollectionUtil.isEmpty(listNewLayout)) {
 			return null;
 		} else {
 			for (int i = 0; i < listNewLayout.size(); i++) {
+				// 5:時刻(TimePoint)
+				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
+					// 3:日付(Date)
+					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listNewLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
+						listNewLayoutS.add(listNewLayout.get(i));
+					}else{
+						if(listNewLayout.get(i).getItemParentCD()==null){
+							listNewLayoutS.add(listNewLayout.get(i));
+						}
+					}
+				}
+			}
+			for (int i = 0; i < listNewLayoutS.size(); i++) {
 				Map<String, Object> data = new HashMap<>();
 				putEmptyData(data);
-				String cateName = listNewLayout.get(i).getCategoryName();
-				String itemName = listNewLayout.get(i).getItemName();
-				String itemParentCD = listNewLayout.get(i).getItemParentCD();
-				String itemNameC = listNewLayout.get(i).getItemNameC();
+				String cateName = listNewLayoutS.get(i).getCategoryName();
+				String itemName = listNewLayoutS.get(i).getItemName();
+				String itemParentCD = listNewLayoutS.get(i).getItemParentCD();
+				String itemNameC = listNewLayoutS.get(i).getItemNameC();
 
 				if (cateName == null) {
 					data.put(value1, "----------");
@@ -60,7 +76,7 @@ public class NewLayoutExportImpl implements MasterListData{
 						data.put(value2, itemName);
 						data.put(value3, "");
 					} else {
-						if (listNewLayout.get(i).getCategoryName().equals(listNewLayout.get(i - 1).getCategoryName())) {
+						if (listNewLayoutS.get(i).getCategoryName().equals(listNewLayoutS.get(i - 1).getCategoryName())) {
 							data.put(value1, "");
 							
 							if(itemParentCD ==null){
@@ -68,6 +84,7 @@ public class NewLayoutExportImpl implements MasterListData{
 								data.put(value3, "");
 							}else{
 								data.put(value2, "");
+								
 								data.put(value3, itemNameC);
 							}
 						} else {
@@ -83,23 +100,7 @@ public class NewLayoutExportImpl implements MasterListData{
 						}
 					}
 				}
-//				if (cateName == null) {
-//					data.put(value1, "----------");
-//					data.put(value2, "----------");
-//				} else {
-//					if (i == 0) {
-//						data.put(value1, cateName);
-//						data.put(value2, itemName);
-//					} else {
-//						if (listNewLayout.get(i).getCategoryName().equals(listNewLayout.get(i - 1).getCategoryName())) {
-//							data.put(value1, "");
-//							data.put(value2, itemName);
-//						} else {
-//							data.put(value1, cateName);
-//							data.put(value2, itemName);
-//						}
-//					}
-//				}
+
 
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -120,7 +121,7 @@ public class NewLayoutExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value2, TextResource.localize("CPS007_23"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value3, TextResource.localize(" "),
+		columns.add(new MasterHeaderColumn(value3, TextResource.localize("CPS007_26"),
 				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;

@@ -16,10 +16,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkTypeGroupExcel{
 
-	private static final String SELECT_ALL_WORKTYPE_EXCEL = "SELECT a.CODE, a.NAME, b.WORKTYPE_GROUP_NO, b.WORKTYPE_GROUP_NAME, c.NAME,b.WORKTYPE_CODE "
-			+ "FROM BSYMT_EMPLOYMENT  a "
-			+ "left join KRCMT_WORKTYPE_CHANGEABLE b on a.CODE = b.EMP_CODE and a.CID=b.CID "
-			+ "left join KSHMT_WORKTYPE c on b.WORKTYPE_CODE = c.CD and b.CID=c.CID "
+	private static final String SELECT_ALL_WORKTYPE_EXCEL = "SELECT a.EMP_CODE, b.NAME, a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, c.NAME,a.WORKTYPE_CODE "
+			+ "FROM KRCMT_WORKTYPE_CHANGEABLE  a "
+			+ "left join BSYMT_EMPLOYMENT b on b.CODE = a.EMP_CODE and a.CID=b.CID "
+			+ "left join KSHMT_WORKTYPE c on a.WORKTYPE_CODE = c.CD and b.CID=c.CID "
 			+ "where a.CID=?companyId ";
 	private static final String SELECT_ALL_DEFAULT_WORKTPYE = "select a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, b.NAME,b.CD "
 			+ "from KRCMT_WORKTYPE_CHANGEABLE a "

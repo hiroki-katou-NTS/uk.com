@@ -65,8 +65,22 @@ module nts.uk.at.view.kml002 {
                         break;
                 }
             }
+            /**
+             * Export excel
+             */
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                h.service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
-
+    
         interface ITabModel {
             id: any;
             name: string;

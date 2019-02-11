@@ -48,7 +48,7 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 	@Inject
 	private PermissonFinder permissonFinder;
 	
-	private final static String GET_BY_ROLE_TYPE = "SELECT ROLE_ID, ROLE_CD, CID, ROLE_TYPE, ROLE_NAME FROM SACMT_ROLE WHERE CID = ?companyId AND ROLE_TYPE = " + roleType + " ORDER BY ASSIGN_ATR, ROLE_CD";
+	private final static String GET_BY_ROLE_TYPE = "SELECT t1.ROLE_ID, t2.ROLE_CD, t2.CID, t2.ROLE_TYPE, t2.ROLE_NAME FROM (SELECT DISTINCT ROLE_ID FROM KSCST_SCHE_COMMON_AUTHOR WHERE CID = ?companyId) AS t1 LEFT JOIN (SELECT * FROM SACMT_ROLE WHERE CID = ?companyId) AS t2 ON t1.ROLE_ID = t2.ROLE_ID WHERE (ROLE_TYPE = " + roleType + " OR ROLE_TYPE IS NULL) ORDER BY t2.ASSIGN_ATR, t2.ROLE_CD";
 	
 	/**
 	 * init data using some common available
@@ -59,11 +59,6 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		int maxColumn = 0;
 		List<SacmtRoleData> listSacmtRoles = findRoles(companyId);
 		Map<String, Object> map = new HashMap<>();
-		if (listSacmtRoles.isEmpty()){
-			map.put("listColumns", new ArrayList<>());
-			map.put("listDatas", new ArrayList<>());
-			return map;
-		}
 		
 		ScheduleDescriptionDto scheduleDescriptionDto = permissonFinder.getAllDes();
 		
@@ -132,9 +127,10 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 					if (!listShiftPermisson.contains(columnName)) listShiftPermisson.add(columnName);
 				}
 			}
-			
-			String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
-			if (!listSchemodifyDeadline.contains(columnName)) listSchemodifyDeadline.add(columnName);
+			String n1 = TextResource.localize("KSM011_76");
+			String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+			if (!listSchemodifyDeadline.contains(n1)) listSchemodifyDeadline.add(n1);
+			if (!listSchemodifyDeadline.contains(n2)) listSchemodifyDeadline.add(n2);
 		}
 		
 		listColumnNames.addAll(listCommonAuthor);
@@ -145,8 +141,14 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		listColumnNames.addAll(listSchemodifyDeadline);
 		
 		List<MasterHeaderColumn> listColumns = getHeaderColumns(maxColumn, listColumnNames);
-		List<MasterData> listDatas = getMasterDatas(maxColumn, listItems, scheduleDescriptionDto, listColumnNames);
 		map.put("listColumns", listColumns);
+		
+		if (listSacmtRoles.isEmpty()){
+			map.put("listDatas", new ArrayList<>());
+			return map;
+		}
+		
+		List<MasterData> listDatas = getMasterDatas(maxColumn, listItems, scheduleDescriptionDto, listColumnNames);
 		map.put("listDatas", listDatas);
 		return map;
 	}
@@ -259,8 +261,8 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 	
 	/* put empty map */
 	private void putEmptyData(Map<String, Object> data, List<String> listColumnNames){
-		data.put("項目","");
-		data.put("値", "");
+		data.put("コード","");
+		data.put("名称", "");
 		for (String column : listColumnNames) {
 			data.put(column, "");
 		}
@@ -279,8 +281,14 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		Map<String, Object> data = new HashMap<>();
 		putEmptyData(data, listColumnNames); 
 		
-		data.put("コード", roleData.getCode());
-		data.put("名称", roleData.getName());
+		if (roleData.getCode() != null){
+			data.put("コード", roleData.getCode());
+		}
+		if (roleData.getName() != null){
+			data.put("名称", roleData.getName());
+		} else {
+			data.put("名称", TextResource.localize("KSM011_75"));
+		}
 		
 		Map<String, Object> mapRole = new HashMap<>();
 		mapRole.put("data", permissonDto);
@@ -293,10 +301,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, au.getFunctionNoCommon().intValue(), 1);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (au.getAvailableCommon() == 0) {
+					switch (au.getAvailableCommon()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -309,10 +323,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, pe.getFunctionNoPers().intValue(), 2);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (pe.getAvailablePers() == 0) {
+					switch (pe.getAvailablePers()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -325,10 +345,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, da.getFunctionNoDate().intValue(), 3);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (da.getAvailableDate() == 0) {
+					switch (da.getAvailableDate()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -341,10 +367,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, sh.getFunctionNoShift().intValue(), 4);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (sh.getAvailableShift() == 0) {
+					switch (sh.getAvailableShift()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -357,10 +389,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, pe.getFunctionNoWorkplace().intValue(), 5);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (pe.getAvailableWorkplace() == 0) {
+					switch (pe.getAvailableWorkplace()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -369,18 +407,28 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		List<ModifyDeadlineDto> schemodifyDeadline = permissonDto.getSchemodifyDeadline();
 		if (!schemodifyDeadline.isEmpty()){
 			for (ModifyDeadlineDto sc : schemodifyDeadline) {
-				String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
-				String value = String.valueOf(sc.getCorrectDeadline());
-				value = value.concat(" ");
-				value = value.concat(TextResource.localize("KSM011_135"));
-				value = value.concat(TextResource.localize("KSM011_91"));
-				
-				data.put(columnName, value);
+				String n1 = TextResource.localize("KSM011_76");
+				switch (sc.getUseCls()) {
+				case 0:
+					data.put(n1, TextResource.localize("KSM011_8"));
+					
+					String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+					String value = String.valueOf(sc.getCorrectDeadline());
+					value = value.concat(TextResource.localize("KSM011_135"));
+					value = value.concat(TextResource.localize("KSM011_91"));
+					data.put(n2, value);
+					
+					break;
+				case 1:
+					data.put(n1, TextResource.localize("KSM011_9"));
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		
 		MasterData masterData = new MasterData(data, null, "");
-		
 		masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 		masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 		for (String string : listColumnNames) {
