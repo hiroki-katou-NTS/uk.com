@@ -129,7 +129,7 @@ public class WorkTypeControlSheet extends JpaRepository{
 							data.put("項目", parent);
 						}
 						data.put(sheet3_column2, child);
-						if (child.equals(TextResource.localize("KSM011_1")) && parent.equals(TextResource.localize("KSM011_68")) && worktypeDisControl.getUseAtr().value == 1){
+						if (child.equals(TextResource.localize("KSM011_1")) && parent.equals(TextResource.localize("KSM011_68")) && worktypeDisControl.getUseAtr().value == 0){
 							data.put("値", null);
 						} else {
 							data.put("値", getControlValue(parent, child, worktypeDisControl, workTypeDtos));
@@ -168,10 +168,10 @@ public class WorkTypeControlSheet extends JpaRepository{
 		if (key.equals(TextResource.localize("KSM011_69")) && parent.equals(TextResource.localize("KSM011_68"))){
 			switch (worktypeDisControl.getUseAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -209,9 +209,6 @@ public class WorkTypeControlSheet extends JpaRepository{
 				if (type.getWorkTypeCode().equals(workTypeCode)){
 					name = type.getName();
 				}
-			}
-			if (name == null){
-				name = TextResource.localize("KSM011_75");
 			}
 		}
 		return name;
