@@ -166,7 +166,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                            if(c.getUseAtr()==1){
                                   data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
-                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
+//                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
+                        	   return;
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
@@ -885,7 +886,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                            if(c.getUseAtr()){
                                   data.put("使用区分", "使用する");
                            }else{
-                                  data.put("使用区分", "使用しない");
+//                                  data.put("使用区分", "使用しない");
+                        	   return;
                            }
                            List<Integer> listApplication  = c.getLstApplication();
                            Collections.sort(listApplication);
