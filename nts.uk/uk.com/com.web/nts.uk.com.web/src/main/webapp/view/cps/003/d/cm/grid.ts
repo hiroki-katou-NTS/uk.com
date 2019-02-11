@@ -152,7 +152,7 @@ module nts.custombinding {
                         if (evt.target.tagName == 'DIV' && [13, 32].indexOf(evt.keyCode) > -1) {
                             let input = evt.target.querySelector('input');
 
-                            if (input) {
+                            if (input && !input.disabled) {
                                 dispatch(input, 'click');
                             }
                         } else if (evt.target.tagName == 'INPUT') {
@@ -180,6 +180,9 @@ module nts.custombinding {
 
                         if (input && (input.getAttribute('data-require') == 'true' || input.getAttribute('data-pc'))) {
                             input.disabled = true;
+                            $(input).closest('.ntsControl.ntsCheckBox').attr('tabindex', -1);
+                        } else {
+                            $(input).closest('.ntsControl.ntsCheckBox').attr('tabindex', 0);
                         }
 
                         if ([].slice.call(inputs).length == dataSources.length) {
