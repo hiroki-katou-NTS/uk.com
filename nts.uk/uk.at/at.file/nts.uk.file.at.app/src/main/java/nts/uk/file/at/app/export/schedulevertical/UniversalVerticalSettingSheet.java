@@ -96,8 +96,10 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 		// loop listItems 
 		listItems = listItems.stream().sorted((object1, object2) -> object1.getVerticalCalCd().compareTo(object2.getVerticalCalCd())).collect(Collectors.toList());
 		listItems.stream().forEach(item -> {
-			AtomicInteger count = new AtomicInteger(0); 
-			datas.addAll(createRow(item, count));
+			if (item.getUseAtr() == 1) {
+				AtomicInteger count = new AtomicInteger(0); 
+				datas.addAll(createRow(item, count));
+			}
 		});
 		return datas;
 	}
