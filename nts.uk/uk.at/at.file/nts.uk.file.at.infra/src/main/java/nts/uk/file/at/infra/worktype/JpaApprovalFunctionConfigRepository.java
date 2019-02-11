@@ -264,7 +264,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("        ORDER BY EMP_WT.CID, EMP_WT.WORK_TYPE_CODE ");
 		sql.append("       FOR XML PATH('')), 1 , 1, '') ");
 		sql.append("       ELSE NULL ");
-		sql.append("     END WORK_TYPE_NAME ");
+		sql.append("     END WORK_TYPE_NAME, ");
+		sql.append("	 ROW_NUMBER() OVER (PARTITION BY TEMP.CODE, APP_TYPE ORDER BY TEMP.CODE, APP_TYPE) AS ROW_NUM	");
 		sql.append("    FROM ");
 		sql.append("     (SELECT ");
 		sql.append("      EMP_SET.CID, ");
