@@ -926,42 +926,42 @@ public class CalculationSettingExportImpl implements MasterListData {
 				// block 2
 				
 				//
-				Map<String, Object> line31 = new HashMap<>();
-				line31.put(column1Sheet2,"");
-				line31.put(column2Sheet2,TextResource.localize("KMK013_29"));
-				line31.put(column3Sheet2,"");
-				line31.put(column4Sheet2,"");
+				Map<String, Object> line31_1 = new HashMap<>();
+				line31_1.put(column1Sheet2,"");
+				line31_1.put(column2Sheet2,TextResource.localize("KMK013_29"));
+				line31_1.put(column3Sheet2,"");
+				line31_1.put(column4Sheet2,"");
 				if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet()) && !Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation())
 						&& holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation()==1){
-					line31.put(column5Sheet2,TextResource.localize("KMK013_42"));
+					line31_1.put(column5Sheet2,TextResource.localize("KMK013_42"));
 				}else{
-					line31.put(column5Sheet2,TextResource.localize("KMK013_43"));
+					line31_1.put(column5Sheet2,TextResource.localize("KMK013_43"));
 				}
-				MasterData masterData31 = new MasterData(line31, null, "");
-				Map<String, MasterCellData> rowData31 = masterData31.getRowData();
-				getAlignsheet2(rowData31);
-				datas.add(masterData31);
+				MasterData masterData31_1 = new MasterData(line31_1, null, "");
+				Map<String, MasterCellData> rowData31_1 = masterData31_1.getRowData();
+				getAlignsheet2(rowData31_1);
+				datas.add(masterData31_1);
 				//
 				
 				if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet()) && !Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation())
 						&& holidayAddtionDto.getHourlyPaymentAdditionSet().getCalcWorkHourVacation()==1){
 					// if check
-					Map<String, Object> line32 = new HashMap<>();
-					line32.put(column1Sheet2,"");
-					line32.put(column2Sheet2,"");
-					line32.put(column3Sheet2,TextResource.localize("KMK013_44"));
-					line32.put(column4Sheet2,"");
+					Map<String, Object> line32_1 = new HashMap<>();
+					line32_1.put(column1Sheet2,"");
+					line32_1.put(column2Sheet2,"");
+					line32_1.put(column3Sheet2,TextResource.localize("KMK013_44"));
+					line32_1.put(column4Sheet2,"");
 					if(!Objects.isNull(holidayAddtionDto.getHourlyPaymentAdditionSet().getAddition2())
 							&& holidayAddtionDto.getHourlyPaymentAdditionSet().getAddition2()==1){
 						
-						line32.put(column5Sheet2,select);
+						line32_1.put(column5Sheet2,select);
 					}else{
-						line32.put(column5Sheet2,unselect);
+						line32_1.put(column5Sheet2,unselect);
 					}
-					MasterData masterData32 = new MasterData(line32, null, "");
-					Map<String, MasterCellData> rowData32 = masterData32.getRowData();
-					getAlignsheet2(rowData32);
-					datas.add(masterData32);
+					MasterData masterData32_1 = new MasterData(line32_1, null, "");
+					Map<String, MasterCellData> rowData32_1 = masterData32_1.getRowData();
+					getAlignsheet2(rowData32_1);
+					datas.add(masterData32_1);
 					//
 					Map<String, Object> line33 = new HashMap<>();
 					line33.put(column1Sheet2,"");
@@ -1362,20 +1362,26 @@ public class CalculationSettingExportImpl implements MasterListData {
 					getAlignsheet2(rowDatatab4block1line2);
 					datas.add(masterDatatab4block1line2);
 					//
-					Map<String, Object> tab4block1line3 = new HashMap<>();
-					tab4block1line3.put(column1Sheet2,"");
-					tab4block1line3.put(column2Sheet2,"");
-					tab4block1line3.put(column3Sheet2,"");
-					tab4block1line3.put(column4Sheet2,TextResource.localize("KMK013_34"));
-					if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getDeformatExcValue()==1){
-						tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_37"));
-					}else{
-						tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_36"));
+					
+					if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getAdditionTimePre()==1){
+						Map<String, Object> tab4block1line3 = new HashMap<>();
+						tab4block1line3.put(column1Sheet2,"");
+						tab4block1line3.put(column2Sheet2,"");
+						tab4block1line3.put(column3Sheet2,"");
+						tab4block1line3.put(column4Sheet2,TextResource.localize("KMK013_34"));
+						if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getDeformatExcValue()==1){
+							tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_37"));
+						}else{
+							tab4block1line3.put(column5Sheet2,TextResource.localize("KMK013_36"));
+						}
+						MasterData masterDatatab4block1line3 = new MasterData(tab4block1line3, null, "");
+						Map<String, MasterCellData> rowDatatab4block1line3 = masterDatatab4block1line3.getRowData();
+						getAlignsheet2(rowDatatab4block1line3);
+						datas.add(masterDatatab4block1line3);
 					}
-					MasterData masterDatatab4block1line3 = new MasterData(tab4block1line3, null, "");
-					Map<String, MasterCellData> rowDatatab4block1line3 = masterDatatab4block1line3.getRowData();
-					getAlignsheet2(rowDatatab4block1line3);
-					datas.add(masterDatatab4block1line3);
+				
+					
+					
 					//
 					Map<String, Object> tab4block1line4 = new HashMap<>();
 					tab4block1line4.put(column1Sheet2,"");
@@ -1679,7 +1685,7 @@ private List<MasterData> getDataEmbossSetting (MasterListExportQuery query){
 			data4.put(column2Sheet4,"");
 			if(!Objects.isNull(stampReflectionManagementDto.getAutoStampReflectionClass())){
 					
-				data4.put(column3Sheet4,stampReflectionManagementDto.getAutoStampReflectionClass()==1?TextResource.localize("KMK013_279"):TextResource.localize("KMK013_280"));			
+				data4.put(column3Sheet4,stampReflectionManagementDto.getAutoStampReflectionClass()==1?TextResource.localize("KMK013_280"):TextResource.localize("KMK013_279"));			
 				}else{
 					data4.put(column3Sheet4,"");
 				}
@@ -1746,7 +1752,7 @@ private List<MasterData> getDataEmbossSetting (MasterListExportQuery query){
 			data9.put(column1Sheet4, TextResource.localize("KMK013_302"));
 			data9.put(column2Sheet4,"");
 			if(!Objects.isNull(stampReflectionManagementDto.getBreakSwitchClass())){					
-				data9.put(column3Sheet4,stampReflectionManagementDto.getBreakSwitchClass()==1?TextResource.localize("KMK013_304"):TextResource.localize("KMK013_305"));			
+				data9.put(column3Sheet4,stampReflectionManagementDto.getBreakSwitchClass()==1?TextResource.localize("KMK013_305"):TextResource.localize("KMK013_304"));			
 				}else{
 					data9.put(column3Sheet4,"");
 				}
@@ -1996,9 +2002,9 @@ private List<MasterData> getDataFlexWorkSetting(MasterListExportQuery query){
 		data5.put(column2Sheet7,"");
 		if( !Objects.isNull(flexSetDto.getFlexNonworkingDayCalc()) ){
 			if(flexSetDto.getFlexNonworkingDayCalc()==1){
-				data5.put(column3Sheet7,TextResource.localize("KMK013_269"));
-			}else if(flexSetDto.getFlexNonworkingDayCalc()==0){
 				data5.put(column3Sheet7,TextResource.localize("KMK013_268"));
+			}else if(flexSetDto.getFlexNonworkingDayCalc()==0){
+				data5.put(column3Sheet7,TextResource.localize("KMK013_269"));
 			}else{
 				data5.put(column3Sheet7,"");
 			}
@@ -2094,7 +2100,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	if(!CollectionUtil.isEmpty(rs) && !CollectionUtil.isEmpty(rsName) && rs.size()>=rsName.size()){
 	
 			 for( int i=0;i<rsName.size(); i++){
-				RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
+				/*RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
 				 if(i==0){
 					 Map<String, Object> data = new HashMap<>();
 					 data.put(column1Sheet8,TextResource.localize("KMK013_383"));
@@ -2113,35 +2119,115 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 					Map<String, MasterCellData> rowData = masterData.getRowData();
 					getAlignLeftsheet8(rowData);
 					datas.add(masterData);
+				 }*/
+				 OvertimeWorkFrameFindDto overtimeWorkFrameFindDto =rsName.get(i);
+			//	 RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
+				 if(i==0){
+					
+					 for(RoleOvertimeWorkDto roleOvertimeWorkDto:rs){
+						 if(roleOvertimeWorkDto.getOvertimeFrNo()==overtimeWorkFrameFindDto.getOvertimeWorkFrNo()){
+							 Map<String, Object> data = new HashMap<>();
+							 data.put(column1Sheet8,TextResource.localize("KMK013_383"));					 
+							 data.put(column2Sheet8,TextResource.localize("KMK013_152")+overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+							 data.put(column3Sheet8,getNameRoleOTWork(roleOvertimeWorkDto.getRoleOTWork()));
+							 MasterData masterData = new MasterData(data, null, "");
+							Map<String, MasterCellData> rowData = masterData.getRowData();
+							getAlignLeftsheet8(rowData);
+							datas.add(masterData);
+							break;
+						 }
+						
+					 }
+					
+				 }else{
+					 for(RoleOvertimeWorkDto roleOvertimeWorkDto:rs){
+						 if(roleOvertimeWorkDto.getOvertimeFrNo()==overtimeWorkFrameFindDto.getOvertimeWorkFrNo()){
+							 Map<String, Object> data = new HashMap<>();
+							 data.put(column1Sheet8,"");
+							 data.put(column2Sheet8,TextResource.localize("KMK013_152")+overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+							 data.put(column3Sheet8,getNameRoleOTWork(roleOvertimeWorkDto.getRoleOTWork()));
+							MasterData masterData = new MasterData(data, null, "");
+							Map<String, MasterCellData> rowData = masterData.getRowData();
+							getAlignLeftsheet8(rowData);
+							datas.add(masterData);
+							break;
+						 }
+					 } 
+					
 				 }
 				
 			}
 		 //
 			 if(!CollectionUtil.isEmpty(rsworkday) && !CollectionUtil.isEmpty(listRoleOpen) && listRoleOpen.size()>=rsworkday.size() ){
 				 
-				 for( int i=0;i<rsworkday.size(); i++){
+			 for( int i=0;i<rsworkday.size(); i++){
 					 WorkdayoffFrameFindDto workdayoffFrameFindDto=rsworkday.get(i);
 						 if(i==0){
-							 Map<String, Object> data = new HashMap<>();
-							 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
-							 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
-							 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
-							 MasterData masterData = new MasterData(data, null, "");
-							Map<String, MasterCellData> rowData = masterData.getRowData();
-							getAlignLeftsheet8(rowData);
-							datas.add(masterData);
+							 for(RoleOfOpenPeriodDto roleOfOpenPeriodDto:listRoleOpen){
+								 if(roleOfOpenPeriodDto.getBreakoutFrNo()==workdayoffFrameFindDto.getWorkdayoffFrNo()){
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(roleOfOpenPeriodDto.getRoleOfOpenPeriod()));
+									 MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+									break;
+								 }
+							 }
+						
 						 }else{
-							 Map<String, Object> data = new HashMap<>();
-							 data.put(column1Sheet8,"");
-							 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
-							 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
-							MasterData masterData = new MasterData(data, null, "");
-							Map<String, MasterCellData> rowData = masterData.getRowData();
-							getAlignLeftsheet8(rowData);
-							datas.add(masterData);
+							 for(RoleOfOpenPeriodDto roleOfOpenPeriodDto:listRoleOpen){
+								 if(roleOfOpenPeriodDto.getBreakoutFrNo()==workdayoffFrameFindDto.getWorkdayoffFrNo()){
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,"");
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(roleOfOpenPeriodDto.getRoleOfOpenPeriod()));
+									MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+									break;
+								 }
+							 }
+							 
+							
 						 }
 						
 					}
+				 
+				/* for( int i=0;i<rsworkday.size(); i++){
+					 WorkdayoffFrameFindDto workdayoffFrameFindDto=rsworkday.get(i);
+						 if(i==0){
+						
+							
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,TextResource.localize("KMK013_384"));
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
+									 MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+								
+								 
+							 
+						
+						 }else{
+								
+									 Map<String, Object> data = new HashMap<>();
+									 data.put(column1Sheet8,"");
+									 data.put(column2Sheet8,TextResource.localize("KMK013_157")+workdayoffFrameFindDto.getWorkdayoffFrNo()+workdayoffFrameFindDto.getWorkdayoffFrName());
+									 data.put(column3Sheet8,getNameRoleOfOpenPeriodEnum(listRoleOpen.get(i).getRoleOfOpenPeriod()));
+									MasterData masterData = new MasterData(data, null, "");
+									Map<String, MasterCellData> rowData = masterData.getRowData();
+									getAlignLeftsheet8(rowData);
+									datas.add(masterData);
+							
+						 }
+						
+					}*/
 				 
 			 }
 		
@@ -2730,7 +2816,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 				  	//	 List<WeekdayHolidayDto> listWeekdayHolidayDto=zeroTimeDto.getWeekdayHoliday(); //1
 				  	//	zeroTimeDto.getOverdayHolidayAtten(); //2
 				  	//	zeroTimeDto.getOverdayCalcHoliday(); //3
-						
+					if(!CollectionUtil.isEmpty(rs)){
 						ZeroTimeDto zeroTimeDto=rs.get(0);
 				  		List<WeekdayHolidayDto> listWeekdayHolidayDto=zeroTimeDto.getWeekdayHoliday(); //1
 				  		List<HdFromWeekdayDto> listHdFromWeekdayDto=zeroTimeDto.getOverdayHolidayAtten(); //2
@@ -2803,6 +2889,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 		        		 getAlignsheet10(rowData);
 		        		 datas.add(masterData);
 						
+					}
 					}
 				}
 			}
