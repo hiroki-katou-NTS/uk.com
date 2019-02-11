@@ -59,11 +59,6 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		int maxColumn = 0;
 		List<SacmtRoleData> listSacmtRoles = findRoles(companyId);
 		Map<String, Object> map = new HashMap<>();
-		if (listSacmtRoles.isEmpty()){
-			map.put("listColumns", new ArrayList<>());
-			map.put("listDatas", new ArrayList<>());
-			return map;
-		}
 		
 		ScheduleDescriptionDto scheduleDescriptionDto = permissonFinder.getAllDes();
 		
@@ -146,8 +141,14 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		listColumnNames.addAll(listSchemodifyDeadline);
 		
 		List<MasterHeaderColumn> listColumns = getHeaderColumns(maxColumn, listColumnNames);
-		List<MasterData> listDatas = getMasterDatas(maxColumn, listItems, scheduleDescriptionDto, listColumnNames);
 		map.put("listColumns", listColumns);
+		
+		if (listSacmtRoles.isEmpty()){
+			map.put("listDatas", new ArrayList<>());
+			return map;
+		}
+		
+		List<MasterData> listDatas = getMasterDatas(maxColumn, listItems, scheduleDescriptionDto, listColumnNames);
 		map.put("listDatas", listDatas);
 		return map;
 	}
