@@ -585,7 +585,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let noPrintLineInCtg = 0;
 
             for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
-                totalLine += settingByCtg.listLineByLineSet().length;
+                for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                    if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                        totalLine++;
+                    }
+                }
             }
 
             for(let lineByLineSetting: LineByLineSetting of self.listLineByLineSet()) {
