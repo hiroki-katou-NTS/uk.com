@@ -272,33 +272,32 @@ public class RoleMonthlyExportExcelImpl  {
     }
     
     public List<MasterData> getMasterDatasSheet2(MasterListExportQuery query, List<AttItemName> listAttItemNameNoAuth, Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly) {
-        List<MasterData> datas = new ArrayList<>();
-        if (CollectionUtil.isEmpty(listAttItemNameNoAuth)) {
+    	List<Integer> listIdControlItem = new ArrayList<Integer>(listConItem.keySet());
+    	List<MasterData> datas = new ArrayList<>();
+        if (CollectionUtil.isEmpty(listIdControlItem)) {
             return null;
         } else {
-            listAttItemNameNoAuth.stream().forEach(c -> {
-                ControlOfAttMonthlyDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
-                Map<String, Object> data = new HashMap<>();
-                putDataEmptySheet2(data);
-            
-                data.put("コード", c.getAttendanceItemDisplayNumber());
-                data.put("項目", c.getAttendanceItemName());
-                if(controlItem!=null){
-                    if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
-                        data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
+        	if (!CollectionUtil.isEmpty(listAttItemNameNoAuth)){
+        		listAttItemNameNoAuth.stream().forEach(c -> {
+                    ControlOfAttMonthlyDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
+                   
+                    if(controlItem!=null){
+                    	 Map<String, Object> data = new HashMap<>();
+                         putDataEmptySheet2(data);
+                         data.put("コード", c.getAttendanceItemDisplayNumber());
+                         data.put("項目", c.getAttendanceItemName());
+                        if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
+                            data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
+                        }
+                        TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
+                        data.put("丸め単位", timeInputUnit.nameId);
+                        if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
+                        	data.put("丸め単位","");
+                        }
+                        datas.add(alignMasterDataSheet2(data));
                     }
-                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
-                    data.put("丸め単位", timeInputUnit.nameId);
-                }else{
-                    data.put("ヘッダー色", "");
-                    data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
-                }
-                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
-                	data.put("丸め単位","");
-                }
-                datas.add(alignMasterDataSheet2(data));
-                
-            });
+                });
+        	}
         }
         return datas;
     }
@@ -311,7 +310,7 @@ public class RoleMonthlyExportExcelImpl  {
     }
     private MasterData alignMasterDataSheet2(Map<String, Object> data) {
         /**
-         *     TIME_INPUT_1Min(0, "1分"),
+        TIME_INPUT_1Min(0, "1分"),
         TIME_INPUT_5Min(1, "5分"),
         TIME_INPUT_10Min(2, "10分"),
         TIME_INPUT_15Min(3, "15分"),
