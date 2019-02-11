@@ -420,6 +420,24 @@ module cps003.f.vm {
                                 }
                             }
                         } else {
+                            if ([1, 2, 3].indexOf(value.replaceFormat) > -1) {
+                                confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            } else {
+                                if (value.replaceValue1) {
+                                    confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    confirm({ messageId: 'Msg_634', messageParams: [item.name] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
+                            }
                         }
                     }
                 }
@@ -460,6 +478,24 @@ module cps003.f.vm {
                                 }
                             }
                         } else {
+                            if ([1, 2, 3].indexOf(value.replaceFormat) > -1) {
+                                confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            } else {
+                                if (value.replaceValue1) {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    confirm({ messageId: 'Msg_636', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
+                            }
                         }
                     }
                 } else {
@@ -538,6 +574,24 @@ module cps003.f.vm {
                                     }
                                 }
                             } else {
+                                if ([1, 2, 3].indexOf(value.replaceFormat) > -1) {
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    if (value.replaceValue1) {
+                                        confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                            setShared('CPS003F_VALUE', value);
+                                            close();
+                                        });
+                                    } else {
+                                        alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                            setShared('CPS003F_VALUE', null);
+                                            //close();
+                                        });
+                                    }
+                                }
                             }
                         }
                     }
