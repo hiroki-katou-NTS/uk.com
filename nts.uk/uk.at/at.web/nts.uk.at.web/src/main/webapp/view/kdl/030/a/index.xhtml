@@ -49,7 +49,7 @@
 						<tbody data-bind="foreach: approvalRootState">
 							<!-- 1 フェーズ -->
 							<com:ko bind="$data.listApprovalFrame" tag="foreach">
-								<tr style="cursor:pointer;">
+								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
 											style="width: 111px;"  class="bg-green"></td>
