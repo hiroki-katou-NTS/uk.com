@@ -44,7 +44,7 @@ module cps003.b.vm {
                 close();
 
             }).fail((res) =>{
-                alertError({ messageId: res.messageId });
+                alertError({ messageId: res.messageId , messageParams: [self.currentMode().categoryName] });
                 block.clear();
             })
         }
