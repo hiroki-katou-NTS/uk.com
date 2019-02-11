@@ -87,6 +87,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 }
             }).always(() => {
                 block.clear();
+                $("#G1_5_container").focus();
             });
         }
 
