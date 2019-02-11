@@ -14,7 +14,7 @@
    			<button class="proceed" tabindex="1" data-bind="click: save, attr : {'disabled' : false}, ">#{i18n.getText('KMF002_2')}</button>
    			<!-- A2_2 -->
    			<button tabindex="2" data-bind="click: settingOfUsageUnit, attr : {'disabled' : isDisableSetUnitBtn}">#{i18n.getText('KMF002_26')}</button>
-   			<button id="print-button_1" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
+   			<button tabindex="3" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
 		</div>
 		
 		<div id="scrA" class="contents-area" style="padding-right:10px">
@@ -24,7 +24,7 @@
 					<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_3')}</div>
 				</div>
 				<!-- A3_2 -->
-				<div id="managePubHDDiv" tabindex="3" name="#[KMF002_3]">
+				<div id="managePubHDDiv" tabindex="4" name="#[KMF002_3]">
 					<!-- A3_3, A3_4 -->
 					<div tabindex="-1" id="managePubHD" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
 														optionsText: 'name',
@@ -43,7 +43,7 @@
 				<div>
 					<!-- A3_7 -->
 					<!-- A3_8 -->
-					<div tabindex="4" id="combo-box" style="width: 180px" 
+					<div tabindex="5" id="combo-box" style="width: 180px" 
 									data-bind="ntsComboBox: { options: lstCarryoverDeadline,
 																optionsValue: 'code',
 																visibleItemsCount: lstCarryoverDeadline().length,
@@ -57,7 +57,7 @@
 																name: '#[KMF002_4]'}"></div>
 				</div>
 				<!-- A3_9 -->
-				<div tabindex="5" id="ckbTransferWhenPublicHdIsMinus" data-bind="ntsCheckBox: { 
+				<div tabindex="6" id="ckbTransferWhenPublicHdIsMinus" data-bind="ntsCheckBox: { 
 																				checked: forwardSetOfPubHD().isTransferWhenPublicHdIsMinus, 
 																				enable: enableTransferWhenPublicHdIsMinus,
 																				 name:'#[KMF002_7]'
@@ -71,7 +71,7 @@
 				</div>
 				
 				<!-- A4_2 -->
-				<div tabindex="6" name='#[KMF002_7]'>
+				<div tabindex="7" name='#[KMF002_7]'>
 					<!-- A4_3, A4_4 -->
 					<div id="publicHdManagementClassification" tabindex="-1" data-bind="ntsRadioBoxGroup: { options: publicHDPeriod,
 														optionsText: 'name',
@@ -88,7 +88,7 @@
 				</div>
 				
 				<!-- A4_6 -->
-				<div tabindex="7" id="combo-box7" style="width: 155px" data-bind="ntsComboBox: { options: lstManagementPeriod,
+				<div tabindex="8" id="combo-box7" style="width: 155px" data-bind="ntsComboBox: { options: lstManagementPeriod,
 																optionsValue: 'code',
 																visibleItemsCount: 2,
 																value: publicHolidaySetting().pubHDGrantDate().period,
@@ -108,7 +108,7 @@
 						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_15')}</div>
 					</div>
 					<!-- A9_2 -->
-					<div tabindex="8">
+					<div tabindex="9">
 						<!-- A9_3, A9_4 -->
 						<div id="determineStartDate" tabindex="-1" data-bind="ntsRadioBoxGroup: { options: dayOfPublicHoliday,
 															optionsText: 'name',
@@ -124,7 +124,7 @@
 					</div>
 					<div>
 						<!-- A9_6 -->
-						<div tabindex="9" id="fullDate"
+						<div tabindex="10" id="fullDate"
 									data-bind="ntsDatePicker: {value: publicHolidaySetting().pubHD().date, 
 												      dateFormat: 'YYYY/MM/DD',
 												      enable: enablePubHDDateAndDayMonth,
@@ -134,7 +134,7 @@
 												css: {'hidden-element': enableFullDate() == false}" >
 						</div>
 						<!-- A9_7 -->
-						<div tabindex="10" id="monthdays" data-bind="ntsMonthDays: {value: publicHolidaySetting().pubHD().dayMonth,
+						<div tabindex="11" id="monthdays" data-bind="ntsMonthDays: {value: publicHolidaySetting().pubHD().dayMonth,
 																					name:'#[KMF002_16]',
 																					enable: enablePubHDDateAndDayMonth},
 																		css: {'hidden-element': enableFullDate() == true}"/>
