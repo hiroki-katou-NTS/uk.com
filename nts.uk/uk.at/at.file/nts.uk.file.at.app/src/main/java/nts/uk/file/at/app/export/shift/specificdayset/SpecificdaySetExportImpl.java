@@ -287,8 +287,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 				List<SpecificdaySetWorkplaceReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					SpecificdaySetWorkplaceReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//							|| (!firstObject.getHierarchyCode().isPresent()
+//							&& !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = dataByCode.stream()
 								.collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
 						AtomicInteger index = new AtomicInteger(0);
