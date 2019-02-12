@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 /**
 * パラメータ数値
 */
-@DecimalMaxValue("9999999.99")
-@DecimalMinValue("-9999999.99")
+@DecimalMaxValue("999999999.99")
+@DecimalMinValue("-999999999.99")
 @DecimalMantissaMaxLength(2)
 public class ParamNumber extends DecimalPrimitiveValue<ParamNumber> {
     
