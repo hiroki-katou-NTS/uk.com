@@ -5,9 +5,9 @@ public class AlarmCheckCondQuery {
 			.append("SELECT a.CD as CD, a.NAME as NAME,")
 			.append("(CASE WHEN (c.FILTER_BY_EMP = 1)")
 			.append(" THEN ")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '224')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '237')")
 			.append(" ELSE")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '225')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '238')")
 			.append(" END) as FILTER_BY_EMP,")
 			.append(" (CASE WHEN (c.FILTER_BY_EMP = 1)")
 			.append(" THEN")
@@ -16,7 +16,7 @@ public class AlarmCheckCondQuery {
 			.append(" (CASE WHEN (d1.NAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" d1.NAME")
-			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')")
+			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_EMP d ")
 			.append(" LEFT JOIN BSYMT_EMPLOYMENT d1 ON d.EMP_CD = d1.CODE AND d1.CID = a.CID")
@@ -29,9 +29,9 @@ public class AlarmCheckCondQuery {
 //			.append("c.FILTER_BY_CLS,")
 			.append("(CASE WHEN (c.FILTER_BY_CLS = 1)")
 			.append(" THEN ")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '224')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '237')")
 			.append(" ELSE")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '225')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '238')")
 			.append(" END) as FILTER_BY_CLS,")
 			.append(" (CASE WHEN (c.FILTER_BY_CLS = 1)")
 			.append(" THEN")
@@ -40,7 +40,7 @@ public class AlarmCheckCondQuery {
 			.append(" (CASE WHEN (e1.CLSNAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" e1.CLSNAME")
-			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')")
+			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_CLS e ")
 			.append(" LEFT JOIN BSYMT_CLASSIFICATION e1 ON e1.CID = a.CID AND e1.CLSCD = e.CLS_CD")
@@ -54,9 +54,9 @@ public class AlarmCheckCondQuery {
 //			.append(" c.FILTER_BY_JOB,")
 			.append("(CASE WHEN (c.FILTER_BY_JOB = 1)")
 			.append(" THEN ")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '224')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '237')")
 			.append(" ELSE")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '225')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '238')")
 			.append(" END) as FILTER_BY_JOB,")
 			.append("(CASE WHEN (c.FILTER_BY_JOB = 1)")
 			.append(" THEN")
@@ -65,7 +65,7 @@ public class AlarmCheckCondQuery {
 			.append(" (CASE WHEN (f1.JOB_NAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" f1.JOB_NAME")
-			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')")
+			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_JOB f ")
 			.append(" INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID AND f2.JOB_ID = f.JOB_ID AND f2.END_DATE >= '9999-12-31'")
@@ -80,9 +80,9 @@ public class AlarmCheckCondQuery {
 //			.append(" c.FILTER_BY_BUSINESSTYPE,")
 			.append("(CASE WHEN (c.FILTER_BY_BUSINESSTYPE = 1)")
 			.append(" THEN ")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '224')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '237')")
 			.append(" ELSE")
-			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '225')")
+			.append(" (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '238')")
 			.append(" END) as FILTER_BY_BUSINESSTYPE,")
 			.append("(CASE WHEN (c.FILTER_BY_BUSINESSTYPE = 1)")
 			.append(" THEN")
@@ -91,7 +91,7 @@ public class AlarmCheckCondQuery {
 			.append(" (CASE WHEN (g1.BUSINESS_TYPE_NAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" g1.BUSINESS_TYPE_NAME")
-			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')")
+			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_BUSTYPE g ")
 			.append(" LEFT JOIN KRCMT_BUSINESS_TYPE g1 ON g1.CID = a.CID AND g1.BUSINESS_TYPE_CD = g.BUSINESSTYPE_CD")
@@ -115,7 +115,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (d1.NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						d1.NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_EMP d "
 			+ " 				LEFT JOIN BSYMT_EMPLOYMENT d1 ON d.EMP_CD = d1.CODE AND d1.CID = a.CID"
@@ -131,7 +131,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (e1.CLSNAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						e1.CLSNAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_CLS e "
 			+ " 				LEFT JOIN BSYMT_CLASSIFICATION e1 ON e1.CID = a.CID AND e1.CLSCD = e.CLS_CD"
@@ -148,7 +148,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
 			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
@@ -166,7 +166,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (g1.BUSINESS_TYPE_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						g1.BUSINESS_TYPE_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_BUSTYPE g "
 			+ " 				left JOIN KRCMT_BUSINESS_TYPE g1 on g1.CID = a.CID and g1.BUSINESS_TYPE_CD = g.BUSINESSTYPE_CD"
@@ -182,7 +182,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (h2.ERROR_ALARM_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						h2.ERROR_ALARM_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END)"
 			+ " 				)"
 			+ " 				FROM KRCMT_DAILY_ERROR_CODE_PK h1"
@@ -970,7 +970,7 @@ public class AlarmCheckCondQuery {
 			+ "  				(CASE WHEN (d1.NAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						d1.NAME"
-			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				from KFNMT_ALCHKTARGET_EMP d "
 			+ "  				LEFT JOIN BSYMT_EMPLOYMENT d1 ON d.EMP_CD = d1.CODE AND d1.CID = a.CID"
@@ -986,7 +986,7 @@ public class AlarmCheckCondQuery {
 			+ "  				(CASE WHEN (e1.CLSNAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						e1.CLSNAME"
-			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				FROM KFNMT_ALCHKTARGET_CLS e "
 			+ "  				LEFT JOIN BSYMT_CLASSIFICATION e1 ON e1.CID = a.CID AND e1.CLSCD = e.CLS_CD"
@@ -1003,7 +1003,7 @@ public class AlarmCheckCondQuery {
 			+ "  				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						f1.JOB_NAME"
-			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				from KFNMT_ALCHKTARGET_JOB f "
 			+ "  				INNER join BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
@@ -1021,7 +1021,7 @@ public class AlarmCheckCondQuery {
 			+ "  				(CASE WHEN (g1.BUSINESS_TYPE_NAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						g1.BUSINESS_TYPE_NAME"
-			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				from KFNMT_ALCHKTARGET_BUSTYPE g "
 			+ "  				left join KRCMT_BUSINESS_TYPE g1 on g1.CID = a.CID and g1.BUSINESS_TYPE_CD = g.BUSINESSTYPE_CD"
@@ -1355,7 +1355,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (d1.NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						d1.NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_EMP d "
 			+ " 				LEFT JOIN BSYMT_EMPLOYMENT d1 ON d.EMP_CD = d1.CODE AND d1.CID = a.CID"
@@ -1371,7 +1371,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (e1.CLSNAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						e1.CLSNAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_CLS e "
 			+ " 				LEFT JOIN BSYMT_CLASSIFICATION e1 ON e1.CID = a.CID AND e1.CLSCD = e.CLS_CD"
@@ -1388,7 +1388,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
 			+ " 				INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
@@ -1406,7 +1406,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (g1.BUSINESS_TYPE_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						g1.BUSINESS_TYPE_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_BUSTYPE g "
 			+ " 				LEFT JOIN KRCMT_BUSINESS_TYPE g1 ON g1.CID = a.CID and g1.BUSINESS_TYPE_CD = g.BUSINESSTYPE_CD"
@@ -2252,7 +2252,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (d1.NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						d1.NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_EMP d "
 			+ " 				LEFT JOIN BSYMT_EMPLOYMENT d1 ON d.EMP_CD = d1.CODE AND d1.CID = a.CID"
@@ -2268,7 +2268,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (e1.CLSNAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						e1.CLSNAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_CLS e "
 			+ " 				LEFT JOIN BSYMT_CLASSIFICATION e1 ON e1.CID = a.CID AND e1.CLSCD = e.CLS_CD"
@@ -2285,7 +2285,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
 			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
@@ -2303,7 +2303,7 @@ public class AlarmCheckCondQuery {
 			+ " 				(CASE WHEN (g1.BUSINESS_TYPE_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						g1.BUSINESS_TYPE_NAME"
-			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '226')"
+			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_BUSTYPE g "
 			+ " 				LEFT JOIN KRCMT_BUSINESS_TYPE g1 on g1.CID = a.CID and g1.BUSINESS_TYPE_CD = g.BUSINESSTYPE_CD"

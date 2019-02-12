@@ -95,11 +95,6 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM002_93"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM002_94"), ColumnTextAlign.LEFT, "", true));
 
-		//TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
 		return columns;
 	}
 

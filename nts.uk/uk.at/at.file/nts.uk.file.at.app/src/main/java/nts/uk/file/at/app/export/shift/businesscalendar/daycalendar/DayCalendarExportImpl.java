@@ -82,11 +82,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("年月日", TextResource.localize("KSM004_23"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("祝日名称", TextResource.localize("KSM004_24"), ColumnTextAlign.LEFT, "", true));
-		//TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
+		
 		return columns;
 	}
 	
