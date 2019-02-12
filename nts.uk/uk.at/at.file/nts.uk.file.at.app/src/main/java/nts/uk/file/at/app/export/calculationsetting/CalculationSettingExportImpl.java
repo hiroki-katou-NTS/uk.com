@@ -2484,12 +2484,22 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     		 data2.put(column2Sheet11,TextResource.localize("KMK013_336"));
     		 data2.put(column3Sheet11,"");
     		 if(!CollectionUtil.isEmpty(listAbs)){
+    			
     			 String codeNameAbs=listAbs.get(0).getWorkTypeCode()+listAbs.get(0).getName();
     			 for( int i=1;i<listAbs.size();i++){
     				 codeNameAbs=codeNameAbs+","+listAbs.get(i).getWorkTypeCode()+listAbs.get(i).getName();
     			 }
     			 data2.put(column3Sheet11,codeNameAbs);
     		 }    	   		
+    		 MasterData masterData2 = new MasterData(data2, null, "");
+    		 Map<String, MasterCellData> rowData2 = masterData2.getRowData();
+    		 getAlignsheet11(rowData2);
+    		 datas.add(masterData2);
+    	}else{
+    		 Map<String, Object> data2 = new HashMap<>();
+    		 data2.put(column1Sheet11,TextResource.localize("KMK013_335"));
+    		 data2.put(column2Sheet11,TextResource.localize("KMK013_336"));
+    		 data2.put(column3Sheet11,"");
     		 MasterData masterData2 = new MasterData(data2, null, "");
     		 Map<String, MasterCellData> rowData2 = masterData2.getRowData();
     		 getAlignsheet11(rowData2);
@@ -2511,6 +2521,15 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     			 data3.put(column3Sheet11,codeNameAtt);
     		 }    	   	
     		
+    		 MasterData masterData3 = new MasterData(data3, null, "");
+    		 Map<String, MasterCellData> rowData3 = masterData3.getRowData();
+    		 getAlignsheet11(rowData3);
+    		 datas.add(masterData3);
+    	}else{    		
+    		 Map<String, Object> data3 = new HashMap<>();
+    		 data3.put(column1Sheet11,"");
+    		 data3.put(column2Sheet11,TextResource.localize("KMK013_338"));
+    		 data3.put(column3Sheet11,"");  		    		
     		 MasterData masterData3 = new MasterData(data3, null, "");
     		 Map<String, MasterCellData> rowData3 = masterData3.getRowData();
     		 getAlignsheet11(rowData3);
