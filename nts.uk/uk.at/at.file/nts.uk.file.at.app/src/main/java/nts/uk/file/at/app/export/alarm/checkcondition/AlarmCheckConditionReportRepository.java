@@ -13,4 +13,5 @@ public interface AlarmCheckConditionReportRepository {
 	public List<DailyReportData> getDailyConditions(String companyId);
 	public List<MulMonthReportData> getMulMonthConditions(String companyId);
 	public List<MonthReportData> getMonthConditions(String companyId);
+	public List<Agree36ReportData> getAgree36Conditions(String companyId);
 }

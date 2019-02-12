@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,8 +18,11 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
+import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData.Agree36CondError;
+import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData.Agree36OTError;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -57,10 +61,13 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				null, null, TextResource.localize("KAL003_262"));
 		SheetData sheetMulMonthData = new SheetData(getMasterDatasMulMonth(query), getHeaderColumnsMulMonth(query),
 				null, null, TextResource.localize("KAL003_267"));
+		SheetData sheetAgree36Data = new SheetData(getMasterDatasAgree36(query), getHeaderColumnsAgree36(query),
+				null, null, TextResource.localize("KAL003_299"));
 		
 		sheetDatas.add(sheetDailyData);
 		sheetDatas.add(sheetMonthData);
 		sheetDatas.add(sheetMulMonthData);
+		sheetDatas.add(sheetAgree36Data);
 		
 		return sheetDatas;
 	}
@@ -91,7 +98,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_220"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_221"),
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_221, TextResource.localize("KAL003_221"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_222, TextResource.localize("KAL003_222"),
 				ColumnTextAlign.LEFT, "", true));
@@ -151,7 +158,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_221).value(row.getFilterWorkType())
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(AlarmCheckConditionUtils.KAL003_222,
-				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222).value(row.getFilterWorkType())
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222).value(row.getWorktypeselections())
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(AlarmCheckConditionUtils.KAL003_223,
 				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_223)
@@ -182,7 +189,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_220"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_221"),
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_221, TextResource.localize("KAL003_221"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_222, TextResource.localize("KAL003_222"),
 				ColumnTextAlign.LEFT, "", true));
@@ -256,7 +263,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						if (!CollectionUtil.isEmpty(listRowUsePerCode)) {
 							AtomicInteger index = new AtomicInteger(0);
 							listRowUsePerCode.stream()
-									// .sorted(Comparator.nullsLast(Comparator.comparing(DailyReportData::getInsDate)))
+									.sorted(Comparator.nullsLast(Comparator.comparing(DailyReportData::getInsDate)))
 									.forEachOrdered(row -> {
 										datas.add(buildDailyReportData(row, index.get(), attendanceNameDivergenceDtos));
 										index.getAndIncrement();
@@ -306,11 +313,11 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 			data.put(AlarmCheckConditionUtils.KAL003_220,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_220)
 							.value(row.getJobtitles().isPresent() ? row.getJobtitles().get() : "")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 			data.put(AlarmCheckConditionUtils.KAL003_221,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_221)
 							.value(row.getFilterWorkType())
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 			data.put(AlarmCheckConditionUtils.KAL003_222,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222)
 							.value(row.getWorktypes().isPresent() ? row.getWorktypes().get() : "")
@@ -326,7 +333,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 		if (row.getUseAtrCond().isPresent() && row.getUseAtrCond().get() == 1) {
 			// 13: チェック条件 NO
 			data.put(AlarmCheckConditionUtils.KAL003_230,
-					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_230).value(rowIndex)
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_230).value(rowIndex+1)
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 
 			// 14: チェック条件 名称
@@ -369,14 +376,14 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_237)
 							.value(row.getStartValue().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
 									row.getStartValue().get(), row.getConditionAtr().get()) : "")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 			// 21: チェック条件 値２
 			data.put(AlarmCheckConditionUtils.KAL003_238,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_238)
 							.value(row.getEndValue().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
 									row.getEndValue().get(), row.getConditionAtr().get()) : "")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 			// 22: チェック条件 複合条件 グループ１
 			data.put(AlarmCheckConditionUtils.KAL003_239,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_239).value(
@@ -624,7 +631,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_220"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_221"),
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_221, TextResource.localize("KAL003_221"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_222, TextResource.localize("KAL003_222"),
 				ColumnTextAlign.LEFT, "", true));
@@ -749,7 +756,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 
 			// 12: アラームリストのチェック条件 NO
 			data.put(AlarmCheckConditionUtils.KAL003_251,
-					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_251).value(rowIndex)
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_251).value(rowIndex+1)
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 
 			// 13: アラームリストのチェック条件 名称
@@ -981,7 +988,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_220"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_221"),
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_221, TextResource.localize("KAL003_221"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_222, TextResource.localize("KAL003_222"),
 				ColumnTextAlign.LEFT, "", true));
@@ -1122,7 +1129,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 		if (row.getUseAtrCond().isPresent() && row.getUseAtrCond().get() == 1) {
 			// 13: アラームリストのチェック条件 NO
 			data.put(AlarmCheckConditionUtils.KAL003_263,
-					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(rowIndex)
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(rowIndex+1)
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 
 			// 14: アラームリストのチェック条件 名称
@@ -1150,15 +1157,15 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				// 20: アラームリストのチェック条件 値１
 				data.put(AlarmCheckConditionUtils.KAL003_270,
 						MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_270)
-								.value(row.getNumdayHoliday1().isPresent() ? row.getNumdayHoliday1().get() : "")
-								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+								.value(row.getNumdayHoliday1().isPresent() ? row.getNumdayHoliday1().get() + TextResource.localize("KAL003_301") : "")
+								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 				if (row.getCompareOperatorInt().isPresent() && row.getCompareOperatorInt().get() > SingleValueCompareType.GREATER_THAN.value) {
 					// 21: アラームリストのチェック条件 値２
 					data.put(AlarmCheckConditionUtils.KAL003_271,
 							MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_271)
-									.value(row.getNumdayHoliday2().isPresent() ? row.getNumdayHoliday2().get() : "")
-									.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+									.value(row.getNumdayHoliday2().isPresent() ? row.getNumdayHoliday2().get() + TextResource.localize("KAL003_301") : "")
+									.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 				}
 			}
 
@@ -1185,15 +1192,15 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				// 20: アラームリストのチェック条件 値１
 				data.put(AlarmCheckConditionUtils.KAL003_270,
 						MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_270)
-								.value(row.getVacationStartValue().isPresent() ? row.getVacationStartValue().get() : "")
-								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+								.value(row.getVacationStartValue().isPresent() ? row.getVacationStartValue().get() + TextResource.localize("KAL003_301") : "")
+								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 				if (row.getVacationCompareAtrInt().isPresent() && row.getVacationCompareAtrInt().get() > SingleValueCompareType.GREATER_THAN.value) {
 					// 21: アラームリストのチェック条件 値２
 					data.put(AlarmCheckConditionUtils.KAL003_271,
 							MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_271)
-									.value(row.getVacationEndValue().isPresent() ? row.getVacationEndValue().get() : "")
-									.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+									.value(row.getVacationEndValue().isPresent() ? row.getVacationEndValue().get() + TextResource.localize("KAL003_301") : "")
+									.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 				}
 
 			}
@@ -1220,7 +1227,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						.columnId(AlarmCheckConditionUtils.KAL003_270)
 						.value(row.getStartValue().isPresent() ? AlarmCheckConditionUtils
 								.getValueWithConditionAtr(row.getStartValue().get(), row.getConditionAtr().get()) : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 				if (row.getCompareAtrInt().isPresent() && row.getCompareAtrInt().get() > SingleValueCompareType.GREATER_THAN.value) {
 					// 21: アラームリストのチェック条件 値２
@@ -1228,7 +1235,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 							.columnId(AlarmCheckConditionUtils.KAL003_271)
 							.value(row.getEndValue().isPresent() ? AlarmCheckConditionUtils
 									.getValueWithConditionAtr(row.getEndValue().get(), row.getConditionAtr().get()) : "")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 				}
 				
 				// 22: アラームリストのチェック条件 複合条件 グループ１
@@ -1433,6 +1440,211 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(AlarmCheckConditionUtils.KAL003_282,
 				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_282).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+	}
+	
+	
+	//Agree 36
+	public List<MasterHeaderColumn> getHeaderColumnsAgree36(MasterListExportQuery query) {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_212, TextResource.localize("KAL003_212"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_213, TextResource.localize("KAL003_213"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_214, TextResource.localize("KAL003_214"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_215, TextResource.localize("KAL003_215"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_216, TextResource.localize("KAL003_216"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_217, TextResource.localize("KAL003_217"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_218, TextResource.localize("KAL003_218"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_219, TextResource.localize("KAL003_219"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_220, TextResource.localize("KAL003_220"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_221, TextResource.localize("KAL003_221"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_222, TextResource.localize("KAL003_222"),
+				ColumnTextAlign.LEFT, "", true));
+		
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_283, TextResource.localize("KAL003_291"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_284, TextResource.localize("KAL003_292"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_285, TextResource.localize("KAL003_293"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_286, TextResource.localize("KAL003_294"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_287, TextResource.localize("KAL003_295"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_288, TextResource.localize("KAL003_296"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_289, TextResource.localize("KAL003_297"),
+				ColumnTextAlign.LEFT, "", true));
+		return columns;
+	}
+
+	public List<MasterData> getMasterDatasAgree36(MasterListExportQuery query) {
+		String companyId = AppContexts.user().companyId();
+		List<Agree36ReportData> agree36ReportDatas = alarmCheckConditionReportRepository
+				.getAgree36Conditions(companyId);
+		return buildAgree36MasterData(agree36ReportDatas);
+	}
+
+	private List<MasterData> buildAgree36MasterData(List<Agree36ReportData> agree36ReportDatas) {
+		List<MasterData> datas = new ArrayList<>();
+		agree36ReportDatas.stream().sorted(Comparator.comparing(Agree36ReportData::getCode))
+				.forEachOrdered(x -> {					
+					int max = x.getAgree36CondErrors().size() > x.getAgree36OTErrors().size() 
+							? x.getAgree36CondErrors().size() : x.getAgree36OTErrors().size();
+					IntStream.range(0, max).forEach(idx -> {
+						datas.add(buildAgree36Row(x, idx));
+					});
+					
+				});
+		return datas;
+	}
+
+	private MasterData buildAgree36Row(Agree36ReportData row, int no) {
+		Map<String, MasterCellData> data = new HashMap<>();
+		putEmptyAgree36(data);
+		if (no == 0) {
+			data.put(AlarmCheckConditionUtils.KAL003_212,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_212).value(row.getCode())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_213,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_213).value(row.getName())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_214,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_214)
+							.value(TextResource.localize("Enum_AlarmCategory_AGREEMENT"))
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_215,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_215).value(row.getFilterEmp())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_216,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_216).value(row.getEmployees())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_217,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_217).value(row.getFilterClas())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_218,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_218).value(row.getClassifications())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_219,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_219).value(row.getFilterJobTitles())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_220,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_220).value(row.getJobtitles())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_221,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_221).value(row.getFilterWorkType())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_222,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222).value(row.getWorktypeselections())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		}
+		
+		if (row.getAgree36CondErrors().size() > no) {
+			Agree36CondError condError = row.getAgree36CondErrors().get(no);
+			data.put(AlarmCheckConditionUtils.KAL003_283,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_283)
+							.value(no+1)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_284,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_284)
+							.value(condError.getName())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_285,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_285)
+							.value(condError.getMessage())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		}
+		
+		if (row.getAgree36OTErrors().size() > no) {
+			Agree36OTError condOTError = row.getAgree36OTErrors().get(no);
+			data.put(AlarmCheckConditionUtils.KAL003_286,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_286)
+							.value(condOTError.getNo())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_287,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_287)
+							.value(AlarmCheckConditionUtils.getValueWithConditionAtr(condOTError.getOvertime(), 
+									ConditionAtr.TIME_DURATION.value))
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_288,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_288)
+							.value(condOTError.getExcessNum() + TextResource.localize("KAL003_298"))
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+			data.put(AlarmCheckConditionUtils.KAL003_289,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_289)
+							.value(condOTError.getMessage())
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		}
+		
+		return MasterData.builder().rowData(data).build();
+	}
+	
+	
+	private void putEmptyAgree36(Map<String, MasterCellData> data) {
+		data.put(AlarmCheckConditionUtils.KAL003_212,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_212).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_213,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_213).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_214,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_214).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_215,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_215).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_216,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_216).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_217,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_217).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_218,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_218).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_219,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_219).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_220,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_220).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_221,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_221).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_222,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+
+	
+		data.put(AlarmCheckConditionUtils.KAL003_283,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_283).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_284,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_284).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_285,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_285).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_286,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_286).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_287,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_287).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_288,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_288).value("")
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(AlarmCheckConditionUtils.KAL003_289,
+				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_289).value("")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 	}
 }

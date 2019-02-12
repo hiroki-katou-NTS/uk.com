@@ -94,6 +94,7 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		Optional<Integer> userAtr = Optional.ofNullable(record.getInt("USE_ATR"));
 		dailyReportData.setUseAtrCond(userAtr);
 		if (userAtr.isPresent() && userAtr.get() == 1) {
+			dailyReportData.setInsDate(record.getString("INS_DATE"));
 			//14: チェック条件 名称
 			dailyReportData.setNameCond(Optional.ofNullable(record.getString("NAME_COND_14")));
 			//15: チェック条件 チェック項目
@@ -150,7 +151,6 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			dailyReportData.setGroup2UseAtr(Optional.ofNullable(AlarmCheckConditionUtils.getUseAtrStr(group2UseAtr)));
 			dailyReportData.setGroup2UseAtrInt(group2UseAtr);
 			if (group2UseAtr.isPresent() && group2UseAtr.get() == 1) {
-				dailyReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
 				//27(チェック条件 複合条件 グループ2)
 				dailyReportData.setConditionOperatorGroup2(Optional.ofNullable(AlarmCheckConditionUtils.getOperatorStr(Optional.ofNullable(record.getInt("CONDITION_OPERATOR_GROUP_2_27")))));
 				
@@ -251,8 +251,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			mulMonthReportData.setConditionTypeCond(Optional.ofNullable(record.getInt("CONDITION_TYPE_COND")));
 			mulMonthReportData.setCompareAtrCond(Optional.ofNullable(
 					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_COND")))));
-			mulMonthReportData.setStartValueCond(Optional.ofNullable(record.getInt("START_VALUE_COND")));
-			mulMonthReportData.setEndValueCond(Optional.ofNullable(record.getInt("END_VALUE_COND")));
+			mulMonthReportData.setStartValueCond(Optional.ofNullable(record.getDouble("START_VALUE_COND")));
+			mulMonthReportData.setEndValueCond(Optional.ofNullable(record.getDouble("END_VALUE_COND")));
 		}
 
 		// AVG
@@ -263,8 +263,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			mulMonthReportData.setConditionTypeAvg(Optional.ofNullable(record.getInt("CONDITION_TYPE_AVG")));
 			mulMonthReportData.setCompareAtrAvg(Optional.ofNullable(
 					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_AVG")))));
-			mulMonthReportData.setStartValueAvg(Optional.ofNullable(record.getInt("START_VALUE_AVG")));
-			mulMonthReportData.setEndValueAvg(Optional.ofNullable(record.getInt("END_VALUE_AVG")));
+			mulMonthReportData.setStartValueAvg(Optional.ofNullable(record.getDouble("START_VALUE_AVG")));
+			mulMonthReportData.setEndValueAvg(Optional.ofNullable(record.getDouble("END_VALUE_AVG")));
 		}
 
 		// CONT
@@ -276,8 +276,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			mulMonthReportData.setConditionTypeCont(Optional.ofNullable(record.getInt("CONDITION_TYPE_CONT")));
 			mulMonthReportData.setCompareAtrCont(Optional.ofNullable(
 					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_CONT")))));
-			mulMonthReportData.setStartValueCont(Optional.ofNullable(record.getInt("START_VALUE_CONT")));
-			mulMonthReportData.setEndValueCont(Optional.ofNullable(record.getInt("END_VALUE_CONT")));
+			mulMonthReportData.setStartValueCont(Optional.ofNullable(record.getDouble("START_VALUE_CONT")));
+			mulMonthReportData.setEndValueCont(Optional.ofNullable(record.getDouble("END_VALUE_CONT")));
 		}
 
 		// COSP
@@ -291,8 +291,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			mulMonthReportData.setConditionTypeCosp(Optional.ofNullable(record.getInt("CONDITION_TYPE_COSP")));
 			mulMonthReportData.setCompareAtrCosp(Optional.ofNullable(
 					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_COSP")))));
-			mulMonthReportData.setStartValueCosp(Optional.ofNullable(record.getInt("START_VALUE_COSP")));
-			mulMonthReportData.setEndValueCosp(Optional.ofNullable(record.getInt("END_VALUE_COSP")));
+			mulMonthReportData.setStartValueCosp(Optional.ofNullable(record.getDouble("START_VALUE_COSP")));
+			mulMonthReportData.setEndValueCosp(Optional.ofNullable(record.getDouble("END_VALUE_COSP")));
 		}
 		// 22(チェック条件 表示するメッセージ)
 		mulMonthReportData.setMessage(Optional.ofNullable(record.getString("MESSAGE_DISPLAY_22")));
@@ -362,8 +362,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareOperatorHoliday(Optional.ofNullable(AlarmCheckConditionUtils
 						.getCompareAtrStr(compareOperatorInt)));
 				monthReportData.setCompareOperatorInt(compareOperatorInt);
-				monthReportData.setNumdayHoliday1(Optional.ofNullable(record.getInt("NUMBER_DAY_DIFF_HOLIDAY_1_20")));
-				monthReportData.setNumdayHoliday2(Optional.ofNullable(record.getInt("NUMBER_DAY_DIFF_HOLIDAY_2_21")));
+				monthReportData.setNumdayHoliday1(Optional.ofNullable(record.getDouble("NUMBER_DAY_DIFF_HOLIDAY_1_20")));
+				monthReportData.setNumdayHoliday2(Optional.ofNullable(record.getDouble("NUMBER_DAY_DIFF_HOLIDAY_2_21")));
 			}
 			
 			if (checkItem.isPresent() && checkItem.get() == TypeMonCheckItem.CHECK_REMAIN_NUMBER.value) {
@@ -376,8 +376,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setVacationCompareAtr(Optional.ofNullable(AlarmCheckConditionUtils
 						.getCompareAtrStr(vacationCompareAtrInt)));
 				monthReportData.setVacationCompareAtrInt(vacationCompareAtrInt);
-				monthReportData.setVacationStartValue(Optional.ofNullable(record.getInt("VACATION_START_VALUE_20")));
-				monthReportData.setVacationEndValue(Optional.ofNullable(record.getInt("VACATION_END_VALUE_21")));
+				monthReportData.setVacationStartValue(Optional.ofNullable(record.getDouble("VACATION_START_VALUE_20")));
+				monthReportData.setVacationEndValue(Optional.ofNullable(record.getDouble("VACATION_END_VALUE_21")));
 			}
 			
 			if (checkItem.isPresent() && checkItem.get() != TypeMonCheckItem.CERTAIN_DAY_OFF.value
@@ -448,8 +448,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 						.setGroup2UseAtr(Optional.ofNullable(AlarmCheckConditionUtils.getUseAtrStr(group2UseAtr)));
 				monthReportData.setGroup2UseAtrInt(group2UseAtr);
 				if (group2UseAtr.isPresent() && group2UseAtr.get() == 1) {
-					monthReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
-					// 27(アラームリストのチェック条件 複合条件 グループ２)
+					//monthReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
+					//27(アラームリストのチェック条件 複合条件 グループ２)
 					monthReportData.setConditionOperatorGroup2(Optional.ofNullable(AlarmCheckConditionUtils
 							.getOperatorStr(Optional.ofNullable(record.getInt("CONDITION_OPERATOR_GROUP_2_27")))));
 
@@ -503,5 +503,38 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		}
 		
 		return monthReportData;
+	}
+
+	@SneakyThrows
+	@Override
+	public List<Agree36ReportData> getAgree36Conditions(String companyId) {
+		List<Agree36ReportData>  result = new ArrayList<>();
+		try(PreparedStatement stmt = this.connection().prepareStatement(AlarmCheckCondQuery.SELECT_AGREE36)) {
+            stmt.setString(1,companyId);
+            result = new NtsResultSet(stmt.executeQuery()).getList(x -> toDomainAgree36(x));
+        } 
+		
+		return result;
+	}
+	
+	/**
+	 * toDomanin calendar company
+	 * @param entity
+	 * @return
+	 */
+	private Agree36ReportData toDomainAgree36(NtsResultSet.NtsResultRecord record) {
+		return Agree36ReportData.createFromJavaType(
+				record.getString("CD_1"),
+				record.getString("NAME_2"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_EMP_4"))),
+				record.getString("EMP_CDS_5"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_CLS_6"))),
+				record.getString("CLS_CDS_7"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_JOB_8"))),
+				record.getString("JOB_IDS_9"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))),
+				record.getString("BUSINESSTYPE_CDS_11"),
+				record.getString("AGREE_COND_ERRS"),
+				record.getString("COND_OT_ERRS"));
 	}
 }

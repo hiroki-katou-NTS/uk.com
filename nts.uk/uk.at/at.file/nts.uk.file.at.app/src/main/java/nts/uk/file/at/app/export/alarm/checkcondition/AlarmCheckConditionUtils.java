@@ -100,6 +100,17 @@ public class AlarmCheckConditionUtils {
 	public static final String KAL003_281 = "アラームリストのチェック条件 複合条件 グループ1とグループ2の条件";
 	public static final String KAL003_282 = "アラームリストのチェック条件 表示するメッセージ";
 	
+	//agree36
+	public static final String KAL003_283 = "36協定エラーアラームのチェック条件 NO";
+	public static final String KAL003_284 = "36協定エラーアラームのチェック条件 チェック内容";
+	public static final String KAL003_285 = "36協定エラーアラームのチェック条件 表示するメッセージ";
+	public static final String KAL003_286 = "36協定時間年間超過回数チェック  NO";
+	public static final String KAL003_287 = "36協定時間年間超過回数チェック 超過時間";
+	public static final String KAL003_288 = "36協定時間年間超過回数チェック 回数";
+	public static final String KAL003_289 = "36協定時間年間超過回数チェック 表示するメッセージ";
+	
+	
+	
 	
 	public static String getCheckItemStr(Optional<Integer> checkItem) {
 		if (checkItem.isPresent()) {
@@ -330,19 +341,20 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
-	public static String getValueWithConditionAtr(int value, int conditionAtr) {
+	public static <T> String getValueWithConditionAtr(T value, int conditionAtr) {
+		
 		if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
-			return (new CheckedAmountValue(value)).toString();
+			return (new CheckedAmountValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue()).toString());
 		} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
-			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value);
+			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value instanceof Integer ? (Integer)value : ((Double)value).intValue());
 			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() 
 				+ ":" + (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
-			return (new TimeWithDayAttr(value)).getInDayTimeWithFormat();
+			return (new TimeWithDayAttr(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).getInDayTimeWithFormat();
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
-			return (new CheckedTimesValue(value)).toString();
+			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return (new CheckedTimesValueDay(Double.valueOf(value))).toString();
+			return ((new CheckedTimesValueDay(value instanceof Integer ? ((Integer)value).doubleValue() : ((Double)value))).toString() + TextResource.localize("KAL003_301")) ;
 		}
 		return "";
 	}
