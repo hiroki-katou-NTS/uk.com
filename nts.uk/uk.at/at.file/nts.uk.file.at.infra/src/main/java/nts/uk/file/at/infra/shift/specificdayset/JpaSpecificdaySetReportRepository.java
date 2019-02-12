@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.shift.specificdayset;
+package nts.uk.file.at.infra.shift.specificdayset;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,6 +12,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetCompanyReportData;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetReportRepository;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetWorkplaceReportData;
 
 @Stateless
 public class JpaSpecificdaySetReportRepository extends JpaRepository implements SpecificdaySetReportRepository {
@@ -27,9 +30,9 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 	private static final String GET_WORKSPACE_SPEC_SET = "SELECT"
 			+ " DISTINCT s.WKPID, s.SPECIFIC_DATE, s.SPECIFIC_DATE_ITEM_NO, w.WKPCD, p.NAME "
 			+ "	FROM KSMMT_WP_SPEC_DATE_SET s"
-			+ " INNER JOIN KSMST_SPECIFIC_DATE_ITEM p "
+			+ " LEFT JOIN KSMST_SPECIFIC_DATE_ITEM p "
 			+ "	ON s.SPECIFIC_DATE_ITEM_NO = p.SPECIFIC_DATE_ITEM_NO "
-			+ " INNER JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
+			+ " LEFT JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
 			+ "	AND w.WKPID = s.WKPID"
 			+ " WHERE p.USE_ATR = 1"
 			+ " AND s.SPECIFIC_DATE >= ?startYm"
@@ -59,7 +62,7 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 		
 		List<SpecificdaySetWorkplaceReportData> specificdaySetWorkplaceReportDatas 
 			= data.stream().map(x -> toDomainWithWorkspace((Object[])x)).collect(Collectors.toList());
-		return Optional.of(specificdaySetWorkplaceReportDatas.stream().collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getWorkplaceCode)));
+		return Optional.of(specificdaySetWorkplaceReportDatas.stream().collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getWorkplaceId)));
 	}
 	
 	
@@ -80,12 +83,12 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 		Timestamp timeStamp = (Timestamp)object[1];
 		GeneralDate date = GeneralDate.legacyDate(new Date(timeStamp.getTime()));
 		Integer specificDateItemNo = ((BigDecimal)object[2]).intValue();
-		String workplaceCode = (String) object[3];
+		Optional<String> workplaceCode = Optional.ofNullable((String) object[3]);
 		String specificDateItemName = (String) object[4];
 //		String workplaceName = (String) object[5];
 		
 		SpecificdaySetWorkplaceReportData domain = SpecificdaySetWorkplaceReportData.createFromJavaType(
-				workplaceId, date, specificDateItemNo, specificDateItemName, workplaceCode.trim(),"");
+				workplaceId, date, specificDateItemNo, specificDateItemName, workplaceCode,Optional.empty());
 		return domain;
 	}
 	

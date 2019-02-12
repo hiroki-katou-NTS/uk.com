@@ -3,7 +3,11 @@ package nts.uk.file.at.app.export.attendanceitemprepare;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * 
+ * @author Hoidd 
+ *
+ */
 @Setter
 @Getter
 @AllArgsConstructor
@@ -17,4 +21,5 @@ public class ControlOfAttendanceItemsDtoExcel {
 
 	/**時間項目の入力単位*/
 	private Integer inputUnitOfTimeItem;
+	
 }

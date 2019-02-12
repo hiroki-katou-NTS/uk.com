@@ -53,7 +53,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         loadGird() {
             let self = this;
             $("#F3_1").ntsGrid({
-                height: '311px',
+                height: '433px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -96,6 +96,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 }
             }).always(() => {
                 block.clear();
+                $("#F1_5_container").focus();
             });
         }
 

@@ -14,4 +14,17 @@ module cas009.a {
             check: (roleId: string) => ajax('com', 'ctx/com/screen/person/role/check', roleId)
         },
     };
+    export function exportExcel(): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = "CAS009";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
+        let _params = { domainId: "RolePersonalInfor", 
+                        domainType: domainType,
+                        languageId: "ja", 
+                        reportType: 0};
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
+    }
 }

@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmk002.a {
     export module service {
-
+        import exportFile = nts.uk.request.exportFile;
         /**
          *  Service paths
          */
@@ -10,6 +10,16 @@ module nts.uk.at.view.kmk002.a {
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
             getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
+
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMK002";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: domainType, languageId: languageId, reportType: 0 });
+        }
 
         /**
          * Call service to get optional item enum
@@ -193,7 +203,11 @@ module nts.uk.at.view.kmk002.a {
                     return result;
                 }
             }
-        }
 
+
+
+        }
     }
+
+
 }

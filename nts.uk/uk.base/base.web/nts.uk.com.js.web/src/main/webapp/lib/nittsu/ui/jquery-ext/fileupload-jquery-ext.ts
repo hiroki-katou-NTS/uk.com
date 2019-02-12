@@ -58,19 +58,19 @@ module nts.uk.ui.jqueryExtentions {
                         // 413はnginxが返す
                         // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                         if (jqXHR.status === 413) {
-                            dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                            dfd.reject(resource.getMessageObj("Msg_1494"));
                         } else {
                             // Client Exception
-                            dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                            dfd.reject(resource.getMessageObj("Msg_1495"));
                         }
                     });
                 }
                 else {
-                    dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
+                    dfd.reject(resource.getMessageObj("Msg_1496"));
                 }
             }
             else {
-                dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
+                dfd.reject(resource.getMessageObj("Msg_1497"));
             }
             return dfd.promise();
         }

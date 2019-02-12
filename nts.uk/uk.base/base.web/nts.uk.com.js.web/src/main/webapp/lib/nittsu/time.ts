@@ -23,6 +23,24 @@ module nts.uk.time {
             return year + "年 " + month + " 月";
         return year;
     }
+    
+    export function today (): moment.Moment {
+        let todayDate ="";
+        nts.uk.request.syncAjax("com", "server/time/today/").done(function(res) {
+            todayDate = res;
+        }).fail(function() {
+        });
+        return moment.utc(todayDate, "yyyy/MM/dd");
+    }
+    
+    export function now (): moment.Moment {
+        let nowDateTime ="";
+        nts.uk.request.syncAjax("com", "server/time/now/").done(function(res) {
+            nowDateTime = res;
+        }).fail(function() {
+        });
+        return moment.utc(nowDateTime);
+    }
 
     export class JapanYearMonth {
         empire: string;
@@ -46,70 +64,83 @@ module nts.uk.time {
         public getMonth() {
             return this.month;
         }
+        
+        public removeMonth() : JapanYearMonth {
+            this.month = null;
+            return this;
+        }
 
         public toString() {
-            return (this.empire === undefined ? "" : this.empire)
-                + (this.year === undefined || this.year === "" ? "" : this.year + "年")
-                + (this.month === undefined || this.month === "" ? "" : this.month + "月");
+            return (_.isEmpty(this.getEmpire()) ? "" : this.getEmpire())
+                + (_.isNil(this.getYear()) ? "" : this.getYear() + "年")
+                + (_.isNil(this.getMonth()) ? "" : this.getMonth() + "月");
         }
     }
 
-    export function yearInJapanEmpire(date: any): JapanYearMonth {
-        return yearmonthInJapanEmpire(date, true);
+    export class JapanDateMoment extends JapanYearMonth{
+        day: number;
+
+        constructor(empire?: string, year?: number, month?: number, date?: any) {
+            super(empire, year, month);
+            this.day = date;
+        }
+
+        public getDate() {
+            return this.day;
+        }
+        
+        public removeDate() : JapanDateMoment {
+            this.day = null;
+            return this;
+        }
+
+        public toString() {
+            return super.toString() + (_.isNil(this.getDate()) ? "" : this.getDate() + " 日");
+        }
     }
 
-    export function yearmonthInJapanEmpire(yearmonth: any, onlyYear?: boolean): JapanYearMonth {
-        if(!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)){
+    export function dateInJapanEmpire(date: any): JapanDateMoment {
+        if(!nts.uk.ntsNumber.isNumber(date) && _.isEmpty(date)){
             return null;
         }
-        let dateString = yearmonth.toString(), 
+        let dateString = date.toString(), 
             seperator = (dateString.match(/\//g) || []).length
         
-        if(seperator > 2 || seperator < 0){
+        if(seperator > 2){
             return null;
         }
         let format = _.filter(defaultInputFormat, function(f){ return (f.match(/\//g) || []).length === seperator}),
-            formatted = moment.utc(dateString, defaultInputFormat, true),
-            formattedYear = formatted.year();
-        
-        if (onlyYear && dateString.length < 5) {
-            formattedYear = Number(dateString);    
-        }
+            formatted = moment.utc(dateString, defaultInputFormat, true);
         
         for(let i of __viewContext.env.japaneseEras){
-            let startEraYear = moment(i.start).year(),
-                endEraYear = moment(i.end).year();
-            if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
-                let diff = formattedYear - startEraYear + 1;
-                return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+            let startEra = moment(i.start), endEraYear = moment(i.end);
+            
+            if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
+                let diff = formatted.year() - startEra.year() + 1;
+                return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
             }               
         }
         return null;
     }
 
-    export class JapanDateMoment {
-        moment: moment.Moment;
-        empire: string;
-        year: number;
-        month: number;
-        day: number;
-
-        constructor(date: any, outputFormat?: string) {
-            var MomentResult = parseMoment(date, outputFormat);
-            var year = MomentResult.momentObject.year();
-            var month = MomentResult.momentObject.month() + 1;
+    export function yearInJapanEmpire(date: any): JapanDateMoment {
+        let formatted: JapanDateMoment = yearmonthInJapanEmpire(date);
+        
+        if(formatted !== null){
+            formatted.month = null;    
         }
-
-        public toString() {
-            return (this.empire === undefined ? "" : this.empire + " ")
-                + (this.year === undefined ? "" : this.year + " 年 ")
-                + (this.month === undefined ? "" : this.month + " 月")
-                + (this.day === undefined ? "" : this.day + " ");
-        }
+        
+        return formatted;
     }
 
-    export function dateInJapanEmpire(date: any): JapanDateMoment {
-        return new JapanDateMoment(date);
+    export function yearmonthInJapanEmpire(yearmonth: any): JapanDateMoment {
+        let formatted: JapanDateMoment = dateInJapanEmpire(yearmonth);
+        
+        if(formatted !== null){
+            formatted.day = null;    
+        }
+        
+        return formatted;
     }
 
 	/**

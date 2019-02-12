@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.salgenpurposeparam;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -46,7 +47,7 @@ public class SalGenParaValue extends AggregateRoot {
     */
     private Optional<ParaTargetAtr> targetAtr;
     
-    public SalGenParaValue(String hisId, Integer selection, int availableAtr, String numberValue, String characterValue, Integer timeValue, Integer targetAtr) {
+    public SalGenParaValue(String hisId, Integer selection, int availableAtr, BigDecimal numberValue, String characterValue, Integer timeValue, Integer targetAtr) {
         this.historyId = hisId;
         this.availableAtr = EnumAdaptor.valueOf(availableAtr, ParaAvailableValue.class);
         this.charValue = characterValue == null ? Optional.empty() : Optional.of(new ParamCharacter(characterValue));

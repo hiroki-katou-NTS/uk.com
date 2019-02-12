@@ -115,7 +115,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
                     __viewContext.viewModel.viewmodelB.enableRegisterButton(true);
                 }
                 __viewContext.viewModel.viewmodelB.newHistoryId(null);
-                $("#B1_5").focus();
+                $("#B1_5_container").focus();
             });
         };
 
@@ -132,7 +132,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
                     __viewContext.viewModel.viewmodelC.enableRegisterButton(true);
                 }
                 __viewContext.viewModel.viewmodelC.newHistoryId(null);
-                $("#C1_5").focus();
+                $("#C1_5_container").focus();
             });
         };
 
@@ -141,31 +141,40 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 __viewContext.viewModel.viewmodelD.enableEditHisButton(true);
                 __viewContext.viewModel.viewmodelD.enableAddHisButton(true);
+                $("#D1_5_container").focus();
             });
+
         };
 
         onSelectTabE() {
             __viewContext.viewModel.viewmodelE.initScreen(null);
+            $("#E1_5_container").focus();
         };
 
         onSelectTabI(){
             __viewContext.viewModel.viewmodelI.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelI.loadCCg001();
+                $("#I1_2_container").focus();
             });
+
         };
 
         onSelectTabF() {
             __viewContext.viewModel.viewmodelF.initScreen(null);
+            $("#F1_5_container").focus();
         };
 
         onSelectTabG() {
             __viewContext.viewModel.viewmodelG.initScreen(null);
+            $("#G1_5_container").focus();
         };
 
         onSelectTabH() {
             __viewContext.viewModel.viewmodelH.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelH.loadCCG001();
+                $("#emp-component").focus();
             });
+
         };
     }
 }

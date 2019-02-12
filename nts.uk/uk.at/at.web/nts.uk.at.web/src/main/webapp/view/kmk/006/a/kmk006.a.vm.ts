@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmk006.a {
 
     import Enum = service.model.Enum;
-    
+    import setShared = nts.uk.ui.windows.setShared;
     // Import Dto
     import ComAutoCalSettingDto = a.service.model.ComAutoCalSettingDto;
     import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
@@ -114,7 +114,11 @@ module nts.uk.at.view.kmk006.a {
             // UI 
             createModeScreenB: KnockoutObservable<boolean>;
             createModeScreenC: KnockoutObservable<boolean>;
-            createModeScreenD: KnockoutObservable<boolean>;           
+            createModeScreenD: KnockoutObservable<boolean>;
+
+            //export
+            baseDate: KnockoutObservable<string> = ko.observable('9999/12/31');
+            langId: KnockoutObservable<string> = ko.observable('ja');
 
             constructor() {
                 var self = this;
@@ -1192,6 +1196,22 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
+            private exportExcel(domainId: string) {
+                var self = this;
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = "KMK006";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
+                let baseDate: any = moment.utc(self.baseDateTreeList(), 'YYYY/MM/DD').toISOString();
+                let useUnit: any = self.useUnitAutoCalSettingModel();
+                service.exportExcel(self.langId(), domainId, domainType, useUnit, baseDate)
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError(res);
+                    });
+            }
+            
             private clearAllError() {
                 nts.uk.ui.errors.clearAll();
             }          

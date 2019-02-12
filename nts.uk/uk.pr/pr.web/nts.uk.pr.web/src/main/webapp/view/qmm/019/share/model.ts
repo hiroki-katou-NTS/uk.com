@@ -801,7 +801,7 @@ module nts.uk.pr.view.qmm019.share.model {
     export function validateLayout(layoutPattern: number, totalLine: number, ctgAtr: number,
                                    printLineInCtg: number, noPrintLineInCtg: number, printSet: number): string {
         // if no print
-        if (printSet == 1) {
+        if (printSet == StatementPrintAtr.DO_NOT_PRINT) {
             if (noPrintLineInCtg >= 5) {
                 return "MsgQ_20";
             } else {

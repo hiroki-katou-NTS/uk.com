@@ -23,6 +23,7 @@ import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
@@ -51,6 +52,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
@@ -238,6 +240,28 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
+	 * Gets the employee info case signon.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param isSignOn the is sign on
+	 * @return the employee info case signon
+	 */
+	//EA修正履歴 No.3067、3068、3069
+	protected SignonEmployeeInfoData getEmployeeInfoCaseSignon(WindowsAccount windowAcc, Boolean isSignOn) {
+		// imported（GateWay）「会社情報」を取得する
+		CompanyInformationImport companyInformationImport = this.companyInformationAdapter.findById(windowAcc.getCompanyId());
+
+		// Imported（GateWay）「社員」を取得する
+		Optional<EmployeeImportNew> opEm = this.employeeAdapter.getEmployeeBySid(windowAcc.getEmployeeId());
+
+		// 社員が削除されたかを取得
+		this.checkEmployeeDelStatus(windowAcc.getEmployeeId(), isSignOn);
+		
+		return new SignonEmployeeInfoData(companyInformationImport, opEm.get());
+	}
+	
+	/**
 	 * Check employee del status.
 	 *
 	 * @param sid
@@ -308,9 +332,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
+    /**
+    * CCG007-C.セッション生成
+    * @param user ドメインモデル「ユーザ」
+    * @param em 社員
+    * @param companyCode 会社コード
+    */
+   public void initSessionC(UserImportNew user, EmployeeImport em, String companyCode) {
+       //「ログインユーザコンテキスト」を新規作成、セッションに格納
+       manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
+               companyCode, em.getEmployeeId(), em.getEmployeeCode());
+       //権限（ロール）情報を取得、設定する 
+       this.setRoleId(user.getUserId());
+   }
+   /**
 
 	/**
-	 * Inits the session.
+	 * CCG007-B.セッション生成
 	 *
 	 * @param user
 	 *            the user
@@ -585,8 +623,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				hostname);
 
 		if (!opWindowAccount.isPresent()) {
+			String remarkText = hostname + "\\" + username + " " + TextResource.localize("Msg_876");
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"), null);
+					remarkText, null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -602,8 +641,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				.collect(Collectors.toList());
 
 		if (windows.isEmpty()? true : windows.get(0).getUseAtr() == UseAtr.NotUse ? true : false) {
+			String remarkText = hostname + " " + username + " " + TextResource.localize("Msg_876");
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"), null);
+					remarkText, null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -620,15 +660,21 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the user and check limit time
 	 */
 	public UserImportNew getUserAndCheckLimitTime(WindowsAccount windowAccount) {
+		String username = AppContexts.windowsAccount().getUserName();
+		String domain = AppContexts.windowsAccount().getDomain();
+		// cut hostname
+		String hostname = domain.substring(0, domain.lastIndexOf(";"));
+		
+		//EA修正履歴 No.3067、3068、3069
 		// get user
-		Optional<UserImportNew> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
+		Optional<UserImportNew> optUserImport = this.userAdapter.findUserByEmployeeId(windowAccount.getEmployeeId());
 
 		// Validate limit time
 		if (optUserImport.isPresent()) {
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
-				
-				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-						TextResource.localize("Msg_316"), null);
+				String remarkText = hostname + " " + username + " " + TextResource.localize("Msg_316");
+				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value,
+						LoginStatus.Fail.value, remarkText, null);
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -650,7 +696,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the contract code
 	 */
 	// アルゴリズム「エラーチェック（形式１）」を実行する
-	public void errorCheck(String userId, Integer roleType, String contractCode, boolean isSignOn) {
+	public void errorCheck(String loginId, String userId, Integer roleType, String contractCode, boolean isSignOn) {
 
 		GeneralDate date = GeneralDate.today();
 		// 切替可能な会社一覧を取得する Get list company
@@ -661,15 +707,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			if(isSignOn){
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
-			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_1419"), null);
+			String remarkText = loginId + " " + TextResource.localize("Msg_1419");
+			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value, remarkText, null);
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_1419");
 		}
 
-		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();
+		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();
 
 		if (!message.isEmpty()) {
 			// return messageError
@@ -725,8 +771,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_286");
 			}
 		}
+		//update EA修正履歴 No.3054
+		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);
 		
-		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
+		String loginId = "";
+		if (opUserImport.isPresent()) {
+			loginId = opUserImport.get().getLoginId();
+		}
+		String message = this.checkAccoutLock(loginId, contractCode, userId, companyId, isSignon).v();
 		
 		if (!message.isEmpty()) {
 			// return messageError
@@ -864,7 +916,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user id
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId, boolean isSignOn) {
+	private LockOutMessage checkAccoutLock(String loginId, String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -879,8 +931,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					if (isSignOn){
 						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 					}
+					String remarkText = loginId + " " + accountLockPolicy.getLockOutMessage().v();
 					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
-							accountLockPolicy.getLockOutMessage().v(), null);
+							remarkText, null);
 					
 					// アルゴリズム「ログイン記録」を実行する１
 					this.service.callLoginRecord(param);

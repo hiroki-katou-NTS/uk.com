@@ -7,6 +7,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
 * 給与汎用給与汎用パラメータ識別パラメータ値
@@ -37,7 +38,7 @@ public class QqsmtSalGenParamValue extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "NUMBER_VALUE")
-    public String numberValue;
+    public BigDecimal numberValue;
     
     /**
     * 値（文字）

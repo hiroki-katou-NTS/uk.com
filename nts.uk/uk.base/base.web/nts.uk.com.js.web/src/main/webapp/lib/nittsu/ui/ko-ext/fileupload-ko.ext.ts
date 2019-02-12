@@ -140,7 +140,7 @@ module nts.uk.ui.koExtentions {
             let fileName: string = ko.unwrap(data.filename);
             let accept: string[] = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
             let asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-            let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
+            let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : toBeResource.refer;
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
             let $container = $(element)

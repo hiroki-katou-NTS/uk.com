@@ -25,7 +25,7 @@ module nts.uk.ui.menu {
         let $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
         let $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
         let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-        $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
+        $menuItems.append($("<li class='menu-item'/>").text(toBeResource.selectMenu));
         $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
         _.forEach(menuSet, function(item, i) {
             $menuItems.append($("<li class='menu-item'/>")
@@ -168,8 +168,8 @@ module nts.uk.ui.menu {
                     let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                     $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                     let userOptions;
-                    if (show) userOptions = [ /*new MenuItem("個人情報の設定"),*/ new MenuItem("マニュアル"), new MenuItem("ログアウト") ];
-                    else userOptions = [ /*new MenuItem("個人情報の設定"),*/ new MenuItem("ログアウト") ];
+                    if (show) userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.manual), new MenuItem(toBeResource.logout) ];
+                    else userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.logout) ];
                     let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                     _.forEach(userOptions, function(option: any, i: number) {
                         let $li = $("<li class='menu-item'/>").text(option.name);
@@ -223,6 +223,9 @@ module nts.uk.ui.menu {
      * Get program.
      */
     function getProgram() {
+            
+        initPgArea();
+        
         nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
             let programName = "";
             let queryString = __viewContext.program.queryString;
@@ -249,24 +252,32 @@ module nts.uk.ui.menu {
             }
                 
             // show program name on title of browser
-            ui.viewModelBuilt.add(() => {
+            if(_.isNil(ui._viewModel)) {
+                ui.viewModelBuilt.add(() => {
+                    ui._viewModel.kiban.programName(programName);
+                });       
+            } else {
                 ui._viewModel.kiban.programName(programName);
-            });
+            }
             
-            let $pgArea = $("#pg-area");
-            $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-            let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+            $("#pg-name").text(programName);
+        });
+    }
+    
+    function initPgArea(){
+        let $pgArea = $("#pg-area");
+        $("<div/>").attr("id", "pg-name").appendTo($pgArea);
+        let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
 //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
 //            $manualBtn.on(constants.CLICK, function() {
 //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
 //                window.open(path);
 //            });
             
-            let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-            $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-            $tglBtn.on(constants.CLICK, function() {
-                // TODO
-            });
+        let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+        $tglBtn.on(constants.CLICK, function() {
+            // TODO
         });
     }
     

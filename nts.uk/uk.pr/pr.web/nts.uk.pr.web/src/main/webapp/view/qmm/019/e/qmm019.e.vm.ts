@@ -116,7 +116,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.condition24(value);
                 self.condition25(value);
                 self.condition26(value);
-                self.condition44(value);
             });
 
             self.dataScreen().itemRangeSet.errorUpperLimitSetAtr.subscribe(value => {
