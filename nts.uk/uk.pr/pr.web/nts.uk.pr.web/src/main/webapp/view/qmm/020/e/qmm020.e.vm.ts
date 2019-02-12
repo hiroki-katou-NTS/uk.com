@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         loadGird(){
             let self = this;
             $("#E3_1").ntsGrid({
-                height: '311px',
+                height: '433px',
                 dataSource: self.listStateLinkSettingMaster(),
                 selected: self.currentCode(),
                 primaryKey: 'masterCode',
