@@ -313,11 +313,11 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 			data.put(AlarmCheckConditionUtils.KAL003_220,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_220)
 							.value(row.getJobtitles().isPresent() ? row.getJobtitles().get() : "")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 			data.put(AlarmCheckConditionUtils.KAL003_221,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_221)
 							.value(row.getFilterWorkType())
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 			data.put(AlarmCheckConditionUtils.KAL003_222,
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_222)
 							.value(row.getWorktypes().isPresent() ? row.getWorktypes().get() : "")
