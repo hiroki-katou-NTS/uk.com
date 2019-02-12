@@ -255,19 +255,19 @@ public class AlarmCheckConditionUtils {
 		if (compareAtr.isPresent()) {
 			switch (compareAtr.get()) {
 			case 0:
-				return TextResource.localize("KAL003_285");
+				return TextResource.localize("KAL003_298");
 			case 1:
-				return TextResource.localize("KAL003_286");
+				return TextResource.localize("KAL003_299");
 			case 2:
-				return TextResource.localize("KAL003_287");
+				return TextResource.localize("KAL003_300");
 			case 3:
-				return TextResource.localize("KAL003_288");
+				return TextResource.localize("KAL003_301");
 			case 4:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 5:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_303");
 			default:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_303");
 			}
 		} else {
 			return null;
@@ -279,15 +279,15 @@ public class AlarmCheckConditionUtils {
 		if (compareAtr.isPresent()) {
 			switch (compareAtr.get()) {
 			case 6:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 7:
-				return TextResource.localize("KAL003_287");
+				return TextResource.localize("KAL003_300");
 			case 8:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 9:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_303");
 			default:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			}
 		} else {
 			return null;
@@ -314,11 +314,11 @@ public class AlarmCheckConditionUtils {
 		if (useAtr.isPresent()) {
 			switch (useAtr.get()) {
 			case 0:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			case 1:
-				return TextResource.localize("KAL003_224");
+				return TextResource.localize("KAL003_237");
 			default:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			}
 		} else {
 			return null;
@@ -329,15 +329,15 @@ public class AlarmCheckConditionUtils {
 		if (filter.isPresent()) {
 			switch (filter.get()) {
 			case 0:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			case 1:
-				return TextResource.localize("KAL003_224");
+				return TextResource.localize("KAL003_237");
 			default:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			}
 
 		} else {
-			return TextResource.localize("KAL003_225");
+			return TextResource.localize("KAL003_238");
 		}
 	}
 	
@@ -354,7 +354,7 @@ public class AlarmCheckConditionUtils {
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return ((new CheckedTimesValueDay(value instanceof Integer ? ((Integer)value).doubleValue() : ((Double)value))).toString() + TextResource.localize("KAL003_301")) ;
+			return ((new CheckedTimesValueDay(value instanceof Integer ? ((Integer)value).doubleValue() : ((Double)value))).toString() + TextResource.localize("KAL003_314")) ;
 		}
 		return "";
 	}
@@ -489,39 +489,39 @@ public class AlarmCheckConditionUtils {
 		if (checkItem.isPresent()) {
 			switch (checkItem.get()) {
 			case 0:
-				return TextResource.localize("KAL003_268");
-			case 1:
-				return TextResource.localize("KAL003_269");
-			case 2:
-				return TextResource.localize("KAL003_270");
-			case 3:
-				return TextResource.localize("KAL003_271");
-			case 4:
-				return TextResource.localize("KAL003_272");
-			case 5:
-				return TextResource.localize("KAL003_273");
-			case 6:
-				return TextResource.localize("KAL003_274");
-			case 7:
-				return TextResource.localize("KAL003_275");
-			case 8:
-				return TextResource.localize("KAL003_276");
-			case 9:
-				return TextResource.localize("KAL003_277");
-			case 10:
-				return TextResource.localize("KAL003_278");
-			case 11:
-				return TextResource.localize("KAL003_279");
-			case 12:
-				return TextResource.localize("KAL003_280");
-			case 13:
 				return TextResource.localize("KAL003_281");
-			case 14:
+			case 1:
 				return TextResource.localize("KAL003_282");
-			case 15:
+			case 2:
 				return TextResource.localize("KAL003_283");
+			case 3:
+				return TextResource.localize("KAL003_284");
+			case 4:
+				return TextResource.localize("KAL003_285");
+			case 5:
+				return TextResource.localize("KAL003_286");
+			case 6:
+				return TextResource.localize("KAL003_287");
+			case 7:
+				return TextResource.localize("KAL003_288");
+			case 8:
+				return TextResource.localize("KAL003_289");
+			case 9:
+				return TextResource.localize("KAL003_290");
+			case 10:
+				return TextResource.localize("KAL003_291");
+			case 11:
+				return TextResource.localize("KAL003_292");
+			case 12:
+				return TextResource.localize("KAL003_293");
+			case 13:
+				return TextResource.localize("KAL003_294");
+			case 14:
+				return TextResource.localize("KAL003_295");
+			case 15:
+				return TextResource.localize("KAL003_296");
 			default:
-				return TextResource.localize("KAL003_268");
+				return TextResource.localize("KAL003_281");
 			}
 		} else {
 			return null;
