@@ -85,6 +85,8 @@ import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
+import nts.uk.screen.at.app.worktype.WorkTypeDto;
+import nts.uk.screen.at.app.worktype.WorkTypeProcessor;
 @Stateless
 @DomainID(value = "CalculationSetting")
 public class CalculationSettingExportImpl implements MasterListData {
@@ -146,6 +148,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 
 	@Inject
 	SpecificWorkRuleRepository specificWorkRuleRepository;
+	
+	@Inject
+	private WorkTypeProcessor workTypeProcessor;
 	
 	private static final String select = "○";
 	private static final String unselect = "-";
@@ -2474,20 +2479,35 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     		 getAlignsheet11(rowData1);
     		 datas.add(masterData1);
     	}
-    	
+    	List<WorkTypeDto> rs=	workTypeProcessor.findWorkTypeAll();
+    	Map<String, WorkTypeDto> mapvalue= new HashMap<>();
+    	for(WorkTypeDto workTypeDto:rs){
+    		mapvalue.put(workTypeDto.getWorkTypeCode(), workTypeDto);
+    	}
+  //  	List<String> listworktype=rs.stream().map(x ->x.getWorkTypeCode()).collect(Collectors.toList());
 		 //
     	PayItemCountOfMonthlyDto payItemCountOfMonthlyDto =payItemCountOfMonthlyFinder.findSetting();
-    	if(!Objects.isNull(payItemCountOfMonthlyDto) && !CollectionUtil.isEmpty(payItemCountOfMonthlyDto.getPayAbsenceDays()) ){
-    		List<WorkTypeInfor> listAbs=workTypeFinder.getPossibleWorkType(payItemCountOfMonthlyDto.getPayAbsenceDays());
+    	if(!Objects.isNull(payItemCountOfMonthlyDto) && !CollectionUtil.isEmpty(payItemCountOfMonthlyDto.getPayAbsenceDays()) ){    	
+    		List<workTypeDto> listcodeName= new ArrayList<>();
+    		List<String> listPayAbsenceDays=payItemCountOfMonthlyDto.getPayAbsenceDays().stream().sorted((o1, o2) -> o1.compareTo(o2)).collect(Collectors.toList());
+    			for(String code:listPayAbsenceDays){       			
+    				if(mapvalue.containsKey(code)){
+    					listcodeName.add(new workTypeDto(code,mapvalue.get(code).getName()));
+    				}else{
+    					listcodeName.add(new workTypeDto(code,TextResource.localize("KMK013_475")));
+    				}
+    				
+        		}
+    		
     		 Map<String, Object> data2 = new HashMap<>();
     		 data2.put(column1Sheet11,TextResource.localize("KMK013_335"));
     		 data2.put(column2Sheet11,TextResource.localize("KMK013_336"));
     		 data2.put(column3Sheet11,"");
-    		 if(!CollectionUtil.isEmpty(listAbs)){
-    			
-    			 String codeNameAbs=listAbs.get(0).getWorkTypeCode()+listAbs.get(0).getName();
-    			 for( int i=1;i<listAbs.size();i++){
-    				 codeNameAbs=codeNameAbs+","+listAbs.get(i).getWorkTypeCode()+listAbs.get(i).getName();
+    		 if(!CollectionUtil.isEmpty(listcodeName)){
+    			 String codeNameAbs="";    			
+    			 codeNameAbs =listcodeName.get(0).getWorkTypeCode()+listcodeName.get(0).getName();	
+    			 for( int i=1;i<listcodeName.size();i++){				 
+        				 codeNameAbs =codeNameAbs+","+listcodeName.get(i).getWorkTypeCode()+listcodeName.get(i).getName();       			
     			 }
     			 data2.put(column3Sheet11,codeNameAbs);
     		 }    	   		
@@ -2508,19 +2528,30 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     //	
     	
     	if(!Objects.isNull(payItemCountOfMonthlyDto) && !CollectionUtil.isEmpty(payItemCountOfMonthlyDto.getPayAttendanceDays())){
-    		List<WorkTypeInfor> listAtt=workTypeFinder.getPossibleWorkType(payItemCountOfMonthlyDto.getPayAttendanceDays());
+    	//	List<WorkTypeInfor> listAtt=workTypeFinder.getPossibleWorkType(payItemCountOfMonthlyDto.getPayAttendanceDays());
+    		List<workTypeDto> listcodeName= new ArrayList<>();
+    		List<String> listPayAttendanceDays=payItemCountOfMonthlyDto.getPayAttendanceDays().stream().sorted((o1, o2) -> o1.compareTo(o2)).collect(Collectors.toList());
+    		for(String code:listPayAttendanceDays){       			
+				if(mapvalue.containsKey(code)){
+					listcodeName.add(new workTypeDto(code,mapvalue.get(code).getName()));
+				}else{
+					listcodeName.add(new workTypeDto(code,TextResource.localize("KMK013_475")));
+				}
+				
+    		}
     		 Map<String, Object> data3 = new HashMap<>();
     		 data3.put(column1Sheet11,"");
     		 data3.put(column2Sheet11,TextResource.localize("KMK013_338"));
     		 data3.put(column3Sheet11,"");
-    		 if(!CollectionUtil.isEmpty(listAtt)){
-    			 String codeNameAtt=listAtt.get(0).getWorkTypeCode()+listAtt.get(0).getName();
-    			 for( int i=1;i<listAtt.size();i++){
-    				 codeNameAtt=codeNameAtt+","+listAtt.get(i).getWorkTypeCode()+listAtt.get(i).getName();
+    		 if(!CollectionUtil.isEmpty(listcodeName)){
+    			 String codeNameAbs="";    			
+    			 codeNameAbs =listcodeName.get(0).getWorkTypeCode()+listcodeName.get(0).getName();	
+    			 for( int i=1;i<listcodeName.size();i++){				 
+        				 codeNameAbs =codeNameAbs+","+listcodeName.get(i).getWorkTypeCode()+listcodeName.get(i).getName();       			
     			 }
-    			 data3.put(column3Sheet11,codeNameAtt);
-    		 }    	   	
-    		
+    			 data3.put(column3Sheet11,codeNameAbs);
+    		 }    	   		
+	
     		 MasterData masterData3 = new MasterData(data3, null, "");
     		 Map<String, MasterCellData> rowData3 = masterData3.getRowData();
     		 getAlignsheet11(rowData3);
