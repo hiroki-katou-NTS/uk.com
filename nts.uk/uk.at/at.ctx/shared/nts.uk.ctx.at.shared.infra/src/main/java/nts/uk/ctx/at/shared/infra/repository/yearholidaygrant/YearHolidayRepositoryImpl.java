@@ -316,8 +316,10 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 					masterData.cellAt("基準設定５ 45").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt("基準設定下限５ 46").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt("上限５ 47").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("備考 54").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					datas.add(masterData);
 				}else{
+
 					for(int i=0 ; i<maxYearHoliday; i++){
 						if(i==0){
 							data.put("コード", c.getYearHolidayCode());

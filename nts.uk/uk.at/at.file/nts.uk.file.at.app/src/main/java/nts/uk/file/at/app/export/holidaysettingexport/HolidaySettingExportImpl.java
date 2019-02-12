@@ -1,10 +1,12 @@
 package nts.uk.file.at.app.export.holidaysettingexport;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -86,6 +88,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Inject
 	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepository;
+	
 	
 	//設定 
 	public static String value1= "項目";
@@ -186,16 +189,28 @@ public class HolidaySettingExportImpl implements MasterListData{
 					String getSub = optPubHDSet.getPubHdSet().getDayMonth().toString();
                     String subDay = "";
                     String subMonth = "";
+                    String subDays = "";
                      if(getSub.length()==3){
                             subMonth = getSub.substring(0, 1);
                             subDay = getSub.substring(1,3);
+                            
+                            if(subDay.substring(0,1).equals("0")){
+                            	subDays = getSub.substring(2,3);
+                            }else{
+                            	subDays = getSub.substring(1,3);
+                            }
                      }else{
                             subMonth = getSub.substring(0,2);
                             subDay = getSub.substring(2,4);
+                            if(subDay.substring(0,1).equals("0")){
+                            	subDays = getSub.substring(3,4);
+                            }else{
+                            	subDays = getSub.substring(2,4);
+                            }
                      }
                     putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
 					putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),subMonth+TextResource.localize("KMF002_69"),1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),subDay+TextResource.localize("KMF002_8"),1);
+					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),subDays+TextResource.localize("KMF002_8"),1);
 				}
 			}
 			//週間休日チェック
@@ -281,7 +296,6 @@ public class HolidaySettingExportImpl implements MasterListData{
 			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
 			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
 			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-			
 			putDataCustom(datas,"","",TextResource.localize("KMF002_18"),"","",0);
 			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
 			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
@@ -318,7 +332,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KMF002_30");
+		return TextResource.localize("KMF002_1");
 	}
 
 	@Override
@@ -433,10 +447,17 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 		
+		
+		
+		
 		for(int y=0;y<listYear.size();y++){
 			List<String> lstWpk = workplaceMonthDaySettingRepository.findWkpRegisterByYear(new CompanyId(companyId), new Year(listYear.get(y)));
 
 			List<WorkplaceHierarchyDto> listWorkplace = getListWorkplaceHierarchyDto(workplaceHierarchyDtos, lstWpk);
+
+//			listWorkplace = listWorkplace.stream().sorted(
+//					Comparator.comparing(WorkplaceHierarchyDto::getCode, Comparator.nullsLast(String::compareTo)))
+//					.collect(Collectors.toList());
 			
 			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
 				if(!CollectionUtil.isEmpty(listWorkplace)){  
@@ -444,14 +465,15 @@ public class HolidaySettingExportImpl implements MasterListData{
 						Map<String, Object> data = new HashMap<>();
 						Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 						int startMonthThree = companyStartMonth.get().getStartMonth();
+						
 						for(int j=0;j<12; j++){
 							putEmptyDataThree(data);
 							if(i==0 && j==0){
 								data.put(valueThree1, listYear.get(y));
 							}
 							if(j==0){
-								data.put(valueThree2, listWorkplace.get(i).getCode());
-				                data.put(valueThree3,listWorkplace.get(i).getName());
+								data.put(valueThree2, listWorkplace.get(i).getCode()==null?"":listWorkplace.get(i).getCode());
+				                data.put(valueThree3, listWorkplace.get(i).getName());
 							}else{
 								data.put(valueThree2, "");
 				                data.put(valueThree3,"");
@@ -540,7 +562,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 								data.put(valueFour1, listYear.get(y));
 							}
 							if (j == 0) {
-								data.put(valueFour2, listEmployeeExport.get(i).getCode());
+								data.put(valueFour2, listEmployeeExport.get(i).getCode()==null?"":listEmployeeExport.get(i).getCode());
 								data.put(valueFour3, listEmployeeExport.get(i).getName());
 							}
 							data.put(valueFour4, startMonthFour + TextResource.localize("KMF002_12"));
@@ -648,7 +670,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 								data.put(valueFive1, listYear.get(y));
 							}
 							if (j == 0) {
-								data.put(valueFive2, listmployee.get(i).getEmployeeCode());
+								data.put(valueFive2, listmployee.get(i).getEmployeeCode()==null?"":listmployee.get(i).getEmployeeCode());
 								data.put(valueFive3, listmployee.get(i).getEmployeeName());
 							}
 							
@@ -744,33 +766,46 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		PublicHolidayManagementUsageUnitFindDto findData = finderPublicHolidayManagement.findData();
 		
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"));
-		SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("KMF002_76"));
-		SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"));
-		SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"));
+//		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+//		SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("KMF002_76"), MasterListMode.YEAR_RANGE);
+//		SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"), MasterListMode.YEAR_RANGE);
+//		SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"), MasterListMode.YEAR_RANGE);
 		
 		if(optPubHDSet.getPubHdSet().getPublicHdManagementClassification() ==0){//1ヵ月
 			
 			if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==0){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataFour);
 				
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==1){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("KMF002_76"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataThree);
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==0){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataFive);
 			}else if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==0){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataFour);
 				listSheetData.add(sheetDataFive);
 			}else if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==1 && findData.getIsManageWkpPublicHd()==1){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataThree = new SheetData(getMasterDataThree(query), getHeaderColumnThree(query), null, null, TextResource.localize("KMF002_76"), MasterListMode.YEAR_RANGE);
+				SheetData sheetDataFive = new SheetData(getMasterDataFive(query), getHeaderColumnFive(query), null, null, TextResource.localize("KMF002_78"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 				listSheetData.add(sheetDataThree);
 				listSheetData.add(sheetDataFive);
 			}
 			if(findData.getIsManageEmpPublicHd()==0 && findData.getIsManageWkpPublicHd()==0 && findData.getIsManageEmployeePublicHd()==0){
+				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 			}
 		}
@@ -874,13 +909,22 @@ public class HolidaySettingExportImpl implements MasterListData{
 	private List<WorkplaceHierarchyDto> getListWorkplaceHierarchyDto(List<WorkplaceHierarchyDto> workplaceHierarchyDtos, List<String> lstWpk){
 		List<WorkplaceHierarchyDto> listWorkplace = new ArrayList<>();
 		
-		if(workplaceHierarchyDtos.size()!=0){
+		if(workplaceHierarchyDtos.size()!= 0){
 			for(int i =0;i<workplaceHierarchyDtos.size();i++){
 				for(int j =0; j<lstWpk.size();j++){
 					if(lstWpk.get(j).equals(workplaceHierarchyDtos.get(i).getWorkplaceId())){
 						listWorkplace.add(workplaceHierarchyDtos.get(i));
 						lstWpk.remove(j);
 					}
+				}
+			}
+			
+			if(lstWpk.size()!=0){
+				for(int i=0;i<lstWpk.size();i++){
+					WorkplaceHierarchyDto temp = new WorkplaceHierarchyDto();
+					temp.setWorkplaceId(lstWpk.get(i));
+					temp.setName("マスタ未登録");
+					listWorkplace.add(temp);
 				}
 			}
 		}
@@ -900,6 +944,14 @@ public class HolidaySettingExportImpl implements MasterListData{
 					}
 				}
 			}
+			if(lstEmp.size()!=0){
+				for(int i=0;i<lstEmp.size();i++){
+					EmploymentDto temp = new EmploymentDto();
+					temp.setCode(lstEmp.get(i));
+					temp.setName("マスタ未登録");
+					listEmployeeExport.add(temp);
+				}
+			}
 		}
 		return listEmployeeExport;
 	}
@@ -914,6 +966,13 @@ public class HolidaySettingExportImpl implements MasterListData{
 						lististRegulationInfoEmployee.add(listFind.get(i));
 						listEmployeeRegister.remove(j);
 					}
+				}
+			}
+			if(listEmployeeRegister.size()!=0){
+				for(int i=0;i<listEmployeeRegister.size();i++){
+					RegulationInfoEmployeeDto temp = RegulationInfoEmployeeDto.builder()
+							.employeeId(listEmployeeRegister.get(i)).employeeName("マスタ未登録").build();
+					lististRegulationInfoEmployee.add(temp);
 				}
 			}
 		}

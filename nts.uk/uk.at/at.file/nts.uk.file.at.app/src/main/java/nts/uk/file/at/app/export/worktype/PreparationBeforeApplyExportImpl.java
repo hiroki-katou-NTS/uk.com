@@ -300,7 +300,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA8Top.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_4)
-                    .value(TextResource.localize("KAF022_468"))
+                    .value("")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA8Top.put(KAF022_455, MasterCellData.builder()

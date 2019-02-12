@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.shift.basicworkregister;
+package nts.uk.file.at.infra.shift.basicworkregister;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +10,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
+import nts.uk.file.at.app.export.shift.basicworkregister.BasicWorkRegisterReportRepository;
+import nts.uk.file.at.app.export.shift.basicworkregister.ClassBasicWorkData;
+import nts.uk.file.at.app.export.shift.basicworkregister.CompanyBasicWorkData;
+import nts.uk.file.at.app.export.shift.basicworkregister.WorkplaceBasicWorkData;
 import nts.uk.shr.com.i18n.TextResource;
 
 
