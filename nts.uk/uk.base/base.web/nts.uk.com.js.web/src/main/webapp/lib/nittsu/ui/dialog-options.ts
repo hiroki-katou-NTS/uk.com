@@ -41,7 +41,7 @@ module nts.uk.ui.option {
             this.buttons = [];
             // Add OK Button
             this.buttons.push({
-                text: "はい",
+                text: toBeResource.yes,
                 "class": "yes ",
                 size: "large",
                 color: "danger",
@@ -52,7 +52,7 @@ module nts.uk.ui.option {
             });
             // Add Cancel Button
             this.buttons.push({
-                text: "いいえ",
+                text: toBeResource.no,
                 "class": "no ",
                 size: "large",
                 color: "",
@@ -72,7 +72,7 @@ module nts.uk.ui.option {
             this.buttons = [];
             // Add OK Button
             this.buttons.push({
-                text: "はい",
+                text: toBeResource.yes,
                 "class": "yes ",
                 size: "large",
                 color: "proceed",
@@ -83,7 +83,7 @@ module nts.uk.ui.option {
             });
             // Add Cancel Button
             this.buttons.push({
-                text: "いいえ",
+                text: toBeResource.no,
                 "class": "no ",
                 size: "large",
                 color: "",
@@ -115,8 +115,8 @@ module nts.uk.ui.option {
             // Default value
             this.headers = (option && option.headers) ? option.headers : [
                 
-                 new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
-                new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
+                 new nts.uk.ui.errors.ErrorHeader("messageText", toBeResource.errorContent, "auto", true),
+                new nts.uk.ui.errors.ErrorHeader("errorCode", toBeResource.errorCode, 150, true)
 
 
             ];
@@ -128,7 +128,7 @@ module nts.uk.ui.option {
             this.buttons = [];
             // Add Close Button
             this.buttons.push({
-                text: "閉じる",
+                text: toBeResource.close,
                 "class": "yes ",
                 size: "large",
                 color: "",
@@ -146,9 +146,9 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.headers = (option && option.headers) ? option.headers : [
-                new errors.ErrorHeader("tab", "タブ", 90, true),
-                new errors.ErrorHeader("location", "エラー箇所", 115, true),
-                new errors.ErrorHeader("message", "エラー詳細", 250, true)
+                new errors.ErrorHeader("tab", toBeResource.tab, 90, true),
+                new errors.ErrorHeader("location", toBeResource.errorPoint, 115, true),
+                new errors.ErrorHeader("message", toBeResource.errorDetail, 250, true)
             ];
             this.modal = (option && option.modal !== undefined) ? option.modal : false;
             this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -158,7 +158,7 @@ module nts.uk.ui.option {
             this.buttons = [];
             // Add Close Button
             this.buttons.push({
-                text: "閉じる",
+                text: toBeResource.close,
                 "class": "yes ",
                 size: "large",
                 color: "",
