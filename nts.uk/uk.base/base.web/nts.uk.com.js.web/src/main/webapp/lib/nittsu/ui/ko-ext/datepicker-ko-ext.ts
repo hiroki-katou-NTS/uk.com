@@ -66,7 +66,7 @@ module nts.uk.ui.koExtentions {
             container.removeClass(containerClass);
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
+            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "' autocomplete='off'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
             $input.data("required", required);

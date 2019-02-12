@@ -96,7 +96,7 @@ module ksm002.a.viewmodel {
             var dfd = $.Deferred<any>();
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
-            self.showExportBtn();
+//            self.showExportBtn();
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
                     //getAll SpecDate

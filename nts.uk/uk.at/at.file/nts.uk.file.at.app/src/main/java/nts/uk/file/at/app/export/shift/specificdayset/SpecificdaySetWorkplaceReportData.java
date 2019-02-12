@@ -1,6 +1,9 @@
 package nts.uk.file.at.app.export.shift.specificdayset;
 
+import java.util.Optional;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
@@ -8,10 +11,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SpecificdaySetWorkplaceReportData {
 	public SpecificdaySetWorkplaceReportData(String workplaceId, GeneralDate specificDate,
-			SpecificDateItemNo specificDateItemNo, SpecificName specificDateItemName, String workplaceCode,
-			String workplaceName) {
+			SpecificDateItemNo specificDateItemNo, SpecificName specificDateItemName, Optional<String> workplaceCode,
+			Optional<String> workplaceName) {
 		super();
 		this.workplaceId = workplaceId;
 		this.specificDate = specificDate;
@@ -19,18 +23,19 @@ public class SpecificdaySetWorkplaceReportData {
 		this.specificDateItemName = specificDateItemName;
 		this.workplaceCode = workplaceCode;
 		this.workplaceName = workplaceName;
+		this.hierarchyCode = Optional.empty();
 	}
 
 	private String workplaceId;
 	private GeneralDate specificDate;
 	private SpecificDateItemNo specificDateItemNo;
 	private SpecificName specificDateItemName;
-	private String workplaceCode;
-	private String workplaceName;
-	private String hierarchyCode;
+	private Optional<String> workplaceCode;
+	private Optional<String> workplaceName;
+	private Optional<String> hierarchyCode;
 	
 	public static SpecificdaySetWorkplaceReportData createFromJavaType(String workplaceId, 
-			GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName, String workplaceCode, String workplaceName) {
+			GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName, Optional<String> workplaceCode, Optional<String> workplaceName) {
 		return new SpecificdaySetWorkplaceReportData(
 				workplaceId, 
 				specificDate, 

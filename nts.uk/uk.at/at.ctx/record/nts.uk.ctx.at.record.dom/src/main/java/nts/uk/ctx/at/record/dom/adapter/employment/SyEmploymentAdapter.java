@@ -11,4 +11,6 @@ public interface SyEmploymentAdapter {
 	Optional<SyEmploymentImport> findByEmployeeId (String companyId, String employeeId, GeneralDate baseDate);
 	
 	Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes);
+	
+	List<SyEmploymentImport> findByCid(String companyId);
 }

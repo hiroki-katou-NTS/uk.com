@@ -136,8 +136,19 @@ module cas009.a.viewmodel {
                 block.clear();
                 errors.clearAll();
             });
-        }
+        };
+        /**
+         * export excel
+         */
+        exportExcel(){
+            cas009.a.exportExcel().done(function(data) {
 
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+            }).always(()=>{
+                block.clear();
+            });
+        }
         // Kinh dị:
         // Tạo 2 danh sách để lưu 1 giá trị.
         getListRole() {
@@ -271,6 +282,7 @@ module cas009.a.viewmodel {
                 });
             }
         }
+
     }
 
     export interface EnumConstantDto {

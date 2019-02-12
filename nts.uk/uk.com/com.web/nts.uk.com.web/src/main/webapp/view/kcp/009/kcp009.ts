@@ -145,19 +145,19 @@ module kcp009.viewmodel {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/7.png').serialize();
-                $('#profile-icon-'+self.prefix()).attr('style', "background: url('" + iconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+               // $('#profile-icon-'+self.prefix()).attr('style', "background: url('" + iconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Icon for Previous Button
                 var prevIconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/9.png').serialize();
-                $('#prev-btn-'+self.prefix()).attr('style', "background: url('" + prevIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+               // $('#prev-btn-'+self.prefix()).attr('style', "background: url('" + prevIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Icon for Next Button
                 var nextIconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/10.png').serialize();
-                $('#next-btn-'+self.prefix()).attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                //$('#next-btn-'+self.prefix()).attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Toggle employee list
                 var itemListEl = '#item-list-' + self.prefix();

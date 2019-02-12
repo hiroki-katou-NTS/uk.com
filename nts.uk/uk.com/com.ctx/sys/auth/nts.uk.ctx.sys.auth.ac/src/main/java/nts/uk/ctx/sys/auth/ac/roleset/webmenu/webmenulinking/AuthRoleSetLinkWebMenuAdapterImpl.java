@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WebMenuAdapterImpl.
+ * The Class WebMenuAdapImpl.
  * @author HieuNV
  */
 @Stateless

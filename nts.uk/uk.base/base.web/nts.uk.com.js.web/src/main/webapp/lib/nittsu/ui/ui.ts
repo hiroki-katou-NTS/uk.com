@@ -15,10 +15,37 @@ module nts.uk.ui {
         export let errorContent = "エラー内容";
         export let errorCode = "エラーコード";
         export let errorList = "エラー一覧";
+        export let errorPoint = "エラー箇所";
+        export let errorDetail = "エラー詳細";
+        export let tab = "タブ";
         export let plzWait = "お待ちください";
-        export let targetNotFound = "対象データがありません";
+        export let targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
         export let clear = "解除";
         export let searchBox = "検索テキストボックス";
+        export let addNewRow = "新規行の追加";
+        export let deleteRow = "行の削除";
+        export let selectMenu = "メニュー選択";
+        export let manual = "マニュアル";
+        export let logout = "ログアウト";
+        export let settingPersonal = "個人情報の設定";
+        export let weekDaysShort = [ "日", "月", "火", "水", "木", "金", "土" ];
+        export let searchByCodeName = "コード・名称で検索・・・";
+        export let search = "検索";
+        export let filter = "絞り込み";
+        export let code = "コード";
+        export let codeAndName = "コード／名称";
+        export let alphaNumeric = "半角英数字";
+        export let katakana = "カタカナ";
+        export let kana = "カナ";
+        export let otherColors = "その他の色";
+        export let hide = "隠す";
+        export let decide = "確定";
+        export let refer = "参照";
+        export let selectViewArea = "表示エリアを選択する";
+        export let showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
+        export let dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
+        export let invalidImageData = "不正な画像データです。";
+        export let legendExample = "凡例";
     }
 
 
@@ -250,6 +277,41 @@ module nts.uk.ui {
                 _lastKey.time = new Date();
             });
             
+        });
+    }
+
+    module buttonExtension {
+        // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
+        // clickイベントが発生しなくなる不具合がある。
+        // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+        $(() => {
+            $("body").on("mousedown", "button", e => {
+                var $button = $(e.target);
+                var $dammy = $("<div>")
+                    .css({
+                        background: "white",
+                        position: "absolute",
+                        width: $button.outerWidth(),
+                        height: parseInt($button.css("top"), 10),
+                        cursor: "pointer",
+                        opacity: 100
+                    })
+                    .appendTo("body")
+                    .position({
+                        my: "left bottom",
+                        at: "left top",
+                        of: e.target
+                    })
+                    .on("mouseup", eup => {
+                        $dammy.remove();
+                        $button.click();
+                    });
+
+                $(window).on("mouseup.dammyevent", () => {
+                    $dammy.remove();
+                    $(window).off("mouseup.dammyevent");
+                });
+            });
         });
     }
 }

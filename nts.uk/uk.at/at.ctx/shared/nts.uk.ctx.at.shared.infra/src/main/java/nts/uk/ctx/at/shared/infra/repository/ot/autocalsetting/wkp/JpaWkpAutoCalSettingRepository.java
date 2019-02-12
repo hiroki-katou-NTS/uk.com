@@ -4,19 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkp;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
@@ -29,7 +31,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
  */
 @Stateless
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
-	
+
 	/** The select no where. */
 	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
 	
@@ -48,6 +50,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 		this.getEntityManager().flush();
 
 	}
+
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository#add(nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting)

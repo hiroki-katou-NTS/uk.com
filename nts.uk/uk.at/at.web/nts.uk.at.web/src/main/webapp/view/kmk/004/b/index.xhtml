@@ -51,6 +51,7 @@
 				<span class="action-bar">
 				<button tabindex="6" data-bind="click: saveEmployeeSetting, enable: (selectedEmployeeId()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
 				<button tabindex="7" class="danger" data-bind="click: removeEmployeeSetting, disable: worktimeVM.isNewMode() || !selectedEmployeeCode()">#{i18n.getText('KMK004_29')}</button>
+				<button tabindex="8" id="print-button" data-bind="click: saveAsExcel" style="width: 120px;">#{i18n.getText('KMK004_193')}</button>
 				</span>
 			</div>
 			<div class="contents-area cf fixed-flex-layout" style="margin-left: 0px;">
