@@ -53,7 +53,6 @@ module nts.uk.at.view.kmf002.e {
                     domainId: "HolidaySetting",
                     domainType: domainType,
                     languageId: 'ja', reportType: 0,
-                    mode: mode,
                     startDate: moment.utc(startDate).format(),
                     endDate: moment.utc(endDate).format()
                 });
