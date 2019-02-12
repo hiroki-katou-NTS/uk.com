@@ -1,5 +1,7 @@
 package nts.uk.file.com.app.person.matrix;
 
-public interface PersonInfoMatrixRepository {
+import nts.uk.file.com.app.person.matrix.datasource.PersonInfoMatrixDataSource;
 
+public interface PersonInfoMatrixRepository {
+	PersonInfoMatrixDataSource getFullInfoPersonMatrix();
 }

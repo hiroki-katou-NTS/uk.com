@@ -12,6 +12,7 @@ public class PersonInfoMatrixExportService extends ExportService<PersonInfoMatri
 
 	@Inject
 	private PersonInfoMatrixGenerator matrixGenerator;
+	
 	@Override
 	protected void handle(ExportServiceContext<PersonInfoMatrixDataSource> context) {
 		val dataSource = context.getQuery();
