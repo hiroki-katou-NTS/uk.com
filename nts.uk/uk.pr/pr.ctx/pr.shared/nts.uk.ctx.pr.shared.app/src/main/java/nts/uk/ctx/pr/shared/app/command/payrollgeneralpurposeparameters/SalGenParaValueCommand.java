@@ -4,6 +4,8 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
+import java.math.BigDecimal;
+
 @Value
 public class SalGenParaValueCommand
 {
@@ -26,7 +28,7 @@ public class SalGenParaValueCommand
     /**
     * 値（数値）
     */
-    private String numValue;
+    private BigDecimal numValue;
     
     /**
     * 値（文字）

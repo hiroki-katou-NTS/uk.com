@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValue;
 
+import java.math.BigDecimal;
+
 /**
 * 給与汎用パラメータ値: DTO
 */
@@ -30,7 +32,7 @@ public class SalGenParaValueDto
     /**
     * 値（数値）
     */
-    private String numValue;
+    private BigDecimal numValue;
     
     /**
     * 値（文字）
