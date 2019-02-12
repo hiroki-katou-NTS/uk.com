@@ -121,7 +121,7 @@ module nts.uk.at.view.ksm006.a {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             let programName = program[1]!=null?program[1]:"";
             return nts.uk.request.exportFile('/masterlist/report/print', 
-                {domainId: 'BasicWorkrRegister', domainType: 'KSM006' + programName, 
+                {domainId: 'BasicWorkRegister', domainType: 'KSM006' + programName, 
                 languageId: 'ja', reportType: 0});
         }
 

@@ -83,7 +83,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 		if(CollectionUtil.isEmpty(listSequenceMaster)){
 			return null;
 		}else{
-			listSequenceMaster.stream().sorted(Comparator.comparing(SequenceMaster::getSequenceCode)).forEach(c ->{
+			listSequenceMaster.stream().sorted(Comparator.comparing(SequenceMaster::getOrder)).forEach(c ->{
 				Map<String, Object> data = new HashMap<>();
 				putEmptyDataTwo(data);
 				data.put("コード", c.getSequenceCode());

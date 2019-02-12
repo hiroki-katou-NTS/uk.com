@@ -44,7 +44,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -102,7 +101,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
           //16
-         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, GeneralDate.today());
+         GeneralDate lastDate =  GeneralDate.ymd(9999, 12, 31);
+         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, lastDate);
           //18
 	     List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
          //22
@@ -166,18 +166,19 @@ public class ErrorAlarmWorkRecordExportImpl {
                            if(c.getUseAtr()==1){
                                   data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
-                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
+//                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
+                        	   return;
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
                           if (c.getFixedAtr() != 1 && c.getTypeAtr() != 2) {       
 	                           if(c.getRemarkCancelErrorInput() == 1){
-	                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                                  data.put(header.get(5), TextResource.localize("KDW007_109"));
 	                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
 	                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
 	                                  
 	                           }else{
-	                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
+	                        	   	data.put(header.get(5), TextResource.localize("KDW007_110"));
 	                                  data.put(header.get(6), "");
 	                           }
                           }
@@ -264,20 +265,35 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   }
                                   //16
                                   String sValues16 = "";
-                                  List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
-                                  Collections.sort(lstJobTitleCode);
-                                  List<String> codeAndNameJobTitle = new ArrayList<>();
-                                  for (String key : lstJobTitleCode) {
+                                  List<String> lstJobTitleId= c.getAlCheckTargetCondition().getLstJobTitle();
+//                                  Collections.sort(lstJobTitleCode);
+                                  List<JobTitleItemDto> listJobTitleItemDto = new ArrayList<>();
+                                  List<String> lstJobTitleIdDeleted = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(lstJobTitleId)){
+                            	     for (String key : lstJobTitleId) {
                                          JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
                                          if(jobTitleItemDto!=null){
-                                        	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                       	  listJobTitleItemDto.add(jobTitleItemDto);
                                          }else {
-                                        	 codeAndNameJobTitle.add(key+TextResource.localize("KDW006_226"));
-										}
-                                               
+                                       	  lstJobTitleIdDeleted.add(key);
+   										}
+                            	     }
                                   }
+                                  List<String> codeAndNameJobTitle = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(listJobTitleItemDto)){
+                                	  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
+                                      for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
+                                          if(jobTitleItemDto!=null){
+                                         	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                          }
+                                   }
+                                  }
+                                  
                                   if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
                                          sValues16 = String.join(",", codeAndNameJobTitle);
+                                         for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
+                                        	 sValues16+=","+TextResource.localize("KDW006_226");
+										}
                                          data.put(header.get(16), sValues16);
                                   }
                            }
@@ -870,7 +886,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                            if(c.getUseAtr()){
                                   data.put("使用区分", "使用する");
                            }else{
-                                  data.put("使用区分", "使用しない");
+//                                  data.put("使用区分", "使用しない");
+                        	   return;
                            }
                            List<Integer> listApplication  = c.getLstApplication();
                            Collections.sort(listApplication);

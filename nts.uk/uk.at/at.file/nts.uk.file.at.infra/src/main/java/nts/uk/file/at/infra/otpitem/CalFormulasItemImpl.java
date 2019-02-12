@@ -20,7 +20,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
@@ -229,7 +228,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHEN 0 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis1.CID = name1.CID AND  name1.OT_FR_NO = B.FRAME_NO)))) ");
 	     exportSQL.append("       WHEN 1 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis1.CID = name2.CID AND  name2.OT_FR_NO = B.FRAME_NO))))   ");
 	     exportSQL.append("       WHEN 2 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis1.CID = name3.CID AND  name3.WDO_FR_NO = B.FRAME_NO))))");
-	     exportSQL.append("       WHEN 3 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis1.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO))))");
+	     exportSQL.append("       WHEN 3 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name4.TRANS_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis1.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 4 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis1.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 5 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis1.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO))))");
 	     exportSQL.append("       WHEN 6 THEN CONCAT(CASE cis1.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis1.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO))))");
@@ -256,7 +255,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHERE");
 	     exportSQL.append("        fr_day.FORMULA_ID = cis1.FORMULA_ID  AND cis1.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO AND cis1.CID = cis.CID");
 	     exportSQL.append("       ORDER BY");
-	     exportSQL.append("        fd1.DISPORDER,cis1.ATTENDANCE_ITEM_ID FOR XML PATH ('')");
+	     exportSQL.append("        fd1.DISPORDER,dai.DISPLAY_NUMBER FOR XML PATH ('')");
 	     exportSQL.append("        ),");
 	     exportSQL.append("       1,");
 	     exportSQL.append("       1,");
@@ -269,7 +268,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("             WHEN 0 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis.CID = name1.CID AND  name1.OT_FR_NO = B1.FRAME_NO )))) ");
 	     exportSQL.append("       WHEN 1 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis2.CID = name2.CID AND  name2.OT_FR_NO = B1.FRAME_NO ))))   ");
 	     exportSQL.append("       WHEN 2 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis2.CID = name3.CID AND  name3.WDO_FR_NO = B1.FRAME_NO ))))");
-	     exportSQL.append("       WHEN 3 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis2.CID = name4.CID AND  name4.WDO_FR_NO = B1.FRAME_NO ))))");
+	     exportSQL.append("       WHEN 3 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name4.TRANS_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis2.CID = name4.CID AND  name4.WDO_FR_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 4 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis2.CID = name5.CID AND  name5.PREMIUM_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 5 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis2.CID = name6.CID AND  name6.TIME_ITEM_NO = B1.FRAME_NO ))))");
 	     exportSQL.append("       WHEN 6 THEN CONCAT(CASE cis2.OPERATOR  WHEN 0 THEN '+ ' WHEN 1 THEN '- ' WHEN 2 THEN '* ' WHEN 3 THEN '/ ' END,(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis2.CID = name7.CID AND  name7.TIME_ITEM_NO = B1.FRAME_NO ))))");
@@ -297,7 +296,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     exportSQL.append("       WHERE");
 	     exportSQL.append("        fr_month.FORMULA_ID = cis2.FORMULA_ID  AND cis2.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO");
 	     exportSQL.append("       ORDER BY");
-	     exportSQL.append("        fd2.DISPORDER, cis2.ATTENDANCE_ITEM_ID FOR XML PATH ('')");
+	     exportSQL.append("        fd2.DISPORDER, mai.DISP_NO FOR XML PATH ('')");
 	     exportSQL.append("        ),");
 	     exportSQL.append("       1,");
 	     exportSQL.append("       1,");

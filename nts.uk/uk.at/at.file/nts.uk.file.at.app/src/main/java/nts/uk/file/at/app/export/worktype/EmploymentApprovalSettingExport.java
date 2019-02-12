@@ -46,7 +46,7 @@ public class EmploymentApprovalSettingExport {
                 MasterCellData.builder().columnId(EmploymentApprovalSettingExport.KAF022_629).value(r[1])
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
         data.put(EmploymentApprovalSettingExport.KAF022_630,
-                MasterCellData.builder().columnId(EmploymentApprovalSettingExport.KAF022_630).value(r[2])
+                MasterCellData.builder().columnId(EmploymentApprovalSettingExport.KAF022_630).value((Long)r[6] == 1 ? r[2] : "")
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
         data.put(EmploymentApprovalSettingExport.KAF022_631,
                 MasterCellData.builder().columnId(EmploymentApprovalSettingExport.KAF022_631).value(r[3])
