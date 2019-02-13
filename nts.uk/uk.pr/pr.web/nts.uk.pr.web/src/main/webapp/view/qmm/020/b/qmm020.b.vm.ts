@@ -251,6 +251,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
                 block.clear();
+                $("#B1_5_container").focus();
             });
         }
 
@@ -310,7 +311,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                     block.clear();
                 }
 
-
+                $("#B1_5_container").focus();
             });
         }
 

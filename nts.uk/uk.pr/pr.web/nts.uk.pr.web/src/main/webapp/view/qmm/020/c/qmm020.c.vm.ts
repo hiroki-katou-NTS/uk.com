@@ -320,6 +320,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
                 block.clear();
+                $("#C1_5_container").focus();
             });
         }
 
@@ -378,7 +379,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 }else{
                     block.clear();
                 }
-
+                $("#C1_5_container").focus();
             });
         }
     }
