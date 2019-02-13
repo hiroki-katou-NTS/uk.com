@@ -8,10 +8,10 @@ import nts.arc.i18n.I18NText;
 */
 public enum RoundingMethod {
     
-    ROUND_OFF(0, I18NText.getText("Enum_RoundingMethod_ROUND_OFF")),
-    ROUND_UP(1, I18NText.getText("Enum_RoundingMethod_ROUND_UP")),
-    TRUNCATION(2, I18NText.getText("Enum_RoundingMethod_TRUNCATION")),
-    DO_NOTHING(3, I18NText.getText("Enum_RoundingMethod_DO_NOTHING"));
+    ROUND_OFF(0, I18NText.getText("QMM017_168")),
+    ROUND_UP(1, I18NText.getText("QMM017_169")),
+    TRUNCATION(2, I18NText.getText("QMM017_170")),
+    DO_NOTHING(3, I18NText.getText("QMM017_171"));
     
     /** The value. */
     public final int value;
