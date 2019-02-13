@@ -8,10 +8,9 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @Getter
 @AllArgsConstructor
 public class GridEmpBodyDataSource {
-	private String itemCode;
-	private String itemParentCode;	
-	private Object value;
 	private String recordId;
+	private String itemCode;
+	private Object value;
 	private List<ComboBoxObject> lstComboBoxValue;
 	public void setValue(String textValue) {
 		this.value = textValue;

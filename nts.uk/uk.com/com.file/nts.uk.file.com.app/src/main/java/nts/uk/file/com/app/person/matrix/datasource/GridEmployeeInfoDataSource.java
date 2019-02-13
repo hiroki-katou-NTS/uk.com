@@ -19,25 +19,13 @@ public class GridEmployeeInfoDataSource {
 	
 	private String employeeName;
 	
-	private String employeeBirthday;
-	
-	private String departmentCode;
-	
 	private String departmentName;
 	
-	private String workplaceCode;	
-	
 	private String workplaceName;	
-
-	private String positionCode;	
 	
 	private String positionName;
 	
-	private String employmentCode;	
-	
 	private String employmentName;
-	
-	private String classificationCode;	
 	
 	private String classificationName;	
 
