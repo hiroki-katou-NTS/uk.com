@@ -52,9 +52,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
                     { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
                     { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton' },
-                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '190'},
                     { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'BonusButton' },
-                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
+                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '190' },
 
                 ],
                 features: [
@@ -82,6 +82,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     }
                     self.hisIdSelected(self.listStateCorrelationHisSalary()[self.getIndex(hisId)].hisId);
                 } else {
+                    self.listStateCorrelationHisSalary([]);
                     self.mode(model.MODE.NO_REGIS);
                     this.loadGird();
                 }
@@ -131,7 +132,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
-                    self.mode(model.MODE.NO_REGIS);
+                    dialog.info({ messageId: "MsgQ_247" }).then(() => {
+                        self.mode(model.MODE.NO_EXIST);
+                    });
                 }
                 self.loadGird();
             }).always(() => {
@@ -151,15 +154,15 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         enableRegis() {
-            return this.mode() == model.MODE.NO_REGIS;
+            return (this.mode() == model.MODE.NO_REGIS || this.mode() == model.MODE.NO_EXIST);
         }
 
         enableNew() {
             let self = this;
             if (self.listStateCorrelationHisSalary().length > 0) {
-                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisSalary()[FIRST].hisId == HIS_ID_TEMP));
+                return !(self.mode() == model.MODE.NEW || (self.listStateCorrelationHisSalary()[FIRST].hisId == HIS_ID_TEMP));
             }
-            return self.mode() == model.MODE.NEW;
+            return self.mode() != model.MODE.NEW && self.mode() != model.MODE.NO_EXIST;
         }
 
         enableEdit(){
@@ -299,7 +302,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
     }
 
-    export class StateCorrelationHisSalary {
+    export class StateCorreHisSalaStateCorrelationHisSalary {
         hisId: string;
         startYearMonth: number;
         endYearMonth: number;
