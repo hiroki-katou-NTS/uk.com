@@ -37,7 +37,7 @@ module nts.uk.ui.errors {
         allCellsResolved: JQueryCallback;
 
         constructor(dialogOptions?: any) {
-            this.title = "エラー一覧"; 
+            this.title = toBeResource.errorList; 
             this.errors = ko.observableArray([]);
             this.errors.extend({ rateLimit: 1 });
             this.gridErrors = ko.observableArray([]);

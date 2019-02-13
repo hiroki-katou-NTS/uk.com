@@ -49,7 +49,7 @@ module nts.uk.ui.gridlist {
                 this.time = _.random(0, 16) + ":" + _.random(10, 59); //"13:36";
                 this.addressCode1 = "111";
                 this.addressCode2 = "002";
-                this.address1 = "0";
+                this.address1 = index + "";
                 this.fullDate = new Date(Date.UTC(2010, 10, _.random(1, 30)));
                 this.yearMonth = "200" + _.random(0, 9) + "/01";
                 this.year = "200" + _.random(0, 9);
@@ -231,8 +231,8 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             hideZero: false,
                             preventEditInError: false,
-                            userId: "4",
-                            getUserId: function(k) { return String(k); },
+//                            userId: "4",
+//                            getUserId: function(k) { return String(k); },
                             errorColumns: [ "ruleCode" ],
                             errorsOnPage: true,
                             idGen: function(id) { return id + 10000 + _.random(1000); },
@@ -243,6 +243,7 @@ module nts.uk.ui.gridlist {
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
                             columns: [
+                                { headerText: '', key: 'rowNumber', dataType: 'number', width: '40px' }, 
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: true },
                                 { headerText: 'Image', key: 'flexImage', dataType: 'string', width: '60px', ntsControl: 'FlexImage' },
 //                                { headerText: 'Picture', key: "picture", dataType: "string", width: '60px', ntsControl: 'Image' },
@@ -356,14 +357,15 @@ module nts.uk.ui.gridlist {
                                             }]
                                         },
                                         {
-                                            name: 'WidthSaving'
+                                            name: 'WidthSaving',
+                                            reset: false
                                         },
-                                        {
-                                            name: 'Paging',
-                                            pageSize: 100,
-                                            currentPageIndex: 0,
-                                            loaded: function() { alert("load"); }
-                                        },
+//                                        {
+//                                            name: 'Paging',
+//                                            pageSize: 100,
+//                                            currentPageIndex: 0,
+//                                            loaded: function() {}
+//                                        },
                                         {
                                             name: "Sorting",
                                             columnSettings: [
@@ -396,17 +398,18 @@ module nts.uk.ui.gridlist {
                                                 { key: 'time', colors: ['#E9AEF1'] }
                                             ]
                                         },
-                                        { name: "Sheet", 
-                                          initialDisplay: "sheet1",
-                                          sheets: [ 
-                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "workplace", "header02"] }, 
-                                                    { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
-                                                  ]
-                                        },
+//                                        { name: "Sheet", 
+//                                          initialDisplay: "sheet1",
+//                                          sheets: [ 
+//                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "workplace", "header02"] }, 
+//                                                    { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
+//                                                  ]
+//                                        },
                                         { name: 'ColumnFixing', fixingDirection: 'left',
 //                                            syncRowHeights: true,
                                             showFixButtons: false,
                                             columnSettings: [
+                                                            { columnKey: 'rowNumber', isFixed: true },
                                                             { columnKey: 'id', isFixed: true },
                                                             { columnKey: 'flexImage', isFixed: true },
                                                             { columnKey: 'show', isFixed: true },
@@ -474,7 +477,7 @@ module nts.uk.ui.gridlist {
                                             { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
                                             { name: 'FlexImage', source: 'ui-icon ui-icon-info', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
                                             { name: 'Image', source: 'hidden-button', controlType: 'Image' },
-                                            { name: "ImageAdd", source: "ui-icon ui-icon-plusthick", controlType: "Image" },
+                                            { name: "ImageAdd", source: "plus-button", controlType: "Image", copy: true },
                                             { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }]
 //                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } }]
                             })

@@ -125,7 +125,7 @@ public class QbtmtEmpBonPayMethod extends UkJpaEntity {
 					this.desDepositType = paymentMethodDetail.getTransferInfor().get().getDesDepositType().value;
 				}
 				this.paymentProportionAtr = paymentMethodDetail.getPaymentProportionAtr().get().value;
-				this.paymentPriority = paymentMethodDetail.getPaymentPriority().get().value;
+				this.paymentPriority = paymentMethodDetail.getPaymentPriority().isPresent() ? paymentMethodDetail.getPaymentPriority().get().value : null;
 				switch (paymentProportionAtr) {
 				case 0: // 定率 - FIXED_RATE
 					this.paymentRate = paymentMethodDetail.getPaymentRate().get().v();

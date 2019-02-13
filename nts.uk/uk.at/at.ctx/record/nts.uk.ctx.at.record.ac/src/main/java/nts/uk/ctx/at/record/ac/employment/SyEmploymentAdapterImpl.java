@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.ac.employment;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 	public Optional<SyEmploymentImport> findByEmployeeId(String companyId, String employeeId, GeneralDate baseDate) {
 
 		Optional<SEmpHistExport> empHist = this.syEmploymentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
-		
+
 		if (!empHist.isPresent()) {
 			return Optional.empty();
 		}
@@ -33,10 +34,16 @@ public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 
 		return Optional.of(syEmploymentImport);
 	}
-	
+
 	@Override
 	public Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes) {
 		return this.syEmploymentPub.getEmploymentMapCodeName(companyId, empCodes);
+	}
+
+	@Override
+	public List<SyEmploymentImport> findByCid(String companyId) {
+		return this.syEmploymentPub.findAll(companyId).stream()
+				.map(x -> new SyEmploymentImport(null, x.getCode(), x.getName(), null)).collect(Collectors.toList());
 	}
 
 }

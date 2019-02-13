@@ -17,14 +17,17 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.shr.com.i18n.TextResource;
@@ -74,6 +77,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			//get User
 			user = this.getUserAndCheckLimitTime(windowAcc);
 			oldPassword = user.getPassword();
+			SignonEmployeeInfoData signonData = this.getEmployeeInfoCaseSignon(windowAcc,true);
+			CompanyInformationImport com = signonData.companyInformationImport;
+			EmployeeImportNew emp = signonData.employeeImportNew;
+			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
+			companyCode = com.getCompanyCode();
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
@@ -96,13 +104,14 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 			
 			// Get User by PersonalId
-			user = this.getUser(em.getPersonalId(), companyId);
+			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
 			
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
-				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-						TextResource.localize(msgErrorId), em.getEmployeeId());
+				String remarkText = companyId + " " + employeeCode + " " + TextResource.localize(msgErrorId);
+				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+						LoginStatus.Fail.value, remarkText, em.getEmployeeId());
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -110,7 +119,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			} 
 			
 			// check time limit
-			this.checkLimitTime(user, companyId);
+			this.checkLimitTime(user, companyId,employeeCode);
 			employeeId = em.getEmployeeId();
 		}
 		
@@ -119,14 +128,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
-		if (command.isSignOn()){
-			this.initSession(user, command.isSignOn());
-		} else {
-			this.setLoggedInfo(user, em, companyCode);
-		}
 		
-		//set role Id for LoginUserContextManager
-		this.setRoleId(user.getUserId());
+		//ログインセッション作成 (Create login session)
+        this.initSessionC(user, em, companyCode);
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
@@ -218,8 +222,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		if (em.isPresent()) {
 			return em.get();
 		} else {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"), null);
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -233,14 +238,15 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private UserImportNew getUser(String personalId, String companyId) {
+	private UserImportNew getUser(String personalId, String companyId,String employeeCode) {
 		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"), null);
-			
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
@@ -252,10 +258,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(UserImportNew user, String companyId) {
+	private void checkLimitTime(UserImportNew user, String companyId,String employeeCode) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_316"), null);
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_316");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);

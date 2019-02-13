@@ -23,8 +23,11 @@ module nts.uk.at.view.kmk004.c {
         import MonthlyCalSettingDto = nts.uk.at.view.kmk004.shared.model.MonthlyCalSettingDto;
         import WorktimeSetting = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel.WorktimeSetting;
         
+        import setShared = nts.uk.ui.windows.setShared;
+        import getShared = nts.uk.ui.windows.getShared;
         export class ScreenModel {
             
+            langId: KnockoutObservable<string> = ko.observable('ja');
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             
             worktimeVM: WorktimeSettingVM.ScreenModel;
@@ -367,6 +370,42 @@ module nts.uk.at.view.kmk004.c {
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }
+            }
+            
+            saveAsExcel(): void {
+                let self = this;
+                let params = {
+                    date: null,
+                    mode: 5
+                };
+                if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }  
+               nts.uk.ui.windows.sub.modal("../../../../../nts.uk.com.web/view/cdl/028/a/index.xhtml").onClosed(function() {
+                   var result = getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        service.findprogramName("KMK004", "A").done(function(res:String ) {
+                           let domainType = "KMK004";
+                           res = res.split(" ");
+                           if (res.length > 1) {
+                               res.shift();
+                               domainType = domainType + res.join(" ");
+                           }
+                            let startDate = moment.utc(result.startDateFiscalYear ,"YYYY/MM/DD");
+                            let endDate = moment.utc(result.endDateFiscalYear ,"YYYY/MM/DD") ;
+                            service.saveAsExcel(domainType, startDate, endDate).done(function() {
+                            }).fail(function(error) {
+                                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                            }).always(function() {
+                                nts.uk.ui.block.clear();
+                            });
+                       
+                       }).always(function() {
+                            nts.uk.ui.block.clear();
+                       });
+                   }           
+               });
             }
         } // ----- end ScreenModel
         

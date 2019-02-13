@@ -630,6 +630,21 @@ module ccg013.a.viewmodel {
                 }
             });
         }
+        
+        /**
+         * Export excel
+         */
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
     }
 
     export class WebMenuModel {

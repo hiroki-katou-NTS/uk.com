@@ -154,8 +154,8 @@ module nts.uk.pr.view.kmf001.c {
                 let command = self.toJsObject();
                 
                 nts.uk.ui.block.grayout();
-                
-                service.save(command).done(function() {
+
+                nts.uk.pr.view.kmf001.c.service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $('#annual-manage').focus();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -171,7 +171,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findSetting().done(function(res: any) {
+                nts.uk.pr.view.kmf001.c.service.findSetting().done(function(res: any) {
                     if (res) {
                         self.initUI(res);
                     }
@@ -313,7 +313,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadManageDistinctEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findManageDistinct().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.findManageDistinct().done(function(res: Array<EnumertionModel>) {
                     self.manageDistinctList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -326,7 +326,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadPreemptionPermitEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findPreemptionPermit().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.findPreemptionPermit().done(function(res: Array<EnumertionModel>) {
                     self.annualPriorityList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -339,7 +339,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadDisplayDivisionEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findDisplayDivision().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.findDisplayDivision().done(function(res: Array<EnumertionModel>) {
                     self.displayDivisionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -352,7 +352,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadTimeUnitEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findTimeUnit().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.findTimeUnit().done(function(res: Array<EnumertionModel>) {
                     self.vacationTimeUnitList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -365,7 +365,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadMaxDayReferenceEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findMaxDayReference().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.findMaxDayReference().done(function(res: Array<EnumertionModel>) {
                     self.maxDayReferenceList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -378,7 +378,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadRoundProcessClassificationEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.roundProcessClassification().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.roundProcessClassification().done(function(res: Array<EnumertionModel>) {
                     self.roundProcessClassificationList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -391,7 +391,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadRoundProcessClassificEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.roundProcessClassific().done(function(res: Array<EnumertionModel>) {
+                nts.uk.pr.view.kmf001.c.service.roundProcessClassific().done(function(res: Array<EnumertionModel>) {
                     self.roundProcessClassificList(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -399,6 +399,7 @@ module nts.uk.pr.view.kmf001.c {
                 });
                 return dfd.promise();
             }
+
         }
     }
 }

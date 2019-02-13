@@ -14,6 +14,7 @@
 				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="1" class="danger"
 				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
+			<button tabindex="1" data-bind="click: function(){exportExcel('AutomaticCalculationSetting')}">#{i18n.getText('KMK006_47')}</button>
 		</ui:define>
 
 		<ui:define name="extended-222">
