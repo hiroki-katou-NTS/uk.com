@@ -474,6 +474,30 @@ module cps003.a.vm {
             });
         }
         
+        exportFile() {
+            let self = this, $grid = $("#grid"), 
+                matrixData = { categoryId: self.category.catId(), categoryName: self.category.cate().categoryName,
+                    fixedHeader: { isShowDepartment: self.settings.matrixDisplay().departmentATR === IUSE_SETTING.USE,
+                                   isShowWorkplace: self.settings.matrixDisplay().workPlaceATR === IUSE_SETTING.USE,
+                                   isShowPosition: self.settings.matrixDisplay().jobATR === IUSE_SETTING.USE,
+                                   isShowEmployment: self.settings.matrixDisplay().employmentATR === IUSE_SETTING.USE,
+                                   isShowClassification: self.settings.matrixDisplay().clsATR === IUSE_SETTING.USE },
+                    dynamicHeader: _.filter(self.headDatas, (data: IDataHead) => _.find(self.settings.perInfoData(), (info: IPersonInfoSetting) => info.regulationAtr && info.itemCD === data.itemCode)),
+                    detailData: []
+                };
+            
+            _.forEach($grid.mGrid("dataSource"), (record: Record) => {
+                matrixData.detailData.push(new GridEmployeeInfoDataSource(record, matrixData.dynamicHeader, $grid));
+            });
+            
+            nts.uk.request.exportFile("com", "/person/matrix/report/printMatrix", matrixData).done(data => {
+                
+            }).fail(mes => {
+            
+            });
+            
+        }
+        
         saveWidth() {
             let self = this, width = nts.uk.localStorage.getItem(nts.uk.request.location.current.rawUrl + "/grid"), items = [];
             width.ifPresent(w => {
@@ -1614,6 +1638,61 @@ module cps003.a.vm {
         }
     }
     
+    class GridEmployeeInfoDataSource {
+        personId: string;
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        departmentName: string;
+        workplaceName: string;   
+        positionName: string;
+        employmentName: string;
+        classificationName: string;  
+        items: Array<GridEmpBodyDataSource> = [];
+        
+        constructor(record: Record, heads: Array<IDataHead>, $grid: any) {
+            this.personId = record.personId;
+            this.employeeId = record.employeeId;
+            this.employeeCode = record.employeeCode;
+            this.employeeName = record.employeeName;
+            this.departmentName = record.deptName;
+            this.workplaceName = record.workplaceName;
+            this.positionName = record.positionName;
+            this.employmentName = record.employmentName;
+            this.classificationName = record.className;
+            _.forEach(_.keys(record), f => {
+                if (_.find(heads, (h: IDataHead) => h.itemCode === f)) {
+                    this.items.push(new GridEmpBodyDataSource(f, record, $grid));
+                }
+            });
+        }
+    }
+    
+    class GridEmpBodyDataSource {
+        recordId: string;
+        itemCode: string;
+        value: any;
+        lstComboBoxValue: Array<ComboBoxObject>;
+        
+        constructor(itemCode: string, record: Record, $grid: any) {
+            this.recordId = record.id;
+            this.itemCode = itemCode;
+            let value = record[itemCode];
+            if (value instanceof Date) {
+                this.value = moment(value).format("YYYY/MM/DD");
+            } else if (value instanceof moment) {
+                this.value = value._i;
+            } else this.value = value;
+            
+            this.lstComboBoxValue = $grid.mGrid("optionsList", this.recordId, this.itemCode);
+        }
+    }
+    
+    class ComboBoxObject {
+        optionValue: string;
+        optionText: string;
+    }
+    
     interface StampCardEditing {
         method: EDIT_METHOD;
         digitsNumber: number;
@@ -1669,5 +1748,20 @@ module cps003.a.vm {
         NODUPLICATE = 4, //No duplicate history
         DUPLICATE = 5, // Duplicate history,
         CONTINUWED = 6 // Continuos history with end date
+    }
+    
+    interface IReplaceValueDto {
+        // 全て置換する
+        replaceAll: boolean;
+        // 対象項目
+        targetItem: string;
+        // 一致する値
+        matchValue: any;
+        // 置換形式 
+        replaceFormat: Number;
+        // 値1
+        replaceValue1: any;
+        // 値2
+        replaceValue2: any;
     }
 }
