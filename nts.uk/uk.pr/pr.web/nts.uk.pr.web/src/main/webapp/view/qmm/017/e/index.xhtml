@@ -134,7 +134,7 @@
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; " data-bind = "if: formulaType() == 0">
+                            <div style="margin-top: 10px; " data-bind = "if: formulaType() != 0">
                                 <!--E4_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate'}">#{i18n.getText('QMM017_113')}</div>
@@ -152,7 +152,7 @@
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px;" data-bind = "if: formulaType() == 0">
+                            <div style="margin-top: 10px;" data-bind = "if: formulaType() != 0">
                                 <!--E5_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_115')}</div>

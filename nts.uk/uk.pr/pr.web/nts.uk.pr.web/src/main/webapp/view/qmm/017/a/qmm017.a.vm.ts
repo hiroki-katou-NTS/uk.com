@@ -359,7 +359,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                 if (identifier.length > 0 ){
                     self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
-                    $("#A3_4").focus();
+                    $("#A2_6").focus();
                     self.basicFormulaSetting(new model.BasicFormulaSetting(null));
                 }
             }
