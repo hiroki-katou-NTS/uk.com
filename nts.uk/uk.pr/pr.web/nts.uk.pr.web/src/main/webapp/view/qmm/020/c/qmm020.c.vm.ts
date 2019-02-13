@@ -36,6 +36,11 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let listStateCorrelationHis = [];
 
             service.getStateCorrelationHisEmployeeById().done((data)=>{
+                if(data == null){
+                    dialog.info({ messageId: "Msg_303" }).then(()=>{
+                        self.enableAddHisButton(false);
+                    });
+                }
                 if(data.length > 0){
                     _.forEach(data,(o)=>{
                         listStateCorrelationHis.push(new ItemModel(o.hisId, o.startYearMonth , o.endYearMonth));
