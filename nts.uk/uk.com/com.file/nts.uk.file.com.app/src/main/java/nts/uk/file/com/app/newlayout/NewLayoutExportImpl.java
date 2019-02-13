@@ -45,6 +45,7 @@ public class NewLayoutExportImpl implements MasterListData{
 		if (CollectionUtil.isEmpty(listNewLayout)) {
 			return null;
 		} else {
+
 			for (int i = 0; i < listNewLayout.size(); i++) {
 				// 5:時刻(TimePoint)
 				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
@@ -52,7 +53,7 @@ public class NewLayoutExportImpl implements MasterListData{
 					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listNewLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
 						listNewLayoutS.add(listNewLayout.get(i));
 					}else{
-						if(listNewLayout.get(i).getItemParentCD()==null){
+						if(listNewLayout.get(i).getItemParentCD()==null||listNewLayout.get(i).getItemParentCD().equals("IS00278")){
 							listNewLayoutS.add(listNewLayout.get(i));
 						}
 					}
