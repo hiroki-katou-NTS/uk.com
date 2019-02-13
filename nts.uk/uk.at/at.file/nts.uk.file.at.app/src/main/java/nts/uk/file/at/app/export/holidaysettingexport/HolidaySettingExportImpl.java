@@ -207,6 +207,7 @@ public class HolidaySettingExportImpl implements MasterListData{
                             }else{
                             	subDays = getSub.substring(2,4);
                             }
+                            
                      }
                     putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
 					putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),subMonth+TextResource.localize("KMF002_69"),1);
@@ -483,13 +484,13 @@ public class HolidaySettingExportImpl implements MasterListData{
 //					Comparator.comparing(WorkplaceHierarchyDto::getCode, Comparator.nullsLast(String::compareTo)))
 //					.collect(Collectors.toList());
 			
+			
 			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
 				if(!CollectionUtil.isEmpty(listWorkplace)){  
 					for(int i=0;i<listWorkplace.size();i++){
 						Map<String, Object> data = new HashMap<>();
 						Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 						int startMonthThree = companyStartMonth.get().getStartMonth();
-						
 						for(int j=0;j<12; j++){
 							putEmptyDataThree(data);
 							if(i==0 && j==0){
@@ -575,11 +576,19 @@ public class HolidaySettingExportImpl implements MasterListData{
 		for(int y=0;y<listYear.size();y++){
 			List<String> lstEmp = employmentMonthDaySettingRepository.findAllEmpRegister(new CompanyId(companyId), new Year(listYear.get(y)));
 			List<EmploymentDto> listEmployeeExport = getListEmploymentDto(listEmployee, lstEmp);
+			
+			listEmployeeExport = listEmployeeExport.stream().sorted(
+					Comparator.comparing(EmploymentDto::getCode, Comparator.nullsLast(String::compareTo)))
+					.collect(Collectors.toList());
+			
 			if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
 				if (!CollectionUtil.isEmpty(listEmployeeExport)) {
 					Map<String, Object> data = new HashMap<>();
 					int startMonthFour = companyStartMonth.get().getStartMonth();
 					for (int i = 0; i < listEmployeeExport.size(); i++) {
+						
+						System.out.println(listEmployeeExport.get(i).getCode());
+						
 						for (int j = 0; j < 12; j++) {
 							putEmptyDataFour(data);
 							if (i == 0 && j == 0) {
