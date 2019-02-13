@@ -7,6 +7,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
 
     export class ScreenModel {
+        option: any = {
+            decimallength: 2
+        };
         screenControl: KnockoutObservable<ScreenControl>;
 
         selectedSearchIitemName: KnockoutObservable<any>;

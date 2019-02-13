@@ -51,15 +51,15 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         }
 
        enableRegis() {
-            return this.mode() == model.MODE.NO_REGIS;
+            return (this.mode() == model.MODE.NO_REGIS || this.mode() == model.MODE.NO_EXIST);
        }
 
         enableNew() {
             let self = this;
             if (self.listStateCorrelationHisClassification().length > 0) {
-                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisClassification()[FIRST].hisId == HIS_ID_TEMP));
+                return !(self.mode() == model.MODE.NEW || (self.listStateCorrelationHisClassification()[FIRST].hisId == HIS_ID_TEMP));
             }
-            return self.mode() == model.MODE.NEW;
+            return self.mode() != model.MODE.NEW && self.mode() != model.MODE.NO_EXIST;
         }
 
        enableEdit(){
@@ -80,9 +80,9 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
                     { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
                     { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75', unbound: true, ntsControl: '' },
-                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '190'},
                     { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75', unbound: true, ntsControl: 'Bonus' },
-                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
+                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '190' },
 
                 ],
                 features: [
@@ -103,6 +103,16 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
 
         initScreen(hisId: string){
             let self = this;
+            service.getAllClassificationByCid().done((classificationList: Array<IClassificationImportDto>) => {
+                if(!classificationList || classificationList.length == 0) {
+                    dialog.info({ messageId: "Msg_304" }).then(() => {
+                        self.mode(model.MODE.NO_EXIST);
+                        return;
+                    });
+                }
+                self.classificationList = classificationList;
+                self.listStateLinkSettingMasterInit = classificationList.map((value: IClassificationImportDto) => new model.StateLinkSettingMaster(value.classificationCode, value.classificationName));
+            });
             block.invisible();
             service.getStateCorrelationHisClassification().done((listStateCorrelationHis: Array<StateCorrelationHisClassification>) => {
                 if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
@@ -113,17 +123,13 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     }
                     self.hisIdSelected(self.listStateCorrelationHisClassification()[self.getIndex(hisId)].hisId);
                 } else {
+                    self.listStateCorrelationHisClassification([]);
                     self.mode(model.MODE.NO_REGIS);
                     self.loadGird();
                 }
             }).always(() => {
                 block.clear();
                 $("#E1_5_container").focus();
-            });
-
-            service.getAllClassificationByCid().done((classificationList: Array<IClassificationImportDto>) => {
-                self.classificationList = classificationList;
-                self.listStateLinkSettingMasterInit = classificationList.map((value: IClassificationImportDto) => new model.StateLinkSettingMaster(value.classificationCode, value.classificationName));
             });
         }
 
@@ -161,7 +167,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             block.invisible();
             let self = this;
             service.getStateLinkMasterClassification(hisId, startYearMonth).done((stateLinkSettingMaster: Array<model.StateLinkSettingMaster>) => {
-                if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
+                if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0 ) {
                     for(let item: model.StateLinkSettingMaster of stateLinkSettingMaster) {
                         let classificationImport = _.filter(self.classificationList, function(o) {
                             return item.masterCode == o.classificationCode;
@@ -183,7 +189,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
 
         initStateLinkSettingMaster() {
             let self = this;
-
             self.mode(model.MODE.NEW);
             self.listStateLinkSettingMaster(self.listStateLinkSettingMasterInit);
             self.loadGird();
@@ -219,7 +224,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     index = self.findItem(item.masterCode);
                     self.updateLinkSettingMaster(params.statementCode, params.statementName, index, code);
                 }
-
             });
         }
 
@@ -270,7 +274,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 canDelete: canDelete,
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION,
-                isFirst: index === 0 && self.listStateCorrelationHisClassification().length > 1 ? true : false
+                isFirst: index == 0 && self.listStateCorrelationHisClassification().length > 1 ? true : false
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);

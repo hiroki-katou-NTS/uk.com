@@ -109,7 +109,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                         if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) itemToBeFocus = '#C2_7';
                         else itemToBeFocus = '#B1_4';
                     } else itemToBeFocus = '#D1_4';
-                } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
+                } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#formula-tree_container'}
                 setTimeout (function(){
                     if (itemToBeFocus) $(itemToBeFocus).focus();
                 }, 50);
@@ -307,16 +307,16 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     // for ie
                     setTimeout(function(){
                         nts.uk.ui.errors.clearAll();
-                    }, 50)
+                    }, 50);
                     setTimeout(function(){
                         nts.uk.ui.errors.clearAll();
-                    }, 100)
+                    }, 100);
                     setTimeout(function(){
                         nts.uk.ui.errors.clearAll();
-                    }, 200)
+                    }, 200);
                     setTimeout(function(){
                         nts.uk.ui.errors.clearAll();
-                    }, 300)
+                    }, 300);
                 }, 100)
             }
             else self.selectedTab('tab-1');
@@ -359,7 +359,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                 if (identifier.length > 0 ){
                     self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
-                    $("#A2_6").focus();
+                    $("#formula-tree_container").focus();
                     self.basicFormulaSetting(new model.BasicFormulaSetting(null));
                 }
             }
