@@ -22,7 +22,7 @@
             </div>
             <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="E1_3" tabindex="5" data-bind="click: openJScreen,timeClick: 800, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
+                    <button id="E1_3" tabindex="5" data-bind="click: openJScreen,timeClick: 800, enable: enableNew()">#{i18n.getText('QMM020_13')}</button>
 
                     <button id="E1_4" tabindex="6" data-bind="click: openKScreen,timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
