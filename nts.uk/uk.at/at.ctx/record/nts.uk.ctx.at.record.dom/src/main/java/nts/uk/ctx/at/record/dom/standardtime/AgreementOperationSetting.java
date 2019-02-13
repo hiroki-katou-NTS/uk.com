@@ -167,6 +167,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 				source.getYearMonth(),
 				new Year(calcYear),
 				source.getAgreementTime(),
-				source.getBreakdown());
+				source.getAgreementMaxTime());
 	}
 }

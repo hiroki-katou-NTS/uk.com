@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeBreakdownDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyAggregationErrorInfoDto;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -55,9 +57,11 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 
 	@Override
 	public AgreementTimeOfManagePeriod toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return AgreementTimeOfManagePeriod.of(employeeId, ym, year, 
-											agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(), 
-											breakdown == null ? new AgreementTimeBreakdown() : breakdown.toDomain());
+		return AgreementTimeOfManagePeriod.of(employeeId, ym, year,
+				AgreementTimeManage.of(
+						agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(), 
+						breakdown == null ? new AgreementTimeBreakdown() : breakdown.toDomain()),
+				new AgreMaxTimeManage());
 	}
 
 	@Override
@@ -79,8 +83,8 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 		AgreementTimeOfManagePeriodDto dto = new AgreementTimeOfManagePeriodDto();
 		if(domain != null){
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime()));
-			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getBreakdown()));
+			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime().getAgreementTime()));
+			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getAgreementTime().getBreakdown()));
 			dto.setErrorInfos(ConvertHelper.mapTo(domain.getErrorInfos(), c -> new MonthlyAggregationErrorInfoDto(c.getResourceId(), c.getMessage().v())));
 			dto.setYear(domain.getYear());
 			dto.setYearMonth(domain.getYearMonth());

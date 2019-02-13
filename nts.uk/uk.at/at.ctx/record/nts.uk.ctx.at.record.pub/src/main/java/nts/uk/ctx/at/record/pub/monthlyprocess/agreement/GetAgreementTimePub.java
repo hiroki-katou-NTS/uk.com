@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * 36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetAgreementTimePub {
 
