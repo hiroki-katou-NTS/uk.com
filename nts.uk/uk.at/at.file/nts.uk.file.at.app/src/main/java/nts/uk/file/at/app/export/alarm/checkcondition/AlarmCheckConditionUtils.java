@@ -558,6 +558,21 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
+	public static <T> String getValueWithConditionAtrMonth(T value, int checkTypeItem) {
+		if (checkTypeItem == 4) {
+			CheckedTimeDuration timeDuration = new CheckedTimeDuration(
+					value instanceof Integer ? (Integer) value : ((Double) value).intValue());
+			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() + ":"
+					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
+		} else if (checkTypeItem == 5) {
+			return ((new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).toString());
+		} else if (checkTypeItem == 6 || checkTypeItem == 7) {
+			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))
+					.toString();
+		}
+		return "";
+	}
 	
 	public static String getTypeCheckVacationStr(Optional<Integer> typeCheckVacation)  {
 		if (typeCheckVacation.isPresent()) {
