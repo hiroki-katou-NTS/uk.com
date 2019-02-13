@@ -500,7 +500,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let formulaElements:any = formula.split(regex).filter(item => {return item && item.length});
             let self = this, index = 0, currentChar, nextChar, operators = self.operators;
             if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_234', []);
-            if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
+            if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('MsgQ_235', []);
             for(index = 0 ; index < formulaElements.length; index ++){
                 currentChar = formulaElements[index];
                 if (operators.indexOf(currentChar)>-1){
