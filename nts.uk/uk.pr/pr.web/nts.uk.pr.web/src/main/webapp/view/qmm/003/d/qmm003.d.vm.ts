@@ -122,7 +122,7 @@ module nts.uk.pr.view.qmm003.d.viewmodel {
             self.code = code;
             self.searchCode = level == 2 ? code : "";
             self.name = level == 2 ? name : "";
-            self.nodeText = level == 2 ? _.escape(self.code + ' ' + self.name) : _.escape(self.name);
+            self.nodeText = level == 2 ? _.escape(code + ' ' + name) : _.escape(name);
             self.children = children;
             if (level != null) self.level = level;
         }
