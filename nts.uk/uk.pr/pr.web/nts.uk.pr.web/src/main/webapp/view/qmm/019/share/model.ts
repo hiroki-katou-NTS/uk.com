@@ -23,7 +23,7 @@ module nts.uk.pr.view.qmm019.share.model {
             case CategoryAtr.ATTEND_ITEM:
                 return getText("Enum_CategoryAtr_ATTEND_ITEM");
             case CategoryAtr.REPORT_ITEM:
-                return getText("Enum_CategoryAtr_ATTEND_ITEM");
+                return getText("Enum_CategoryAtr_REPORT_ITEM");
             case CategoryAtr.OTHER_ITEM:
                 return getText("Enum_CategoryAtr_OTHER_ITEM");
             default:
