@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
 
     let paths: any = {
         find: "at/request/application/getalldatabyclosureId",
@@ -27,6 +28,10 @@ module nts.uk.at.view.kmf022.a.service {
     }
     export function findJobTitleSearchList(param: any): JQueryPromise<void> {
         return nts.uk.request.ajax("com", paths.findJobTitleSearchList, param);
+    }
+
+    export function exportExcel(languageId: string, domainId, domainType: string): JQueryPromise<any> {
+        return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: null });
     }
     
      

@@ -40,6 +40,25 @@ module nts.uk.at.view.kmf002.e {
             command.year = year;
             return nts.uk.request.ajax("at", path.remove, command);
         }
+        
+        export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMF002";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile('/masterlist/report/print',
+                {
+                    domainId: "HolidaySetting",
+                    domainType: domainType,
+                    languageId: 'ja', reportType: 0,
+                    mode: mode,
+                    startDate: moment.utc(startDate).format(),
+                    endDate: moment.utc(endDate).format()
+                });
+        }
+        
     }
     
     /**

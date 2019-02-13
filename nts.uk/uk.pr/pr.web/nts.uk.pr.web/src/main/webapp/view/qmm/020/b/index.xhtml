@@ -23,7 +23,7 @@
                     <div >
                         <i id="img-calendar" class="image image-calendar"/>
                     </div>
-                        <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+                        <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                                 <div>
                                         <button id="B1_3" tabindex="5" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">#{i18n.getText('QMM020_13')}</button>
 
@@ -32,7 +32,8 @@
 
                                 <div style="margin-top: 10px">
                                         <table  id="B1_5"  tabindex="7" data-bind="ntsGridList: {
-                                            height: 250,
+                                            height: 165,
+                                            rows:6,
                                             name: '#{i18n.getText('QMM020_14')}',
                                             dataSource: listStateCorrelationHis,
                                             primaryKey: 'hisId',

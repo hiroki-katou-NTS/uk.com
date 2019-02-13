@@ -26,8 +26,11 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -57,9 +60,10 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	public void update(OptionalItem dom) {
 
 		// Find entity
-		KrcstOptionalItem entity = this.queryProxy().find(
-				new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
-				KrcstOptionalItem.class).get();
+		KrcstOptionalItem entity = this.queryProxy()
+				.find(new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
+						KrcstOptionalItem.class)
+				.get();
 
 		// Update entity
 		dom.saveToMemento(new JpaOptionalItemSetMemento(entity));
@@ -92,26 +96,24 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@Override
 	@SneakyThrows
 	public List<OptionalItem> findAll(String companyId) {
-		try (val stmt = this.connection().prepareStatement(
-					"select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
-					+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
-					+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
+		try (val stmt = this.connection()
+				.prepareStatement("select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
+						+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
-			
+
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				KrcstOptionalItem item = new KrcstOptionalItem();
-				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(
-						companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
-				
+
 				KrcstCalcResultRange range = new KrcstCalcResultRange();
-				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(
-						companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
 				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
 				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
@@ -120,7 +122,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
 				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
 				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
-				
+
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
 		}
@@ -139,8 +141,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
-				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -162,8 +164,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// Return
 		return results.stream()
-				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
-						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+				.map(item -> new OptionalItem(
+						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -182,8 +184,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 			return Collections.emptyList();
 		}
 
-		try (val stmt = this.connection().prepareStatement(
-				"select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+		try (val stmt = this.connection()
+				.prepareStatement("select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
 						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
 						+ "where KOI.CID = ? and KOI.OPTIONAL_ITEM_NO in ("
 						+ NtsStatement.In.createParamsString(optionalitemNos)
@@ -195,8 +197,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				KrcstOptionalItem item = new KrcstOptionalItem();
-				item.setKrcstOptionalItemPK(
-						new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
@@ -205,8 +206,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
 
 				KrcstCalcResultRange range = new KrcstCalcResultRange();
-				range.setKrcstCalcResultRangePK(
-						new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
 				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
 				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
@@ -221,8 +221,12 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByAtr(java.lang.String, nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByAtr(java.
+	 * lang.String, nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr)
 	 */
 	@Override
 	public List<OptionalItem> findByAtr(String companyId, OptionalItemAtr atr) {
@@ -237,14 +241,13 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
-				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(
-				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -261,8 +264,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// Return
 		return results.stream()
-				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
-						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+				.map(item -> new OptionalItem(
+						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -286,14 +289,13 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
-				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(
-				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -310,11 +312,11 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// Return
 		return results.stream()
-				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
-						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+				.map(item -> new OptionalItem(
+						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -335,27 +337,28 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(
-				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.usageAtr), OptionalItemUsageAtr.USE.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		
+
 		cq = cq.multiselect(root, join);
 		List<Tuple> result = em.createQuery(cq.distinct(true)).getResultList();
-		
+
 		// Get results
 		return result.stream()
-				.map(c -> new OptionalItem(new JpaOptionalItemGetMemento((KrcstOptionalItem) c.get(0), (KrcstCalcResultRange) c.get(1))))
+				.map(c -> new OptionalItem(
+						new JpaOptionalItemGetMemento((KrcstOptionalItem) c.get(0), (KrcstCalcResultRange) c.get(1))))
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr) {
 		// Get entity manager
@@ -373,25 +376,107 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		
+
 		// Get NO and optional attr only
-		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo), 
-						root.get(KrcstOptionalItem_.optionalItemAtr));
+		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo),
+				root.get(KrcstOptionalItem_.optionalItemAtr));
 
 		// Get results
 		List<Tuple> results = em.createQuery(cq).getResultList();
-		
+
 		// Check empty
 		if (CollectionUtil.isEmpty(results)) {
 			return new HashMap<>();
 		}
-		
+
 		// Return
-		return results.stream().collect(Collectors.toMap(r -> (Integer) r.get(0), 
+		return results.stream().collect(Collectors.toMap(r -> (Integer) r.get(0),
 				r -> EnumAdaptor.valueOf((Integer) r.get(1), OptionalItemAtr.class)));
 	}
+
+	@Override
+	public List<CalFormulasItemExportData> findAllData(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@SneakyThrows
+	public List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId) {
+		try (val stmt = this.connection().prepareStatement(
+				"SELECT ec.EMP_CD , oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oi.EMP_CONDITION_ATR FROM "
+						+ "KRCST_OPTIONAL_ITEM oi " + "LEFT JOIN KRCST_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
+						+ "AND oi.OPTIONAL_ITEM_NO = rr.OPTIONAL_ITEM_NO "
+						+ "LEFT JOIN KRCST_APPL_EMP_CON ec ON rr.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO AND rr.CID = ec.CID"
+						+ "where oi.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {
+			stmt.setString(1, companyId);
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				CalFormulasItemExportData item = new CalFormulasItemExportData();
+				return toReportData(rec);
+			});
+		} 
+
+	}
+
+	private CalFormulasItemExportData toReportData(NtsResultRecord rec) {
+		Map<String, String> empConditions = new HashMap<>();
+		empConditions.put(rec.getString("EMP_CD"), rec.getString("EMP_APPL_ATR"));
+		CalFormulasItemExportData item = new CalFormulasItemExportData(
+				rec.getString("OPTIONAL_ITEM_NO"),
+				rec.getString("OPTIONAL_ITEM_NAME"), 
+				rec.getString("EMP_CONDITION_ATR"), 
+				empConditions);
+		return item;
+	}
+
+	// Export Data table
+	@Override
+	@SneakyThrows
+	public List<CalFormulasItemTableExportData> findAllCalFormulasTableItem(String companyId, String languageId) {
+		try (val stmt = this.connection().prepareStatement(
+				"SELECT "
+				+"oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oif.SYMBOL, fd.DISPORDER "
+				+", fr.ROUNDING_ATR "
+				+", oi.PERFORMANCE_ATR "
+				+", oi.EMP_CONDITION_ATR, oi.PERFORMANCE_ATR, oif.FORMULA_ID, fd.DISPORDER "
+				+", oif.FORMULA_ATR, oif.FORMULA_NAME, oif.CALC_ATR "
+				+", fr.NUMBER_ROUNDING, fr.TIME_ROUNDING, fr.AMOUNT_ROUNDING, fr.NUMBER_ROUNDING_UNIT, fr.TIME_ROUNDING_UNIT, fr.AMOUNT_ROUNDING_UNIT "
+				+", cis.MINUS_SEGMENT, cis.OPERATOR "
+				+", fs.LEFT_FORMULA_ITEM_ID, fs.LEFT_SET_METHOD, fs.LEFT_INPUT_VAL, fs.RIGHT_FORMULA_ITEM_ID, fs.RIGHT_SET_METHOD, fs.RIGHT_INPUT_VAL "
+				+"FROM "
+				+"KRCST_OPTIONAL_ITEM oi "
+				+"INNER JOIN KRCMT_OPT_ITEM_FORMULA oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO "
+				+"INNER JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID AND oif.FORMULA_ID = fd.FORMULA_ID " 
+				+"INNER JOIN KRCMT_FORMULA_ROUNDING fr ON fd.FORMULA_ID = fr.FORMULA_ID and fd.OPTIONAL_ITEM_NO = fr.OPTIONAL_ITEM_NO "
+				+"INNER JOIN KRCMT_CALC_ITEM_SELECTION cis ON fd.FORMULA_ID = cis.FORMULA_ID AND fd.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO "
+				+"LEFT JOIN KRCMT_FORMULA_SETTING fs ON (fr.FORMULA_ID = fs.LEFT_FORMULA_ITEM_ID  OR fr.FORMULA_ID = fs.RIGHT_FORMULA_ITEM_ID) "
+				+"WHERE oi.CID = ? "
+				)) {
+			stmt.setString(1, companyId);
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				CalFormulasItemTableExportData item = new CalFormulasItemTableExportData();
+				return toReportDataTable(rec);
+			});
+		}
+
+	}
+
+	private CalFormulasItemTableExportData toReportDataTable(NtsResultRecord rec) {
+		CalFormulasItemTableExportData item = new CalFormulasItemTableExportData(
+				//
+		);
+		return null;
+	}
+	/*
+	 * private CalFormulasItemExportData toReportData(Object[] entity, String
+	 * langId) { // TODO Auto-generated method stub return new
+	 * CalFormulasItemExportData(
+	 * 
+	 * ); }
+	 */
 
 }

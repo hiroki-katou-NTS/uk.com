@@ -20,7 +20,7 @@ public class JpaCompanyMonthDaySettingSetMemento implements CompanyMonthDaySetti
 	
 	/** The company id. */
 	private String companyId;
-	
+
 	/** The year. */
 	private int year;
 

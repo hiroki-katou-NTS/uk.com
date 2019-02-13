@@ -1,9 +1,11 @@
 module nts.uk.com.view.cas013.a.viewmodel {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
-
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
@@ -265,6 +267,31 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     });
                 });
             }
+        }
+        
+        exportExcel(): void {
+            let self = this;
+            let params = {
+                date: null,
+                mode: 1
+            };
+            if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            }
+            nts.uk.ui.windows.sub.modal("../../../../../nts.uk.com.web/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var result = getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let langId = self.langId();
+                    let date = moment.utc(result.standardDate, "YYYY/MM/DD");
+                    new service.Service().saveAsExcel(langId, date).done(function() {
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            });
         }
 
     }

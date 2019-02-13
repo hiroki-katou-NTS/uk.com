@@ -6,7 +6,7 @@ module nts.uk.at.view.ksm005.a {
         export class ScreenModel {
             constructor() {
                 var self = this;
-                self.showExportBtn();
+//                self.showExportBtn();
             }
             
              // 締め期間確認 

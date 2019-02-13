@@ -33,6 +33,7 @@
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button class="proceed" data-bind="click: registerByCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
 					<!-- <button class="danger" data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button> -->
+					<button id="print-button_1" data-bind="click: exportExcel">#{i18n.getText('KSM006_23')}</button>
 				</div>
 
 
@@ -108,6 +109,7 @@
 						data-bind="click: registerByWorkplace, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
 						data-bind="click: removeByWorkplace, enable: isUpdateModeWorkplace()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
+					<button id="print-button_2" data-bind="click: exportExcel">#{i18n.getText('KSM006_23')}</button>
 				</div>
 
 				<div id="workplace-content">
@@ -206,6 +208,7 @@
 						data-bind="click: registerByClassification, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
 						data-bind="click: removeByClassification, enable: isUpdateModeClassify()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
+					<button id="print-button_1" data-bind="click: exportExcel">#{i18n.getText('KSM006_23')}</button>
 				</div>
 
 				<div id="classification-content">

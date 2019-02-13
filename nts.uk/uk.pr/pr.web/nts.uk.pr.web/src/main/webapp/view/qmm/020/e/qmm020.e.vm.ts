@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         loadGird(){
             let self = this;
             $("#E3_1").ntsGrid({
-                height: '311px',
+                height: '433px',
                 dataSource: self.listStateLinkSettingMaster(),
                 selected: self.currentCode(),
                 primaryKey: 'masterCode',
@@ -118,6 +118,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 }
             }).always(() => {
                 block.clear();
+                $("#E1_5_container").focus();
             });
 
             service.getAllClassificationByCid().done((classificationList: Array<IClassificationImportDto>) => {

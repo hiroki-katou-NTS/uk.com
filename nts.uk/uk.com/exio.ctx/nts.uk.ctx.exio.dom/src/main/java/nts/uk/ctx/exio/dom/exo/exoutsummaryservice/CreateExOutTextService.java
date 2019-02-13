@@ -475,7 +475,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					
 					for (List<String> lineData : data) {
 						lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
-								outputItemCustomList, sid, stringFormat, baseDate);
+								outputItemCustomList, sid, stringFormat, baseDate, type);
 						stateResult = (String) lineDataResult.get(RESULT_STATE);
 						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
@@ -511,7 +511,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 							|| (checkResult == ExIoOperationState.INTER_FINISH))
 						return new OperationStateResult(checkResult);
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
-							loginSid, stringFormat,baseDate);
+							loginSid, stringFormat,baseDate, type);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
 					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 					if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
@@ -755,7 +755,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル行データ作成
 	private Map<String, Object> fileLineDataCreation(String processingId, List<String> lineData,
-			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat,GeneralDate baseDate) {
+			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat,GeneralDate baseDate, CategorySetting type) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> lineDataCSV = new HashMap<String, Object>();
@@ -783,7 +783,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			if (isfixedValue == NotUseAtr.USE) {
 				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
-					targetValue = stringFormat.character +fixedValue + stringFormat.character;
+					targetValue = stringFormat.character + stringFormat.character +fixedValue + stringFormat.character;
 				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
 					targetValue = stringFormat.character+ fixedValue +stringFormat.character ;
 				}else{
@@ -820,6 +820,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue = fileItemDataCheckedResult.get(RESULT_VALUE);
 
 			if (RESULT_NG.equals(resultState)) {
+				// Do khong biet nghiep vu. nen fix the nay cho bug 105279
+				if(type != CategorySetting.DATA_TYPE) sid = null;
+				
 				createOutputLogError(processingId, errorMess, targetValue, sid,
 						outputItemCustom.getStandardOutputItem().getOutputItemName().v());
 				result.put(RESULT_STATE, RESULT_NG);

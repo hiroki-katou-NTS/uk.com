@@ -20,17 +20,18 @@
             <div >
                 <i id="img-calendar" class="image image-calendar"/>
             </div>
-            <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+            <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="E1_3" data-bind="click: openJScreen,timeClick: 800, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
+                    <button id="E1_3" tabindex="5" data-bind="click: openJScreen,timeClick: 800, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
 
-                    <button id="E1_4" data-bind="click: openKScreen,timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                    <button id="E1_4" tabindex="6" data-bind="click: openKScreen,timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
                 <div style="margin-top: 10px">
-                    <table  id="E1_5"  data-bind="ntsGridList: {
+                    <table  id="E1_5" tabindex="7" data-bind="ntsGridList: {
+                                            height: 165,
                                             name: '#QMM020_14',
-                                            rows:10,
+                                            rows:6,
                                             dataSource: listStateCorrelationHisClassification,
                                             primaryKey: 'hisId',
                                             columns: [
