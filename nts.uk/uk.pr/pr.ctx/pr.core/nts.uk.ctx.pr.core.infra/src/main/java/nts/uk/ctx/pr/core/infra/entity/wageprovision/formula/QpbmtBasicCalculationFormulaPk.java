@@ -45,7 +45,7 @@ public class QpbmtBasicCalculationFormulaPk implements Serializable {
      * 使用マスタコード
      */
     @Basic(optional = false)
-    @Column(name = "MASTER_USE_CODE")
+    @Column(name = "MASTER_USE_CD")
     public String masterUseCode;
     
 }

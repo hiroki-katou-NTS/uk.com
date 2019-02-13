@@ -727,9 +727,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (messageId == "MsgQ_231") {
                 isHasUniqueMessage = _.some(nts.uk.ui.errors.getErrorList(), {errorCode: 'MsgQ_231'})
             }
-            let messageParam = messageParams[0].replace('{','\\{').replace('}', '\\}');
-            //if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams[0].replace('{','\\\{')});
-            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: 'MsgQ_233', messageParams: ['\{文字0qqq\}']});
+            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams});
         }
 
         extractFormulaElement () {
