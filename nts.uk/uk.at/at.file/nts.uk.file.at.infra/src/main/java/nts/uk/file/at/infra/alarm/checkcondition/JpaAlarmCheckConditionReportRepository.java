@@ -54,7 +54,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				record.getString("FILTER_BY_JOB"),
 				record.getString("JOB_IDS"),
 				record.getString("FILTER_BY_BUSINESSTYPE"),
-				record.getString("BUSINESSTYPE_CDS"));
+				record.getString("BUSINESSTYPE_CDS"),
+				record.getInt("W4D4_CHECK_COND"));
 	}
 	
 	
@@ -97,7 +98,7 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		//10: チェック対象範囲 勤務種別
 		dailyReportData.setFilterWorkType(AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))));
 		//11: チェック対象範囲 勤務種別対象
-		dailyReportData.setWorktypes(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
+		dailyReportData.setWorktypeselections(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
 		//12: 日別実績のエラーアラーム
 		dailyReportData.setDailyErrorAlarms(Optional.ofNullable(record.getString("DAILY_ERROR_ALARMS_12")));
 		 
