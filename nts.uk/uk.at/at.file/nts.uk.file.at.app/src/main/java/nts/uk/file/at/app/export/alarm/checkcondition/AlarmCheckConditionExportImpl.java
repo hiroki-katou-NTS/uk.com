@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData.Agree36CondError;
 import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData.Agree36OTError;
@@ -687,7 +688,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						if (!CollectionUtil.isEmpty(listRowUsePerCode)) {
 							AtomicInteger index = new AtomicInteger(0);
 							listRowUsePerCode.stream()
-									// .sorted(Comparator.nullsLast(Comparator.comparing(DailyReportData::getInsDate)))
+									.sorted(Comparator.nullsLast(Comparator.comparing(MulMonthReportData::getInsDate)))
 									.forEachOrdered(row -> {
 										datas.add(buildMulMonthReportData(row, index.get(),
 												attendanceNameDivergenceDtos));
@@ -791,13 +792,18 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						.value(row.getStartValueCond().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
 								row.getStartValueCond().get(), row.getConditionAtrCond().get()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-
-				// 18: チェック条件 値2
-				data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
-						.columnId(AlarmCheckConditionUtils.KAL003_257)
-						.value(row.getEndValueCond().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
-								row.getEndValueCond().get(), row.getConditionAtrCond().get()) : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				
+				if (row.getCompareAtrCondInt().isPresent() && 
+						row.getCompareAtrCondInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+					// 18: チェック条件 値2
+					data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
+							.columnId(AlarmCheckConditionUtils.KAL003_257)
+							.value(row.getEndValueCond().isPresent()
+									? AlarmCheckConditionUtils.getValueWithConditionAtr(row.getEndValueCond().get(),
+											row.getConditionAtrCond().get())
+									: "")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				}
 			}
 
 			if (row.getUseAtrAvg().isPresent() && row.getUseAtrAvg().get() == 1) {
@@ -814,12 +820,15 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 								row.getStartValueAvg().get(), row.getConditionAtrAvg().get()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
-				// 18: チェック条件 値2
-				data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
-						.columnId(AlarmCheckConditionUtils.KAL003_257)
-						.value(row.getEndValueAvg().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
-								row.getEndValueAvg().get(), row.getConditionAtrAvg().get()) : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				if (row.getCompareAtrAvgInt().isPresent() && 
+						row.getCompareAtrAvgInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+					// 18: チェック条件 値2
+					data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
+							.columnId(AlarmCheckConditionUtils.KAL003_257)
+							.value(row.getEndValueAvg().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
+									row.getEndValueAvg().get(), row.getConditionAtrAvg().get()) : "")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				}
 			}
 
 			if (row.getUseAtrCont().isPresent() && row.getUseAtrCont().get() == 1) {
@@ -836,12 +845,15 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 								row.getStartValueCont().get(), row.getConditionAtrCont().get()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
-				// 18: チェック条件 値2
-				data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
-						.columnId(AlarmCheckConditionUtils.KAL003_257)
-						.value(row.getEndValueCont().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
-								row.getEndValueCont().get(), row.getConditionAtrCont().get()) : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				if (row.getCompareAtrContInt().isPresent() && 
+						row.getCompareAtrContInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+					// 18: チェック条件 値2
+					data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
+							.columnId(AlarmCheckConditionUtils.KAL003_257)
+							.value(row.getEndValueCont().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
+									row.getEndValueCont().get(), row.getConditionAtrCont().get()) : "")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				}
 
 				// 21: チェック条件 連続期間
 				data.put(AlarmCheckConditionUtils.KAL003_260,
@@ -865,12 +877,15 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 								row.getStartValueCosp().get(), row.getConditionAtrCosp().get()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
-				// 18: チェック条件 値2
-				data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
-						.columnId(AlarmCheckConditionUtils.KAL003_257)
-						.value(row.getEndValueCosp().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
-								row.getEndValueCosp().get(), row.getConditionAtrCosp().get()) : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				if (row.getCompareAtrCospInt().isPresent() && 
+						row.getCompareAtrCospInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+					// 18: チェック条件 値2
+					data.put(AlarmCheckConditionUtils.KAL003_257, MasterCellData.builder()
+							.columnId(AlarmCheckConditionUtils.KAL003_257)
+							.value(row.getEndValueCosp().isPresent() ? AlarmCheckConditionUtils.getValueWithConditionAtr(
+									row.getEndValueCosp().get(), row.getConditionAtrCosp().get()) : "")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+				}
 
 				// 19: チェック条件 計算式 条件
 				data.put(AlarmCheckConditionUtils.KAL003_258, MasterCellData.builder()
@@ -1160,7 +1175,8 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 								.value(row.getNumdayHoliday1().isPresent() ? row.getNumdayHoliday1().get() + TextResource.localize("KAL003_314") : "")
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
-				if (row.getCompareOperatorInt().isPresent() && row.getCompareOperatorInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+				if (row.getCompareOperatorInt().isPresent() 
+						&& row.getCompareOperatorInt().get() > SingleValueCompareType.GREATER_THAN.value) {
 					// 21: アラームリストのチェック条件 値２
 					data.put(AlarmCheckConditionUtils.KAL003_271,
 							MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_271)
@@ -1178,11 +1194,14 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_266)
 								.value(row.getTypeCheckVacation().isPresent() ? row.getTypeCheckVacation().get() : "")
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-				// 17: アラームリストのチェック条件 条件
-				data.put(AlarmCheckConditionUtils.KAL003_266,
-						MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_266)
-								.value(row.getVacationItems().isPresent() ? row.getVacationItems().get() : "")
-								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				if (row.getTypeCheckVacationInt().isPresent() 
+						&& row.getTypeCheckVacationInt().get() == TypeCheckVacation.SPECIAL_HOLIDAY.value) {
+					// 17: アラームリストのチェック条件 条件
+					data.put(AlarmCheckConditionUtils.KAL003_267,
+							MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_267)
+									.value(row.getVacationItems().isPresent() ? row.getVacationItems().get() : "")
+									.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				}
 
 				// 19: アラームリストのチェック条件 条件
 				data.put(AlarmCheckConditionUtils.KAL003_269,
@@ -1195,7 +1214,8 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 								.value(row.getVacationStartValue().isPresent() ? row.getVacationStartValue().get() + TextResource.localize("KAL003_314") : "")
 								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
-				if (row.getVacationCompareAtrInt().isPresent() && row.getVacationCompareAtrInt().get() > SingleValueCompareType.GREATER_THAN.value) {
+				if (row.getVacationCompareAtrInt().isPresent() 
+						&& row.getVacationCompareAtrInt().get() > SingleValueCompareType.GREATER_THAN.value) {
 					// 21: アラームリストのチェック条件 値２
 					data.put(AlarmCheckConditionUtils.KAL003_271,
 							MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_271)
@@ -1226,7 +1246,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				data.put(AlarmCheckConditionUtils.KAL003_270, MasterCellData.builder()
 						.columnId(AlarmCheckConditionUtils.KAL003_270)
 						.value(row.getStartValue().isPresent() ? AlarmCheckConditionUtils
-								.getValueWithConditionAtr(row.getStartValue().get(), row.getConditionAtr().get()) : "")
+								.getValueWithConditionAtrMonth(row.getStartValue().get(), row.getCheckItemInt().get()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 				if (row.getCompareAtrInt().isPresent() && row.getCompareAtrInt().get() > SingleValueCompareType.GREATER_THAN.value) {
@@ -1234,7 +1254,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 					data.put(AlarmCheckConditionUtils.KAL003_271, MasterCellData.builder()
 							.columnId(AlarmCheckConditionUtils.KAL003_271)
 							.value(row.getEndValue().isPresent() ? AlarmCheckConditionUtils
-									.getValueWithConditionAtr(row.getEndValue().get(), row.getConditionAtr().get()) : "")
+									.getValueWithConditionAtrMonth(row.getEndValue().get(), row.getCheckItemInt().get()) : "")
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 				}
 				
