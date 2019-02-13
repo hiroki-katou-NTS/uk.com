@@ -244,7 +244,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     self.startYearMonth(params.start);
                     self.endYearMonth(999912);
                 }
-
+                $("#E1_5_container").focus();
             });
 
         }
@@ -280,8 +280,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 if(params && params.modeEditHistory == 0) {
                     self.initScreen(null);
                 }
-                $('#E2_1').focus();
-
+                $("#E1_5_container").focus();
             });
         }
 

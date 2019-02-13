@@ -220,6 +220,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.listStateCorrelationHisSalary.unshift(self.createStateCorrelationHisSalary(params.start, self.endYearMonth()));
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
+                $("#G1_5_container").focus();
             });
 
         }
@@ -265,7 +266,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.initScreen(null);
 
                 }
-                $('#G2_1').focus();
+                $("#G1_5_container").focus();
 
             });
 

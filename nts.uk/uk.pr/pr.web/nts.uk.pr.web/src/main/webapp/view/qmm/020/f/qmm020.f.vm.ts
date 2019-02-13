@@ -254,7 +254,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.listStateCorrelationHisPosition.unshift(self.createStateCorrelationHisPosition(params.start, self.end()));
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
-
+                $("#F1_5_container").focus();
             });
 
         }
@@ -302,8 +302,8 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if (params && params.modeEditHistory == model.EDIT_METHOD.DELETE) {
                     self.initScreen(null);
                 }
-                $('#F2_1').focus();
 
+                $("#F1_5_container").focus();
             });
 
         }
