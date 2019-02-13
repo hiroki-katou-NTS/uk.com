@@ -242,12 +242,12 @@ public class DisplayControlSheet {
 			name = TextResource.localize("KSM011_55");
 			break;
 		case 5:
-			if (scheFuncControl.getTeamCls().value == 0){
+			if (scheFuncControl.getTeamCls().value == 1){
 				name = TextResource.localize("KSM011_56");
 			}
 			break;
 		case 6:
-			if (scheFuncControl.getRankCls().value == 0){
+			if (scheFuncControl.getRankCls().value == 1){
 				name = TextResource.localize("KSM011_57");
 			}
 			break;
@@ -281,10 +281,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_63")) && parent.equals(TextResource.localize("KSM011_62"))){
 			switch (scheDispControl.getSymbolHalfDayAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -293,10 +293,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_64")) && parent.equals(TextResource.localize("KSM011_62"))){
 			switch (scheDispControl.getSymbolAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -305,10 +305,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_66")) && parent.equals(TextResource.localize("KSM011_65"))){
 			switch (scheDispControl.getPubHolidayExcessAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -317,10 +317,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_67")) && parent.equals(TextResource.localize("KSM011_65"))){
 			switch (scheDispControl.getPubHolidayShortageAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;

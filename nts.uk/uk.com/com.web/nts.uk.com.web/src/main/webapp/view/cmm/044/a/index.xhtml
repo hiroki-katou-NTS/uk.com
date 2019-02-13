@@ -34,7 +34,7 @@
 				<button class="pdf" data-bind="click: openDDialog">#{i18n.getText('CMM044_4')}</button>
 				<button class="danger"
 					data-bind="click: deleteAgent, enable: isEnableDelete">#{i18n.getText('CMM044_6')}</button>
-				<button class="exportExcel" data-bind="click: exportExcel" tabindex="3" >#{i18n.getText('CMM044_54')}</button>
+				<button class="exportExcel" data-bind="click: exportExcel, visible: false" tabindex="3" >#{i18n.getText('CMM044_54')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="ccgcomponent_contents">

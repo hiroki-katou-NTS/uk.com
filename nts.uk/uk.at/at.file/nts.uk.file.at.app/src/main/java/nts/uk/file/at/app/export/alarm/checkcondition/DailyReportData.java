@@ -158,7 +158,7 @@ public class DailyReportData {
 	// 30-7
 	private Optional<Integer> attendanceItem3Group2;
 	
-	private Optional<String> insDate;
+	private String insDate;
 	//31: チェック条件 複合条件 グループ1とグループ2の条件
 	private Optional<String> operatorBetweenGroups;
 	//32: チェック条件 表示するメッセージ

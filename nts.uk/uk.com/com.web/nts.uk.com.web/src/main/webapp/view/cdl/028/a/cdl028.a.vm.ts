@@ -141,7 +141,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                */
                let paramsCdl : IPARAMS_CDL = {
                    status : true,
-                   mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
+                   mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_RANGE : self.modeScreen(),
                    standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? self.convertMonthYearToString(self.standardDate())  : null,
                    startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.startDateFiscalYear()),
                    endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.endDateFiscalYear())
@@ -209,7 +209,10 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         ALL = 3,
 
         //YEAR PERIOD
-        YEAR_PERIOD = 5
+        YEAR_PERIOD = 5,
+        
+        // YEAR PERIOD MAPPING WITH SERVER
+        YEAR_RANGE = 4
     }
     interface IPARAMS_CDL {
         status: boolean;

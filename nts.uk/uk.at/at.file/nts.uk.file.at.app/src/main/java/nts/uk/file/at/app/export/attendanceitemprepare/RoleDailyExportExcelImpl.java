@@ -364,35 +364,32 @@ public class RoleDailyExportExcelImpl {
     }
     
     public List<MasterData> getMasterDatasSheet2(MasterListExportQuery query, List<AttItemName> listAttItemNameNoAuth, Map<Integer, ControlOfAttendanceItemsDtoExcel> listConItem) {
-        
+		List<Integer> listIdControlItem = new ArrayList<Integer>(listConItem.keySet());
         List<MasterData> datas = new ArrayList<>();
-        if (CollectionUtil.isEmpty(listAttItemNameNoAuth)) {
+        if (CollectionUtil.isEmpty(listIdControlItem)) {
             return null;
         } else {
-            listAttItemNameNoAuth.stream().forEach(c -> {
-                ControlOfAttendanceItemsDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
-                Map<String, Object> data = new HashMap<>();
-                putDataEmptySheet2(data);
-            
-                data.put("コード", c.getAttendanceItemDisplayNumber());
-                data.put("項目", c.getAttendanceItemName());
-                if(controlItem!=null){
-                	 String color =controlItem.getHeaderBgColorOfDailyPer();
-                     if(color!=null){
-                    	 data.put("ヘッダー色", color.replace("#", ""));
-                     }
-	                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
-	                    data.put("丸め単位", timeInputUnit.nameId);
-	                }else{
-	                    data.put("ヘッダー色", "");
-	                    data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
-	                }
-                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=5){
-                	data.put("丸め単位","");
-                }
-                datas.add(alignMasterDataSheet2(data));
-                
-            });
+        	if (!CollectionUtil.isEmpty(listAttItemNameNoAuth)) {
+                listAttItemNameNoAuth.stream().forEach(c -> {
+                    ControlOfAttendanceItemsDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
+                    Map<String, Object> data = new HashMap<>();
+                    if(controlItem!=null){
+                    	putDataEmptySheet2(data);
+                        data.put("コード", c.getAttendanceItemDisplayNumber());
+                        data.put("項目", c.getAttendanceItemName());
+                    	 String color =controlItem.getHeaderBgColorOfDailyPer();
+                         if(color!=null){
+                        	 data.put("ヘッダー色", color.replace("#", ""));
+                         }
+    	                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
+    	                    data.put("丸め単位", timeInputUnit.nameId);
+                        if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=5){
+    	                    	data.put("丸め単位","");
+    	                } 
+                        datas.add(alignMasterDataSheet2(data));
+                    }
+                });
+        	}
         }
         return datas;
     }
