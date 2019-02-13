@@ -109,7 +109,7 @@ public class AgreementTimeOfWeekly implements Cloneable {
 				weekPeriod.end(), aggregateAtr, weeklyCalculation, companySets, repositories);
 		
 		// 週別の36協定時間へ値を移送
-		val agreementTimeOfMonthly = agreementTimeOfManagePeriod.getAgreementTime();
+		val agreementTimeOfMonthly = agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
 		this.agreementTime = new AttendanceTimeMonth(agreementTimeOfMonthly.getAgreementTime().v());
 		this.limitErrorTime = new LimitWeek(agreementTimeOfMonthly.getLimitErrorTime().v());
 		this.limitAlarmTime = new LimitWeek(agreementTimeOfMonthly.getLimitAlarmTime().v());
