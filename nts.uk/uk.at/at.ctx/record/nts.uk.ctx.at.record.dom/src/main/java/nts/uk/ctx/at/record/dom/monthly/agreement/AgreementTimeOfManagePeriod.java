@@ -29,9 +29,9 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	/** 年度 */
 	private Year year;
 	/** 36協定時間 */
-	private AgreementTimeOfMonthly agreementTime;
-	/** 内訳 */
-	private AgreementTimeBreakdown breakdown;
+	private AgreementTimeManage agreementTime;
+	/** 36協定上限時間 */
+	private AgreMaxTimeManage agreementMaxTime;
 
 	/** エラー情報 */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
@@ -47,8 +47,8 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		this.employeeId = employeeId;
 		this.yearMonth = yearMonth;
 		this.year = new Year(yearMonth.year());
-		this.agreementTime = new AgreementTimeOfMonthly();
-		this.breakdown = new AgreementTimeBreakdown();
+		this.agreementTime = new AgreementTimeManage();
+		this.agreementMaxTime = new AgreMaxTimeManage();
 		
 		this.errorInfos = new ArrayList<>();
 	}
@@ -59,20 +59,20 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 * @param yearMonth 月度
 	 * @param year 年度
 	 * @param agreementTime 36協定時間
-	 * @param breakdown 内訳
+	 * @param agreementMaxTime 36協定上限時間
 	 * @return 管理期間の36協定時間
 	 */
 	public static AgreementTimeOfManagePeriod of(
 			String employeeId,
 			YearMonth yearMonth,
 			Year year,
-			AgreementTimeOfMonthly agreementTime,
-			AgreementTimeBreakdown breakdown){
+			AgreementTimeManage agreementTime,
+			AgreMaxTimeManage agreementMaxTime){
 	
 		AgreementTimeOfManagePeriod domain = new AgreementTimeOfManagePeriod(employeeId, yearMonth);
 		domain.year = year;
 		domain.agreementTime = agreementTime;
-		domain.breakdown = breakdown;
+		domain.agreementMaxTime = agreementMaxTime;
 		return domain;
 	}
 	
@@ -108,19 +108,11 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		this.year = monthlyCalculation.getYear();
 		
-		// 36協定時間の対象を取得
-		this.breakdown.getTargetItemOfAgreement(aggregateAtr, monthlyCalculation, repositories);
+		// 36協定時間の作成
+		this.agreementTime.aggregate(criteriaDate, aggregateAtr, monthlyCalculation, repositories);
 		
-		// 36協定時間内訳の合計時間を36協定時間とする
-		this.agreementTime.setAgreementTime(this.breakdown.getTotalTime());
-		
-		// エラーアラーム値の取得
-		this.agreementTime.getErrorAlarmValue(
-				monthlyCalculation.getCompanyId(), monthlyCalculation.getEmployeeId(), criteriaDate,
-				monthlyCalculation.getYearMonth(), monthlyCalculation.getWorkingSystem(), repositories);
-		
-		// エラーチェック
-		this.agreementTime.errorCheck();
+		// 36協定上限時間の作成
+		this.agreementMaxTime.aggregate(criteriaDate, aggregateAtr, monthlyCalculation, repositories);
 	}
 	
 	/**
@@ -142,19 +134,8 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		this.year = year;
 		
-		// 36協定時間の対象を取得
-		this.breakdown.getTargetItemOfAgreementForWeek(aggregateAtr, weeklyCalculation, companySets);
-		
-		// 36協定時間内訳の合計時間を36協定時間とする
-		this.agreementTime.setAgreementTime(this.breakdown.getTotalTime());
-		
-		// エラーアラーム値の取得
-		this.agreementTime.getErrorAlarmValueForWeek(
-				weeklyCalculation.getCompanyId(), weeklyCalculation.getEmployeeId(),
-				criteriaDate, weeklyCalculation.getWorkingSystem(), repositories);
-		
-		// エラーチェック
-		this.agreementTime.errorCheck();
+		// 36協定時間の作成（週用）
+		this.agreementTime.aggregateForWeek(criteriaDate, aggregateAtr, weeklyCalculation, companySets, repositories);
 	}
 	
 	/**
@@ -163,6 +144,6 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 */
 	public void sum(AgreementTimeOfManagePeriod target){
 		this.agreementTime.sum(target.agreementTime);
-		this.breakdown.sum(target.breakdown);
+		this.agreementMaxTime.sum(target.agreementMaxTime);
 	}
 }

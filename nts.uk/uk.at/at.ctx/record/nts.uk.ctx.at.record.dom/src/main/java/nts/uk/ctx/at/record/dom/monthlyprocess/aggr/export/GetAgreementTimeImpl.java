@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * 実装：36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetAgreementTimeImpl implements GetAgreementTime {
