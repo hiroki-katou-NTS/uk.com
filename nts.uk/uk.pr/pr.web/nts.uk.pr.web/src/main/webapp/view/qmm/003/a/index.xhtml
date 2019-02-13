@@ -47,12 +47,12 @@
 						<!-- A2_2 -->
 						<div style="width: 400px" tabindex="8"
 							data-bind="ntsSearchBox: {
-								targetKey: 'code', 
+								targetKey: 'id', 
 								mode:'igTree', 
 								comId:'rsdTree', 
 								items: items2, 
 								selected: selectedCode, 
-								selectedKey: 'code', 
+								selectedKey: 'id', 
 								childField: 'children', 
 								fields: ['name', 'code']}" />
 						<!-- A2_3 -->
@@ -64,7 +64,7 @@
 								dataSource: items2,
 								value: selectedCode,
 								headers: headers,
-								primaryKey: 'code',
+								primaryKey: 'id',
 								childDataKey: 'children',
 								primaryText: 'nodeText',
 								multiple: false,
