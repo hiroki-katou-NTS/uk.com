@@ -203,7 +203,8 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 			if (workingConditionItemOpt.isPresent()){
 				val workingSystem = workingConditionItemOpt.get().getLaborSystem();
 				//36協定基本設定を取得する
-				BasicAgreementSetting basicSet = this.agreementDomainService.getBasicSet(companyId, employeeId, date, workingSystem);
+				BasicAgreementSetting basicSet = this.agreementDomainService.getBasicSet(
+						companyId, employeeId, date, workingSystem).getBasicAgreementSetting();
 				
 				this.acquire36AgreementExceptionSetting(companyId, employeeId, date, yearMonth, year, basicSet);
 				return basicSet;

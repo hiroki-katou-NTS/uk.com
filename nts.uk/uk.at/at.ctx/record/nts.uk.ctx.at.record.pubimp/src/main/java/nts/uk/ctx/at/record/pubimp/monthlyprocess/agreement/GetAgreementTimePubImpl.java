@@ -8,14 +8,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：36協定時間の取得
@@ -28,6 +32,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 	@Inject
 	private GetAgreementTime getAgreementTime;
 	
+	/** 36協定時間の取得 */
 	@Override
 	public List<AgreementTimeExport> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
@@ -111,5 +116,19 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 					confirmed, afterAppReflect, confirmedMax, afterAppReflectMax, errorMessage));
 		}
 		return result;
+	}
+	
+	/** 36協定年間時間の取得 */
+	@Override
+	public Optional<AgreementTimeYear> getYear(String companyId, String employeeId, YearMonthPeriod period,
+			GeneralDate criteria) {
+		return this.getAgreementTime.getYear(companyId, employeeId, period, criteria);
+	}
+	
+	/** 36協定上限複数月平均時間の取得 */
+	@Override
+	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId,
+			YearMonth yearMonth, GeneralDate criteria) {
+		return this.getAgreementTime.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
 	}
 }
