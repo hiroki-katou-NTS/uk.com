@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         conditionItemName: KnockoutObservable<string> = ko.observable(null);
         isShowConditionItem: KnockoutObservable<boolean> = ko.observable(true);
         startMonth = moment().year();
+
         constructor() {
             let self = this;
             let params = getShared("QMM017_E_PARAMS");
@@ -26,20 +27,21 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             }
             self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
                 $('#E2_6').ntsError('clear');
-            })
+            });
             self.basicCalculationFormula().coefficientClassification.subscribe(newValue => {
                 $('#E6_4').ntsError('clear');
-            })
+            });
             self.basicCalculationFormula().baseItemClassification.subscribe(newValue => {
                 $('#E3_4').ntsError('clear');
-            })
+            });
             self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
                 self.baseAmountTargetItem("");
                 if (newValue) self.basicCalculationFormula().targetItemCodeList([]);
-            })
+            });
             self.computeBaseAmountTargetItem(self.basicCalculationFormula().standardAmountClassification());
         }
-        saveConfiguration () {
+
+        saveConfiguration() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').filter(':enabled').trigger("validate");
@@ -49,14 +51,20 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             setShared("QMM017_E_RES_PARAMS", {basicCalculationFormula: self.fromKnockoutObservableToJS(self.basicCalculationFormula)});
             nts.uk.ui.windows.close();
         }
-        cancel () {
+
+        cancel() {
             let self = this;
             nts.uk.ui.windows.close();
         }
-        selectTargetItem () {
+
+        selectTargetItem() {
             let self = this;
-            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeList = basicCalculationFormula.targetItemCodeList;
-            setShared("QMM017_F_PARAMS", {startMonth: self.startMonth, basicCalculationFormula: basicCalculationFormula});
+            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula),
+                targetItemCodeList = basicCalculationFormula.targetItemCodeList;
+            setShared("QMM017_F_PARAMS", {
+                startMonth: self.startMonth,
+                basicCalculationFormula: basicCalculationFormula
+            });
             modal("/view/qmm/017/f/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_F_RES_PARAMS");
                 if (params) {
@@ -66,21 +74,25 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
                 $('#E2_4').focus();
             });
         }
-        fromKnockoutObservableToJS (basicCalculationFormula: KnockoutObservable<any>) {
+
+        fromKnockoutObservableToJS(basicCalculationFormula: KnockoutObservable<any>) {
             basicCalculationFormula = ko.toJS(basicCalculationFormula);
-            basicCalculationFormula.targetItemCodeList =  Object.keys(basicCalculationFormula.targetItemCodeList).map(key => basicCalculationFormula.targetItemCodeList[key]);
+            basicCalculationFormula.targetItemCodeList = Object.keys(basicCalculationFormula.targetItemCodeList).map(key => basicCalculationFormula.targetItemCodeList[key]);
             return basicCalculationFormula;
         }
-        computeBaseAmountTargetItem (standardAmountCls) {
+
+        computeBaseAmountTargetItem(standardAmountCls) {
             let self = this;
-            service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function(data) {
+            service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function (data) {
                 if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM || standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM)
-                    data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
+                    data = data.map(item => {
+                        return {code: item.itemNameCd, name: item.name}
+                    })
                 let targetItemCodeList = self.fromKnockoutObservableToJS(self.basicCalculationFormula).targetItemCodeList;
                 let targetItem = data.filter(item => targetItemCodeList.indexOf(item.code) > -1).map(item => item.name);
                 if (targetItem) self.baseAmountTargetItem(targetItem.join(" ＋ "));
                 block.clear();
-            }).fail(function(err) {
+            }).fail(function (err) {
                 block.clear();
                 dialog.alertError(err.message);
             });

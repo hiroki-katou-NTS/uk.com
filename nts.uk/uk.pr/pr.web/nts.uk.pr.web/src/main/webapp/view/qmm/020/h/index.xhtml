@@ -18,7 +18,7 @@
     <div style="margin-top: 15px; min-width: 1000px;" class="contents-area " >
         <div id="com-ccg001"></div>
         <div id = "H1_1" style="margin-left: 70px; ">
-            <div  id="emp-component" style="margin-left: 10px;"></div>
+            <div  tabindex = "6" id="emp-component" style="margin-left: 10px;"></div>
         </div>
   <!--      <div id="H1_2">
 
@@ -27,7 +27,7 @@
             <div >
                 <i id="img-calendar" class="image image-calendar"/>
             </div>
-            <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+            <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                 <div>
                     <button id="H2_3" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
 
@@ -36,7 +36,8 @@
 
                 <div style="margin-top: 10px">
                     <table  id="H1_5"  data-bind="ntsGridList: {
-                                            height: 250,
+                                            height: 165,
+                                            rows:6,
                                             dataSource: listStateCorrelationHis,
                                             primaryKey: 'hisId',
                                             columns: [

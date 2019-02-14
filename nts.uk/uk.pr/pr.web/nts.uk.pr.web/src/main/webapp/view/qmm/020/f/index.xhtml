@@ -10,17 +10,18 @@
             <div >
                 <i id="img-calendar" class="image image-calendar"/>
             </div>
-            <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+            <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
 
                 <div>
-                    <button id="F1_3" tabindex="2" data-bind="click: openJScreen, timeClick: 800, enable: !enableNew() ">#{i18n.getText('QMM020_13')}</button>
+                    <button id="F1_3" tabindex="2" data-bind="click: openJScreen, timeClick: 800, enable: enableNew() ">#{i18n.getText('QMM020_13')}</button>
                     <button id="F1_4" tabindex="3" data-bind="click: openKScreen, timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
                 <div >
                     <table  id="F1_5" tabindex="4" data-bind="ntsGridList: {
                                             name: '#QMM020_37',
-                                            height: 250,
+                                            height: 165,
+                                            rows:6,
                                             dataSource: listStateCorrelationHisPosition,
                                             primaryKey: 'hisId',
                                             columns: [

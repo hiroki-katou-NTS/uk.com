@@ -42,7 +42,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                     close();
                 }
                 else {
-                    nts.uk.ui.dialog.info({messageId: 'Msg_106'});
+                    nts.uk.ui.dialog.info({messageId: 'Msg_106'}).then(()=>{
+                        $('#J1_3').focus();
+                    });
+
                     return;
                 }
             }
@@ -57,7 +60,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 close();
             }
             else {
-                nts.uk.ui.dialog.info({messageId: 'Msg_106'});
+                nts.uk.ui.dialog.info({messageId: 'Msg_106'}).then(()=>{
+                    $('#J1_3').focus();
+                });
+
             }
         }
         initView(params: any) {

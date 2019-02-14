@@ -17,15 +17,19 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getCategoryAtrText(e: CategoryAtr) {
         switch (e) {
             case CategoryAtr.PAYMENT_ITEM:
-                return getText("Enum_CategoryAtr_PAYMENT_ITEM");
+                // return getText("Enum_CategoryAtr_PAYMENT_ITEM");
+                return getText("QMM019_106");
             case CategoryAtr.DEDUCTION_ITEM:
-                return getText("Enum_CategoryAtr_DEDUCTION_ITEM");
+                // return getText("Enum_CategoryAtr_DEDUCTION_ITEM");
+                return getText("QMM019_160");
             case CategoryAtr.ATTEND_ITEM:
-                return getText("Enum_CategoryAtr_ATTEND_ITEM");
+                // return getText("Enum_CategoryAtr_ATTEND_ITEM");
+                return getText("QMM019_168");
             case CategoryAtr.REPORT_ITEM:
-                return getText("Enum_CategoryAtr_ATTEND_ITEM");
-            case CategoryAtr.OTHER_ITEM:
-                return getText("Enum_CategoryAtr_OTHER_ITEM");
+                // return getText("Enum_CategoryAtr_REPORT_ITEM");
+                return getText("QMM019_173");
+            // case CategoryAtr.OTHER_ITEM:
+                // return getText("Enum_CategoryAtr_OTHER_ITEM");
             default:
                 return "";
         }
@@ -801,7 +805,7 @@ module nts.uk.pr.view.qmm019.share.model {
     export function validateLayout(layoutPattern: number, totalLine: number, ctgAtr: number,
                                    printLineInCtg: number, noPrintLineInCtg: number, printSet: number): string {
         // if no print
-        if (printSet == 1) {
+        if (printSet == StatementPrintAtr.DO_NOT_PRINT) {
             if (noPrintLineInCtg >= 5) {
                 return "MsgQ_20";
             } else {

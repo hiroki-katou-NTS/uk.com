@@ -12,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +45,9 @@ public class StateCorreHisSalaFinder {
     public List<StateLinkSetMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
         List<SalaryClassificationInformation> salaryClassificationInformation = salaryClassificationInformationRepository.getAllSalaryClassificationInformation(cId);
+        if(salaryClassificationInformation == null || salaryClassificationInformation.size() == 0) {
+            Collections.emptyList();
+        }
         List<StateLinkSetMaster> listStateLinkSetMaster =  finder.getStateLinkSettingMasterByHisId(cId, hisId);
         List<StateLinkSetMasterDto> listStateLinkSetMasterDto = stateLinkSetMasterFinder.getStateLinkSettingMaster(startYearMonth, listStateLinkSetMaster);
         return salaryClassificationInformation.stream().map(i -> this.addCategoryName(i, listStateLinkSetMasterDto,cId,startYearMonth)).collect(Collectors.toList());

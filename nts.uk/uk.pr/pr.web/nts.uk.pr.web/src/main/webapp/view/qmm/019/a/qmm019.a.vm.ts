@@ -364,8 +364,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             }).length > 0;
 
                             if(matchKey) {
-                                self.currentHistoryId(oldHist);
-                                //self.currentHistoryId.valueHasMutated();
+                                if (self.currentHistoryId() == oldHist) {
+                                    self.currentHistoryId.valueHasMutated();
+                                } else {
+                                    self.currentHistoryId(oldHist);
+                                }
                             } else if(self.statementLayoutList().length > 0) {
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
@@ -585,7 +588,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let noPrintLineInCtg = 0;
 
             for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
-                totalLine += settingByCtg.listLineByLineSet().length;
+                for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                    if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                        totalLine++;
+                    }
+                }
             }
 
             for(let lineByLineSetting: LineByLineSetting of self.listLineByLineSet()) {

@@ -9,9 +9,9 @@
             <div style="width: 130px; display: inline-block;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
             <div style="display: inline-block;"
-                 data-bind="text: formulaCode"></div>
+                 data-bind="text: formulaCode"/>
             <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
-                  data-bind="text: formulaName"></span>
+                  data-bind="text: formulaName"/>
         </div>
         <div data-bind = "with: screenDViewModel">
             <!--D1_4-->
@@ -32,11 +32,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm" data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'code',
@@ -44,7 +44,7 @@
                                     items: statementItemList,
                                     selectedKey: 'code',
                                     fields: ['code', 'name'],
-                                    mode: 'listbox'}"></div>
+                                    mode: 'listbox'}"/>
                             </div>
                             <div class ="list-box" id="D2_5" data-bind="ntsListBox: {
                             options: statementItemList,
@@ -65,9 +65,9 @@
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
-                            <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr></hr>
-                            <div class ="display-notes" data-bind="text: displayItemNote"></div>
+                            <div style="margin-top:5px; margin-bottom: 15px">#{i18n.getText('QMM017_49')}</div>
+                            <hr/>
+                            <div class ="display-notes" data-bind="text: displayItemNote"/>
                         </div>
                     </div>
                 </div>
@@ -87,11 +87,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm" data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'code',
@@ -99,7 +99,7 @@
                                     items: unitPriceItemList,
                                     selectedKey: 'code',
                                     fields: ['code', 'name'],
-                                    mode: 'listbox'}"></div>
+                                    mode: 'listbox'}"/>
                             </div>
                             <div class ="list-box" id="D5_5" data-bind="ntsListBox: {
                             options: unitPriceItemList,
@@ -120,9 +120,9 @@
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
-                            <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr></hr>
-                            <div class ="display-notes" data-bind="text: displayUnitPriceItemNote"></div>
+                            <div style="margin-top:5px; margin-bottom: 15px">#{i18n.getText('QMM017_49')}</div>
+                            <hr/>
+                            <div class ="display-notes" data-bind="text: displayUnitPriceItemNote"/>
                         </div>
                     </div>
                 </div>
@@ -142,11 +142,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'value',
@@ -154,7 +154,7 @@
                                     items: functionListItem,
                                     selectedKey: 'value',
                                     fields: ['name'],
-                                    mode: 'listbox'}"></div>
+                                    mode: 'listbox'}"/>
                             </div>
                             <div id="D6_5" data-bind="ntsListBox: {
                             options: functionListItem,
@@ -175,9 +175,9 @@
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
-                            <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr></hr>
-                            <div class ="display-notes" data-bind="text: displayFunctionNote"></div>
+                            <div style="margin-top:5px; margin-bottom: 15px">#{i18n.getText('QMM017_49')}</div>
+                            <hr/>
+                            <div class ="display-notes" data-bind="text: displayFunctionNote"/>
                         </div>
                     </div>
                 </div>
@@ -197,11 +197,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="formula-button caret-right outline large-right-caret"></span>
+                            <span class="formula-button caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'value',
@@ -209,7 +209,7 @@
                                     items: systemVariableListItem,
                                     selectedKey: 'value',
                                     fields: ['name'],
-                                    mode: 'listbox'}"></div>
+                                    mode: 'listbox'}"/>
                             </div>
                             <div id="D7_5" data-bind="ntsListBox: {
                             options: systemVariableListItem,
@@ -230,9 +230,9 @@
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
-                            <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr></hr>
-                            <div class ="display-notes" data-bind="text: displayVariableNote"></div>
+                            <div style="margin-top:5px; margin-bottom: 15px">#{i18n.getText('QMM017_49')}</div>
+                            <hr/>
+                            <div class ="display-notes" data-bind="text: displayVariableNote"/>
                         </div>
                     </div>
                 </div>
@@ -255,11 +255,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                 searchMode: 'highlight',
                                 targetKey: 'formulaCode',
@@ -267,7 +267,7 @@
                                 items: formulaList,
                                 selectedKey: 'formulaCode',
                                 fields: ['formulaCode', 'formulaName'],
-                                mode: 'listbox'}"></div>
+                                mode: 'listbox'}"/>
                             </div>
                             <div class ="list-box" id="D9_5" data-bind="ntsListBox: {
                             options: formulaList,
@@ -308,11 +308,11 @@
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="caret-right outline large-right-caret"/>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
-                                <i class="search-icon"></i>
+                                <i class="search-icon"/>
                                 <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'code',
@@ -342,9 +342,9 @@
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
-                            <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr></hr>
-                            <div class ="display-notes" data-bind="text: selectedWageTable().remarkInformation"></div>
+                            <div style="margin-top:5px; margin-bottom: 15px">#{i18n.getText('QMM017_49')}</div>
+                            <hr/>
+                            <div class ="display-notes" data-bind="text: selectedWageTable().remarkInformation"/>
                         </div>
                     </div>
                 </div>
@@ -358,7 +358,7 @@
                     <button data-bind = "click: validateSyntaxOnClick" style="margin-left: 10px;">#{i18n.getText('QMM017_52')}</button>
                     <button data-bind = "click: startTrialCalculation">#{i18n.getText('QMM017_53')}</button>
                 </div>
-                <hr></hr>
+                <hr/>
                 <div>
                     <div class = "cal-container">
                         <div>
@@ -395,7 +395,7 @@
                             <select style = "display: none; width: 150px;" size="5" id="auto-complete-container" data-bind="options: autoComplete, optionsText: 'displayText', value: autoSelected">
                             </select>
                         </div>
-                        <div id="input-content-area" data-bind="html: divValue"></div>
+                        <div id="input-content-area" data-bind="html: divValue"/>
                         <div id="input-area">
                             <textarea id = "D3_5" style = "position: relative; height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
                                 value: displayDetailCalculationFormula}" />
@@ -406,7 +406,7 @@
             <div data-bind="with: $vm.detailFormulaSetting" style="width: 200px; display: inline-block; margin-left: 40px;">
                 <div style="width: 130px; display: inline-block;"
                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_54')}</div>
-                <hr></hr>
+                <hr/>
                 <div data-bind="ntsComboBox: {
                     width: '120px',
                     name: '#[QMM017_55]',
@@ -423,8 +423,8 @@
                 </div>
                 <div class = "row">#{i18n.getText('QMM017_56')}</div>
                 <div class = "row">#{i18n.getText('QMM017_57')}</div>
-                <div class = "row" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_58')}</div>
-                <hr></hr>
+                <div class = "row" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_58')}</div>
+                <hr/>
                 <div class = "row">
                     <div style = "display: inline-block">#{i18n.getText('QMM017_59')}</div>
                     <div style = "display: inline-block; vertical-align: middle; margin-left: 45px;" data-bind="ntsComboBox: {

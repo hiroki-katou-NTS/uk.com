@@ -784,16 +784,16 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 this.amountDecember = isNullOrEmpty(data.amountDecember) ? dataDefault : data.amountDecember;
             } else {
                 this.inputAtr = ResidentTaxInputAtr.NOT_ALL_MONTH;
-                this.amountJanuary = dataDefault;
-                this.amountFebruary = dataDefault;
-                this.amountMarch = dataDefault;
-                this.amountApril = dataDefault;
-                this.amountMay = dataDefault;
-                this.amountAugust = dataDefault;
-                this.amountSeptember = dataDefault;
-                this.amountOctober = dataDefault;
-                this.amountNovember = dataDefault;
-                this.amountDecember = dataDefault;
+                this.amountJanuary = this.amountJuly;
+                this.amountFebruary = this.amountJuly;
+                this.amountMarch = this.amountJuly;
+                this.amountApril = this.amountJuly;
+                this.amountMay = this.amountJuly;
+                this.amountAugust = this.amountJuly;
+                this.amountSeptember = this.amountJuly;
+                this.amountOctober = this.amountJuly;
+                this.amountNovember = this.amountJuly;
+                this.amountDecember = this.amountJuly;
             }
         }
 

@@ -36,6 +36,11 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let listStateCorrelationHis = [];
 
             service.getStateCorrelationHisEmployeeById().done((data)=>{
+                if(data == null){
+                    dialog.info({ messageId: "Msg_303" }).then(()=>{
+                        self.enableAddHisButton(false);
+                    });
+                }
                 if(data.length > 0){
                     _.forEach(data,(o)=>{
                         listStateCorrelationHis.push(new ItemModel(o.hisId, o.startYearMonth , o.endYearMonth));
@@ -212,7 +217,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let self = this;
             block.invisible();
             $("#grid2").ntsGrid({
-                height: '311px',
+                height: '433px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -320,6 +325,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
                 block.clear();
+                $("#C1_5_container").focus();
             });
         }
 
@@ -378,7 +384,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 }else{
                     block.clear();
                 }
-
+                $("#C1_5_container").focus();
             });
         }
     }

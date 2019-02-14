@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
-//import com.aspose.cells.Workbook;
-//import com.aspose.cells.Worksheet;
+
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -124,8 +125,8 @@ public class DetailFormulaCalculationService {
         calculationFormulaDictionary.put(WAGE_TABLE, "wage_00");
     }
 
-//    Workbook workbook = new Workbook();
-//    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
+    Workbook workbook = new Workbook();
+    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
 
     /**
      *
@@ -187,7 +188,7 @@ public class DetailFormulaCalculationService {
     public String getEmbeddedFormulaDisplayContent (String formulaElement, int yearMonth) {
         String formulaCode = formulaElement.substring(7, formulaElement.length());
         Optional<FormulaHistory> optFormulaHistory = formulaRepository.getFormulaHistoryByCode(formulaCode);
-        if (!optFormulaHistory.isPresent() && optFormulaHistory.get().getHistory().isEmpty()) {
+        if (!optFormulaHistory.isPresent() || optFormulaHistory.get().getHistory().isEmpty()) {
             throw new BusinessException("MsgQ_233", formulaElement);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
@@ -256,7 +257,7 @@ public class DetailFormulaCalculationService {
         Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndReferenceTime();
         int startFunctionIndex, endFunctionIndex;
         String systemVariable, systemVariableResult;
-        while (formulaElement.indexOf(VARIABLE) > -1) {
+        while (formulaElement.contains(VARIABLE)) {
             startFunctionIndex = formulaElement.lastIndexOf(VARIABLE);
             endFunctionIndex = formulaElement.substring(startFunctionIndex).indexOf(CLOSE_CURLY_BRACKET) + 1;
             systemVariable = formulaElement.substring(startFunctionIndex, startFunctionIndex + endFunctionIndex);
@@ -335,8 +336,8 @@ public class DetailFormulaCalculationService {
 
     private String calculateSuffixFormulaViaAsposeCell (String formulaContent) {
         if (!isNaN(formulaContent)) return formulaContent;
-        return ";";
-        //return virtualWorksheet.calculateFormula(formulaContent).toString();
+        //return ";";
+        return virtualWorksheet.calculateFormula(formulaContent).toString();
     }
     
     private String calculateSuffixFormula (String formulaContent) {

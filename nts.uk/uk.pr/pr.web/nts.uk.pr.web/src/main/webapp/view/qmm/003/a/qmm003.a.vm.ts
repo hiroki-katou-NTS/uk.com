@@ -188,6 +188,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
     }
 
     class Node {
+        id: string;
         code: string;
         name: string;
         nodeText: string;
@@ -196,9 +197,10 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
         
         constructor(code: string, name: string, children: Array<Node>, level?: number) {
             let self = this;
-            self.code = code;
-            self.name = name;
-            self.nodeText = level == 2 ? _.escape(self.code + ' ' + self.name) : _.escape(self.name);
+            self.id = code;
+            self.code = level == 2 ? code : "";
+            self.name = level == 2 ? name : "";
+            self.nodeText = level == 2 ? _.escape(code + ' ' + name) : _.escape(name);
             self.children = children;
             if (level != null) self.level = level;
         }
