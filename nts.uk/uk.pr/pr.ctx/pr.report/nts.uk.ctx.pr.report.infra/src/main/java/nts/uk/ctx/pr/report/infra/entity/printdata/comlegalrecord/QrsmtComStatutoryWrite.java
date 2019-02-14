@@ -115,7 +115,7 @@ public class QrsmtComStatutoryWrite extends UkJpaEntity implements Serializable 
      */
     @Basic
     @Column(name = "CORPORATE_NUMBER")
-    public BigDecimal corporateNumber;
+    public String corporateNumber;
 
     /**
      * 会計事務所電話番号
@@ -244,7 +244,7 @@ public class QrsmtComStatutoryWrite extends UkJpaEntity implements Serializable 
                 domain.getBasicInformation().getClubRepresentativePosition().map(PrimitiveValueBase::v).orElse(null),
                 domain.getBasicInformation().getClubRepresentativeName().map(PrimitiveValueBase::v).orElse(null),
                 domain.getBasicInformation().getLinkingDepartment().isPresent() ? domain.getBasicInformation().getLinkingDepartment().get() : null,
-                domain.getBasicInformation().getCorporateNumber().isPresent() ? new BigDecimal(domain.getBasicInformation().getCorporateNumber().get().v()) : null,
+                domain.getBasicInformation().getCorporateNumber().isPresent() ? domain.getBasicInformation().getCorporateNumber().get().v() : null,
                 domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().map(PrimitiveValueBase::v).orElse(null),
                 domain.getSummaryTableInformation().getAccountingOfficeName().map(PrimitiveValueBase::v).orElse(null),
                 domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().map(PrimitiveValueBase::v).orElse(null),
