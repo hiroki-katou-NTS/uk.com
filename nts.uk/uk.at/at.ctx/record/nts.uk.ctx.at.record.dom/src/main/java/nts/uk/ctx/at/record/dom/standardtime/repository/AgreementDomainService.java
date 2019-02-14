@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -18,6 +17,6 @@ public interface AgreementDomainService {
 	 * @param workingSystem 労働制
 	 * @return 36協定基本設定
 	 */
-	BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+	BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 			WorkingSystem workingSystem);
 }

@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 集計期間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @Setter
