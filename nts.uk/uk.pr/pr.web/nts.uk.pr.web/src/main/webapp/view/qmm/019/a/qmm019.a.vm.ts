@@ -22,8 +22,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
     import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
     import getText = nts.uk.resource.getText;
+    import IYearMonthHistory = nts.uk.pr.view.qmm019.share.model.IYearMonthHistory;
 
     export class ScreenModel {
+        newHistId: string;
 
         statementLayoutList: KnockoutObservableArray<StatementLayout>;
         currentHistoryId: KnockoutObservable<string>;
@@ -39,7 +41,16 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             self.statementLayoutHistData = ko.observable(null);
 
             self.currentHistoryId.subscribe(x => {
-                if(x && (x != "")) {
+                if (x && (x != "")) {
+                    if (self.statementLayoutHistData().checkCreate()) {
+                        if (self.newHistId != x) {
+                            self.newHistId = null;
+                            self.loadListData();
+                        } else {
+                            return;
+                        }
+                    }
+
                     let data: YearMonthHistory;
 
                     for(let statementLayout: StatementLayout of self.statementLayoutList()) {
@@ -263,7 +274,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         } else if (self.statementLayoutList().length > 0) {
                             let histLength = self.statementLayoutList()[0].history.length;
                             if (histLength > 0) {
-                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                             }
                         }
                     });
@@ -298,7 +309,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         } else if (self.statementLayoutList().length > 0) {
                             let histLength = self.statementLayoutList()[0].history.length;
                             if (histLength > 0) {
-                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                             }
                         }
                     });
@@ -354,7 +365,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 block.invisible();
                 service.updateStatementLayoutHistData(data).done(() => {
                     block.clear();
-
+                    self.statementLayoutHistData().checkCreate(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.loadListData().done(function() {
                             let matchKey: boolean = _.filter(self.statementLayoutList(), function(o: StatementLayout) {
@@ -372,7 +383,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             } else if(self.statementLayoutList().length > 0) {
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             }
 
@@ -406,8 +417,9 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
-                            self.currentHistoryId("");
+                            self.addHistoryItem(statementCode, histId, startMonth, layoutPattern);
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
+                            self.currentHistoryId(histId);
                             self.calculatePrintLine();
 
                             $("#A3_4").focus();
@@ -415,6 +427,33 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     });
                 }
             });
+        }
+
+        public addHistoryItem(statementCode: string, newHistId: string, startMonth: number, layoutPattern: number) {
+            let self = this;
+            self.newHistId = newHistId;
+            let layout: StatementLayout = _.find(self.statementLayoutList(), (item: StatementLayout) => {
+                return item.statementCode == statementCode;
+            });
+
+            let lastHistoryItem: YearMonthHistory = _.maxBy(layout.history, (item: YearMonthHistory) => {
+                return item.endMonth;
+            });
+
+            let startYM = moment.utc(startMonth, "YYYYMM");
+            let endYM = 999912;
+            let endYMOld = startYM.add(-1, "M");
+
+            lastHistoryItem.endMonth = parseInt(endYMOld.format("YYYYMM"));
+            lastHistoryItem.updateNodeText();
+            let iHist: IYearMonthHistory = <IYearMonthHistory> {
+                historyId: newHistId,
+                startMonth: startMonth,
+                endMonth: endYM,
+                layoutPattern: layoutPattern
+            };
+            let newHist: YearMonthHistory = new YearMonthHistory(statementCode, iHist);
+            layout.history.unshift(newHist);
         }
 
         public editHistory(): void {
@@ -442,7 +481,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             } else if(self.statementLayoutList().length > 0) {
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             }
                         } else {
@@ -453,12 +492,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             if(matchCode.length > 0) {
                                 let histLength = matchCode[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(matchCode[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(matchCode[0].history[0].historyId);
                                 }
                             } else if(self.statementLayoutList().length > 0){
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             } else {
                                 self.createIfEmpty();

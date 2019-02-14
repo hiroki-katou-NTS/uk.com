@@ -40,8 +40,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     dialog.info({ messageId: "Msg_303" }).then(()=>{
                         self.enableAddHisButton(false);
                     });
-                }
-                if(data.length > 0){
+					
+                }else if(data.length > 0){
                     _.forEach(data,(o)=>{
                         listStateCorrelationHis.push(new ItemModel(o.hisId, o.startYearMonth , o.endYearMonth));
                     });
