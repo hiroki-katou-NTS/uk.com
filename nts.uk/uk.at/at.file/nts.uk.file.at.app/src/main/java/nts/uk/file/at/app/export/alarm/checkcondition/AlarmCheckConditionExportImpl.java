@@ -653,7 +653,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_253, TextResource.localize("KAL003_245"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_254, TextResource.localize("KAL003_247"),
+		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_254, TextResource.localize("KAL003_315"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(AlarmCheckConditionUtils.KAL003_255, TextResource.localize("KAL003_249"),
 				ColumnTextAlign.LEFT, "", true));

@@ -354,7 +354,8 @@ public class AlarmCheckConditionUtils {
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return ((new CheckedTimesValueDay(value instanceof Integer ? ((Integer)value).doubleValue() : ((Double)value))).toString() + TextResource.localize("KAL003_314")) ;
+			return (String.format ("%.0f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()) + TextResource.localize("KAL003_314")) ;
 		}
 		return "";
 	}
@@ -577,8 +578,8 @@ public class AlarmCheckConditionUtils {
 			return (timeDuration.hour() + ":"
 					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (checkTypeItem == 5) {
-			return ((new CheckedTimesValueDay(
-					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).toString());
+			return (String.format ("%.0f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()));
 		} else if (checkTypeItem == 6) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))
 					.toString();
