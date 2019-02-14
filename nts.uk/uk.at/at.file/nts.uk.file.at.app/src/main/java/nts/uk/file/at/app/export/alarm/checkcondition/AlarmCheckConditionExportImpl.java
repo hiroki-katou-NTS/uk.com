@@ -1154,7 +1154,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 		if (row.getUseAtrCond().isPresent() && row.getUseAtrCond().get() == 1) {
 			// 13: アラームリストのチェック条件 NO
 			data.put(AlarmCheckConditionUtils.KAL003_263,
-					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(row.getSortBy())
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(row.getSortBy().get())
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 			// 14: アラームリストのチェック条件 名称
