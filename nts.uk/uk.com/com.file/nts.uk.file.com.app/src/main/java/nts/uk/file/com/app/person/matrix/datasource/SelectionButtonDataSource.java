@@ -8,7 +8,6 @@ import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
  * @author lanlt
  *
  */
-@Getter
 public class SelectionButtonDataSource extends SelectionItemDataSource {
 
 	private ReferenceTypes referenceType;

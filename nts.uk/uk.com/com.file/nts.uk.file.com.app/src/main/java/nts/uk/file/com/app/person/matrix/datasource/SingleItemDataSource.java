@@ -16,7 +16,7 @@ public class SingleItemDataSource extends ItemTypeStateDataSource {
 
 	private SingleItemDataSource(DataTypeStateDataSource dataTypeState) {
 		super();
-		this.itemType = ItemType.SINGLE_ITEM.value;
+//		this.itemType = ItemType.SINGLE_ITEM.value;
 		this.dataTypeState = dataTypeState;
 	}
 

@@ -15,6 +15,8 @@ public class PersonInfoMatrixDataSource {
 	
 	private String categoryId;
 	
+	private String categoryCode;
+	
 	private String categoryName;
 	
 	// thiết lập hiển thị cột fixed như workplace, department,...

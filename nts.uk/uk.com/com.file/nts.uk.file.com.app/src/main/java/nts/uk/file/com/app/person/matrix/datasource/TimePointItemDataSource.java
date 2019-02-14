@@ -1,8 +1,6 @@
 package nts.uk.file.com.app.person.matrix.datasource;
 
-import lombok.Getter;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-@Getter
 public class TimePointItemDataSource extends DataTypeStateDataSource {
 
 	private long timePointItemMin;

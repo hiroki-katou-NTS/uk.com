@@ -1,26 +1,424 @@
 package nts.uk.file.com.infra.generate.person.matrix;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Color;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.file.com.app.person.matrix.PersonInfoMatrixGenerator;
+import nts.uk.file.com.app.person.matrix.datasource.FixedColumnDisplay;
+import nts.uk.file.com.app.person.matrix.datasource.GridEmpBodyDataSource;
+import nts.uk.file.com.app.person.matrix.datasource.GridEmployeeInfoDataSource;
+import nts.uk.file.com.app.person.matrix.datasource.GridHeaderData;
 import nts.uk.file.com.app.person.matrix.datasource.PersonInfoMatrixDataSource;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 @Stateless
 public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator implements PersonInfoMatrixGenerator{
 
 	private static final String REPORT_ID = "PersonMatrix";
 	 /** The Constant EXTENSION_FILE. */
     private static final String EXTENSION_FILE = ".xlsx";
+    
+    private static final String SPACE = "＿";
+    //（コード
+    private static final String SELCODE = "（コード）";
+	private static final String JP_SPACE = "　";
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PersonInfoMatrixDataSource dataSource) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
-		String fileName = "AAAAA"+ GeneralDateTime.now().toString("yyyyMMddHHmmss")+ EXTENSION_FILE;
+		String fileName = dataSource.getCategoryName()+ GeneralDateTime.now().toString("yyyyMMddHHmmss")+ EXTENSION_FILE;
+		Workbook workbook = reportContext.getWorkbook(); 
+		Worksheet worksheet = workbook.getWorksheets().get(0);
+		FixedColumnDisplay fixedCol = new FixedColumnDisplay(dataSource.getFixedHeader().isShowDepartment(),
+				dataSource.getFixedHeader().isShowWorkplace(), dataSource.getFixedHeader().isShowPosition(),
+				dataSource.getFixedHeader().isShowEmployment(), dataSource.getFixedHeader().isShowClassification());
 		
+		List<GridHeaderData> gridHeader =  converHeaderData(dataSource.getDynamicHeader());
+		printPage(worksheet);
+        int numberOfColumnHeader = numberOfColumnHeader(dataSource, gridHeader);
+		int row = 0;
+		setHeader(worksheet, dataSource, gridHeader, numberOfColumnHeader, row);
+		printEmployeeInfo(worksheet, dataSource, fixedCol, gridHeader, numberOfColumnHeader, row);
 		reportContext.processDesigner();
 		reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName));
+	}
+	
+	/**
+	 * setHeader
+	 * @param worksheet
+	 * @param dataSource
+	 * @param numberOfColumnHeader
+	 * @param row
+	 */
+	private void setHeader(Worksheet worksheet, PersonInfoMatrixDataSource dataSource, List<GridHeaderData> gridHeader, int numberOfColumnHeader, int row) {
+		FixedColumnDisplay fixedCol = dataSource.getFixedHeader();
+		// tính thêm cột selectionCode
+		List<GridHeaderData> itemSelection = gridHeader.stream()
+				.filter(c -> c.getItemTypeState().getItemType() == 2
+						&& (c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value))
+				.collect(Collectors.toList());
+		int numberOfFixed = numberOfColumnHeader - gridHeader.size() - itemSelection.size();
+		for(int i = 0; i < numberOfColumnHeader; i++) {
+			Cell cell = worksheet.getCells().get(row, i );
+			if(i < numberOfFixed) {
+				setHeaderStyle(cell, false, true);
+			}
+			if (i == 0) {
+				cell.setValue(TextResource.localize("CPS003_28"));
+			} else if (i == 1) {
+				cell.setValue(TextResource.localize("CPS003_29"));
+			} else {
+				// in ra những cột cố định
+				if(i < numberOfFixed && i > 1) {
+					if(fixedCol.isShowDepartment()) {
+						cell.setValue(TextResource.localize("CPS003_30"));
+						fixedCol.setShowDepartment(false);
+						continue;
+					}
+					
+					if(fixedCol.isShowWorkplace()) {
+						cell.setValue(TextResource.localize("CPS003_31"));
+						fixedCol.setShowWorkplace(false);
+						continue;
+					}
+					
+					if(fixedCol.isShowPosition()) {
+						cell.setValue(TextResource.localize("CPS003_32"));
+						fixedCol.setShowPosition(false);
+						continue;
+					}
+					
+					if(fixedCol.isShowEmployment()) {
+						cell.setValue(TextResource.localize("CPS003_33"));
+						fixedCol.setShowEmployment(false);
+						continue;
+						
+					}
+					
+					if(fixedCol.isShowClassification()) {
+						cell.setValue(TextResource.localize("CPS003_34"));
+						fixedCol.setShowClassification(false);
+						continue;
+					}
+				}else {
+					// in ra những cột động
+					int dynamicPositionStart = i;
+					for(int j = 0; j < gridHeader.size(); j ++) {
+						GridHeaderData header = gridHeader.get(j);
+						if(header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+								|| header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+								|| header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value ) {
+							Cell selCodeCell = worksheet.getCells().get(row, dynamicPositionStart + j );
+							selCodeCell.setValue(header.getItemName()+ SELCODE);
+							setHeaderStyle(selCodeCell, header.isRequired(), false);
+							Cell selNameCell = worksheet.getCells().get(row, dynamicPositionStart + j + 1);
+							selNameCell.setValue(header.getItemName());
+							setHeaderStyle(selNameCell, header.isRequired(), false);
+							// tăng dynamicPositionStart  thêm 1 bởi vì thêm cột code
+							dynamicPositionStart = dynamicPositionStart + 1;
+							 i = i + 2;
+						}else {
+							Cell cellDynamic = worksheet.getCells().get(row, dynamicPositionStart + j );
+							cellDynamic.setValue(header.getItemName());
+							setHeaderStyle(cellDynamic, header.isRequired(), false);
+							 i++;
+						}
+						
+					}
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	private List<GridHeaderData> converHeaderData(List<GridHeaderData> dynamicHeader){
+		List<GridHeaderData> itemSetLst = dynamicHeader.stream()
+				.filter(c -> c.getItemTypeState().getItemType() == 1 || c.getItemTypeState().getItemType() == 3)
+				.collect(Collectors.toList());
+		List<GridHeaderData> itemSingleLst = dynamicHeader.stream()
+				.filter(c -> c.getItemTypeState().getItemType() == 2)
+				.collect(Collectors.toList());
+		itemSingleLst.stream().forEach(c ->{
+			if(c.getItemParentCode()  != null  || !c.getItemParentCode().isEmpty()) {
+				Optional<GridHeaderData> parentItemOpt = itemSetLst.stream().filter(set -> set.getItemCode().equals(c.getItemParentCode())).findFirst();
+				if(parentItemOpt.isPresent()) {
+					GridHeaderData parentItem = parentItemOpt.get();
+					String itemName = c.getItemName();
+					c.setItemName(parentItem.getItemName() + SPACE + itemName);
+//					if(parentItem.getItemParentCode()  != null  || !parentItem.getItemParentCode().isEmpty()) {
+//						Optional<GridHeaderData> parentParentItemOpt = itemSetLst.stream().filter(set -> set.getItemCode().equals(parentItem.getItemParentCode())).findFirst();
+//						if (parentParentItemOpt.isPresent()) {
+//							GridHeaderData parentParentItem = parentParentItemOpt.get();
+//							c.setItemName(parentParentItem.getItemName() + SPACE + parentItem.getItemName() + SPACE + itemName);
+//						}				
+//					
+//					}
+				}
+			}
+			
+			
+		});
+		return itemSingleLst;
+	}
+	
+	private void printEmployeeInfo(Worksheet worksheet, PersonInfoMatrixDataSource dataSource, FixedColumnDisplay fixedCol, List<GridHeaderData> gridHeader, int numberOfColumnHeader, int row) {
+		// bởi vì row = 0 in ra header, bắt đầu in ra employee thì row sẽ  = 1
+		row = 1;
+		// tính thêm cột selectionCode
+		List<GridHeaderData> itemSelection = gridHeader.stream()
+				.filter(c -> c.getItemTypeState().getItemType() == 2
+						&& (c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value))
+				.collect(Collectors.toList());
+		int numberOfFixed = numberOfColumnHeader - gridHeader.size() - itemSelection.size();
+		List<GridEmployeeInfoDataSource> detailData = dataSource.getDetailData();
+		for(GridEmployeeInfoDataSource employeeInfo : detailData) {
+			for(int i = 0; i < numberOfColumnHeader; i++) {
+				Cell cell = worksheet.getCells().get(row, i );
+				if (i == 0) {
+					cell.setValue(employeeInfo.getEmployeeCode());
+					setBodyStyle(cell);
+				} else if (i == 1) {
+					cell.setValue(employeeInfo.getEmployeeName());
+					setBodyStyle(cell);
+				} else {
+					// in ra những cột cố định
+					if(i < numberOfFixed) {
+						if(fixedCol.isShowDepartment()) {
+							cell.setValue(employeeInfo.getDepartmentName());
+							setBodyStyle(cell);
+							fixedCol.setShowDepartment(false);
+							continue;
+						}
+						
+						if(fixedCol.isShowWorkplace()) {
+							cell.setValue(employeeInfo.getWorkplaceName());
+							setBodyStyle(cell);
+							fixedCol.setShowWorkplace(false);
+							continue;
+						}
+						
+						if(fixedCol.isShowPosition()) {
+							cell.setValue(employeeInfo.getPositionName());
+							setBodyStyle(cell);
+							fixedCol.setShowPosition(false);
+							continue;
+						}
+						
+						if(fixedCol.isShowEmployment()) {
+							cell.setValue(employeeInfo.getEmploymentName());
+							setBodyStyle(cell);
+							fixedCol.setShowEmployment(false);
+							continue;
+							
+						}
+						
+						if(fixedCol.isShowClassification()) {
+							cell.setValue(employeeInfo.getClassificationName());
+							setBodyStyle(cell);
+							fixedCol.setShowClassification(false);
+							continue;
+						}
+					}else {
+						// in ra những cột động
+						int dynamicPositionStart = i;
+						List<GridEmpBodyDataSource> items = employeeInfo.getItems();
+						for(int j = 0; j < gridHeader.size(); j ++) {
+							GridHeaderData header = gridHeader.get(j);
+							for(GridEmpBodyDataSource item: items) {
+								if(item.getItemCode().equals(gridHeader.get(j).getItemCode())) {
+									if (header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+											|| header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+											|| header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value) {
+										Cell selCodeCell = worksheet.getCells().get(row, dynamicPositionStart + j );
+										Cell selNameCell = worksheet.getCells().get(row, dynamicPositionStart + j + 1 );
+										if(item.getValue() != null) {
+											Optional<ComboBoxObject> comboxObjOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue().toString())).findFirst();
+											if(comboxObjOpt.isPresent()) {
+												ComboBoxObject comboxObj = comboxObjOpt.get();
+												if(!header.getItemTypeState().getDataTypeState().getReferenceType().equals("ENUM")) {
+													String[] stringSplit = comboxObj.getOptionText().split(JP_SPACE);
+													String selCode = dataSource.getCategoryCode().equals("CS00016") || dataSource.getCategoryCode().equals("CS00017")?  (stringSplit.length > 0? stringSplit[0]: ""): comboxObj.getOptionValue();
+													selCodeCell.setValue(selCode);
+													selNameCell.setValue(stringSplit[1]);
+												}else {
+													
+													selCodeCell.setValue(comboxObj.getOptionValue());
+													selNameCell.setValue(comboxObj.getOptionText());
+												}
+
+											}else {
+												selCodeCell.setValue("");
+												selNameCell.setValue("");
+											}
+											
+										}else {
+											selCodeCell.setValue("");
+											selNameCell.setValue("");
+										}
+										setBodyStyle(selCodeCell);
+										setBodyStyle(selNameCell);
+										// tăng dynamicPositionStart  thêm 1 bởi vì thêm cột code
+										dynamicPositionStart = dynamicPositionStart + 1;
+										i =  i + 2;
+										continue;
+
+									}else {
+										Cell cellDynamic = worksheet.getCells().get(row, dynamicPositionStart + j );
+										if(header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.TIMEPOINT.value) {
+											cellDynamic.setValue(item.getValue() == null? "": convertTimepoint(item.getValue().toString()));
+											
+										}else {
+											cellDynamic.setValue(item.getValue() == null? "": item.getValue().toString());
+										}
+										setBodyStyle(cellDynamic);
+										i++;
+										continue;
+
+										
+									}
+
+								}
+							}
+						}
+					}
+					
+				}
+				
+			}
+			row ++;
+		}
+		
+	}
+	
+	private String convertTimepoint(String value) {
+		String result = "";
+		String[] valueSplit = value.split(":");
+		if(valueSplit.length > 0) {
+			int hours = Integer.valueOf(valueSplit[0]).intValue();
+			int day = hours/24;
+			
+			if (day == -1) {
+				result = "前日" + hours + ":"+ valueSplit[1];
+			}
+			
+			if (day == 0) {
+				result = "当日" + hours + ":"+ valueSplit[1];
+			}
+			
+			if(day == 1) {
+				result = "翌日" + (hours - 24) + ":"+ valueSplit[1];
+			}
+			
+			if(day == 2) {
+				result = "翌々日" + (hours - 48) + ":"+ valueSplit[1];
+				
+			}
+		}
+		
+		return result;
+	}
+	private int numberOfColumnHeader(PersonInfoMatrixDataSource dataSource, List<GridHeaderData> gridHeader ) {
+		// tính thêm cột selectionCode
+		List<GridHeaderData> itemSelection = gridHeader.stream()
+				.filter(c -> c.getItemTypeState().getItemType() == 2
+						&& (c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+								|| c.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value))
+				.collect(Collectors.toList());
+		int indexColumns = gridHeader.size()+ itemSelection.size() + 2; //cộng thêm cột employeeCode và employeeName
+		if(dataSource.getFixedHeader().isShowDepartment()) {
+			indexColumns++;
+		}
+		
+		if(dataSource.getFixedHeader().isShowWorkplace()) {
+			indexColumns++;
+		}
+		
+		if(dataSource.getFixedHeader().isShowPosition()) {
+			indexColumns++;
+		}
+		
+		if(dataSource.getFixedHeader().isShowEmployment()) {
+			indexColumns++;
+		}
+		
+		if(dataSource.getFixedHeader().isShowClassification()) {
+			indexColumns++;
+		}
+		return indexColumns;
+	}
+	
+
+	/**
+	 * PRINT PAGE
+	 * 
+	 * @param worksheet
+	 * @param lstWorkplace
+	 */
+	private void printPage(Worksheet worksheet) {
+		// Set print page
+		PageSetup pageSetup = worksheet.getPageSetup();
+		pageSetup.setFirstPageNumber(1);
+	}
+	
+	/**
+	 * Sets the title style.
+	 *
+	 * @param cell
+	 *            the new title style
+	 */
+	private void setHeaderStyle(Cell cell, boolean isRequired, boolean isFixed) {
+		Style style = cell.getStyle();
+		style.setPattern(BackgroundType.SOLID);
+		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		if(isFixed) {
+			style.setForegroundColor(Color.getGray());
+		}else if(!isFixed && isRequired) {
+			style.setForegroundColor(Color.getOrange());
+		}else {
+			style.setForegroundColor(Color.getGreenYellow());
+		}
+		cell.setStyle(style);
+	}
+	
+	/**
+	 * Sets the title style.
+	 *
+	 * @param cell
+	 *            the new title style
+	 */
+	private void setBodyStyle(Cell cell) {
+		Style style = cell.getStyle();
+		style.setPattern(BackgroundType.SOLID);
+		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		cell.setStyle(style);
 	}
 
 }

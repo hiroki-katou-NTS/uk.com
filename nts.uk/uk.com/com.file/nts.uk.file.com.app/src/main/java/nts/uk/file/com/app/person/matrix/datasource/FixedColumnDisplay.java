@@ -2,6 +2,7 @@ package nts.uk.file.com.app.person.matrix.datasource;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * FixedDisplayCheck
@@ -9,9 +10,10 @@ import lombok.Getter;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class FixedColumnDisplay {
-	private boolean isShowDeparment;
+	private boolean isShowDepartment;
 	private boolean isShowWorkplace;
 	private boolean isShowPosition;
 	private boolean isShowEmployment;

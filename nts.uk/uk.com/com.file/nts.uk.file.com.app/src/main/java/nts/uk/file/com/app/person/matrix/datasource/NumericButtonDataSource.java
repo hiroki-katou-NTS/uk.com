@@ -2,14 +2,12 @@ package nts.uk.file.com.app.person.matrix.datasource;
 
 import java.math.BigDecimal;
 
-import lombok.Getter;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 /**
  * NumericButtonDataSource
  * @author lanlt
  *
  */
-@Getter
 public class NumericButtonDataSource extends DataTypeStateDataSource {
 	private int numericItemMinus;
 	private int numericItemAmount;

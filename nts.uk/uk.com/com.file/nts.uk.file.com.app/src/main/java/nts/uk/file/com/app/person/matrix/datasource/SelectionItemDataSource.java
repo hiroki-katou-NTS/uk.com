@@ -7,7 +7,6 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.MasterReferenceCondition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-@Getter
 public class SelectionItemDataSource extends DataTypeStateDataSource {
 
 	private ReferenceTypes referenceType;

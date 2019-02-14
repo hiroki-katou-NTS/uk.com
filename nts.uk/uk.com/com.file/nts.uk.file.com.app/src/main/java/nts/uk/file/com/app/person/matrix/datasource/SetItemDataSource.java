@@ -9,13 +9,12 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
  * @author lanlt
  *
  */
-@Getter
 public class SetItemDataSource extends ItemTypeStateDataSource {
 	private List<String> items;
 
 	private SetItemDataSource(List<String> items) {
 		super();
-		this.itemType = ItemType.SET_ITEM.value;
+//		this.itemType = ItemType.SET_ITEM.value;
 		this.items = items;
 	}
 
