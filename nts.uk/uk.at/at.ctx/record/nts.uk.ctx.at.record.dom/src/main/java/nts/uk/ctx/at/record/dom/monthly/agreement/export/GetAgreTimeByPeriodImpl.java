@@ -100,7 +100,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 				
 				// 36協定基本設定を取得する
 				val basicAgreementSet = this.agreementDomainService.getBasicSet(
-						companyId, employeeId, criteria, workingSystem);
+						companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
 				
 				// 「年度」を確認
 				Optional<AgreementYearSetting> yearSetOpt = Optional.empty();
