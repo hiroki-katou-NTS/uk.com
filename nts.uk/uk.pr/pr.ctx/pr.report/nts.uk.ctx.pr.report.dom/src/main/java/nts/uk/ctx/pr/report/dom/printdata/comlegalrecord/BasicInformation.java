@@ -51,9 +51,9 @@ public class BasicInformation extends DomainObject
     */
     private AddressInformation addressInformation;
     
-    public BasicInformation(String kanaName, String note, String representativePosition, String representativeName, String linkedDepartment, BigDecimal corporateNumber, AddressInformation addressInformation) {
+    public BasicInformation(String kanaName, String note, String representativePosition, String representativeName, String linkedDepartment, String corporateNumber, AddressInformation addressInformation) {
         this.kanaName = new KanaName(kanaName);
-        this.corporateNumber = corporateNumber == null ? Optional.empty() : Optional.of(new CorporateNumber(corporateNumber.toString()));
+        this.corporateNumber = corporateNumber == null ? Optional.empty() : Optional.of(new CorporateNumber(corporateNumber));
         this.clubRepresentativeName = representativeName == null ? Optional.empty() : Optional.of(new RepresentativeName(representativeName));
         this.clubRepresentativePosition = representativePosition == null ? Optional.empty() : Optional.of(new RepresentativePosition(representativePosition));
         this.notes = note == null || note.isEmpty() ? Optional.empty() : Optional.of(new Memo(note));
