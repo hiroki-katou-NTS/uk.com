@@ -2097,10 +2097,10 @@ public class CalculationSettingExportImpl implements MasterListData {
 			Map<String, Object> data4 = new HashMap<>();
 			data4.put(column1Sheet7, "");
 			data4.put(column2Sheet7, TextResource.localize("KMK013_194"));
-			if (!Objects.isNull(flexSetDto.getMissCalcHd())) {
-				if (flexSetDto.getMissCalcHd() == 1) {
+			if (!Objects.isNull(flexSetDto.getMissCalcSubhd())) {
+				if (flexSetDto.getMissCalcSubhd() == 1) {
 					data4.put(column3Sheet7, TextResource.localize("KMK013_197"));
-				} else if (flexSetDto.getMissCalcHd() == 0) {
+				} else if (flexSetDto.getMissCalcSubhd() == 0) {
 					data4.put(column3Sheet7, TextResource.localize("KMK013_196"));
 				} else {
 					data4.put(column3Sheet7, "");
@@ -3395,10 +3395,10 @@ public class CalculationSettingExportImpl implements MasterListData {
 		Integer hours = att / 60, minutes = att % 60;
 		if (hours >= 24 && check) {
 			hours = hours - 24;
-			return String.join("", "翌日", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "",
+			return String.join("", "翌日",hours.toString(), ":", minutes < 10 ? "0" : "",
 					minutes.toString());
 		} else {
-			return String.join("", "当日", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "",
+			return String.join("", "当日", hours.toString(), ":", minutes < 10 ? "0" : "",
 					minutes.toString());
 		}
 	}
