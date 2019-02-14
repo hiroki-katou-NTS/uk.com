@@ -27,19 +27,19 @@ public class QpbmtSalIndAmountNamePk implements Serializable
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;
-    
-    /**
-    * 個人金額コード
-    */
-    @Basic(optional = false)
-    @Column(name = "INDIVIDUAL_PRICE_CODE")
-    public String individualPriceCode;
 
     /**
      * 個人金額名称
      */
     @Basic(optional = false)
-    @Column(name = "CATE_INDICATOR")
+    @Column(name = "CATEGORY_ATR")
     public int cateIndicator;
+    
+    /**
+    * 個人金額コード
+    */
+    @Basic(optional = false)
+    @Column(name = "INDIVIDUAL_PRICE_CD")
+    public String individualPriceCode;
     
 }
