@@ -63,9 +63,9 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90'},
                     {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '180'},
                     {headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
-                    {headerText: '', key: 'displayE3_4', dataType: 'string', width: '190'},
+                    {headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
                     {headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'BonusButton'},
-                    {headerText: '', key: 'displayE3_5', dataType: 'string', width: '190'},
+                    {headerText: '', key: 'displayE3_5', dataType: 'string', width: '200'},
 
                 ],
                 features: [
