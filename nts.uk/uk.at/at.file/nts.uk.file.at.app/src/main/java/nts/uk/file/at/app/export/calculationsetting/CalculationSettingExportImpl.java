@@ -3395,10 +3395,10 @@ public class CalculationSettingExportImpl implements MasterListData {
 		Integer hours = att / 60, minutes = att % 60;
 		if (hours >= 24 && check) {
 			hours = hours - 24;
-			return String.join("", "翌日", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "",
+			return String.join("", "翌日",hours.toString(), ":", minutes < 10 ? "0" : "",
 					minutes.toString());
 		} else {
-			return String.join("", "当日", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "",
+			return String.join("", "当日", hours.toString(), ":", minutes < 10 ? "0" : "",
 					minutes.toString());
 		}
 	}
