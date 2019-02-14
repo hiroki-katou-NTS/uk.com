@@ -34,7 +34,7 @@ public class QpbmtPayUnitPrice extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "NAME")
+    @Column(name = "UNIT_PRICE_NAME")
     public String name;
     
     @Override
