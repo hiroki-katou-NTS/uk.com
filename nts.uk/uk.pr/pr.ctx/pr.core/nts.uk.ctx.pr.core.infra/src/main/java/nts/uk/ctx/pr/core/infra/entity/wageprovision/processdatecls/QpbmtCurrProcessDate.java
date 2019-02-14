@@ -30,10 +30,10 @@ public class QpbmtCurrProcessDate extends UkJpaEntity implements Serializable {
 	public QpbmtCurrProcessDatePk currProcessDatePk;
 
 	/**
-	 * GIVE_CURR_TREAT_YEAR
+	 *
 	 */
 	@Basic(optional = false)
-	@Column(name = "GIVE_CURR_TREAT_YEAR")
+	@Column(name = "CURRENT_YM")
 	public int giveCurrTreatYear;
 
 	@Override
