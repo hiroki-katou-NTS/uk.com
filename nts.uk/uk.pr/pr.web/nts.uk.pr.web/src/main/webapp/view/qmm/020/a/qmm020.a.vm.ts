@@ -25,6 +25,8 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
                     self.individualUse(data.individualUse);
                     self.usageMaster(data.usageMaster);
                     self.activeSideBar(data);
+                } else {
+                    self.activeSideBar(null);
                 }
                 dfd.resolve();
             }).fail((err) => {
@@ -38,6 +40,16 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         }
 
         activeSideBar(setting) {
+            if(!setting) {
+                $("#sidebar").ntsSideBar("hide", 1);
+                $("#sidebar").ntsSideBar("hide", 2);
+                $("#sidebar").ntsSideBar("hide", 3);
+                $("#sidebar").ntsSideBar("hide", 4);
+                $("#sidebar").ntsSideBar("hide", 5);
+                $("#sidebar").ntsSideBar("hide", 6);
+                return;
+            }
+
             if (setting.masterUse == 1) {
                 if (setting.usageMaster == 0) {
                     $("#sidebar").ntsSideBar("show", 1);

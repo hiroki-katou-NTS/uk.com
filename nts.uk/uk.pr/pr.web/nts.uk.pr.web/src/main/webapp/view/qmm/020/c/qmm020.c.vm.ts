@@ -39,6 +39,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 if(data == null){
                     dialog.info({ messageId: "Msg_303" }).then(()=>{
                         self.enableAddHisButton(false);
+                        self.enableEditHisButton(false);
+                        self.enableRegisterButton(false);
                     });
 					
                 }else if(data.length > 0){
