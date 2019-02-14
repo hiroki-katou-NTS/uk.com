@@ -43,6 +43,7 @@ public class MonthReportData {
 	private Optional<String> checkItem;
 	//16: アラームリストのチェック条件 休暇種類(TypeCheckVacation.java)
 	private Optional<String> typeCheckVacation;
+	private Optional<Integer> typeCheckVacationInt;
 	//17: アラームリストのチェック条件 休暇項目
 	private Optional<String> vacationItems;
 	
@@ -55,9 +56,9 @@ public class MonthReportData {
 	private Optional<Integer> compareAtrInt;
 	private Optional<String> compareAtr;
 	//20: アラームリストのチェック条件 値１
-	private Optional<Integer> startValue;
+	private Optional<Double> startValue;
 	//21: アラームリストのチェック条件 値２
-	private Optional<Integer> endValue;
+	private Optional<Double> endValue;
 	//22: アラームリストのチェック条件 複合条件 グループ１
 	private Optional<String> conditionOperatorGroup1;
 	//23:アラームリストのチェック条件 複合条件 計算式
