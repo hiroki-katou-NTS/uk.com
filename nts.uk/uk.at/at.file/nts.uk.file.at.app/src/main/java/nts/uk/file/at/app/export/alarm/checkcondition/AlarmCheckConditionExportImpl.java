@@ -168,6 +168,12 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 							.value(TextResource.localize("KAL003_240"))
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
+		else {
+			data.put(AlarmCheckConditionUtils.KAL003_223,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_223)
+							.value("")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		}
 
 		return MasterData.builder().rowData(data).build();
 	}
