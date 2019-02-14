@@ -272,6 +272,7 @@ module cps003.f.vm {
             let self = this,
                 item: any = ko.toJS(self.currentItem),
                 value = {
+                    mode: undefined,
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.id,
                     matchValue: item.filter,
@@ -300,6 +301,7 @@ module cps003.f.vm {
                         'IS00594', 'IS00601',
                         'IS00608', 'IS00615',
                         'IS00622'].indexOf(item.itemData.itemCode) > -1) {
+                        value.mode = APPLY_MODE.GRANDDATE;
                         switch (value.replaceFormat) {
                             case 1:
                                 break;
@@ -316,34 +318,41 @@ module cps003.f.vm {
                                 break;
                         }
                     } else {
+                        value.mode = APPLY_MODE.DATE;
                         if (item.value.value0) {
                             value.replaceValue1 = moment.utc(item.value.value0).format('YYYY/MM/DD');
                         }
                     }
                     break;
                 case ITEM_SINGLE_TYPE.STRING:
+                    value.mode = APPLY_MODE.STRING;
                     value.replaceValue1 = item.value.value0;
                     break;
                 case ITEM_SINGLE_TYPE.TIME:
                     if (item.itemData.itemCode == 'IS00287') {
+                        value.mode = APPLY_MODE.TIMEYEAR;
                         if (value.replaceFormat == 1) {
                             value.replaceValue1 = item.value.value0;
                         } else {
                             value.replaceValue1 = item.value.value1;
                         }
                     } else {
+                        value.mode = APPLY_MODE.TIME;
                         value.replaceValue1 = item.value.value0;
                     }
                     break;
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    value.mode = APPLY_MODE.CLOCK;
                     value.replaceValue1 = item.value.value0;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     if (!item.itemData.amount) {
+                        value.mode = APPLY_MODE.AMOUNT;
                         if (item.value.value0) {
                             value.replaceValue1 = Number(item.value.value0);
                         }
                     } else {
+                        value.mode = APPLY_MODE.NUMBER;
                         if (value.replaceFormat == 1) {
                             if (item.value.value0) {
                                 value.replaceValue1 = Number(item.value.value0);
@@ -358,6 +367,23 @@ module cps003.f.vm {
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    if ([
+                        ITEM_SINGLE_TYPE.SELECTION,
+                        ITEM_SINGLE_TYPE.SEL_RADIO].indexOf(item.itemData.dataType) > -1) {
+                        value.mode = APPLY_MODE.SELECTION;
+                    } else {
+                        if (['IS00131', 'IS00140',
+                            'IS00158', 'IS00167',
+                            'IS00176', 'IS00149',
+                            'IS00194', 'IS00203',
+                            'IS00212', 'IS00221',
+                            'IS00230', 'IS00239',
+                            'IS00185'].indexOf(itemData.itemCode) > -1) {
+                            value.mode = APPLY_MODE.WORKTIME;
+                        } else {
+                            value.mode = APPLY_MODE.DIALOG;
+                        }
+                    }
                     value.replaceValue1 = item.value.value0;
                     break;
             }
@@ -669,6 +695,7 @@ module cps003.f.vm {
 
     // return value
     interface IValueDto {
+        mode: APPLY_MODE;
         // 全て置換する
         replaceAll: boolean;
         // 対象項目
@@ -681,5 +708,19 @@ module cps003.f.vm {
         replaceValue1: any;
         // 値2
         replaceValue2: any;
+    }
+
+    enum APPLY_MODE {
+        DATE = 1,
+        STRING = 2,
+        TIME = 3,
+        CLOCK = 4,
+        NUMBER = 5,
+        AMOUNT = 6,
+        SELECTION = 7,
+        DIALOG = 8,
+        WORKTIME = 9,
+        GRANDDATE = 10,
+        TIMEYEAR = 11
     }
 }
