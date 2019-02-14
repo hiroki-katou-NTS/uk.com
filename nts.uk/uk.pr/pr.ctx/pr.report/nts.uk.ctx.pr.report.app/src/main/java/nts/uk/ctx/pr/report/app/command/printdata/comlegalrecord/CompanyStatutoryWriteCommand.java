@@ -81,7 +81,7 @@ public class CompanyStatutoryWriteCommand
     /**
      * 法人番号
      */
-    private BigDecimal corporateNumber;
+    private String corporateNumber;
 
     /**
      * 会計事務所電話番号

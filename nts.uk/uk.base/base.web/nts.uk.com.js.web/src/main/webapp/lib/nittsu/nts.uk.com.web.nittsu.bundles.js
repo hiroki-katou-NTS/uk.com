@@ -17869,7 +17869,8 @@ var nts;
                             var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
                             // filter specs key
                             if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
-                                if (!evt.key.match(/[\-\.0-9]/g)) {
+                                // fix bug cannot press [.] on numpad
+                                if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
                                     evt.preventDefault();
                                 }
                                 else {
@@ -17888,6 +17889,8 @@ var nts;
                                     else {
                                         val = val.replace(val.substring(ss, se), evt.key);
                                     }
+                                    // fix bug cannot press [.] on numpad
+                                    val = val.replace(/Decimal/, '.');
                                     // accept negative key only first press
                                     if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
                                         evt.preventDefault();
@@ -17902,12 +17905,19 @@ var nts;
                                     if (constraint) {
                                         var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                         if (primitive) {
-                                            var nval = parseFloat(val), min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength;
+                                            var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min)), mival = val, maval = val, dlen = primitive.mantissaMaxLength;
                                             // accept negative key if min < 0
                                             if (evt.key == '-' && min >= 0) {
                                                 evt.preventDefault();
                                                 return;
                                             }
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
                                             // clear decimal in constraint (sync) if option not has decimallength
                                             if (rd.option && rd.option.decimallength < 1) {
                                                 primitive.valueType = 'Integer';
@@ -17925,7 +17935,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17936,7 +17946,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17947,7 +17957,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17968,26 +17978,47 @@ var nts;
                                 var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                 // if value after delete out of range, preventDefault
                                 if (primitive) {
-                                    var min = primitive.min, max = primitive.max;
+                                    var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min));
                                     if (ss == se) {
                                         if (evt.keyCode == 8) {
-                                            var _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                         else {
-                                            var _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                     }
                                     else {
-                                        var _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
-                                        if (_num < min || _num > max) {
+                                        var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
+                                        for (var i = mival.length; i < stmi.length; i++) {
+                                            mival += '0';
+                                        }
+                                        for (var i = maval.length; i < stma.length; i++) {
+                                            maval += '9';
+                                        }
+                                        var nmin = Number(mival), nmax = Number(maval);
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -18859,6 +18890,7 @@ var nts;
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
                         }
+                        _.defer(function () { $grid.ntsGridList("scrollToSelected"); });
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
@@ -34112,6 +34144,26 @@ var nts;
                                 return setupDeleteButton($grid, param);
                             case 'setupScrollWhenBinding':
                                 return setupScrollWhenBinding($grid);
+                            case 'scrollToSelected':
+                                return scrollToSelect($grid);
+                        }
+                    }
+                    function scrollToSelect($grid) {
+                        var row = null;
+                        var selectedRows = $grid.igGrid("selectedRows");
+                        if (selectedRows) {
+                            row = selectedRows[0];
+                        }
+                        else {
+                            row = $grid.igGrid("selectedRow");
+                        }
+                        if (row) {
+                            if ($grid.igGrid("option", "virtualization") === true) {
+                                ui.ig.grid.virtual.expose(row, $grid);
+                            }
+                            else {
+                                ui.ig.grid.expose(row, $grid);
+                            }
                         }
                     }
                     function setupScrollWhenBinding($grid) {

@@ -300,7 +300,7 @@ module nts.uk.pr.view.qmm035.a {
             clubRepresentativePosition: string;
             clubRepresentativeName: string;
             linkingDepartment: string;
-            corporateNumber: number;
+            corporateNumber: string;
             accountingOfficeTelephoneNumber: string;
             accountingOfficeName: string;
             salaryPaymentMethodAndDueDate1: string;
@@ -335,7 +335,7 @@ module nts.uk.pr.view.qmm035.a {
             clubRepresentativePosition: KnockoutObservable<string> = ko.observable(null);
             clubRepresentativeName: KnockoutObservable<string> = ko.observable(null);
             linkingDepartment: KnockoutObservable<string> = ko.observable(null);
-            corporateNumber: KnockoutObservable<number> = ko.observable(null);
+            corporateNumber: KnockoutObservable<string> = ko.observable(null);
             accountingOfficeTelephoneNumber: KnockoutObservable<string> = ko.observable(null);
             accountingOfficeName: KnockoutObservable<string> = ko.observable(null);
             salaryPaymentMethodAndDueDate1: KnockoutObservable<string> = ko.observable(null);
