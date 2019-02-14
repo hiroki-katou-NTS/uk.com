@@ -579,10 +579,13 @@ public class AlarmCheckConditionUtils {
 		} else if (checkTypeItem == 5) {
 			return ((new CheckedTimesValueDay(
 					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).toString());
-		} else if (checkTypeItem == 6 || checkTypeItem == 7) {
+		} else if (checkTypeItem == 6) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))
 					.toString();
+		} else if (checkTypeItem == 7) {
+			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
 		}
+		
 		return "";
 	}
 	

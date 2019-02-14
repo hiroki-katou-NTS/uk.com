@@ -338,6 +338,12 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_229)
 							.value(row.getDailyErrorAlarms().isPresent() ? row.getDailyErrorAlarms().get() : "")
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			
+			// 33: 固定チェック条件
+			data.put(AlarmCheckConditionUtils.KAL003_250,
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_250)
+							.value(row.getFixedCheckCond().isPresent() ? row.getFixedCheckCond().get() : "")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
 
 		if (row.getUseAtrCond().isPresent() && row.getUseAtrCond().get() == 1) {
@@ -478,11 +484,6 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 							.value(row.getMessage().isPresent() ? row.getMessage().get() : "")
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
-		// 33: 固定チェック条件
-		data.put(AlarmCheckConditionUtils.KAL003_250,
-				MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_250)
-						.value(row.getFixedCheckCond().isPresent() ? row.getFixedCheckCond().get() : "")
-						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 
 		return MasterData.builder().rowData(data).build();
 	}
@@ -1153,7 +1154,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 		if (row.getUseAtrCond().isPresent() && row.getUseAtrCond().get() == 1) {
 			// 13: アラームリストのチェック条件 NO
 			data.put(AlarmCheckConditionUtils.KAL003_263,
-					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(rowIndex+1)
+					MasterCellData.builder().columnId(AlarmCheckConditionUtils.KAL003_262).value(row.getSortBy())
 							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 
 			// 14: アラームリストのチェック条件 名称
