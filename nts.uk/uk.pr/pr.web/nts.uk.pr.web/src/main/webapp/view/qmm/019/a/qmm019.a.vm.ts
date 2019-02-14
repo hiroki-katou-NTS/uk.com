@@ -22,8 +22,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
     import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
     import getText = nts.uk.resource.getText;
+    import IYearMonthHistory = nts.uk.pr.view.qmm019.share.model.IYearMonthHistory;
 
     export class ScreenModel {
+        isNewMode: boolean = false;
+        newHistId: string;
 
         statementLayoutList: KnockoutObservableArray<StatementLayout>;
         currentHistoryId: KnockoutObservable<string>;
@@ -39,7 +42,17 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             self.statementLayoutHistData = ko.observable(null);
 
             self.currentHistoryId.subscribe(x => {
-                if(x && (x != "")) {
+                if (x && (x != "")) {
+                    if (self.isNewMode) {
+                        if (self.newHistId != x) {
+                            self.newHistId = null;
+                            self.isNewMode = false;
+                            self.loadListData();
+                        } else {
+                            return;
+                        }
+                    }
+
                     let data: YearMonthHistory;
 
                     for(let statementLayout: StatementLayout of self.statementLayoutList()) {
@@ -406,7 +419,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
-                            self.currentHistoryId("");
+                            self.addHistoryItem(statementCode, histId, startMonth, layoutPattern);
+                            self.currentHistoryId(histId);
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
                             self.calculatePrintLine();
 
@@ -415,6 +429,34 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     });
                 }
             });
+        }
+
+        public addHistoryItem(statementCode: string, newHistId: string, startMonth: number, layoutPattern: number) {
+            let self = this;
+            self.isNewMode = true;
+            self.newHistId = newHistId;
+            let layout: StatementLayout = _.find(self.statementLayoutList(), (item: StatementLayout) => {
+                return item.statementCode == statementCode;
+            });
+
+            let lastHistoryItem: YearMonthHistory = _.maxBy(layout.history, (item: YearMonthHistory) => {
+                return item.endMonth;
+            });
+
+            let startYM = moment.utc(startMonth, "YYYYMM");
+            let endYM = 999912;
+            let endYMOld = startYM.add(-1, "M");
+
+            lastHistoryItem.endMonth = parseInt(endYMOld.format("YYYYMM"));
+            lastHistoryItem.updateNodeText();
+            let iHist: IYearMonthHistory = <IYearMonthHistory> {
+                historyId: newHistId,
+                startMonth: startMonth,
+                endMonth: endYM,
+                layoutPattern: layoutPattern
+            };
+            let newHist: YearMonthHistory = new YearMonthHistory(statementCode, iHist);
+            layout.history.unshift(newHist);
         }
 
         public editHistory(): void {

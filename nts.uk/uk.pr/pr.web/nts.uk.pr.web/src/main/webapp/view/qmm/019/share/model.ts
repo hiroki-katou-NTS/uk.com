@@ -521,6 +521,11 @@ module nts.uk.pr.view.qmm019.share.model {
                 + " ～ " + nts.uk.time.parseYearMonth(params.endMonth).format();
             this.history = [];
         }
+
+        updateNodeText(){
+            this.nodeText = nts.uk.time.parseYearMonth(this.startMonth).format()
+                + " ～ " + nts.uk.time.parseYearMonth(this.endMonth).format();
+        }
     }
 
     export interface IStatementLayout {
