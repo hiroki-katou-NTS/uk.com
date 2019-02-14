@@ -61,15 +61,21 @@ public class AlarmCheckCondQuery {
 			.append("(CASE WHEN (c.FILTER_BY_JOB = 1)")
 			.append(" THEN")
 			.append(" STUFF(")
-			.append(" (SELECT DISTINCT (',' + f1.JOB_CD + ")
+			.append(" (SELECT DISTINCT (',' + ")
+			.append("	(CASE WHEN (f1.JOB_CD IS NOT NULL)")
+			.append("	THEN")
+			.append("		f1.JOB_CD")
+			.append("	ELSE")
+			.append("		'' ")
+			.append("	END) + ")
 			.append(" (CASE WHEN (f1.JOB_NAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" f1.JOB_NAME")
 			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_JOB f ")
-			.append(" INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID AND f2.JOB_ID = f.JOB_ID AND f2.END_DATE >= '9999-12-31'")
-			.append(" INNER JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID AND f1.JOB_ID = f.JOB_ID AND f1.HIST_ID = f2.HIST_ID")
+			.append(" LEFT JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID AND f2.JOB_ID = f.JOB_ID AND f2.END_DATE >= '9999-12-31'")
+			.append(" LEFT JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID AND f1.JOB_ID = f.JOB_ID AND f1.HIST_ID = f2.HIST_ID")
 			.append(" WHERE f.AL_CHK_TARGET_ID = c.ID ")
 			.append(" FOR XML PATH(''))")
 			.append(" , 1, 1, '')")
@@ -145,15 +151,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ "  THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"
@@ -1000,15 +1012,21 @@ public class AlarmCheckCondQuery {
 			+ "  (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ "  THEN"
 			+ "  	STUFF("
-			+ "  			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ "  				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						f1.JOB_NAME"
 			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				from KFNMT_ALCHKTARGET_JOB f "
-			+ "  				INNER join BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ "  				INNER join BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ "  				LEFT join BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ "  				LEFT join BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ "  				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ "  				FOR XML PATH(''))"
 			+ "  			, 1, 1, '')"
@@ -1385,15 +1403,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ " THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"
@@ -2276,15 +2300,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ " THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + " 
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"
