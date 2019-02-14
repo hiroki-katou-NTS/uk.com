@@ -574,7 +574,7 @@ public class AlarmCheckConditionUtils {
 		if (checkTypeItem == 4) {
 			CheckedTimeDuration timeDuration = new CheckedTimeDuration(
 					value instanceof Integer ? (Integer) value : ((Double) value).intValue());
-			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() + ":"
+			return (timeDuration.hour() + ":"
 					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (checkTypeItem == 5) {
 			return ((new CheckedTimesValueDay(
