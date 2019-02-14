@@ -276,7 +276,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         } else if (self.statementLayoutList().length > 0) {
                             let histLength = self.statementLayoutList()[0].history.length;
                             if (histLength > 0) {
-                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                             }
                         }
                     });
@@ -311,7 +311,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         } else if (self.statementLayoutList().length > 0) {
                             let histLength = self.statementLayoutList()[0].history.length;
                             if (histLength > 0) {
-                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                             }
                         }
                     });
@@ -385,7 +385,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             } else if(self.statementLayoutList().length > 0) {
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             }
 
@@ -484,7 +484,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             } else if(self.statementLayoutList().length > 0) {
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             }
                         } else {
@@ -495,12 +495,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             if(matchCode.length > 0) {
                                 let histLength = matchCode[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(matchCode[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(matchCode[0].history[0].historyId);
                                 }
                             } else if(self.statementLayoutList().length > 0){
                                 let histLength = self.statementLayoutList()[0].history.length;
                                 if(histLength > 0) {
-                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[0].historyId);
                                 }
                             } else {
                                 self.createIfEmpty();
