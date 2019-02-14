@@ -347,7 +347,6 @@ public class AlarmCheckConditionUtils {
 			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
 		} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
 			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value instanceof Integer ? (Integer)value : ((Double)value).intValue());
-			System.out.println("Value: " + value + ", Hour: " + timeDuration.hour() + ", " + timeDuration.minute());
 			return (timeDuration.hour() 
 				+ ":" + (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
