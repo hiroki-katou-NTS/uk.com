@@ -84,7 +84,6 @@ import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.screen.at.app.worktype.WorkTypeDto;
 import nts.uk.screen.at.app.worktype.WorkTypeProcessor;
 
