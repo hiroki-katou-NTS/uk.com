@@ -287,7 +287,8 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 									}else {
 										Cell cellDynamic = worksheet.getCells().get(row, dynamicPositionStart + j );
 										if(header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.TIMEPOINT.value) {
-											cellDynamic.setValue(item.getValue() == null? null: convertTimepoint(item.getValue().toString()));
+											String value = item.getValue() == null? null: item.getValue().toString();
+											cellDynamic.setValue(value == null? null: isNumeric(value) == false ? value: convertTimepoint(value));
 											
 										}else {
 											cellDynamic.setValue(item.getValue() == null? null: item.getValue().toString());
@@ -338,6 +339,11 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		}
 		
 		return result;
+	}
+	
+	private boolean isNumeric(String str)
+	{
+	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 	private int numberOfColumnHeader(PersonInfoMatrixDataSource dataSource, List<GridHeaderData> gridHeader ) {
 		// tính thêm cột selectionCode
