@@ -1,15 +1,21 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 指定期間36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetAgreTimeByPeriod {
 
@@ -25,4 +31,34 @@ public interface GetAgreTimeByPeriod {
 	 */
 	List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
 			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr);
+
+	/**
+	 * 指定月36協定上限月間時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 月別実績の36協定上限時間リスト
+	 */
+	List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period);
+
+	/**
+	 * 指定期間36協定上限複数月平均時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteria 基準日
+	 * @param yearMonth 指定年月
+	 * @return 36協定上限複数月平均時間
+	 */
+	Optional<AgreMaxAverageTimeMulti> maxAverageTimeMulti(String companyId, String employeeId, GeneralDate criteria,
+			YearMonth yearMonth);
+
+	/**
+	 * 指定年36協定年間時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteria 基準日
+	 * @param year 年度
+	 * @return 36協定年間時間
+	 */
+	Optional<AgreementTimeYear> timeYear(String companyId, String employeeId, GeneralDate criteria, Year year);
 }
