@@ -25,7 +25,7 @@ public class QpbmtPerProcesClsSetPk implements Serializable
     * 会社ID
     */
     @Basic(optional = false)
-    @Column(name = "COMPANY_ID")
+    @Column(name = "CID")
     public String companyId;
     
     /**

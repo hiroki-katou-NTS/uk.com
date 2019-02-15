@@ -38,14 +38,14 @@ public class QpbmtSalIndAmountHis extends UkJpaEntity implements Serializable
     * 開始年月
     */
     @Basic(optional = false)
-    @Column(name = "PERIOD_START_YM")
+    @Column(name = "START_YM")
     public int periodStartYm;
     
     /**
     * 終了年月
     */
     @Basic(optional = false)
-    @Column(name = "PERIOD_END_YM")
+    @Column(name = "END_YM")
     public int periodEndYm;
     
     /**
@@ -66,7 +66,7 @@ public class QpbmtSalIndAmountHis extends UkJpaEntity implements Serializable
     }
 
     public static QpbmtSalIndAmountHis toEntity(SalIndAmountHis domain1, SalIndAmount domain2) {
-        return new QpbmtSalIndAmountHis(new QpbmtSalIndAmountHisPk(domain1.getEmpId(), domain1.getPeriod().get(0).getHistoryID(), domain1.getSalBonusCate().value, domain1.getCateIndicator().value, domain1.getPerValCode()), domain1.getPeriod().get(0).getPeriodYearMonth().start().v(), domain1.getPeriod().get(0).getPeriodYearMonth().end().v(), domain2.getAmountOfMoney().v());
+        return new QpbmtSalIndAmountHis(new QpbmtSalIndAmountHisPk(domain1.cid, domain1.getEmpId(), domain1.getPeriod().get(0).getHistoryID(), domain1.getSalBonusCate().value, domain1.getCateIndicator().value, domain1.getPerValCode()), domain1.getPeriod().get(0).getPeriodYearMonth().start().v(), domain1.getPeriod().get(0).getPeriodYearMonth().end().v(), domain2.getAmountOfMoney().v());
     }
 
     public static PersonalAmount toDomainObject(QpbmtSalIndAmountHis entity) {

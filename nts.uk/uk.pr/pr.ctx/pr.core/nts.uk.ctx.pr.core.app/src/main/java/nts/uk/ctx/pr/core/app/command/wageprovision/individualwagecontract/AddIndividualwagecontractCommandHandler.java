@@ -6,6 +6,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,10 +20,12 @@ public class AddIndividualwagecontractCommandHandler extends CommandHandler<AddI
 
     @Override
     protected void handle(CommandHandlerContext<AddIndividualwagecontractCommand> commandHandlerContext) {
+        String cid = AppContexts.user().companyId();
         AddIndividualwagecontractCommand contractCommand = commandHandlerContext.getCommand();
         SalIndAmountHisCommand salIndAmountHisCommand = contractCommand.getSalIndAmountHisCommand();
         SalIndAmountCommand salIndAmountCommand = contractCommand.getSalIndAmountCommand();
         SalIndAmountHis salIndAmountHis = new SalIndAmountHis(
+                cid,
                 salIndAmountHisCommand.getPerValCode(),
                 salIndAmountHisCommand.getEmpId(),
                 salIndAmountHisCommand.getCateIndicator(),
