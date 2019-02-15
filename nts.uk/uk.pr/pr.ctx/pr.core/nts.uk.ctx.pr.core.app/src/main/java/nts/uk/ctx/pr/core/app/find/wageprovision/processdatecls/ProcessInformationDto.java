@@ -33,7 +33,7 @@ public class ProcessInformationDto {
 
 	public static ProcessInformationDto fromDomain(ProcessInformation domain) {
 		return new ProcessInformationDto(domain.getCid(), domain.getProcessCateNo(), domain.getDeprecatCate().value,
-				domain.getProcessCls().v());
+				domain.getProcessName().v());
 	}
 
 }

@@ -37,7 +37,7 @@ public class ProcessInformationFinder {
                  x->new ProcessInformationDto(
                          x.getCid(),x.getProcessCateNo(),
                          x.getDeprecatCate().value,
-                         x.getProcessCls().v())
+                         x.getProcessName().v())
          ).orElse(null);
 
     }
