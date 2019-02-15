@@ -197,8 +197,8 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
-	public static String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
-			Optional<Integer> start, Optional<Integer> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
+	public static <T> String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
+			Optional<T> start, Optional<T> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
 			Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos) {
 		StringBuffer condition = new StringBuffer("");
 		String targetAttendancesStr = targetAttendances.isPresent() ? getAttendanceStrFromTarget(targetAttendances.get(), attendanceNameDivergenceDtos, false) : "";
@@ -354,7 +354,7 @@ public class AlarmCheckConditionUtils {
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return (String.format ("%.0f", (new CheckedTimesValueDay(
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
 					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v())) ;
 		}
 		return "";
@@ -578,7 +578,7 @@ public class AlarmCheckConditionUtils {
 			return (timeDuration.hour() + ":"
 					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (checkTypeItem == 5) {
-			return (String.format ("%.0f", (new CheckedTimesValueDay(
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
 					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()));
 		} else if (checkTypeItem == 6) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))

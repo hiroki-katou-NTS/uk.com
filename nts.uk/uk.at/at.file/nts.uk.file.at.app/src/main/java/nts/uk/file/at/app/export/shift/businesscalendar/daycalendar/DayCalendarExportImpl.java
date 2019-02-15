@@ -300,11 +300,6 @@ public class DayCalendarExportImpl implements MasterListData {
 							y.setHierarchyCode(Optional.of(hierarchyCode));
 							y.setWorkplaceCode(Optional.of(code));
 							y.setWorkplaceName(Optional.of(name));
-							System.out.println(
-									"wpId: " + wpId +
-									"Workplace code: " + code + 
-									", workplace name: " + name
-									+ ", hierarchy code: " + hierarchyCode);
 						});
 					}
 				});
@@ -331,8 +326,8 @@ public class DayCalendarExportImpl implements MasterListData {
 				List<WorkplaceCalendarReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					WorkplaceCalendarReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//						|| (!firstObject.getHierarchyCode().isPresent() && !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode
 								.stream()
 								.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
