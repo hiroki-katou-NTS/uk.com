@@ -41,17 +41,19 @@ public class MulMonthReportData {
 	private Optional<Integer> useAtrCond;
 	private Optional<Integer> conditionAtrCond;
 	private Optional<Integer> conditionTypeCond;
+	private Optional<Integer> compareAtrCondInt;
 	private Optional<String> compareAtrCond;
-	private Optional<Integer> startValueCond;
-	private Optional<Integer> endValueCond;
+	private Optional<Double> startValueCond;
+	private Optional<Double> endValueCond;
 	
 	//condition AVG
 	private Optional<Integer> useAtrAvg;
 	private Optional<Integer> conditionAtrAvg;
 	private Optional<Integer> conditionTypeAvg;
+	private Optional<Integer> compareAtrAvgInt;
 	private Optional<String> compareAtrAvg;
-	private Optional<Integer> startValueAvg;
-	private Optional<Integer> endValueAvg;
+	private Optional<Double> startValueAvg;
+	private Optional<Double> endValueAvg;
 	
 	//condition CONTINOUES
 	private Optional<Integer> useAtrCont;
@@ -59,9 +61,10 @@ public class MulMonthReportData {
 	private Optional<Integer> continueMonth;
 	private Optional<Integer> conditionAtrCont;
 	private Optional<Integer> conditionTypeCont;
+	private Optional<Integer> compareAtrContInt;
 	private Optional<String> compareAtrCont;
-	private Optional<Integer> startValueCont;
-	private Optional<Integer> endValueCont;
+	private Optional<Double> startValueCont;
+	private Optional<Double> endValueCont;
 	
 	//condition COSP
 	private Optional<Integer> useAtrCosp;
@@ -71,11 +74,12 @@ public class MulMonthReportData {
 	private Optional<Integer> times;
 	private Optional<Integer> conditionAtrCosp;
 	private Optional<Integer> conditionTypeCosp;
+	private Optional<Integer> compareAtrCospInt;
 	private Optional<String> compareAtrCosp;
-	private Optional<Integer> startValueCosp;
-	private Optional<Integer> endValueCosp;
+	private Optional<Double> startValueCosp;
+	private Optional<Double> endValueCosp;
 	
-	private Optional<String> insDate;
+	private String insDate;
 	//22: チェック条件 表示するメッセージ
 	private Optional<String> message;
 }

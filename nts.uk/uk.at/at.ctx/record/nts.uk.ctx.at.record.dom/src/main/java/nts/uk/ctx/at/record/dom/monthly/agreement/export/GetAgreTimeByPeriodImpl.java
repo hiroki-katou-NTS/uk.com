@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 /**
  * 実装：指定期間36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
@@ -78,7 +78,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			
 			// 36協定時間を合計
 			for (val agreeemntTime : agreementTimeList){
-				result.addMinutesToAgreementTime(agreeemntTime.getAgreementTime().getAgreementTime().v());
+				result.addMinutesToAgreementTime(agreeemntTime.getAgreementTime().getAgreementTime().getAgreementTime().v());
 			}
 			
 			Optional<Year> checkYearOpt = Optional.empty();
@@ -100,7 +100,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 				
 				// 36協定基本設定を取得する
 				val basicAgreementSet = this.agreementDomainService.getBasicSet(
-						companyId, employeeId, criteria, workingSystem);
+						companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
 				
 				// 「年度」を確認
 				Optional<AgreementYearSetting> yearSetOpt = Optional.empty();

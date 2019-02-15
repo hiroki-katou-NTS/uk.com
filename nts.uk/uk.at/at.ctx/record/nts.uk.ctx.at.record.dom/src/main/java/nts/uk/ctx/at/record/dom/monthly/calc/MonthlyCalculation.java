@@ -14,7 +14,6 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.util.Time;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
@@ -41,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -617,7 +617,7 @@ public class MonthlyCalculation {
 		ConcurrentStopwatches.stop("12227:管理期間の36協定：");
 		
 		// 月別実績の36協定へ値を移送
-		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
 	}
 	
 	/**
@@ -639,7 +639,7 @@ public class MonthlyCalculation {
 		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
 		
 		// 月別実績の36協定へ値を移送
-		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
 	}
 	
 	/**

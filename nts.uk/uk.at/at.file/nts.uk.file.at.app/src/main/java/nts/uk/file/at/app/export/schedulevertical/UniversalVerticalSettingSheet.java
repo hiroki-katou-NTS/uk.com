@@ -96,8 +96,10 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
 		// loop listItems 
 		listItems = listItems.stream().sorted((object1, object2) -> object1.getVerticalCalCd().compareTo(object2.getVerticalCalCd())).collect(Collectors.toList());
 		listItems.stream().forEach(item -> {
-			AtomicInteger count = new AtomicInteger(0); 
-			datas.addAll(createRow(item, count));
+			if (item.getUseAtr() == 1) {
+				AtomicInteger count = new AtomicInteger(0); 
+				datas.addAll(createRow(item, count));
+			}
 		});
 		return datas;
 	}
@@ -483,6 +485,8 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
                                 String externalItem = getAttendanceItem(listDailyItems, "externalBudgetCd", data);
                                 if (externalItem != null) {
                                     formulaResult += operator + " " + externalItem + " ";
+                                } else {
+                                	formulaResult += operator + " " + TextResource.localize("KML002_153") + " ";
                                 }
                             }
                         }
@@ -623,6 +627,8 @@ public class UniversalVerticalSettingSheet extends JpaRepository{
                                 String externalItem = getAttendanceItem(listDailyItems, "externalBudgetCd", data);
                                 if (externalItem != null) {
                                     formulaResult += operator + " " + externalItem + " ";
+                                } else {
+                                	formulaResult += operator + " " + TextResource.localize("KML002_153") + " ";
                                 }
                             }
                         }

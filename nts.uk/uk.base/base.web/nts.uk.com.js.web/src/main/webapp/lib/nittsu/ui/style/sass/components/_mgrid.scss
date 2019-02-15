@@ -50,6 +50,11 @@
 	background: #fff;
 }
 
+.mgrid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table,
+.mgrid .mgrid-free:not(.mgrid-header) .mgrid-free-table {
+	border-left: 1px solid #CCC;
+}
+
 .mgrid .mgrid-fixed-line, .mgrid .mgrid-line {
 	position: absolute;
 	cursor: ew-resize;
@@ -115,6 +120,10 @@
 	color: #fff;
 }
 
+.mgrid table tr.mgrid-top-space td {
+	border: 0px solid #F3F3F3;
+}
+
 .mcombo-wrapper {
 	position: relative;
 	display: inline-block;
@@ -173,6 +182,8 @@
     box-sizing: border-box;
     border: 1px solid #c5c5c5;
     border-radius: 3px;
+    top: -99999px;
+    left: -99999px;
 }
 
 .mcombo-list {
@@ -256,7 +267,16 @@
 }
 
 .mgrid table tr td span.hidden-button {
-	background-image: url(images/icons/s_sum_user_hidden.png);
+	background-image: url(images/icons/minus.png);
+	display: inline-block;
+	width: 19px;
+	height: 17px;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+}
+
+.mgrid table tr td span.plus-button {
+	background-image: url(images/icons/plus.png);
 	display: inline-block;
 	width: 19px;
 	height: 17px;
@@ -474,4 +494,35 @@
 .mgrid-refer-text {
 	display: inline-block;
 	margin-left: 10px;
+}
+
+.mg-right-margin {
+	margin-left: 0px;
+	margin-right: 10px;
+}
+
+.mdatepicker-container {
+	font-size: 12px;
+	line-height: 30px;
+	position: fixed;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	width: 210px;
+	user-select: none;
+	background-color: #fff;
+	direction: ltr !important;
+	touch-action: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+}
+
+.mdatepicker-dropdown {
+	position: absolute;
+	z-index: 1;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px solid #ccc;
+	box-shadow: 0 3px 6px #ccc;
 }

@@ -8,17 +8,22 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetAgreementTimePubImpl implements GetAgreementTimePub {
@@ -27,6 +32,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 	@Inject
 	private GetAgreementTime getAgreementTime;
 	
+	/** 36協定時間の取得 */
 	@Override
 	public List<AgreementTimeExport> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
@@ -38,7 +44,10 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 		for (val agreementTime : agreementTimeList){
 			val srcConfirmedOpt = agreementTime.getConfirmed();
 			val srcAfterAppReflectOpt = agreementTime.getAfterAppReflect();
+			val srcConfirmedMaxOpt = agreementTime.getConfirmedMax();
+			val srcAfterAppReflectMaxOpt = agreementTime.getAfterAppReflectMax();
 			
+			// 確定情報
 			AgreementTimeOfMonthly confirmed = null;
 			if (srcConfirmedOpt.isPresent()){
 				val srcConfirmed = srcConfirmedOpt.get();
@@ -59,6 +68,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 						srcConfirmed.getStatus());
 			}
 			
+			// 申請反映後情報
 			AgreementTimeOfMonthly afterAppReflect = null;
 			if (srcAfterAppReflectOpt.isPresent()){
 				val srcAfterAppReflect = srcAfterAppReflectOpt.get();
@@ -79,12 +89,46 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 						srcAfterAppReflect.getStatus());
 			}
 			
+			// 確定限度情報
+			AgreMaxTimeOfMonthly confirmedMax = null;
+			if (srcConfirmedMaxOpt.isPresent()){
+				val srcConfirmedMax = srcConfirmedMaxOpt.get();
+				confirmedMax = AgreMaxTimeOfMonthly.of(
+						srcConfirmedMax.getAgreementTime(),
+						new LimitOneMonth(srcConfirmedMax.getMaxTime().v()),
+						srcConfirmedMax.getStatus());
+			}
+			
+			// 申請反映後限度情報
+			AgreMaxTimeOfMonthly afterAppReflectMax = null;
+			if (srcAfterAppReflectMaxOpt.isPresent()){
+				val srcAfterAppReflectMax = srcAfterAppReflectMaxOpt.get();
+				afterAppReflectMax = AgreMaxTimeOfMonthly.of(
+						srcAfterAppReflectMax.getAgreementTime(),
+						new LimitOneMonth(srcAfterAppReflectMax.getMaxTime().v()),
+						srcAfterAppReflectMax.getStatus());
+			}
+			
 			String errorMessage = null;
 			if (agreementTime.getErrorMessage().isPresent()) errorMessage = agreementTime.getErrorMessage().get();
 			
 			result.add(AgreementTimeExport.of(agreementTime.getEmployeeId(),
-					confirmed, afterAppReflect, errorMessage));
+					confirmed, afterAppReflect, confirmedMax, afterAppReflectMax, errorMessage));
 		}
 		return result;
+	}
+	
+	/** 36協定年間時間の取得 */
+	@Override
+	public Optional<AgreementTimeYear> getYear(String companyId, String employeeId, YearMonthPeriod period,
+			GeneralDate criteria) {
+		return this.getAgreementTime.getYear(companyId, employeeId, period, criteria);
+	}
+	
+	/** 36協定上限複数月平均時間の取得 */
+	@Override
+	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId,
+			YearMonth yearMonth, GeneralDate criteria) {
+		return this.getAgreementTime.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
 	}
 }

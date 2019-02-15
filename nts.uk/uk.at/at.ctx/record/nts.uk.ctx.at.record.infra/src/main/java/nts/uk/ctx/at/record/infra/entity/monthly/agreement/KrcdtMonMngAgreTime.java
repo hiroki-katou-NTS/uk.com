@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
@@ -138,8 +140,8 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 				this.PK.employeeId,
 				new YearMonth(this.PK.yearMonth),
 				new Year(this.PK.yearMonth / 100),
-				agreementTime,
-				breakdown);
+				AgreementTimeManage.of(agreementTime, breakdown),
+				new AgreMaxTimeManage());
 	}
 	
 	/**
@@ -160,8 +162,8 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 	 */
 	public void fromDomainForUpdate(AgreementTimeOfManagePeriod domain){
 		
-		val agreementTime = domain.getAgreementTime();
-		val breakdown = domain.getBreakdown();
+		val agreementTime = domain.getAgreementTime().getAgreementTime();
+		val breakdown = domain.getAgreementTime().getBreakdown();
 		
 		this.agreementTime = agreementTime.getAgreementTime().v();
 		this.limitErrorTime = agreementTime.getLimitErrorTime().v();
