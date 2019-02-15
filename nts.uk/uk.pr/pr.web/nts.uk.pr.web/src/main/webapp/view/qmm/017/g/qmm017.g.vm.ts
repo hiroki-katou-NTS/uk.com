@@ -54,7 +54,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     formulaItem = _.find(self.formulaListItem, {formulaName: formulaName});
                     if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [operand]});
+                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaName]});
                     }
                     registerContent = 'calc_00' + formulaItem.formulaCode;
                     embeddedFormulaElement[registerContent] = null;
@@ -87,7 +87,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let dto = {
                 yearMonth: self.startMonth,
                 formulaElements: embeddedFormulaElement
-            }
+            };
             service.getEmbeddedFormulaDisplayContent(dto).done(function(data: any){
                 let formulaCode, formulaItem, displayContent;
                 block.clear();
