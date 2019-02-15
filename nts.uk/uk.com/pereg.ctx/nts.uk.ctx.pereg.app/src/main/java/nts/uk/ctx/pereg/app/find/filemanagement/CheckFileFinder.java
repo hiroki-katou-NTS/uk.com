@@ -302,68 +302,66 @@ public class CheckFileFinder {
 		readEmployeeFromFile(category,rows, employees, headerReal, contraintList, headerRemain,  employeeDtos, startCode);
 		
 		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
-		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId
+		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
-		if(headerReal.size() > 0) {
-			this.parallel.forEach(employeeDtos, pdt -> {
+		this.parallel.forEach(employeeDtos, pdt -> {
 
-				// Miss infoId (get infoId by baseDate)
-				PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
-						pdt.getEmployeeId(), pdt.getPersonId());
-				List<ItemRowDto> itemDtos = new ArrayList<>();
-				subq.setCategoryId(category.getPersonInfoCategoryId());
-				subq.setStandardDate(GeneralDate.today());
-				// lấy full value của các item
-				EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
-				List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
-						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
-				// thực hiện lấy những item được hiển thị trên màn hình A mà  ko có trong import 
-				//・上書き保存モードの場合、・t/h mode overwrite_Save、				
-				//受入した項目のみ更新して、受入してない項目は変更しない update chỉ cac item đa import, cac item chưa import thi ko thay đổi.
-				//・新規履歴追加モードの場合、・t/h mode  them lịch sử mới、
-				//基準日時点の履歴の情報をベースにして、受入した項目のみ変更、lấy thong tin lịch sử tại thời điểm baseDate lam chuẩn, chỉ thay đổi item đa import、
-				//受入していない項目は基準日時点の情報で追加する cac item chưa import thi them thong tin tại thời điểm baseDate
-				//※更新権限がない項目は受入（値の変更）をしない。※item ko co quyền update thi ko import（thay đổi value）
-				headerReal.stream().forEach(h ->{
-					items.stream().forEach(item ->{
-						if(h.getItemId().equals(item.getItemDefId())) {
-							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
-							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
-									item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false);
-							itemDtos.add(dto);
-						}
-					});
+			// Miss infoId (get infoId by baseDate)
+			PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
+					pdt.getEmployeeId(), pdt.getPersonId());
+			List<ItemRowDto> itemDtos = new ArrayList<>();
+			subq.setCategoryId(category.getPersonInfoCategoryId());
+			subq.setStandardDate(GeneralDate.today());
+			// lấy full value của các item
+			EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
+			List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
+					.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
+			// thực hiện lấy những item được hiển thị trên màn hình A mà  ko có trong import 
+			//・上書き保存モードの場合、・t/h mode overwrite_Save、				
+			//受入した項目のみ更新して、受入してない項目は変更しない update chỉ cac item đa import, cac item chưa import thi ko thay đổi.
+			//・新規履歴追加モードの場合、・t/h mode  them lịch sử mới、
+			//基準日時点の履歴の情報をベースにして、受入した項目のみ変更、lấy thong tin lịch sử tại thời điểm baseDate lam chuẩn, chỉ thay đổi item đa import、
+			//受入していない項目は基準日時点の情報で追加する cac item chưa import thi them thong tin tại thời điểm baseDate
+			//※更新権限がない項目は受入（値の変更）をしない。※item ko co quyền update thi ko import（thay đổi value）
+			headerReal.stream().forEach(h ->{
+				items.stream().forEach(item ->{
+					if(h.getItemId().equals(item.getItemDefId())) {
+						// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
+						ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
+								item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false);
+						itemDtos.add(dto);
+					}
 				});
-				
-				if(itemDtos.size() > 0) {
-					pdt.getItems().addAll(itemDtos);
-				}
-				//lấy thông tin recordId và actionRole
-				items.stream().forEach(item -> {
-					pdt.getItems().stream().forEach(itemDto -> {
-						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							itemDto.setRecordId(item.getRecordId());
-							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
-							if(itemDto.getActionRole() == null) {
-								itemDto.setActionRole(item.getActionRole());
-							}
-							// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
-							if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
-								itemDto.setValue(item.getValue());
-							}
-							if(itemDto.isError()) {
-								itemErrors.add(itemDto);
-							}
-							
-						}
-					});
-				});
-				// đếm số item bị lỗi của một employee
-				pdt.setNumberOfError(itemErrors.size());
-				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
-				result.add(pdt);
 			});
-		}
+			
+			if(itemDtos.size() > 0) {
+				pdt.getItems().addAll(itemDtos);
+			}
+			//lấy thông tin recordId và actionRole
+			items.stream().forEach(item -> {
+				pdt.getItems().stream().forEach(itemDto -> {
+					if (itemDto.getItemCode().equals(item.getItemCode())) {
+						itemDto.setRecordId(item.getRecordId());
+						// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
+						if(itemDto.getActionRole() == null) {
+							itemDto.setActionRole(item.getActionRole());
+						}
+						// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
+						if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
+							itemDto.setValue(item.getValue());
+						}
+						if(itemDto.isError()) {
+							itemErrors.add(itemDto);
+						}
+						
+					}
+				});
+			});
+			// đếm số item bị lỗi của một employee
+			pdt.setNumberOfError(itemErrors.size());
+			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
+			result.add(pdt);
+		});
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
 		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode)
@@ -690,7 +688,7 @@ public class CheckFileFinder {
 						}
 					}
 				} else {
-					if (value != null) {
+					if (value != null && value != "") {
 						Optional<String> string = numberContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
@@ -700,10 +698,10 @@ public class CheckFileFinder {
 				}
 				break;
 			case DATE:
-				itemDto.setValue(value == null ? null : value.toString());
+				itemDto.setValue(value == null || value == "" ? null : value.toString());
 				DateConstraint dateContraint = (DateConstraint) contraint;
 				if (gridHead.isRequired()) {
-					if (value == null) {
+					if (value == null || value == "") {
 						itemDto.setError(true);
 						break;
 					} else {
@@ -714,7 +712,7 @@ public class CheckFileFinder {
 						}
 					}
 				} else {
-					if (value != null) {
+					if (value != null && value != "") {
 						Optional<String>  string = dateContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
@@ -738,7 +736,7 @@ public class CheckFileFinder {
 						}
 					}
 				} else {
-					if (value != null) {
+					if (value != null && value != "") {
 						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
@@ -751,7 +749,7 @@ public class CheckFileFinder {
 			case TIMEPOINT:
 				TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
 				if (gridHead.isRequired()) {
-					if (value != null) {
+					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value.toString()));
 						Optional<String> string = timePointContraint.validateString(value.toString());
 						if (string.isPresent()) {
@@ -762,7 +760,7 @@ public class CheckFileFinder {
 						itemDto.setError(true);
 					}
 				} else {
-					if (value != null) {
+					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value.toString()));
 						Optional<String> string = timePointContraint.validateString(value.toString());
 						if (string.isPresent()) {
@@ -777,7 +775,7 @@ public class CheckFileFinder {
 			case SELECTION_BUTTON:
 			case SELECTION_RADIO:
 				if (gridHead.isRequired()) {
-					if(value == null) {
+					if(value == null || value == "") {
 						itemDto.setError(true); break;
 					}
 				}

@@ -11,6 +11,7 @@ import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
+import com.aspose.cells.Font;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
@@ -166,14 +167,6 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 					GridHeaderData parentItem = parentItemOpt.get();
 					String itemName = c.getItemName();
 					c.setItemName(parentItem.getItemName() + SPACE + itemName);
-//					if(parentItem.getItemParentCode()  != null  || !parentItem.getItemParentCode().isEmpty()) {
-//						Optional<GridHeaderData> parentParentItemOpt = itemSetLst.stream().filter(set -> set.getItemCode().equals(parentItem.getItemParentCode())).findFirst();
-//						if (parentParentItemOpt.isPresent()) {
-//							GridHeaderData parentParentItem = parentParentItemOpt.get();
-//							c.setItemName(parentParentItem.getItemName() + SPACE + parentItem.getItemName() + SPACE + itemName);
-//						}				
-//					
-//					}
 				}
 			}
 			
@@ -194,7 +187,13 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 				.collect(Collectors.toList());
 		int numberOfFixed = numberOfColumnHeader - gridHeader.size() - itemSelection.size();
 		List<GridEmployeeInfoDataSource> detailData = dataSource.getDetailData();
+		FixedColumnDisplay fixedColSource = new FixedColumnDisplay(fixedCol.isShowDepartment(),
+				fixedCol.isShowWorkplace(), fixedCol.isShowPosition(),
+				fixedCol.isShowEmployment(), fixedCol.isShowClassification());
 		for(GridEmployeeInfoDataSource employeeInfo : detailData) {
+			FixedColumnDisplay fixedColTemp = new FixedColumnDisplay(fixedColSource.isShowDepartment(),
+					fixedColSource.isShowWorkplace(), fixedColSource.isShowPosition(),
+					fixedColSource.isShowEmployment(), fixedColSource.isShowClassification());
 			for(int i = 0; i < numberOfColumnHeader; i++) {
 				Cell cell = worksheet.getCells().get(row, i );
 				if (i == 0) {
@@ -206,39 +205,39 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 				} else {
 					// in ra những cột cố định
 					if(i < numberOfFixed) {
-						if(fixedCol.isShowDepartment()) {
+						if(fixedColTemp.isShowDepartment()) {
 							cell.setValue(employeeInfo.getDepartmentName());
 							setBodyStyle(cell);
-							fixedCol.setShowDepartment(false);
+							fixedColTemp.setShowDepartment(false);
 							continue;
 						}
 						
-						if(fixedCol.isShowWorkplace()) {
+						if(fixedColTemp.isShowWorkplace()) {
 							cell.setValue(employeeInfo.getWorkplaceName());
 							setBodyStyle(cell);
-							fixedCol.setShowWorkplace(false);
+							fixedColTemp.setShowWorkplace(false);
 							continue;
 						}
 						
-						if(fixedCol.isShowPosition()) {
+						if(fixedColTemp.isShowPosition()) {
 							cell.setValue(employeeInfo.getPositionName());
 							setBodyStyle(cell);
-							fixedCol.setShowPosition(false);
+							fixedColTemp.setShowPosition(false);
 							continue;
 						}
 						
-						if(fixedCol.isShowEmployment()) {
+						if(fixedColTemp.isShowEmployment()) {
 							cell.setValue(employeeInfo.getEmploymentName());
 							setBodyStyle(cell);
-							fixedCol.setShowEmployment(false);
+							fixedColTemp.setShowEmployment(false);
 							continue;
 							
 						}
 						
-						if(fixedCol.isShowClassification()) {
+						if(fixedColTemp.isShowClassification()) {
 							cell.setValue(employeeInfo.getClassificationName());
 							setBodyStyle(cell);
-							fixedCol.setShowClassification(false);
+							fixedColTemp.setShowClassification(false);
 							continue;
 						}
 					}else {
@@ -270,13 +269,13 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 												}
 
 											}else {
-												selCodeCell.setValue("");
-												selNameCell.setValue("");
+												selCodeCell.setValue(null);
+												selNameCell.setValue(null);
 											}
 											
 										}else {
-											selCodeCell.setValue("");
-											selNameCell.setValue("");
+											selCodeCell.setValue(null);
+											selNameCell.setValue(null);
 										}
 										setBodyStyle(selCodeCell);
 										setBodyStyle(selNameCell);
@@ -288,10 +287,10 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 									}else {
 										Cell cellDynamic = worksheet.getCells().get(row, dynamicPositionStart + j );
 										if(header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.TIMEPOINT.value) {
-											cellDynamic.setValue(item.getValue() == null? "": convertTimepoint(item.getValue().toString()));
+											cellDynamic.setValue(item.getValue() == null? null: convertTimepoint(item.getValue().toString()));
 											
 										}else {
-											cellDynamic.setValue(item.getValue() == null? "": item.getValue().toString());
+											cellDynamic.setValue(item.getValue() == null? null: item.getValue().toString());
 										}
 										setBodyStyle(cellDynamic);
 										i++;
@@ -393,6 +392,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	private void setHeaderStyle(Cell cell, boolean isRequired, boolean isFixed) {
 		Style style = cell.getStyle();
 		style.setPattern(BackgroundType.SOLID);
+		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -403,6 +403,8 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		}else {
 			style.setForegroundColor(Color.getGreenYellow());
 		}
+		Font font = style.getFont();
+		font.setName("MS ゴシック");
 		cell.setStyle(style);
 	}
 	
@@ -415,9 +417,12 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	private void setBodyStyle(Cell cell) {
 		Style style = cell.getStyle();
 		style.setPattern(BackgroundType.SOLID);
+		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		Font font = style.getFont();
+		font.setName("MS ゴシック");
 		cell.setStyle(style);
 	}
 
