@@ -85,13 +85,22 @@ public class JpaEmpPaymentMethodRepository extends JpaRepository implements Empl
 
 	@Override
 	public void updateEmpSalaryPayMethod(EmployeeSalaryPaymentMethod domain) {
-		this.commandProxy().updateAll(QbtmtEmpSalPayMethod.fromDomain(domain));
+		String query = "SELECT e FROM QbtmtEmpSalPayMethod e WHERE e.pk.historyId = :histId";
+		List<QbtmtEmpSalPayMethod> listEntity = this.queryProxy().query(query, QbtmtEmpSalPayMethod.class)
+				.setParameter("histId", domain.getHistoryId()).getList();
+		this.commandProxy().removeAll(listEntity);
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(QbtmtEmpSalPayMethod.fromDomain(domain));
 	}
 
 	@Override
 	public void updateEmpBonusPayMethod(EmployeeBonusPaymentMethod domain) {
-		this.commandProxy().updateAll(QbtmtEmpBonPayMethod.fromDomain(domain));
-
+		String query = "SELECT e FROM QbtmtEmpBonPayMethod e WHERE e.pk.historyId = :histId";
+		List<QbtmtEmpBonPayMethod> listEntity = this.queryProxy().query(query, QbtmtEmpBonPayMethod.class)
+				.setParameter("histId", domain.getHistoryId()).getList();
+		this.commandProxy().removeAll(listEntity);
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(QbtmtEmpBonPayMethod.fromDomain(domain));
 	}
 
 }
