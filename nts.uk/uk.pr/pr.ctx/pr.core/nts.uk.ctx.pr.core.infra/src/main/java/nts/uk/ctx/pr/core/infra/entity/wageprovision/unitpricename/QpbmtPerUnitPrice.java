@@ -84,37 +84,37 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
     /**
     * 対象区分
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "TARGET_ATR")
-    public Integer targetClassification;
+    public int targetClassification;
     
     /**
     * 月給者
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "TARGET_ATR_MONTHLYPAY")
-    public Integer monthlySalary;
+    public int monthlySalary;
     
     /**
     * 日給月給者
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "TARGET_ATR_MONTHVARIABLEPAY")
-    public Integer monthlySalaryPerday;
+    public int monthlySalaryPerday;
     
     /**
     * 日給者
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "TARGET_ATR_DAYPAY")
-    public Integer dayPayee;
+    public int dayPayee;
     
     /**
     * 時給者
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "TARGET_ATR_HOURLYPAY")
-    public Integer hourlyPay;
+    public int hourlyPay;
     
     @Override
     protected Object getKey()
@@ -140,11 +140,11 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
 
         this.unitPriceType = setting.getUnitPriceType().value;
         this.settingAtr = setting.getFixedWage().getSettingAtr().value;
-        this.targetClassification = setting.getFixedWage().getEveryoneEqualSet().map(x -> Integer.valueOf(x.getTargetClassification().value)).orElse(null);
-        this.monthlySalary = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalary().value)).orElse(null);
-        this.monthlySalaryPerday = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalaryPerday().value)).orElse(null);
-        this.dayPayee = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getDayPayee().value)).orElse(null);
-        this.hourlyPay = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getHourlyPay().value)).orElse(null);
+        this.targetClassification = setting.getFixedWage().getEveryoneEqualSet().map(x -> Integer.valueOf(x.getTargetClassification().value)).orElse(0);
+        this.monthlySalary = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalary().value)).orElse(0);
+        this.monthlySalaryPerday = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalaryPerday().value)).orElse(0);
+        this.dayPayee = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getDayPayee().value)).orElse(0);
+        this.hourlyPay = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getHourlyPay().value)).orElse(0);
     }
 
 }

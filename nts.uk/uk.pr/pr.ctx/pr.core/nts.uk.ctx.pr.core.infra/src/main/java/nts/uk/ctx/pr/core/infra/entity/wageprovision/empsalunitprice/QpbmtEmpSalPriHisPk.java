@@ -25,21 +25,21 @@ public class QpbmtEmpSalPriHisPk implements Serializable
     * 個人単価コード
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_UNIT_PRICE_CODE")
+    @Column(name = "INDIVIDUAL_UNIT_PRICE_CD")
     public String personalUnitPriceCode;
     
     /**
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
     
 }
