@@ -728,7 +728,17 @@ public class CheckFileFinder {
 						itemDto.setError(true);
 						break;
 					} else {
-						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+						String[] stringSplit = value.toString().split(":");
+						if(stringSplit.length >= 1  && stringSplit.length < 3) {
+							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+							}else {
+								itemDto.setValue(value.toString());
+							}
+						}else {
+							itemDto.setValue(value.toString());
+						}
+						
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
@@ -737,7 +747,16 @@ public class CheckFileFinder {
 					}
 				} else {
 					if (value != null && value != "") {
-						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+						String[] stringSplit = value.toString().split(":");
+						if(stringSplit.length >= 1 && stringSplit.length < 3) {
+							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+							}else {
+								itemDto.setValue(value.toString());
+							}
+						}else {
+							itemDto.setValue(value.toString());
+						}
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
@@ -787,6 +806,11 @@ public class CheckFileFinder {
 
 	}
 	
+	private boolean isNumeric(String str)
+	{
+	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+	}
+	
 	/**
 	 * validate những item đặc biệt của category CS0002
 	 * validateItemOfCS0002
@@ -811,23 +835,30 @@ public class CheckFileFinder {
 	 * @param value
 	 * @return
 	 */
-	private int convertTimepoint(String value) {
+	private String convertTimepoint(String value) {
 		List<String> day = Arrays.asList("当日","前日","翌日");
 		for(int i = 0; i< day.size(); i++) {
 			if(value.matches((day.get(i)+"(.*)"))) {
 				String[] e = value.split("日");
+				try {
 				int minute= MinutesBasedTimeParser.parse(e[1]).asDuration();
 				switch(i) {
 				case 0:
-					return minute;
+					return String.valueOf(minute);
 				case 1:
-					return -minute;
+					return String.valueOf(-minute);
 				case 2:
-					return minute+ 24*60;
+					return String.valueOf(minute+ 24*60);
 				}
+				
+				}catch(RuntimeException re){
+					 return value;
+					
+				}
+
 			}
 		}
-		return 0;
+		return value;
 	}
 	
 	@RequiredArgsConstructor

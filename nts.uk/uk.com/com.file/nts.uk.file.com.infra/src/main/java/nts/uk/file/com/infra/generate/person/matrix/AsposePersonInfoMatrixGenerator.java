@@ -288,7 +288,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 										Cell cellDynamic = worksheet.getCells().get(row, dynamicPositionStart + j );
 										if(header.getItemTypeState().getDataTypeState().getDataTypeValue() == DataTypeValue.TIMEPOINT.value) {
 											String value = item.getValue() == null? null: item.getValue().toString();
-											cellDynamic.setValue(value == null? null: isNumeric(value) == false ? value: convertTimepoint(value));
+											cellDynamic.setValue(value == null? null: convertTimepoint(value));
 											
 										}else {
 											cellDynamic.setValue(item.getValue() == null? null: item.getValue().toString());
@@ -317,6 +317,16 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		String result = "";
 		String[] valueSplit = value.split(":");
 		if(valueSplit.length > 0) {
+			if(valueSplit.length == 2) {
+				if(!isNumeric(valueSplit[0]) || !isNumeric(valueSplit[1])) return value;
+			}
+			if(valueSplit.length > 2) {
+				 return value;
+			}
+			
+			if(valueSplit.length == 1) {
+				if(!isNumeric(valueSplit[0])) return value;
+			}
 			int hours = Integer.valueOf(valueSplit[0]).intValue();
 			int day = hours/24;
 			
