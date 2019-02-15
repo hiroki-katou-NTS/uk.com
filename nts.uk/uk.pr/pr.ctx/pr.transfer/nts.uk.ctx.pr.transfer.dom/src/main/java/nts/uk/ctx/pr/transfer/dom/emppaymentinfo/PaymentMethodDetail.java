@@ -66,6 +66,11 @@ public class PaymentMethodDetail {
 		super();
 		this.useAtr = PaymentUseAtr.of(useAtr);
 		this.paymentMethodNo = paymentMethodNo;
+		if (this.paymentMethodNo == 1) {
+			useAtr = true;
+			paymentPriority = null;
+			paymentProportionAtr = null;
+		}
 		if (useAtr) {
 			this.paymentMethod = Optional
 					.ofNullable(paymentMethodTransfer == null ? null : SalaryPaymentMethod.of(paymentMethodTransfer));
@@ -76,20 +81,25 @@ public class PaymentMethodDetail {
 
 			this.paymentProportionAtr = Optional
 					.ofNullable(paymentProportionAtr == null ? null : PaymentProportionAtr.of(paymentProportionAtr));
-			switch (paymentProportionAtr) {
-			case 0: // 定率 - FIXED_RATE
-				this.paymentRate = Optional.ofNullable(paymentRate == null ? null : new PaymentRate(paymentRate));
-				this.paymentAmount = Optional.empty();
-				break;
-			case 1: // 定額 - FIXED_AMOUNT
+			if (paymentProportionAtr != null) {
+				switch (paymentProportionAtr) {
+				case 0: // 定率 - FIXED_RATE
+					this.paymentRate = Optional.ofNullable(paymentRate == null ? null : new PaymentRate(paymentRate));
+					this.paymentAmount = Optional.empty();
+					break;
+				case 1: // 定額 - FIXED_AMOUNT
+					this.paymentRate = Optional.empty();
+					this.paymentAmount = Optional
+							.ofNullable(paymentAmount == null ? null : new PaymentAmount(paymentAmount));
+					break;
+				default: // 全額 - FULL_AMOUNT
+					this.paymentRate = Optional.empty();
+					this.paymentAmount = Optional.empty();
+					break;
+				}
+			} else {
 				this.paymentRate = Optional.empty();
-				this.paymentAmount = Optional
-						.ofNullable(paymentAmount == null ? null : new PaymentAmount(paymentAmount));
-				break;
-			default: // 全額 - FULL_AMOUNT
-				this.paymentRate = Optional.empty();
 				this.paymentAmount = Optional.empty();
-				break;
 			}
 			this.paymentPriority = Optional
 					.ofNullable(paymentPriority == null ? null : PaymentPriority.of(paymentPriority));
