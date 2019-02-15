@@ -15,6 +15,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
@@ -52,7 +54,8 @@ public class DayCalendarExportImpl implements MasterListData {
 	@Inject
 	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
-//	private Period period;
+	@Inject
+	private CompanyEventRepository companyEventRepository;
 	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
@@ -231,6 +234,21 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		GeneralDate d = setReportData.getDate();
+		if (d != null){
+			List<GeneralDate> lst = new ArrayList<>();
+			lst.add(d);
+			String companyId = AppContexts.user().companyId();
+			List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
+			if (!lstEvent.isEmpty()){
+				CompanyEvent e = lstEvent.get(0);
+				if (e.getEventName() != null){
+					value += "「" + e.getEventName() + "」"; 
+				}
+			}
+		}
+		
 		data.put(key, value);
 	}
 	
@@ -428,6 +446,20 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		GeneralDate d = setReportData.getDate();
+		if (d != null){
+			List<GeneralDate> lst = new ArrayList<>();
+			lst.add(d);
+			String companyId = AppContexts.user().companyId();
+			List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
+			if (!lstEvent.isEmpty()){
+				CompanyEvent e = lstEvent.get(0);
+				if (e.getEventName() != null){
+					value += "「" + e.getEventName() + "」"; 
+				}
+			}
+		}
 		data.put(key, value);
 	}
 	
@@ -550,6 +582,20 @@ public class DayCalendarExportImpl implements MasterListData {
 			value += "," + setReportData.getWorkingDayAtrName();
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
+		}
+		
+		GeneralDate d = setReportData.getDate();
+		if (d != null){
+			List<GeneralDate> lst = new ArrayList<>();
+			lst.add(d);
+			String companyId = AppContexts.user().companyId();
+			List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
+			if (!lstEvent.isEmpty()){
+				CompanyEvent e = lstEvent.get(0);
+				if (e.getEventName() != null){
+					value += "「" + e.getEventName() + "」"; 
+				}
+			}
 		}
 		data.put(key, value);
 	}
