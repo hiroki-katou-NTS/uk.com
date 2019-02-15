@@ -51,6 +51,7 @@ public class MaintenanceExportImpl implements MasterListData {
 		String contractCode = AppContexts.user().contractCode();
 
 		List<MaintenanceLayoutData> listMaintenanceLayoutS = new ArrayList<>();
+		List<MaintenanceLayoutData> listMaintenanceLayoutSv2 = new ArrayList<>();
 		
 		List<MasterData> datas = new ArrayList<>();
 		
@@ -59,20 +60,30 @@ public class MaintenanceExportImpl implements MasterListData {
 		if(CollectionUtil.isEmpty(listMaintenanceLayout)){
 			return null;
 		}else{
+
+			
 			for (int i = 0; i < listMaintenanceLayout.size(); i++) {
-				// 5:時刻(TimePoint)
-				if(listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
-					// 3:日付(Date)
-					
-					if(listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
-						listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
-					}else{
-						if(listMaintenanceLayout.get(i).getItemParentCD()==null||listMaintenanceLayout.get(i).getItemParentCD().equals("IS00278")){
-							listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
+				if(listMaintenanceLayout.get(i).getItemParentCD()==null && listMaintenanceLayout.get(i).getItemCD()!=null){
+					listMaintenanceLayoutSv2.add(listMaintenanceLayout.get(i));
+				}
+			}
+			
+			for(int n=0;n<listMaintenanceLayout.size();n++){
+				if(listMaintenanceLayout.get(n).getItemParentCD()==null){
+					listMaintenanceLayoutS.add(listMaintenanceLayout.get(n));
+				}else{
+					for(int m=0;m<listMaintenanceLayoutSv2.size();m++){
+						if(listMaintenanceLayout.get(n).getItemParentCD().equals(listMaintenanceLayoutSv2.get(m).getItemCD())){
+							listMaintenanceLayoutS.add(listMaintenanceLayout.get(n));
+							break;
 						}
+						
 					}
 				}
 			}
+			
+			
+			
 			
 			//map layoutCD
 			for (int i = 0; i < listMaintenanceLayoutS.size(); i++) { 
