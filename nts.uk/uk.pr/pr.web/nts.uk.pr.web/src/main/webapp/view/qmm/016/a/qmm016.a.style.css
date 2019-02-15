@@ -39,6 +39,7 @@
 	padding-left: 3px;
 	margin-top: -7px;
 }
-.hover { 
+
+#content-table tr:hover td { 
 	background-color: #C5F1F7; 
 }
