@@ -41,7 +41,23 @@ module cps003.f.vm {
                         items = _(resp.perInfoData)
                             .filter(f => excs.indexOf(f.itemCD) == -1)
                             .filter(f => data.itemsDefIds.indexOf(f.perInfoItemDefID) > -1)
-                            .orderBy([])
+                            .filter(f => [
+                                'IS00106', 'IS00107', 'IS00109', 'IS00110', // 
+                                'IS00133', 'IS00134', 'IS00136', 'IS00137', // IS00131
+                                'IS00142', 'IS00143', 'IS00145', 'IS00146', // IS00140
+                                'IS00151', 'IS00152', 'IS00154', 'IS00155', // IS00149
+                                'IS00160', 'IS00161', 'IS00163', 'IS00164', // IS00158
+                                'IS00169', 'IS00170', 'IS00172', 'IS00173', // IS00167
+                                'IS00178', 'IS00179', 'IS00181', 'IS00182', // IS00176
+                                'IS00196', 'IS00197', 'IS00199', 'IS00200', // IS00194
+                                'IS00205', 'IS00206', 'IS00208', 'IS00209', // IS00203
+                                'IS00214', 'IS00215', 'IS00217', 'IS00218', // IS00212
+                                'IS00223', 'IS00224', 'IS00226', 'IS00227', // IS00221
+                                'IS00232', 'IS00233', 'IS00235', 'IS00236', // IS00230
+                                'IS00241', 'IS00242', 'IS00244', 'IS00245', // IS00239
+                                'IS00187', 'IS00188', 'IS00190', 'IS00191'  // IS00185
+                            ].indexOf(f.itemCD) == -1)
+                            //.orderBy([])
                             .map(m => ({ id: m.perInfoItemDefID, name: m.itemName })).value();
 
                     self.dataSources(items);
@@ -274,8 +290,8 @@ module cps003.f.vm {
                 value = {
                     mode: undefined,
                     replaceAll: item.applyFor == 'all',
-                    targetItem: item.id,
-                    matchValue: item.filter,
+                    targetItem: item.itemData.itemCode,
+                    matchValue: item.filter || undefined,
                     replaceFormat: Number(item.value.mode),
                     replaceValue1: undefined,
                     replaceValue2: undefined
@@ -378,13 +394,58 @@ module cps003.f.vm {
                             'IS00194', 'IS00203',
                             'IS00212', 'IS00221',
                             'IS00230', 'IS00239',
-                            'IS00185'].indexOf(itemData.itemCode) > -1) {
+                            'IS00185'].indexOf(item.itemData.itemCode) > -1) {
+                            let target = value.targetItem,
+                                values = item.value.value1;
+
                             value.mode = APPLY_MODE.WORKTIME;
+                            switch (target) {
+                                case "IS00131":
+                                    value.targetItem = [target, 'IS00133', 'IS00134', 'IS00136', 'IS00137'];
+                                    break;
+                                case "IS00140":
+                                    value.targetItem = [target, 'IS00142', 'IS00143', 'IS00145', 'IS00146'];
+                                    break;
+                                case "IS00158":
+                                    value.targetItem = [target, 'IS00160', 'IS00161', 'IS00163', 'IS00164'];
+                                    break;
+                                case "IS00167":
+                                    value.targetItem = [target, 'IS00169', 'IS00170', 'IS00172', 'IS00173'];
+                                    break;
+                                case "IS00176":
+                                    value.targetItem = [target, 'IS00178', 'IS00179', 'IS00181', 'IS00182'];
+                                    break;
+                                case "IS00149":
+                                    value.targetItem = [target, 'IS00151', 'IS00152', 'IS00154', 'IS00155'];
+                                    break;
+                                case "IS00194":
+                                    value.targetItem = [target, 'IS00196', 'IS00197', 'IS00199', 'IS00200'];
+                                    break;
+                                case "IS00203":
+                                    value.targetItem = [target, 'IS00205', 'IS00206', 'IS00208', 'IS00209'];
+                                    break;
+                                case "IS00212":
+                                    value.targetItem = [target, 'IS00214', 'IS00215', 'IS00217', 'IS00218'];
+                                    break;
+                                case "IS00221":
+                                    value.targetItem = [target, 'IS00223', 'IS00224', 'IS00226', 'IS00227'];
+                                    break;
+                                case "IS00230":
+                                    value.targetItem = [target, 'IS00232', 'IS00233', 'IS00235', 'IS00236'];
+                                    break;
+                                case "IS00239":
+                                    value.targetItem = [target, 'IS00241', 'IS00242', 'IS00244', 'IS00245'];
+                                    break;
+                                case "IS00185":
+                                    value.targetItem = [target, 'IS00187', 'IS00188', 'IS00190', 'IS00191'];
+                                    break;
+                            }
+                            value.replaceValue1 = [values.selectedWorkTimeCode, values.first.start, values.first.end, values.second.start, values.second.end];
                         } else {
                             value.mode = APPLY_MODE.DIALOG;
+                            value.replaceValue1 = item.value.value0;
                         }
                     }
-                    value.replaceValue1 = item.value.value0;
                     break;
             }
 
@@ -699,7 +760,7 @@ module cps003.f.vm {
         // 全て置換する
         replaceAll: boolean;
         // 対象項目
-        targetItem: string;
+        targetItem: string | string[];
         // 一致する値
         matchValue: any;
         // 置換形式 
