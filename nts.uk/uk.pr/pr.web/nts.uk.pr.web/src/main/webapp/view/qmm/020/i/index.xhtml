@@ -3,8 +3,8 @@
     <div class="sidebar-content-header" style = "min-width: 800px;">
         <span class = "title" style="margin-left: 4px;">#{i18n.getText('QMM020_2')}</span>
     </div>
-    <div style="margin-top: 15px;margin-bottom: 20px;height: 480px; min-width: 1000px;" class="contents" >
-            <div id="com-ccg001_2"> </div>
+    <div style="margin-top: 15px;margin-bottom: 20px;height: 430px; min-width: 1000px;" class="contents" >
+            <div id="com-ccgI"> </div>
             <div id="fixed-flex-layout-right" style="margin-left: 90px; ">
                 <div class="table">
                     <div class="cell valign-center">
@@ -13,28 +13,17 @@
                     </div>
                     <div class="cell valign-center">
                         <!--I1_3-->
-                        <img src="../resources/QMM020_03.png"></img>
+                        <img src="../resources/QMM020_03.png" style="margin-left: 570px"></img>
                     </div>
                     <div class="cell valign-center">
                         <!--I1_4-->
                         <div class="label">#{i18n.getText('QMM020_48')}</div>
                     </div>
-                    <div class="cell valign-center">
-                        <!--I1_5-->
-                        <div class="label">#{i18n.getText('QMM020_12')}</div>
-                    </div>
-                    <div class="cell valign-center">
-                        <!--I1_6-->
-                        <button data-bind="ntsHelpButton: {image: '../resources/QMM020_01.png',position: 'bottom right', enable: true }">？</button>
-                    </div>
+
                 </div>
                 <hr/>
                 <table id="grid" tabindex="2" />
             </div>
         </div>
-    <div id="functions-area-bottom" style=" margin-top: 25px; width: 1125px;height:45px;position:static">
-        <button tabindex="3"
-                data-bind="click: cancel, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_52')}</button>
-    </div>
 
 </div>
