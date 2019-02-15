@@ -5437,6 +5437,21 @@ module nts.uk.ui.mgrid {
                 
                 return idx;
             },
+            optionsList: function(id, key) {
+                let control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
+                if (!control || !controlMap || !(controlDef = controlMap[key])) return null;
+                if (control === dkn.REFER_BUTTON) {
+                    return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                    if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
+                        return control.optionsList[listType];
+                    } else {
+                        return control.options;
+                    }
+                } 
+                
+                return null;
+            },
             checkAll: function(key, fixed) {
                 let idxes, rows; 
                 if (fixed) {
