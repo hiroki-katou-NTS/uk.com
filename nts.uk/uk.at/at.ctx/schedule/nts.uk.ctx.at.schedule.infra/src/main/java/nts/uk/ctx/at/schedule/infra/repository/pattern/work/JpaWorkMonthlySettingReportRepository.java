@@ -33,6 +33,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 	private static final String GET_PERSION_WORK_MONTH_SET = (new StringBuffer()
 			.append("SELECT DISTINCT a.SCD, a.BUSINESS_NAME,")
 			.append(" c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, '') as M_PATTERN_NAME")
+			.append(", a.SID")
 			.append(" FROM KSHMT_WORKING_COND c ")
 //			.append(" FROM EMPLOYEE_DATA_VIEW a")
 			.append(" LEFT JOIN EMPLOYEE_DATA_VIEW a ON c.SID = a.SID AND c.CID = a.CID ")
@@ -146,6 +147,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		//a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, d.MONTHLY_PATTERN, e.M_PATTERN_NAME
 		String scd = (String) object[0];
 		String name = (String) object[1];
+		
 		GeneralDate startDate = null;
 		if (object[2] != null) {
 			String startTimeStamp = ((Timestamp)object[2]).toString();
@@ -163,8 +165,8 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		if (!StringUtil.isNullOrEmpty(patternCode, true) && StringUtil.isNullOrEmpty(patternName, true)) {
 			patternName = TextResource.localize("KSM005_84");
 		}
-		
-		PersionalWorkMonthlySettingReportData domain = PersionalWorkMonthlySettingReportData.createFromJavaType(
+		String sid = (String) object[6];
+		PersionalWorkMonthlySettingReportData domain = PersionalWorkMonthlySettingReportData.createFromJavaType(sid, 
 				scd, name, startDate, endDate, patternCode, patternName);
 		return domain;
 	}

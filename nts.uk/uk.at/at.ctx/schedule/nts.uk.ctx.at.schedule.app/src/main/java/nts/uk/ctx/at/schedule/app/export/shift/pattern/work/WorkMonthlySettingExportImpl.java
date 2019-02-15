@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
+import nts.uk.ctx.at.shared.app.find.workingconditionitem.WorkingConditionItemFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -36,6 +37,9 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	
 	@Inject
 	private CompanyEventRepository companyEventRepository;
+	
+	@Inject
+	private WorkingConditionItemFinder workingConditionItemFinder;
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -255,9 +259,25 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 				.findAllPersionWorkMonthlySet(companyId, query.getBaseDate());
 		if(optReportDatas.isPresent()) {
 			List<PersionalWorkMonthlySettingReportData> reportDatas = optReportDatas.get();
-			reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd)).forEachOrdered(x -> {
-				datas.add(newPersionSetMasterData(x));
+			List<String> lstSids = new ArrayList<>();
+			reportDatas.stream().forEachOrdered(x -> {
+				if (!lstSids.contains(x.getSid())){
+					lstSids.add(x.getSid());
+				}
 			});
+			List<String> lstSidExcepts = new ArrayList<>();
+			if (!lstSids.isEmpty()){
+				lstSidExcepts = workingConditionItemFinder.findBySidsAndNewestHistory(lstSids);
+			}
+			if (!lstSidExcepts.isEmpty()){
+				reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd));
+				
+				for (PersionalWorkMonthlySettingReportData x : reportDatas) {
+					if (!lstSidExcepts.contains(x.getSid())){
+						datas.add(newPersionSetMasterData(x));
+					}
+				}
+			}
 		}
 		return datas;
 	}
