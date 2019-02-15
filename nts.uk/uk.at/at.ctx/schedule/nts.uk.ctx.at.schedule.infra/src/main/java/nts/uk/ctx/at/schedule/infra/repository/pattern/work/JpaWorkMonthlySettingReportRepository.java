@@ -20,7 +20,7 @@ import nts.uk.shr.com.i18n.TextResource;
 public class JpaWorkMonthlySettingReportRepository extends JpaRepository implements WorkMonthlySettingReportRepository {
 	private static final String GET_WORK_MONTHLY_SET_UPDATE = (new StringBuffer()
 			.append("SELECT d.M_PATTERN_CD, d.M_PATTERN_NAME AS NAME, a.YMD_K AS DATE,")
-			.append("c.CD, c.NAME AS WORK_TYPE_NAME, b.WORKTIME_CD, b.NAME AS WORK_TIME_NAME")
+			.append("a.WORK_TYPE_CD, c.NAME AS WORK_TYPE_NAME, a.WORKING_CD, b.NAME AS WORK_TIME_NAME")
 			.append(" FROM KSCMT_MONTH_PATTERN d")
 			.append(" LEFT JOIN KSCMT_WORK_MONTH_SET a ON d.CID = a.CID AND d.M_PATTERN_CD = a.M_PATTERN_CD ")
 			.append(" AND a.YMD_K >= ?startYm AND a.YMD_K <= ?endYm ")
@@ -104,7 +104,13 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		String workTimeName = (String) object[6];
 		if (workTypeCD != null) {
 			workSetNameBuf.append(workTypeCD);
-			workSetNameBuf.append(workingTypeName);
+			if (workingTypeName != null) {
+				workSetNameBuf.append(workingTypeName);
+			}
+			else {
+				workSetNameBuf.append(TextResource.localize("KSM005_84"));
+			}
+			
 			if (workingCD != null) {
 				workSetNameBuf.append("," + workingCD);
 				if (workTimeName != null) {

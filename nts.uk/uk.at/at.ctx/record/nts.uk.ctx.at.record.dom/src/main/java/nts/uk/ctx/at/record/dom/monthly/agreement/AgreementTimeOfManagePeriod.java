@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -14,6 +17,13 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 管理期間の36協定時間
@@ -136,6 +146,78 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		// 36協定時間の作成（週用）
 		this.agreementTime.aggregateForWeek(criteriaDate, aggregateAtr, weeklyCalculation, companySets, repositories);
+	}
+	
+	/**
+	 * 36協定複数月平均時間の計算
+	 * @param yearMonth 指定年月
+	 * @param maxTime 上限時間
+	 * @param agreTimeOfMngPeriodList 管理期間の36協定時間リスト
+	 * @return 36協定上限複数月平均時間
+	 */
+	public static AgreMaxAverageTimeMulti calcMaxAverageTimeMulti(
+			YearMonth yearMonth,
+			LimitOneMonth maxTime,
+			List<AgreementTimeOfManagePeriod> agreTimeOfMngPeriodList){
+
+		// Mapに組み換え
+		Map<YearMonth, AgreementTimeOfManagePeriod> agreTimeOfMngPeriodMap = new HashMap<>();
+		for (val agreTimeOfMngPeriod : agreTimeOfMngPeriodList) {
+			agreTimeOfMngPeriodMap.putIfAbsent(agreTimeOfMngPeriod.getYearMonth(), agreTimeOfMngPeriod);
+		}
+		
+		// 36協定上限複数月平均時間を作成する
+		AgreMaxAverageTimeMulti result = AgreMaxAverageTimeMulti.of(
+				new LimitOneMonth(maxTime.v()), new ArrayList<>());
+		
+		// 月数分ループ
+		for (Integer monNum = 6; monNum >= 2; monNum--) {
+		
+			// 期間を計算
+			YearMonthPeriod period = new YearMonthPeriod(yearMonth.addMonths(-(monNum-1)), yearMonth);
+			
+			// 36協定上限各月平均時間の計算
+			{
+				// 合計時間の計算
+				int totalMinutes = 0;
+				List<YearMonth> existYm = new ArrayList<>();
+				for (val procYm : period.yearMonthsBetween()) {
+					
+					// 労働時間の合計
+					if (agreTimeOfMngPeriodMap.containsKey(procYm)) {
+						val breakdown = agreTimeOfMngPeriodMap.get(procYm).getAgreementMaxTime().getBreakdown();
+						totalMinutes += breakdown.getTotalTime().v();
+						existYm.add(procYm);
+					}
+				}
+
+				// 期間内の結果がある場合のみ
+				if (existYm.size() > 0) {
+
+					// 有効期間の計算
+					YearMonthPeriod existPeriod = new YearMonthPeriod(existYm.get(0), existYm.get(existYm.size()-1));
+					
+					// 合計時間を有効期間の月数で除算
+					int averageMinutes = totalMinutes / existPeriod.yearMonthsBetween().size();
+					
+					// 36協定上限各月平均時間を作成
+					AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
+							existPeriod,
+							new AttendanceTimeYear(totalMinutes),
+							new AttendanceTimeMonth(averageMinutes),
+							AgreMaxTimeStatusOfMonthly.NORMAL);
+					
+					// 36協定複数月平均時間の状態チェック
+					agreMaxAveTime.errorCheck(result.getMaxTime());
+					
+					// 36協定上限各月平均時間を返す
+					result.getAverageTimeList().add(agreMaxAveTime);
+				}
+			}
+		}
+		
+		// 36協定上限複数月平均時間を返す
+		return result;
 	}
 	
 	/**
