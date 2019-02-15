@@ -27,14 +27,14 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             let self = this;
             self.ccgcomponent = {
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: 2, // システム区分 - 就業
-                showQuickSearchTab: false, // クイック検索
+                systemType: 1,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
                 showPeriod: false, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
@@ -82,14 +82,14 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     });
                 }
             }
-            $('#com-ccg001_2').ntsGroupComponent(self.ccgcomponent);
+            $('#com-ccgI').ntsGroupComponent(self.ccgcomponent);
         }
 
         loadGrid() {
             let self = this;
             $("#grid").ntsGrid({
-                width: '1000px',
-                height: '433px',
+                width: '1050px',
+                height: '360px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
                 rowVirtualization: true,
@@ -101,7 +101,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     {headerText: getText("QMM020_50"), key: 'empName', dataType: 'string', width: '200px'},
                     {headerText: getText("QMM020_20"), key: 'salary', dataType: 'string', width: '200px',},
                     {headerText: getText("QMM020_22"), key: 'bonus', dataType: 'string', width: '200px'},
-                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '280px'}
+                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '310px'}
                 ],
                 features: [
                     {
@@ -120,10 +120,6 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     }
                 ],
             });
-        }
-
-        cancel() {
-            nts.uk.ui.windows.close();
         }
 
     }
