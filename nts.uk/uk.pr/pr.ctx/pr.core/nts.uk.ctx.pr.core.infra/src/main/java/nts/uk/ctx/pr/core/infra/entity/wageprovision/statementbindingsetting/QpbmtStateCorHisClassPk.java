@@ -39,7 +39,7 @@ public class QpbmtStateCorHisClassPk implements Serializable
      * マスタコード
      */
     @Basic(optional = false)
-    @Column(name = "MASTER_CODE")
+    @Column(name = "CLS_CD")
     public String masterCode;
     
 }
