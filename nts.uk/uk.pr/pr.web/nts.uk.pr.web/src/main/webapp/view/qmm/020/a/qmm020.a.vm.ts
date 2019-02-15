@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         masterUse: KnockoutObservable<number> = ko.observable();
         individualUse: KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservable<number> = ko.observable();
+        selectedH: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
 
@@ -164,6 +165,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         };
 
         onSelectTabI(){
+            __viewContext.viewModel.viewmodelA.selectedH(0);
             __viewContext.viewModel.viewmodelI.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelI.loadCCg001();
                 $("#I1_2_container").focus();
@@ -182,6 +184,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         };
 
         onSelectTabH() {
+            __viewContext.viewModel.viewmodelA.selectedH(1);
             __viewContext.viewModel.viewmodelH.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelH.loadCCG001();
                 $("#emp-component").focus();

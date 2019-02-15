@@ -1,7 +1,4 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
-
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -19,6 +16,9 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This file will be used if calculate via aspose cell solution is not accepted from customer
+ */
 @Stateless
 public class DetailFormulaCalculationService {
 
@@ -61,38 +61,38 @@ public class DetailFormulaCalculationService {
      * Can't find solution, temporary use fixed text
      */
     private static final String
-        PAYMENT = "支給",
-        DEDUCTION = "控除",
-        ATTENDANCE = "勤怠",
-        COMPANY_UNIT_PRICE = "会社単価",
-        INDIVIDUAL_UNIT_PRICE = "個人単価",
-        FUNCTION = "関数",
-        VARIABLE = "変数",
-        PERSON = "個人",
-        FORMULA = "計算式",
-        WAGE_TABLE = "賃金";
+            PAYMENT = "支給",
+            DEDUCTION = "控除",
+            ATTENDANCE = "勤怠",
+            COMPANY_UNIT_PRICE = "会社単価",
+            INDIVIDUAL_UNIT_PRICE = "個人単価",
+            FUNCTION = "関数",
+            VARIABLE = "変数",
+            PERSON = "個人",
+            FORMULA = "計算式",
+            WAGE_TABLE = "賃金";
     private static final String
-        CONDITIONAL = "条件式",
-        AND = "かつ",
-        OR = "または",
-        ROUND_OFF = "四捨五入",
-        TRUNCATION = "切り捨て",
-        ROUND_UP = "切り上げ",
-        MAX_VALUE = "最大値",
-        MIN_VALUE = "最小値",
-        NUM_OF_FAMILY_MEMBER = "家族人数",
-        YEAR_MONTH = "年月加算",
-        YEAR_EXTRACTION = "年抽出",
-        MONTH_EXTRACTION = "月抽出";
+            CONDITIONAL = "条件式",
+            AND = "かつ",
+            OR = "または",
+            ROUND_OFF = "四捨五入",
+            TRUNCATION = "切り捨て",
+            ROUND_UP = "切り上げ",
+            MAX_VALUE = "最大値",
+            MIN_VALUE = "最小値",
+            NUM_OF_FAMILY_MEMBER = "家族人数",
+            YEAR_MONTH = "年月加算",
+            YEAR_EXTRACTION = "年抽出",
+            MONTH_EXTRACTION = "月抽出";
     private static final String
-        SYSTEM_YMD_DATE = "システム日付（年月日）",
-        SYSTEM_YM_DATE = "システム日付（年月）",
-        SYSTEM_Y_DATE = "システム日付（年）",
-        PROCESSING_YEAR_MONTH = "処理年月",
-        PROCESSING_YEAR = "処理年",
-        REFERENCE_TIME = "基準時間",
-        STANDARD_DAY = "基準日数",
-        WORKDAY = "要勤務日数";
+            SYSTEM_YMD_DATE = "システム日付（年月日）",
+            SYSTEM_YM_DATE = "システム日付（年月）",
+            SYSTEM_Y_DATE = "システム日付（年）",
+            PROCESSING_YEAR_MONTH = "処理年月",
+            PROCESSING_YEAR = "処理年",
+            REFERENCE_TIME = "基準時間",
+            STANDARD_DAY = "基準日数",
+            WORKDAY = "要勤務日数";
     private static final Map<String, String> calculationFormulaDictionary;
     static {
         calculationFormulaDictionary = new HashMap<>();
@@ -124,10 +124,6 @@ public class DetailFormulaCalculationService {
         calculationFormulaDictionary.put(FORMULA, "calc_00");
         calculationFormulaDictionary.put(WAGE_TABLE, "wage_00");
     }
-
-    Workbook workbook = new Workbook();
-    Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
-
     /**
      *
      * @param formulaElements  must be sort asc
@@ -149,8 +145,8 @@ public class DetailFormulaCalculationService {
         return displayFormula;
     }
     private String convertToDisplayContent (String formulaElement, Map<String, String> paymentItem, Map<String, String> deductionItem,
-           Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
-           Map<String, String> wageTableItem, int yearMonth) {
+                                            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
+                                            Map<String, String> wageTableItem, int yearMonth) {
         // is number or operator
         if (!isNaN(formulaElement) || formulaElement.length() < 2 ) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
@@ -188,7 +184,7 @@ public class DetailFormulaCalculationService {
     public String getEmbeddedFormulaDisplayContent (String formulaElement, int yearMonth) {
         String formulaCode = formulaElement.substring(7, formulaElement.length());
         Optional<FormulaHistory> optFormulaHistory = formulaRepository.getFormulaHistoryByCode(formulaCode);
-        if (!optFormulaHistory.isPresent() || optFormulaHistory.get().getHistory().isEmpty()) {
+        if (!optFormulaHistory.isPresent() && optFormulaHistory.get().getHistory().isEmpty()) {
             throw new BusinessException("MsgQ_233", formulaElement);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
@@ -212,7 +208,7 @@ public class DetailFormulaCalculationService {
         }
         formula = calculateSystemVariable(type, formula);
         formula = calculateFunction(formula);
-        formula = calculateSuffixFormulaViaAsposeCell(formula) + "";
+        formula = calculateSuffixFormula(formula) + "";
         if (isNaN(formula)) throw new BusinessException("MsgQ_235");
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
     }
@@ -257,7 +253,7 @@ public class DetailFormulaCalculationService {
         Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndReferenceTime();
         int startFunctionIndex, endFunctionIndex;
         String systemVariable, systemVariableResult;
-        while (formulaElement.contains(VARIABLE)) {
+        while (formulaElement.indexOf(VARIABLE) > -1) {
             startFunctionIndex = formulaElement.lastIndexOf(VARIABLE);
             endFunctionIndex = formulaElement.substring(startFunctionIndex).indexOf(CLOSE_CURLY_BRACKET) + 1;
             systemVariable = formulaElement.substring(startFunctionIndex, startFunctionIndex + endFunctionIndex);
@@ -334,13 +330,8 @@ public class DetailFormulaCalculationService {
         return 0;
     }
 
-    private String calculateSuffixFormulaViaAsposeCell (String formulaContent) {
-        if (!isNaN(formulaContent)) return formulaContent;
-        //return ";";
-        return virtualWorksheet.calculateFormula(formulaContent).toString();
-    }
-    
     private String calculateSuffixFormula (String formulaContent) {
+        if (!isNaN(formulaContent)) return formulaContent;
         String currentChar, operand1, operand2;
         Stack<String> operands = new Stack();
         String [] postFix = convertToPostfix(formulaContent);
@@ -402,11 +393,11 @@ public class DetailFormulaCalculationService {
         }
         try {
             if (functionName.equals(ROUND_OFF))
-                return Math.round(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
+                return Math.round(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
             if (functionName.equals(ROUND_UP))
-                return Math.ceil(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
+                return Math.ceil(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
             if (functionName.equals(TRUNCATION))
-                return Math.floor(Double.parseDouble(calculateSuffixFormulaViaAsposeCell(functionParameter[0]))) + "";
+                return Math.floor(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
         } catch (NumberFormatException e) {
             throw new BusinessException("MsgQ_240", functionName, "1");
         }
@@ -429,7 +420,7 @@ public class DetailFormulaCalculationService {
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
                 if (functionParameters[i].split(conditionRegex).length < 2 && !isConditionOperator(functionParameters[i])) {
-                    functionParameters[i] = calculateSuffixFormulaViaAsposeCell(functionParameters[i]) + "";
+                    functionParameters[i] = calculateSuffixFormula(functionParameters[i]) + "";
                 }
             }
         }
@@ -471,7 +462,7 @@ public class DetailFormulaCalculationService {
         String [] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
         if (conditionParameters.length == 1) {
             if (!conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
-                    throw new BusinessException("MsgQ_240", functionName, "1");
+                throw new BusinessException("MsgQ_240", functionName, "1");
             }
             return conditionParameters[0];
         } else {
@@ -549,7 +540,7 @@ public class DetailFormulaCalculationService {
         Double minValue = Double.MAX_VALUE, valueInDouble;
         try {
             for (String value: values) {
-                valueInDouble = Double.parseDouble(calculateSuffixFormulaViaAsposeCell(value));
+                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble < minValue) {
                     minValue = valueInDouble;
                 }
@@ -564,7 +555,7 @@ public class DetailFormulaCalculationService {
         Double minValue = Double.MIN_VALUE, valueInDouble;
         try{
             for (String value: values) {
-                valueInDouble = Double.parseDouble(calculateSuffixFormulaViaAsposeCell(value));
+                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble > minValue) {
                     minValue = valueInDouble;
                 }
