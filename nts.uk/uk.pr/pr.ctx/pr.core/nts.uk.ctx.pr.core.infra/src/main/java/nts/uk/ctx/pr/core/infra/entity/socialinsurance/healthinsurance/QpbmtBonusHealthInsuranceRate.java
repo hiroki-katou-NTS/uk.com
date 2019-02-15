@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_BONUS_HEALTH_INS")
+@Table(name = "QPBMT_BOUNUS_HEALTH_INS")
 public class QpbmtBonusHealthInsuranceRate extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
