@@ -21,6 +21,7 @@ public class MaintenanceLayoutData extends AggregateRoot {
 	private String itemParentCD;
 	private int dataType;
 	private String itemCD;
+	private int layoutItemType;
 	
 }
 

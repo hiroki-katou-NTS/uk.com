@@ -14,7 +14,7 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 	@Override
 	public List<NewLayoutExportData> getAllMaintenanceLayout(String companyId, String contractCd) {
 		String GET_CPS007 = (new StringBuffer()
-				.append("SELECT a.DISPORDER, d.CATEGORY_NAME, c.ITEM_NAME,c.ITEM_NAME, e.ITEM_PARENT_CD, e.DATA_TYPE, e.ITEM_CD  FROM  PPEMT_NEW_LAYOUT g")
+				.append("SELECT a.DISPORDER, d.CATEGORY_NAME, c.ITEM_NAME,c.ITEM_NAME, e.ITEM_PARENT_CD, e.DATA_TYPE, e.ITEM_CD, a.LAYOUT_ITEM_TYPE  FROM  PPEMT_NEW_LAYOUT g")
 				.append(" LEFT JOIN  PPEMT_LAYOUT_ITEM_CLS a ON g.LAYOUT_ID = a.LAYOUT_ID")
 				.append(" LEFT JOIN PPEMT_LAYOUT_ITEM_CLS_DF b ON b.LAYOUT_ID = g.LAYOUT_ID and b.LAYOUT_DISPORDER = a.DISPORDER ")
 				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM c ON c.PER_INFO_ITEM_DEFINITION_ID = b.PER_INFO_ITEM_DEF_ID and c.PER_INFO_CTG_ID = a.PER_INFO_CATEGORY_ID AND c.ABOLITION_ATR = 0 ")
@@ -49,8 +49,15 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 		}
 		String itemCD = (String) object[6];
 		
+		int layoutItemType;
+		if(((BigDecimal)  object[7]) ==null){
+			layoutItemType =0;
+		}else{
+			layoutItemType =((BigDecimal)  object[7]).intValue();
+		}
 		
-		NewLayoutExportData newLayoutExportData = NewLayoutExportData.createFromJavaType(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType, itemCD);
+		
+		NewLayoutExportData newLayoutExportData = NewLayoutExportData.createFromJavaType(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType, itemCD, layoutItemType);
 		return newLayoutExportData;
 		
 	}
