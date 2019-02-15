@@ -28,14 +28,14 @@ public class QpbmtEmpSalaCategory extends UkJpaEntity implements Serializable {
      * 開始年月
      */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
+    @Column(name = "START_YM")
     public int startYearMonth;
 
     /**
      * 終了年月
      */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
+    @Column(name = "END_YM")
     public int endYearMonth;
 
 

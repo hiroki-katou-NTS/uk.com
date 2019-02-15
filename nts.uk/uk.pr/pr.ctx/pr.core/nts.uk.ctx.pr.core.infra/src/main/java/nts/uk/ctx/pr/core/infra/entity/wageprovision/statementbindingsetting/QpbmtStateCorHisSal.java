@@ -37,28 +37,28 @@ public class QpbmtStateCorHisSal extends UkJpaEntity implements Serializable {
      * 開始年月
      */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
+    @Column(name = "START_YM")
     public int startYearMonth;
 
     /**
      * 終了年月
      */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
+    @Column(name = "END_YM")
     public int endYearMonth;
 
     /**
      * 給与明細書
      */
     @Basic(optional = true)
-    @Column(name = "SALARY")
+    @Column(name = "S_STATEMENT_CD")
     public String salaryCode;
 
     /**
      * 賞与明細書
      */
     @Basic(optional = true)
-    @Column(name = "BONUS")
+    @Column(name = "B_STATEMENT_CD")
     public String bonusCode;
 
     @Override
