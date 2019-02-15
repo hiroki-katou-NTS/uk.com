@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
  * @author shuichi_ishida
  */
 @Getter
-public class AgreementTimeYear {
+public class AgreementTimeYear implements Cloneable {
 
 	/** 限度時間 */
 	private LimitOneYear limitTime;
@@ -44,6 +44,20 @@ public class AgreementTimeYear {
 		domain.recordTime = recordTime;
 		domain.status = status;
 		return domain;
+	}
+	
+	@Override
+	public AgreementTimeYear clone() {
+		AgreementTimeYear cloned = new AgreementTimeYear();
+		try {
+			cloned.limitTime = new LimitOneYear(this.limitTime.v());
+			cloned.recordTime = new AttendanceTimeYear(this.recordTime.v());
+			cloned.status = this.status;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AgreementTimeYear clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
