@@ -355,7 +355,7 @@ public class AlarmCheckConditionUtils {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
 			return (String.format ("%.0f", (new CheckedTimesValueDay(
-					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()) + TextResource.localize("KAL003_314")) ;
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v())) ;
 		}
 		return "";
 	}
