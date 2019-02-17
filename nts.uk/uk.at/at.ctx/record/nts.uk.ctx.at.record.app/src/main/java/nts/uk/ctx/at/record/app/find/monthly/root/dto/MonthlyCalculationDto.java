@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -58,7 +59,8 @@ public class MonthlyCalculationDto implements ItemConst {
 									aggregateTime == null ? new AggregateTotalWorkingTime() : aggregateTime.toDomain(),
 									new AttendanceTimeMonth(totalWorkingTime),
 									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain(),
-									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain());
+									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(),
+									new AgreMaxTimeOfMonthly());
 	}
 	
 	public static MonthlyCalculationDto from(MonthlyCalculation domain) {

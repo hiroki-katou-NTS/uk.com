@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeManage;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -99,6 +102,26 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 	@Column(name = "MONTH_PREMIUM_TIME")
 	public int monthlyPremiumTime;
 	
+	/** 36協定上限対象時間 */
+	@Column(name = "AGREEMENT_REG_TIME")
+	public int agreementRegTime;
+	
+	/** 36協定上限規制時間 */
+	@Column(name = "AGREEMENT_REG_LIMIT_TIME")
+	public int agreementRegLimitTime;
+	
+	/** 36協定上限規制状態 */
+	@Column(name = "AGREEMENT_REG_LIMIT_STATUS")
+	public int agreementRegLimitStatus;
+	
+	/** 法定内休出時間 */
+	@Column(name = "LEGAL_HOLI_WORK_TIME")
+	public int legalHoliWorkTime;
+	
+	/** 法定内振替時間 */
+	@Column(name = "LEGAL_TRANS_HDWK_TIME")
+	public int legalTransHdwkTime;
+	
 	/**
 	 * キー取得
 	 */
@@ -136,12 +159,32 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.weeklyPremiumTime),
 				new AttendanceTimeMonth(this.monthlyPremiumTime));
 		
+		// 月別実績の36協定上限時間
+		val agreMaxTime = AgreMaxTimeOfMonthly.of(
+				new AttendanceTimeMonth(this.agreementRegTime),
+				new LimitOneMonth(this.agreementRegLimitTime),
+				EnumAdaptor.valueOf(this.agreementRegLimitStatus, AgreMaxTimeStatusOfMonthly.class));
+		
+		// 36協定上限時間内訳
+		val maxBreakdown = AgreMaxTimeBreakdown.of(
+				new AttendanceTimeMonth(this.overTime),
+				new AttendanceTimeMonth(this.transferOverTime),
+				new AttendanceTimeMonth(this.holidayWorkTime),
+				new AttendanceTimeMonth(this.transferHolidayWorkTime),
+				new AttendanceTimeMonth(this.flexLegalTime),
+				new AttendanceTimeMonth(this.flexIllegalTime),
+				new AttendanceTimeMonth(this.withinPresctibedPremiumTime),
+				new AttendanceTimeMonth(this.weeklyPremiumTime),
+				new AttendanceTimeMonth(this.monthlyPremiumTime),
+				new AttendanceTimeMonth(this.legalHoliWorkTime),
+				new AttendanceTimeMonth(this.legalTransHdwkTime));
+		
 		return AgreementTimeOfManagePeriod.of(
 				this.PK.employeeId,
 				new YearMonth(this.PK.yearMonth),
 				new Year(this.PK.yearMonth / 100),
 				AgreementTimeManage.of(agreementTime, breakdown),
-				new AgreMaxTimeManage());
+				AgreMaxTimeManage.of(agreMaxTime, maxBreakdown));
 	}
 	
 	/**
@@ -164,6 +207,8 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 		
 		val agreementTime = domain.getAgreementTime().getAgreementTime();
 		val breakdown = domain.getAgreementTime().getBreakdown();
+		val agreMaxTime = domain.getAgreementMaxTime().getAgreementTime();
+		val maxBreakdown = domain.getAgreementMaxTime().getBreakdown();
 		
 		this.agreementTime = agreementTime.getAgreementTime().v();
 		this.limitErrorTime = agreementTime.getLimitErrorTime().v();
@@ -182,5 +227,11 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 		this.flexIllegalTime = breakdown.getFlexIllegalTime().v();
 		this.weeklyPremiumTime = breakdown.getWeeklyPremiumTime().v();
 		this.monthlyPremiumTime = breakdown.getMonthlyPremiumTime().v();
+		
+		this.agreementRegTime = agreMaxTime.getAgreementTime().v();
+		this.agreementRegLimitTime = agreMaxTime.getMaxTime().v();
+		this.agreementRegLimitStatus = agreMaxTime.getStatus().value;
+		this.legalHoliWorkTime = maxBreakdown.getLegalHolidayWorkTime().v();
+		this.legalTransHdwkTime = maxBreakdown.getLegalTransferTime().v();
 	}
 }
