@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -30,8 +29,6 @@ public class OvertimeOfDailyService {
 	private WorkUpdateService recordUpdate;
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateDaily;
-	@Inject
-	private AttendanceTimeRepository attendanceTimeRepo;
 	/**
 	 * 申請された時間を補正する
 	 * @param working
@@ -175,10 +172,23 @@ public class OvertimeOfDailyService {
 			exMidNightTime.getTime().setTime(new AttendanceTime(0));
 		}
 
-		attendanceTimeRepo.updateFlush(working.getAttendanceTimeOfDailyPerformance().get());
+		//attendanceTimeRepo.updateFlush(working.getAttendanceTimeOfDailyPerformance().get());
 		//削除
-		editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), itemIdList);
+		//editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), itemIdList);
+		this.deleteItemEdit(working.getEditState(), itemIdList);
 		return working;
 	}
-	
+	private void deleteItemEdit(List<EditStateOfDailyPerformance> editState, List<Integer> deleteItem) {
+		if(editState.isEmpty() || deleteItem.isEmpty()) {
+			return;
+		}		
+		/*List<EditStateOfDailyPerformance> temp = editState.stream().map(x -> new EditStateOfDailyPerformance(x.getEmployeeId(), x.getAttendanceItemId(), x.getYmd(), x.getEditStateSetting()))
+				.collect(Collectors.toList());*/
+		List<EditStateOfDailyPerformance> temp = new ArrayList<>(editState);
+		for (EditStateOfDailyPerformance a : temp) {
+			if(deleteItem.contains(a.getAttendanceItemId())) {
+				editState.remove(editState.indexOf(a));
+			}
+		}
+	}
 }

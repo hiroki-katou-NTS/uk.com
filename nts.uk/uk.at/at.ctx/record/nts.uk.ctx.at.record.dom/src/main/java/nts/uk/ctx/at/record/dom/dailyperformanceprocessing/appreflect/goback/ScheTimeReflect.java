@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
@@ -19,8 +19,8 @@ public interface ScheTimeReflect {
 	 * @param timeTypeScheReflect: 予定勤種・就時の反映
 	 * @return
 	 */
-	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
-			WorkInfoOfDailyPerformance dailyInfor);
+	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
+			IntegrationOfDaily dailyInfor);
 	
 	/**
 	 * 
@@ -40,13 +40,14 @@ public interface ScheTimeReflect {
 	 * 時刻の反映
 	 * @param para
 	 */
-	public Optional<TimeLeavingOfDailyPerformance> reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect);
+	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect, IntegrationOfDaily dailyInfor);
 	/**
 	 * 1.出勤時刻を反映できるか
 	 * 2.退勤時刻を反映できるか
 	 * @param para
 	 */
-	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre);
+	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre,
+			Optional<TimeLeavingOfDailyPerformance> optTimeLeave);
 	/**
 	 * ジャスト遅刻により時刻を編集する
 	 * ジャスト早退により時刻を編集する
