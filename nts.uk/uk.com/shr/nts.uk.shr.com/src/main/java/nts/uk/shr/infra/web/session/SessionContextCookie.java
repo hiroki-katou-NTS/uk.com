@@ -10,6 +10,7 @@ import javax.ws.rs.core.NewCookie;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.security.csrf.CsrfToken;
+import nts.arc.system.ServerSystemProperties;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
@@ -44,7 +45,7 @@ public class SessionContextCookie {
 				null,
 				NewCookie.DEFAULT_VERSION,
 				null,
-				NewCookie.DEFAULT_MAX_AGE,
+				ServerSystemProperties.sessionTimeout(),
 				null,
 				false,
 				false));

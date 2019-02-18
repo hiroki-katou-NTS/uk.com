@@ -1021,6 +1021,9 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		
+		// https://mvnrepository.com/artifact/org.wildfly.core/wildfly-controller-client
+		runtime group: 'org.wildfly.core', name: 'wildfly-controller-client', version: '7.0.0.Final'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
