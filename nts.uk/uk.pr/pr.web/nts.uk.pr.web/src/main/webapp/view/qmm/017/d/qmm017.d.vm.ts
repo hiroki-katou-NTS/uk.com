@@ -263,7 +263,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
                 if (newValue || !newValue && newValue === 0) {
                     let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function (formula) {
-                        return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
+                        return formula.nestedAtr == model.NESTED_USE_CLS.USE && formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
                             return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
                         })
                     }).map(item => {
