@@ -26,6 +26,10 @@ public class MonthlyCalculationDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
 	private AgreementTimeOfMonthlyDto agreementTime;
 
+	/** 36協定上限時間: 月別実績の36協定上限時間 */
+	@AttendanceItemLayout(jpPropertyName = AGREEMENT + UPPER_LIMIT, layout = LAYOUT_B)
+	private AgreMaxTimeOfMonthlyDto agreMaxTime;
+
 	/** フレックス時間: 月別実績のフレックス時間 */
 	@AttendanceItemLayout(jpPropertyName = FLEX, layout = LAYOUT_B)
 	private FlexTimeOfMonthlyDto flexTime;
@@ -60,7 +64,7 @@ public class MonthlyCalculationDto implements ItemConst {
 									new AttendanceTimeMonth(totalWorkingTime),
 									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain(),
 									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(),
-									new AgreMaxTimeOfMonthly());
+									agreMaxTime == null ? new AgreMaxTimeOfMonthly() : agreMaxTime.toDomain());
 	}
 	
 	public static MonthlyCalculationDto from(MonthlyCalculation domain) {
@@ -73,6 +77,7 @@ public class MonthlyCalculationDto implements ItemConst {
 			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalTimeSpentAtWork()));
 			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? null : domain.getTotalWorkingTime().valueAsMinutes());
 			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? null : domain.getStatutoryWorkingTime().valueAsMinutes());
+			dto.setAgreMaxTime(AgreMaxTimeOfMonthlyDto.from(domain.getAgreMaxTime()));
 		}
 		return dto;
 	}
