@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let listStateCorrelationHis = [];
 
             service.getStateCorrelationHisEmployeeById().done((data)=>{
-                if(data == null){
+                if(data == null || data.length == 0){
                     dialog.info({ messageId: "Msg_303" }).then(()=>{
                         self.enableAddHisButton(false);
                         self.enableEditHisButton(false);
@@ -237,6 +237,13 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'employeeCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'employeeName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {
                         name: 'Selection',
                         mode: 'row',

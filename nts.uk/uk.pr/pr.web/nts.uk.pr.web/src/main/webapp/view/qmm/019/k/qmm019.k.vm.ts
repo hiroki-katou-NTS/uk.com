@@ -23,8 +23,8 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
             let params = getShared("QMM019_A_TO_K_PARAMS");
 
             self.itemList = ko.observableArray([
-                new shareModel.BoxModel(0, getText("QMM019_188")),
-                new shareModel.BoxModel(1, getText("QMM019_189")),
+                new shareModel.BoxModel(shareModel.StatementPrintAtr.PRINT, getText("QMM019_188")),
+                new shareModel.BoxModel(shareModel.StatementPrintAtr.DO_NOT_PRINT, getText("QMM019_189")),
                 new shareModel.BoxModel(2, getText("QMM019_191"))
             ]);
 
@@ -39,7 +39,7 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
                 self.noPrintLineInCtg = params.noPrintLineInCtg;
                 self.haveItemBreakdownInsite = params.haveItemBreakdownInsite;
             } else {
-                self.printSet = ko.observable(1);
+                self.printSet = ko.observable(shareModel.StatementPrintAtr.DO_NOT_PRINT);
             }
         }
 
@@ -61,7 +61,7 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
                     let messageId = validateLayout(self.layoutPattern, self.totalLine, self.ctgAtr, self.printLineInCtg, self.noPrintLineInCtg, self.printSet());
                     if(messageId != null) {
                         nts.uk.ui.dialog.alertError({ messageId: messageId });
-                    } else if((self.printSet() == 1) && ((self.ctgAtr == CategoryAtr.PAYMENT_ITEM) || (self.ctgAtr == CategoryAtr.DEDUCTION_ITEM)) && self.haveItemBreakdownInsite) {
+                    } else if((self.printSet() == shareModel.StatementPrintAtr.DO_NOT_PRINT) && ((self.ctgAtr == CategoryAtr.PAYMENT_ITEM) || (self.ctgAtr == CategoryAtr.DEDUCTION_ITEM)) && self.haveItemBreakdownInsite) {
                         nts.uk.ui.dialog.info({ messageId: "QMsg_" });
                     } else {
                         setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});

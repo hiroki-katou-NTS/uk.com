@@ -28,11 +28,11 @@ module nts.uk.pr.view.qmm019.j.viewmodel {
             }
 
             self.itemList = ko.observableArray([
-                new shareModel.BoxModel(0, getText("QMM019_188")),
-                new shareModel.BoxModel(1, getText("QMM019_189")),
+                new shareModel.BoxModel(shareModel.StatementPrintAtr.PRINT, getText("QMM019_188")),
+                new shareModel.BoxModel(shareModel.StatementPrintAtr.DO_NOT_PRINT, getText("QMM019_189")),
             ]);
 
-            self.printSet = ko.observable(0);
+            self.printSet = ko.observable(shareModel.StatementPrintAtr.PRINT);
         }
 
         startPage(): JQueryPromise<any> {

@@ -1,8 +1,6 @@
 <div>
-    <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
-
-        <div id="A">
-            <span style="position: absolute;margin-left: -40px;font-size: 25px;">#{i18n.getText('QMM020_6')}</span>
+    <div class="sidebar-content-header" style = "min-width: 1000px;">
+            <span class = "title">#{i18n.getText('QMM020_6')}</span>
             <button style="margin-left:48px" id="A1_1" tabindex="1" class="proceed"
                     data-bind="click: registerStateCorrelationHisDeparment, enable: $root.errors.isEmpty() &amp;&amp; enableRegisterButton()">#{i18n.getText('QMM020_1')}</button>
 
@@ -11,8 +9,6 @@
 
             <button id="A1_4" tabindex="4"
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
-        </div>
-
     </div>
     <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
         <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 0px !important;">

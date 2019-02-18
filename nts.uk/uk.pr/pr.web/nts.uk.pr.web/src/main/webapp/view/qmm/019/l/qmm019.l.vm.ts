@@ -31,19 +31,19 @@ module nts.uk.pr.view.qmm019.l.viewmodel {
 
                 if(params.isAddCategory) {
                     self.itemList = ko.observableArray([
-                        new shareModel.BoxModel(0, getText("QMM019_194")),
-                        new shareModel.BoxModel(1, getText("QMM019_195"))
+                        new shareModel.BoxModel(shareModel.StatementPrintAtr.PRINT, getText("QMM019_194")),
+                        new shareModel.BoxModel(shareModel.StatementPrintAtr.DO_NOT_PRINT, getText("QMM019_195"))
                     ]);
                 } else {
                     self.itemList = ko.observableArray([
-                        new shareModel.BoxModel(0, getText("QMM019_194")),
-                        new shareModel.BoxModel(1, getText("QMM019_195")),
+                        new shareModel.BoxModel(shareModel.StatementPrintAtr.PRINT, getText("QMM019_194")),
+                        new shareModel.BoxModel(shareModel.StatementPrintAtr.DO_NOT_PRINT, getText("QMM019_195")),
                         new shareModel.BoxModel(2, getText("QMM019_196"))
                     ]);
                 }
             }
 
-            self.printSet = ko.observable(0);
+            self.printSet = ko.observable(shareModel.StatementPrintAtr.PRINT);
         }
 
         startPage(): JQueryPromise<any> {
