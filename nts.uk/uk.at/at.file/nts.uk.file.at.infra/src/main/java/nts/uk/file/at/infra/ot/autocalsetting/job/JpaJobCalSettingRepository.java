@@ -110,7 +110,7 @@ public class JpaJobCalSettingRepository extends JpaRepository implements JobAuto
 		sql.append("         WHERE CID = ?cid)j ");
 		sql.append("         ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k ");
 		sql.append("      ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
-		sql.append("   ORDER BY  CASE WHEN k.JOB_CD IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD");
+		sql.append("   ORDER BY  CASE WHEN k.JOB_CD IS NULL OR  w.JOB_NAME IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD");
 		SELECT_ALL_POSITION_BY_CID = sql.toString();
 	}
 

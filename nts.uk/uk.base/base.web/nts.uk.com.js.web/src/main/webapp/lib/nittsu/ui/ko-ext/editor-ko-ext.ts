@@ -491,7 +491,8 @@ module nts.uk.ui.koExtentions {
                 // filter specs key
                 if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
 
-                    if (!evt.key.match(/[\-\.0-9]/g)) {
+                    // fix bug cannot press [.] on numpad
+                    if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
                         evt.preventDefault();
                     } else {
                         // calc new value after keypress
@@ -506,6 +507,9 @@ module nts.uk.ui.koExtentions {
                         } else {
                             val = val.replace(val.substring(ss, se), evt.key);
                         }
+
+                        // fix bug cannot press [.] on numpad
+                        val = val.replace(/Decimal/, '.');
 
                         // accept negative key only first press
                         if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
@@ -523,9 +527,12 @@ module nts.uk.ui.koExtentions {
                         if (constraint) {
                             let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                             if (primitive) {
-                                let nval = parseFloat(val),
-                                    min = primitive.min,
+                                let min = primitive.min,
                                     max = primitive.max,
+                                    stma = String(Math.abs(max)),
+                                    stmi = String(Math.abs(min)),
+                                    mival = val,
+                                    maval = val,
                                     dlen = primitive.mantissaMaxLength;
 
                                 // accept negative key if min < 0
@@ -533,6 +540,83 @@ module nts.uk.ui.koExtentions {
                                     evt.preventDefault();
                                     return;
                                 }
+                                
+                                if (min < 1) {
+                                    // accept once 0 char
+                                    if (val.match(/(^0{2,})|(^-?0{2,})/)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                } else {
+                                    // not accept char 0 offset = 0
+                                    if (val.match(/^0/)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                }
+
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
 
                                 // clear decimal in constraint (sync) if option not has decimallength
                                 if (rd.option && rd.option.decimallength < 1) {
@@ -554,7 +638,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -567,7 +651,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -580,7 +664,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -603,28 +687,212 @@ module nts.uk.ui.koExtentions {
                     // if value after delete out of range, preventDefault
                     if (primitive) {
                         let min = primitive.min,
-                            max = primitive.max;
+                            max = primitive.max,
+                            stma = String(Math.abs(max)),
+                            stmi = String(Math.abs(min));
 
                         if (ss == se) {
                             if (evt.keyCode == 8) {
-                                let _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
+                                let mival = val.substring(0, ss - 1) + val.substring(se, val.length),
+                                    maval = mival;
 
-                                if (_num < min || _num > max) {
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
                                     evt.preventDefault();
                                     return;
                                 }
                             } else {
-                                let _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
+                                let mival = val.substring(0, ss) + val.substring(se + 1, val.length),
+                                    maval = mival;
 
-                                if (_num < min || _num > max) {
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
                                     evt.preventDefault();
                                     return;
                                 }
                             }
                         } else {
-                            let _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
+                            let mival = val.substring(0, ss) + val.substring(se, val.length),
+                                maval = mival;
 
-                            if (_num < min || _num > max) {
+                            // calculate min & max value
+                            if (max < 0) {
+                                for (let i = mival.length - 1; i < stmi.length; i++) {
+                                    if (stmi[i].match(/\d/)) {
+                                        mival += '9';
+                                    } else {
+                                        mival += stmi[i];
+                                    }
+                                }
+
+                                for (let i = maval.length - 1; i < stma.length; i++) {
+                                    if (stma[i].match(/\d/)) {
+                                        maval += '0';
+                                    } else {
+                                        maval += stma[i];
+                                    }
+                                }
+                            } else if (min < 0) {
+                                if (val.indexOf('-') > -1) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i].match(/\d/)) {
+                                            mival += '9';
+                                        } else {
+                                            mival += stmi[i];
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i].match(/\d/)) {
+                                            maval += '9';
+                                        } else {
+                                            maval += stma[i];
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (let i = maval.length; i < stma.length; i++) {
+                                    if (stma[i].match(/\d/)) {
+                                        maval += '9';
+                                    } else {
+                                        maval += stma[i];
+                                    }
+                                }
+                            }
+
+                            // fix halfint max value
+                            if (primitive.valueType == 'HalfInt') {
+                                maval = maval.replace(/\.\d$/, '.5');
+                            }
+
+                            let nmin = Number(mival),
+                                nmax = Number(maval);
+
+                            if (nmax < min || nmin > max) {
                                 evt.preventDefault();
                                 return;
                             }
@@ -956,7 +1224,7 @@ module nts.uk.ui.koExtentions {
             $input.addClass("enterkey")
                 .onkey("down", uk.KeyCodes.Enter, e => {
                 
-                    if($(".blockUI").length <= 0){
+                    if($(".blockUI").length > 0){
                         return; 
                     }
                 

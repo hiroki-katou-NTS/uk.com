@@ -12,17 +12,15 @@ module nts.uk.at.view.kmk004.b {
             findEmployeeSetting: 'screen/at/kmk004/employee/getDetails',
             saveEmployeeSetting: 'screen/at/kmk004/employee/save',
             removeEmployeeSetting: 'screen/at/kmk004/employee/delete',
-    
+            findprogramName : 'sys/portal/standardmenu/findProgramName/{0}/{1}'
         }
         
-        export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
-                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-                let domainType = "KMK004";
-                if (program.length > 1){
-                    program.shift();
-                    domainType = domainType + program.join(" ");
-                }
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
+        export function findprogramName(programId: string, screenId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', nts.uk.text.format(servicePath.findprogramName, programId, screenId));
+        }
+        
+        export function saveAsExcel(domainType: string, startDate : any, endDate: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: 'ja', reportType: 0, mode: 4, startDate: startDate, endDate: endDate});
         }
         
         export function removeEmployeeSetting(command: any): JQueryPromise<any> {

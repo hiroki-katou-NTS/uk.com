@@ -124,7 +124,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    SELECT ");
 		sql.append("     IIF(WPI.WKPCD IS NOT NULL, WPI.WKPCD, ?masterUnregistered) AS CODE, ");
 		sql.append("     IIF(WPH.END_DATE = ?baseDate AND WPI.WKP_NAME IS NOT NULL, WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
-		sql.append("     ISNULL(WP_CONFIG.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, ");
+		sql.append("     IIF(WP_CONFIG.HIERARCHY_CD IS NULL OR WPH.END_DATE < ?baseDate, '999999999999999999999999999999',WP_CONFIG.HIERARCHY_CD) AS HIERARCHY_CD, ");
 		sql.append("     WP.APP_TYPE, ");
 		sql.append("     WP.USE_ATR, ");
 		sql.append("     WP.REQUIRED_INSTRUCTION_FLG, ");
@@ -264,7 +264,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("        ORDER BY EMP_WT.CID, EMP_WT.WORK_TYPE_CODE ");
 		sql.append("       FOR XML PATH('')), 1 , 1, '') ");
 		sql.append("       ELSE NULL ");
-		sql.append("     END WORK_TYPE_NAME ");
+		sql.append("     END WORK_TYPE_NAME, ");
+		sql.append("	 ROW_NUMBER() OVER (PARTITION BY TEMP.CODE, APP_TYPE ORDER BY TEMP.CODE, APP_TYPE) AS ROW_NUM	");
 		sql.append("    FROM ");
 		sql.append("     (SELECT ");
 		sql.append("      EMP_SET.CID, ");

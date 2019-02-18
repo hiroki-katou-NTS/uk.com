@@ -95,11 +95,6 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM002_93"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM002_94"), ColumnTextAlign.LEFT, "", true));
 
-		//TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
 		return columns;
 	}
 
@@ -292,8 +287,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 				List<SpecificdaySetWorkplaceReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					SpecificdaySetWorkplaceReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//							|| (!firstObject.getHierarchyCode().isPresent()
+//							&& !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = dataByCode.stream()
 								.collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
 						AtomicInteger index = new AtomicInteger(0);

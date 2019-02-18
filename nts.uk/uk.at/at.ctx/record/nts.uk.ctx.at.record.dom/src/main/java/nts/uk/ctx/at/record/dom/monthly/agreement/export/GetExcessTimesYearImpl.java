@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
@@ -18,9 +18,9 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 @Stateless
 public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 
-	/** 管理期間の36協定時間 */
+	/** 管理期間の36協定時間を取得 */
 	@Inject
-	private AgreementTimeOfManagePeriodRepository agreementTimeOfMngPrdRepo;
+	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
 	
 	/** 年間超過回数の取得 */
 	@Override
@@ -28,13 +28,13 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 
 		List<YearMonth> yearMonths = new ArrayList<>();
 		
-		// 36協定時間を取得
-		val agreementTimeList =  this.agreementTimeOfMngPrdRepo.findByYearOrderByYearMonth(employeeId, year);
+		// 管理期間の36協定時間を取得
+		val agreementTimeList =  this.getAgreementTimeOfMngPeriod.algorithm(employeeId, year);
 		
 		// 状態が「超過」判定の件数をカウント
 		int excessCount = 0;
 		for (val agreementTime : agreementTimeList){
-			switch (agreementTime.getAgreementTime().getStatus()){
+			switch (agreementTime.getAgreementTime().getAgreementTime().getStatus()){
 			case EXCESS_LIMIT_ERROR:
 			case EXCESS_LIMIT_ERROR_SP:
 			case EXCESS_EXCEPTION_LIMIT_ALARM:

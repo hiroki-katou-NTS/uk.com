@@ -53,14 +53,14 @@ public class DisplayAgreementInfo {
 		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = agreementTimeOfManagePeriodRepository.find(employeeId, YearMonth.of(year, month));
 		
 		if (agreeTimeOpt.isPresent()) {
-			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getStatus().value));
-			result.setAgreementTime36(agreeTimeOpt.get().getAgreementTime() != null
-					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime() != null
-							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().v())
+			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getStatus().value));
+			result.setAgreementTime36(agreeTimeOpt.get().getAgreementTime().getAgreementTime() != null
+					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime() != null
+							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime().v())
 							: "0:00");
 			result.setMaxTime(agreeTimeOpt.get().getAgreementTime() != null
-					&& agreeTimeOpt.get().getAgreementTime().getLimitErrorTime() != null
-							? convertTime(agreeTimeOpt.get().getAgreementTime().getLimitErrorTime().v())
+					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime() != null
+							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime().v())
 							: "0:00");
 		}
 

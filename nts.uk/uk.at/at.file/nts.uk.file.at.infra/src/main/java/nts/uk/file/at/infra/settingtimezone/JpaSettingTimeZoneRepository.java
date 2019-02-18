@@ -587,7 +587,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_121, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_121)
-                .value(rs.getString("WKPCD") != null ? rs.getString("WKPCD") : "マスタ未登録")
+                .value(rs.getString("WKPCD") != null && rs.getString("WKP_NAME") != null ? rs.getString("WKPCD") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_122, MasterCellData.builder()

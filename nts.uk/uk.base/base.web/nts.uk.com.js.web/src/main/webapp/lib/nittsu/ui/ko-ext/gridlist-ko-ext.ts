@@ -167,6 +167,7 @@ module nts.uk.ui.koExtentions {
             }
             $grid.data("height", height);
 
+            let scrollHeightSet = true;
             $grid.igGrid({
                 width: data.width,
                 height: height,
@@ -176,7 +177,24 @@ module nts.uk.ui.koExtentions {
                 virtualizationMode: 'continuous',
                 rowVirtualization: rowVirtualization,
                 features: features,
-                tabIndex: -1
+                tabIndex: -1,
+                dataBound: () => {
+                    if (window.navigator.userAgent.indexOf("Edge") > -1) {
+                        let scrollContainer = $(`#${$grid.attr("id")}_scrollContainer`);
+                        let height = scrollContainer.height();
+                        if (scrollHeightSet) {
+                            scrollContainer.height(0); 
+                            scrollHeightSet = false;
+                        }
+                        
+                        setTimeout(() => {
+                            if (!scrollHeightSet) {
+                                scrollContainer.height(height);
+                                scrollHeightSet = true;
+                            }
+                        }, 1);
+                    }
+                }
             });
             
             if (data.itemDraggable) {
@@ -444,6 +462,9 @@ module nts.uk.ui.koExtentions {
                     _.defer(() => {$grid.trigger("selectChange");});
                 }
             }
+            
+            _.defer(() => {$grid.ntsGridList("scrollToSelected");});
+            
             $grid.data("ui-changed", false);
             $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }
