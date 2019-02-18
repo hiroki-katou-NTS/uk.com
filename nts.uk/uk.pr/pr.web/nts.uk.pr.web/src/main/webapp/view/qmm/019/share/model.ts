@@ -481,8 +481,8 @@ module nts.uk.pr.view.qmm019.share.model {
      * 明細書印字区分
      */
     export enum StatementPrintAtr {
-        PRINT = 0,
-        DO_NOT_PRINT = 1
+        PRINT = 1,
+        DO_NOT_PRINT = 0
     }
 
     /**
