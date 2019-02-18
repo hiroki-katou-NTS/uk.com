@@ -150,7 +150,7 @@ module nts.uk.ui.jqueryExtentions {
             || !!window.navigator.userAgent.match(/trident/i)
             || window.navigator.userAgent.indexOf("Edge") > -1)) {
             let $div = $("<div/>").appendTo($(document.body));
-            let style = $label[0].currentStyle || $label[0].style;
+            let style = $label[0].currentStyle || window.getComputedStyle($label[0]); //$label[0].style;
             if (style) {
                 for (let p in style) {
                     $div[0].style[p] = style[p];
