@@ -1,4 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -10,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepositor
 import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.format.DateTimeParseException;
@@ -48,7 +50,7 @@ public class DetailFormulaCalculationService {
      * Try to use text resource for other language
      */
     private static final String
-            OPEN_CURLY_BRACKET = "{", CLOSE_CURLY_BRACKET = "}", COMMA_CHAR = "、",  HALF_SIZE_COMMA_CHAR = ",",
+            OPEN_CURLY_BRACKET = "{", CLOSE_CURLY_BRACKET = "}", COMMA_CHAR = "、", HALF_SIZE_COMMA_CHAR = ",",
             PLUS = "＋", SUBTRACT = "ー", MULTIPLICITY = "×", DIVIDE = "÷", POW = "^", OPEN_BRACKET = "(", CLOSE_BRACKET = ")",
             GREATER = ">", LESS = "<", LESS_OR_EQUAL = "≦", GREATER_OR_EQUAL = "≧", EQUAL = "＝", DIFFERENCE = "≠",
             HALF_SIZE_PLUS = "+", HALF_SIZE_SUBTRACT = "-",
@@ -94,6 +96,7 @@ public class DetailFormulaCalculationService {
             STANDARD_DAY = "基準日数",
             WORKDAY = "要勤務日数";
     private static final Map<String, String> calculationFormulaDictionary;
+
     static {
         calculationFormulaDictionary = new HashMap<>();
         calculationFormulaDictionary.put(PAYMENT, "0000_0");
@@ -124,34 +127,37 @@ public class DetailFormulaCalculationService {
         calculationFormulaDictionary.put(FORMULA, "calc_00");
         calculationFormulaDictionary.put(WAGE_TABLE, "wage_00");
     }
+
     /**
-     *
-     * @param formulaElements  must be sort asc
-     * @param yearMonth  with qmm017 is selected year month
+     * @param formulaElements must be sort asc
+     * @param yearMonth       with qmm017 is selected year month
      * @return display detail calculation formula (ex: 支給{payment 1}＋控除{deduction 1})
      */
     public String getDetailFormulaDisplayContent(List<String> formulaElements, int yearMonth) {
-        String displayFormula = "", displayContent = "", cid = AppContexts.user().companyId();
+        StringBuilder displayFormula = new StringBuilder();
+        String displayContent = "";
+        String cid = AppContexts.user().companyId();
         Map<String, String> paymentItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.PAYMENT_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> deductionItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.DEDUCTION_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> attendanceItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.ATTEND_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> companyUnitPriceItem = payrollUnitPriceRepository.getPayrollUnitPriceByYearMonth(yearMonth).stream().collect(Collectors.toMap(item -> item.getCode().v(), item -> item.getName().v()));
         Map<String, String> individualUnitPriceItem = salaryPerUnitPriceRepository.getAllAbolitionSalaryPerUnitPrice();
         Map<String, String> wageTableItem = wageTableRepository.getWageTableByYearMonth(cid, yearMonth).stream().collect(Collectors.toMap(element -> element.getWageTableCode().v(), element -> element.getWageTableName().v()));
-        for (String formulaElement: formulaElements) {
+        for (String formulaElement : formulaElements) {
             displayContent = convertToDisplayContent(formulaElement, paymentItem, deductionItem, attendanceItem, companyUnitPriceItem, individualUnitPriceItem, wageTableItem, yearMonth);
-            displayFormula += displayContent;
+            displayFormula.append(displayContent);
         }
-        return displayFormula;
+        return displayFormula.toString();
     }
-    private String convertToDisplayContent (String formulaElement, Map<String, String> paymentItem, Map<String, String> deductionItem,
-                                            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
-                                            Map<String, String> wageTableItem, int yearMonth) {
+
+    private String convertToDisplayContent(String formulaElement, Map<String, String> paymentItem, Map<String, String> deductionItem,
+                                           Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
+                                           Map<String, String> wageTableItem, int yearMonth) {
         // is number or operator
-        if (!isNaN(formulaElement) || formulaElement.length() < 2 ) return formulaElement;
+        if (!isNaN(formulaElement) || formulaElement.length() < 2) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
         String elementCode = formulaElement.substring(6, formulaElement.length());
-        if (elementType.startsWith("Func") || elementType.startsWith("vari")){
+        if (elementType.startsWith("Func") || elementType.startsWith("vari")) {
             return getDisplayTypeByRegisterType(formulaElement, formulaElement);
         }
         String displayContent = getDisplayTypeByRegisterType(formulaElement, elementType);
@@ -170,40 +176,40 @@ public class DetailFormulaCalculationService {
         elementType = formulaElement.substring(0, 7);
         elementCode = formulaElement.substring(7, formulaElement.length());
         if (elementType.startsWith("wage"))
-            return combineElementTypeAndName(getDisplayTypeByRegisterType(formulaElement, elementType),  wageTableItem.get(elementCode));
+            return combineElementTypeAndName(getDisplayTypeByRegisterType(formulaElement, elementType), wageTableItem.get(elementCode));
         return formulaElement;
     }
 
-    private String getDisplayTypeByRegisterType (String formulaElement, String elementType) {
-        for(Map.Entry dictionaryItem : calculationFormulaDictionary.entrySet()) {
+    private String getDisplayTypeByRegisterType(String formulaElement, String elementType) {
+        for (Map.Entry dictionaryItem : calculationFormulaDictionary.entrySet()) {
             if (dictionaryItem.getValue().equals(elementType)) return dictionaryItem.getKey().toString();
         }
         throw new BusinessException("MsgQ_233", formulaElement);
     }
 
-    public String getEmbeddedFormulaDisplayContent (String formulaElement, int yearMonth) {
+    public String getEmbeddedFormulaDisplayContent(String formulaElement, int yearMonth) {
         String formulaCode = formulaElement.substring(7, formulaElement.length());
         Optional<FormulaHistory> optFormulaHistory = formulaRepository.getFormulaHistoryByCode(formulaCode);
-        if (!optFormulaHistory.isPresent() && optFormulaHistory.get().getHistory().isEmpty()) {
-            throw new BusinessException("MsgQ_233", formulaElement);
+        if (!optFormulaHistory.isPresent() || optFormulaHistory.get().getHistory().isEmpty()) {
+            throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
         Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_233", formulaElement);
+        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);
     }
 
-    private static String combineElementTypeAndName (String elementType, String elementName) {
+    private static String combineElementTypeAndName(String elementType, String elementName) {
         return elementType + OPEN_CURLY_BRACKET + elementName + CLOSE_CURLY_BRACKET;
     }
 
-    public String calculateDisplayCalculationFormula (int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingPosition) {
+    public String calculateDisplayCalculationFormula(int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingPosition) {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
-        for(Map.Entry replaceValue : replaceValues.entrySet()) {
+        for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
         }
         formula = calculateSystemVariable(type, formula);
@@ -213,7 +219,7 @@ public class DetailFormulaCalculationService {
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
     }
 
-    private String roundingResult (Double result, int roundingMethod, int roundingPosition) {
+    private String roundingResult(Double result, int roundingMethod, int roundingPosition) {
         Boolean isNegativeNumber = false;
         if (result < 0) {
             isNegativeNumber = true;
@@ -225,73 +231,78 @@ public class DetailFormulaCalculationService {
         if (roundingPosition == RoundingPosition.ONE_HUNDRED_YEN.value) roundingValue = 100;
         if (roundingPosition == RoundingPosition.ONE_THOUSAND_YEN.value) roundingValue = 1000;
         if (roundingMethod == Rounding.ROUND_UP.value)
-            result = Math.ceil(result/roundingValue) * roundingValue;
+            result = Math.ceil(result / roundingValue) * roundingValue;
         if (roundingMethod == Rounding.TRUNCATION.value)
-            result = Math.floor(result/roundingValue) * roundingValue;
+            result = Math.floor(result / roundingValue) * roundingValue;
         if (roundingMethod == Rounding.DOWN_1_UP_2.value)
-            result = Math.floor(result/roundingValue + 0.9) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.9) * roundingValue;
         if (roundingMethod == Rounding.DOWN_2_UP_3.value)
-            result = Math.floor(result/roundingValue + 0.8) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.8) * roundingValue;
         if (roundingMethod == Rounding.DOWN_3_UP_4.value)
-            result = Math.floor(result/roundingValue + 0.7) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.7) * roundingValue;
         if (roundingMethod == Rounding.DOWN_4_UP_5.value)
-            result = Math.floor(result/roundingValue + 0.6) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.6) * roundingValue;
         if (roundingMethod == Rounding.DOWN_5_UP_6.value)
-            result = Math.floor(result/roundingValue + 0.5) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.5) * roundingValue;
         if (roundingMethod == Rounding.DOWN_6_UP_7.value)
-            result = Math.floor(result/roundingValue + 0.4) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.4) * roundingValue;
         if (roundingMethod == Rounding.DOWN_7_UP_8.value)
-            result = Math.floor(result/roundingValue + 0.3) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.3) * roundingValue;
         if (roundingMethod == Rounding.DOWN_8_UP_9.value)
-            result = Math.floor(result/roundingValue + 0.2) * roundingValue;
+            result = Math.floor(result / roundingValue + 0.2) * roundingValue;
         if (isNegativeNumber) result = result * -1;
         return result + "";
     }
 
-    private String calculateSystemVariable (int type, String formulaElement) {
-        if (type != 0 && type !=2) return "";
+    private String calculateSystemVariable(int type, String formulaElement) {
+        if (type != 0 && type != 2) return "";
         Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndReferenceTime();
         int startFunctionIndex, endFunctionIndex;
         String systemVariable, systemVariableResult;
-        while (formulaElement.indexOf(VARIABLE) > -1) {
+        while (formulaElement.contains(VARIABLE)) {
             startFunctionIndex = formulaElement.lastIndexOf(VARIABLE);
             endFunctionIndex = formulaElement.substring(startFunctionIndex).indexOf(CLOSE_CURLY_BRACKET) + 1;
             systemVariable = formulaElement.substring(startFunctionIndex, startFunctionIndex + endFunctionIndex);
             systemVariableResult = getSystemValueBySystemVariable(systemVariable, processYearMonthAndReferenceTime);
-            formulaElement = formulaElement.replace(systemVariable,  systemVariableResult);
+            formulaElement = formulaElement.replace(systemVariable, systemVariableResult);
         }
         return formulaElement;
     }
 
-    private String getSystemValueBySystemVariable (String systemVariable, Map<String, String> processYearMonthAndReferenceTime) {
+    private String getSystemValueBySystemVariable(String systemVariable, Map<String, String> processYearMonthAndReferenceTime) {
         String functionName = systemVariable.substring(systemVariable.indexOf(OPEN_CURLY_BRACKET) + 1, systemVariable.indexOf(CLOSE_CURLY_BRACKET));
-        if (functionName.equals(SYSTEM_YMD_DATE)) return  "\"" + GeneralDate.today().toString() + "\"";
+        if (functionName.equals(SYSTEM_YMD_DATE)) return "\"" + GeneralDate.today().toString() + "\"";
         if (functionName.equals(SYSTEM_Y_DATE)) return "\"" + GeneralDate.today().toString("YYYY") + "\"";
         if (functionName.equals(SYSTEM_YM_DATE)) return "\"" + GeneralDate.today().toString("YYYY/MM") + "\"";
-        if (functionName.equals(PROCESSING_YEAR)) return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
-        if (functionName.equals(PROCESSING_YEAR_MONTH)) return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
-        if (functionName.equals(REFERENCE_TIME)) return "\"" + processYearMonthAndReferenceTime.get("referenceDate") + "\"";
+        if (functionName.equals(PROCESSING_YEAR))
+            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+        if (functionName.equals(PROCESSING_YEAR_MONTH))
+            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+        if (functionName.equals(REFERENCE_TIME))
+            return "\"" + processYearMonthAndReferenceTime.get("referenceDate") + "\"";
         throw new BusinessException("MsgQ_233", systemVariable);
     }
-    private String calculateFunction (String formulaElement) {
+
+    private String calculateFunction(String formulaElement) {
         int startFunctionIndex, endFunctionIndex;
         String functionSyntax;
-        while (formulaElement.indexOf(FUNCTION) > -1) {
+        while (formulaElement.contains(FUNCTION)) {
             startFunctionIndex = formulaElement.lastIndexOf(FUNCTION);
             endFunctionIndex = indexOfEndElement(startFunctionIndex, formulaElement) + 1;
             functionSyntax = formulaElement.substring(startFunctionIndex, endFunctionIndex);
-            formulaElement = formulaElement.replace(functionSyntax,  calculateSingleFunction(functionSyntax));
+            formulaElement = formulaElement.replace(functionSyntax, calculateSingleFunction(functionSyntax));
         }
         return formulaElement;
     }
-    private String [] convertToPostfix (String formulaContent) {
+
+    private String[] convertToPostfix(String formulaContent) {
         String regex = "(?<=[+\\-*/#=≤≥＋ー*×÷^()><≦≧＝≠、,])|(?=[+\\-*/#=≤≥＋ー*×÷^()><≦≧＝≠、,])";
-        String [] formulaElements = formulaContent.split(regex);
+        String[] formulaElements = formulaContent.split(regex);
         Stack<String> postfix = new Stack<>(), operators = new Stack<>();
         String currentElement;
-        for(int index = 0; index < formulaElements.length; index++){
-            currentElement = formulaElements[index].trim();
-            if (currentElement.indexOf("\"") == 0 && currentElement.lastIndexOf("\"") == currentElement.length() - 1){
+        for (String formulaElement : formulaElements) {
+            currentElement = formulaElement.trim();
+            if (currentElement.indexOf("\"") == 0 && currentElement.lastIndexOf("\"") == currentElement.length() - 1) {
                 currentElement = currentElement.substring(1, currentElement.length() - 1);
             }
             if (!isComputingOperator(currentElement) && !isConditionOperator(currentElement)) {
@@ -309,20 +320,20 @@ public class DetailFormulaCalculationService {
                 operators.pop();
                 continue;
             }
-            while(!operators.isEmpty() && getPriority(currentElement) <= getPriority(operators.lastElement())){
+            while (!operators.isEmpty() && getPriority(currentElement) <= getPriority(operators.lastElement())) {
                 postfix.push(operators.pop());
             }
             operators.push(currentElement);
         }
-        while (!operators.isEmpty()){
+        while (!operators.isEmpty()) {
             postfix.push(operators.pop());
         }
         return postfix.toArray(new String[0]);
     }
 
-    private int getPriority(String operator){
+    private int getPriority(String operator) {
         if (operator.equals(PLUS) || operator.equals(HALF_SIZE_PLUS) || operator.equals(SUBTRACT) || operator.equals(HALF_SIZE_SUBTRACT))
-            return 1 ;
+            return 1;
         if (operator.equals(MULTIPLICITY) || operator.equals(PROGRAMING_MULTIPLICITY) || operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE))
             return 2;
         if (operator.equals(POW))
@@ -330,13 +341,13 @@ public class DetailFormulaCalculationService {
         return 0;
     }
 
-    private String calculateSuffixFormula (String formulaContent) {
+    private String calculateSuffixFormula(String formulaContent) {
         if (!isNaN(formulaContent)) return formulaContent;
         String currentChar, operand1, operand2;
-        Stack<String> operands = new Stack();
-        String [] postFix = convertToPostfix(formulaContent);
-        for(int index = 0; index < postFix.length; index++){
-            currentChar = postFix[index];
+        Stack<String> operands = new Stack<>();
+        String[] postFix = convertToPostfix(formulaContent);
+        for (String aPostFix : postFix) {
+            currentChar = aPostFix;
             if (!isComputingOperator(currentChar) && !isConditionOperator(currentChar)) {
                 operands.push(currentChar);
                 continue;
@@ -349,20 +360,20 @@ public class DetailFormulaCalculationService {
         return operands.pop();
     }
 
-    private String calculateSingleFunction (String functionSyntax) {
+    private String calculateSingleFunction(String functionSyntax) {
         String functionName = functionSyntax.substring(functionSyntax.indexOf(OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(CLOSE_CURLY_BRACKET));
-        String [] functionParameter = formatFunctionParameter(functionSyntax.substring(functionSyntax.indexOf(OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(CLOSE_BRACKET)).split(COMMA_CHAR + "|" + HALF_SIZE_COMMA_CHAR));
+        String[] functionParameter = formatFunctionParameter(functionSyntax.substring(functionSyntax.indexOf(OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(CLOSE_BRACKET)).split(COMMA_CHAR + "|" + HALF_SIZE_COMMA_CHAR));
         if (functionName.equals(CONDITIONAL))
             return calculateFunctionCondition(functionSyntax, functionParameter);
         if (functionName.equals(YEAR_MONTH)) {
             try {
                 Integer additionalMonth = Integer.parseInt(functionParameter[1]);
                 return "\"" + GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").addMonths(additionalMonth).toString() + "\"";
-            } catch (DateTimeParseException | NumberFormatException e ) {
+            } catch (DateTimeParseException | NumberFormatException e) {
                 try {
                     Integer additionalMonth = Integer.parseInt(functionParameter[1]);
                     return "\"" + new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).addMonths(additionalMonth).toString() + "\"";
-                } catch (DateTimeParseException | NumberFormatException e1 ) {
+                } catch (DateTimeParseException | NumberFormatException e1) {
                     throw new BusinessException("MsgQ_240", functionName);
                 }
             }
@@ -376,18 +387,18 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(YEAR_EXTRACTION)) {
             try {
                 return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").year() + "";
-            } catch (DateTimeParseException | NumberFormatException e ) {
+            } catch (DateTimeParseException | NumberFormatException e) {
                 try {
                     return new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).year() + "";
-                } catch (DateTimeParseException | NumberFormatException e1 ) {
+                } catch (DateTimeParseException | NumberFormatException e1) {
                     throw new BusinessException("MsgQ_240", functionName);
                 }
             }
         }
-        if (functionName.equals(MONTH_EXTRACTION)){
+        if (functionName.equals(MONTH_EXTRACTION)) {
             try {
                 return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").month() + "";
-            } catch (DateTimeParseException | NumberFormatException e ) {
+            } catch (DateTimeParseException | NumberFormatException e) {
                 throw new BusinessException("MsgQ_240", functionName);
             }
         }
@@ -411,12 +422,12 @@ public class DetailFormulaCalculationService {
         throw new BusinessException("MsgQ_233", functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET)));
     }
 
-    private String [] formatFunctionParameter (String [] functionParameters) {
+    private String[] formatFunctionParameter(String[] functionParameters) {
         String functionParameter = "", conditionRegex = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
-        for (int i = 0; i < functionParameters.length; i++){
+        for (int i = 0; i < functionParameters.length; i++) {
             functionParameters[i] = functionParameters[i].trim();
             functionParameter = functionParameters[i];
-            if (functionParameter.split(conditionRegex).length < 2 && functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
+            if (functionParameter.split(conditionRegex).length < 2 && functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1) {
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
                 if (functionParameters[i].split(conditionRegex).length < 2 && !isConditionOperator(functionParameters[i])) {
@@ -427,27 +438,27 @@ public class DetailFormulaCalculationService {
         return functionParameters;
     }
 
-    private String logicAND (String [] functionParameters) {
+    private String logicAND(String[] functionParameters) {
         String result = "TRUE";
-        for (int i = 0; i < functionParameters.length ; i++) {
+        for (int i = 0; i < functionParameters.length; i++) {
             functionParameters[i] = calculateSingleCondition(functionParameters[i], true, combineElementTypeAndName(FUNCTION, AND));
             if (functionParameters[i].toUpperCase().equals("FALSE")) result = "FALSE";
         }
         return result;
     }
 
-    private String logicOR (String [] functionParameters) {
+    private String logicOR(String[] functionParameters) {
         String result = "FALSE";
-        for (int i = 0; i < functionParameters.length ; i++) {
+        for (int i = 0; i < functionParameters.length; i++) {
             functionParameters[i] = calculateSingleCondition(functionParameters[i], true, combineElementTypeAndName(FUNCTION, AND));
             if (functionParameters[i].toUpperCase().equals("TRUE")) result = "TRUE";
         }
         return result;
     }
 
-    private String calculateFunctionCondition (String functionSyntax, String [] functionParameter) {
+    private String calculateFunctionCondition(String functionSyntax, String[] functionParameter) {
         String functionName = functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET));
-        if (functionParameter.length !=3 ) {
+        if (functionParameter.length != 3) {
             if (functionParameter.length < 3) throw new BusinessException("MsgQ_238", functionName);
             throw new BusinessException("MsgQ_239", functionName);
         }
@@ -457,25 +468,26 @@ public class DetailFormulaCalculationService {
         if (conditionResult.toUpperCase().equals("TRUE")) return result1;
         return result2;
     }
-    private String calculateSingleCondition (String conditionFormula, Boolean mustBeBoolean, String functionName) {
+
+    private String calculateSingleCondition(String conditionFormula, Boolean mustBeBoolean, String functionName/*, int index*/) {
         String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
-        String [] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
+        String[] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
         if (conditionParameters.length == 1) {
             if (!conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
                 throw new BusinessException("MsgQ_240", functionName, "1");
             }
             return conditionParameters[0];
         } else {
-            if (conditionParameters.length !=3 ) {
+            if (conditionParameters.length != 3) {
                 throw new BusinessException("MsgQ_240", functionName, "1");
             }
             Comparable operand1 = conditionParameters[0], operand2 = conditionParameters[2];
             String operator = conditionParameters[1];
-            if (!isNaN(conditionParameters[0]) && !isNaN(conditionParameters [2])) {
-                operand1 = Double.parseDouble(conditionParameters [0]);
-                operand2 = Double.parseDouble(conditionParameters [2]);
+            if (!isNaN(conditionParameters[0]) && !isNaN(conditionParameters[2])) {
+                operand1 = Double.parseDouble(conditionParameters[0]);
+                operand2 = Double.parseDouble(conditionParameters[2]);
             }
-            if (operator.equals(GREATER) )
+            if (operator.equals(GREATER))
                 return operand1.compareTo(operand2) > 0 ? "TRUE" : "FALSE";
             if (operator.equals(LESS))
                 return operand1.compareTo(operand2) < 0 ? "TRUE" : "FALSE";
@@ -491,7 +503,8 @@ public class DetailFormulaCalculationService {
         }
         return conditionFormula;
     }
-    private String calculateSingleFormula (String operand1, String operand2, String operator) {
+
+    private String calculateSingleFormula(String operand1, String operand2, String operator) {
         try {
             Double operand1Value = Double.parseDouble(operand1);
             Double operand2Value = Double.parseDouble(operand2);
@@ -501,7 +514,7 @@ public class DetailFormulaCalculationService {
                 return operand2Value - operand1Value + "";
             if (operator.equals(MULTIPLICITY) || operator.equals(PROGRAMING_MULTIPLICITY))
                 return operand2Value * operand1Value + "";
-            if (operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE)){
+            if (operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE)) {
                 if (operand1Value == 0) throw new BusinessException("MsgQ_234");
                 return operand2Value / operand1Value + "";
             }
@@ -512,22 +525,24 @@ public class DetailFormulaCalculationService {
             throw new BusinessException("MsgQ_235");
         }
     }
-    private int indexOfEndElement (int startFunctionIndex, String formula) {
+
+    private int indexOfEndElement(int startFunctionIndex, String formula) {
         int index, openBracketNum = 0, closeBracketNum = 0;
         String currentChar;
-        for(index = startFunctionIndex; index < formula.length() ; index ++ ) {
+        for (index = startFunctionIndex; index < formula.length(); index++) {
             currentChar = Character.toString(formula.charAt(index));
-            if (currentChar.equals(OPEN_BRACKET)) openBracketNum ++;
-            if (currentChar.equals(CLOSE_BRACKET)){
-                closeBracketNum ++;
-                if (openBracketNum == closeBracketNum){
+            if (currentChar.equals(OPEN_BRACKET)) openBracketNum++;
+            if (currentChar.equals(CLOSE_BRACKET)) {
+                closeBracketNum++;
+                if (openBracketNum == closeBracketNum) {
                     return index;
                 }
             }
         }
         return -1;
     }
-    private Boolean isNaN (String number) {
+
+    private Boolean isNaN(String number) {
         try {
             Double.parseDouble(number);
         } catch (NumberFormatException e) {
@@ -536,10 +551,10 @@ public class DetailFormulaCalculationService {
         return false;
     }
 
-    private String getMinValue (String [] values) {
+    private String getMinValue(String[] values) {
         Double minValue = Double.MAX_VALUE, valueInDouble;
         try {
-            for (String value: values) {
+            for (String value : values) {
                 valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble < minValue) {
                     minValue = valueInDouble;
@@ -551,10 +566,10 @@ public class DetailFormulaCalculationService {
         return minValue + "";
     }
 
-    private String getMaxValue (String [] values) {
+    private String getMaxValue(String[] values) {
         Double minValue = Double.MIN_VALUE, valueInDouble;
-        try{
-            for (String value: values) {
+        try {
+            for (String value : values) {
                 valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble > minValue) {
                     minValue = valueInDouble;
@@ -566,17 +581,18 @@ public class DetailFormulaCalculationService {
         return minValue + "";
     }
 
-    private Boolean isComputingOperator (String operator) {
-        String [] computingOperator = {OPEN_BRACKET, CLOSE_BRACKET, PLUS, SUBTRACT, MULTIPLICITY, DIVIDE, POW, HALF_SIZE_PLUS, HALF_SIZE_SUBTRACT, PROGRAMING_MULTIPLICITY, PROGRAMING_DIVIDE};
-        for (int i = 0; i < computingOperator.length; i++) {
-            if (computingOperator[i].equals(operator)) return true;
+    private Boolean isComputingOperator(String operator) {
+        String[] computingOperator = {OPEN_BRACKET, CLOSE_BRACKET, PLUS, SUBTRACT, MULTIPLICITY, DIVIDE, POW, HALF_SIZE_PLUS, HALF_SIZE_SUBTRACT, PROGRAMING_MULTIPLICITY, PROGRAMING_DIVIDE};
+        for (String aComputingOperator : computingOperator) {
+            if (aComputingOperator.equals(operator)) return true;
         }
         return false;
     }
-    private Boolean isConditionOperator (String operator) {
-        String [] conditionOperators = {GREATER, LESS, LESS_OR_EQUAL, GREATER_OR_EQUAL, EQUAL, HALF_SIZE_LESS_OR_EQUAL, HALF_SIZE_EQUAL, PROGRAMMING_DIFFERENCE};
-        for (int i = 0; i < conditionOperators.length; i++) {
-            if (conditionOperators[i].equals(operator)) return true;
+
+    private Boolean isConditionOperator(String operator) {
+        String[] conditionOperators = {GREATER, LESS, LESS_OR_EQUAL, GREATER_OR_EQUAL, EQUAL, HALF_SIZE_LESS_OR_EQUAL, HALF_SIZE_EQUAL, PROGRAMMING_DIFFERENCE};
+        for (String conditionOperator : conditionOperators) {
+            if (conditionOperator.equals(operator)) return true;
         }
         return false;
     }

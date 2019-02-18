@@ -16,13 +16,18 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
 
         initScreen(): JQueryPromise<any> {
             let self = this,
-            dfd = $.Deferred();
-            self.loadGrid();
-            dfd.resolve();
+                dfd = $.Deferred();
+            let dataInput: any = {
+                empIds: [],
+                baseDate: new Date()
+            };
+            self.loadData([], dataInput).done(() => {
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
-        loadCCg001(){
+        loadCCg001() {
             //_____CCG001________
             let self = this;
             self.ccgcomponent = {
@@ -70,24 +75,32 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         empIds: empIds,
                         baseDate: data.baseDate
                     };
-                    service.getStatementLinkPerson(dataInput).done((res: Array<IConfirmPersonSetStatus>) => {
-                        self.listEmp(ConfirmPersonSetStatus.fromApp(data.listEmployee, res));
-                        $("#grid").ntsGrid("destroy");
-                        self.loadGrid();
-                        $("#grid").focus();
-                    }).fail((err) => {
-                        dialog.alertError(err);
-                    }).always(() => {
+                    self.loadData(data.listEmployee, dataInput).done(() => {
                         block.clear();
                     });
                 }
-            }
+            };
             $('#com-ccgI').ntsGroupComponent(self.ccgcomponent);
+        }
+
+        loadData(listEmployee, dataInput) {
+            let self = this,
+                dfd = $.Deferred();
+            service.getStatementLinkPerson(dataInput).done((res: Array<IConfirmPersonSetStatus>) => {
+                self.listEmp(ConfirmPersonSetStatus.fromApp(listEmployee, res));
+                self.loadGrid();
+                $("#I2_1_container").focus();
+            }).fail((err) => {
+                dialog.alertError(err);
+            }).always(() => {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         loadGrid() {
             let self = this;
-            $("#grid").ntsGrid({
+            $("#I2_1").ntsGrid({
                 width: '1050px',
                 height: '360px',
                 dataSource: self.listEmp(),
