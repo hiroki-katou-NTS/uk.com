@@ -188,10 +188,10 @@ module nts.uk.pr.view.qmm017.share.model {
     }
     export function getRoundingMethodEnumModel () {
         return [
-            new EnumModel(ROUNDING_METHOD.ROUND_OFF, getText('Enum_RoundingMethod_ROUND_OFF')),
-            new EnumModel(ROUNDING_METHOD.ROUND_UP, getText('Enum_RoundingMethod_ROUND_UP')),
-            new EnumModel(ROUNDING_METHOD.TRUNCATION, getText('Enum_RoundingMethod_TRUNCATION')),
-            new EnumModel(ROUNDING_METHOD.DO_NOTHING, getText('Enum_RoundingMethod_DO_NOTHING'))
+            new EnumModel(ROUNDING_METHOD.ROUND_OFF, getText('QMM017_168')),
+            new EnumModel(ROUNDING_METHOD.ROUND_UP, getText('QMM017_169')),
+            new EnumModel(ROUNDING_METHOD.TRUNCATION, getText('QMM017_170')),
+            new EnumModel(ROUNDING_METHOD.DO_NOTHING, getText('QMM017_171'))
         ];
     }
 
