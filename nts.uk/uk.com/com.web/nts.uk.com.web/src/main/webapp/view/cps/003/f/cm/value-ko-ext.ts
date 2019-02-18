@@ -103,7 +103,7 @@ module nts.custombinding {
                                         columns: [
                                             { prop: 'optionText', length: 10 },
                                         ]}"></div>
-                                    <div id="monthdays" data-bind="ntsMonthDays: { value: value1, enable: m3, required: false }"/>
+                                    <div id="monthdays" data-bind="ntsMonthDays: { value: value1, enable: m3, required: m3 }"/>
                                 </div>
                                 <div class="text-box">
                                     <div data-bind="ntsDatePicker: { value: value2, constraint: constraint, enable: m4, required: false, dateFormat: 'YYYY/MM/DD' }"></div>

@@ -297,6 +297,10 @@ module cps003.f.vm {
                     replaceValue2: undefined
                 };
 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
             switch (item.itemData.dataType) {
                 default:
                     break;
