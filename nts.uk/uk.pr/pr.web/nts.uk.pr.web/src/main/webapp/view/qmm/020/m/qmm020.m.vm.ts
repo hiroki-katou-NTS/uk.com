@@ -29,13 +29,12 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 if(data && data.length > 0){
                     this.items(StatementDto.fromApp(data));
                     self.currentCodeList(params.statementCode != null && params.statementCode != '' ? params.statementCode : self.items()[0].statementCode);
-                    $('#multi-list_container').focus();
                 }
             }).fail((err) =>{
                 if(err)
                     dialog.alertError(err);
             }).always(()=>{
-
+                $('#multi-list_container').focus();
             });
         }
 

@@ -168,9 +168,8 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
             __viewContext.viewModel.viewmodelA.selectedH(0);
             __viewContext.viewModel.viewmodelI.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelI.loadCCg001();
-                $("#I1_2_container").focus();
+                $("#I2_1_container").focus();
             });
-
         };
 
         onSelectTabF() {
