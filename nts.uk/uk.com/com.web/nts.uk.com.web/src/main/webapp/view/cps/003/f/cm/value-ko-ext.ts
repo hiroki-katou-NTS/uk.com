@@ -203,6 +203,8 @@ module nts.custombinding {
                                         let data: any = childData[0];
 
                                         vm.value(data.selectedWorkTimeCode);
+                                        vm.value1(data);
+                                        
                                         vm.textValue(`${data.selectedWorkTimeCode} ${data.selectedWorkTimeName}`);
 
                                         if (data.first && data.first.start && data.first.end) {
@@ -227,6 +229,8 @@ module nts.custombinding {
 
                                 if (childData[0]) {
                                     vm.value(childData[0].code);
+                                    vm.value1(childData[0]);
+                                    
                                     vm.textValue(`${childData[0].code} ${childData[0].name}`);
                                 }
                             });
