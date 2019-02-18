@@ -118,7 +118,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                         calculationFormulaData.push({
                             formulaItem: operand,
                             trialCalculationValue: ko.observable(null),
-                            constraint: 'PaymentAndDeductionItem'
+                            constraint: 'PaymentAndDeductionItem',
+                            decimalLength: 0
                         })
                 }
                 if (operand.startsWith(self.ATTENDANCE)) {
@@ -126,16 +127,29 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                         calculationFormulaData.push({
                             formulaItem: operand,
                             trialCalculationValue: ko.observable(null),
-                            constraint: 'AttendanceItem'
+                            constraint: 'AttendanceItem',
+                            decimalLength: 2,
+                            readonly: false
                         })
                 }
-                if (operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)
-                    || operand.startsWith(self.WAGE_TABLE)) {
+                if (operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)) {
                     if (!(_.some(calculationFormulaData, {formulaItem: operand})))
                         calculationFormulaData.push({
                             formulaItem: operand,
                             trialCalculationValue: ko.observable(null),
-                            constraint: 'CompanyAndIndividualUnitPrice'
+                            constraint: 'CompanyAndIndividualUnitPrice',
+                            decimalLength: 2,
+                            readonly: false
+                        })
+                }
+                if (operand.startsWith(self.WAGE_TABLE)) {
+                    if (!(_.some(calculationFormulaData, {formulaItem: operand})))
+                        calculationFormulaData.push({
+                            formulaItem: operand,
+                            trialCalculationValue: ko.observable(1),
+                            constraint: '',
+                            decimalLength: 0,
+                            readonly: true
                         })
                 }
             });

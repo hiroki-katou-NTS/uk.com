@@ -541,9 +541,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         addWageTableItem() {
             let self = this;
-            // 「賃金テーブル」was not subject to processing. Value returned 1.
-            //self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
-            self.addToFormulaByPosition('1');
+            // 「賃金テーブル」was not a processed object. Value returned 1.
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
         }
 
         addToFormulaByPosition(formulaToAdd: string) {
