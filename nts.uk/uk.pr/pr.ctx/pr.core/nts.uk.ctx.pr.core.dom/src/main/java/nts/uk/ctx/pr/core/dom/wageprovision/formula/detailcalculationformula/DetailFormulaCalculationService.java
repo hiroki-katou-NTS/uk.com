@@ -131,7 +131,9 @@ public class DetailFormulaCalculationService {
      * @return display detail calculation formula (ex: 支給{payment 1}＋控除{deduction 1})
      */
     public String getDetailFormulaDisplayContent(List<String> formulaElements, int yearMonth) {
-        String displayFormula = "", displayContent = "", cid = AppContexts.user().companyId();
+        StringBuilder displayFormula = new StringBuilder();
+        String displayContent = "";
+        String cid = AppContexts.user().companyId();
         Map<String, String> paymentItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.PAYMENT_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> deductionItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.DEDUCTION_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> attendanceItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.ATTEND_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
@@ -140,9 +142,9 @@ public class DetailFormulaCalculationService {
         Map<String, String> wageTableItem = wageTableRepository.getWageTableByYearMonth(cid, yearMonth).stream().collect(Collectors.toMap(element -> element.getWageTableCode().v(), element -> element.getWageTableName().v()));
         for (String formulaElement: formulaElements) {
             displayContent = convertToDisplayContent(formulaElement, paymentItem, deductionItem, attendanceItem, companyUnitPriceItem, individualUnitPriceItem, wageTableItem, yearMonth);
-            displayFormula += displayContent;
+            displayFormula.append(displayContent);
         }
-        return displayFormula;
+        return displayFormula.toString();
     }
     private String convertToDisplayContent (String formulaElement, Map<String, String> paymentItem, Map<String, String> deductionItem,
                                             Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
@@ -184,12 +186,12 @@ public class DetailFormulaCalculationService {
     public String getEmbeddedFormulaDisplayContent (String formulaElement, int yearMonth) {
         String formulaCode = formulaElement.substring(7, formulaElement.length());
         Optional<FormulaHistory> optFormulaHistory = formulaRepository.getFormulaHistoryByCode(formulaCode);
-        if (!optFormulaHistory.isPresent() && optFormulaHistory.get().getHistory().isEmpty()) {
-            throw new BusinessException("MsgQ_233", formulaElement);
+        if (!optFormulaHistory.isPresent() || optFormulaHistory.get().getHistory().isEmpty()) {
+            throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
         Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_233", formulaElement);
+        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);

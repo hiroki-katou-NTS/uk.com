@@ -594,10 +594,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         validateSyntax() {
             let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
-            if (formula.length == 0) {
-                self.setErrorToFormula('MsgQ_236', []);
-                return;
-            }
             self.checkOperatorAndDivideZero(formula);
             self.checkResultIsNotNumber(formula);
             self.checkBracket(formula);
@@ -612,9 +608,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let formulaElements: any = formula.split(regex).filter(item => {
                 return item && item.length
             });
-            let self = this, index = 0, currentChar, nextChar, operators = self.operators;
-            if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_234', []);
-            if (formulaElements[formulaElements.length - 1] && self.operators.indexOf(formulaElements[formulaElements.length - 1]) > 1) self.setErrorToFormula('MsgQ_235', []);
+            let self = this, currentChar, nextChar, operators = self.operators;
+            if ((formulaElements[formulaElements.length - 1] && self.operators.indexOf(formulaElements[formulaElements.length - 1]) > 1) || self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_235', []);
             for (index = 0; index < formulaElements.length; index++) {
                 currentChar = formulaElements[index];
                 if (operators.indexOf(currentChar) > -1) {
@@ -945,40 +940,40 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }) [0];
             if (elementType.startsWith("0000_0")) {
                 selectedItem = _.find(self.paymentItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
 
             if (elementType.startsWith("0001_0")) {
                 selectedItem = _.find(self.deductionItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("0002_0")) {
                 selectedItem = _.find(self.attendanceItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U000_0")) {
                 selectedItem = _.find(self.companyUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U001_0")) {
                 selectedItem = _.find(self.individualUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.formulaList), {formulaCode: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.formulaName);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.wageTableList), {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent,  elementCode]);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             return formulaElement;
