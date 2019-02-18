@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.shared.app.find.workingconditionitem.WorkingConditionItemFinder;
@@ -167,7 +168,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 				lst.add(d.get());
 				String companyId = AppContexts.user().companyId();
 				List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
-				if (!lstEvent.isEmpty()){
+				if (!CollectionUtil.isEmpty(lstEvent)){
 					CompanyEvent e = lstEvent.get(0);
 					if (e.getEventName() != null){
 						value += "「" + e.getEventName() + "」"; 

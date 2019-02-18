@@ -246,7 +246,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			lst.add(d);
 			String companyId = AppContexts.user().companyId();
 			List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
-			if (!lstEvent.isEmpty()){
+			if (CollectionUtil.isEmpty(lstEvent)){
 				CompanyEvent e = lstEvent.get(0);
 				if (e.getEventName() != null){
 					value += "「" + e.getEventName() + "」"; 
@@ -458,7 +458,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			lst.add(d);
 			String companyId = AppContexts.user().companyId();
 			List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
-			if (!lstEvent.isEmpty()){
+			if (!CollectionUtil.isEmpty(lstEvent)){
 				CompanyEvent e = lstEvent.get(0);
 				if (e.getEventName() != null){
 					value += "「" + e.getEventName() + "」"; 
@@ -466,7 +466,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			}
 			
 			List<WorkplaceEvent> listWpEvent = workplaceEventRepository.getWorkplaceEventsByListDate(companyId, lst);
-			if (!lstEvent.isEmpty()){
+			if (!CollectionUtil.isEmpty(listWpEvent)){
 				WorkplaceEvent e = listWpEvent.get(0);
 				if (e.getEventName() != null){
 					value += "「" + e.getEventName() + "」"; 
