@@ -86,7 +86,7 @@
 #contents-area .stime-group-box .ntsRadioBox,
 #contents-area .number-group-box .ntsRadioBox,
 #contents-area .selection-group-box .ntsRadioBox {
-	display: block;
+	display: table;
 	line-height: 37px;
 }
 
