@@ -790,7 +790,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 functionParameters.forEach(function (functionParameter, index) {
                     functionParameter.split(conditionRegex).forEach(function (item) {
                         self.checkBracket(item);
-                    })
+                    });
                     if (functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
                         self.setErrorToFormula('MsgQ_240', [functionName, index + 1]);
                     }

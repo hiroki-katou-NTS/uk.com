@@ -7,7 +7,12 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 730, height: 570};</script>
+        <script>var dialogSize = {width: 750, height: 570};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.PaymentAndDeductionItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.AttendanceItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.CompanyAndIndividualUnitPrice
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm017.g.service.js"/>
@@ -28,7 +33,7 @@
                             <table id="G1_2">
                                 <colgroup>
                                     <col width="150px"/>
-                                    <col width="120px"/>
+                                    <col width="140px"/>
                                 </colgroup>
                                 <thead>
                                 <tr>
@@ -47,8 +52,9 @@
                                     <td>
                                         <input data-bind="ntsNumberEditor: {
                                             value: trialCalculationValue,
+                                            constraint: constraint,
                                             option: {
-                                                width: '90px',
+                                                width: '110px',
 				                                decimallength: 2
                                             },
                                             name: 'お試し計算値',
