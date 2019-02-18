@@ -90,7 +90,7 @@ public class GridCommandFacade {
 						if (itemOptional.isPresent()) {
 							
 							ErrorWarningInfoOfRowOrder order = new ErrorWarningInfoOfRowOrder(
-									itemOptional.get().itemName(), ErrorType.ERROR, input.getOrder(), exp.getMessage());
+									itemOptional.get().itemName(), 1, input.getOrder(), exp.getMessage());
 							
 							errorWarning.setErrorLst(Arrays.asList(order));
 							

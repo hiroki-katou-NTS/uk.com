@@ -17,8 +17,8 @@ import lombok.Setter;
 public class ErrorWarningInfoOfRowOrder {
 	//項目名
 	private String itemName;
-	//区分
-	private ErrorType errorType;
+	//区分 - ErrorType
+	private int errorType;
 	//行番号
 	private int rowOrder;
 	//メッセージ
