@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -21,7 +23,7 @@ public interface RecruitmentRelectRecordService {
 	 * 予定勤種就時の反映
 	 * @param param
 	 */
-	public WorkInfoOfDailyPerformance reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre, WorkInfoOfDailyPerformance dailyInfo);
+	public void reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre, IntegrationOfDaily dailyInfo);
 	/**
 	 * 開始終了時刻の反映
 	 * @param param
@@ -42,5 +44,7 @@ public interface RecruitmentRelectRecordService {
 	 * @param optTimeLeaving
 	 * @return
 	 */
-	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo, boolean isAttendence, String employeeId, GeneralDate baseDate);
+	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo, boolean isAttendence, String employeeId, 
+			GeneralDate baseDate);
+	public List<IntegrationOfDaily> getByRecruitment(CommonReflectParameter param, boolean isPre);
 }
