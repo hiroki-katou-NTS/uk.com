@@ -16,9 +16,9 @@ public enum ExpirationTime {
 	THIS_MONTH(0, "当月", "当月"),
 
 	/** The alway. 
-	 *  常に繰越
+	 *  無期限
 	 */
-	UNLIMITED(1, "常に繰越", "常に繰越"),
+	UNLIMITED(1, "無期限", "無期限"),
 
 	/** The end of year. 
 	 *  年度末クリア

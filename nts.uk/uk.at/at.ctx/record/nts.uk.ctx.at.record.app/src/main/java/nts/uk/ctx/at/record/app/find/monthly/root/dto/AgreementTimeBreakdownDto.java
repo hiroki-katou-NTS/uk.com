@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -61,6 +62,16 @@ public class AgreementTimeBreakdownDto implements ItemConst{
 	@AttendanceItemValue(type = ValueType.TIME)
 	private int monthlyPremiumTime;
 	
+	/** 法定内休出時間 */
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK + LEGAL, layout = LAYOUT_J)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int legalHolidayWorkTime;
+	
+	/** 法定内振替時間 */
+	@AttendanceItemLayout(jpPropertyName = TRANSFER + LEGAL, layout = LAYOUT_K)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int legalTransferTime;
+	
 	public static AgreementTimeBreakdownDto from(AgreementTimeBreakdown domain) {
 		if(domain != null){
 			return new AgreementTimeBreakdownDto(domain.getOverTime().valueAsMinutes(), 
@@ -71,7 +82,25 @@ public class AgreementTimeBreakdownDto implements ItemConst{
 												domain.getFlexIllegalTime().valueAsMinutes(), 
 												domain.getWithinPrescribedPremiumTime().valueAsMinutes(), 
 												domain.getWeeklyPremiumTime().valueAsMinutes(), 
-												domain.getMonthlyPremiumTime().valueAsMinutes());
+												domain.getMonthlyPremiumTime().valueAsMinutes(),
+												0, 0);
+		}
+		return null;
+	}
+	
+	public static AgreementTimeBreakdownDto from(AgreMaxTimeBreakdown domain) {
+		if(domain != null){
+			return new AgreementTimeBreakdownDto(domain.getOverTime().valueAsMinutes(), 
+												domain.getTransferOverTime().valueAsMinutes(), 
+												domain.getHolidayWorkTime().valueAsMinutes(), 
+												domain.getTransferTime().valueAsMinutes(),
+												domain.getFlexLegalTime().valueAsMinutes(), 
+												domain.getFlexIllegalTime().valueAsMinutes(), 
+												domain.getWithinPrescribedPremiumTime().valueAsMinutes(), 
+												domain.getWeeklyPremiumTime().valueAsMinutes(), 
+												domain.getMonthlyPremiumTime().valueAsMinutes(),
+												domain.getLegalHolidayWorkTime().valueAsMinutes(), 
+												domain.getLegalTransferTime().valueAsMinutes());
 		}
 		return null;
 	}
@@ -86,5 +115,19 @@ public class AgreementTimeBreakdownDto implements ItemConst{
 											new AttendanceTimeMonth(withinPrescribedPremiumTime), 
 											new AttendanceTimeMonth(weeklyPremiumTime), 
 											new AttendanceTimeMonth(monthlyPremiumTime));
+	}
+	
+	public AgreMaxTimeBreakdown toMaxDomain(){
+		return AgreMaxTimeBreakdown.of(new AttendanceTimeMonth(overTime), 
+											new AttendanceTimeMonth(transferOverTime), 
+											new AttendanceTimeMonth(holidayWorkTime), 
+											new AttendanceTimeMonth(transferTime), 
+											new AttendanceTimeMonth(flexLegalTime), 
+											new AttendanceTimeMonth(flexIllegalTime), 
+											new AttendanceTimeMonth(withinPrescribedPremiumTime), 
+											new AttendanceTimeMonth(weeklyPremiumTime), 
+											new AttendanceTimeMonth(monthlyPremiumTime),
+											new AttendanceTimeMonth(legalHolidayWorkTime),
+											new AttendanceTimeMonth(legalTransferTime));
 	}
 }
