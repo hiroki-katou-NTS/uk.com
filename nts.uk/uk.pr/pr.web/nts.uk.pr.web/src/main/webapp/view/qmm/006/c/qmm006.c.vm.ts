@@ -34,6 +34,10 @@ module nts.uk.pr.view.qmm006.c.viewmodel {
                 });
                 self.listSourceBankLeft(listSB);
                 self.listSourceBankRight(listSB);
+                if (!_.isEmpty(listSB)) {
+                    self.selectedCodeLeft(listSB[0].code);
+                    self.selectedCodeRight(listSB[0].code);
+                }
                 dfd.resolve();
             }).fail(error => {
                 alertError(error);

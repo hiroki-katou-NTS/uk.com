@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         masterUse: KnockoutObservable<number> = ko.observable();
         individualUse: KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservable<number> = ko.observable();
+        selectedH: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
 
@@ -25,6 +26,8 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
                     self.individualUse(data.individualUse);
                     self.usageMaster(data.usageMaster);
                     self.activeSideBar(data);
+                } else {
+                    self.activeSideBar(null);
                 }
                 dfd.resolve();
             }).fail((err) => {
@@ -38,6 +41,16 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         }
 
         activeSideBar(setting) {
+            if(!setting) {
+                $("#sidebar").ntsSideBar("hide", 1);
+                $("#sidebar").ntsSideBar("hide", 2);
+                $("#sidebar").ntsSideBar("hide", 3);
+                $("#sidebar").ntsSideBar("hide", 4);
+                $("#sidebar").ntsSideBar("hide", 5);
+                $("#sidebar").ntsSideBar("hide", 6);
+                return;
+            }
+
             if (setting.masterUse == 1) {
                 if (setting.usageMaster == 0) {
                     $("#sidebar").ntsSideBar("show", 1);
@@ -152,6 +165,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         };
 
         onSelectTabI(){
+            __viewContext.viewModel.viewmodelA.selectedH(0);
             __viewContext.viewModel.viewmodelI.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelI.loadCCg001();
                 $("#I1_2_container").focus();
@@ -170,6 +184,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         };
 
         onSelectTabH() {
+            __viewContext.viewModel.viewmodelA.selectedH(1);
             __viewContext.viewModel.viewmodelH.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelH.loadCCG001();
                 $("#emp-component").focus();

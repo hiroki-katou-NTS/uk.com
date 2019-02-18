@@ -31,13 +31,13 @@ public class QpbmtStateCorHisDepPk implements Serializable {
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     public String hisId;
 
     /**
      * マスタコード
      */
     @Basic(optional = false)
-    @Column(name = "MASTER_CODE")
+    @Column(name = "DEP_CD")
     public String masterCode;
 }

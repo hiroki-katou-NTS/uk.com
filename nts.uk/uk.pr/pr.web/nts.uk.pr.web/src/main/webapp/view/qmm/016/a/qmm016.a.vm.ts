@@ -299,7 +299,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 						}
 						self.wageTableContent(new model.WageTableContent(contentData));
 						self.elementRangeSetting(new model.ElementRangeSetting(contentData.elemRangeSet));
-						if (!_.isEmpty(contentData.list3dElements)) {
+						if (!_.isEmpty(contentData.list3dElements) || !_.isEmpty(contentData.list2dElements)) {
 							$("#content-wrapper").unbind();
                             self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
 						}

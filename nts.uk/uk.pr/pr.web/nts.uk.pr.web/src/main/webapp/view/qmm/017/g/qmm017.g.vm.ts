@@ -41,7 +41,13 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.formulaListItem = params.formulaListItem;
             self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
-            $('#G1_2').ntsFixedTable({height: 184});
+
+            if (/Chrome/.test(navigator.userAgent)) {
+                $('#G1_2').ntsFixedTable({height: 279});
+            } else {
+                $('#G1_2').ntsFixedTable({height: 276.5});
+            }
+
         }
         extractFormula (formula) {
             let self = this, separators = self.separators;
@@ -54,7 +60,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     formulaItem = _.find(self.formulaListItem, {formulaName: formulaName});
                     if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [operand]});
+                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaName]});
                     }
                     registerContent = 'calc_00' + formulaItem.formulaCode;
                     embeddedFormulaElement[registerContent] = null;
@@ -87,7 +93,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let dto = {
                 yearMonth: self.startMonth,
                 formulaElements: embeddedFormulaElement
-            }
+            };
             service.getEmbeddedFormulaDisplayContent(dto).done(function(data: any){
                 let formulaCode, formulaItem, displayContent;
                 block.clear();
@@ -95,11 +101,11 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     formulaCode = key.substring(7);
                     formulaItem = _.find(self.formulaListItem, {formulaCode: formulaCode});
                     if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [key]});
+                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaCode]});
                     }
                     displayContent = self.FORMULA + self.OPEN_CURLY_BRACKET + formulaItem.formulaName + self.CLOSE_CURLY_BRACKET;
                     formula = formula.replace(new RegExp(displayContent, 'g'), data[key]);
-                })
+                });
                 self.formulaContent(formula);
                 self.extractInputParameter(formula);
                 $('#G1_2_container').focus();

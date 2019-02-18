@@ -70,7 +70,7 @@
             <li data-bind="click: $vm.viewmodelA.onSelectTabH"><a tabindex="-1" href="#tabpanel-3"
                    role="tab-navigator">#{i18n.getText('QMM020_11')}</a></li>
             <li data-bind="click: $vm.viewmodelA.onSelectTabI"><a tabindex="-1" href="#tabpanel-4"
-                   role="tab-navigator">#{i18n.getText('QMM020_2')}</a></li>
+                   role="tab-navigator">#{i18n.getText('QMM020_83')}</a></li>
         </ul>
         <div class="divider"></div>
         <span>#{i18n.getText('QMM020_12')}</span>
@@ -107,7 +107,9 @@
         </com:ko-if>
         <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
             <div id="tabpanel-3" role="tabpanel" data-bind="with: viewmodelH">
+                <com:ko-if bind="$vm.viewmodelA.selectedH() == 1">
                 <ui:include src="../h/index.xhtml"/>
+                </com:ko-if>
             </div>
         </com:ko-if>
         <div id="tabpanel-4" role="tabpanel" data-bind="with: viewmodelI">

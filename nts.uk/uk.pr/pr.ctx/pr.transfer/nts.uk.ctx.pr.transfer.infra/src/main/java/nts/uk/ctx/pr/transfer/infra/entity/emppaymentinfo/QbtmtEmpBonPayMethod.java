@@ -116,7 +116,8 @@ public class QbtmtEmpBonPayMethod extends UkJpaEntity {
 			this.useAtr = paymentMethodDetail.getUseAtr().value ? 1 : 0;
 			if (paymentMethodDetail.getUseAtr().value) {
 				this.paymentMethod = paymentMethodDetail.getPaymentMethod().get().value ? 1 : 0;
-				if (paymentMethodDetail.getPaymentMethod().get().value) {
+				if (paymentMethodDetail.getPaymentMethod().get().value
+						&& paymentMethodDetail.getTransferInfor().isPresent()) {
 					this.sourceBankCode = paymentMethodDetail.getTransferInfor().get().getSourceBankBranchInfor().v();
 					this.desAccountNumber = paymentMethodDetail.getTransferInfor().get().getDesAccountNumber().v();
 					this.desAccountName = paymentMethodDetail.getTransferInfor().get().getDesAccountName().v();
@@ -124,17 +125,23 @@ public class QbtmtEmpBonPayMethod extends UkJpaEntity {
 					this.desBranchId = paymentMethodDetail.getTransferInfor().get().getDesBankBranchInfor();
 					this.desDepositType = paymentMethodDetail.getTransferInfor().get().getDesDepositType().value;
 				}
-				this.paymentProportionAtr = paymentMethodDetail.getPaymentProportionAtr().get().value;
-				this.paymentPriority = paymentMethodDetail.getPaymentPriority().isPresent() ? paymentMethodDetail.getPaymentPriority().get().value : null;
-				switch (paymentProportionAtr) {
-				case 0: // 定率 - FIXED_RATE
-					this.paymentRate = paymentMethodDetail.getPaymentRate().get().v();
-					break;
-				case 1: // 定額 - FIXED_AMOUNT
-					this.paymentAmount = paymentMethodDetail.getPaymentAmount().get().v();
-					break;
-				default: // 全額 - FULL_AMOUNT
-					break;
+				this.paymentProportionAtr = paymentMethodDetail.getPaymentProportionAtr().isPresent()
+						? paymentMethodDetail.getPaymentProportionAtr().get().value : null;
+				this.paymentPriority = paymentMethodDetail.getPaymentPriority().isPresent()
+						? paymentMethodDetail.getPaymentPriority().get().value : null;
+				if (paymentProportionAtr != null) {
+					switch (paymentProportionAtr) {
+					case 0: // 定率 - FIXED_RATE
+						this.paymentRate = paymentMethodDetail.getPaymentRate().isPresent()
+								? paymentMethodDetail.getPaymentRate().get().v() : null;
+						break;
+					case 1: // 定額 - FIXED_AMOUNT
+						this.paymentAmount = paymentMethodDetail.getPaymentAmount().isPresent()
+								? paymentMethodDetail.getPaymentAmount().get().v() : null;
+						break;
+					default: // 全額 - FULL_AMOUNT
+						break;
+					}
 				}
 			}
 		} else {
@@ -149,12 +156,13 @@ public class QbtmtEmpBonPayMethod extends UkJpaEntity {
 		if (listEntity.size() == 1 && listEntity.get(0).individualSettingAtr == 0) {
 			return new EmployeeBonusPaymentMethod(listEntity.get(0).pk.historyId, false, Collections.emptyList());
 		} else {
-			List<PaymentMethodDetail> listPaymentMethod = listEntity.stream()
-					.map(m -> new PaymentMethodDetail(m.useAtr == 1 ? true : false, m.pk.paymentMethodNo,
+			List<PaymentMethodDetail> listPaymentMethod = listEntity.stream().map(m -> m.useAtr == 1
+					? new PaymentMethodDetail(true, m.pk.paymentMethodNo,
 							m.paymentMethod == 1 ? new TransferInfor(m.sourceBankCode, m.desAccountKanaName,
 									m.desAccountName, m.desAccountNumber, m.desBranchId, m.desDepositType) : null,
 							m.paymentProportionAtr, m.paymentMethod == 1 ? true : false, m.paymentRate, m.paymentAmount,
-							m.paymentPriority))
+							m.paymentPriority)
+					: new PaymentMethodDetail(false, m.pk.paymentMethodNo, null, null, null, null, null, null))
 					.collect(Collectors.toList());
 			return new EmployeeBonusPaymentMethod(listEntity.get(0).pk.historyId, true, listPaymentMethod);
 		}

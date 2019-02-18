@@ -43,21 +43,22 @@
         </div>
         <div class="fixed-flex-layout-right">
             <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
-                <div id="D2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
+                <div id="D2_1" style="margin-bottom: 5px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
             </div>
 
             <div>
-                <span  id="D2_3" class="label with-image">
+                <span id="D2_3" class="label with-image" style="margin-bottom: 10px;">
                     <i class="image image-calendar"/>
                     <span>#{i18n.getText('QMM020_30')}</span>
                 </span>
             </div>
 
             <div>
-                <div style="width: 390px" data-bind="ntsSearchBox: {targetKey: 'departmentID', mode:'igTree', comId:'treegrid', items: items, selected: currentSelectedDep, selectedKey: 'departmentID', childField: 'childs', fields: ['departmentName', 'departmentID']}"></div>
+                <div style="width: 300px;margin-bottom: 0px;" data-bind="ntsSearchBox: {targetKey: 'departmentID', mode:'igTree', comId:'treegrid', items: items, selected: currentSelectedDep, selectedKey: 'departmentID', childField: 'childs', fields: ['departmentName', 'departmentID']}"></div>
+                <p class="halign-right" style="margin-right: 25px;margin-bottom: 10px;">#{i18n.getText('QMM020_31')}</p>
 
                 <table id="treegrid" data-bind="ntsTreeGridView:{
-                    width: 789,
+                    width: 800,
                     height: 311,
                     options: items,
                     virtualization: true,

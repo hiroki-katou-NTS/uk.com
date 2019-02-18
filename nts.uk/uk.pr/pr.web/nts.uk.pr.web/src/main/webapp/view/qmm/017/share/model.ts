@@ -444,8 +444,8 @@ module nts.uk.pr.view.qmm017.share.model {
     export function getSystemVariableListEnumModel () {
         return [
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE, getText('Enum_SystemVariableList_SYSTEM_YMD_DATE')),
-            new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, getText('Enum_SystemVariableList_SYSTEM_Y_DATE')),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, getText('Enum_SystemVariableList_SYSTEM_YM_DATE')),
+            new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, getText('Enum_SystemVariableList_SYSTEM_Y_DATE')),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR_MONTH, getText('Enum_SystemVariableList_PROCESSING_YEAR_MONTH')),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, getText('Enum_SystemVariableList_PROCESSING_YEAR')),
             new EnumModel(SYSTEM_VARIABLE_LIST.WORKDAY, getText('Enum_SystemVariableList_WORKDAY'))
