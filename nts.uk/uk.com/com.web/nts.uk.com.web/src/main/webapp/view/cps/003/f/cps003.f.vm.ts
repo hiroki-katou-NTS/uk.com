@@ -764,7 +764,7 @@ module cps003.f.vm {
         // 一致する値
         matchValue: any;
         // 置換形式 
-        replaceFormat: Number;
+        replaceFormat: REPLACE_FORMAT;
         // 値1
         replaceValue1: any;
         // 値2
@@ -783,5 +783,12 @@ module cps003.f.vm {
         WORKTIME = 9,
         GRANDDATE = 10,
         TIMEYEAR = 11
+    }
+
+    enum REPLACE_FORMAT {
+        SAME_AS = 1,        // 入社年月日と同じ, 契約時間　×,
+        PLUS_OR_MIN = 2,    // 年休付与基準日と同じ, 
+        REPLACE_BY_YM = 3,  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
+        REPLACE_BY_YMD = 4  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
     }
 }
