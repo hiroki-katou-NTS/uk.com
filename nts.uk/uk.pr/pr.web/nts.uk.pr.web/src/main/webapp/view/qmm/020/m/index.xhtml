@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 440 };</script>
+        <script>var dialogSize = { width: 480, height: 500 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm020.m.vm.js" />
@@ -24,7 +24,7 @@
         <div id="side-menu" class="cf"></div>
         <div id="content" class="cf">          
             <div class="cf" style="margin: 15px 0px 0px 30px;">
-                <div tabindex="1" style="height: 30px;width: 250px" data-bind="ntsSearchBox: {searchMode: 'highlight',
+                <div tabindex="1" style="height: 30px;width: 280px" data-bind="ntsSearchBox: {searchMode: 'highlight',
                     targetKey: 'statementCode',
                      comId: 'multi-list',
 									items: items,
@@ -32,7 +32,7 @@
 									   fields: ['statementCode', 'statementName'],
 									    mode: 'igGrid'}"/>
                     <table tabindex="2" id="multi-list" data-bind="ntsGridList: {
-										height: 205,
+										height: 232,
 										options: items,
 										optionsValue: 'statementCode',
 										columns: columns,

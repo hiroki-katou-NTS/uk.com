@@ -12,9 +12,9 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
         constructor(){
             let self = this;
             this.columns = ko.observableArray([
-                { headerText: getText('QMM020_26'), prop: 'statementCode', width: 50, formatter: _.escape },
-                { headerText: getText('QMM020_27'),  prop: 'statementName', width: 110 , formatter: _.escape},
-                { headerText: getText('QMM020_81'), prop: 'displayYearMonth', width: 150, formatter: _.escape }
+                { headerText: getText('QMM020_26'), prop: 'statementCode', width: 40, formatter: _.escape },
+                { headerText: getText('QMM020_27'),  prop: 'statementName', width: 180 , formatter: _.escape},
+                { headerText: getText('QMM020_81'), prop: 'displayYearMonth', width: 160, formatter: _.escape }
             ]);
             self.initScreen();
         }
@@ -76,7 +76,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 }
                 listStatementDto.push(dto);
             })
-            return listStatementDto;
+            return _.orderBy(listStatementDto,['statementCode']);
         }
         static convertMonthYearToString(yearMonth: any) {
             let self = this;
