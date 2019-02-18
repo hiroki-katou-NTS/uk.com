@@ -69,6 +69,13 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'masterCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'categoryName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
                     {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},

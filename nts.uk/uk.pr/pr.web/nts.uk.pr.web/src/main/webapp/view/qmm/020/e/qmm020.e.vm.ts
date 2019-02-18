@@ -86,8 +86,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
 
                 ],
                 features: [
-                    { name: 'Sorting',
-                        type: 'local'
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'masterCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'categoryName', allowResizing: true, minimumWidth:30
+                        }]
                     },
                     {
                         name: 'Selection',

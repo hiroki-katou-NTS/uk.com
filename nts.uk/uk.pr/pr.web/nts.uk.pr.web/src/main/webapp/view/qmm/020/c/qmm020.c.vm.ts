@@ -237,6 +237,13 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'employeeCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'employeeName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {
                         name: 'Selection',
                         mode: 'row',
