@@ -469,7 +469,7 @@ public class DetailFormulaCalculationService {
         return result2;
     }
 
-    private String calculateSingleCondition(String conditionFormula, Boolean mustBeBoolean, String functionName/*, int index*/) {
+    private String calculateSingleCondition(String conditionFormula, Boolean mustBeBoolean, String functionName) {
         String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         String[] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
         if (conditionParameters.length == 1) {

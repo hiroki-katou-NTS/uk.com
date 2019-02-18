@@ -119,7 +119,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             formulaItem: operand,
                             trialCalculationValue: ko.observable(null),
                             constraint: 'PaymentAndDeductionItem',
-                            decimalLength: 0
+                            decimalLength: 0,
+                            readonly: false
                         })
                 }
                 if (operand.startsWith(self.ATTENDANCE)) {
