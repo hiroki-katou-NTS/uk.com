@@ -997,6 +997,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 $("#auto-complete-container").hide();
             });
             $("#D3_5").on("keypress", function (event) {
+                if(!$("#auto-complete-container").is(":visible")){
+                    event.preventDefault();
+                    return;
+                }
                 if (event.keyCode == 13) {
                     event.preventDefault();
                     let displayText = $('#auto-complete-container option:selected').text();
