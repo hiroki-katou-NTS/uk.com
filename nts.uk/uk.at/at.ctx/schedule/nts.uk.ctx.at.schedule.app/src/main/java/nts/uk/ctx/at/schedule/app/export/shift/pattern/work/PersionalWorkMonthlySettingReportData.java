@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 @AllArgsConstructor
 public class PersionalWorkMonthlySettingReportData {
+	private String sid;
 	private String scd;
 	private String name;
 	private GeneralDate startDate;
@@ -16,9 +17,9 @@ public class PersionalWorkMonthlySettingReportData {
 	private String patternCode;
 	private String patternName;
 	
-	public static PersionalWorkMonthlySettingReportData createFromJavaType(String scd,
+	public static PersionalWorkMonthlySettingReportData createFromJavaType(String sid, String scd,
 			String name, GeneralDate startDate, GeneralDate endDate, String patternCode, String patternName) {
 		return new PersionalWorkMonthlySettingReportData(
-				scd, name, startDate, endDate, patternCode, patternName);
+				sid, scd, name, startDate, endDate, patternCode, patternName);
 	}
 }

@@ -45,6 +45,9 @@ public class NewLayoutExportImpl implements MasterListData{
 			return null;
 		} else {
 			for (int i = 0; i < listNewLayout.size(); i++) {
+				if(listNewLayout.get(i).getItemParentCD()!= null && listNewLayout.get(i).getLayoutItemType() ==1){
+					listNewLayout.get(i).setItemParentCD(null);
+				}
 				if(listNewLayout.get(i).getItemParentCD()==null && listNewLayout.get(i).getItemCD()!=null){
 					listNewLayoutSv2.add(listNewLayout.get(i));
 				}

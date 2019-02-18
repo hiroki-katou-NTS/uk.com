@@ -15,7 +15,7 @@ public class JpaMaintenanceExportRepository extends JpaRepository implements Mai
 	@Override                                                                                       
 	public List<MaintenanceLayoutData> getAllMaintenanceLayout(String companyId, String contractCd) {
 		String GET_CPS008 = (new StringBuffer()
-				.append("SELECT g.LAYOUT_CD, g.LAYOUT_NAME, d.CATEGORY_NAME, c.ITEM_NAME, c.ITEM_NAME, e.ITEM_PARENT_CD, e.DATA_TYPE, e.ITEM_CD FROM  PPEMT_MAINTENANCE_LAYOUT g")
+				.append("SELECT g.LAYOUT_CD, g.LAYOUT_NAME, d.CATEGORY_NAME, c.ITEM_NAME, c.ITEM_NAME, e.ITEM_PARENT_CD, e.DATA_TYPE, e.ITEM_CD, a.LAYOUT_ITEM_TYPE FROM  PPEMT_MAINTENANCE_LAYOUT g")
 				.append(" LEFT JOIN  PPEMT_LAYOUT_ITEM_CLS a ON g.LAYOUT_ID = a.LAYOUT_ID")
 				.append(" LEFT JOIN PPEMT_LAYOUT_ITEM_CLS_DF b ON b.LAYOUT_ID = g.LAYOUT_ID and b.LAYOUT_DISPORDER = a.DISPORDER ")
 				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM c ON c.PER_INFO_ITEM_DEFINITION_ID = b.PER_INFO_ITEM_DEF_ID ")
@@ -54,8 +54,14 @@ public class JpaMaintenanceExportRepository extends JpaRepository implements Mai
 			dataType =((BigDecimal)  object[6]).intValue();
 		}
 		String itemCD = (String) object[7];
+		int layoutItemType;
+		if(((BigDecimal)  object[8]) ==null){
+			layoutItemType =0;
+		}else{
+			layoutItemType =((BigDecimal)  object[8]).intValue();
+		}
 		
-		MaintenanceLayoutData maintenanceLayoutData = new MaintenanceLayoutData(layoutCd, layoutName,categoryName,itemName, itemNameC,itemParentCD, dataType,itemCD);
+		MaintenanceLayoutData maintenanceLayoutData = new MaintenanceLayoutData(layoutCd, layoutName,categoryName,itemName, itemNameC,itemParentCD, dataType,itemCD,layoutItemType);
 		return maintenanceLayoutData;
 			
 		

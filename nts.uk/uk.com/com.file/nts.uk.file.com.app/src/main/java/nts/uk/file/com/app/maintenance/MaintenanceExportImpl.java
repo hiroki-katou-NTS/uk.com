@@ -63,6 +63,10 @@ public class MaintenanceExportImpl implements MasterListData {
 
 			
 			for (int i = 0; i < listMaintenanceLayout.size(); i++) {
+				if(listMaintenanceLayout.get(i).getItemParentCD()!= null && listMaintenanceLayout.get(i).getLayoutItemType() ==1){
+					listMaintenanceLayout.get(i).setItemParentCD(null);
+				}
+				
 				if(listMaintenanceLayout.get(i).getItemParentCD()==null && listMaintenanceLayout.get(i).getItemCD()!=null){
 					listMaintenanceLayoutSv2.add(listMaintenanceLayout.get(i));
 				}
