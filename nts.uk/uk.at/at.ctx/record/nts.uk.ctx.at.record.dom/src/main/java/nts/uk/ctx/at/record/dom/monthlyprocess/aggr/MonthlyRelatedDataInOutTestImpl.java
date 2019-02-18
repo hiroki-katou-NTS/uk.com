@@ -297,6 +297,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		*/
 		
 		//*****（テスト　2018.3.16 shuichi_ishida）　管理期間の36協定時間読み書き
+		/*
 		val agreementTimeOfManagePeriod = AgreementTimeOfManagePeriod.of(
 				employeeId,
 				yearMonth,
@@ -320,6 +321,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(0))
 			);
 		this.agreementTimeOfManagePeriodRepository.persistAndUpdate(agreementTimeOfManagePeriod);
+		*/
 //		val agreementTimeOpt = this.agreementTimeOfManagePeriodRepository.find(employeeId, yearMonth);
 //		AgreementTimeOfManagePeriod agreementTime = null;
 //		if (agreementTimeOpt.isPresent()) agreementTime = agreementTimeOpt.get();

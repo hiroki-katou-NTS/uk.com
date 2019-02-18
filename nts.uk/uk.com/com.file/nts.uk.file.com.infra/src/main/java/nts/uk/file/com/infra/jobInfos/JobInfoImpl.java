@@ -36,12 +36,13 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+		" WHEN TBL.ROW_NUMBER = 1 THEN TBL.APPLY_CONCURRENT_PERSON"
 			+		" ELSE NULL"
 			+	" END APPLY_CONCURRENT_PERSON,"
-			+	" TBL.JOB_CD, TBL.JOB_NAME, TBL.ROLESET_NAME"
+			+	" TBL.JOB_CD_DIS, TBL.JOB_NAME, TBL.ROLESET_NAME"
 			+	" FROM"
-			+		" (SELECT job.APPLY_CONCURRENT_PERSON, info.JOB_CD, "
+			+		" (SELECT job.APPLY_CONCURRENT_PERSON, "
+			+ " IIF(his.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), info.JOB_CD, '') AS JOB_CD_DIS, "
 			+ " IIF(his.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), info.JOB_NAME, 'マスタ未登録') AS JOB_NAME, "
 			+ " d.ROLESET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME,"
-			+			" ROW_NUMBER() OVER (ORDER BY info.JOB_CD ASC) AS ROW_NUMBER"
+			+			" ROW_NUMBER() OVER (ORDER BY CASE WHEN his.END_DATE <> CONVERT(DATETIME, '9999-12-31 00:00:00', 120) THEN 1 ELSE 0 END ASC, info.JOB_CD ) AS ROW_NUMBER"
 			+			" FROM BSYMT_JOB_INFO info"
 			+ " 		  INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID, JOB_ID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_JOB_HIST) his " 
 			+ "				ON info.JOB_ID = his.JOB_ID AND info.HIST_ID = his.HIST_ID AND info.CID = his.CID AND his.RN = 1 "		
@@ -100,7 +101,7 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
                 .build());
             data.put(JobInfoColumn.CAS014_42, MasterCellData.builder()
                 .columnId(JobInfoColumn.CAS014_42)
-                .value(r.getString("JOB_CD"))
+                .value(r.getString("JOB_CD_DIS"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(JobInfoColumn.CAS014_43, MasterCellData.builder()

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -54,6 +55,10 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 @Stateless
 public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implements MasterListReportGenerator {
 
+	private static final Pattern SHEET_NAME_FORBIDDEN_PATTERN = Pattern.compile("[:\\\\?\\[\\]\\/*：￥＼？［］／＊]");
+	
+	private static final Pattern FILE_NAME_FORBIDDEN_PATTERN = Pattern.compile("[(\\|/|:|\\*|?|\"|<|>|\\\\|)]");
+
 	private static final String YEAR_FORMAT = "yyyy年";
 	
 	private static final String FISCAL_YEAR_FORMAT = "yyyy年度";
@@ -80,7 +85,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private static final String YYYY_MM_DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
 
-	private static final String COMPANY = "Com_Company";
+	private static final String COMPANY = "FND_MASLST_COMPANY";
 
 	private static final String FEATURE_TYPE = "FND_MASLST_TYPE";
 
@@ -145,11 +150,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 				processOneSheet(subSheets.get(i), i + 1, workbook, query, (cells) -> null);
 			}
 		}
-
+		
+		reportName = FILE_NAME_FORBIDDEN_PATTERN.matcher(reportName).replaceAll("_");
+		
 		workbook.getWorksheets().setActiveSheetIndex(0);
-
+		
 		reportContext.processDesigner();
-
+		
 		switch (query.getReportType()) {
 		case CSV:
 			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName + CSV_FILE));
@@ -215,11 +222,20 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		sheet.setName(getSheetName(sheetData.getSheetName(), idx, workbook));
 
 		cells.get(HEADER_INFOR_START_ROW + 3, 1).setValue(sheetData.getSheetName());
-
+		
+		boolean isCsv = isExportCsvFile(query.getReportType());
+		
 		if (sheetData.getMode() != MasterListMode.NONE) {
-			checkModeAndSetHeader(cells, sheetData.getMode(), columnSize, isExportCsvFile(query.getReportType()),
+			checkModeAndSetHeader(cells, sheetData.getMode(), columnSize, isCsv,
 					query.getBaseDate(), query.getStartDate(), query.getEndDate());
+		} else {
+			clearHeaderPathAt(cells, HEADER_INFOR_START_ROW + 4, columnSize, isCsv);
+			clearHeaderPathAt(cells, HEADER_INFOR_START_ROW + 5, columnSize, isCsv);
 		}
+	}
+	
+	private void clearHeaderPathAt(Cells cells, int idx, int columnSize, boolean isCsv){
+		processHeaderInfo(cells, columnSize, idx, isCsv, EMPTY_STRING, EMPTY_STRING);
 	}
 
 	@SneakyThrows
@@ -231,13 +247,15 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private String getSheetName(String sheetName, int idx, Workbook workbook) {
 
+		String name = SHEET_NAME_FORBIDDEN_PATTERN.matcher(sheetName).replaceAll("_");
+		
 		for (Object x : workbook.getWorksheets()) {
-			if (((Worksheet) x).getName().equals(sheetName)) {
-				return getSheetName(sheetName + "(" + idx + ")", idx, workbook);
+			if (((Worksheet) x).getName().equals(name)) {
+				return getSheetName(name + "(" + idx + ")", idx, workbook);
 			}
 		}
 
-		return sheetName;
+		return name;
 	}
 
 	private void setDefaultSheetOption(final Worksheet sheet) {
@@ -311,7 +329,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 					TextResource.localize(FISCAL_YEAR), range);
 		}
 		if (mode != MasterListMode.ALL) {
-			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, EMPTY_STRING, EMPTY_STRING);
+			clearHeaderPathAt(cells, HEADER_INFOR_START_ROW + 5, columnSize, isCsv);
 		}
 	}
 

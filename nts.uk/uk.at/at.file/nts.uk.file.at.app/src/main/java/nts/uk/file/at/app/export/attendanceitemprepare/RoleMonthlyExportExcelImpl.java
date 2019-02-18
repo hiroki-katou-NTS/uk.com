@@ -105,7 +105,7 @@ public class RoleMonthlyExportExcelImpl  {
         BusinessTypeSortedMonDto bzTypeSortMon =  businessFinder.getBusinessTypeSortedMon();
         if(bzTypeSortMon!=null){
             listOrderReferWorkType.addAll(bzTypeSortMon.getListOrderReferWorkType());
-            listOrderReferWorkType.sort(Comparator.comparing(OrderReferWorkTypeDto::getAttendanceItemID));
+            listOrderReferWorkType.sort(Comparator.comparing(OrderReferWorkTypeDto::getOrder));
         }
     }
 
@@ -141,7 +141,18 @@ public class RoleMonthlyExportExcelImpl  {
     }
     
     public List<MasterData> getMasterDatas(MasterListExportQuery query, List<EmployeeRoleDto> listEmployeeRoleDto, Map<String, List<AttItemName>> authSeting, List<AttItemName> listAttItemNameNoAuth) {
-        List<MasterData> datas = new ArrayList<>();
+    	List<String> listAuthSetingCode = new ArrayList<String>(authSeting.keySet());
+		Map<String, EmployeeRoleDto> mapListEmployeeRoleDto =
+				listEmployeeRoleDto.stream().collect(Collectors.toMap(EmployeeRoleDto::getRoleId,
+        	                                              Function.identity()));
+		if(!CollectionUtil.isEmpty(listAuthSetingCode)){
+			for (String key : listAuthSetingCode) {
+				if(mapListEmployeeRoleDto.get(key)==null){
+					listEmployeeRoleDto.add(new EmployeeRoleDto(key,"",TextResource.localize("KDW006_226")));
+				}
+			}
+		}
+    	List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listEmployeeRoleDto)) {
             return null;
         } else {
@@ -261,33 +272,32 @@ public class RoleMonthlyExportExcelImpl  {
     }
     
     public List<MasterData> getMasterDatasSheet2(MasterListExportQuery query, List<AttItemName> listAttItemNameNoAuth, Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly) {
-        List<MasterData> datas = new ArrayList<>();
-        if (CollectionUtil.isEmpty(listAttItemNameNoAuth)) {
+    	List<Integer> listIdControlItem = new ArrayList<Integer>(listConItem.keySet());
+    	List<MasterData> datas = new ArrayList<>();
+        if (CollectionUtil.isEmpty(listIdControlItem)) {
             return null;
         } else {
-            listAttItemNameNoAuth.stream().forEach(c -> {
-                ControlOfAttMonthlyDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
-                Map<String, Object> data = new HashMap<>();
-                putDataEmptySheet2(data);
-            
-                data.put("コード", c.getAttendanceItemDisplayNumber());
-                data.put("項目", c.getAttendanceItemName());
-                if(controlItem!=null){
-                    if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
-                        data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
+        	if (!CollectionUtil.isEmpty(listAttItemNameNoAuth)){
+        		listAttItemNameNoAuth.stream().forEach(c -> {
+                    ControlOfAttMonthlyDtoExcel controlItem = listConItem.get(c.getAttendanceItemId());
+                   
+                    if(controlItem!=null){
+                    	 Map<String, Object> data = new HashMap<>();
+                         putDataEmptySheet2(data);
+                         data.put("コード", c.getAttendanceItemDisplayNumber());
+                         data.put("項目", c.getAttendanceItemName());
+                        if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
+                            data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
+                        }
+                        TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
+                        data.put("丸め単位", timeInputUnit.nameId);
+                        if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
+                        	data.put("丸め単位","");
+                        }
+                        datas.add(alignMasterDataSheet2(data));
                     }
-                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
-                    data.put("丸め単位", timeInputUnit.nameId);
-                }else{
-                    data.put("ヘッダー色", "");
-                    data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
-                }
-                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
-                	data.put("丸め単位","");
-                }
-                datas.add(alignMasterDataSheet2(data));
-                
-            });
+                });
+        	}
         }
         return datas;
     }
@@ -300,7 +310,7 @@ public class RoleMonthlyExportExcelImpl  {
     }
     private MasterData alignMasterDataSheet2(Map<String, Object> data) {
         /**
-         *     TIME_INPUT_1Min(0, "1分"),
+        TIME_INPUT_1Min(0, "1分"),
         TIME_INPUT_5Min(1, "5分"),
         TIME_INPUT_10Min(2, "10分"),
         TIME_INPUT_15Min(3, "15分"),
@@ -310,8 +320,7 @@ public class RoleMonthlyExportExcelImpl  {
         MasterData masterData = new MasterData(data, null, "");
         masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())));
+        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())).horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("丸め単位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         return masterData;
     }
@@ -340,15 +349,28 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
     public List<MasterData> getMasterDatasSheet3(MasterListExportQuery query, List<BusinessTypeDto> listBzMonthly, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly, Map<Integer, AttItemName> mapAttNameMonthlys, String companyId, int mode) {
     	if(mode==1){
 	        List<MasterData> datas = new ArrayList<>();
-	        if (CollectionUtil.isEmpty(listBzMonthly)) {
+	        List<String> listWorkTypeCode =  new ArrayList<String>(mapListRecordMonthly.keySet());
+	        Map<String, BusinessTypeDto> maplistBzMonthly =
+	        		listBzMonthly.stream().collect(Collectors.toMap(BusinessTypeDto::getBusinessTypeCode,
+	        	                                              Function.identity()));
+	       
+	        if (CollectionUtil.isEmpty(listWorkTypeCode)) {
 	            return null;
 	        } else {
-	            listBzMonthly.stream().forEach(c -> {
+	        	Collections.sort(listWorkTypeCode);
+	        	listWorkTypeCode.stream().forEach(c -> {
 	                Map<String, Object> data = new HashMap<>();
 	                putDataEmptySheet3(data,mode);
-	                MonthlyRecordWorkTypeDto montlhyRecord = mapListRecordMonthly.get(c.getBusinessTypeCode());
-	                data.put("コード", c.getBusinessTypeCode());
-	                data.put("名称", c.getBusinessTypeName());
+	                MonthlyRecordWorkTypeDto montlhyRecord = mapListRecordMonthly.get(c);
+	                BusinessTypeDto bzType =  maplistBzMonthly.get(c);
+	                String name ="";
+	                if(bzType==null){
+	                	name = TextResource.localize("KDW006_226");
+	                }else {
+						name = bzType.getBusinessTypeName();
+					}
+	                data.put("コード", c);
+	                data.put("名称", name);
 	                if(montlhyRecord!=null &&montlhyRecord.getDisplayItem()!=null){
 	                    MonthlyActualResultsDto monActualResult = montlhyRecord.getDisplayItem();
 	                    List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monActualResult.getListSheetCorrectedMonthly();
@@ -420,7 +442,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		data.put("コード", x);
         		Map.Entry<Integer,List<PerAuthFormatItem>> entry = mapAttItem.entrySet().iterator().next();
         		PerAuthFormatItem monFirst = entry.getValue().get(0);
-        		data.put("名称", monFirst.getDailyName());
+        		data.put("名称", monFirst.getDailyName()==null?TextResource.localize("KDW006_226"): monFirst.getDailyName());
         		data.put("このフォーマットを初期設定にする", monFirst.getAvailability()==1?"○":"-");
                 
         		List<Integer> keySheetNo = new ArrayList<Integer>(mapAttItem.keySet());
@@ -486,7 +508,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         if(mode == 0){
         	masterData.cellAt("このフォーマットを初期設定にする").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         }
-        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         masterData.cellAt("名称SheetName").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("月次項目 項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         return masterData;

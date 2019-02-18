@@ -14,8 +14,8 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.util.Time;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -76,6 +77,9 @@ public class MonthlyCalculation {
 	/** 36協定時間 */
 	@Setter
 	private AgreementTimeOfMonthly agreementTime;
+	/** 36協定上限時間 */
+	@Setter
+	private AgreMaxTimeOfMonthly agreMaxTime;
 
 	/** 会社ID */
 	private String companyId;
@@ -150,6 +154,7 @@ public class MonthlyCalculation {
 		this.totalWorkingTime = new AttendanceTimeMonth(0);
 		this.totalTimeSpentAtWork = new AggregateTotalTimeSpentAtWork();
 		this.agreementTime = new AgreementTimeOfMonthly();
+		this.agreMaxTime = new AgreMaxTimeOfMonthly();
 		
 		this.companyId = "empty";
 		this.employeeId = "empty";
@@ -190,6 +195,7 @@ public class MonthlyCalculation {
 	 * @param totalWorkingTime 総労働時間
 	 * @param totalTimeSpentAtWork 総拘束時間
 	 * @param agreementTime 36協定時間
+	 * @param agreMaxTime 36協定上限時間
 	 * @return 月別実績の月の計算
 	 */
 	public static MonthlyCalculation of(
@@ -199,7 +205,8 @@ public class MonthlyCalculation {
 			AggregateTotalWorkingTime aggregateTime,
 			AttendanceTimeMonth totalWorkingTime,
 			AggregateTotalTimeSpentAtWork totalTimeSpentAtWork,
-			AgreementTimeOfMonthly agreementTime){
+			AgreementTimeOfMonthly agreementTime,
+			AgreMaxTimeOfMonthly agreMaxTime){
 		
 		val domain = new MonthlyCalculation();
 		domain.actualWorkingTime = actualWorkingTime;
@@ -209,6 +216,7 @@ public class MonthlyCalculation {
 		domain.totalWorkingTime = totalWorkingTime;
 		domain.totalTimeSpentAtWork = totalTimeSpentAtWork;
 		domain.agreementTime = agreementTime;
+		domain.agreMaxTime = agreMaxTime;
 		return domain;
 	}
 	
@@ -617,7 +625,8 @@ public class MonthlyCalculation {
 		ConcurrentStopwatches.stop("12227:管理期間の36協定：");
 		
 		// 月別実績の36協定へ値を移送
-		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
+		this.agreMaxTime = this.agreementTimeOfManagePeriod.getAgreementMaxTime().getAgreementTime();
 	}
 	
 	/**
@@ -639,7 +648,8 @@ public class MonthlyCalculation {
 		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
 		
 		// 月別実績の36協定へ値を移送
-		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
+		this.agreMaxTime = this.agreementTimeOfManagePeriod.getAgreementMaxTime().getAgreementTime();
 	}
 	
 	/**

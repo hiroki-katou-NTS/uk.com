@@ -257,32 +257,18 @@ public class MenuSettingImpl implements MasterListData {
 			if (treeMenu.getCode().equals(menu.getCode()) && treeMenu.getClassification().equals(menu.getClassification()) && treeMenu.getSystem().equals(menu.getSystem())) {
 				String displayName = menu.getDisplayName().v();
 				if (displayName != null){
-					if (displayName.contains(TextResource.localize("CCG013_134"))) {
+					if (displayName.trim().equals(TextResource.localize("CCG013_134"))) {
 						displayName = displayName.replaceAll(TextResource.localize("CCG013_134"), separatorLine);
 						return displayName;
 					}
 					if (displayName.contains(line)){
-						String str[] = displayName.split(line);
-						StringBuffer bf = new StringBuffer();
-						if (str.length > 0){
-							for (int i = 0; i < str.length; i++){
-								if (str[i] != null && !"".equals(str[i])) {
-									if (bf.length() <= 0){
-										bf.append(str[i]);
-									} else {
-										bf.append(line);
-										bf.append(str[i]);
-									}
-								}
-							}
+						String str = displayName.trim().replaceAll(line, "");
+						if (displayName.equals(line) || str.length() <= 0){
+							return separatorLine;
 						}
-						if (bf.length() <= 0) bf.append(line);
-						String name = bf.toString();
-						name = name.replaceAll(line, separatorLine);
-						return name;
 					}
+					return displayName;
 				}
-				return displayName;
 			}
 		}
 		return null;

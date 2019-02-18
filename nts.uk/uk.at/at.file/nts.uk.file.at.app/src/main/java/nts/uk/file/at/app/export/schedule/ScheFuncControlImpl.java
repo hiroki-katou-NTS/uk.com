@@ -244,7 +244,6 @@ public class ScheFuncControlImpl implements MasterListData {
 		    	} else {
 		    		AtomicInteger i = new AtomicInteger(0); 
 		    		for (String child : listChilds) {
-		    			boolean _check = false;
 		    			Map<String, Object> data = new HashMap<>();
 						putEmptyData(data); 
 						if (i.get() == 0){
@@ -252,8 +251,8 @@ public class ScheFuncControlImpl implements MasterListData {
 						}
 						data.put(sheet1_column2, child);
 						if (parent.equals(TextResource.localize("KSM011_43"))) {
-							if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1) {
-								if (child.equals(TextResource.localize("KSM011_44")) && scheFuncControl.getExecutionMethod().value == 1 && scheFuncControl.getAlarmCheckCls().value == 0){
+							if (scheFuncControl.getCompletedFuncCls().value == 1 && scheFuncControl.getHowToComplete().value == 1) {
+								if (child.equals(TextResource.localize("KSM011_44")) && scheFuncControl.getExecutionMethod().value == 1 && scheFuncControl.getAlarmCheckCls().value == 1){
 									List<ScheFuncCond> listScheFuncConds = scheFuncControl.getScheFuncCond();
 									listScheFuncConds = listScheFuncConds.stream().sorted((object1, object2) -> object1.getConditionNo() - (object2.getConditionNo())).collect(Collectors.toList());
 									String conditionText = null;
@@ -269,43 +268,25 @@ public class ScheFuncControlImpl implements MasterListData {
 										}
 									}
 									data.put("値", conditionText);
-									_check = true;
 								} else {
 									String value = getScheFuncControlValue(parent, child, scheFuncControl);
-									if (value != null){
-										data.put("値", value);
-										_check = true;
-									} else {
-										_check = false;
-									}
+									data.put("値", value);
 								}
 							} else {
-								_check = false;
+								data.put("値", null);
 							}
 						} else if (child.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
 							if (scheFuncControl.getSearchMethod().value == 0){
-								_check = false;
+								data.put("値", null);
 							} else {
 								String value = getScheFuncControlValue(parent, child, scheFuncControl);
-								if (value != null){
-									data.put("値", value);
-									_check = true;
-								} else {
-									_check = false;
-								}
+								data.put("値", value);
 							}
 						} else {
 							String value = getScheFuncControlValue(parent, child, scheFuncControl);
-							if (value != null){
-								data.put("値", value);
-								_check = true;
-							} else {
-								_check = false;
-							}
+							data.put("値", value);
 						}
-						if (_check){
-							datas.add(data);
-						}
+						datas.add(data);
 						i.getAndIncrement();
 					}
 		    	}
@@ -340,10 +321,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		if (key.equals(TextResource.localize("KSM011_7")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getAlarmCheckUseCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -351,10 +332,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_10")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getConfirmedCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -362,10 +343,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_11")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getPublicCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -373,10 +354,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_12")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getOutputCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -384,10 +365,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_13")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getWorkDormitionCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -395,10 +376,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_14")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getTeamCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -406,10 +387,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_15")) && parent.equals(TextResource.localize("KSM011_76"))){
 			switch (scheFuncControl.getRankCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -443,10 +424,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_17")) && parent.equals(TextResource.localize("KSM011_16"))){
 			switch (scheFuncControl.getShortNameDisp().value) {
 			case 0:	
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -454,10 +435,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_18")) && parent.equals(TextResource.localize("KSM011_16"))){
 			switch (scheFuncControl.getTimeDisp().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -465,10 +446,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_19")) && parent.equals(TextResource.localize("KSM011_16"))){
 			switch (scheFuncControl.getSymbolDisp().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -476,10 +457,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_21")) && parent.equals(TextResource.localize("KSM011_20"))){
 			switch (scheFuncControl.getTwentyEightDaysCycle().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -487,10 +468,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_22")) && parent.equals(TextResource.localize("KSM011_20"))){
 			switch (scheFuncControl.getLastDayDisp().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -498,10 +479,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_24")) && parent.equals(TextResource.localize("KSM011_23"))){
 			switch (scheFuncControl.getIndividualDisp().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -509,10 +490,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_25")) && parent.equals(TextResource.localize("KSM011_23"))){
 			switch (scheFuncControl.getDispByDate().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -520,10 +501,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_26")) && parent.equals(TextResource.localize("KSM011_23"))){
 			switch (scheFuncControl.getIndicationByShift().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -531,10 +512,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_28")) && parent.equals(TextResource.localize("KSM011_27"))){
 			switch (scheFuncControl.getRegularWork().value) {
 			case 0:
-				value = TextResource.localize("KSM011_29");
+				value = TextResource.localize("KSM011_30");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_30");
+				value = TextResource.localize("KSM011_29");
 				break;
 			default:
 				break;
@@ -542,10 +523,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_31")) && parent.equals(TextResource.localize("KSM011_27"))){
 			switch (scheFuncControl.getFluidWork().value) {
 			case 0:
-				value = TextResource.localize("KSM011_29");
+				value = TextResource.localize("KSM011_30");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_30");
+				value = TextResource.localize("KSM011_29");
 				break;
 			default:
 				break;
@@ -553,10 +534,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_32")) && parent.equals(TextResource.localize("KSM011_27"))){
 			switch (scheFuncControl.getWorkingForFlex().value) {
 			case 0:
-				value = TextResource.localize("KSM011_29");
+				value = TextResource.localize("KSM011_30");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_30");
+				value = TextResource.localize("KSM011_29");
 				break;
 			default:
 				break;
@@ -564,10 +545,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_33")) && parent.equals(TextResource.localize("KSM011_27"))){
 			switch (scheFuncControl.getOvertimeWork().value) {
 			case 0:
-				value = TextResource.localize("KSM011_29");
+				value = TextResource.localize("KSM011_30");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_30");
+				value = TextResource.localize("KSM011_29");
 				break;
 			default:
 				break;
@@ -575,10 +556,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_35")) && parent.equals(TextResource.localize("KSM011_34"))){
 			switch (scheFuncControl.getNormalCreation().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -586,10 +567,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_36")) && parent.equals(TextResource.localize("KSM011_34"))){
 			switch (scheFuncControl.getSimulationCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -597,10 +578,10 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_37")) && parent.equals(TextResource.localize("KSM011_34"))){
 			switch (scheFuncControl.getCaptureUsageCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -608,16 +589,16 @@ public class ScheFuncControlImpl implements MasterListData {
 		} else if (key.equals(TextResource.localize("KSM011_39")) && parent.equals(TextResource.localize("KSM011_38"))){
 			switch (scheFuncControl.getCompletedFuncCls().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
 			}
 		} else if (key.equals(TextResource.localize("KSM011_40")) && parent.equals(TextResource.localize("KSM011_38"))){
-			if (scheFuncControl.getCompletedFuncCls().value == 0) {
+			if (scheFuncControl.getCompletedFuncCls().value == 1) {
 				switch (scheFuncControl.getHowToComplete().value) {
 				case 0:
 					value = TextResource.localize("KSM011_41");
@@ -630,13 +611,13 @@ public class ScheFuncControlImpl implements MasterListData {
 				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_7")) && parent.equals(TextResource.localize("KSM011_43"))){
-			if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1) {
+			if (scheFuncControl.getCompletedFuncCls().value == 1 && scheFuncControl.getHowToComplete().value == 1) {
 				switch (scheFuncControl.getAlarmCheckCls().value) {
 				case 0:
-					value = TextResource.localize("KSM011_8");
+					value = TextResource.localize("KSM011_9");
 					break;
 				case 1:
-					value = TextResource.localize("KSM011_9");
+					value = TextResource.localize("KSM011_8");
 					break;
 				default:
 					break;
@@ -645,7 +626,7 @@ public class ScheFuncControlImpl implements MasterListData {
 				value = TextResource.localize("KSM011_9");
 			}
 		} else if (key.equals(TextResource.localize("KSM011_77")) && parent.equals(TextResource.localize("KSM011_43"))){
-			if (scheFuncControl.getCompletedFuncCls().value == 0 && scheFuncControl.getHowToComplete().value == 1 && scheFuncControl.getAlarmCheckCls().value == 0) {
+			if (scheFuncControl.getCompletedFuncCls().value == 1 && scheFuncControl.getHowToComplete().value == 1 && scheFuncControl.getAlarmCheckCls().value == 1) {
 				switch (scheFuncControl.getExecutionMethod().value) {
 				case 0:
 					value = TextResource.localize("KSM011_41");
@@ -658,26 +639,30 @@ public class ScheFuncControlImpl implements MasterListData {
 				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_46")) && parent.equals(TextResource.localize("KSM011_43"))){
-			switch (scheFuncControl.getHandleRepairAtr().value) {
-			case 0:
-				value = TextResource.localize("KSM011_8");
-				break;
-			case 1:
-				value = TextResource.localize("KSM011_9");
-				break;
-			default:
-				break;
+			if (scheFuncControl.getCompletedFuncCls().value == 1 && scheFuncControl.getHowToComplete().value == 1) {
+				switch (scheFuncControl.getHandleRepairAtr().value) {
+				case 0:
+					value = TextResource.localize("KSM011_9");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_8");
+					break;
+				default:
+					break;
+				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_47")) && parent.equals(TextResource.localize("KSM011_43"))){
-			switch (scheFuncControl.getConfirm().value) {
-			case 0:
-				value = TextResource.localize("KSM011_8");
-				break;
-			case 1:
-				value = TextResource.localize("KSM011_9");
-				break;
-			default:
-				break;
+			if (scheFuncControl.getCompletedFuncCls().value == 1 && scheFuncControl.getHowToComplete().value == 1) {
+				switch (scheFuncControl.getConfirm().value) {
+				case 0:
+					value = TextResource.localize("KSM011_9");
+					break;
+				case 1:
+					value = TextResource.localize("KSM011_8");
+					break;
+				default:
+					break;
+				}
 			}
 		} else if (key.equals(TextResource.localize("KSM011_49")) && parent.equals(TextResource.localize("KSM011_48"))){
 			switch (scheFuncControl.getSearchMethod().value) {

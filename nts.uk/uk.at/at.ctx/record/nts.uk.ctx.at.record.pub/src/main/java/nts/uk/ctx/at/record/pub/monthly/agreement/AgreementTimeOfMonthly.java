@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 
 /**
  * 月別実績の36協定時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeOfMonthly {

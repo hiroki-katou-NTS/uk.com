@@ -24,7 +24,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return;
             }
             self.modeScreen(params.mode);
-            self.standardDate(params.date == null ? parseInt(moment().utc().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(moment().utc(params.date).format("YYYYMMDD")).toValue());
+            self.standardDate(params.date == null ? parseInt(moment().utc().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(moment(params.date).format("YYYYMMDD")).toValue());
         }
         /**
          * startPage
@@ -123,7 +123,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     self.standardDate();
                     self.startDateFiscalYear(self.yearValue().startDate+""+ self.getFullMonth(self.firstMonth()) +"01");
                     if( self.firstMonth()!= 1){
-                        self.endDateDay (moment().utc((parseInt(self.yearValue().endDate)+1)+"-"+ self.getFullMonth(self.firstMonth() - 1) , "YYYY-MM").daysInMonth());
+                        self.endDateDay (moment((parseInt(self.yearValue().endDate)+1)+"-"+ self.getFullMonth(self.firstMonth() - 1) , "YYYY-MM").daysInMonth());
                         self.endDateFiscalYear(self.yearValue().endDate === "9999" ? "99991231" : (self.convertYearToInt(self.yearValue().endDate)+1)+""+ self.getFullMonth(self.firstMonth() - 1) +""+self.endDateDay());
                     } else {
                         self.endDateFiscalYear(self.convertYearToInt((self.yearValue().endDate)) + "1231");
@@ -141,10 +141,10 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                */
                let paramsCdl : IPARAMS_CDL = {
                    status : true,
-                   mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
-                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment().utc(self.standardDate() + "").format("YYYY/MM/DD") : null,
-                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
-                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
+                   mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_RANGE : self.modeScreen(),
+                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? self.convertMonthYearToString(self.standardDate())  : null,
+                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.startDateFiscalYear()),
+                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.endDateFiscalYear())
                };
 
                 $("#A2_2 .ntsDatepicker").trigger("validate");
@@ -187,6 +187,16 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return "" + month;
             }
         }
+
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string, date: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            date = yearMonth.slice(6,8);
+            return year + "/" + month + "/" + date;
+        }
     }
     export enum MODE_SCREEN {
         //mode standard date
@@ -199,7 +209,10 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         ALL = 3,
 
         //YEAR PERIOD
-        YEAR_PERIOD = 5
+        YEAR_PERIOD = 5,
+        
+        // YEAR PERIOD MAPPING WITH SERVER
+        YEAR_RANGE = 4
     }
     interface IPARAMS_CDL {
         status: boolean;
@@ -224,6 +237,8 @@ module nts.uk.com.view.cdl028.a.viewmodel {
             this.endDateFiscalYear = paramsCdl.endDateFiscalYear;
         }
     }
+
+
 
     interface  IStartMonth{
         startMonth: number;

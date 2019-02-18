@@ -67,7 +67,8 @@ public class ApprovalFunctionConfigExport {
         Map<String, MasterCellData> data = new HashMap<>();
         data.put(ApprovalFunctionConfigExport.KAF022_635,
 				MasterCellData.builder().columnId(ApprovalFunctionConfigExport.KAF022_635).value(
-						r[0] != null && !TextResource.localize("Enum_MasterUnregistered").equals(r[0].toString().trim())
+						(r[0] != null && !TextResource.localize("Enum_MasterUnregistered").equals(r[0].toString().trim()))
+						&& (r[1] != null && !TextResource.localize("Enum_MasterUnregistered").equals(r[1].toString().trim()))
 								? r[0] : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
         data.put(ApprovalFunctionConfigExport.KAF022_636,

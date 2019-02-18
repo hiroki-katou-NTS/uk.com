@@ -45,7 +45,7 @@ module nts.uk.ui.koExtentions {
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
             var enableRowNumbering = false;
-            var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
+            var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : toBeResource.searchByCodeName; 
             
             let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
             let beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
@@ -96,14 +96,14 @@ module nts.uk.ui.koExtentions {
                         $SearchArea.append("<div class='ntsClearButtonContainer'/>");
                         $SearchArea.find(".ntsClearButtonContainer")
                             .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
-                        $SearchArea.find(".clear-btn").text("解除");        
+                        $SearchArea.find(".clear-btn").text(toBeResource.clear);        
                     }
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
-                    $SearchArea.find(".search-btn").text("検索");  
+                    $SearchArea.find(".search-btn").text(toBeResource.search);  
                 }
                 
                 var searchAreaId = elementId + "-search-area";

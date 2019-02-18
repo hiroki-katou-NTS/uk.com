@@ -11,11 +11,16 @@ module nts.uk.at.view.kmk004.a {
             saveCompanySetting: 'screen/at/kmk004/company/save',
             removeCompanySetting: 'screen/at/kmk004/company/delete',
             
-            findBeginningMonth: 'basic/company/beginningmonth/find'
+            findBeginningMonth: 'basic/company/beginningmonth/find',
+            findprogramName : 'sys/portal/standardmenu/findProgramName/{0}/{1}'
         }
-        export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
-            let domainType = "KMK004" + nts.uk.resource.getText("KMK004_194");
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
+        
+        export function findprogramName(programId: string, screenId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', nts.uk.text.format(servicePath.findprogramName, programId, screenId));
+        }
+        
+        export function saveAsExcel(domainType: string, startDate : any, endDate: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: 'ja', reportType: 0, mode: 4, startDate: startDate, endDate: endDate});
         }
         
         export function getStartMonth(): JQueryPromise<any> {

@@ -119,9 +119,13 @@ module nts.uk.at.view.ksm006.a {
         
         export function saveAsExcel(): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1]!=null?program[1]:"";
+            let domainType = "KSM006";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print', 
-                {domainId: 'BasicWorkrRegister', domainType: 'KSM006' + programName, 
+                {domainId: 'BasicWorkRegister', domainType: domainType, 
                 languageId: 'ja', reportType: 0});
         }
 
