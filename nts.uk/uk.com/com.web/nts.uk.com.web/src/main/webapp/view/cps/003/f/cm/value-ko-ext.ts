@@ -40,11 +40,11 @@ module nts.custombinding {
                 template = {
                     str: `<input data-bind="ntsTextEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false }" />`,
                     numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false, option: options }" />`,
-                    amount: `<div class='number-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '1'; }), m2: ko.computed(function() { return mode() == '2'; }) }">
+                    amount: `<div class='number-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '0'; }), m2: ko.computed(function() { return mode() == '1'; }) }">
                                 <div class="grant-selection-group" data-bind="ntsRadioBoxGroup: {
                                     options: ko.observableArray([
-                                        { id: '1', name: '' },
-                                        { id: '2', name: '' }]),
+                                        { id: '0', name: '' },
+                                        { id: '1', name: '' }]),
                                     optionsValue: 'id',
                                     optionsText: 'name',
                                     value: mode,
@@ -71,13 +71,13 @@ module nts.custombinding {
                                 </div>
                                 <div class="" data-bind="text: i18n('CPS003_86')"></div>
                             </div>`,
-                    grDate: `<div class='selection-group-box' data-bind="let: { m3: ko.computed(function() { return mode() == '3' }), m4: ko.computed(function() { return mode() == '4' }) }">
+                    grDate: `<div class='selection-group-box' data-bind="let: { m3: ko.computed(function() { return mode() == '2' }), m4: ko.computed(function() { return mode() == '3' }) }">
                                 <div class="grant-selection-group" data-bind="ntsRadioBoxGroup: {
                                     options: ko.observableArray([
-                                        { id: '1', name: i18n('CPS003_88', [itemNames()['IS00020']]) },
-                                        { id: '2', name: i18n('CPS003_88', [itemNames()['IS00279']]) },
-                                        { id: '3', name: ''}, 
-                                        { id: '4', name: ''}]),
+                                        { id: '0', name: i18n('CPS003_88', [itemNames()['IS00020']]) },
+                                        { id: '1', name: i18n('CPS003_88', [itemNames()['IS00279']]) },
+                                        { id: '2', name: ''}, 
+                                        { id: '3', name: ''}]),
                                     optionsValue: 'id',
                                     optionsText: 'name',
                                     value: mode,
@@ -88,9 +88,9 @@ module nts.custombinding {
                                         width: '140px',
                                         name: i18n('CPS003_89'),
                                         options: ko.observableArray([
-                                            {optionValue: '1', optionText: i18n('CPS003_131') },
-                                            {optionValue: '2', optionText: i18n('CPS003_132') },
-                                            {optionValue: '3', optionText: i18n('CPS003_133') }
+                                            {optionValue: '0', optionText: i18n('CPS003_131') },
+                                            {optionValue: '1', optionText: i18n('CPS003_132') },
+                                            {optionValue: '2', optionText: i18n('CPS003_133') }
                                         ]),
                                         optionsValue: 'optionValue',
                                         visibleItemsCount: 5,
@@ -111,11 +111,11 @@ module nts.custombinding {
                             </div>`,
                     date: `<div data-bind="ntsDatePicker: { value: value, constraint: constraint, enable: true, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
                     time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, inputFormat: 'time', mode: 'time', enable: true, required: false }" />`,
-                    timey: `<div class='stime-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '1'; }), m2: ko.computed(function() { return mode() == '2'; }) }">
+                    timey: `<div class='stime-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '0'; }), m2: ko.computed(function() { return mode() == '1'; }) }">
                                 <div class="grant-selection-group" data-bind="ntsRadioBoxGroup: {
                                     options: ko.observableArray([
-                                        { id: '1', name: i18n('CPS003_91', [itemNames()['IS00253']]) },
-                                        { id: '2', name: '' }]),
+                                        { id: '0', name: i18n('CPS003_91', [itemNames()['IS00253']]) },
+                                        { id: '1', name: '' }]),
                                     optionsValue: 'id',
                                     optionsText: 'name',
                                     value: mode,
@@ -166,7 +166,7 @@ module nts.custombinding {
                 }, vm = {
                     itemNames: ko.observable({}),
                     i18n: nts.uk.resource.getText,
-                    mode: ko.observable('1'),
+                    mode: ko.observable('0'),
                     value: ko.observable(),
                     value1: ko.observable(),
                     value2: ko.observable(),
@@ -304,7 +304,7 @@ module nts.custombinding {
                             break;
                         case ITEM_SINGLE_TYPE.TIME:
                             if (itemData.itemCode == 'IS00287') {
-                                if (mode == '1') {
+                                if (mode == '0') {
                                     textView = vm.i18n('CPS003_91', [vm.itemNames()['IS00253']]) + ' ' + value;
                                 } else {
                                     textView = parseTime(Number(value1), true).format();
@@ -326,7 +326,7 @@ module nts.custombinding {
                                     textView = value;
                                 }
                             } else {
-                                if (mode == '1') {
+                                if (mode == '0') {
                                     if (value && !isNaN(Number(value))) {
                                         textView = Number(value).toLocaleString('ja-JP', { useGrouping: true });
                                     }
@@ -360,7 +360,7 @@ module nts.custombinding {
                 $(element).find('input').ntsError('clear');
 
                 setTimeout(() => {
-                    if (m == "1") {
+                    if (m == "0") {
                         let input = document.querySelector('.text-box-x input, .number-group-box .text-box input');
                         if (input) {
                             input.focus();
@@ -386,7 +386,7 @@ module nts.custombinding {
                         } else if (itemData.dataType == ITEM_SINGLE_TYPE.TIME && itemData.itemCode == 'IS00287') {
                             vm.value1(undefined);
                         }
-                    } else if (m == "2") {
+                    } else if (m == "1") {
                         let input = document.querySelector('.text-box-a input, .number-group-box .dropdown-box .ntsControl');
                         if (input) {
                             input.focus();
@@ -412,7 +412,7 @@ module nts.custombinding {
                         } else if (itemData.dataType == ITEM_SINGLE_TYPE.TIME && itemData.itemCode == 'IS00287') {
                             vm.value(undefined);
                         }
-                    } else if (m == "3") {
+                    } else if (m == "2") {
                         let combx = document.querySelector('.dropdown-box>.ntsControl');
                         if (combx) {
                             combx.focus();
@@ -433,7 +433,7 @@ module nts.custombinding {
                             vm.value1(101);
                             vm.value2(undefined);
                         }
-                    } else if (m == "4") {
+                    } else if (m == "3") {
                         let input = document.querySelector('.text-box input');
                         if (input) {
                             input.focus();
@@ -503,7 +503,7 @@ module nts.custombinding {
                                 'IS00594', 'IS00601',
                                 'IS00608', 'IS00615',
                                 'IS00622'].indexOf(itemData.itemCode) > -1) {
-                                vm.mode('1');
+                                vm.mode('0');
                                 ko.utils.setHtml(element, template.grDate);
                             } else {
                                 vm.mode(undefined);
@@ -516,7 +516,7 @@ module nts.custombinding {
                             break;
                         case ITEM_SINGLE_TYPE.TIME:
                             if (itemData.itemCode == 'IS00287') {
-                                vm.mode('1');
+                                vm.mode('0');
                                 ko.utils.setHtml(element, template.timey);
                             } else {
                                 vm.mode(undefined);
@@ -532,7 +532,7 @@ module nts.custombinding {
                                 ko.utils.setHtml(element, template.numb);
                                 vm.options.grouplength = 0;
                             } else {
-                                vm.mode('1');
+                                vm.mode('0');
                                 ko.utils.setHtml(element, template.amount);
                                 vm.options.grouplength = 3;
                             }
