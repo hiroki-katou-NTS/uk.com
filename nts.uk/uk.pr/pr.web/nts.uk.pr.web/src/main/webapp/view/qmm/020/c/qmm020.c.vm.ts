@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let listStateCorrelationHis = [];
 
             service.getStateCorrelationHisEmployeeById().done((data)=>{
-                if(data == null){
+                if(data == null || data.length == 0){
                     dialog.info({ messageId: "Msg_303" }).then(()=>{
                         self.enableAddHisButton(false);
                         self.enableEditHisButton(false);
@@ -226,17 +226,24 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number', ntsControl: 'Label',hidden: true },
-                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '50px'},
-                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '200px',  },
-                    { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonSalary' },
+                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '90px'},
+                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '180px',  },
+                    { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'ButtonSalary' },
                     { headerText: '',template: '<div>${salaryCode}</div>', key: 'salaryCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '200px' },
-                    { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonBonus' },
+                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '180px' },
+                    { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'ButtonBonus' },
                     { headerText: '',template: '<div>${bonusCode}</div>', key: 'bonusCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '200px' },
+                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '180px' },
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'employeeCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'employeeName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {
                         name: 'Selection',
                         mode: 'row',

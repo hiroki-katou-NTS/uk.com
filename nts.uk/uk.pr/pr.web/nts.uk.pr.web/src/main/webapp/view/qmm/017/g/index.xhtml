@@ -7,7 +7,12 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 730, height: 570};</script>
+        <script>var dialogSize = {width: 765, height: 570};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.PaymentAndDeductionItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.AttendanceItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.CompanyAndIndividualUnitPrice
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm017.g.service.js"/>
@@ -28,7 +33,7 @@
                             <table id="G1_2">
                                 <colgroup>
                                     <col width="150px"/>
-                                    <col width="120px"/>
+                                    <col width="140px"/>
                                 </colgroup>
                                 <thead>
                                 <tr>
@@ -47,13 +52,15 @@
                                     <td>
                                         <input data-bind="ntsNumberEditor: {
                                             value: trialCalculationValue,
+                                            constraint: constraint,
                                             option: {
-                                                width: '90px',
-				                                decimallength: 2
+                                                width: '110px',
+				                                decimallength: decimalLength
                                             },
                                             name: 'お試し計算値',
-                                            required: true}"
-                                        />
+                                            required: true,
+                                            readonly: readonly
+                                        }"/>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -83,7 +90,7 @@
                 <div style="margin-top: 10px; min-width: 550px;">
                     <div style="margin-top: 10px; min-width: 550px">
                         <div>
-                        <textarea id="G1_12" tabindex="3" style="height: 100px; width: 646px;" data-bind="ntsMultilineEditor: {
+                        <textarea id="G1_12" tabindex="3" style="height: 100px; width: 666px;" data-bind="ntsMultilineEditor: {
                             value: formulaContent,
                             readonly: true}"/>
                         </div>

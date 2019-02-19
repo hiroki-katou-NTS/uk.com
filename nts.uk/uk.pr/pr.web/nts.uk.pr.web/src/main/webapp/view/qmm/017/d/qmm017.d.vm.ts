@@ -263,7 +263,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
                 if (newValue || !newValue && newValue === 0) {
                     let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function (formula) {
-                        return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
+                        return formula.nestedAtr == model.NESTED_USE_CLS.USE && formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
                             return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
                         })
                     }).map(item => {
@@ -541,9 +541,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         addWageTableItem() {
             let self = this;
-            // 「賃金テーブル」was not subject to processing. Value returned 1.
-            //self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
-            self.addToFormulaByPosition('1');
+            // 「賃金テーブル」was not a processed object. Value returned 1.
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
         }
 
         addToFormulaByPosition(formulaToAdd: string) {
@@ -625,8 +624,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkResultIsNotNumber(formula) {
             let self = this;
             if (formula.startsWith(self.VARIABLE) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.AND))
-                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
-                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION))) self.setErrorToFormula('MsgQ_235', []);
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR))
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION))
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION)))
+                self.setErrorToFormula('MsgQ_235', []);
         }
 
         checkBracket(formula) {
@@ -790,7 +792,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 functionParameters.forEach(function (functionParameter, index) {
                     functionParameter.split(conditionRegex).forEach(function (item) {
                         self.checkBracket(item);
-                    })
+                    });
                     if (functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
                         self.setErrorToFormula('MsgQ_240', [functionName, index + 1]);
                     }
@@ -1000,6 +1002,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             $("#D3_5").on("keypress", function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
+                    if(!$("#auto-complete-container").is(":visible")) return;
                     let displayText = $('#auto-complete-container option:selected').text();
                     if (displayText.indexOf("    ") > -1) displayText = displayText.split("    ")[1];
                     $("#auto-complete-container").hide();

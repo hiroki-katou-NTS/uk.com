@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
             block.invisible();
             service.getInsuranceType(self.lifeInsuranceCode()).done(function (data: Array<IInsuranceType>) {
                 if (data && data.length > 0) {
-                    let dataSort = _.sortBy(data, ["insuranceTypeCode"]);
+                    let dataSort = _.sortBy(data, ["atrOfInsuranceType", "insuranceTypeCode"]);
                     self.lstInsuranceType(dataSort);
                     self.currentCode(self.lstInsuranceType()[0].insuranceTypeCode);
                 }
@@ -101,7 +101,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
             block.invisible();
             service.getInsuranceType(self.lifeInsuranceCode()).done(function (data: Array<IInsuranceType>) {
                 if (data && data.length > 0) {
-                    let dataSort = _.sortBy(data, ["insuranceTypeCode"]);
+                    let dataSort = _.sortBy(data, ["atrOfInsuranceType", "insuranceTypeCode"]);
                     self.lstInsuranceType(dataSort);
                 }
                 else {
