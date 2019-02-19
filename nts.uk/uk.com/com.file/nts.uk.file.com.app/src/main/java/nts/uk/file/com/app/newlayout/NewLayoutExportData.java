@@ -18,10 +18,13 @@ public class NewLayoutExportData extends AggregateRoot {
 	private String itemNameC;
 	private String itemParentCD;
 	private int dataType;
+	private String itemCD;
+	private int layoutItemType;
 	
 
-	public static NewLayoutExportData createFromJavaType(int dispoder,String categoryName,String itemName,String itemNameC,String itemParentCD, int dataType) {
-		return new NewLayoutExportData(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType) ;
+	public static NewLayoutExportData createFromJavaType(int dispoder,String categoryName,String itemName,String itemNameC,
+			String itemParentCD, int dataType, String itemCD, int layoutItemType) {
+		return new NewLayoutExportData(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType, itemCD, layoutItemType) ;
 	}
 
 }

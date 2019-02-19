@@ -62,7 +62,8 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, ymRange);
 		Map<YearMonth, AttendanceTimeMonth> result = new HashMap<>();
 		for (val srcAgreementTime : srcAgreementTimeList){
-			result.put(srcAgreementTime.getYearMonth(), srcAgreementTime.getAgreementTime().getAgreementTime());
+			result.put(srcAgreementTime.getYearMonth(),
+					srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
 		}
 		
 		return result;
@@ -79,7 +80,7 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 	private AgreementTimeOfManagePeriod toPubDomain(
 			nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod fromDomain){
 		
-		val fromAgreementTime = fromDomain.getAgreementTime();
+		val fromAgreementTime = fromDomain.getAgreementTime().getAgreementTime();
 		LimitOneMonth fromLimitErrorTime = null;
 		if (fromAgreementTime.getExceptionLimitErrorTime().isPresent()){
 			fromLimitErrorTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitErrorTime().get().v());
@@ -88,7 +89,7 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 		if (fromAgreementTime.getExceptionLimitAlarmTime().isPresent()){
 			fromLimitAlarmTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitAlarmTime().get().v());
 		}
-		val fromBreakdown = fromDomain.getBreakdown();
+		val fromBreakdown = fromDomain.getAgreementTime().getBreakdown();
 		
 		return AgreementTimeOfManagePeriod.of(
 				fromDomain.getEmployeeId(),
@@ -134,11 +135,11 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 			val agreementTimeList = srcAgreementTimeList.stream().filter( e->e.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			
 			for (val srcAgreementTime : agreementTimeList){
-				mapAttendanceTime.put(srcAgreementTime.getYearMonth(), srcAgreementTime.getAgreementTime().getAgreementTime());
+				mapAttendanceTime.put(srcAgreementTime.getYearMonth(),
+						srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
 			}
 			
 			result.put(employeeId, mapAttendanceTime);
-			
 		}
 
 		return result;

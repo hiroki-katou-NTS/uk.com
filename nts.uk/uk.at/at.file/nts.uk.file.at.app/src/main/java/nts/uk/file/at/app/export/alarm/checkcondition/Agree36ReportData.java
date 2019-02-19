@@ -97,7 +97,7 @@ public class Agree36ReportData {
 		if (!StringUtil.isNullOrEmpty(agreeCondOtErrors, true)) {
 			String[] agree36OTErrorArray = agreeCondOtErrors.split("\\|");
 			for(int i = 0; i < agree36OTErrorArray.length; i++) {
-				String[] agree36OTError = agree36OTErrorArray[i].split(",");
+				String[] agree36OTError = agree36OTErrorArray[i].split(",", -1);
 				if (agree36OTError.length == 4) {
 					Agree36OTError obj = new Agree36OTError(Integer.valueOf(agree36OTError[0]), Integer.valueOf(agree36OTError[1]), 
 							agree36OTError[2], agree36OTError[3]);
