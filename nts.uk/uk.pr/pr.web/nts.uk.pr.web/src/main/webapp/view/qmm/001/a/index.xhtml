@@ -67,7 +67,7 @@
 					                { headerText: '#{i18n.getText('QMM001_9')}', width: 184, key: 'name', formatter: _.escape}
 					            ],
 								multiple: false,
-								rows: 9,
+								rows: 12,
 								value: selectedSalGenParaIdent}">
 					</table>
 					<!-- arrow -->
@@ -287,6 +287,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									required:true,
+									selectFirstIfNull: true,
 									value: valueComboBox,
 									columns: [{ prop: 'code'},
 									{ prop: 'name' }],

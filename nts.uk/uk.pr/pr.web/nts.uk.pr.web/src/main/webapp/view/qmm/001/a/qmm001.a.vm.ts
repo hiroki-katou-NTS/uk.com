@@ -307,6 +307,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         };
                         self.value(null);
                         self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
+                        self.valueComboBox(FIRST);
+                        self.selectedSwitchParaTargetAtr(PARATARGETATR.TARGET);
+
                     }
                     else{
                         dataSalGenValueTemp  ={
