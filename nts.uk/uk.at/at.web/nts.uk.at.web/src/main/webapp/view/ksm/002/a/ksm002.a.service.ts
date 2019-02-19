@@ -76,7 +76,7 @@ module ksm002.a.service {
         }
         return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', 
             domainType: domainType, 
-            languageId: 'ja', reportType: 0, mode: mode, 
+            languageId: 'ja', reportType: 0, 
             startDate : moment.utc(startDate).format(), 
             endDate : moment.utc(endDate).format()});
     }

@@ -3,10 +3,8 @@ package nts.uk.file.at.app.export.worktype;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -207,7 +205,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[27]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? PreparationBeforeApplyExport.getTextApplication(((BigDecimal)export[27]).intValue()) : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -246,7 +244,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[27]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? PreparationBeforeApplyExport.getTextApplication(((BigDecimal)export[27]).intValue()) : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -285,7 +283,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA8Top.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value( i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[27]).intValue(), ApplicationType.class).nameId : "")
+                    .value( i == 0 ? PreparationBeforeApplyExport.getTextApplication(((BigDecimal)export[27]).intValue()) : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA8Top.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -553,7 +551,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         StringBuilder value = new StringBuilder();
         obj.forEach(item ->{
                 if(item[19] != null) {
-                    value.append(EnumAdaptor.valueOf(((BigDecimal) item[20]).intValue(), ApplicationType.class).nameId);
+                    value.append(PreparationBeforeApplyExport.getTextApplication(((BigDecimal)item[20]).intValue()));
                     value.append(",");
                 }
         });

@@ -67,8 +67,9 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		if(!this.checkReflectStartEndForSetting(overtimePara, workReflect)) {
 			return dailyInfor;
 		}
-		//予定開始終了時刻の反映(事前事後共通部分)
-		return scheStartEndTimeReflect.reflectScheStartEndTime(overtimePara, workTimeType, dailyInfor);
+		//予定開始終了時刻の反映(事前事後共通部分) TODO
+		//return scheStartEndTimeReflect.reflectScheStartEndTime(overtimePara, workTimeType, dailyInfor);
+		return null;
 	}
 
 	@Override
@@ -174,7 +175,9 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				tmp.put(entry.getKey(), entry.getValue());
 			}
 		}
-		return scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, false, attendanceTimeData);
+		// TODO
+		//return scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, false, attendanceTimeData);
+		return null;
 	}
 
 	@Override
@@ -186,7 +189,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		}
 		//所定外深夜時間の反映
 		//所定外深夜時間を反映する + 所定外深夜時間の編集状態を更新する
-		attendanceTimeData = scheWorkUpdate.updateTimeShiftNight(employeeId, baseDate, timeNight, false, attendanceTimeData);
+		//attendanceTimeData = scheWorkUpdate.updateTimeShiftNight(employeeId, baseDate, timeNight, false, attendanceTimeData);
 		//休出時間(深夜)(法内)の反映
 		//休出時間(深夜)(法外)の反映
 		//休出時間(深夜)(祝日)の反映
