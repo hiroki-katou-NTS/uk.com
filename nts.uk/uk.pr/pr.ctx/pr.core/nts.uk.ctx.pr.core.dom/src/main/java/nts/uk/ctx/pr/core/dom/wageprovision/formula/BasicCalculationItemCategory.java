@@ -28,7 +28,7 @@ public class BasicCalculationItemCategory extends DomainObject
     */
     private Optional<BaseItemFixedValue> baseItemFixedValue;
     
-    public BasicCalculationItemCategory(int baseItemClassification, BigDecimal baseItemFixedValue) {
+    public BasicCalculationItemCategory(int baseItemClassification, Long baseItemFixedValue) {
         this.baseItemClassification = EnumAdaptor.valueOf(baseItemClassification, BaseItemClassification.class);
         if (!this.baseItemClassification.equals(BaseItemClassification.FIXED_VALUE)) this.baseItemFixedValue = Optional.empty();
         else

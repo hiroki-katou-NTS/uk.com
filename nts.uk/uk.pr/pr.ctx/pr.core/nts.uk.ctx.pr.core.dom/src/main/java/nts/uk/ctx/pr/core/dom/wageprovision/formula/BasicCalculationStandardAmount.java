@@ -33,7 +33,7 @@ public class BasicCalculationStandardAmount extends DomainObject
     */
     private List<TargetItemCode> targetItemCodeList;
     
-    public BasicCalculationStandardAmount(int standardAmountClassification, BigDecimal standardFixedValue, List<String> targetItemCodeList) {
+    public BasicCalculationStandardAmount(int standardAmountClassification, Long standardFixedValue, List<String> targetItemCodeList) {
         this.standardAmountClassification = EnumAdaptor.valueOf(standardAmountClassification, StandardAmountClassification.class);
         if (!this.standardAmountClassification.equals(StandardAmountClassification.FIXED_AMOUNT)){
             this.standardFixedValue = Optional.empty();

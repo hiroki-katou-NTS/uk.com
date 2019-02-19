@@ -51,7 +51,7 @@ public class BasicCalculationFormula extends AggregateRoot {
     */
     private Optional<BasicCalculationForm> basicCalculationForm;
     
-    public BasicCalculationFormula(String formulaCode, String historyID, String masterUseCode, int calculationFormulaClassification, BigDecimal basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
+    public BasicCalculationFormula(String formulaCode, String historyID, String masterUseCode, int calculationFormulaClassification, Long basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
         this.formulaCode = new FormulaCode(formulaCode);
         this.historyID = historyID;
         this.masterUseCode = new MasterUseCode(masterUseCode);

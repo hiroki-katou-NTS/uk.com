@@ -27,9 +27,9 @@ public class BasicCalculationFormulaDto {
     private int calculationFormulaClassification;
     private String masterUseCode;
     private String historyID;
-    private BigDecimal basicCalculationFormula;
+    private Long basicCalculationFormula;
     private Integer standardAmountClassification;
-    private BigDecimal standardFixedValue;
+    private Long standardFixedValue;
     private List<String> targetItemCodeList = new ArrayList<>();
     private String attendanceItem;
     private Integer coefficientClassification;
@@ -38,7 +38,7 @@ public class BasicCalculationFormulaDto {
     private Integer roundingResult;
     private Integer adjustmentClassification;
     private Integer baseItemClassification;
-    private BigDecimal baseItemFixedValue;
+    private Long baseItemFixedValue;
     private Integer premiumRate;
     private Integer roundingMethod;
     
