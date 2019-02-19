@@ -436,10 +436,21 @@ module nts.uk.pr.view.qmm016.share.model {
         stepIncrement: KnockoutObservable<number> = ko.observable(null);
         rangeLowerLimit: KnockoutObservable<number> = ko.observable(null);
         rangeUpperLimit: KnockoutObservable<number> = ko.observable(null);
+        valueChanged: boolean = false;
+        
         constructor (params: IElementRange) {
             this.stepIncrement(params ? params.stepIncrement : null);
             this.rangeLowerLimit(params ? params.rangeLowerLimit : null);
             this.rangeUpperLimit(params ? params.rangeUpperLimit : null);
+            this.stepIncrement.subscribe(value => {
+                this.valueChanged = true;
+            });
+            this.rangeLowerLimit.subscribe(value => {
+                this.valueChanged = true;
+            });
+            this.rangeUpperLimit.subscribe(value => {
+                this.valueChanged = true;
+            });
         }
     }
 
