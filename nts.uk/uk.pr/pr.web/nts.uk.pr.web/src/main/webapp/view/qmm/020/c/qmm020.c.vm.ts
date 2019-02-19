@@ -36,14 +36,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let listStateCorrelationHis = [];
 
             service.getStateCorrelationHisEmployeeById().done((data)=>{
-                if(data == null || data.length == 0){
-                    dialog.info({ messageId: "Msg_303" }).then(()=>{
-                        self.enableAddHisButton(false);
-                        self.enableEditHisButton(false);
-                        self.enableRegisterButton(false);
-                    });
-					
-                }else if(data.length > 0){
+                if(data.length > 0){
                     _.forEach(data,(o)=>{
                         listStateCorrelationHis.push(new ItemModel(o.hisId, o.startYearMonth , o.endYearMonth));
                     });
@@ -70,12 +63,23 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
 
                 }else{
                     self.listStateCorrelationHis([]);
-                    self.items([]);
-                    self.loadGrid();
-                    self.mode(model.MODE.NO_REGIS);
+                    service.getStateLinkSettingMasterByHisId("0",0).done((data)=>{
+                        if(data && data.length > 0) {
+                            self.items(self.convertToGridItem(data));
+                        } else {
+                            self.items([]);
+                            dialog.info({ messageId: "Msg_303" }).then(()=>{
+                                self.enableAddHisButton(false);
+                                self.enableEditHisButton(false);
+                                self.enableRegisterButton(false);
+                            });
+                        }
+                        self.loadGrid();
+                        self.enableAll();
+                        self.mode(model.MODE.NO_REGIS);
+                    });
                 }
                 dfd.resolve();
-
             }).fail((err) =>{
                 dfd.reject();
                 if(err) dialog.alertError(err);
@@ -84,6 +88,15 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             });
             return dfd.promise();
 
+        }
+
+        enableAll(){
+            let self = this;
+            self.enableAddHisButton(true);
+            self.enableEditHisButton(false);
+            self.enableRegisterButton(false);
+            $("#grid2").ntsGrid("disableNtsControls", 'open1', 'Button');
+            $("#grid2").ntsGrid("disableNtsControls", 'open', 'Button');
         }
 
         watchDataChanged(){
@@ -230,10 +243,10 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '180px',  },
                     { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'ButtonSalary' },
                     { headerText: '',template: '<div>${salaryCode}</div>', key: 'salaryCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '180px' },
+                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '170px' },
                     { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'ButtonBonus' },
                     { headerText: '',template: '<div>${bonusCode}</div>', key: 'bonusCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '180px' },
+                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '170px' },
 
                 ],
                 features: [
@@ -330,6 +343,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.enableRegisterButton(true);
                     self.transferMode(params.transferMethod);
                     self.currentSelectedHis(self.newHistoryId());
+                    $("#grid2").ntsGrid("enableNtsControls", 'open1', 'Button');
+                    $("#grid2").ntsGrid("enableNtsControls", 'open', 'Button');
                 }else if(!params && self.listStateCorrelationHis().length === 0){
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
