@@ -103,11 +103,11 @@ module nts.uk.ui.validation {
         return result;
     }
     function autoConvertText(inputText: string, charType:nts.uk.text.CharType):string{
-        if (charType.viewName === '半角英数字') {
+        if (charType.viewName === toBeResource.alphaNumeric) {
            inputText = text.toUpperCase(inputText);
-        } else if (charType.viewName === 'カタカナ') {
+        } else if (charType.viewName === toBeResource.katakana) {
            inputText = text.oneByteKatakanaToTwoByte(inputText);    
-        } else if (charType.viewName === 'カナ') {
+        } else if (charType.viewName === toBeResource.kana) {
            inputText = text.hiraganaToKatakana(text.oneByteKatakanaToTwoByte(inputText));
         }
         return inputText;
@@ -333,11 +333,11 @@ module nts.uk.ui.validation {
             let validateResult;
             // Check CharType
             if (!util.isNullOrUndefined(this.charType)) { 
-                if (this.charType.viewName === '半角英数字') {
+                if (this.charType.viewName === toBeResource.alphaNumeric) {
                     inputText = text.toUpperCase(inputText);
-                } else if (this.charType.viewName === 'カタカナ') {
+                } else if (this.charType.viewName === toBeResource.katakana) {
                     inputText = text.oneByteKatakanaToTwoByte(inputText);    
-                } else if (this.charType.viewName === 'カナ') {
+                } else if (this.charType.viewName === toBeResource.kana) {
                     inputText = text.hiraganaToKatakana(text.oneByteKatakanaToTwoByte(inputText));
                 }
                 validateResult = this.charType.validate(inputText); 

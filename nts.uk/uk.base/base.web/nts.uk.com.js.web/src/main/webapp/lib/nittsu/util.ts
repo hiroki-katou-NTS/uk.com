@@ -719,6 +719,14 @@
 			
             return message.replace(/\\r\\n/g, '\r\n');
         }
+
+        export function getMessageObj(messageId: string, params?: any[]): { message: string, messageId: string} {
+            return {
+                message: getMessage(messageId, params),
+                messageId: messageId
+            };
+        }
+
         function formatCompCustomizeResource(message: string) {
             let compDependceParamRegex = /{#(\w*)}/;
             let matches: string[];
