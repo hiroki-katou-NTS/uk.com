@@ -790,9 +790,15 @@ module cps003.f.vm {
     }
 
     enum REPLACE_FORMAT {
-        SAME_AS = 1,        // 入社年月日と同じ, 契約時間　×,
-        PLUS_OR_MIN = 2,    // 年休付与基準日と同じ, 
-        REPLACE_BY_YM = 3,  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
-        REPLACE_BY_YMD = 4  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
+        SAME_AS = 0,        // 入社年月日と同じ, 契約時間　×,
+        PLUS_OR_MIN = 1,    // 年休付与基準日と同じ, 
+        REPLACE_BY_YM = 2,  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
+        REPLACE_BY_YMD = 3  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
+    }
+
+    enum YEAR_OF_JOIN {
+        NEXT = 0, //翌年
+        SAME = 1, //同年
+        PREV = 2  //前年
     }
 }
