@@ -184,7 +184,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	}
 	
 	/**
-	 * 年月期間から36協定期間の年月を取得する
+	 * 年月期間から36協定期間を取得する
 	 * @param yearMonthPeriod 年月期間
 	 * @return 期間
 	 */
@@ -195,13 +195,25 @@ public class AgreementOperationSetting extends AggregateRoot {
 		val startAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.start());
 		if (!startAggrPeriodOpt.isPresent()) return Optional.empty();
 		
-		// 年月から集計期間を取得　（開始年月）
+		// 年月から集計期間を取得　（終了年月）
 		val endAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.end());
 		if (!endAggrPeriodOpt.isPresent()) return Optional.empty();
 		
 		// 期間を返す
 		return Optional.of(new DatePeriod(
 				startAggrPeriodOpt.get().getPeriod().start(), endAggrPeriodOpt.get().getPeriod().end()));
+	}
+	
+	/**
+	 * 年度から36協定の年月期間を取得する
+	 * @param year 年度
+	 * @return 年月期間
+	 */
+	// 2019.2.15 ADD shuichi_ishida
+	public YearMonthPeriod getYearMonthPeriod(Year year){
+		return new YearMonthPeriod(
+				YearMonth.of(year.v(), this.startingMonth.value + 1),
+				YearMonth.of(year.v() + 1, this.startingMonth.value + 1).previousMonth());
 	}
 	
 	/**

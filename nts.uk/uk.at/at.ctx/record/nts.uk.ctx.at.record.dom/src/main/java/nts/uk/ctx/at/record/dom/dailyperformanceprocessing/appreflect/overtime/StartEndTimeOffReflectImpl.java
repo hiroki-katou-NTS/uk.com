@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflect;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
@@ -44,6 +45,25 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 		this.clearAutomaticEmbossing(param.getEmployeeId(),
 				param.getDateInfo(),
 				workInfo.getRecordInfo().getWorkTypeCode().v(),
+				param.isAutoClearStampFlg(),
+				param.getOvertimePara());
+		//開始終了時刻の反映(事前)
+		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getDateInfo(), param.getOvertimePara().getStartTime1(), 
+				param.getOvertimePara().getEndTime1(), param.getOvertimePara().getStartTime2(), 
+				param.getOvertimePara().getEndTime2(), 
+				param.getOvertimePara().getWorkTimeCode(), param.getOvertimePara().getWorkTypeCode(), param.getOvertimePara().getOvertimeAtr());
+		//this.startEndTimeOutput(startEndTimeData, workInfo);
+	}
+	@Override
+	public void startEndTimeOffReflect(OvertimeParameter param, IntegrationOfDaily workInfo) {
+		//INPUT．勤種反映フラグ(実績)をチェックする
+		if(!param.isActualReflectFlg()) {
+			return;
+		}
+		//自動打刻をクリアする
+		this.clearAutomaticEmbossing(param.getEmployeeId(),
+				param.getDateInfo(),
+				workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
 				param.isAutoClearStampFlg(),
 				param.getOvertimePara());
 		//開始終了時刻の反映(事前)
@@ -106,14 +126,14 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	}
 
 	@Override
-	public TimeLeavingOfDailyPerformance startEndTimeOutput(StartEndTimeRelectCheck param, WorkInfoOfDailyPerformance workInfo) {
+	public void startEndTimeOutput(StartEndTimeRelectCheck param, IntegrationOfDaily workInfo) {
+		WorkInfoOfDailyPerformance workInformation = workInfo.getWorkInformation();
 		//反映する開始終了時刻を求める
-		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v(), 
-				workInfo.getRecordInfo().getWorkTypeCode() == null ? null : workInfo.getRecordInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInformation.getRecordInfo().getWorkTimeCode() == null ? null : workInformation.getRecordInfo().getWorkTimeCode().v(), 
+				workInformation.getRecordInfo().getWorkTypeCode() == null ? null : workInformation.getRecordInfo().getWorkTypeCode().v());
 		ScheStartEndTimeReflectOutput findStartEndTime = scheTimereflect.findStartEndTime(param, workInfor);
 		//ジャスト遅刻早退により時刻を編集する
 		StartEndTimeOutput justLateEarly = this.justLateEarly(workInfor.getWorktimeCode(), findStartEndTime);
-		TimeLeavingOfDailyPerformance timeDaily = null;
 		//１回勤務反映区分(output)をチェックする
 		if(findStartEndTime.isCountReflect1Atr()) {			
 			//開始時刻を反映できるかチェックする
@@ -123,7 +143,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 			boolean isEnd = scheTimereflect.checkRecordStartEndTimereflect(param.getEmployeeId(), param.getBaseDate(), 1, 
 					workInfor.getWorkTypeCode(), param.getOverTimeAtr(), false);
 			TimeReflectPara timePara1 = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), justLateEarly.getEnd1(), 1, isStart, isEnd);
-			timeDaily =  scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1);
+			scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1, workInfo);
 		}
 		//２回勤務反映区分(output)をチェックする
 		if(findStartEndTime.isCountReflect2Atr()) {			
@@ -134,10 +154,8 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 			boolean isEnd = scheTimereflect.checkRecordStartEndTimereflect(param.getEmployeeId(), param.getBaseDate(), 2, 
 					workInfor.getWorkTypeCode(), param.getOverTimeAtr(),false);
 			TimeReflectPara timePara2 = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart2(), justLateEarly.getEnd2(), 2, isStart, isEnd);
-			timeDaily = scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2);
+			scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2, workInfo);
 		}
-		return timeDaily;
-		
 	}
 
 	@Override

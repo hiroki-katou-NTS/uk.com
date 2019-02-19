@@ -69,9 +69,9 @@ public class MonthReportData {
 	//23_3
 	private Optional<Integer> conditionAtr1Group1;
 	//23-4	
-	private Optional<Integer> start1Group1;
+	private Optional<Double> start1Group1;
 	//23-5
-	private Optional<Integer> end1Group1;
+	private Optional<Double> end1Group1;
 	//23-6
 	private Optional<Integer> conditionType1Group1;
 	//23-7
@@ -85,9 +85,9 @@ public class MonthReportData {
 	// 24_3
 	private Optional<Integer> conditionAtr2Group1;
 	// 24-4
-	private Optional<Integer> start2Group1;
+	private Optional<Double> start2Group1;
 	// 24-5
-	private Optional<Integer> end2Group1;
+	private Optional<Double> end2Group1;
 	// 24-6
 	private Optional<Integer> conditionType2Group1;
 	// 24-7
@@ -101,9 +101,9 @@ public class MonthReportData {
 	// 25_3
 	private Optional<Integer> conditionAtr3Group1;
 	// 25-4
-	private Optional<Integer> start3Group1;
+	private Optional<Double> start3Group1;
 	// 25-5
-	private Optional<Integer> end3Group1;
+	private Optional<Double> end3Group1;
 	// 25-6
 	private Optional<Integer> conditionType3Group1;
 	// 25-7
@@ -122,9 +122,9 @@ public class MonthReportData {
 	// 28_3
 	private Optional<Integer> conditionAtr1Group2;
 	// 28-4
-	private Optional<Integer> start1Group2;
+	private Optional<Double> start1Group2;
 	// 28-5
-	private Optional<Integer> end1Group2;
+	private Optional<Double> end1Group2;
 	// 28-6
 	private Optional<Integer> conditionType1Group2;
 	// 28-7
@@ -138,9 +138,9 @@ public class MonthReportData {
 	// 29_3
 	private Optional<Integer> conditionAtr2Group2;
 	// 29-4
-	private Optional<Integer> start2Group2;
+	private Optional<Double> start2Group2;
 	// 29-5
-	private Optional<Integer> end2Group2;
+	private Optional<Double> end2Group2;
 	// 29-6
 	private Optional<Integer> conditionType2Group2;
 	// 29-7
@@ -154,9 +154,9 @@ public class MonthReportData {
 	// 30_3
 	private Optional<Integer> conditionAtr3Group2;
 	// 30-4
-	private Optional<Integer> start3Group2;
+	private Optional<Double> start3Group2;
 	// 30-5
-	private Optional<Integer> end3Group2;
+	private Optional<Double> end3Group2;
 	// 30-6
 	private Optional<Integer> conditionType3Group2;
 	// 30-7
