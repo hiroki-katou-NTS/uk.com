@@ -16,7 +16,7 @@ public class JpaSalGenParamOptionsRepository extends JpaRepository implements Sa
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSalGenPrOptions f";
-    private static final String SELECT_BY_KEY_PARANO = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrOptionsPk.paraNo =:paraNo AND  f.salGenPrOptionsPk.cid =:cid ";
+    private static final String SELECT_BY_KEY_PARANO = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrOptionsPk.paraNo =:paraNo AND  f.salGenPrOptionsPk.cid =:cid ORDER BY f.salGenPrOptionsPk.optionNo ASC";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrOptionsPk.paraNo =:paraNo AND  f.salGenPrOptionsPk.cid =:cid AND  f.salGenPrOptionsPk.optionNo =:optionNo ";
 
     @Override
