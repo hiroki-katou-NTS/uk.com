@@ -50,12 +50,31 @@ public class DetailFormulaCalculationService {
      * Try to use text resource for other language
      */
     private static final String
-            OPEN_CURLY_BRACKET = "{", CLOSE_CURLY_BRACKET = "}", COMMA_CHAR = "、", HALF_SIZE_COMMA_CHAR = ",",
-            PLUS = "＋", SUBTRACT = "ー", MULTIPLICITY = "×", DIVIDE = "÷", POW = "^", OPEN_BRACKET = "(", CLOSE_BRACKET = ")",
-            GREATER = ">", LESS = "<", LESS_OR_EQUAL = "≦", GREATER_OR_EQUAL = "≧", EQUAL = "＝", DIFFERENCE = "≠",
-            HALF_SIZE_PLUS = "+", HALF_SIZE_SUBTRACT = "-",
-            HALF_SIZE_LESS_OR_EQUAL = "≤", HALF_SIZE_GREATER_OR_EQUAL = "≥", HALF_SIZE_EQUAL = "=",
-            PROGRAMING_MULTIPLICITY = "*", PROGRAMING_DIVIDE = "/", PROGRAMMING_DIFFERENCE = "#";
+            OPEN_CURLY_BRACKET = "{",
+            CLOSE_CURLY_BRACKET = "}",
+            COMMA_CHAR = "、",
+            HALF_SIZE_COMMA_CHAR = ",",
+            PLUS = "＋",
+            SUBTRACT = "ー",
+            MULTIPLICITY = "×",
+            DIVIDE = "÷",
+            POW = "^",
+            OPEN_BRACKET = "(",
+            CLOSE_BRACKET = ")",
+            GREATER = ">",
+            LESS = "<",
+            LESS_OR_EQUAL = "≦",
+            GREATER_OR_EQUAL = "≧",
+            EQUAL = "＝",
+            DIFFERENCE = "≠",
+            HALF_SIZE_PLUS = "+",
+            HALF_SIZE_SUBTRACT = "-",
+            HALF_SIZE_LESS_OR_EQUAL = "≤",
+            HALF_SIZE_GREATER_OR_EQUAL = "≥",
+            HALF_SIZE_EQUAL = "=",
+            PROGRAMING_MULTIPLICITY = "*",
+            PROGRAMING_DIVIDE = "/",
+            PROGRAMMING_DIFFERENCE = "#";
     /**
      * Error when deploy if using getText or get name from enum
      * Caused by: java.lang.ExceptionInInitializerError
@@ -154,7 +173,7 @@ public class DetailFormulaCalculationService {
                                            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
                                            Map<String, String> wageTableItem, int yearMonth) {
         // is number or operator
-        if (!isNaN(formulaElement) || formulaElement.length() < 2) return formulaElement;
+        if (!isNaN(formulaElement) || formulaElement.length() < 6 ) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
         String elementCode = formulaElement.substring(6, formulaElement.length());
         if (elementType.startsWith("Func") || elementType.startsWith("vari")) {
