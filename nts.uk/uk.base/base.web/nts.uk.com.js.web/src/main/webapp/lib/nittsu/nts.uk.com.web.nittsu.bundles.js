@@ -4026,26 +4026,23 @@ var nts;
                             _start.call(__viewContext);
                         }
                     });
-                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if (!onSamplePage) {
-                        if ($(document).find("#header").length > 0) {
-                            ui.menu.request();
-                        }
-                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                            var header = "<div id='header'><div id='menu-header'>"
-                                + "<div id='logo-area' class='cf'>"
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"
-                                + "</div></div>"
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                            $("#master-wrapper").prepend(header);
-                            ui.menu.request();
-                        }
+                    if ($(document).find("#header").length > 0) {
+                        ui.menu.request();
+                    }
+                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                        var header = "<div id='header'><div id='menu-header'>"
+                            + "<div id='logo-area' class='cf'>"
+                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='user-info' class='cf'>"
+                            + "<div id='company' class='cf' />"
+                            + "<div id='user' class='cf' />"
+                            + "</div></div>"
+                            + "<div id='nav-area' class='cf' />"
+                            + "<div id='pg-area' class='cf' />"
+                            + "</div></div>";
+                        $("#master-wrapper").prepend(header);
+                        ui.menu.request();
                     }
                 };
                 var noSessionWebScreens = [
@@ -4280,27 +4277,34 @@ var nts;
                         $companySelect.appendTo($company);
                         $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
                         var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        _.forEach(companies, function (comp, i) {
-                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                            $compItem.on(constants.CLICK, function () {
-                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (data) {
-                                    $companyName.text(comp.companyName);
-                                    $userName.text(data.personName);
-                                    $companyList.css("right", $user.outerWidth() + 30);
-                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
-                                            location.reload(true);
+                        var listCompany = function (comps) {
+                            _.forEach(comps, function (comp, i) {
+                                var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                                $compItem.on(constants.CLICK, function () {
+                                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                                        .done(function (data) {
+                                        $companyName.text(comp.companyName);
+                                        $userName.text(data.personName);
+                                        $companyList.css("right", $user.outerWidth() + 30);
+                                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                                uk.request.jumpToTopPage();
+                                            });
+                                        }
+                                        else {
+                                            uk.request.jumpToTopPage();
+                                        }
+                                    }).fail(function (msg) {
+                                        nts.uk.ui.dialog.alertError(msg.messageId);
+                                        $companyList.empty();
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (compList) {
+                                            listCompany(compList);
                                         });
-                                    }
-                                    else {
-                                        location.reload(true);
-                                    }
-                                }).fail(function (msg) {
-                                    nts.uk.ui.dialog.alertError(msg.messageId);
+                                    });
                                 });
                             });
-                        });
+                        };
+                        listCompany(companies);
                         $companySelect.on(constants.CLICK, function () {
                             if ($companyList.css("display") === "none") {
                                 $companyList.fadeIn(100);
@@ -15404,7 +15408,7 @@ var nts;
                             || !!window.navigator.userAgent.match(/trident/i)
                             || window.navigator.userAgent.indexOf("Edge") > -1)) {
                         var $div = $("<div/>").appendTo($(document.body));
-                        var style = $label[0].currentStyle || $label[0].style;
+                        var style = $label[0].currentStyle || window.getComputedStyle($label[0]); //$label[0].style;
                         if (style) {
                             for (var p in style) {
                                 $div[0].style[p] = style[p];
@@ -17882,7 +17886,8 @@ var nts;
                             var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
                             // filter specs key
                             if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
-                                if (!evt.key.match(/[\-\.0-9]/g)) {
+                                // fix bug cannot press [.] on numpad
+                                if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
                                     evt.preventDefault();
                                 }
                                 else {
@@ -17901,6 +17906,8 @@ var nts;
                                     else {
                                         val = val.replace(val.substring(ss, se), evt.key);
                                     }
+                                    // fix bug cannot press [.] on numpad
+                                    val = val.replace(/Decimal/, '.');
                                     // accept negative key only first press
                                     if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
                                         evt.preventDefault();
@@ -17915,12 +17922,19 @@ var nts;
                                     if (constraint) {
                                         var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                         if (primitive) {
-                                            var nval = parseFloat(val), min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength;
+                                            var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min)), mival = val, maval = val, dlen = primitive.mantissaMaxLength;
                                             // accept negative key if min < 0
                                             if (evt.key == '-' && min >= 0) {
                                                 evt.preventDefault();
                                                 return;
                                             }
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
                                             // clear decimal in constraint (sync) if option not has decimallength
                                             if (rd.option && rd.option.decimallength < 1) {
                                                 primitive.valueType = 'Integer';
@@ -17938,7 +17952,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17949,7 +17963,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17960,7 +17974,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17981,26 +17995,47 @@ var nts;
                                 var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                 // if value after delete out of range, preventDefault
                                 if (primitive) {
-                                    var min = primitive.min, max = primitive.max;
+                                    var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min));
                                     if (ss == se) {
                                         if (evt.keyCode == 8) {
-                                            var _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                         else {
-                                            var _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
+                                            for (var i = mival.length; i < stmi.length; i++) {
+                                                mival += '0';
+                                            }
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                maval += '9';
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                     }
                                     else {
-                                        var _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
-                                        if (_num < min || _num > max) {
+                                        var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
+                                        for (var i = mival.length; i < stmi.length; i++) {
+                                            mival += '0';
+                                        }
+                                        for (var i = maval.length; i < stma.length; i++) {
+                                            maval += '9';
+                                        }
+                                        var nmin = Number(mival), nmax = Number(maval);
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -18872,6 +18907,7 @@ var nts;
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
                         }
+                        _.defer(function () { $grid.ntsGridList("scrollToSelected"); });
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
@@ -34127,6 +34163,26 @@ var nts;
                                 return setupDeleteButton($grid, param);
                             case 'setupScrollWhenBinding':
                                 return setupScrollWhenBinding($grid);
+                            case 'scrollToSelected':
+                                return scrollToSelect($grid);
+                        }
+                    }
+                    function scrollToSelect($grid) {
+                        var row = null;
+                        var selectedRows = $grid.igGrid("selectedRows");
+                        if (selectedRows) {
+                            row = selectedRows[0];
+                        }
+                        else {
+                            row = $grid.igGrid("selectedRow");
+                        }
+                        if (row) {
+                            if ($grid.igGrid("option", "virtualization") === true) {
+                                ui.ig.grid.virtual.expose(row, $grid);
+                            }
+                            else {
+                                ui.ig.grid.expose(row, $grid);
+                            }
                         }
                     }
                     function setupScrollWhenBinding($grid) {
