@@ -749,6 +749,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return (self.acceptFunctionPostfix.indexOf(elementName) > -1);
             if (elementType == self.VARIABLE)
                 return (self.acceptVariablePostfix.indexOf(elementName) > -1);
+
+            self.setErrorToFormula('MsgQ_233', [elementType]);
             return true;
 
         }
