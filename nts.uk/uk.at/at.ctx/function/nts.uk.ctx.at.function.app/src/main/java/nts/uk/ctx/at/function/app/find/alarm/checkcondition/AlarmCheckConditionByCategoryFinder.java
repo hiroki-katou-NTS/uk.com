@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AlarmChkCondAgree36Dto;
@@ -31,9 +33,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
@@ -90,6 +94,13 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private IAgreeCondOtRepository condOtRep;
+	
+	@Inject
+	private IAgreeNameErrorRepository iAgreeNameErrorRepository;
+	
+	@Inject
+	private IAgreeConditionErrorRepository iAgreeConditionErrorRepository;
+	
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -104,6 +115,28 @@ public class AlarmCheckConditionByCategoryFinder {
 	}
 
 	public AlarmCheckConditionByCategoryDto getDataByCode(int category, String code) {
+		String companyId = AppContexts.user().companyId();
+		if (category == AlarmCategory.AGREEMENT.value) {
+			List<AgreeNameError> itemDefault = iAgreeNameErrorRepository.findAll();
+			List<AgreeConditionError> agreeCondition = iAgreeConditionErrorRepository.findAll(code, category);
+			if(itemDefault.size() != agreeCondition.size() && agreeCondition.size() != 0) {
+				// add default new Item 2: 上限規制(Upper)
+				iAgreeConditionErrorRepository.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId, category, code,
+						0, Period.Months_Average.value, ErrorAlarm.Upper.value, ""));
+				iAgreeConditionErrorRepository.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId, category, code,
+						0, Period.One_Month.value, ErrorAlarm.Upper.value, ""));
+				
+			}
+		}
+		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
+		if (opt.isPresent()) {
+			return fromDomain(opt.get());
+		} else {
+			throw new RuntimeException("Object not exist!");
+		}
+	}
+	
+	public AlarmCheckConditionByCategoryDto getDataByCodeAndInsertDefault(int category, String code) {
 		String companyId = AppContexts.user().companyId();
 		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
 		if (opt.isPresent()) {
