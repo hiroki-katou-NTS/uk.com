@@ -181,14 +181,23 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 		
 		DefaultLoginUserContext restored = ObjectSerializer.restore(base64);
 		
-		this.loggedInAsEmployee(
-				restored.userId(),
-				restored.personId(),
-				restored.contractCode(),
-				restored.companyId(),
-				restored.companyCode(),
-				restored.employeeId(),
-				restored.employeeCode());
+		if (restored.isEmployee()) {
+			this.loggedInAsEmployee(
+					restored.userId(),
+					restored.personId(),
+					restored.contractCode(),
+					restored.companyId(),
+					restored.companyCode(),
+					restored.employeeId(),
+					restored.employeeCode());
+		} else {
+			this.loggedInAsUser(
+					restored.userId(), 
+					restored.personId(), 
+					restored.contractCode(), 
+					restored.companyId(), 
+					restored.companyCode());
+		}
 		
 		DefaultLoginUserContext context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
 		((DefaultLoginUserRoles)context.roles()).restore(restored.roles());
