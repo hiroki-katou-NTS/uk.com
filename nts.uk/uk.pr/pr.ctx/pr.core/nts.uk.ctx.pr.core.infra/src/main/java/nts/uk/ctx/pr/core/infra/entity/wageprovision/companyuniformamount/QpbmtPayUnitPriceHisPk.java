@@ -32,14 +32,14 @@ public class QpbmtPayUnitPriceHisPk implements Serializable
      * コード
      */
     @Basic(optional = false)
-    @Column(name = "CODE")
+    @Column(name = "UNIT_PRICE_CD")
     public String code;
 
     /**
      * 履歴ID
      */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     public String hisId;
 
 }

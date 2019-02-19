@@ -26,7 +26,7 @@
 					<button id="btnSave"
 						class="button proceed separate-button fix-button"
 						data-bind="click: save, enable: enableSave" tabindex="1">#{i18n.getText('KMK009_1')}</button>
-					<button  tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
+					<button tabindex="2" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
 				</div>
 			</div>
 
@@ -34,7 +34,7 @@
 				<div id="left-content" class="bg-green caret-right caret-background fixed-flex-layout-left">
 					<div class="cf">
 						<div style="float: left">
-							<table tabindex="2" id="single-list-dataSource"
+							<table tabindex="3" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 450,
@@ -62,7 +62,7 @@
 							</td>
 							<td>
 								<!-- A3_2 , A3_3 ,A3_4: Setting Use -->
-								<div tabindex="3" id="switch-use"
+								<div tabindex="4" id="switch-use"
 									data-bind="ntsSwitchButton: {
 									name: '#[KMK009_5]',
 									options: useSet,
@@ -81,7 +81,7 @@
 							</td>
 							<td>
 								<!-- A3_6: Total Time Name --> 
-								<input tabindex="4"
+								<input tabindex="5"
 								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
 										 name: '#[KMK009_6]',
@@ -99,7 +99,7 @@
 									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesABName' }">#{i18n.getText('KMK009_22')}</div>
 							</td>
 							<td>
-								<!-- A3_26: Total Time Name --> <input tabindex="5"
+								<!-- A3_26: Total Time Name --> <input tabindex="6"
 								class="nts-input" id="itemnameAB" style="width: 60px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK009_22]',
@@ -117,7 +117,7 @@
 							</td>
 							<td>
 								<!-- A3_8: Total Time Name -->
-								<div id="combo-box" tabindex="6"
+								<div id="combo-box" tabindex="7"
 									data-bind="ntsComboBox: {
 									name: '#[KMK009_14]',
 									options: totalClsEnums,
@@ -139,7 +139,7 @@
 							</td>
 							<td>
 								<!-- A3_11 Open dialog KDL002-->
-								<button tabindex="7" 
+								<button tabindex="8" 
 									data-bind="click: openKDL002Dialog,enable: enableWorkType">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_12: Time item name --> <input class="nts-input"
 								id="inpName" style="width: 350px"
@@ -158,7 +158,7 @@
 							</td>
 							<td>
 								<!-- A3_14 Open dialog KDL001-->
-								<button tabindex="8"
+								<button tabindex="9"
 									data-bind="click: openKDL001Dialog,enable: enableWorkTime">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_15: Time item name --> 
 								<input class="nts-input check-focus" 
@@ -179,7 +179,7 @@
 							<td>
 								<div>
 									<!--A3:17 : Check error(select) -->
-									<div tabindex="9"
+									<div tabindex="10"
 										data-bind="ntsCheckBox:{
 									checked: selectUnder,
 									enable: enableUse
@@ -187,7 +187,7 @@
 									</div>
 
 									<!-- A3_18: Alarm time -->
-									<input class="nts-validate" id="inpAlarmTime" tabindex="10"
+									<input class="nts-validate" id="inpAlarmTime" tabindex="11"
 										style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
@@ -207,14 +207,14 @@
 							<td>
 								<div>
 									<!-- :A3_20 Check error(select) -->
-									<div tabindex="11"
+									<div tabindex="12"
 										data-bind="ntsCheckBox:{
 									checked: selectUppper,
 									enable: enableUse
 									}">
 									</div>
 									<!-- A3_21: Error time -->
-									<input style="width: 50px" tabindex="12"
+									<input style="width: 50px" tabindex="13"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
 									value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
@@ -236,7 +236,7 @@
 							</td>
 							<td>
 								<!-- A3_28 Open dialog KDL002-->
-								<button tabindex="13"
+								<button tabindex="14"
 									data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn">#{i18n.getText('KMK009_15')}</button>
 								<!-- <span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span> -->
 								<span class="label" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span>
@@ -251,7 +251,7 @@
 							<td>
 								<div>
 									<!-- A3_24: Check error(select) -->
-									<div tabindex="13"
+									<div tabindex="15"
 										data-bind="ntsCheckBox:{
 									checked: checkedCountAtr,
 									enable: enableUse,

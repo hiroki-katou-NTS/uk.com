@@ -299,7 +299,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 						}
 						self.wageTableContent(new model.WageTableContent(contentData));
 						self.elementRangeSetting(new model.ElementRangeSetting(contentData.elemRangeSet));
-						if (!_.isEmpty(contentData.list3dElements)) {
+						if (!_.isEmpty(contentData.list3dElements) || !_.isEmpty(contentData.list2dElements)) {
 							$("#content-wrapper").unbind();
                             self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
 						}
@@ -825,19 +825,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
         
         getElementRange(elementRange, controlLower, controlUpper, controlStep): any {
-            if (elementRange.rangeLowerLimit == null) {
+            if (elementRange.rangeLowerLimit == null || elementRange.rangeLowerLimit == "") {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlLower.focus();
                 });
                 return null;
             }
-            if (elementRange.rangeUpperLimit == null) {
+            if (elementRange.rangeUpperLimit == null || elementRange.rangeUpperLimit == "") {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlUpper.focus();
                 });
                 return null;
             }
-            if (elementRange.stepIncrement == null) {
+            if (elementRange.stepIncrement == null || elementRange.stepIncrement == "") {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlStep.focus();
                 });

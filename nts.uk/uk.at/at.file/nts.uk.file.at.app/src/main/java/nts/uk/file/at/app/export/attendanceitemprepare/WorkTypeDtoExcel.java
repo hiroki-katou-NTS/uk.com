@@ -15,10 +15,12 @@ public class WorkTypeDtoExcel {
 	private String nameEmp;
 	private int groupNo;
 	private String groupName;
+	private String workTypeCode;
 	private String workTypeName;
 	
-	public void setCodeEmpAndName(String codeEmp, String nameEmp){
-		this.nameEmp = nameEmp;
-		this.codeEmp = codeEmp;
+	
+	public void setCodeAndNameWorkType(String workTypeCode, String workTypeName){
+		this.workTypeCode = workTypeCode;
+		this.workTypeName = workTypeName;
 	}
 }

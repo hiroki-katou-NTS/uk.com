@@ -14,4 +14,17 @@ module cps007.a.service {
     export function saveData(command) {
         return ajax(paths.saveData, command);
     }
+    
+    //saveAsExcel
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = "CPS007";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+        return nts.uk.request.exportFile('/masterlist/report/print', {
+            domainId: "NewLayout", domainType: domainType, languageId: languageId, reportType: 0
+        });
+    }
 }

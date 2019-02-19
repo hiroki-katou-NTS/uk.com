@@ -1,6 +1,6 @@
 <div>
     <div class="sidebar-content-header" style = "min-width: 1000px;">
-            <span class="title" style="margin-left: 4px;font-size: 25px;">#{i18n.getText('QMM020_9')}</span>
+            <span class="title">#{i18n.getText('QMM020_9')}</span>
             <button id="A1_1" tabindex="1" class="proceed" style="margin-left: 80px"
                     data-bind="click: registerPosition, enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
@@ -13,7 +13,7 @@
             <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
 
                 <div>
-                    <button id="F1_3" tabindex="2" data-bind="click: openJScreen, timeClick: 800, enable: !enableNew() ">#{i18n.getText('QMM020_13')}</button>
+                    <button id="F1_3" tabindex="2" data-bind="click: openJScreen, timeClick: 800, enable: enableNew() ">#{i18n.getText('QMM020_13')}</button>
                     <button id="F1_4" tabindex="3" data-bind="click: openKScreen, timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 

@@ -58,6 +58,13 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'masterCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'categoryName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {
                         name: 'Selection',
                         mode: 'row',
@@ -82,6 +89,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     }
                     self.hisIdSelected(self.listStateCorrelationHisSalary()[self.getIndex(hisId)].hisId);
                 } else {
+                    self.listStateCorrelationHisSalary([]);
                     self.mode(model.MODE.NO_REGIS);
                     this.loadGird();
                 }
@@ -131,7 +139,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
-                    self.mode(model.MODE.NO_REGIS);
+                    dialog.info({ messageId: "MsgQ_247" }).then(() => {
+                        self.mode(model.MODE.NO_EXIST);
+                    });
                 }
                 self.loadGird();
             }).always(() => {
@@ -151,15 +161,15 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         enableRegis() {
-            return this.mode() == model.MODE.NO_REGIS;
+            return (this.mode() == model.MODE.NO_REGIS || this.mode() == model.MODE.NO_EXIST);
         }
 
         enableNew() {
             let self = this;
             if (self.listStateCorrelationHisSalary().length > 0) {
-                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisSalary()[FIRST].hisId == HIS_ID_TEMP));
+                return !(self.mode() == model.MODE.NEW || (self.listStateCorrelationHisSalary()[FIRST].hisId == HIS_ID_TEMP));
             }
-            return self.mode() == model.MODE.NEW;
+            return self.mode() != model.MODE.NEW && self.mode() != model.MODE.NO_EXIST;
         }
 
         enableEdit(){
@@ -220,6 +230,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.listStateCorrelationHisSalary.unshift(self.createStateCorrelationHisSalary(params.start, self.endYearMonth()));
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
+                $("#G1_5_container").focus();
             });
 
         }
@@ -265,7 +276,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.initScreen(null);
 
                 }
-                $('#G2_1').focus();
+                $("#G1_5_container").focus();
 
             });
 
@@ -299,7 +310,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
     }
 
-    export class StateCorrelationHisSalary {
+    export class StateCorreHisSalaStateCorrelationHisSalary {
         hisId: string;
         startYearMonth: number;
         endYearMonth: number;

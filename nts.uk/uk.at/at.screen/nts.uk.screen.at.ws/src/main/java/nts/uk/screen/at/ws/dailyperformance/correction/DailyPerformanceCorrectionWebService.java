@@ -210,8 +210,8 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("releaseClosure")
-	public void releaseClosure(EmpAndDate empAndDate){
-		personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+	public JavaTypeResult<String> releaseClosure(EmpAndDate empAndDate){
+		return new JavaTypeResult<String>(personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate()));
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -307,7 +307,7 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		
-		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
+		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits(), dcTimeParam.getChangeSpr31(), dcTimeParam.getChangeSpr34());
 		session.setAttribute("domainEdits", result.getDailyEdits());
 		result.setDailyEdits(Collections.emptyList());
 		return result;

@@ -86,7 +86,7 @@ public class CompanyStatutoryWriteDto {
     /**
      * 法人番号
      */
-    private BigDecimal corporateNumber;
+    private String corporateNumber;
 
     /**
      * 会計事務所電話番号
@@ -180,7 +180,7 @@ public class CompanyStatutoryWriteDto {
                 domain.getBasicInformation().getClubRepresentativePosition().isPresent() ? domain.getBasicInformation().getClubRepresentativePosition().get().v() : null,
                 domain.getBasicInformation().getClubRepresentativeName().isPresent() ? domain.getBasicInformation().getClubRepresentativeName().get().v() : null,
                 domain.getBasicInformation().getLinkingDepartment().isPresent() ? domain.getBasicInformation().getLinkingDepartment().get() : null,
-                domain.getBasicInformation().getCorporateNumber().isPresent() ? new BigDecimal(domain.getBasicInformation().getCorporateNumber().get().v()) : null,
+                domain.getBasicInformation().getCorporateNumber().isPresent() ? domain.getBasicInformation().getCorporateNumber().get().v() : null,
                 domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().isPresent() ? domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().get().v() : null,
                 domain.getSummaryTableInformation().getAccountingOfficeName().isPresent() ? domain.getSummaryTableInformation().getAccountingOfficeName().get().v() : null,
                 domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().isPresent() ? domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().get().v() : null,

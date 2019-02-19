@@ -17,7 +17,8 @@ module nts.uk.at.view.kmk003.a {
             saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
             removeWorkTimeByCode: "at/shared/worktimesetting/remove",
             findSettingFlexWork: "shared/selection/func/settingflexwork/get",
-            findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used"
+            findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used",
+            saveAsExcel: "at/file/worktime/report/export"
         };
 
         /**
@@ -109,6 +110,16 @@ module nts.uk.at.view.kmk003.a {
          */
         export function findAllUsedOvertimeWorkFrame(): JQueryPromise<model.OvertimeWorkFrameFindDto[]> {
             return nts.uk.request.ajax(servicePath.findAllUsedOvertimeWorkFrame);
+        }
+        
+        export function saveAsExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMK003";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile( servicePath.saveAsExcel + "/" + domainType);
         }
         
         export module model {

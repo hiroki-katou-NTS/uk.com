@@ -16,25 +16,30 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
 
         initScreen(): JQueryPromise<any> {
             let self = this,
-            dfd = $.Deferred();
-            self.loadGrid();
-            dfd.resolve();
+                dfd = $.Deferred();
+            let dataInput: any = {
+                empIds: [],
+                baseDate: new Date()
+            };
+            self.loadData([], dataInput).done(() => {
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
-        loadCCg001(){
+        loadCCg001() {
             //_____CCG001________
             let self = this;
             self.ccgcomponent = {
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: 2, // システム区分 - 就業
-                showQuickSearchTab: false, // クイック検索
+                systemType: 1,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
                 showPeriod: false, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
@@ -70,26 +75,34 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         empIds: empIds,
                         baseDate: data.baseDate
                     };
-                    service.getStatementLinkPerson(dataInput).done((res: Array<IConfirmPersonSetStatus>) => {
-                        self.listEmp(ConfirmPersonSetStatus.fromApp(data.listEmployee, res));
-                        $("#grid").ntsGrid("destroy");
-                        self.loadGrid();
-                        $("#grid").focus();
-                    }).fail((err) => {
-                        dialog.alertError(err);
-                    }).always(() => {
+                    self.loadData(data.listEmployee, dataInput).done(() => {
                         block.clear();
                     });
                 }
-            }
-            $('#com-ccg001_2').ntsGroupComponent(self.ccgcomponent);
+            };
+            $('#com-ccgI').ntsGroupComponent(self.ccgcomponent);
+        }
+
+        loadData(listEmployee, dataInput) {
+            let self = this,
+                dfd = $.Deferred();
+            service.getStatementLinkPerson(dataInput).done((res: Array<IConfirmPersonSetStatus>) => {
+                self.listEmp(ConfirmPersonSetStatus.fromApp(listEmployee, res));
+                self.loadGrid();
+                $("#I2_1_container").focus();
+            }).fail((err) => {
+                dialog.alertError(err);
+            }).always(() => {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         loadGrid() {
             let self = this;
-            $("#grid").ntsGrid({
-                width: '1000px',
-                height: '433px',
+            $("#I2_1").ntsGrid({
+                width: '1050px',
+                height: '360px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
                 rowVirtualization: true,
@@ -101,7 +114,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     {headerText: getText("QMM020_50"), key: 'empName', dataType: 'string', width: '200px'},
                     {headerText: getText("QMM020_20"), key: 'salary', dataType: 'string', width: '200px',},
                     {headerText: getText("QMM020_22"), key: 'bonus', dataType: 'string', width: '200px'},
-                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '280px'}
+                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '310px'}
                 ],
                 features: [
                     {
@@ -120,10 +133,6 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     }
                 ],
             });
-        }
-
-        cancel() {
-            nts.uk.ui.windows.close();
         }
 
     }

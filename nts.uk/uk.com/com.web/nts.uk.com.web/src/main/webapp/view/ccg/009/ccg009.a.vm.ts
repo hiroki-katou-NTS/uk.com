@@ -29,7 +29,9 @@ module nts.uk.com.view.ccg009.a.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('CCG009_4'), key: 'value', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText('CCG009_4'), key: 'name', width: 270, formatter: _.escape },
-                { headerText: nts.uk.resource.getText('CCG009_5'), key: 'icon', width: 30 }
+                { headerText: nts.uk.resource.getText('CCG009_5'), key: 'icon', width: 30, 
+                    template: '{{if ${icon} == 1}} <img src="78.png" style=" width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+                }
             ]);
 
             self.roundingRules = ko.observableArray([
@@ -125,7 +127,7 @@ module nts.uk.com.view.ccg009.a.viewmodel {
         name: string;
         alarmCategory: KnockoutObservable<number>;
         useAtr: KnockoutObservable<number>;
-        icon: string;
+        icon: number;
         constructor(value: number, name: string, param: ITopPageAlarmSet) {
             let self = this;
             self.alarmCategory = ko.observable(param.alarmCategory);
@@ -133,9 +135,9 @@ module nts.uk.com.view.ccg009.a.viewmodel {
             self.value = value;
             self.name = name;
             if(param.useAtr == 0){
-                this.icon = "";
+                this.icon = 0;
             } else {
-                this.icon = '<i class="icon icon-dot"></i>';
+                this.icon = 1;
             }
         }
     }

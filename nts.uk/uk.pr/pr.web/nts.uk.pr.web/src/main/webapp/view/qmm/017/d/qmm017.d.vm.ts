@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import model = nts.uk.pr.view.qmm017.share.model;
     import getText = nts.uk.resource.getText;
+
     export class ScreenModel {
         // tab 1
         lineItemCategoryItem: KnockoutObservableArray<model.EnumModel> = model.getLineItemCategoryItem();
@@ -60,15 +61,33 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         // D3_5
         displayDetailCalculationFormula: KnockoutObservable<string> = ko.observable("");
         detailCalculationFormula: KnockoutObservableArray<any> = ko.observableArray([]);
-        calculationFormulaDictionary:Array<any> = [];
+        calculationFormulaDictionary: Array<any> = [];
         // formula
-        OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
-        COMMA_CHAR = '、';  HALF_SIZE_COMMA_CHAR = ',';
-        PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICITY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
-        GREATER = '>'; LESS = '<'; LESS_OR_EQUAL = '≦'; GREATER_OR_EQUAL = '≧'; EQUAL = '＝'; DIFFERENCE = '≠';
-        HALF_SIZE_PLUS = '+'; HALF_SIZE_SUBTRACT = '-';
-        HALF_SIZE_LESS_OR_EQUAL = '≤'; HALF_SIZE_GREATER_OR_EQUAL = '≥'; HALF_SIZE_EQUAL = '=';
-        PROGRAMING_MULTIPLICITY = '*'; PROGRAMING_DIVIDE = '/'; PROGRAMMING_DIFFERENCE = '#';
+        OPEN_CURLY_BRACKET = '{';
+        CLOSE_CURLY_BRACKET = '}';
+        COMMA_CHAR = '、';
+        HALF_SIZE_COMMA_CHAR = ',';
+        PLUS = '＋';
+        SUBTRACT = 'ー';
+        MULTIPLICITY = '×';
+        DIVIDE = '÷';
+        POW = '^';
+        OPEN_BRACKET = '(';
+        CLOSE_BRACKET = ')';
+        GREATER = '>';
+        LESS = '<';
+        LESS_OR_EQUAL = '≦';
+        GREATER_OR_EQUAL = '≧';
+        EQUAL = '＝';
+        DIFFERENCE = '≠';
+        HALF_SIZE_PLUS = '+';
+        HALF_SIZE_SUBTRACT = '-';
+        HALF_SIZE_LESS_OR_EQUAL = '≤';
+        HALF_SIZE_GREATER_OR_EQUAL = '≥';
+        HALF_SIZE_EQUAL = '=';
+        PROGRAMING_MULTIPLICITY = '*';
+        PROGRAMING_DIVIDE = '/';
+        PROGRAMMING_DIFFERENCE = '#';
 
         operators: Array<any>;
         separators: Array<any>;
@@ -107,14 +126,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         REFERENCE_TIME = getText('Enum_SystemVariableList_REFERENCE_TIME');
         STANDARD_DAY = getText('Enum_SystemVariableList_STANDARD_DAY');
         WORKDAY = getText('Enum_SystemVariableList_WORKDAY');
-        autoComplete: KnockoutObservableArray<any> = ko.observableArray([
-
-        ]);
+        autoComplete: KnockoutObservableArray<any> = ko.observableArray([]);
         divValue: KnockoutObservable<any> = ko.observable('');
         autoSelected: KnockoutObservable<any> = ko.observable('');
         row: KnockoutObservable<number> = ko.observable(1);
         col: KnockoutObservable<number> = ko.observable(1);
         index: KnockoutObservable<number> = ko.observable(1);
+
         constructor() {
             var self = this;
             self.changeDataByLineItemCategory();
@@ -126,7 +144,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.initCalculationFormulaDictionary();
             self.initFormulaComponent();
         }
-        getFormulaElements (yearMonth) {
+
+        getFormulaElements(yearMonth) {
             let self = this;
             if (yearMonth) {
                 block.invisible();
@@ -148,7 +167,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 })
             }
         }
-        initFormulaComponent () {
+
+        initFormulaComponent() {
             let self = this;
             self.operators = [self.OPEN_BRACKET, self.CLOSE_BRACKET, self.PLUS, self.HALF_SIZE_PLUS,
                 self.SUBTRACT, self.HALF_SIZE_SUBTRACT, self.MULTIPLICITY, self.PROGRAMING_MULTIPLICITY,
@@ -169,8 +189,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             // self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
             self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME];
         }
+
         // tab 1
-        changeDataByLineItemCategory () {
+        changeDataByLineItemCategory() {
             let self = this;
             self.selectedCategoryValue.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) self.showListStatementItemData(newValue);
@@ -181,11 +202,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             });
             self.selectedStatementItemCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) self.showStatementItemData(self.selectedCategoryValue(), newValue);
-                else  self.displayItemNote(null);
+                else self.displayItemNote(null);
             });
         }
+
         // tab 2
-        changeDataByUnitPriceItem () {
+        changeDataByUnitPriceItem() {
             let self = this;
             self.selectedPriceItemCategoryValue.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) self.showListUnitPriceItem(newValue);
@@ -195,18 +217,18 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 }
             });
             self.selectedUnitPriceItemCode.subscribe(newValue => {
-                if (newValue || !newValue && newValue === 0){
+                if (newValue || !newValue && newValue === 0) {
                     self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
                 }
                 else self.displayUnitPriceItemNote(null);
             })
         }
 
-        changeDataByFunctionItem () {
+        changeDataByFunctionItem() {
             let self = this;
             self.selectedFunctionClassificationValue.subscribe(newValue => {
                 let functionListItem: any = [];
-                if (newValue || !newValue && newValue === 0){
+                if (newValue || !newValue && newValue === 0) {
                     functionListItem = model.getFunctionListEnumModelByType(newValue);
                 }
                 if (functionListItem.length > 0) {
@@ -219,10 +241,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             })
         }
 
-        changeDataByVariableItem () {
+        changeDataByVariableItem() {
             let self = this;
             self.selectedSystemVariableClassificationValue.subscribe(newValue => {
-                if (newValue || !newValue && newValue === 0){
+                if (newValue || !newValue && newValue === 0) {
                     let variableListItem: any = model.getSystemVariableListEnumModel();
                     self.selectedSystemVariableListValue(variableListItem[0].value);
                     self.systemVariableListItem(variableListItem);
@@ -234,13 +256,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             })
         }
 
-        changeDataByFormula () {
+        changeDataByFormula() {
             let self = this;
             self.formulaSelectedSystemVariableClassificationValue.subscribe(newValue => {
-                let selectedFormulaCode = __viewContext.screenModel.selectedFormula().formulaCode(), selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
+                let selectedFormulaCode = __viewContext.screenModel.selectedFormula().formulaCode(),
+                    selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
                 if (newValue || !newValue && newValue === 0) {
-                    let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function(formula){
-                        return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function(item){
+                    let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function (formula) {
+                        return formula.nestedAtr == model.NESTED_USE_CLS.USE && formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
                             return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
                         })
                     }).map(item => {
@@ -248,7 +271,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                         return item;
                     });
                     this.formulaList(embeddableFormulaList);
-                    if (embeddableFormulaList.length > 0 ) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
+                    if (embeddableFormulaList.length > 0) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
                 } else {
                     self.formulaList([]);
                     self.selectedFormulaCode(null);
@@ -266,7 +289,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             })
         }
 
-        changeDataByWageTable () {
+        changeDataByWageTable() {
             let self = this;
             self.wageSelectedSystemVariableClassificationValue.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
@@ -288,11 +311,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             })
         }
 
-        initWageTableData () {
+        initWageTableData() {
             let self = this;
             let wageTableData = self.wageTableData;
-            wageTableData.map(function(item){ item.name = _.escape(item.name); return item});
-            if (wageTableData){
+            wageTableData.map(function (item) {
+                item.name = _.escape(item.name);
+                return item
+            });
+            if (wageTableData) {
                 self.wageTableList(wageTableData);
                 if (wageTableData.length > 0) self.selectedWageTableCode(wageTableData[0].code);
             } else {
@@ -300,28 +326,32 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 self.selectedWageTableCode(null);
             }
         }
+
         // tab 1
-        showListStatementItemData (categoryAtr) {
+        showListStatementItemData(categoryAtr) {
             let self = this;
             self.statementItemList().map(item => item.name = _.unescape(item.name));
             let statementItemList = self.paymentItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) statementItemList = self.deductionItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.ATTENDANCE_ITEM) statementItemList = self.attendanceItemList;
-            statementItemList.map(function(item){item.name = _.escape(item.name); return item;});
+            statementItemList.map(function (item) {
+                item.name = _.escape(item.name);
+                return item;
+            });
             self.statementItemList(statementItemList);
             if (statementItemList.length > 0) self.selectedStatementItemCode(statementItemList[0].code)
             else self.selectedStatementItemCode(null);
         }
 
-        showStatementItemData (categoryAtr, itemNameCode) {
+        showStatementItemData(categoryAtr, itemNameCode) {
             let self = this, dfd = $.Deferred();
             block.invisible();
             // 廃止区分＝廃止しない (false)
-            service.getStatementItemData(categoryAtr, itemNameCode).done(function(data) {
-                self.displayItemNote(categoryAtr == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM ? data.paymentItemSet ? data.paymentItemSet.note : "" : categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM ? data.deductionItemSet ? data.deductionItemSet.note: null : data.timeItemSet ? data.timeItemSet.note : null);
+            service.getStatementItemData(categoryAtr, itemNameCode).done(function (data) {
+                self.displayItemNote(categoryAtr == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM ? data.paymentItemSet ? data.paymentItemSet.note : "" : categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM ? data.deductionItemSet ? data.deductionItemSet.note : null : data.timeItemSet ? data.timeItemSet.note : null);
                 block.clear();
                 dfd.resolve();
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dfd.reject();
                 block.clear();
                 dialog.alertError({messageId: err.messageId});
@@ -330,20 +360,23 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         // tab 2
-        showListUnitPriceItem (unitPriceItemCategory) {
+        showListUnitPriceItem(unitPriceItemCategory) {
             let self = this;
             let unitPriceList = self.companyUnitPriceList;
             if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM) unitPriceList = self.individualUnitPriceList;
-            unitPriceList.map(function(item){item.name = _.escape(item.name); return item;})
+            unitPriceList.map(function (item) {
+                item.name = _.escape(item.name);
+                return item;
+            });
             self.unitPriceItemList(unitPriceList);
             if (unitPriceList.length > 0) self.selectedUnitPriceItemCode(unitPriceList[0].code);
             else self.selectedUnitPriceItemCode(null);
         }
 
-        showUnitPriceItemData (unitPriceItemCategory, code) {
+        showUnitPriceItemData(unitPriceItemCategory, code) {
             let self = this, dfd = $.Deferred();
             // block.invisible();
-            service.getUnitPriceItemByCode(unitPriceItemCategory, code, __viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
+            service.getUnitPriceItemByCode(unitPriceItemCategory, code, __viewContext.screenModel.selectedHistory().startMonth()).done(function (data) {
                 self.selectedUnitPriceItem(ko.mapping.fromJS(data));
                 // TODO
                 if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM)
@@ -353,7 +386,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 }
                 block.clear();
                 dfd.resolve();
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dfd.reject();
                 block.clear();
                 dialog.alertError({messageId: err.messageId});
@@ -368,38 +401,104 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         // sheet 詳細計算式登録内容補足
-        initCalculationFormulaDictionary () {
+        initCalculationFormulaDictionary() {
             let self = this;
             self.calculationFormulaDictionary.push({displayContent: self.PAYMENT, registerContent: '0000_0'});
             self.calculationFormulaDictionary.push({displayContent: self.DEDUCTION, registerContent: '0001_0'});
             self.calculationFormulaDictionary.push({displayContent: self.ATTENDANCE, registerContent: '0002_0'});
-            self.calculationFormulaDictionary.push({displayContent: self.COMPANY_UNIT_PRICE, registerContent: 'U000_0'});
-            self.calculationFormulaDictionary.push({displayContent: self.INDIVIDUAL_UNIT_PRICE, registerContent: 'U001_0'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL)    , registerContent: 'Func_00001'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.AND), registerContent: 'Func_00002'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.OR), registerContent: 'Func_00003'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_OFF), registerContent: 'Func_00004'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.TRUNCATION), registerContent: 'Func_00005'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_UP), registerContent: 'Func_00006'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MAX_VALUE), registerContent: 'Func_00007'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MIN_VALUE), registerContent: 'Func_00008'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.NUM_OF_FAMILY_MEMBER), registerContent: 'Func_00009'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH), registerContent: 'Func_00010'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION), registerContent: 'Func_00011'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION), registerContent: 'Func_00012'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YMD_DATE), registerContent: 'vari_00001'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_Y_DATE), registerContent: 'vari_00002'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YM_DATE), registerContent: 'vari_00003'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR_MONTH), registerContent: 'vari_00004'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR), registerContent: 'vari_00005'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.REFERENCE_TIME), registerContent: 'vari_00006'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.STANDARD_DAY), registerContent: 'vari_00007'});
-            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.WORKDAY), registerContent: 'vari_00008'});
+            self.calculationFormulaDictionary.push({
+                displayContent: self.COMPANY_UNIT_PRICE,
+                registerContent: 'U000_0'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.INDIVIDUAL_UNIT_PRICE,
+                registerContent: 'U001_0'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
+                registerContent: 'Func_00001'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.AND),
+                registerContent: 'Func_00002'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.OR),
+                registerContent: 'Func_00003'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_OFF),
+                registerContent: 'Func_00004'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.TRUNCATION),
+                registerContent: 'Func_00005'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_UP),
+                registerContent: 'Func_00006'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MAX_VALUE),
+                registerContent: 'Func_00007'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MIN_VALUE),
+                registerContent: 'Func_00008'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.NUM_OF_FAMILY_MEMBER),
+                registerContent: 'Func_00009'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH),
+                registerContent: 'Func_00010'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION),
+                registerContent: 'Func_00011'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION),
+                registerContent: 'Func_00012'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YMD_DATE),
+                registerContent: 'vari_00001'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_Y_DATE),
+                registerContent: 'vari_00002'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YM_DATE),
+                registerContent: 'vari_00003'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR_MONTH),
+                registerContent: 'vari_00004'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR),
+                registerContent: 'vari_00005'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.REFERENCE_TIME),
+                registerContent: 'vari_00006'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.STANDARD_DAY),
+                registerContent: 'vari_00007'
+            });
+            self.calculationFormulaDictionary.push({
+                displayContent: self.combineElementTypeAndName(self.VARIABLE, self.WORKDAY),
+                registerContent: 'vari_00008'
+            });
             self.calculationFormulaDictionary.push({displayContent: self.FORMULA, registerContent: 'calc_00'});
             self.calculationFormulaDictionary.push({displayContent: self.WAGE_TABLE, registerContent: 'wage_00'});
         }
 
-        addStatementItem () {
+        addStatementItem() {
             let self = this, selectedCategory = self.selectedCategoryValue(), appendFormula = "",
                 selectedStatementItemName = _.find(ko.toJS(this.statementItemList), {code: self.selectedStatementItemCode()}).name;
             if (selectedCategory == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM) {
@@ -412,9 +511,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.addToFormulaByPosition(self.combineElementTypeAndName(appendFormula, _.unescape(selectedStatementItemName)));
         }
 
-        addUnitPriceItem () {
+        addUnitPriceItem() {
             let self = this, selectedUnitPriceValue = self.selectedPriceItemCategoryValue(), appendFormula = "";
-            let selectedUnitPrice:any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
+            let selectedUnitPrice: any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
             if (selectedUnitPriceValue == model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM) {
                 appendFormula = self.combineElementTypeAndName(self.COMPANY_UNIT_PRICE, (selectedUnitPrice ? _.unescape(selectedUnitPrice.name) : ""));
             } else {
@@ -422,41 +521,49 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             self.addToFormulaByPosition(appendFormula);
         }
-        addFunctionItem () {
-            let self = this, selectedFunctionItem:any = _.find(self.functionListItem(), {value: Number(self.selectedFunctionListValue())});
+
+        addFunctionItem() {
+            let self = this,
+                selectedFunctionItem: any = _.find(self.functionListItem(), {value: Number(self.selectedFunctionListValue())});
             self.addToFormulaByPosition(self.combineElementTypeAndName(self.FUNCTION, _.unescape(selectedFunctionItem.name)));
         }
-        addVariableItem () {
-            let self = this, selectedSystemVariableItem:any = _.find(self.systemVariableListItem(), {value: Number(self.selectedSystemVariableListValue())});
+
+        addVariableItem() {
+            let self = this,
+                selectedSystemVariableItem: any = _.find(self.systemVariableListItem(), {value: Number(self.selectedSystemVariableListValue())});
             self.addToFormulaByPosition(self.combineElementTypeAndName(self.VARIABLE, _.unescape(selectedSystemVariableItem.name)));
         }
-        addFormulaItem () {
+
+        addFormulaItem() {
             let self = this;
             self.addToFormulaByPosition(self.combineElementTypeAndName(self.FORMULA, _.unescape(self.selectedFormula().formulaName())));
         }
-        addWageTableItem () {
+
+        addWageTableItem() {
             let self = this;
-            // 「賃金テーブル」was not subject to processing. Value returned 1.
-            //self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
-            self.addToFormulaByPosition('1');
+            // 「賃金テーブル」was not a processed object. Value returned 1.
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, _.unescape(self.selectedWageTable().name())));
         }
 
-        addToFormulaByPosition (formulaToAdd: string) {
-            let self = this, calculationFormulaItem:any = $('#D3_5')[0];
-            let startSelection = calculationFormulaItem.selectionStart, endSelection = calculationFormulaItem.selectionEnd;
+        addToFormulaByPosition(formulaToAdd: string) {
+            let self = this, calculationFormulaItem: any = $('#D3_5')[0];
+            let startSelection = calculationFormulaItem.selectionStart,
+                endSelection = calculationFormulaItem.selectionEnd;
             self.displayDetailCalculationFormula(calculationFormulaItem.value.substring(0, startSelection) + formulaToAdd + calculationFormulaItem.value.substring(startSelection));
             let newStartSelection = startSelection + formulaToAdd.length;
             $('#D3_5').focus();
             calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
         }
-        startTrialCalculation () {
+
+        startTrialCalculation() {
             let self = this;
             self.validateSyntax();
             if (nts.uk.ui.errors.hasError()) {
-                return ;
+                return;
             }
             setShared("QMM017_G_PARAMS",
-                {formulaElement: self, formula: self.displayDetailCalculationFormula(),
+                {
+                    formulaElement: self, formula: self.displayDetailCalculationFormula(),
                     startMonth: __viewContext.screenModel.selectedHistory().startMonth(),
                     formulaListItem: ko.toJS(self.formulaList()),
                     roundingPosition: ko.toJS(__viewContext.screenModel.detailFormulaSetting).roundingPosition,
@@ -467,12 +574,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             });
         }
 
-        addSymbol (symbol: string) {
-            let self = this, targetItem:any = event.target;
+        addSymbol(symbol: string) {
+            let self = this, targetItem: any = event.target;
             let symbol = targetItem.innerText;
             this.addToFormulaByPosition(symbol);
         }
-        validateSyntaxOnClick () {
+
+        validateSyntaxOnClick() {
             let self = this;
             self.validateSyntax();
 
@@ -481,49 +589,51 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 self.extractFormulaElement();
             }
         }
-        validateSyntax () {
+
+        validateSyntax() {
             let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
-            if (formula.length == 0) {
-                self.setErrorToFormula('MsgQ_236', []);
-                return;
-            }
             self.checkOperatorAndDivideZero(formula);
             self.checkResultIsNotNumber(formula);
-            self.checkBracket (formula);
+            self.checkBracket(formula);
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
             self.checkConditionOperator(formula);
+            self.checkNestedFormula(formula);
         }
-        checkOperatorAndDivideZero (formula) {
+
+        checkOperatorAndDivideZero(formula) {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
-            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length});
-            let self = this, index = 0, currentChar, nextChar, operators = self.operators;
-            if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_234', []);
-            if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
-            for(index = 0 ; index < formulaElements.length; index ++){
+            let formulaElements: any = formula.split(regex).filter(item => {
+                return item && item.length
+            });
+            let self = this, currentChar, nextChar, operators = self.operators;
+            if ((formulaElements[formulaElements.length - 1] && self.operators.indexOf(formulaElements[formulaElements.length - 1]) > 1) || self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_235', []);
+            for (index = 0; index < formulaElements.length; index++) {
                 currentChar = formulaElements[index];
-                if (operators.indexOf(currentChar)>-1){
-                    nextChar = formulaElements[index+1];
-                    if (operators.indexOf(nextChar)>-1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
+                if (operators.indexOf(currentChar) > -1) {
+                    nextChar = formulaElements[index + 1];
+                    if (operators.indexOf(nextChar) > -1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
                     if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
                 }
             }
         }
-        checkResultIsNotNumber (formula) {
+
+        checkResultIsNotNumber(formula) {
             let self = this;
             if (formula.startsWith(self.VARIABLE) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.AND))
-            || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
-            || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION))) self.setErrorToFormula('MsgQ_235', []);
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION))) self.setErrorToFormula('MsgQ_235', []);
         }
-        checkBracket (formula) {
+
+        checkBracket(formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
-            for(index = 0; index < formula.length ; index ++ ) {
+            for (index = 0; index < formula.length; index++) {
                 currentChar = formula [index];
-                if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
-                if (currentChar == self.CLOSE_BRACKET) closeBracketNum ++;
+                if (currentChar == self.OPEN_BRACKET) openBracketNum++;
+                if (currentChar == self.CLOSE_BRACKET) closeBracketNum++;
                 if (openBracketNum - closeBracketNum > 10) {
                     self.setErrorToFormula('MsgQ_237', []);
                     return;
@@ -538,25 +648,26 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             return;
         }
-        replaceTextInsideDoubleQuote (formula) {
+
+        replaceTextInsideDoubleQuote(formula) {
             let self = this, indexToCheck = formula.length, startOfLastFunctionIndex = -1, endOfLastFunctionIndex,
                 singleFunctionContent;
             let textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/g;
-            while (formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION) > -1){
+            while (formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION) > -1) {
                 startOfLastFunctionIndex = formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION);
                 endOfLastFunctionIndex = self.indexOfEndFunction(startOfLastFunctionIndex, formula);
-                singleFunctionContent = formula.substr(startOfLastFunctionIndex, endOfLastFunctionIndex -startOfLastFunctionIndex + 1);
+                singleFunctionContent = formula.substr(startOfLastFunctionIndex, endOfLastFunctionIndex - startOfLastFunctionIndex + 1);
                 formula = formula.replace(singleFunctionContent, singleFunctionContent.replace(textInsideDoubleQuoteRegex, 0));
                 indexToCheck = startOfLastFunctionIndex;
             }
             return formula;
         }
 
-        checkConditionOperator (formula) {
+        checkConditionOperator(formula) {
             let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
-            let functionCondition =  self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
-                functionAnd =  self.combineElementTypeAndName(self.FUNCTION, self.AND),
-                functionOr =  self.combineElementTypeAndName(self.FUNCTION, self.OR);
+            let functionCondition = self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
+                functionAnd = self.combineElementTypeAndName(self.FUNCTION, self.AND),
+                functionOr = self.combineElementTypeAndName(self.FUNCTION, self.OR);
             let conditionRegex = new RegExp(self.conditionSeparators.join('|'));
 
             while (formula.indexOf(functionCondition) > -1 || formula.indexOf(functionAnd) > -1 || formula.indexOf(functionOr) > -1) {
@@ -565,73 +676,91 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 }
                 if (endFunctionIndex == -1) break;
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1), 0);
             }
             if (formula.split(conditionRegex).length > 1) {
                 self.setErrorToFormula('MsgQ_235', []);
             }
         }
 
-        checkInputContent (formula) {
+        checkInputContent(formula) {
             let self = this, operand, prevOperand, operands, dotIndex,
                 separators: string = self.separators.join('|'),
-            formula = this.replaceTextInsideDoubleQuote(formula);
+                formula = this.replaceTextInsideDoubleQuote(formula);
             operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
-            for(operand of operands) {
+            for (operand of operands) {
                 if (isNaN(operand)) {
-                    if (! (operand.indexOf(self.OPEN_CURLY_BRACKET) > -1)) {
+                    if (!(operand.indexOf(self.OPEN_CURLY_BRACKET) > -1)) {
                         self.setErrorToFormula('MsgQ_233', [operand]);
                         continue;
                     }
-                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)), elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [operand]);
-                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_233', [operand]);
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)),
+                        elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
+                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
                 } else {
                     dotIndex = operand.indexOf('.');
-                    if (dotIndex > - 1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
+                    if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
                 }
                 prevOperand = operand;
             }
         }
-        checkElementName (elementType: string, elementName: string): boolean {
+
+        checkElementName(elementType: string, elementName: string): boolean {
             let self = this;
             if (elementType == self.PAYMENT)
-                return self.paymentItemList.some(item => {return item.name == elementName});
+                return self.paymentItemList.some(item => {
+                    return item.name == elementName
+                });
             if (elementType == self.DEDUCTION)
-                return self.deductionItemList.some(item => {return item.name == elementName});
+                return self.deductionItemList.some(item => {
+                    return item.name == elementName
+                });
             if (elementType == self.ATTENDANCE)
-                return self.attendanceItemList.some(item => {return item.name == elementName});
+                return self.attendanceItemList.some(item => {
+                    return item.name == elementName
+                });
             if (elementType == self.COMPANY_UNIT_PRICE)
-                return self.companyUnitPriceList.some(item => {return item.name == elementName});
+                return self.companyUnitPriceList.some(item => {
+                    return item.name == elementName
+                });
             if (elementType == self.INDIVIDUAL_UNIT_PRICE)
-                return self.individualUnitPriceList.some(item => {return item.name == elementName});
+                return self.individualUnitPriceList.some(item => {
+                    return item.name == elementName
+                });
             if (elementType == self.FORMULA)
-                return (ko.toJS(self.formulaList).some(item => {return item.formulaName == elementName}));
-            if (elementType == self.WAGE_TABLE )
-                return (ko.toJS(self.wageTableList).some(item => {return item.name == elementName}));
-            if (elementType == self.FUNCTION )
+                return (ko.toJS(self.formulaList).some(item => {
+                    return item.formulaName == elementName
+                }));
+            if (elementType == self.WAGE_TABLE)
+                return (ko.toJS(self.wageTableList).some(item => {
+                    return item.name == elementName
+                }));
+            if (elementType == self.FUNCTION)
                 return (self.acceptFunctionPostfix.indexOf(elementName) > -1);
-            if (elementType == self.VARIABLE )
+            if (elementType == self.VARIABLE)
                 return (self.acceptVariablePostfix.indexOf(elementName) > -1);
             return true;
 
         }
-        checkFunctionSyntax (formula) {
+
+        checkFunctionSyntax(formula) {
             let self = this, startFunctionIndex, endFunctionIndex, replaceValue;
             while (formula.indexOf(self.FUNCTION) > -1) {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
-                if (endFunctionIndex == -1){
+                if (endFunctionIndex == -1) {
                     self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
                     break;
                 }
                 replaceValue = self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  replaceValue);
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1), replaceValue);
             }
         }
-        checkSingleFunctionSyntax (functionSyntax) {
+
+        checkSingleFunctionSyntax(functionSyntax) {
             let self = this, conditionRegex = new RegExp(self.conditionSeparators.join('|'));
             let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.CLOSE_CURLY_BRACKET)),
                 functionParameters = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(new RegExp(self.COMMA_CHAR + '|' + self.HALF_SIZE_COMMA_CHAR)).filter(item => item.length).map(item => item.trim());
@@ -639,13 +768,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 self.setErrorToFormula('MsgQ_238', [functionName]);
                 return "";
             }
-            if (functionName == self.CONDITIONAL){
-                functionParameters.forEach(function(functionParameter){
+            if (functionName == self.CONDITIONAL) {
+                functionParameters.forEach(function (functionParameter) {
                     if (functionParameter)
-                        functionParameter.split(conditionRegex).forEach(function(item) {
+                        functionParameter.split(conditionRegex).forEach(function (item) {
                             self.checkBracket(item);
                         })
-                })
+                });
                 if (functionParameters.length != 3) {
                     if (functionParameters.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
@@ -657,20 +786,20 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return 0;
             }
             if (functionName == self.OR || functionName == self.AND) {
-                functionParameters.forEach(function(functionParameter, index) {
-                    functionParameter.split(conditionRegex).forEach(function(item) {
+                functionParameters.forEach(function (functionParameter, index) {
+                    functionParameter.split(conditionRegex).forEach(function (item) {
                         self.checkBracket(item);
-                    })
+                    });
                     if (functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
                         self.setErrorToFormula('MsgQ_240', [functionName, index + 1]);
                     }
-                })
+                });
                 return '"TRUE"';
 
             }
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
                 if (functionParameters.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
-                if (!self.checkNumberDataType(functionParameters)){
+                if (!self.checkNumberDataType(functionParameters)) {
                     self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return 0;
@@ -679,7 +808,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (functionParameters.length != 2) {
                     if (functionParameters.length < 2) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
-                } else if (!self.checkDateDataType(functionParameters[0])){
+                } else if (!self.checkDateDataType(functionParameters[0])) {
                     self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return '"' + moment().format("YYYY/MM/DD") + '"';
@@ -687,71 +816,85 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (functionName == self.YEAR_EXTRACTION || functionName == self.MONTH_EXTRACTION) {
                 if (functionParameters.length > 1) {
                     self.setErrorToFormula('MsgQ_239', [functionName]);
-                } else if (!self.checkDateDataType(functionParameters[0])){
+                } else if (!self.checkDateDataType(functionParameters[0])) {
                     self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
                 return 0;
             }
             return 0;
         }
-        indexOfEndFunction (startFunctionIndex, formula) {
+
+        checkNestedFormula(formula: string) {
+
+        }
+
+        indexOfEndFunction(startFunctionIndex, formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
-            for(index = startFunctionIndex; index < formula.length ; index ++ ) {
+            for (index = startFunctionIndex; index < formula.length; index++) {
                 currentChar = formula [index];
-                if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
-                if (currentChar == self.CLOSE_BRACKET){
-                    closeBracketNum ++;
-                    if (openBracketNum > 0 && openBracketNum == closeBracketNum){
+                if (currentChar == self.OPEN_BRACKET) openBracketNum++;
+                if (currentChar == self.CLOSE_BRACKET) {
+                    closeBracketNum++;
+                    if (openBracketNum > 0 && openBracketNum == closeBracketNum) {
                         return index;
                     }
                 }
             }
             return -1;
         }
-        checkNumberDataType (functionParameters) {
+
+        checkNumberDataType(functionParameters) {
             let self = this;
-            for(var functionParameter of functionParameters ) {
+            for (let functionParameter of functionParameters) {
                 if (functionParameter.indexOf('"') > -1 || functionParameter.startsWith(self.VARIABLE)) return false;
             }
             return true;
         }
-        checkDateDataType (functionParameter) {
+
+        checkDateDataType(functionParameter) {
             let self = this;
             if (!isNaN(functionParameter)) return false;
-            if (functionParameter.indexOf('"') > -1 && ! moment(functionParameter.split('"')[1], "YYYY/MM/DD", true).isValid()) return false;
+            if (functionParameter.indexOf('"') > -1 && !moment(functionParameter.split('"')[1], "YYYY/MM/DD", true).isValid()) return false;
             if (functionParameter.startsWith(self.FUNCTION) && !functionParameter.startsWith(self.FUNCTION + self.OPEN_CURLY_BRACKET + self.CONDITIONAL)) return false;
             return true;
         }
-        setErrorToFormula (messageId: string, messageParams: Array) {
+
+        setErrorToFormula(messageId: string, messageParams: Array) {
             let isHasUniqueMessage = false;
             if (messageId == "MsgQ_231") {
                 isHasUniqueMessage = _.some(nts.uk.ui.errors.getErrorList(), {errorCode: 'MsgQ_231'})
             }
-            let messageParam = messageParams[0].replace('{','\\{').replace('}', '\\}');
-            //if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams[0].replace('{','\\\{')});
-            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: 'MsgQ_233', messageParams: ['\{文字0qqq\}']});
+            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams});
         }
 
-        extractFormulaElement () {
+        extractFormulaElement() {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
             let formula = self.displayDetailCalculationFormula();
-            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), detailFormula, calculationFormulaTransfer;
-            for(let index = 0; index < formulaElements.length; index++ ) {
+            let formulaElements: any = formula.split(regex).filter(item => {
+                return item && item.length
+            }), detailFormula, calculationFormulaTransfer;
+            for (let index = 0; index < formulaElements.length; index++) {
                 detailFormula = {formulaElement: formulaElements[index].trim(), elementOrder: index};
                 detailFormula.formulaElement = self.convertToRegisterContent(detailFormula.formulaElement);
                 formulaElements[index] = detailFormula;
             }
             return formulaElements;
         }
-        convertToRegisterContent (formulaElement) {
-            let self = this, elementName = formulaElement.substring(formulaElement.indexOf(self.OPEN_CURLY_BRACKET) + 1, formulaElement.indexOf(self.CLOSE_CURLY_BRACKET));
+
+        convertToRegisterContent(formulaElement) {
+            let self = this,
+                elementName = formulaElement.substring(formulaElement.indexOf(self.OPEN_CURLY_BRACKET) + 1, formulaElement.indexOf(self.CLOSE_CURLY_BRACKET));
             if (!elementName) return formulaElement;
             let calculationFormulaTransfer;
-            if (formulaElement.startsWith(self.FUNCTION) || formulaElement.startsWith(self.VARIABLE)){
-                calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.displayContent == formulaElement}) [0];
+            if (formulaElement.startsWith(self.FUNCTION) || formulaElement.startsWith(self.VARIABLE)) {
+                calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {
+                    return item.displayContent == formulaElement
+                }) [0];
                 return calculationFormulaTransfer.registerContent;
             }
-            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.displayContent.startsWith(formulaElement.substring(0, formulaElement.indexOf(self.OPEN_CURLY_BRACKET)))})[0];
+            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {
+                return item.displayContent.startsWith(formulaElement.substring(0, formulaElement.indexOf(self.OPEN_CURLY_BRACKET)))
+            })[0];
             if (formulaElement.startsWith(self.PAYMENT))
                 return calculationFormulaTransfer.registerContent + _.find(self.paymentItemList, {name: elementName}).code;
             if (formulaElement.startsWith(self.DEDUCTION))
@@ -768,91 +911,103 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.wageTableList), {name: elementName}).code;
 
         }
-        combineFormulaElement () {
-            let self = this, displayFormula = "", formulaElements = __viewContext.screenModel.detailFormulaSetting().detailCalculationFormula(), formulaElement;
-            for(let index = 0; index < formulaElements.length; index++ ) {
+
+        combineFormulaElement() {
+            let self = this, displayFormula = "",
+                formulaElements = __viewContext.screenModel.detailFormulaSetting().detailCalculationFormula(),
+                formulaElement;
+            for (let index = 0; index < formulaElements.length; index++) {
                 formulaElement = formulaElements[index].formulaElement;
                 displayFormula += self.convertToDisplayContent(formulaElement);
             }
             self.displayDetailCalculationFormula(displayFormula);
         }
-        convertToDisplayContent (formulaElement) {
+
+        convertToDisplayContent(formulaElement) {
             let self = this, elementType = formulaElement.substring(0, 6), selectedItem;
             let elementCode = formulaElement.substring(6, formulaElement.length);
             if (!elementCode) return formulaElement;
             let calculationFormulaTransfer;
-            if (elementType.startsWith("Func") || elementType.startsWith("vari")){
-                calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent == formulaElement}) [0];
+            if (elementType.startsWith("Func") || elementType.startsWith("vari")) {
+                calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {
+                    return item.registerContent == formulaElement
+                }) [0];
                 return calculationFormulaTransfer.displayContent;
             }
-            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent.startsWith(elementType)}) [0];
+            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {
+                return item.registerContent.startsWith(elementType)
+            }) [0];
             if (elementType.startsWith("0000_0")) {
-                selectedItem =  _.find(self.paymentItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{0000_0' + elementCode + '}']);
+                selectedItem = _.find(self.paymentItemList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
 
             if (elementType.startsWith("0001_0")) {
-                selectedItem =  _.find(self.deductionItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233',[calculationFormulaTransfer.displayContent + '{0001_0' + elementCode + '}']);
+                selectedItem = _.find(self.deductionItemList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("0002_0")) {
                 selectedItem = _.find(self.attendanceItemList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{0002_0' + elementCode + '}']);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U000_0")) {
                 selectedItem = _.find(self.companyUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{U000_0' + elementCode + '}']);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("U001_0")) {
-                selectedItem =_.find(self.individualUnitPriceList, {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{U001_0' + elementCode + '}']);
+                selectedItem = _.find(self.individualUnitPriceList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.formulaList), {formulaCode: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{calc_' + elementCode + '}']);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.formulaName);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 selectedItem = _.find(ko.toJS(self.wageTableList), {code: elementCode});
-                if (!selectedItem) this.setErrorToFormula('MsgQ_233', [calculationFormulaTransfer.displayContent + '{wage_' + elementCode + '}']);
+                if (!selectedItem) this.setErrorToFormula('MsgQ_248', [calculationFormulaTransfer.displayContent, elementCode]);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
             return formulaElement;
         }
-        combineElementTypeAndName (elementType, elementName) {
+
+        combineElementTypeAndName(elementType, elementName) {
             let self = this;
             return elementType + self.OPEN_CURLY_BRACKET + elementName + self.CLOSE_CURLY_BRACKET;
         }
-        isOperator (operator) {
+
+        isOperator(operator) {
             let self = this;
             return operator == self.PLUS
         }
-        showHintBox () {
+
+        showHintBox() {
             let self = this;
-            $("#auto-complete-container").on('click', function(){
+            $("#auto-complete-container").on('click', function () {
                 let displayText = $(this).children("option:selected").text();
-                if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
+                if (displayText.indexOf("    ") > -1) displayText = displayText.split("    ")[1];
                 if (displayText) self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
                 $("#auto-complete-container").hide();
             });
-            $("#D3_5").on("keypress", function(event){
-                if (event.keyCode == 13){
+            $("#D3_5").on("keypress", function (event) {
+                if (event.keyCode == 13) {
                     event.preventDefault();
+                    if(!$("#auto-complete-container").is(":visible")) return;
                     let displayText = $('#auto-complete-container option:selected').text();
-                    if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
+                    if (displayText.indexOf("    ") > -1) displayText = displayText.split("    ")[1];
                     $("#auto-complete-container").hide();
                     self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
                 }
             });
-            $("#D3_5").on("keydown", function(event){
-                if ((event.keyCode == 38 || event.keyCode == 40) && $("#auto-complete-container").is(":visible")){
+            $("#D3_5").on("keydown", function (event) {
+                if ((event.keyCode == 38 || event.keyCode == 40) && $("#auto-complete-container").is(":visible")) {
                     if (event.keyCode == 40) $('#auto-complete-container option:selected').next().prop('selected', true);
                     if (event.keyCode == 38) $('#auto-complete-container option:selected').prev().prop('selected', true);
                     return event.preventDefault();
@@ -861,10 +1016,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             });
 
             // show hint box if selection change ?
-            $("#D3_5").on('input',(event) => {
+            $("#D3_5").on('input', (event) => {
                 let self = this, target = event.target, start = target.selectionStart, end = target.selectionEnd,
                     keyCode = event.keyCode, currentRow, autoCompleteData = [];
-                if (keyCode != 38 && keyCode != 40 && keyCode !=13) {
+                if (keyCode != 38 && keyCode != 40 && keyCode != 13) {
                     self.genVirualElement();
                     currentRow = this.getCurrentPosition(end);
                     self.index(end);
@@ -874,7 +1029,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     });
                     let indexOfNearestOpenCurlyBracket = target.value.substring(0, start).lastIndexOf(self.OPEN_CURLY_BRACKET);
                     autoCompleteData = self.getAutoCompleteDataByElementType(target.value.substring(0, indexOfNearestOpenCurlyBracket), target.value.substring(indexOfNearestOpenCurlyBracket + 1, start));
-                    if (autoCompleteData.length > 0){
+                    if (autoCompleteData.length > 0) {
                         self.autoComplete(autoCompleteData);
                         $("#auto-complete-container").show();
                         self.autoSelected(autoCompleteData[0]);
@@ -883,10 +1038,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                 }
             });
-            $('body').on('click', function(event){
+            $('body').on('click', function (event) {
                 $("#auto-complete-container").hide();
             })
         }
+
         insertString(original, sub, position) {
             if (original.length === position) {
                 return original + sub;
@@ -942,14 +1098,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             var uiPosition = {};
             var $lines = $("#input-content-area").find(".editor-line");
             var index = 0;
-            $lines.each(function(index, line) {
+            $lines.each(function (index, line) {
                 var $line = $(line);
-                var char = _.find($line.children(), function(text) {
+                var char = _.find($line.children(), function (text) {
                     var current = index + $(text).text().length;
                     index += $(text).text().length;
                     return current === position;
                 });
-                if(char !== undefined){
+                if (char !== undefined) {
                     uiPosition = $(char).position();
                     return;
                 }
@@ -965,38 +1121,59 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkJapanese(char) {
             return !nts.uk.text.allHalf(char);
         }
-        changeAutoCompleteData (preString, postString) {
+
+        changeAutoCompleteData(preString, postString) {
 
         }
-        getAutoCompleteDataByElementType(preString, postString): any{
+
+        getAutoCompleteDataByElementType(preString, postString): any {
             let self = this;
             if (preString == null || postString == null) return [];
             if (preString.endsWith(self.PAYMENT))
-               return self.paymentItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return self.paymentItemList.filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.DEDUCTION))
-                return self.deductionItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return self.deductionItemList.filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.ATTENDANCE))
-                return self.attendanceItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return self.attendanceItemList.filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.COMPANY_UNIT_PRICE))
-                return self.companyUnitPriceList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return self.companyUnitPriceList.filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.INDIVIDUAL_UNIT_PRICE))
-                return self.individualUnitPriceList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return self.individualUnitPriceList.filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.FUNCTION))
-                return ko.toJS(self.functionListItem).filter(function(item){return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))}).map(item => new model.ItemModel(null, item.name));
+                return ko.toJS(self.functionListItem).filter(function (item) {
+                    return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))
+                }).map(item => new model.ItemModel(null, item.name));
             if (preString.endsWith(self.VARIABLE))
-                return ko.toJS(self.systemVariableListItem).filter(function(item){return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))}).map(item => new model.ItemModel(null, item.name));
+                return ko.toJS(self.systemVariableListItem).filter(function (item) {
+                    return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))
+                }).map(item => new model.ItemModel(null, item.name));
             if (preString.endsWith(self.FORMULA))
-                return ko.toJS(self.formulaList).filter(function(item){return item.formulaName.startsWith(postString) || item.formulaCode.startsWith(postString)}).map(item => new model.ItemModel(item.formulaCode, item.formulaName));
+                return ko.toJS(self.formulaList).filter(function (item) {
+                    return item.formulaName.startsWith(postString) || item.formulaCode.startsWith(postString)
+                }).map(item => new model.ItemModel(item.formulaCode, item.formulaName));
             if (preString.endsWith(self.WAGE_TABLE))
-                return ko.toJS(self.wageTableList).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+                return ko.toJS(self.wageTableList).filter(function (item) {
+                    return item.name.startsWith(postString) || item.code.startsWith(postString)
+                }).map(item => new model.ItemModel(item.code, item.name));
             return [];
         }
-        addToFormulaFromHintBox (formulaToAdd: string) {
-            let self = this, calculationFormulaItem:any = $('#D3_5')[0];
+
+        addToFormulaFromHintBox(formulaToAdd: string) {
+            let self = this, calculationFormulaItem: any = $('#D3_5')[0];
             let startSelection = calculationFormulaItem.value.substring(0, calculationFormulaItem.selectionStart).lastIndexOf(self.OPEN_CURLY_BRACKET);
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#D3_5').val(calculationFormulaItem.value.substring(0, startSelection + 1) + formulaToAdd + calculationFormulaItem.value.substring(calculationFormulaItem.selectionStart));
-                let newStartSelection = startSelection + formulaToAdd.length +1;
+                let newStartSelection = startSelection + formulaToAdd.length + 1;
                 $('#D3_5').focus();
                 calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
             }, 50);

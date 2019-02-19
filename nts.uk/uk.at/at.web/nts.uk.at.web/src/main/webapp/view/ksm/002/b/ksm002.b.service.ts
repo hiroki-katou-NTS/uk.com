@@ -42,10 +42,19 @@ module nts.uk.at.view.ksm002.b {
         }
                
         export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', domainType: 'KSM002' + __viewContext.program.programName, 
-                languageId: 'ja', reportType: 0, mode: mode, 
-                startDate : moment.utc(startDate).format(), 
-                endDate : moment.utc(endDate).format()});
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KSM002";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile('/masterlist/report/print', {
+                domainId: 'SpecificdaySet',
+                domainType: domainType,
+                languageId: 'ja', reportType: 0, mode: mode,
+                startDate: moment.utc(startDate).format(),
+                endDate: moment.utc(endDate).format()
+            });
         }
     }
 }

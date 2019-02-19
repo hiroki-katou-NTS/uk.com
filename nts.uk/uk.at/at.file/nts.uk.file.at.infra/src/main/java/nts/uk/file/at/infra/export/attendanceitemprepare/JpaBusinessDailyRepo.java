@@ -16,7 +16,7 @@ import nts.uk.file.at.app.export.attendanceitemprepare.BusinessDailyRepo;
 @Stateless
 public class JpaBusinessDailyRepo extends JpaRepository implements BusinessDailyRepo {
 
-	private static final String GET_ALL_BY_COMPANY = "select a.BUSINESS_TYPE_CD, a.ATTENDANCE_ITEM_ID, a.SHEET_NO, b.SHEET_NAME "
+	private static final String GET_ALL_BY_COMPANY = "select a.BUSINESS_TYPE_CD, a.ATTENDANCE_ITEM_ID, a.SHEET_NO, b.SHEET_NAME, a.ORDER_DAILY "
 			+ "from KRCMT_BUS_DAILY_ITEM a "
 			+ "join KRCMT_BUS_FORM_SHEET b "
 			+ "on a.BUSINESS_TYPE_CD=b.BUSINESS_TYPE_CD and a.SHEET_NO=b.SHEET_NO  and a.CID = b.CID where a.CID=?companyId "
@@ -46,15 +46,20 @@ public class JpaBusinessDailyRepo extends JpaRepository implements BusinessDaily
 		Integer attItemId = 0;
 		Integer sheetNo = 0;
 		String code = (String) x[0];
+		Integer order = 0;
 		String sheetName = (String) x[3];
+		
 		if(x[1] !=null){
 			sheetNo = ((BigDecimal) x[1]).intValue();
 		}
 		if(x[2] !=null){
 			attItemId =((BigDecimal) x[2]).intValue();
 		}
+		if(x[4] !=null){
+			order =((BigDecimal) x[4]).intValue();
+		}
 		BusinessDailyExcel businessDailyExcel = 
-				new BusinessDailyExcel(code, sheetNo,attItemId,sheetName);
+				new BusinessDailyExcel(code, sheetNo,attItemId,sheetName,order);
 		list.add(businessDailyExcel);
 	}
 

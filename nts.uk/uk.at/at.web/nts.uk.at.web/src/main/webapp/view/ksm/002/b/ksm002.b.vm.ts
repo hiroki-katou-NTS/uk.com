@@ -39,7 +39,6 @@ module ksm002.b.viewmodel {
         
         constructor() {
             var self = this;
-            console.log(self.currentWorkPlace().name);
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
@@ -101,7 +100,7 @@ module ksm002.b.viewmodel {
             var self = this;  
             $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
-            self.showExportBtn();
+//            self.showExportBtn();
             $.when(
                 self.getAllSpecDate(), 
                 nts.uk.characteristics.restore("IndividualStartDay"),

@@ -41,9 +41,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     */
     @Basic(optional = false)
     @Column(name = "CALCULATION_FORMULA_ATR")
-    public int calculationFormulaCls;
-    
-
+    public Integer calculationFormulaCls;
     
     /**
     * かんたん計算式固定金額
@@ -144,25 +142,43 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
 
     public static QpbmtBasicCalculationFormula toEntity(BasicCalculationFormula domain) {
         QpbmtBasicCalculationFormula entity = new QpbmtBasicCalculationFormula();
-        entity.basicCalFormPk =new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID(), domain.getMasterUseCode().v());
+        entity.basicCalFormPk = new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID(), domain.getMasterUseCode().v());
         entity.calculationFormulaCls = domain.getCalculationFormulaClassification().value;
-        entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(null);
-        if (!domain.getBasicCalculationForm().isPresent()) return entity;
-        BasicCalculationForm basicCalculationForm = domain.getBasicCalculationForm().get();
-        entity.standardAmountCls = basicCalculationForm.getBasicCalculationStandardAmount().getStandardAmountClassification().value;
-        entity.standardFixedValue = basicCalculationForm.getBasicCalculationStandardAmount().getStandardFixedValue().map(PrimitiveValueBase::v).orElse(null);
-        entity.attendanceItem = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getAttendanceItem().map(PrimitiveValueBase::v).orElse(null);
-        entity.coefficientCls = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getCoefficientClassification().map(i -> i.value).orElse(null);
-        entity.coefficientFixedValue = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientFixedValue().map(PrimitiveValueBase::v).orElse(null);
-        entity.formulaType = basicCalculationForm.getFormulaType().value;
-        entity.roundingResult = basicCalculationForm.getRoundingResult().value;
-        entity.adjustmentCls = basicCalculationForm.getAdjustmentClassification().value;
-        entity.premiumRate = basicCalculationForm.getPremiumRate().map(PrimitiveValueBase::v).orElse(null);
-        entity.roundingMethod = basicCalculationForm.getRoundingMethod().map(i -> i.value).orElse(null);
-        if (!basicCalculationForm.getBasicCalculationItemCategory().isPresent()) return entity;
-        BasicCalculationItemCategory basicCalculationItemCategory = basicCalculationForm.getBasicCalculationItemCategory().get();
-        entity.baseItemCls = basicCalculationItemCategory.getBaseItemClassification().value;
-        entity.baseItemFixedValue = basicCalculationItemCategory.getBaseItemFixedValue().map(PrimitiveValueBase::v).orElse(null);
+        entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+        if (!domain.getBasicCalculationForm().isPresent()) {
+            entity.standardAmountCls = 0;
+            entity.standardFixedValue = BigDecimal.ZERO;
+            entity.attendanceItem = null;
+            entity.coefficientCls = 0;
+            entity.coefficientFixedValue = BigDecimal.ZERO;
+            entity.formulaType = 0;
+            entity.roundingResult = 0;
+            entity.adjustmentCls = 0;
+            entity.premiumRate = 100;
+            entity.roundingMethod = 0;
+            entity.baseItemCls = 0;
+            entity.baseItemFixedValue = BigDecimal.ZERO;
+        } else {
+            BasicCalculationForm basicCalculationForm = domain.getBasicCalculationForm().get();
+            entity.standardAmountCls = basicCalculationForm.getBasicCalculationStandardAmount().getStandardAmountClassification().value;
+            entity.standardFixedValue = basicCalculationForm.getBasicCalculationStandardAmount().getStandardFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+            entity.attendanceItem = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getAttendanceItem().map(PrimitiveValueBase::v).orElse(null);
+            entity.coefficientCls = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getCoefficientClassification().map(i -> i.value).orElse(0);
+            entity.coefficientFixedValue = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+            entity.formulaType = basicCalculationForm.getFormulaType().value;
+            entity.roundingResult = basicCalculationForm.getRoundingResult().value;
+            entity.adjustmentCls = basicCalculationForm.getAdjustmentClassification().value;
+            entity.premiumRate = basicCalculationForm.getPremiumRate().map(PrimitiveValueBase::v).orElse(100);
+            entity.roundingMethod = basicCalculationForm.getRoundingMethod().map(i -> i.value).orElse(0);
+            if (!basicCalculationForm.getBasicCalculationItemCategory().isPresent()) {
+                entity.baseItemCls = 0;
+                entity.baseItemFixedValue = BigDecimal.ZERO;
+            } else {
+                BasicCalculationItemCategory basicCalculationItemCategory = basicCalculationForm.getBasicCalculationItemCategory().get();
+                entity.baseItemCls = basicCalculationItemCategory.getBaseItemClassification().value;
+                entity.baseItemFixedValue = basicCalculationItemCategory.getBaseItemFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+            }
+        }
         return entity;
     }
 

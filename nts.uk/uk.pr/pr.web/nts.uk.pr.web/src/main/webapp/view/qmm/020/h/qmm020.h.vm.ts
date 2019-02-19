@@ -316,6 +316,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.mode(model.MODE.NEW);
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
+                $("#H1_5_container").focus();
             });
         }
 
@@ -363,8 +364,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 if(params && params.modeEditHistory == 0) {
                     self.getHisIndividual(self.selectedItem(), null);
                 }
-                $('#H2_1').focus();
-
+                $("#H1_5_container").focus();
             });
         }
 

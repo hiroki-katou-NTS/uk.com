@@ -17,15 +17,19 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getCategoryAtrText(e: CategoryAtr) {
         switch (e) {
             case CategoryAtr.PAYMENT_ITEM:
-                return getText("Enum_CategoryAtr_PAYMENT_ITEM");
+                // return getText("Enum_CategoryAtr_PAYMENT_ITEM");
+                return getText("QMM019_106");
             case CategoryAtr.DEDUCTION_ITEM:
-                return getText("Enum_CategoryAtr_DEDUCTION_ITEM");
+                // return getText("Enum_CategoryAtr_DEDUCTION_ITEM");
+                return getText("QMM019_160");
             case CategoryAtr.ATTEND_ITEM:
-                return getText("Enum_CategoryAtr_ATTEND_ITEM");
+                // return getText("Enum_CategoryAtr_ATTEND_ITEM");
+                return getText("QMM019_168");
             case CategoryAtr.REPORT_ITEM:
-                return getText("Enum_CategoryAtr_ATTEND_ITEM");
-            case CategoryAtr.OTHER_ITEM:
-                return getText("Enum_CategoryAtr_OTHER_ITEM");
+                // return getText("Enum_CategoryAtr_REPORT_ITEM");
+                return getText("QMM019_173");
+            // case CategoryAtr.OTHER_ITEM:
+                // return getText("Enum_CategoryAtr_OTHER_ITEM");
             default:
                 return "";
         }
@@ -477,8 +481,8 @@ module nts.uk.pr.view.qmm019.share.model {
      * 明細書印字区分
      */
     export enum StatementPrintAtr {
-        PRINT = 0,
-        DO_NOT_PRINT = 1
+        PRINT = 1,
+        DO_NOT_PRINT = 0
     }
 
     /**
@@ -516,6 +520,11 @@ module nts.uk.pr.view.qmm019.share.model {
             this.nodeText = nts.uk.time.parseYearMonth(params.startMonth).format()
                 + " ～ " + nts.uk.time.parseYearMonth(params.endMonth).format();
             this.history = [];
+        }
+
+        updateNodeText(){
+            this.nodeText = nts.uk.time.parseYearMonth(this.startMonth).format()
+                + " ～ " + nts.uk.time.parseYearMonth(this.endMonth).format();
         }
     }
 

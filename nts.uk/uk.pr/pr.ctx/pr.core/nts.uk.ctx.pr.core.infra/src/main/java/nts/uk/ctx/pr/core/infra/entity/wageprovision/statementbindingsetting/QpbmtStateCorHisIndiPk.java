@@ -24,14 +24,14 @@ public class QpbmtStateCorHisIndiPk implements Serializable {
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     public String empId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     public String hisId;
     
 }

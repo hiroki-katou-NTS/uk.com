@@ -40,14 +40,14 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
     * 開始年月
     */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
+    @Column(name = "START_YM")
     public int startYearMonth;
     
     /**
     * 終了年月
     */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
+    @Column(name = "END_YM")
     public int endYearMonth;
     
     /**
@@ -61,42 +61,42 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
     * 対象区分
     */
     @Basic(optional = true)
-    @Column(name = "TARGET_CLASS")
+    @Column(name = "TARGET_CLASS_ATR")
     public Integer targetClass;
     
     /**
     * 日給月給者
     */
     @Basic(optional = true)
-    @Column(name = "MONTH_SALARY_PER_DAY")
+    @Column(name = "MONTH_SALARY_PER_DAY_ATR")
     public Integer monthSalaryPerDay;
     
     /**
     * 日給者
     */
     @Basic(optional = true)
-    @Column(name = "A_DAY_PAYEE")
+    @Column(name = "A_DAY_PAYEE_ATR")
     public Integer aDayPayee;
     
     /**
     * 時給者
     */
     @Basic(optional = true)
-    @Column(name = "HOURLY_PAY")
+    @Column(name = "HOURLY_PAY_ATR")
     public Integer hourlyPay;
     
     /**
     * 月給者
     */
     @Basic(optional = true)
-    @Column(name = "MONTH_SALARY")
+    @Column(name = "MONTH_SALARY_ATR")
     public Integer monthSalary;
     
     /**
     * 設定区分
     */
     @Basic(optional = false)
-    @Column(name = "SET_CLASSIFICATION")
+    @Column(name = "SET_CLASSIFICATION_ATR")
     public int setClassification;
     
     /**

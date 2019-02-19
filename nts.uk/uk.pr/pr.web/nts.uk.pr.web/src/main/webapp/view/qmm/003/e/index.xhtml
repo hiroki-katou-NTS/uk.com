@@ -25,7 +25,7 @@
 						<!-- E1_2 -->
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_30')}</div>
 						<!-- E1_3 -->
-						<div id="E1_3" tabindex="13"
+						<div id="E1_3" tabindex="1"
 	                                 data-bind="ntsDatePicker: {
 	                                    name: '#[QMM016_16]',
 	                                    value: targetYm,
@@ -48,7 +48,7 @@
 								<!-- E2_3 -->
 								<div tabindex="2" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
 									targetKey: 'code', mode:'igTree', comId:'treegridsource', items: source, 
-									selected: sourceSelectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+									selected: sourceSelectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
 							</div>
 							<!-- E2_4 -->
 							<table id="treegridsource" tabindex="3"
@@ -64,7 +64,6 @@
 									primaryText: 'nodeText',
 									multiple: true,
 									enable: true,
-									initialExpandDepth: 1,
 									showCheckBox: true}"></table>
 						</div>
 						<div id="midsec" style="float: left; width: 65px">
@@ -84,7 +83,7 @@
 								<!-- E3_3 -->
 								<div tabindex="4" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
 									targetKey: 'code', mode:'igTree', comId:'treegriddestination', items: destination, 
-									selected: selectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+									selected: selectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
 							</div>
 							<!-- E3_4 -->
 							<table id="treegriddestination" tabindex="5"
@@ -100,7 +99,6 @@
 									primaryText: 'nodeText',
 									multiple: false,
 									enable: true,
-									initialExpandDepth: 1,
 									showCheckBox: false}"></table>
 						</div>
 					</div>

@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+
     export class ScreenModel {
         calculationFormulaList: KnockoutObservableArray<any> = ko.observableArray([]);
         trialCalculationResult: KnockoutObservable<number> = ko.observable(null);
@@ -12,18 +13,53 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         roundingMethod: number;
         roundingPosition: number;
 
-        OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
+        OPEN_CURLY_BRACKET = '{';
+        CLOSE_CURLY_BRACKET = '}';
         COMMA_CHAR = ',';
-        PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICITY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
-        GREATER = '>'; LESS = '<'; LESS_OR_EQUAL = '≦'; GREATER_OR_EQUAL = '≧'; EQUAL = '＝'; DIFFERENCE = '≠';
+        PLUS = '＋';
+        SUBTRACT = 'ー';
+        MULTIPLICITY = '×';
+        DIVIDE = '÷';
+        POW = '^';
+        OPEN_BRACKET = '(';
+        CLOSE_BRACKET = ')';
+        GREATER = '>';
+        LESS = '<';
+        LESS_OR_EQUAL = '≦';
+        GREATER_OR_EQUAL = '≧';
+        EQUAL = '＝';
+        DIFFERENCE = '≠';
 
-        PAYMENT = '支給'; DEDUCTION = '控除'; ATTENDANCE = '勤怠'; COMPANY_UNIT_PRICE = '会社単価'; FUNCTION = '関数';
-        INDIVIDUAL_UNIT_PRICE = '個人単価';VARIABLE = '変数'; PERSON = '個人'; FORMULA = '計算式'; WAGE_TABLE = '賃金';
-        CONDITIONAL = '条件式'; AND = 'かつ'; OR = 'または'; ROUND_OFF = '四捨五入'; TRUNCATION = '切り捨て';
-        ROUND_UP = '切り上げ'; MAX_VALUE = '最大値'; MIN_VALUE = '最小値'; NUM_OF_FAMILY_MEMBER = '家族人数';
-        YEAR_MONTH = '年月加算'; YEAR_EXTRACTION = '年抽出'; MONTH_EXTRACTION = '月抽出';
-        SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
-        PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
+        PAYMENT = '支給';
+        DEDUCTION = '控除';
+        ATTENDANCE = '勤怠';
+        COMPANY_UNIT_PRICE = '会社単価';
+        FUNCTION = '関数';
+        INDIVIDUAL_UNIT_PRICE = '個人単価';
+        VARIABLE = '変数';
+        PERSON = '個人';
+        FORMULA = '計算式';
+        WAGE_TABLE = '賃金';
+        CONDITIONAL = '条件式';
+        AND = 'かつ';
+        OR = 'または';
+        ROUND_OFF = '四捨五入';
+        TRUNCATION = '切り捨て';
+        ROUND_UP = '切り上げ';
+        MAX_VALUE = '最大値';
+        MIN_VALUE = '最小値';
+        NUM_OF_FAMILY_MEMBER = '家族人数';
+        YEAR_MONTH = '年月加算';
+        YEAR_EXTRACTION = '年抽出';
+        MONTH_EXTRACTION = '月抽出';
+        SYSTEM_YMD_DATE = 'システム日付（年月日）';
+        SYSTEM_YM_DATE = 'システム日付（年月）';
+        SYSTEM_Y_DATE = 'システム日付（年）';
+        PROCESSING_YEAR_MONTH = '処理年月';
+        PROCESSING_YEAR = '処理年';
+        REFERENCE_TIME = '基準時間';
+        STANDARD_DAY = '基準日数';
+        WORKDAY = '要勤務日数';
 
         separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
             '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
@@ -41,9 +77,16 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.formulaListItem = params.formulaListItem;
             self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
-            $('#G1_2').ntsFixedTable({height: 184});
+
+            if (/Chrome/.test(navigator.userAgent)) {
+                $('#G1_2').ntsFixedTable({height: 279});
+            } else {
+                $('#G1_2').ntsFixedTable({height: 276.5});
+            }
+
         }
-        extractFormula (formula) {
+
+        extractFormula(formula) {
             let self = this, separators = self.separators;
             let operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
@@ -53,53 +96,85 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 if (operand.startsWith(self.FORMULA)) {
                     formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     formulaItem = _.find(self.formulaListItem, {formulaName: formulaName});
-                    if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [operand]});
+                    if (!formulaItem) {
+                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaName]});
                     }
                     registerContent = 'calc_00' + formulaItem.formulaCode;
                     embeddedFormulaElement[registerContent] = null;
                 }
-            })
+            });
             self.getEmbeddedFormulaAndDisplay(formula, embeddedFormulaElement);
         }
-        extractInputParameter (formula) {
+
+        extractInputParameter(formula) {
             let self = this, separators = self.separators;
             let operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
             let calculationFormulaData = [];
             operands.forEach(operand => {
-                if (operand.startsWith(self.PAYMENT) || operand.startsWith(self.DEDUCTION) || operand.startsWith(self.ATTENDANCE)
-                    || operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)
-                    || operand.startsWith(self.WAGE_TABLE)){
+                if (operand.startsWith(self.PAYMENT) || operand.startsWith(self.DEDUCTION)) {
                     if (!(_.some(calculationFormulaData, {formulaItem: operand})))
                         calculationFormulaData.push({
                             formulaItem: operand,
-                            trialCalculationValue: ko.observable(null)
+                            trialCalculationValue: ko.observable(null),
+                            constraint: 'PaymentAndDeductionItem',
+                            decimalLength: 0,
+                            readonly: false
+                        })
+                }
+                if (operand.startsWith(self.ATTENDANCE)) {
+                    if (!(_.some(calculationFormulaData, {formulaItem: operand})))
+                        calculationFormulaData.push({
+                            formulaItem: operand,
+                            trialCalculationValue: ko.observable(null),
+                            constraint: 'AttendanceItem',
+                            decimalLength: 2,
+                            readonly: false
+                        })
+                }
+                if (operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)) {
+                    if (!(_.some(calculationFormulaData, {formulaItem: operand})))
+                        calculationFormulaData.push({
+                            formulaItem: operand,
+                            trialCalculationValue: ko.observable(null),
+                            constraint: 'CompanyAndIndividualUnitPrice',
+                            decimalLength: 2,
+                            readonly: false
+                        })
+                }
+                if (operand.startsWith(self.WAGE_TABLE)) {
+                    if (!(_.some(calculationFormulaData, {formulaItem: operand})))
+                        calculationFormulaData.push({
+                            formulaItem: operand,
+                            trialCalculationValue: ko.observable(1),
+                            constraint: '',
+                            decimalLength: 0,
+                            readonly: true
                         })
                 }
             });
             self.calculationFormulaList(calculationFormulaData);
         }
 
-        getEmbeddedFormulaAndDisplay (formula, embeddedFormulaElement) {
+        getEmbeddedFormulaAndDisplay(formula, embeddedFormulaElement) {
             let self = this;
             let dto = {
                 yearMonth: self.startMonth,
                 formulaElements: embeddedFormulaElement
-            }
-            service.getEmbeddedFormulaDisplayContent(dto).done(function(data: any){
+            };
+            service.getEmbeddedFormulaDisplayContent(dto).done(function (data: any) {
                 let formulaCode, formulaItem, displayContent;
                 block.clear();
                 Object.keys(data).forEach(key => {
                     formulaCode = key.substring(7);
                     formulaItem = _.find(self.formulaListItem, {formulaCode: formulaCode});
-                    if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [key]});
+                    if (!formulaItem) {
+                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaCode]});
                     }
                     displayContent = self.FORMULA + self.OPEN_CURLY_BRACKET + formulaItem.formulaName + self.CLOSE_CURLY_BRACKET;
                     formula = formula.replace(new RegExp(displayContent, 'g'), data[key]);
-                })
+                });
                 self.formulaContent(formula);
                 self.extractInputParameter(formula);
                 $('#G1_2_container').focus();
@@ -110,20 +185,26 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         }
 
         // calculate via aspose cell
-        calculateInServer () {
+        calculateInServer() {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) return;
             let self = this;
             block.invisible();
             let replaceValues = ko.toJS(self.calculationFormulaList);
-            service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingPosition: self.roundingPosition}).done(function(result){
+            service.calculate({
+                formulaContent: self.formulaContent(),
+                replaceValues: replaceValues,
+                roundingMethod: self.roundingMethod,
+                roundingPosition: self.roundingPosition
+            }).done(function (result) {
                 self.trialCalculationResult(result);
                 block.clear();
-            }).fail(function(err){
+            }).fail(function (err) {
                 block.clear();
                 dialog.alertError({messageId: err.messageId, message: err.message});
             })
         }
+
         //
         // calculate () {
         //     $('.nts-input').trigger("validate");
@@ -344,7 +425,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         //     return -1;
         // }
         //
-        closeDialog () {
+        closeDialog() {
             nts.uk.ui.windows.close();
         }
     }

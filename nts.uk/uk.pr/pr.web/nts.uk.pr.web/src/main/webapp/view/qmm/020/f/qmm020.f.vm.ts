@@ -69,6 +69,13 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
                 ],
                 features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'masterCode', allowResizing: true, minimumWidth: 30
+                        }, {
+                            columnKey: 'categoryName', allowResizing: true, minimumWidth:30
+                        }]
+                    },
                     {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
                     {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
@@ -131,15 +138,15 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         enableRegis() {
-            return this.mode() == model.MODE.NO_REGIS;
+            return (this.mode() == model.MODE.NO_REGIS || this.mode() == model.MODE.NO_EXIST);
         }
 
         enableNew() {
             let self = this;
             if (self.listStateCorrelationHisPosition().length > 0) {
-                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisPosition()[FIRST].hisId == HIS_ID_TEMP));
+                return !(self.mode() == model.MODE.NEW || (self.listStateCorrelationHisPosition()[FIRST].hisId == HIS_ID_TEMP));
             }
-            return self.mode() == model.MODE.NEW;
+            return self.mode() != model.MODE.NEW && self.mode() != model.MODE.NO_EXIST;
         }
 
         enableEdit() {
@@ -162,16 +169,20 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
-                    self.mode(model.MODE.NO_REGIS);
+                    dialog.info({ messageId: "Msg_306" }).then(() => {
+                        self.mode(model.MODE.NO_EXIST);
+                    });
                 }
                 self.loadGird();
+            }).fail(function(err) {
+                dialog.alertError(err);
             }).always(() => {
                 block.clear();
             });
         }
 
         getDateBase(hisId: string): JQueryPromise<any> {
-            dfd = $.Deferred();
+            let dfd = $.Deferred();
             let self = this;
             service.getDateBase(hisId).done((item: any) => {
                 if (item) {
@@ -254,7 +265,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.listStateCorrelationHisPosition.unshift(self.createStateCorrelationHisPosition(params.start, self.end()));
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
-
+                $("#F1_5_container").focus();
             });
 
         }
@@ -302,8 +313,8 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if (params && params.modeEditHistory == model.EDIT_METHOD.DELETE) {
                     self.initScreen(null);
                 }
-                $('#F2_1').focus();
 
+                $("#F1_5_container").focus();
             });
 
         }

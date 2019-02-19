@@ -491,7 +491,8 @@ module nts.uk.ui.koExtentions {
                 // filter specs key
                 if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
 
-                    if (!evt.key.match(/[\-\.0-9]/g)) {
+                    // fix bug cannot press [.] on numpad
+                    if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
                         evt.preventDefault();
                     } else {
                         // calc new value after keypress
@@ -506,6 +507,9 @@ module nts.uk.ui.koExtentions {
                         } else {
                             val = val.replace(val.substring(ss, se), evt.key);
                         }
+
+                        // fix bug cannot press [.] on numpad
+                        val = val.replace(/Decimal/, '.');
 
                         // accept negative key only first press
                         if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
@@ -523,9 +527,12 @@ module nts.uk.ui.koExtentions {
                         if (constraint) {
                             let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                             if (primitive) {
-                                let nval = parseFloat(val),
-                                    min = primitive.min,
+                                let min = primitive.min,
                                     max = primitive.max,
+                                    stma = String(Math.abs(max)),
+                                    stmi = String(Math.abs(min)),
+                                    mival = val,
+                                    maval = val,
                                     dlen = primitive.mantissaMaxLength;
 
                                 // accept negative key if min < 0
@@ -533,6 +540,17 @@ module nts.uk.ui.koExtentions {
                                     evt.preventDefault();
                                     return;
                                 }
+
+                                for (let i = mival.length; i < stmi.length; i++) {
+                                    mival += '0';
+                                }
+
+                                for (let i = maval.length; i < stma.length; i++) {
+                                    maval += '9';
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
 
                                 // clear decimal in constraint (sync) if option not has decimallength
                                 if (rd.option && rd.option.decimallength < 1) {
@@ -554,7 +572,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -567,7 +585,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -580,7 +598,7 @@ module nts.uk.ui.koExtentions {
                                             return;
                                         }
 
-                                        if (nval > max || nval < min) {
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -603,28 +621,67 @@ module nts.uk.ui.koExtentions {
                     // if value after delete out of range, preventDefault
                     if (primitive) {
                         let min = primitive.min,
-                            max = primitive.max;
+                            max = primitive.max,
+                            stma = String(Math.abs(max)),
+                            stmi = String(Math.abs(min));
 
                         if (ss == se) {
                             if (evt.keyCode == 8) {
-                                let _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
+                                let mival = val.substring(0, ss - 1) + val.substring(se, val.length),
+                                    maval = mival;
 
-                                if (_num < min || _num > max) {
+
+                                for (let i = mival.length; i < stmi.length; i++) {
+                                    mival += '0';
+                                }
+
+                                for (let i = maval.length; i < stma.length; i++) {
+                                    maval += '9';
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
                                     evt.preventDefault();
                                     return;
                                 }
                             } else {
-                                let _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
+                                let mival = val.substring(0, ss) + val.substring(se + 1, val.length),
+                                    maval = mival;
 
-                                if (_num < min || _num > max) {
+                                for (let i = mival.length; i < stmi.length; i++) {
+                                    mival += '0';
+                                }
+
+                                for (let i = maval.length; i < stma.length; i++) {
+                                    maval += '9';
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
                                     evt.preventDefault();
                                     return;
                                 }
                             }
                         } else {
-                            let _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
+                            let mival = val.substring(0, ss) + val.substring(se, val.length),
+                                maval = mival;
 
-                            if (_num < min || _num > max) {
+                            for (let i = mival.length; i < stmi.length; i++) {
+                                mival += '0';
+                            }
+
+                            for (let i = maval.length; i < stma.length; i++) {
+                                maval += '9';
+                            }
+
+                            let nmin = Number(mival),
+                                nmax = Number(maval);
+
+                            if (nmax < min || nmin > max) {
                                 evt.preventDefault();
                                 return;
                             }
@@ -956,7 +1013,7 @@ module nts.uk.ui.koExtentions {
             $input.addClass("enterkey")
                 .onkey("down", uk.KeyCodes.Enter, e => {
                 
-                    if($(".blockUI").length <= 0){
+                    if($(".blockUI").length > 0){
                         return; 
                     }
                 
