@@ -4026,26 +4026,23 @@ var nts;
                             _start.call(__viewContext);
                         }
                     });
-                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if (!onSamplePage) {
-                        if ($(document).find("#header").length > 0) {
-                            ui.menu.request();
-                        }
-                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                            var header = "<div id='header'><div id='menu-header'>"
-                                + "<div id='logo-area' class='cf'>"
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"
-                                + "</div></div>"
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                            $("#master-wrapper").prepend(header);
-                            ui.menu.request();
-                        }
+                    if ($(document).find("#header").length > 0) {
+                        ui.menu.request();
+                    }
+                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                        var header = "<div id='header'><div id='menu-header'>"
+                            + "<div id='logo-area' class='cf'>"
+                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='user-info' class='cf'>"
+                            + "<div id='company' class='cf' />"
+                            + "<div id='user' class='cf' />"
+                            + "</div></div>"
+                            + "<div id='nav-area' class='cf' />"
+                            + "<div id='pg-area' class='cf' />"
+                            + "</div></div>";
+                        $("#master-wrapper").prepend(header);
+                        ui.menu.request();
                     }
                 };
                 var noSessionWebScreens = [
@@ -4280,27 +4277,34 @@ var nts;
                         $companySelect.appendTo($company);
                         $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
                         var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        _.forEach(companies, function (comp, i) {
-                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                            $compItem.on(constants.CLICK, function () {
-                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (data) {
-                                    $companyName.text(comp.companyName);
-                                    $userName.text(data.personName);
-                                    $companyList.css("right", $user.outerWidth() + 30);
-                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
-                                            location.reload(true);
+                        var listCompany = function (comps) {
+                            _.forEach(comps, function (comp, i) {
+                                var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                                $compItem.on(constants.CLICK, function () {
+                                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                                        .done(function (data) {
+                                        $companyName.text(comp.companyName);
+                                        $userName.text(data.personName);
+                                        $companyList.css("right", $user.outerWidth() + 30);
+                                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                                uk.request.jumpToTopPage();
+                                            });
+                                        }
+                                        else {
+                                            uk.request.jumpToTopPage();
+                                        }
+                                    }).fail(function (msg) {
+                                        nts.uk.ui.dialog.alertError(msg.messageId);
+                                        $companyList.empty();
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (compList) {
+                                            listCompany(compList);
                                         });
-                                    }
-                                    else {
-                                        location.reload(true);
-                                    }
-                                }).fail(function (msg) {
-                                    nts.uk.ui.dialog.alertError(msg.messageId);
+                                    });
                                 });
                             });
-                        });
+                        };
+                        listCompany(companies);
                         $companySelect.on(constants.CLICK, function () {
                             if ($companyList.css("display") === "none") {
                                 $companyList.fadeIn(100);
@@ -15404,7 +15408,7 @@ var nts;
                             || !!window.navigator.userAgent.match(/trident/i)
                             || window.navigator.userAgent.indexOf("Edge") > -1)) {
                         var $div = $("<div/>").appendTo($(document.body));
-                        var style = $label[0].currentStyle || $label[0].style;
+                        var style = $label[0].currentStyle || window.getComputedStyle($label[0]); //$label[0].style;
                         if (style) {
                             for (var p in style) {
                                 $div[0].style[p] = style[p];
