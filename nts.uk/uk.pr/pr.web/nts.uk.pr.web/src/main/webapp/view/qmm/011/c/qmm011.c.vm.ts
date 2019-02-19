@@ -257,7 +257,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         }
 
         openDscreen() {
-            block.invisible();
             let self = this;
             modal("/view/qmm/011/d/index.xhtml").onClosed(function () {
                 let params = getShared('QMM011_D_PARAMS_CLOSE');
@@ -271,7 +270,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 self.getOccAccIsPrRate();
                 nts.uk.ui.errors.clearAll();
             });
-            block.clear();
         }
 
         register() {
