@@ -997,12 +997,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 $("#auto-complete-container").hide();
             });
             $("#D3_5").on("keypress", function (event) {
-                if(!$("#auto-complete-container").is(":visible")){
-                    event.preventDefault();
-                    return;
-                }
                 if (event.keyCode == 13) {
                     event.preventDefault();
+                    if(!$("#auto-complete-container").is(":visible")) return;
                     let displayText = $('#auto-complete-container option:selected').text();
                     if (displayText.indexOf("    ") > -1) displayText = displayText.split("    ")[1];
                     $("#auto-complete-container").hide();
