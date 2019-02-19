@@ -134,7 +134,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         index: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.changeDataByLineItemCategory();
             self.changeDataByUnitPriceItem();
             self.changeDataByFunctionItem();
@@ -585,7 +585,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.validateSyntax();
 
             if (!nts.uk.ui.errors.hasError()) {
-                dialog.info("detail calculation formula is ok");
+                dialog.info({messageId: "MsgQ_249"});
                 self.extractFormulaElement();
             }
         }
@@ -599,7 +599,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
             self.checkConditionOperator(formula);
-            self.checkNestedFormula(formula);
         }
 
         checkOperatorAndDivideZero(formula) {
@@ -703,12 +702,17 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                         elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
                     if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
                 } else {
                     dotIndex = operand.indexOf('.');
                     if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
                 }
                 prevOperand = operand;
             }
+        }
+
+        checkNestedFormula(formulaName): boolean {
+            return (ko.toJS(__viewContext.screenModel.formulaList).some(item => item.formulaName == formulaName) && !ko.toJS(this.formulaList).some(item => item.formulaName == formulaName));
         }
 
         checkElementName(elementType: string, elementName: string): boolean {
@@ -734,7 +738,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     return item.name == elementName
                 });
             if (elementType == self.FORMULA)
-                return (ko.toJS(self.formulaList).some(item => {
+                return (ko.toJS(__viewContext.screenModel.formulaList).some(item => {
                     return item.formulaName == elementName
                 }));
             if (elementType == self.WAGE_TABLE)
@@ -825,10 +829,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return 0;
             }
             return 0;
-        }
-
-        checkNestedFormula(formula: string) {
-
         }
 
         indexOfEndFunction(startFunctionIndex, formula) {
@@ -1002,7 +1002,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             $("#D3_5").on("keypress", function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
-                    if(!$("#auto-complete-container").is(":visible")) return;
+                    if (!$("#auto-complete-container").is(":visible")) return;
                     let displayText = $('#auto-complete-container option:selected').text();
                     if (displayText.indexOf("    ") > -1) displayText = displayText.split("    ")[1];
                     $("#auto-complete-container").hide();

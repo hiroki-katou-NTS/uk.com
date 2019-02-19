@@ -93,7 +93,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 {id: 'tab-3', title: getText('QMM017_42'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'tab-4', title: getText('QMM017_43'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'tab-5', title: getText('QMM017_44'), content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(true)},
-                {id: 'tab-6', title: getText('QMM017_45'), content: '.tab-content-6', enable:ko.observable(true), visible: ko.computed(function() {
+                {id: 'tab-6', title: getText('QMM017_45'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.computed(function() {
                         return (self.selectedFormula().nestedAtr() == model.NESTED_USE_CLS.NOT_USE)}, this)},
                 {id: 'tab-7', title: getText('QMM017_46'), content: '.tab-content-7', enable: ko.observable(true), visible: ko.observable(true)}
             ]);
