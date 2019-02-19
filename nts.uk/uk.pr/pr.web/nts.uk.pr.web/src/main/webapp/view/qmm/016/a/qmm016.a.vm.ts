@@ -422,10 +422,16 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             }
             switch (self.selectedWageTable().elementSetting()) {
                 case model.ELEMENT_SETTING.ONE_DIMENSION:
-                    ko.utils.extend(command.wageTableContent, {oneDimensionPayment: command.wageTableContent.payment});
+                    if (command.elementRange.firstElementRange.valueChanged)
+                        ko.utils.extend(command.wageTableContent, {oneDimensionPayment: []});
+                    else
+                        ko.utils.extend(command.wageTableContent, {oneDimensionPayment: command.wageTableContent.payment});
                     break;
                 case model.ELEMENT_SETTING.TWO_DIMENSION:
-                    ko.utils.extend(command.wageTableContent, {twoDimensionPayment: command.wageTableContent.payment});
+                    if (command.elementRange.firstElementRange.valueChanged || command.elementRange.secondElementRange.valueChanged)
+                        ko.utils.extend(command.wageTableContent, {twoDimensionPayment: []});
+                    else
+                        ko.utils.extend(command.wageTableContent, {twoDimensionPayment: command.wageTableContent.payment});
                     break;
                 case model.ELEMENT_SETTING.THREE_DIMENSION:
                     for (let i = 0; i < command.wageTableContent.payment.length; i++) {
@@ -436,7 +442,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             localStorage.removeItem("ThirdDimension" + i);
                         }
                     }
-                    ko.utils.extend(command.wageTableContent, {threeDimensionPayment: command.wageTableContent.payment});
+                    if (command.elementRange.firstElementRange.valueChanged || command.elementRange.secondElementRange.valueChanged || command.elementRange.thirdElementRange.valueChanged)
+                        ko.utils.extend(command.wageTableContent, {threeDimensionPayment: []});
+                    else
+                        ko.utils.extend(command.wageTableContent, {threeDimensionPayment: command.wageTableContent.payment});
                     break;
                 case model.ELEMENT_SETTING.QUALIFICATION:
                     ko.utils.extend(command.wageTableContent, {wageTableQualifications: command.wageTableContent.qualificationGroupSetting});
@@ -450,7 +459,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             localStorage.removeItem("ThirdDimension" + i);
                         }
                     }
-                    ko.utils.extend(command.wageTableContent, {workLevelPayment: command.wageTableContent.payment});
+                    if (command.elementRange.firstElementRange.valueChanged || command.elementRange.secondElementRange.valueChanged || command.elementRange.thirdElementRange.valueChanged)
+                        ko.utils.extend(command.wageTableContent, {workLevelPayment: []});
+                    else
+                        ko.utils.extend(command.wageTableContent, {workLevelPayment: command.wageTableContent.payment});
                     break;
                 default: break;
             }
@@ -612,12 +624,16 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#B2_8"), $("#B2_10"), $("#B2_11"));
-                if (params.firstElementRange == null) return;
+                if (params.firstElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             block.invisible();
             service.createOneDimentionWageTable(params).done(data => {
                 if (!_.isEmpty(data)) {
                     self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().firstElementRange().valueChanged = false;
                     self.elementRangeSetting().secondElementRange(null);
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
@@ -645,14 +661,20 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 // C2_8、C2_10、C2_11の状態を取得
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#C2_8"), $("#C2_10"), $("#C2_11"));
-                if (params.firstElementRange == null) return;
+                if (params.firstElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             if (self.selectedWageTable().elementInformation().twoDimensionElement().masterNumericClassification()
                     == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
                 // C2_15、C2_17、C2_18の状態を取得
                 let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
                 params.secondElementRange = self.getElementRange(secondElementRange, $("#C2_15"), $("#C2_17"), $("#C2_18"));
-                if (params.secondElementRange == null) return;
+                if (params.secondElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             block.invisible();
             service.createTwoDimentionWageTable(params).done((data: any) => {
@@ -669,6 +691,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().firstElementRange().valueChanged = false;
+                    self.elementRangeSetting().secondElementRange().valueChanged = false;
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
                     $("#content-wrapper").unbind();
@@ -698,21 +722,30 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 // D2_8、D2_10、D2_11の状態を取得
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#D2_8"), $("#D2_10"), $("#D2_11"));
-                if (params.firstElementRange == null) return;
+                if (params.firstElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             if (self.selectedWageTable().elementInformation().twoDimensionElement().masterNumericClassification()
                     == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
                 // D2_15、D2_17、D2_18の状態を取得
                 let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
                 params.secondElementRange = self.getElementRange(secondElementRange, $("#D2_15"), $("#D2_17"), $("#D2_18"));
-                if (params.secondElementRange == null) return;
+                if (params.secondElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             if (self.selectedWageTable().elementInformation().threeDimensionElement().masterNumericClassification()
                     == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
                 // D2_22、D2_24、D2_25の状態を取得
                 let thirdElementRange = ko.toJS(self.elementRangeSetting).thirdElementRange;
                 params.thirdElementRange = self.getElementRange(thirdElementRange, $("#D2_22"), $("#D2_24"), $("#D2_25"));
-                if (params.thirdElementRange == null) return;
+                if (params.thirdElementRange == null) {
+                    self.wageTableContent(new model.WageTableContent(null));
+                    return; 
+                }
             }
             block.invisible();
             service.createThreeDimentionWageTable(params).done(data => {
@@ -740,6 +773,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().firstElementRange().valueChanged = false;
+                    self.elementRangeSetting().secondElementRange().valueChanged = false;
+                    self.elementRangeSetting().thirdElementRange().valueChanged = false;
                     self.wageTableContent(new model.WageTableContent(data));
                     self.wageTableContent2dData(data.list2dElements.map(item => new model.TwoDmsElementItem(item)));
                     $("#content-wrapper").unbind();
@@ -783,12 +819,18 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             // F2_8、F2_10、F2_11の状態を取得
             let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
             params.firstElementRange = self.getElementRange(firstElementRange, $("#F2_8"), $("#F2_10"), $("#F2_11"));
-            if (params.firstElementRange == null) return;
+            if (params.firstElementRange == null) {
+                self.wageTableContent(new model.WageTableContent(null));
+                return; 
+            }
             
             // F2_15、F2_17、F2_18の状態を取得
             let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
             params.secondElementRange = self.getElementRange(secondElementRange, $("#F2_15"), $("#F2_17"), $("#F2_18"));
-            if (params.secondElementRange == null) return;
+            if (params.secondElementRange == null) {
+                self.wageTableContent(new model.WageTableContent(null));
+                return; 
+            }
 
             params.thirdElementRange = {rangeLowerLimit: 1, rangeUpperLimit: 5, stepIncrement: null};
             
@@ -811,6 +853,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().firstElementRange().valueChanged = false;
+                    self.elementRangeSetting().secondElementRange().valueChanged = false;
+                    self.elementRangeSetting().thirdElementRange().valueChanged = false;
                     self.wageTableContent(new model.WageTableContent(data));
                     self.wageTableContent2dData(data.list2dElements.map(item => new model.TwoDmsElementItem(item)));
                     $("#content-wrapper").unbind();
