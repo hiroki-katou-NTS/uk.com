@@ -48,7 +48,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     */
     @Basic(optional = true)
     @Column(name = "BASIC_CALCULATION_FORMULA")
-    public BigDecimal basicCalculationFormula;
+    public Long basicCalculationFormula;
 
     /**
      * 基準金額区分
@@ -62,7 +62,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
      */
     @Basic(optional = true)
     @Column(name = "STANDARD_FIXED_VALUE")
-    public BigDecimal standardFixedValue;
+    public Long standardFixedValue;
 
     /**
     * 勤怠項目
@@ -118,7 +118,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     */
     @Basic(optional = true)
     @Column(name = "BASE_ITEM_FIXED_VALUE")
-    public BigDecimal baseItemFixedValue;
+    public Long baseItemFixedValue;
     
     /**
     * 割増率
@@ -144,10 +144,10 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
         QpbmtBasicCalculationFormula entity = new QpbmtBasicCalculationFormula();
         entity.basicCalFormPk = new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID(), domain.getMasterUseCode().v());
         entity.calculationFormulaCls = domain.getCalculationFormulaClassification().value;
-        entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+        entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(0L);
         if (!domain.getBasicCalculationForm().isPresent()) {
             entity.standardAmountCls = 0;
-            entity.standardFixedValue = BigDecimal.ZERO;
+            entity.standardFixedValue = 0L;
             entity.attendanceItem = null;
             entity.coefficientCls = 0;
             entity.coefficientFixedValue = BigDecimal.ZERO;
@@ -157,11 +157,11 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
             entity.premiumRate = 100;
             entity.roundingMethod = 0;
             entity.baseItemCls = 0;
-            entity.baseItemFixedValue = BigDecimal.ZERO;
+            entity.baseItemFixedValue = 0L;
         } else {
             BasicCalculationForm basicCalculationForm = domain.getBasicCalculationForm().get();
             entity.standardAmountCls = basicCalculationForm.getBasicCalculationStandardAmount().getStandardAmountClassification().value;
-            entity.standardFixedValue = basicCalculationForm.getBasicCalculationStandardAmount().getStandardFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+            entity.standardFixedValue = basicCalculationForm.getBasicCalculationStandardAmount().getStandardFixedValue().map(PrimitiveValueBase::v).orElse(0L);
             entity.attendanceItem = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getAttendanceItem().map(PrimitiveValueBase::v).orElse(null);
             entity.coefficientCls = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getCoefficientClassification().map(i -> i.value).orElse(0);
             entity.coefficientFixedValue = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
@@ -172,11 +172,11 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
             entity.roundingMethod = basicCalculationForm.getRoundingMethod().map(i -> i.value).orElse(0);
             if (!basicCalculationForm.getBasicCalculationItemCategory().isPresent()) {
                 entity.baseItemCls = 0;
-                entity.baseItemFixedValue = BigDecimal.ZERO;
+                entity.baseItemFixedValue = 0L;
             } else {
                 BasicCalculationItemCategory basicCalculationItemCategory = basicCalculationForm.getBasicCalculationItemCategory().get();
                 entity.baseItemCls = basicCalculationItemCategory.getBaseItemClassification().value;
-                entity.baseItemFixedValue = basicCalculationItemCategory.getBaseItemFixedValue().map(PrimitiveValueBase::v).orElse(BigDecimal.ZERO);
+                entity.baseItemFixedValue = basicCalculationItemCategory.getBaseItemFixedValue().map(PrimitiveValueBase::v).orElse(0L);
             }
         }
         return entity;

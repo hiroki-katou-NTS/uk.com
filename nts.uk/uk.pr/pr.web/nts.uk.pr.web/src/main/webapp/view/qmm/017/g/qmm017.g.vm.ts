@@ -121,7 +121,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             constraint: 'PaymentAndDeductionItem',
                             decimalLength: 0,
                             readonly: false
-                        })
+                        });
                 }
                 if (operand.startsWith(self.ATTENDANCE)) {
                     if (!(_.some(calculationFormulaData, {formulaItem: operand})))
@@ -131,7 +131,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             constraint: 'AttendanceItem',
                             decimalLength: 2,
                             readonly: false
-                        })
+                        });
                 }
                 if (operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)) {
                     if (!(_.some(calculationFormulaData, {formulaItem: operand})))
@@ -141,7 +141,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             constraint: 'CompanyAndIndividualUnitPrice',
                             decimalLength: 2,
                             readonly: false
-                        })
+                        });
                 }
                 if (operand.startsWith(self.WAGE_TABLE)) {
                     if (!(_.some(calculationFormulaData, {formulaItem: operand})))
@@ -151,7 +151,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             constraint: '',
                             decimalLength: 0,
                             readonly: true
-                        })
+                        });
                 }
             });
             self.calculationFormulaList(calculationFormulaData);

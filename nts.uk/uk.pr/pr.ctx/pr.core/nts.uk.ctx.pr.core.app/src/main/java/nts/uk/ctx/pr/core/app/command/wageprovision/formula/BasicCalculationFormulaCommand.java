@@ -24,9 +24,9 @@ public class BasicCalculationFormulaCommand {
     public int calculationFormulaClassification;
     public String masterUseCode;
     public String historyID;
-    public BigDecimal basicCalculationFormula;
+    public Long basicCalculationFormula;
     public Integer standardAmountClassification;
-    public BigDecimal standardFixedValue;
+    public Long standardFixedValue;
     public List<String> targetItemCodeList;
     public String attendanceItem;
     public Integer coefficientClassification;
@@ -35,7 +35,7 @@ public class BasicCalculationFormulaCommand {
     public Integer roundingResult;
     public Integer adjustmentClassification;
     public Integer baseItemClassification;
-    public BigDecimal baseItemFixedValue;
+    public Long baseItemFixedValue;
     public Integer premiumRate;
     public Integer roundingMethod;
     

@@ -8,6 +8,8 @@ import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -21,7 +23,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 処理：36協定時間の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public class GetAgreementTimeProc {
 
@@ -68,7 +70,7 @@ public class GetAgreementTimeProc {
 		if (this.companySets.getErrorInfos().size() > 0){
 			
 			// 会社単位エラーメッセージ　（先頭の社員IDに紐づけて返却）
-			val companyError = AgreementTimeDetail.of(employeeIds.get(0), null, null,
+			val companyError = AgreementTimeDetail.of(employeeIds.get(0), null, null, null, null,
 					this.companySets.getErrorInfos().values().stream().findFirst().get().v());
 			results.add(companyError);
 			return results;
@@ -105,14 +107,16 @@ public class GetAgreementTimeProc {
 					this.repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, aggrPeriod);
 
 			// 確定情報の取得
-			val confirmed = this.getConfirmed(employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
+			val confirmedInfo = this.getConfirmedInfo(employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
+			val confirmed = confirmedInfo.getAgreementTime().getAgreementTime();
+			val confirmedMax = confirmedInfo.getAgreementMaxTime().getAgreementTime();
 			
 			// エラーがあるか確認する
 			if (confirmed.getConfirmedErrorMessage() != null){
 				errorMessages.add(confirmed.getConfirmedErrorMessage());
 				
 				// 36協定時間一覧にエラーメッセージを入れる
-				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null,
+				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null, null, null,
 						confirmed.getConfirmedErrorMessage());
 				results.add(employeeError);
 				return;
@@ -124,10 +128,12 @@ public class GetAgreementTimeProc {
 			
 			// 未反映申請反映後情報の取得
 			AgreementTimeOfMonthly afterAppReflect = null;
+			AgreMaxTimeOfMonthly afterAppReflextMax = null;
 			//val afterAppReflect = this.getConfirmed(employeeId, aggrPeriod, workConditionItem,
 			//		Optional.of(appReflectAttdTimeList));
 			
-			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, null);
+			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect,
+					confirmedMax, afterAppReflextMax, null);
 			results.add(aggrTimeDetail);
 		});
 		
@@ -170,9 +176,9 @@ public class GetAgreementTimeProc {
 	 * @param aggrPeriod 集計期間
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
-	 * @return 月別実績の36協定時間
+	 * @return 管理期間の36協定時間
 	 */
-	private AgreementTimeOfMonthly getConfirmed(
+	private AgreementTimeOfManagePeriod getConfirmedInfo(
 			String employeeId,
 			DatePeriod aggrPeriod,
 			MonAggrEmployeeSettings employeeSets,
@@ -227,14 +233,15 @@ public class GetAgreementTimeProc {
 				Optional.empty(), Optional.empty(), this.companySets, employeeSets,
 				monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
-			val agreementTime = agreementTimeOpt.get().getAgreementTime();
+			val agreementTime = agreementTimeOpt.get();
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる
 			if (!monthlyCalculation.getErrorInfos().isEmpty()){
-				agreementTime.setConfirmedErrorMessage(monthlyCalculation.getErrorInfos().get(0).getMessage().v());
+				agreementTime.getAgreementTime().getAgreementTime().setConfirmedErrorMessage(
+						monthlyCalculation.getErrorInfos().get(0).getMessage().v());
 			}
 			
-			// 月別実績の36協定時間を返す
+			// 管理期間の36協定時間を返す
 			return agreementTime;
 		}
 		

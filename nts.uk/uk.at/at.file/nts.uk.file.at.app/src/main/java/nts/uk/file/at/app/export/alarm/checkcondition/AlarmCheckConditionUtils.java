@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.alarm.checkcondition;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +16,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
@@ -197,8 +197,8 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
-	public static String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
-			Optional<Integer> start, Optional<Integer> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
+	public static <T> String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
+			Optional<T> start, Optional<T> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
 			Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos) {
 		StringBuffer condition = new StringBuffer("");
 		String targetAttendancesStr = targetAttendances.isPresent() ? getAttendanceStrFromTarget(targetAttendances.get(), attendanceNameDivergenceDtos, false) : "";
@@ -285,7 +285,7 @@ public class AlarmCheckConditionUtils {
 			case 8:
 				return TextResource.localize("KAL003_302");
 			case 9:
-				return TextResource.localize("KAL003_303");
+				return TextResource.localize("KAL003_300");
 			default:
 				return TextResource.localize("KAL003_302");
 			}
@@ -344,19 +344,25 @@ public class AlarmCheckConditionUtils {
 	public static <T> String getValueWithConditionAtr(T value, int conditionAtr) {
 		
 		if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
-			return (new CheckedAmountValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue()).toString());
+			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
 		} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
 			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value instanceof Integer ? (Integer)value : ((Double)value).intValue());
-			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() 
+			return (timeDuration.hour() 
 				+ ":" + (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
-			return (new TimeWithDayAttr(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).getInDayTimeWithFormat();
+			return (new TimeWithDayAttr(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).getRawTimeWithFormat();
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return ((new CheckedTimesValueDay(value instanceof Integer ? ((Integer)value).doubleValue() : ((Double)value))).toString() + TextResource.localize("KAL003_314")) ;
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v())) ;
 		}
 		return "";
+	}
+	
+	private static String formatCurrency(Integer value) {
+		DecimalFormat formatter = new DecimalFormat("#,###");
+		return formatter.format(value);
 	}
 	
 	public static List<Integer> getAttendanceIds(List<DailyReportData> dailyReportDatas) {
@@ -431,7 +437,7 @@ public class AlarmCheckConditionUtils {
 	}
 	
 	public static String getAttendanceStrFromTarget(String targetAttendances, Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos, boolean withDisplayNumber) {
-		StringBuffer attendanceStr = new StringBuffer("");
+		StringBuffer attendanceStrBuilder = new StringBuffer("");
 		if (!StringUtil.isNullOrEmpty(targetAttendances, true)) {
 			List<String> targets = Arrays.stream(targetAttendances.split(",")).collect(Collectors.toList());
 			StringBuffer targetsStr = new StringBuffer("");
@@ -444,18 +450,25 @@ public class AlarmCheckConditionUtils {
 					if (typeTargetAndAttendance.length == 2) {
 						AttendanceNameDivergenceDto dto = attendanceNameDivergenceDtos.get(Integer.valueOf(typeTargetAndAttendance[1]));
 						if (dto != null) {
-							attendanceStr.append(getTargetAtrStr(Integer.valueOf(typeTargetAndAttendance[0])));
+							attendanceStrBuilder.append(getTargetAtrStr(Integer.valueOf(typeTargetAndAttendance[0])));
 							if (withDisplayNumber) {
-								attendanceStr.append("" + dto.getAttendanceItemDisplayNumber());
+								attendanceStrBuilder.append("" + dto.getAttendanceItemDisplayNumber());
 							}
 							
-							attendanceStr.append(dto.getAttendanceItemName());
+							attendanceStrBuilder.append(dto.getAttendanceItemName());
 						}		
 					}
 				}
 			});;
 		}
-		return attendanceStr.toString();
+		
+		//remove start character "+"
+		String attendanceStr = attendanceStrBuilder.toString();
+		if (attendanceStr.startsWith("+")) {
+			attendanceStr = attendanceStr.substring(1);
+		}
+		
+		return attendanceStr;
 	}
 	
 	public static String getTargetAtrStr(int targetAtr) {
@@ -562,15 +575,18 @@ public class AlarmCheckConditionUtils {
 		if (checkTypeItem == 4) {
 			CheckedTimeDuration timeDuration = new CheckedTimeDuration(
 					value instanceof Integer ? (Integer) value : ((Double) value).intValue());
-			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() + ":"
+			return (timeDuration.hour() + ":"
 					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (checkTypeItem == 5) {
-			return ((new CheckedTimesValueDay(
-					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).toString());
-		} else if (checkTypeItem == 6 || checkTypeItem == 7) {
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()));
+		} else if (checkTypeItem == 6) {
 			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))
 					.toString();
+		} else if (checkTypeItem == 7) {
+			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
 		}
+		
 		return "";
 	}
 	

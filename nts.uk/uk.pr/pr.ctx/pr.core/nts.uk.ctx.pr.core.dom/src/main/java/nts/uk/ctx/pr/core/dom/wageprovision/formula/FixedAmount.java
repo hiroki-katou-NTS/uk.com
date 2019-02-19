@@ -1,26 +1,21 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
-
-import java.math.BigDecimal;
+import nts.arc.primitive.LongPrimitiveValue;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
 
 /**
-* 固定金額
-*/
-@DecimalMaxValue("999999999.999")
-@DecimalMinValue("0.000")
-@DecimalMantissaMaxLength(3)
-public class FixedAmount extends DecimalPrimitiveValue<FixedAmount>
-{
+ * 固定金額
+ */
+
+@LongMaxValue(9999999999L)
+@LongMinValue(-9999999999L)
+public class FixedAmount extends LongPrimitiveValue<FixedAmount> {
 
     private static final long serialVersionUID = 1L;
 
-    public FixedAmount(BigDecimal rawValue)
-    {
-         super(rawValue);
+    public FixedAmount(Long rawValue) {
+        super(rawValue);
     }
-    
+
 }

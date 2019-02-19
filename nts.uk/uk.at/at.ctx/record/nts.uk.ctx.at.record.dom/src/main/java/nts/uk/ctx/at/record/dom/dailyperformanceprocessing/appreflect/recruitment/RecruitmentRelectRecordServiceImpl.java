@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,8 +18,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.S
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOffReflect;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOutput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -35,28 +34,12 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	@Inject
 	private PreHolidayWorktimeReflectService holidayWorktimeService;
 	@Inject
-	private WorkInformationRepository workRepository;
-	@Inject
 	private CommonProcessCheckService commonService;
 	@Override
 	public boolean recruitmentReflect(CommonReflectParameter param, boolean isPre) {
 		try {
-			IntegrationOfDaily daily = holidayWorktimeService.createIntegrationOfDailyStart(param.getEmployeeId(), param.getBaseDate(), 
-					param.getWorkTimeCode(), param.getWorkTypeCode(), param.getStartTime(), param.getEndTime());
-			WorkInfoOfDailyPerformance dailyInfor = daily.getWorkInformation();
-			//予定勤種就時の反映
-			//予定開始終了の反映
-			dailyInfor = this.reflectScheWorkTimeType(param, isPre, dailyInfor);
-			//勤種・就時の反映
-			ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(),
-					param.getWorkTypeCode(), false);		
-			dailyInfor = workUpdate.updateWorkTimeType(reflectData, false, dailyInfor);
-			//日別実績の勤務情報  変更
-			workRepository.updateByKeyFlush(dailyInfor);
-			daily.setWorkInformation(dailyInfor);
-			//開始終了時刻の反映
-			daily = this.reflectRecordStartEndTime(param, daily);			
-			commonService.calculateOfAppReflect(daily, param.getEmployeeId(), param.getBaseDate());
+			List<IntegrationOfDaily> lstDaily = this.getByRecruitment(param, isPre);
+			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -64,21 +47,21 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre, WorkInfoOfDailyPerformance dailyInfo) {
+	public void reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre, IntegrationOfDaily dailyInfo) {
 		//予定を反映できるかチェックする
 		if(!holidayProcess.checkScheWorkTimeReflect(param.getEmployeeId(), param.getBaseDate(), 
 				param.getWorkTimeCode(), param.isScheTimeReflectAtr(), isPre, param.getScheAndRecordSameChangeFlg())) {
-			return dailyInfo;
+			return;
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(),
 				param.getWorkTypeCode(), false);		
-		dailyInfo = workUpdate.updateWorkTimeType(reflectData, true, dailyInfo);
+		workUpdate.updateWorkTimeType(reflectData, true, dailyInfo);
 		//予定開始終了の反映
 		//予定開始時刻の反映
 		//予定終了時刻の反映
-		TimeReflectPara timeRelect = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), param.getStartTime(), param.getEndTime(), 1, true, true);		
-		return  workUpdate.updateScheStartEndTime(timeRelect, dailyInfo);
+		TimeReflectPara timeRelect = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), param.getStartTime(), param.getEndTime(), 1, true, true);	
+		workUpdate.updateScheStartEndTime(timeRelect, dailyInfo);
 	}
 
 	@Override
@@ -125,7 +108,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		worktimeFrame.put(9, 0);
 		worktimeFrame.put(10, 0);
 		
-		daily = workUpdate.updateWorkTimeFrame(employeeId, baseDate, worktimeFrame, false, daily, true);
+		workUpdate.updateWorkTimeFrame(employeeId, baseDate, worktimeFrame, false, daily, true);
 		//振替時間(休出)の反映
 		Map<Integer, Integer> tranferTimeFrame = new HashMap<>();
 		tranferTimeFrame.put(1, 0);
@@ -196,6 +179,23 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		}
 		return false;*/
 		return true;
+	}
+
+	@Override
+	public List<IntegrationOfDaily> getByRecruitment(CommonReflectParameter param, boolean isPre) {
+		IntegrationOfDaily daily = holidayWorktimeService.createIntegrationOfDailyStart(param.getEmployeeId(), param.getBaseDate(), 
+				param.getWorkTimeCode(), param.getWorkTypeCode(), param.getStartTime(), param.getEndTime());
+		//予定勤種就時の反映
+		//予定開始終了の反映
+		this.reflectScheWorkTimeType(param, isPre, daily);
+		//勤種・就時の反映
+		ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(),
+				param.getWorkTypeCode(), false);		
+		workUpdate.updateWorkTimeType(reflectData, false, daily);
+		//開始終了時刻の反映
+		this.reflectRecordStartEndTime(param, daily);			
+		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(daily, param.getEmployeeId(), param.getBaseDate());
+		return lstDaily;
 	}
 
 }

@@ -9,10 +9,15 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreMaxTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeBreakdownDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyAggregationErrorInfoDto;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeManage;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -45,6 +50,14 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 	@AttendanceItemLayout(jpPropertyName = BREAK_DOWN, layout = LAYOUT_B)
 	private AgreementTimeBreakdownDto breakdown;
 
+	/** 36協定上限時間管理 -> 36協定時間 */
+	@AttendanceItemLayout(jpPropertyName = UPPER_LIMIT + AGREEMENT, layout = LAYOUT_C)
+	private AgreMaxTimeOfMonthlyDto agreMax;
+	
+	/** 36協定上限時間管理 -> 内訳 */
+	@AttendanceItemLayout(jpPropertyName = UPPER_LIMIT + BREAK_DOWN, layout = LAYOUT_D)
+	private AgreementTimeBreakdownDto maxBreakdown;
+
 	/** エラー情報 */
 	private List<MonthlyAggregationErrorInfoDto> errorInfos;
 
@@ -55,9 +68,13 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 
 	@Override
 	public AgreementTimeOfManagePeriod toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return AgreementTimeOfManagePeriod.of(employeeId, ym, year, 
-											agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(), 
-											breakdown == null ? new AgreementTimeBreakdown() : breakdown.toDomain());
+		return AgreementTimeOfManagePeriod.of(employeeId, ym, year,
+				AgreementTimeManage.of(
+						agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(), 
+						breakdown == null ? new AgreementTimeBreakdown() : breakdown.toDomain()),
+				AgreMaxTimeManage.of(
+						agreMax == null ? new AgreMaxTimeOfMonthly() : agreMax.toDomain(), 
+						maxBreakdown == null ? new AgreMaxTimeBreakdown() : maxBreakdown.toMaxDomain()));
 	}
 
 	@Override
@@ -79,8 +96,10 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 		AgreementTimeOfManagePeriodDto dto = new AgreementTimeOfManagePeriodDto();
 		if(domain != null){
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime()));
-			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getBreakdown()));
+			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime().getAgreementTime()));
+			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getAgreementTime().getBreakdown()));
+			dto.setAgreMax(AgreMaxTimeOfMonthlyDto.from(domain.getAgreementMaxTime().getAgreementTime()));
+			dto.setMaxBreakdown(AgreementTimeBreakdownDto.from(domain.getAgreementMaxTime().getBreakdown()));
 			dto.setErrorInfos(ConvertHelper.mapTo(domain.getErrorInfos(), c -> new MonthlyAggregationErrorInfoDto(c.getResourceId(), c.getMessage().v())));
 			dto.setYear(domain.getYear());
 			dto.setYearMonth(domain.getYearMonth());

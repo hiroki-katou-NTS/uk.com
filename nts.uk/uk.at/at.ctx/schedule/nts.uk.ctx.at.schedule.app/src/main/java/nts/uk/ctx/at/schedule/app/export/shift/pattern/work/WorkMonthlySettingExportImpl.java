@@ -11,6 +11,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
+import nts.uk.ctx.at.shared.app.find.workingconditionitem.WorkingConditionItemFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -30,6 +35,12 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	
 	@Inject
 	private WorkMonthlySettingReportRepository workMonthlySettingReportRepository;
+	
+	@Inject
+	private CompanyEventRepository companyEventRepository;
+	
+	@Inject
+	private WorkingConditionItemFinder workingConditionItemFinder;
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -149,7 +160,22 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	private void putDataToColumnsWorkSet(Map<String, Object> data, WorkMonthlySettingReportData setReportData) {
 		if(setReportData.getWorkSetName().isPresent()) {
 			String key = setReportData.getDay() + "日";
-			data.put(key, setReportData.getWorkSetName().get());
+			String value = setReportData.getWorkSetName().get();
+			
+			Optional<GeneralDate> d = setReportData.getDate();
+			if (d.isPresent()){
+				List<GeneralDate> lst = new ArrayList<>();
+				lst.add(d.get());
+				String companyId = AppContexts.user().companyId();
+				List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
+				if (!CollectionUtil.isEmpty(lstEvent)){
+					CompanyEvent e = lstEvent.get(0);
+					if (e.getEventName() != null){
+						value += "「" + e.getEventName() + "」"; 
+					}
+				}
+			}
+			data.put(key, value);
 		}
 	}
 	
@@ -234,9 +260,25 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 				.findAllPersionWorkMonthlySet(companyId, query.getBaseDate());
 		if(optReportDatas.isPresent()) {
 			List<PersionalWorkMonthlySettingReportData> reportDatas = optReportDatas.get();
-			reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd)).forEachOrdered(x -> {
-				datas.add(newPersionSetMasterData(x));
+			List<String> lstSids = new ArrayList<>();
+			reportDatas.stream().forEachOrdered(x -> {
+				if (!lstSids.contains(x.getSid())){
+					lstSids.add(x.getSid());
+				}
 			});
+			List<String> lstSidExcepts = new ArrayList<>();
+			if (!lstSids.isEmpty()){
+				lstSidExcepts = workingConditionItemFinder.findBySidsAndNewestHistory(lstSids);
+			}
+			if (!lstSidExcepts.isEmpty()){
+				reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd));
+				
+				for (PersionalWorkMonthlySettingReportData x : reportDatas) {
+					if (!lstSidExcepts.contains(x.getSid())){
+						datas.add(newPersionSetMasterData(x));
+					}
+				}
+			}
 		}
 		return datas;
 	}

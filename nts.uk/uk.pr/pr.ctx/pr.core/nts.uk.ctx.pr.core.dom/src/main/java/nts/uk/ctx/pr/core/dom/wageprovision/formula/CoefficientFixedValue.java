@@ -9,18 +9,17 @@ import nts.arc.primitive.constraint.DecimalMinValue;
 import java.math.BigDecimal;
 
 /**
-* 係数固定値
-*/
-@DecimalMaxValue("999999999")
-@DecimalMinValue("0")
-@DecimalMantissaMaxLength(0)
-public class CoefficientFixedValue extends DecimalPrimitiveValue<BaseItemFixedValue>
-{
+ * 係数固定値
+ */
+
+@DecimalMaxValue("99999.99")
+@DecimalMinValue("-99999.99")
+@DecimalMantissaMaxLength(2)
+public class CoefficientFixedValue extends DecimalPrimitiveValue<CoefficientFixedValue> {
 
     private static final long serialVersionUID = 1L;
 
-    public CoefficientFixedValue(BigDecimal rawValue)
-    {
+    public CoefficientFixedValue(BigDecimal rawValue) {
         super(rawValue);
     }
 
