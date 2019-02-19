@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 反映状況によるチェック
@@ -22,8 +23,7 @@ public interface CommonProcessCheckService {
 	 * 予定勤種の反映
 	 * @param absencePara
 	 */
-	public WorkInfoOfDailyPerformance reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre,
-			WorkInfoOfDailyPerformance dailyInfo);
+	public void reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre, IntegrationOfDaily dailyInfor);
 	/**
 	 * 予定勤種を反映できるかチェックする
 	 * @param absencePara
@@ -34,7 +34,7 @@ public interface CommonProcessCheckService {
 	 * 
 	 * @param integrationOfDaily
 	 */
-	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
+	public void updateDailyAfterReflect(List<IntegrationOfDaily> integrationOfDaily);
 	/**
 	 * 就業時間帯の休憩時間帯を日別実績に反映する
 	 * @param sid
@@ -42,4 +42,10 @@ public interface CommonProcessCheckService {
 	 * @param optTimeLeaving
 	 */
 	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId);
+
+	public List<IntegrationOfDaily> lstIntegrationOfDaily(IntegrationOfDaily integrationOfDaily, String sid,
+			GeneralDate ymd);
+	
+	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
+	
 }

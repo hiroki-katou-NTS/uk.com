@@ -26,8 +26,10 @@ public class WorkplaceCalendarReportData {
 	
 	private Optional<String> hierarchyCode;
 	
+	private String eventName;
+	
 
-	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName) {
+	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName, String eventName) {
 		super();
 		this.workplaceId = workplaceId;
 		this.date = date;
@@ -36,6 +38,7 @@ public class WorkplaceCalendarReportData {
 		this.workplaceCode = workplaceCode;
 		this.workplaceName = workplaceName;
 		this.hierarchyCode = Optional.empty();
+		this.eventName = eventName;
 	}
 	
 	public String getYearMonth() {
@@ -64,12 +67,13 @@ public class WorkplaceCalendarReportData {
 	}
 	
 	public static WorkplaceCalendarReportData createFromJavaType(String workplaceId, 
-			GeneralDate date, Integer workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName) {
+			GeneralDate date, Integer workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName, String eventName) {
 		return new WorkplaceCalendarReportData(
 				workplaceId, 
 				date, 
 				workingDayAtr,
 				workplaceCode,
-				workplaceName);
+				workplaceName,
+				eventName);
 	}
 }

@@ -255,5 +255,20 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.setParameter("editState", editState.value)
 				.getList(c -> toDomain(c));
 	}
+	@Override
+	public List<EditStateOfDailyPerformance> findByEditState(String sid, GeneralDate ymd, EditStateSetting editState) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDailyRecEditSet a ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
+		builderString.append("AND a.editState = :editState ");
+		builderString.append("ORDER BY a.krcdtDailyRecEditSetPK.attendanceItemId");
+		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+				.setParameter("employeeId", sid)
+				.setParameter("ymd", ymd)
+				.setParameter("editState", editState.value)
+				.getList(c -> toDomain(c));
+	}
 
 }

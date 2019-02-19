@@ -4026,26 +4026,23 @@ var nts;
                             _start.call(__viewContext);
                         }
                     });
-                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if (!onSamplePage) {
-                        if ($(document).find("#header").length > 0) {
-                            ui.menu.request();
-                        }
-                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                            var header = "<div id='header'><div id='menu-header'>"
-                                + "<div id='logo-area' class='cf'>"
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"
-                                + "</div></div>"
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                            $("#master-wrapper").prepend(header);
-                            ui.menu.request();
-                        }
+                    if ($(document).find("#header").length > 0) {
+                        ui.menu.request();
+                    }
+                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                        var header = "<div id='header'><div id='menu-header'>"
+                            + "<div id='logo-area' class='cf'>"
+                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='user-info' class='cf'>"
+                            + "<div id='company' class='cf' />"
+                            + "<div id='user' class='cf' />"
+                            + "</div></div>"
+                            + "<div id='nav-area' class='cf' />"
+                            + "<div id='pg-area' class='cf' />"
+                            + "</div></div>";
+                        $("#master-wrapper").prepend(header);
+                        ui.menu.request();
                     }
                 };
                 var noSessionWebScreens = [
@@ -4280,27 +4277,34 @@ var nts;
                         $companySelect.appendTo($company);
                         $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
                         var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        _.forEach(companies, function (comp, i) {
-                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                            $compItem.on(constants.CLICK, function () {
-                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (data) {
-                                    $companyName.text(comp.companyName);
-                                    $userName.text(data.personName);
-                                    $companyList.css("right", $user.outerWidth() + 30);
-                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
-                                            location.reload(true);
+                        var listCompany = function (comps) {
+                            _.forEach(comps, function (comp, i) {
+                                var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                                $compItem.on(constants.CLICK, function () {
+                                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                                        .done(function (data) {
+                                        $companyName.text(comp.companyName);
+                                        $userName.text(data.personName);
+                                        $companyList.css("right", $user.outerWidth() + 30);
+                                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                                uk.request.jumpToTopPage();
+                                            });
+                                        }
+                                        else {
+                                            uk.request.jumpToTopPage();
+                                        }
+                                    }).fail(function (msg) {
+                                        nts.uk.ui.dialog.alertError(msg.messageId);
+                                        $companyList.empty();
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (compList) {
+                                            listCompany(compList);
                                         });
-                                    }
-                                    else {
-                                        location.reload(true);
-                                    }
-                                }).fail(function (msg) {
-                                    nts.uk.ui.dialog.alertError(msg.messageId);
+                                    });
                                 });
                             });
-                        });
+                        };
+                        listCompany(companies);
                         $companySelect.on(constants.CLICK, function () {
                             if ($companyList.css("display") === "none") {
                                 $companyList.fadeIn(100);
@@ -15404,7 +15408,7 @@ var nts;
                             || !!window.navigator.userAgent.match(/trident/i)
                             || window.navigator.userAgent.indexOf("Edge") > -1)) {
                         var $div = $("<div/>").appendTo($(document.body));
-                        var style = $label[0].currentStyle || $label[0].style;
+                        var style = $label[0].currentStyle || window.getComputedStyle($label[0]); //$label[0].style;
                         if (style) {
                             for (var p in style) {
                                 $div[0].style[p] = style[p];
@@ -17911,11 +17915,84 @@ var nts;
                                                 evt.preventDefault();
                                                 return;
                                             }
-                                            for (var i = mival.length; i < stmi.length; i++) {
-                                                mival += '0';
+                                            if (min < 1) {
+                                                // accept once 0 char
+                                                if (val.match(/(^0{2,})|(^-?0{2,})/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
                                             }
-                                            for (var i = maval.length; i < stma.length; i++) {
-                                                maval += '9';
+                                            else {
+                                                // not accept char 0 offset = 0
+                                                if (val.match(/^0/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
+                                            }
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
                                             }
                                             var nmin = Number(mival), nmax = Number(maval);
                                             // clear decimal in constraint (sync) if option not has decimallength
@@ -17982,11 +18059,70 @@ var nts;
                                     if (ss == se) {
                                         if (evt.keyCode == 8) {
                                             var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
-                                            for (var i = mival.length; i < stmi.length; i++) {
-                                                mival += '0';
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            for (var i = maval.length; i < stma.length; i++) {
-                                                maval += '9';
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
                                             }
                                             var nmin = Number(mival), nmax = Number(maval);
                                             if (nmax < min || nmin > max) {
@@ -17996,11 +18132,70 @@ var nts;
                                         }
                                         else {
                                             var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
-                                            for (var i = mival.length; i < stmi.length; i++) {
-                                                mival += '0';
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            for (var i = maval.length; i < stma.length; i++) {
-                                                maval += '9';
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
                                             }
                                             var nmin = Number(mival), nmax = Number(maval);
                                             if (nmax < min || nmin > max) {
@@ -18011,11 +18206,60 @@ var nts;
                                     }
                                     else {
                                         var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
-                                        for (var i = mival.length; i < stmi.length; i++) {
-                                            mival += '0';
+                                        // calculate min & max value
+                                        if (max < 0) {
+                                            for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                }
+                                                else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                            for (var i = maval.length - 1; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '0';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
                                         }
-                                        for (var i = maval.length; i < stma.length; i++) {
-                                            maval += '9';
+                                        else if (min < 0) {
+                                            if (val.indexOf('-') > -1) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i].match(/\d/)) {
+                                                        mival += '9';
+                                                    }
+                                                    else {
+                                                        mival += stmi[i];
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i].match(/\d/)) {
+                                                        maval += '9';
+                                                    }
+                                                    else {
+                                                        maval += stma[i];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                        // fix halfint max value
+                                        if (primitive.valueType == 'HalfInt') {
+                                            maval = maval.replace(/\.\d$/, '.5');
                                         }
                                         var nmin = Number(mival), nmax = Number(maval);
                                         if (nmax < min || nmin > max) {

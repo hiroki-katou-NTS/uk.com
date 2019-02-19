@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absenceleave;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 public interface AbsenceLeaveReflectService {
@@ -15,7 +17,7 @@ public interface AbsenceLeaveReflectService {
 	 * 予定勤種就時開始終了の反映
 	 * @param param
 	 */
-	public WorkInfoOfDailyPerformance reflectScheStartEndTime(CommonReflectParameter param, boolean isPre);
+	public void reflectScheStartEndTime(CommonReflectParameter param, boolean isPre, IntegrationOfDaily dailyInfor);
 	/**
 	 * 就業時間帯が反映できるか
 	 * @param employeeId
@@ -40,7 +42,7 @@ public interface AbsenceLeaveReflectService {
 	 * 勤種就時開始終了の反映
 	 * @param param
 	 */
-	public WorkInfoOfDailyPerformance reflectRecordStartEndTime(CommonReflectParameter param, WorkInfoOfDailyPerformance dailyInfor);
+	public void reflectRecordStartEndTime(CommonReflectParameter param, IntegrationOfDaily dailyInfor);
 	/**
 	 * 開始時刻が反映できるか
 	 * @param employeeId
@@ -49,4 +51,5 @@ public interface AbsenceLeaveReflectService {
 	 * @return
 	 */
 	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo, boolean isAttendence);
+	public List<IntegrationOfDaily> getByAbsenceLeave(CommonReflectParameter param, boolean isPre);
 }

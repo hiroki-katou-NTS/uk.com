@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthly.agreement;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
@@ -10,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 
 /**
@@ -20,23 +20,23 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 public class AgreementTimeBreakdown {
 
 	/** 残業時間 */
-	private AttendanceTimeMonth overTime;
+	protected AttendanceTimeMonth overTime;
 	/** 振替残業時間 */
-	private AttendanceTimeMonth transferOverTime;
+	protected AttendanceTimeMonth transferOverTime;
 	/** 休出時間 */
-	private AttendanceTimeMonth holidayWorkTime;
+	protected AttendanceTimeMonth holidayWorkTime;
 	/** 振替時間 */
-	private AttendanceTimeMonth transferTime;
+	protected AttendanceTimeMonth transferTime;
 	/** フレックス法定内時間 */
-	private AttendanceTimeMonth flexLegalTime;
+	protected AttendanceTimeMonth flexLegalTime;
 	/** フレックス法定外時間 */
-	private AttendanceTimeMonth flexIllegalTime;
+	protected AttendanceTimeMonth flexIllegalTime;
 	/** 所定内割増時間 */
-	private AttendanceTimeMonth withinPrescribedPremiumTime;
+	protected AttendanceTimeMonth withinPrescribedPremiumTime;
 	/** 週割増時間 */
-	private AttendanceTimeMonth weeklyPremiumTime;
+	protected AttendanceTimeMonth weeklyPremiumTime;
 	/** 月割増時間 */
-	private AttendanceTimeMonth monthlyPremiumTime;
+	protected AttendanceTimeMonth monthlyPremiumTime;
 	
 	/**
 	 * コンストラクタ
@@ -171,7 +171,7 @@ public class AgreementTimeBreakdown {
 	 * @param attendanceItemId 勤怠項目ID
 	 * @param targetItemTime 対象項目の時間
 	 */
-	private void addTimeByAttendanceItemId(int attendanceItemId, AttendanceTimeMonth targetItemTime){
+	protected void addTimeByAttendanceItemId(int attendanceItemId, AttendanceTimeMonth targetItemTime){
 		
 		// 残業時間
 		if (attendanceItemId >= AttendanceItemOfMonthly.OVER_TIME_01.value &&

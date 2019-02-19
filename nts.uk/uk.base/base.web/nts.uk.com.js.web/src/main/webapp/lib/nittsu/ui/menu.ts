@@ -128,26 +128,34 @@ module nts.uk.ui.menu {
             $companySelect.appendTo($company);
             $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
             let $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-            _.forEach(companies, function(comp: any, i: number) {
-                let $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                $compItem.on(constants.CLICK, function() {
-                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                    .done(function(data) {
-                        $companyName.text(comp.companyName);
-                        $userName.text(data.personName);
-                        $companyList.css("right", $user.outerWidth() + 30);
-                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(() => {
-                                location.reload(true);
+            let listCompany = (comps) => {
+                _.forEach(comps, function(comp: any, i: number) {
+                    let $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                    $compItem.on(constants.CLICK, function() {
+                        nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                        .done(function(data) {
+                            $companyName.text(comp.companyName);
+                            $userName.text(data.personName);
+                            $companyList.css("right", $user.outerWidth() + 30);
+                            if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(() => {
+                                    uk.request.jumpToTopPage();
+                                });
+                            } else {
+                                uk.request.jumpToTopPage();
+                            }
+                        }).fail(function(msg) {
+                            nts.uk.ui.dialog.alertError(msg.messageId);
+                            $companyList.empty();
+                            nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function(compList: any) {
+                                listCompany(compList);
                             });
-                        } else {
-                            location.reload(true);
-                        }
-                    }).fail(function(msg) {
-                        nts.uk.ui.dialog.alertError(msg.messageId);
+                        });
                     });
                 });
-            });
+            };
+        
+            listCompany(companies);
             
             $companySelect.on(constants.CLICK, function() {
                 if ($companyList.css("display") === "none") {
