@@ -668,9 +668,6 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
 		
-		// https://mvnrepository.com/artifact/org.wildfly.core/wildfly-controller-client
-		runtime group: 'org.wildfly.core', name: 'wildfly-controller-client', version: '7.0.0.Final'
-		
 		runtime project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac')
 		runtime project (':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		runtime project (':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')

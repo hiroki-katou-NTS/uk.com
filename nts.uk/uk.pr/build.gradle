@@ -302,9 +302,6 @@ project (':pr.web:nts.uk.pr.web') {
 		// for SMTP authentications
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
-		// https://mvnrepository.com/artifact/org.wildfly.core/wildfly-controller-client
-		runtime group: 'org.wildfly.core', name: 'wildfly-controller-client', version: '7.0.0.Final'
-		
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.app')
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.dom')

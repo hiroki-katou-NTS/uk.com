@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.val;
 import nts.arc.security.csrf.CsrfToken;
-import nts.arc.system.ServerSystemProperties;
-import nts.arc.system.jboss.JbossConfig;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
@@ -66,7 +64,6 @@ public class SharingSessionFilter implements Filter {
 			val httpResponse = (HttpServletResponse) response;
 			val newSessionContextCookie = new Cookie(COOKIE_SESSION_CONTEXT, createStringSessionContext());
 			newSessionContextCookie.setPath("/");
-			newSessionContextCookie.setMaxAge(JbossConfig.Undertow.minutesDefaultSessionTimeout() * 60);
 			httpResponse.addCookie(newSessionContextCookie);
 		}
 	}
