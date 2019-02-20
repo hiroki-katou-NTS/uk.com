@@ -209,7 +209,7 @@ public class DetailFormulaCalculationService {
     public String getEmbeddedFormulaDisplayContent(String formulaElement, int yearMonth) {
         String formulaCode = formulaElement.substring(7, formulaElement.length());
         Optional<FormulaHistory> optFormulaHistory = formulaRepository.getFormulaHistoryByCode(formulaCode);
-        if (!optFormulaHistory.isPresent() || optFormulaHistory.get().getHistory().isEmpty()) {
+        if (!optFormulaHistory.isPresent() && optFormulaHistory.get().getHistory().isEmpty()) {
             throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
