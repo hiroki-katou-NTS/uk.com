@@ -79,9 +79,9 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     { headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100' , hidden: true},
                     { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
                     { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
-                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75', unbound: true, ntsControl: '' },
+                    { headerText: getText('QMM020_20'), key: 'selectSalary', dataType: 'string', width: '75', unbound: true, ntsControl: 'ButtonSalary' },
                     { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
-                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75', unbound: true, ntsControl: 'Bonus' },
+                    { headerText: getText('QMM020_22'), key: 'selectBonus', dataType: 'string', width: '75', unbound: true, ntsControl: 'ButtonBonus' },
                     { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
 
                 ],
@@ -99,41 +99,43 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                         multipleSelection: true
                     }],
                 ntsControls: [
-                    { name: '', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 1) }, controlType: 'Button' },
-                    { name: 'Bonus', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button' }]
+                    { name: 'ButtonSalary', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 1) }, controlType: 'Button', enable: true },
+                    { name: 'ButtonBonus', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button', enable: true }]
             });
             $("#E3_1").setupSearchScroll("igGrid", true);
         }
 
-        initScreen(hisId: string){
+        initScreen(hisId: string) {
+            block.invisible();
             let self = this;
             service.getAllClassificationByCid().done((classificationList: Array<IClassificationImportDto>) => {
-                if(!classificationList || classificationList.length == 0) {
-                    dialog.info({ messageId: "Msg_304" }).then(() => {
+                if (!classificationList || classificationList.length == 0) {
+                    dialog.info({messageId: "Msg_304"}).then(() => {
                         self.mode(model.MODE.NO_EXIST);
                         return;
                     });
                 }
                 self.classificationList = classificationList;
                 self.listStateLinkSettingMasterInit = classificationList.map((value: IClassificationImportDto) => new model.StateLinkSettingMaster(value.classificationCode, value.classificationName));
-            });
-            block.invisible();
-            service.getStateCorrelationHisClassification().done((listStateCorrelationHis: Array<StateCorrelationHisClassification>) => {
-                if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
-                    self.listStateCorrelationHisClassification(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHis));
-                    if (hisId == null) {
-                        self.index(FIRST);
-                        self.hisIdSelected(null);
+                service.getStateCorrelationHisClassification().done((listStateCorrelationHis: Array<StateCorrelationHisClassification>) => {
+                    if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
+                        self.listStateCorrelationHisClassification(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHis));
+                        if (hisId == null) {
+                            self.index(FIRST);
+                            self.hisIdSelected(null);
+                        }
+                        self.hisIdSelected(self.listStateCorrelationHisClassification()[self.getIndex(hisId)].hisId);
+                    } else {
+                        self.listStateCorrelationHisClassification([]);
+                        self.listStateLinkSettingMaster(self.listStateLinkSettingMasterInit);
+                        self.mode(model.MODE.NO_REGIS);
+                        self.loadGird();
+                        self.enableSelectSalary(false);
                     }
-                    self.hisIdSelected(self.listStateCorrelationHisClassification()[self.getIndex(hisId)].hisId);
-                } else {
-                    self.listStateCorrelationHisClassification([]);
-                    self.mode(model.MODE.NO_REGIS);
-                    self.loadGird();
-                }
-            }).always(() => {
-                block.clear();
-                $("#E1_5_container").focus();
+                }).always(() => {
+                    block.clear();
+                    $("#E1_5_container").focus();
+                });
             });
         }
 
@@ -163,7 +165,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            $("#B3_1").focus();
+            $("#E3_1").focus();
 
         }
 
@@ -189,6 +191,16 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }).always(() => {
                 block.clear();
             });
+        }
+
+        enableSelectSalary(enable: boolean){
+            if(enable) {
+                $("#E3_1").ntsGrid("enableNtsControls", 'selectSalary', 'Button');
+                $("#E3_1").ntsGrid("enableNtsControls", 'selectBonus', 'Button');
+            } else{
+                $("#E3_1").ntsGrid("disableNtsControls", 'selectSalary', 'Button');
+                $("#E3_1").ntsGrid("disableNtsControls", 'selectBonus', 'Button');
+            }
         }
 
         initStateLinkSettingMaster() {
@@ -251,6 +263,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     self.hisIdSelected(HIS_ID_TEMP);
                     self.startYearMonth(params.start);
                     self.endYearMonth(999912);
+                    self.enableSelectSalary(true);
                 }
                 $("#E1_5_container").focus();
             });

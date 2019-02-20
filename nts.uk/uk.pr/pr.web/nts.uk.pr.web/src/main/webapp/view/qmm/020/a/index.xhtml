@@ -69,12 +69,12 @@
                    role="tab-navigator">#{i18n.getText('QMM020_10')}</a></li>
             <li data-bind="click: $vm.viewmodelA.onSelectTabH"><a tabindex="-1" href="#tabpanel-3"
                    role="tab-navigator">#{i18n.getText('QMM020_11')}</a></li>
-            <li data-bind="click: $vm.viewmodelA.onSelectTabI"><a tabindex="-1" href="#tabpanel-4"
+            <li style="margin-bottom: 40px" data-bind="click: $vm.viewmodelA.onSelectTabI"><a tabindex="-1" href="#tabpanel-4"
                    role="tab-navigator">#{i18n.getText('QMM020_83')}</a></li>
         </ul>
-        <div class="divider"></div>
+        <div class="divider" style="margin-bottom: 20px"></div>
         <span>#{i18n.getText('QMM020_12')}</span>
-        <button data-bind="ntsHelpButton: {image: '../resources/QMM020_01.png',position: 'bottom left', enable: true }">？</button>
+        <button tabindex="-1" data-bind="ntsHelpButton: {image: '../resources/QMM020_01.png',position: 'bottom left', enable: true }">？</button>
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB">
