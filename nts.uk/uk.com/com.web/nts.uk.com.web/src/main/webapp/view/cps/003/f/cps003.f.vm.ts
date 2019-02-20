@@ -297,6 +297,8 @@ module cps003.f.vm {
                     replaceFormat: undefined
                 };
 
+            $('input').trigger('validate');
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
