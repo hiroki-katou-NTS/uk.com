@@ -287,7 +287,7 @@ module cps003.f.vm {
         pushData() {
             let self = this,
                 item: any = ko.toJS(self.currentItem),
-                mode: number | null = item.value.mode != undefined ? Number(item.value.mode) : null,
+                mode: any = item.value.mode != undefined ? Number(item.value.mode) : null,
                 value: IValueDto = {
                     mode: undefined,
                     replaceAll: item.applyFor == 'all',
@@ -330,7 +330,7 @@ module cps003.f.vm {
                                 value.replaceFormat = REPLACE_FORMAT.GRAND_DATE;
                                 break;
                             case 2:
-                                value.replaceValue = [item.value.value0, item.value.value1];
+                                value.replaceValue = [Number(item.value.value0), item.value.value1];
                                 value.replaceFormat = REPLACE_FORMAT.DESI_YEAR_OE;
                                 break;
                             case 3:
@@ -357,7 +357,7 @@ module cps003.f.vm {
                     if (item.itemData.itemCode == 'IS00287') {
                         value.mode = APPLY_MODE.TIMEYEAR;
                         if (mode == 0) {
-                            value.replaceValue = item.value.value0;
+                            value.replaceValue = Number(item.value.value0);
                             value.replaceFormat = REPLACE_FORMAT.CONTRACT_TIME;
                         } else {
                             value.replaceValue = item.value.value1;
@@ -776,6 +776,7 @@ module cps003.f.vm {
 
     // return value
     interface IValueDto {
+        mode: APPLY_MODE;
         // 全て置換する
         replaceAll: boolean;
         // 対象項目
