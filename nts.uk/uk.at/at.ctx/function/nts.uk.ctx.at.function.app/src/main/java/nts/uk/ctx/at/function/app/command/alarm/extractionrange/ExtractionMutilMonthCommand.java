@@ -17,7 +17,7 @@ public class ExtractionMutilMonthCommand {
 		if(this.extractionId == null || this.extractionId.equals("")){
 			this.extractionId = IdentifierUtil.randomUniqueId();
 		}
-		return new MutilMonth(extractionId, extractionRange, month);
+		return null;
 	}
 }
 
