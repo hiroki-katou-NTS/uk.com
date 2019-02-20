@@ -67,6 +67,7 @@ public interface WorkingConditionRepository {
 	 */
 	List<WorkingCondition> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
 	
+	List<WorkingCondition> getBySids(List<String> employeeIds,GeneralDate baseDate);
 	/**
 	 * Save.
 	 *

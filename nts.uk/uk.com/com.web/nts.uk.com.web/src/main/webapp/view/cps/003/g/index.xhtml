@@ -26,35 +26,9 @@
 				<button id="" tabindex="2" >#{i18n.getText('CPS003_99')}</button>
 			</div>
 			<div id="contents-area" data-bind="">
-				<div class="errorNumberShowInPage">
-					<div id="combo-box" data-bind="ntsComboBox: {
-						name: 'Sample List',
-						options: itemListCbb1,
-						optionsValue: 'code',
-						visibleItemsCount: 5,
-						value: selectedCode,
-						optionsText: 'name',
-						editable: isEditable,
-						enable: isEnable,
-						required: isRequired,
-						selectFirstIfNull: selectFirstIfNull,
-						columns: [
-							{ prop: 'code', length: 4 },
-							{ prop: 'name', length: 10 },
-						]}"></div>						
-				</div>
-				<div class="gridList" >
-					<!-- <table id="single-list" data-bind="ntsGridList: {								
-						height: 350,
-						dataSource: items,
-						primaryKey: 'code',
-						columns: columns2,
-						deleteOptions : {visible : true, deleteField: 'deletable'},
-						features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
-						multiple: false,
-						value: currentCode
-					}"></table> -->
-				</div>
+			<div id= "contents-grid" data-bind="">
+			<table id="grid2"></table>
+			</div>
 				<div class="showNumberOfpage">
 					<span>1 - 20/230 bug</span>
 				</div>

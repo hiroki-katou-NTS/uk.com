@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtAnnLeaBasicInfo;
 
 @Stateless
 public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEmpBasicInfoRepository {
-
+	
+	private static final String SELECT_ALL = "SELECT si FROM KrcmtAnnLeaBasicInfo si WHERE si.sid IN : listEmployeeId ";
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> get(String employeeId) {
 		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaBasicInfo.class);
@@ -21,6 +23,12 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 					ent.workDaysBeforeIntro, ent.grantTableCode, ent.grantStandardDate));
 		}
 		return Optional.empty();
+	}
+	
+	public List<AnnualLeaveEmpBasicInfo> getAll(List<String> listEmployeeId) {
+		return this.queryProxy().query(SELECT_ALL, KrcmtAnnLeaBasicInfo.class)
+				.setParameter("listEmployeeId", listEmployeeId)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -64,5 +72,4 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		}
 
 	}
-
 }

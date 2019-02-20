@@ -33,6 +33,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the by history id
 	 */
 	Optional<WorkingConditionItem> getByHistoryId(String historyId);
+	/**
+	 * 
+	 * @param listHistoryID
+	 * @return
+	 */
+	List<WorkingConditionItem> getByListHistoryID(List<String> listHistoryID);
 
 	/**
 	 * Find working condition item by pers work cat.

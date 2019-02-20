@@ -907,5 +907,51 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#getByListHistoryID(java.util.List)
+	 */
+	@Override
+	public List<WorkingConditionItem> getByListHistoryID(List<String> listHistoryID) {
+		// get entity manager
+				EntityManager em = this.getEntityManager();
+				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+				CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+						.createQuery(KshmtWorkingCondItem.class);
+
+				// root data
+				Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+				// select root
+				cq.select(root);
+
+				List<KshmtWorkingCondItem> result = new ArrayList<>();
+
+				CollectionUtil.split(listHistoryID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+					// add where
+					List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+					// equal
+					lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.historyId).in(subList));
+					
+					cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+					// creat query
+					TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+					result.addAll(query.getResultList());
+				});
+
+				// Check empty
+				if (CollectionUtil.isEmpty(result)) {
+					return Collections.emptyList();
+				}
+
+				// exclude select
+				return result.stream().map(
+						entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
+						.collect(Collectors.toList());
+	}
+
 }
 
