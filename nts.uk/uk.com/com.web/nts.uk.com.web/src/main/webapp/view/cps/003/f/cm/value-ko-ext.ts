@@ -51,7 +51,7 @@ module nts.custombinding {
                                     enable: true
                                 }"></div>
                                 <div class="text-box">
-                                    <input data-bind="ntsNumberEditor: { name: '', value: value, constraint: constraint, enable: m1, required: false, option: options }" />
+                                    <input data-bind="ntsNumberEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: m1, required: false, option: options }" />
                                 </div>
                                 <div class="dropdown-box">
                                     <div id="pk-amount" class="pk-amount" data-bind="ntsComboBox: {
@@ -67,7 +67,7 @@ module nts.custombinding {
                                         selectFirstIfNull: true,
                                         enable: m2,
                                         columns: [{ prop: 'optionText', length: 10 }]}"></div>
-                                    <input data-bind="ntsNumberEditor: { name: '', value: value2, constraint: constraint, enable: m2, required: m2, option: options }" />
+                                    <input data-bind="ntsNumberEditor: { name: i18n('CPS003_85'), value: value2, constraint: constraint, enable: m2, required: m2, option: options }" />
                                 </div>
                                 <div class="" data-bind="text: i18n('CPS003_86')"></div>
                             </div>`,
@@ -103,13 +103,13 @@ module nts.custombinding {
                                         columns: [
                                             { prop: 'optionText', length: 10 },
                                         ]}"></div>
-                                    <div id="monthdays" data-bind="ntsMonthDays: { value: value1, enable: m3, required: m3 }"/>
+                                    <div id="monthdays" data-bind="ntsMonthDays: { name: i18n('CPS003_81'), value: value1, enable: m3, required: m3 }"/>
                                 </div>
                                 <div class="text-box">
-                                    <div data-bind="ntsDatePicker: { value: value2, constraint: constraint, enable: m4, required: false, dateFormat: 'YYYY/MM/DD' }"></div>
+                                    <div data-bind="ntsDatePicker: { name: i18n('CPS003_90'), value: value2, constraint: constraint, enable: m4, required: false, dateFormat: 'YYYY/MM/DD' }"></div>
                                 </div>
                             </div>`,
-                    date: `<div data-bind="ntsDatePicker: { value: value, constraint: constraint, enable: true, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
+                    date: `<div data-bind="ntsDatePicker: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
                     time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, inputFormat: 'time', mode: 'time', enable: true, required: false }" />`,
                     timey: `<div class='stime-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '0'; }), m2: ko.computed(function() { return mode() == '1'; }) }">
                                 <div class="grant-selection-group" data-bind="ntsRadioBoxGroup: {
@@ -123,7 +123,7 @@ module nts.custombinding {
                                 }"></div>
                                 <div class="text-box-x">
                                     <input data-bind="ntsNumberEditor: {
-                                        name: 'Number', 
+                                        name: i18n('CPS003_78'), 
                                         value: value,
                                         constraint: '',
                                         option: {
@@ -131,17 +131,17 @@ module nts.custombinding {
                                             defaultValue: 0,
                                             unitID: 'DAYS'
                                         },
-                                        required: false,
+                                        required: m1,
                                         enable: m1
                                     }" />
                                 </div>
                                 <div class="text-box-a">
-                                    <input data-bind="ntsTimeEditor: { value: value1, constraint: constraint, inputFormat: 'time', mode: 'time', enable: m2, required: false }" />
+                                    <input data-bind="ntsTimeEditor: { name: i18n('CPS003_81'), value: value1, constraint: constraint, inputFormat: 'time', mode: 'time', enable: m2, required: false }" />
                                 </div>
                             </div>`,
                     timep: `<input data-bind="ntsTimeWithDayEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false }" />`,
                     radio: `<div id="value-selection" data-bind="ntsComboBox: {
-                                name: '',
+                                name: i18n('CPS003_81'),
                                 options: itemOptions,
                                 optionsValue: 'optionValue',
                                 visibleItemsCount: 5,
