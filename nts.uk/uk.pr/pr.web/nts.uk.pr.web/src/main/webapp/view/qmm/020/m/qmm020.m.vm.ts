@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
             self.initScreen();
         }
         initScreen(){
+            let dfd = $.Deferred();
             let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_M.INPUT);
             if(params == null || params == undefined){
@@ -30,12 +31,13 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                     this.items(StatementDto.fromApp(data));
                     self.currentCodeList(params.statementCode != null && params.statementCode != '' ? params.statementCode : self.items()[0].statementCode);
                 }
+                dfd.resolve();
             }).fail((err) =>{
+                dfd.reject();
                 if(err)
                     dialog.alertError(err);
-            }).always(()=>{
-                $('#single-list_container').focus();
             });
+            return dfd.promise();
         }
 
         submit(){
