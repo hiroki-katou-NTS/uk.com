@@ -58,7 +58,7 @@ public class StatementLayoutPrint {
 				continue;
 
 			// ※補足4
-			if (!DefaultAtr.SYSTEM_DEFAULT.equals(item.getDefaultAtr())) {
+			if (DefaultAtr.USER_CREATE.equals(item.getDefaultAtr())) {
 				// A2_3
 				String totalObj = TextResource.localize(payment.getTotalObj().nameId);
 				this.printCell("paymentItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);

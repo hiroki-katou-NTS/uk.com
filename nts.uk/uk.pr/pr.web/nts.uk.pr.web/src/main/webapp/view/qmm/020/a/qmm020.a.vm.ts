@@ -185,7 +185,9 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         onSelectTabH() {
             __viewContext.viewModel.viewmodelA.selectedH(1);
             __viewContext.viewModel.viewmodelH.initScreen().done(() => {
-                __viewContext.viewModel.viewmodelH.loadCCG001();
+                __viewContext.viewModel.viewmodelH.getHisIndividual(__viewContext.viewModel.viewmodelH.selectedItem(),null).done (() => {
+                    __viewContext.viewModel.viewmodelH.loadCCG001();
+                });
                 $("#emp-component").focus();
             });
 

@@ -202,7 +202,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         }
 
-        getHisIndividual(emplId: string, hisId: string){
+        getHisIndividual(emplId: string, hisId: string): JQueryPromise<any> {
+            let dfd = $.Deferred();
             let self = this;
             service.getStateCorrelationHisIndividual(emplId).done((listStateCorrelationHis: Array<StateCorrelationHisInvidual>) => {
                 if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
@@ -219,9 +220,13 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.clearStateLinkSettingMasterIndividual();
                     self.mode(model.MODE.NO_REGIS);
                 }
+                dfd.resolve();
+            }).fail(() =>{
+                dfd.reject();
             }).always(() => {
                 block.clear();
             });
+            return dfd.promise();
         }
 
         getStateLinkSettingMasterIndividual(empId: string,hisId: string, start: number){
