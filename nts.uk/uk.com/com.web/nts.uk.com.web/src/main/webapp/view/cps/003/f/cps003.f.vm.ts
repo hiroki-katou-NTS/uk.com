@@ -287,9 +287,9 @@ module cps003.f.vm {
         pushData() {
             let self = this,
                 item: any = ko.toJS(self.currentItem),
-                    mode: undefined,
                 mode: number | null = item.value.mode != undefined ? Number(item.value.mode) : null,
                 value: IValueDto = {
+                    mode: undefined,
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
                     matchValue: item.filter || undefined,
@@ -461,7 +461,7 @@ module cps003.f.vm {
                             value.replaceValue = [values.selectedWorkTimeCode, values.first.start, values.first.end, values.second.start, values.second.end];
                             value.replaceFormat = REPLACE_FORMAT.VALUE;
                         } else {
-                            value.mode = APPLY_MODE.DIALOG;
+                            value.mode = APPLY_MODE.SELECTION;
                             value.replaceValue = item.value.value0;
                             value.replaceFormat = REPLACE_FORMAT.VALUE;
                         }
@@ -786,6 +786,19 @@ module cps003.f.vm {
         replaceValue: any | any[]; // 入社年指定 or 対象項目 (string[]), replaceValue is any[]
         // 置換形式 
         replaceFormat: REPLACE_FORMAT;
+    }
+    
+    enum APPLY_MODE {
+        DATE = 1,
+        STRING = 2,
+        TIME = 3,
+        CLOCK = 4,
+        NUMBER = 5,
+        AMOUNT = 6,
+        SELECTION = 7,
+        WORKTIME = 8,
+        GRANDDATE = 9,
+        TIMEYEAR = 10
     }
 
     enum REPLACE_FORMAT {
