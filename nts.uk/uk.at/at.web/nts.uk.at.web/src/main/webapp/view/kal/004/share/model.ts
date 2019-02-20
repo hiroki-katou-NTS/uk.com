@@ -24,6 +24,7 @@ module nts.uk.at.view.kal004.share.model {
         extractionUnit?: PeriodUnitDto;
         listExtractionMonthly ?: Array<ExtractionPeriodMonthlyDto>;
         extractionYear ?: ExtractionRangeYearDto;
+        extractionMutilMonth ?: ExtractionMutilMonthDto;
     }
 
 
@@ -150,6 +151,13 @@ module nts.uk.at.view.kal004.share.model {
          year : number;
          thisYear : number;           
     }
+    
+    export interface ExtractionMutilMonthDto{
+         extractionId: string;
+         extractionRange: number;
+         standardMonth: number;
+        
+    }
 
     //Command
     export class AddAlarmPatternSettingCommand {
@@ -182,8 +190,10 @@ module nts.uk.at.view.kal004.share.model {
         extractionPeriodUnit: PeriodUnitCommand;
         listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>=[];
         extractionYear: ExtractionRangeYearCommand;
+        extractionMutilMonth: ExtractionMutilMonthCommand;
+        
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
-            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand) {
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand, extractionMutilMonth: ExtractionMutilMonthCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             
@@ -254,6 +264,10 @@ module nts.uk.at.view.kal004.share.model {
         public setExtractYearly( extractionYear : ExtractionRangeYearCommand){
             this.extractionYear = extractionYear;
         }
+        public setExtractionMutilMonth( extractionMutilMonth : ExtractionMutilMonthCommand){
+            this.extractionMutilMonth = extractionMutilMonth;
+        }
+        
         
         
         public setDefaultDaily() {
@@ -311,6 +325,14 @@ module nts.uk.at.view.kal004.share.model {
                                         extractionRange: 1,
                                         year: 0,
                                         thisYear: 1    
+                                    });    
+        }
+        
+        public setDefaultMultiMonth(){
+            this.extractionMutilMonth = new ExtractionMutilMonthCommand({
+                                        extractionId: "",
+                                        extractionRange: 1,
+                                        month: 0   
                                     });    
         }
     }
@@ -410,6 +432,17 @@ module nts.uk.at.view.kal004.share.model {
             this.extractionRange = dto.extractionRange;
             this.year = dto.year;
             this.thisYear = dto.thisYear;
+        }
+    }
+    
+    export class ExtractionMutilMonthCommand{
+        extractionId: string;
+        extractionRange: number;
+        month: number;
+        constructor(dto: ExtractionMutilMonthDto){
+            this.extractionId = dto.extractionId;
+            this.extractionRange = dto.extractionRange;
+            this.month = dto.month;
         }
     }
 

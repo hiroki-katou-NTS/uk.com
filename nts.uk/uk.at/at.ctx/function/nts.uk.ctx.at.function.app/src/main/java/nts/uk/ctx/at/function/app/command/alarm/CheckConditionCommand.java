@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.command.alarm;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionMutilMonthCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodDailyCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodMonthlyCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodUnitCommand;
@@ -16,4 +17,5 @@ public class CheckConditionCommand {
 	private ExtractionPeriodUnitCommand extractionPeriodUnit;
 	private List<ExtractionPeriodMonthlyCommand> listExtractionMonthly;
 	private ExtractionRangeYearCommand extractionYear;
+	private ExtractionMutilMonthCommand extractionMutilMonth;
 }

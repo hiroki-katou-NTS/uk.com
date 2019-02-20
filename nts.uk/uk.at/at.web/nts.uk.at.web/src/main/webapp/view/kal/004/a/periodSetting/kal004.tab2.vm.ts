@@ -176,6 +176,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let listMonth36Share = nts.uk.ui.windows.getShared("listMonth36Share");
                     let yearly36Share = nts.uk.ui.windows.getShared("yearly36Share");
                     let selectedTab = nts.uk.ui.windows.getShared("selectedTab");
+                    let multiMonthShare = nts.uk.ui.windows.getShared("multiMonthShare");
                     if (!nts.uk.util.isNullOrUndefined(selectedTab)) {
                         self.selectedTab(selectedTab);
                     }
@@ -379,9 +380,12 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 if (this.extractionYear.thisYear) str = getText('KAL004_110');
                 else str = this.extractionYear.year + getText('KAL004_109');
 
+            } else if (selectedTab == 'tab-6'){
+                let month6: share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 2]);
+                str = _.find(self.standardMonth, ['value', month6.strMonth]).name;
             }
 
-            if (selectedTab != 'tab-5') {
+            if (selectedTab != 'tab-5' && selectedTab != 'tab-6') {
                 if (this.extractionYear.year > 0) {
                     str = this.extractionYear.year + getText('KAL004_109');
                     this.extractionPeriod = str;
