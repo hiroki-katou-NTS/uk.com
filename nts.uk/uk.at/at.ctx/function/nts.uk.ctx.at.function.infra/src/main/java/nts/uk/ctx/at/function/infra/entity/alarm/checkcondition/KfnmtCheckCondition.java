@@ -260,7 +260,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily), 
 					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
 					domain.getAlarmCategory().value, e) ).collect(Collectors.toList()),
-					KfnmtExtractRangeYear.toEntity(extractYear));
+					KfnmtExtractRangeYear.toEntity(extractYear),
+					KfnmtExtractMutilMonth.toEntity(null));
 			
 		} else {
 			
