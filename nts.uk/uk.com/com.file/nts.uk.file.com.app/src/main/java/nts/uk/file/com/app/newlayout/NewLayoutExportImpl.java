@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -36,7 +35,7 @@ public class NewLayoutExportImpl implements MasterListData{
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		List<NewLayoutExportData> listNewLayoutS = new ArrayList<>();
-		
+		List<NewLayoutExportData> listNewLayoutSv2 = new ArrayList<>();
 		
 		List<MasterData> datas = new ArrayList<>();
 		List<NewLayoutExportData> listNewLayout = newLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode);
@@ -45,20 +44,28 @@ public class NewLayoutExportImpl implements MasterListData{
 		if (CollectionUtil.isEmpty(listNewLayout)) {
 			return null;
 		} else {
-
 			for (int i = 0; i < listNewLayout.size(); i++) {
-				// 5:時刻(TimePoint)
-				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
-					// 3:日付(Date)
-					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listNewLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
-						listNewLayoutS.add(listNewLayout.get(i));
-					}else{
-						if(listNewLayout.get(i).getItemParentCD()==null||listNewLayout.get(i).getItemParentCD().equals("IS00278")){
-							listNewLayoutS.add(listNewLayout.get(i));
+				if(listNewLayout.get(i).getItemParentCD()!= null && listNewLayout.get(i).getLayoutItemType() ==1){
+					listNewLayout.get(i).setItemParentCD(null);
+				}
+				if(listNewLayout.get(i).getItemParentCD()==null && listNewLayout.get(i).getItemCD()!=null){
+					listNewLayoutSv2.add(listNewLayout.get(i));
+				}
+			}
+			
+			for(int n=0;n<listNewLayout.size();n++){
+				if(listNewLayout.get(n).getItemParentCD()==null){
+					listNewLayoutS.add(listNewLayout.get(n));
+				}else{
+					for(int m=0;m<listNewLayoutSv2.size();m++){
+						if(listNewLayout.get(n).getItemParentCD().equals(listNewLayoutSv2.get(m).getItemCD())){
+							listNewLayoutS.add(listNewLayout.get(n));
 						}
 					}
 				}
 			}
+			
+			
 			for (int i = 0; i < listNewLayoutS.size(); i++) {
 				Map<String, Object> data = new HashMap<>();
 				putEmptyData(data);

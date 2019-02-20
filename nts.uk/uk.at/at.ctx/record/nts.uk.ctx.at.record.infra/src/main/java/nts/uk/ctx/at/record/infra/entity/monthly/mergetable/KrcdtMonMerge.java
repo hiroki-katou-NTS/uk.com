@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -113,6 +114,7 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
@@ -2394,6 +2396,11 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "TOTAL_COUNT_DAYS30")
 	public double totalCountDays30;
 	
+	//月別実績の勤怠時間．月の計算．36協定上限時間
+	/** 36協定上限時間 */
+	@Column(name = "AGREEMENT_REG_TIME")
+	public int agreementRegTime;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtMonMergePk;
@@ -3576,6 +3583,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 36協定時間 */
 		toEntityAgreementTimeOfMonthly(null);
 		
+		/** 36協定上限時間 */
+		toEntityAgreMaxTimeOfMonthly(null);
+		
 		/** 時間外超過 */
 		toEntityExcessOutsideWorkMerge(null);
 		
@@ -3770,6 +3780,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 36協定時間 */
 		val agreementTime = monthlyCalculation.getAgreementTime();
 		toEntityAgreementTimeOfMonthly(agreementTime);
+		
+		/** 36協定上限時間 */
+		val agreMaxTime = monthlyCalculation.getAgreMaxTime();
+		toEntityAgreMaxTimeOfMonthly(agreMaxTime);
 	}
 
 	/* KRCDT_MON_FLEX_TIME */
@@ -4910,6 +4924,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: null);
 		this.status = domain == null ? 0 : domain.getStatus().value;
 	}
+	
+	private void toEntityAgreMaxTimeOfMonthly(AgreMaxTimeOfMonthly domain) {
+		this.agreementRegTime = domain == null ? 0 : domain.getAgreementTime().v();
+	}
 
 	/* KRCDT_MON_AFFILIATION */
 	public void toEntityAffiliationInfoOfMonthly(AffiliationInfoOfMonthly domain) {
@@ -5640,6 +5658,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 月別実績の36協定時間
 		AgreementTimeOfMonthly agreementTime =  toDomainAgreementTimeOfMonthly();
 		
+		// 月別実績の36協定上限時間
+		AgreMaxTimeOfMonthly agreMaxTime = toDomainAgreMaxTimeOfMonthly();
+		
 		// 月別実績の月の計算
 		return  MonthlyCalculation.of(
 				regAndIrgTime, 
@@ -5648,7 +5669,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				aggregateTotalWorkingTime,
 				new AttendanceTimeMonth(this.totalWorkingTime), 
 				aggregateTotalTimeSpent, 
-				agreementTime);
+				agreementTime,
+				agreMaxTime);
 	}
 	
 	private List<TotalCount> getTotalCounts(){
@@ -6217,6 +6239,18 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		(this.exceptionLimitAlarmTime == null ?
 						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の36協定上限時間
+	 */
+	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
+		
+		return AgreMaxTimeOfMonthly.of(
+				new AttendanceTimeMonth(this.agreementRegTime),
+				new LimitOneMonth(0),
+				AgreMaxTimeStatusOfMonthly.NORMAL);
 	}
 	
 	/** KRCDT_MON_AFFILIATION **/

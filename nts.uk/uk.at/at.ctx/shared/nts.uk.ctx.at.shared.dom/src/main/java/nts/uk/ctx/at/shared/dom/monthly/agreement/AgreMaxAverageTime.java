@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AgreMaxAverageTime {
+public class AgreMaxAverageTime implements Cloneable {
 
 	/** 期間 */
 	private YearMonthPeriod period;
@@ -55,6 +55,21 @@ public class AgreMaxAverageTime {
 		domain.averageTime = averageTime;
 		domain.status = status;
 		return domain;
+	}
+	
+	@Override
+	public AgreMaxAverageTime clone() {
+		AgreMaxAverageTime cloned = new AgreMaxAverageTime();
+		try {
+			cloned.period = new YearMonthPeriod(this.period.start(), this.period.end());
+			cloned.totalTime = new AttendanceTimeYear(this.totalTime.v());
+			cloned.averageTime = new AttendanceTimeMonth(this.averageTime.v());
+			cloned.status = this.status;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AgreMaxAverageTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
