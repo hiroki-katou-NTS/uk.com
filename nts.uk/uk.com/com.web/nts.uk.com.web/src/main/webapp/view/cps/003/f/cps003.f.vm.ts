@@ -287,14 +287,14 @@ module cps003.f.vm {
         pushData() {
             let self = this,
                 item: any = ko.toJS(self.currentItem),
-                value = {
                     mode: undefined,
+                mode: number | null = item.value.mode != undefined ? Number(item.value.mode) : null,
+                value: IValueDto = {
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
                     matchValue: item.filter || undefined,
-                    replaceFormat: item.value.mode == undefined ? undefined : Number(item.value.mode),
-                    replaceValue1: undefined,
-                    replaceValue2: undefined
+                    replaceValue: undefined,
+                    replaceFormat: undefined
                 };
 
             if (nts.uk.ui.errors.hasError()) {
@@ -322,65 +322,77 @@ module cps003.f.vm {
                         'IS00608', 'IS00615',
                         'IS00622'].indexOf(item.itemData.itemCode) > -1) {
                         value.mode = APPLY_MODE.GRANDDATE;
-                        switch (value.replaceFormat) {
+                        switch (mode) {
                             case 0:
+                                value.replaceFormat = REPLACE_FORMAT.HIRE_DATE;
                                 break;
                             case 1:
+                                value.replaceFormat = REPLACE_FORMAT.GRAND_DATE;
                                 break;
                             case 2:
-                                value.replaceValue1 = item.value.value0;
-                                value.replaceValue2 = item.value.value1;
+                                value.replaceValue = [item.value.value0, item.value.value1];
+                                value.replaceFormat = REPLACE_FORMAT.DESI_YEAR_OE;
                                 break;
                             case 3:
                                 if (item.value.value2) {
-                                    value.replaceValue1 = moment.utc(item.value.value2).format('YYYY/MM/DD');
+                                    value.replaceValue = moment.utc(item.value.value2).format('YYYY/MM/DD');
                                 }
+                                value.replaceFormat = REPLACE_FORMAT.VALUE;
                                 break;
                         }
                     } else {
                         value.mode = APPLY_MODE.DATE;
                         if (item.value.value0) {
-                            value.replaceValue1 = moment.utc(item.value.value0).format('YYYY/MM/DD');
+                            value.replaceValue = moment.utc(item.value.value0).format('YYYY/MM/DD');
                         }
+                        value.replaceFormat = REPLACE_FORMAT.VALUE;
                     }
                     break;
                 case ITEM_SINGLE_TYPE.STRING:
                     value.mode = APPLY_MODE.STRING;
-                    value.replaceValue1 = item.value.value0;
+                    value.replaceValue = item.value.value0;
+                    value.replaceFormat = REPLACE_FORMAT.VALUE;
                     break;
                 case ITEM_SINGLE_TYPE.TIME:
                     if (item.itemData.itemCode == 'IS00287') {
                         value.mode = APPLY_MODE.TIMEYEAR;
-                        if (value.replaceFormat == 0) {
-                            value.replaceValue1 = item.value.value0;
+                        if (mode == 0) {
+                            value.replaceValue = item.value.value0;
+                            value.replaceFormat = REPLACE_FORMAT.CONTRACT_TIME;
                         } else {
-                            value.replaceValue1 = item.value.value1;
+                            value.replaceValue = item.value.value1;
+                            value.replaceFormat = REPLACE_FORMAT.VALUE;
                         }
                     } else {
                         value.mode = APPLY_MODE.TIME;
-                        value.replaceValue1 = item.value.value0;
+                        value.replaceValue = item.value.value0;
+                        value.replaceFormat = REPLACE_FORMAT.VALUE;
                     }
                     break;
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     value.mode = APPLY_MODE.CLOCK;
-                    value.replaceValue1 = item.value.value0;
+                    value.replaceValue = item.value.value0;
+                    value.replaceFormat = REPLACE_FORMAT.VALUE;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     if (!item.itemData.amount) {
                         value.mode = APPLY_MODE.AMOUNT;
                         if (item.value.value0) {
-                            value.replaceValue1 = Number(item.value.value0);
+                            value.replaceValue = Number(item.value.value0);
                         }
+                        value.replaceFormat = REPLACE_FORMAT.VALUE;
                     } else {
                         value.mode = APPLY_MODE.NUMBER;
-                        if (value.replaceFormat == 0) {
+                        if (mode == 0) {
                             if (item.value.value0) {
-                                value.replaceValue1 = Number(item.value.value0);
+                                value.replaceValue = Number(item.value.value0);
                             }
+                            value.replaceFormat = REPLACE_FORMAT.VALUE;
                         } else {
                             if (item.value.value2) {
-                                value.replaceValue1 = Number(item.value.value1 + item.value.value2);
+                                value.replaceValue = Number(item.value.value1 + item.value.value2);
                             }
+                            value.replaceFormat = REPLACE_FORMAT.ADD_OR_SUB;
                         }
                     }
                     break;
@@ -391,6 +403,8 @@ module cps003.f.vm {
                         ITEM_SINGLE_TYPE.SELECTION,
                         ITEM_SINGLE_TYPE.SEL_RADIO].indexOf(item.itemData.dataType) > -1) {
                         value.mode = APPLY_MODE.SELECTION;
+                        value.replaceValue = item.value.value;
+                        value.replaceFormat = REPLACE_FORMAT.VALUE;
                     } else {
                         if (['IS00131', 'IS00140',
                             'IS00158', 'IS00167',
@@ -444,10 +458,12 @@ module cps003.f.vm {
                                     value.targetItem = [target, 'IS00187', 'IS00188', 'IS00190', 'IS00191'];
                                     break;
                             }
-                            value.replaceValue1 = [values.selectedWorkTimeCode, values.first.start, values.first.end, values.second.start, values.second.end];
+                            value.replaceValue = [values.selectedWorkTimeCode, values.first.start, values.first.end, values.second.start, values.second.end];
+                            value.replaceFormat = REPLACE_FORMAT.VALUE;
                         } else {
                             value.mode = APPLY_MODE.DIALOG;
-                            value.replaceValue1 = item.value.value0;
+                            value.replaceValue = item.value.value0;
+                            value.replaceFormat = REPLACE_FORMAT.VALUE;
                         }
                     }
                     break;
@@ -455,8 +471,8 @@ module cps003.f.vm {
 
             // 画面項目「対象者選択（F1_007）」の状態をチェックする
             if (value.replaceAll) { // 全員（F1_008）が選択されている場合
-                if (value.replaceFormat == undefined) {
-                    if (value.replaceValue1) {
+                if (mode == null) {
+                    if (value.replaceValue) {
                         confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                             setShared('CPS003F_VALUE', value);
                             close();
@@ -469,8 +485,8 @@ module cps003.f.vm {
                     }
                 } else {
                     if (item.itemData.amount) { // 画面モード＝金額モードの場合
-                        if (value.replaceFormat == 0) { // 通常置換（F1_026）が選択されている場合
-                            if (value.replaceValue1) {
+                        if (mode == 0) { // 通常置換（F1_026）が選択されている場合
+                            if (value.replaceValue) {
                                 confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
@@ -482,7 +498,7 @@ module cps003.f.vm {
                                 });
                             }
                         } else { // 加減算（F1_027）が選択されている場合
-                            if (value.replaceValue1) {
+                            if (value.replaceValue) {
                                 confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue1 > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue1)] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
@@ -492,13 +508,13 @@ module cps003.f.vm {
                     } else {
                         // 画面モード＝時間年休上限モードの場合
                         if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME && item.itemData.itemCode == 'IS00287') {
-                            if (value.replaceFormat == 0) {
+                            if (mode == 0) {
                                 confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
                             } else {
-                                if (value.replaceValue1) {
+                                if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -511,13 +527,13 @@ module cps003.f.vm {
                                 }
                             }
                         } else {
-                            if ([0, 1, 2].indexOf(value.replaceFormat) > -1) {
+                            if ([0, 1, 2].indexOf(mode) > -1) {
                                 confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
                             } else {
-                                if (value.replaceValue1) {
+                                if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -534,8 +550,8 @@ module cps003.f.vm {
                 }
             } else { // 一致する社員のみ（F1_009）が選択されている場合
                 if (value.matchValue) {
-                    if (value.replaceFormat == undefined) {
-                        if (value.replaceValue1) {
+                    if (mode == null) {
+                        if (value.replaceValue) {
                             confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
@@ -548,8 +564,8 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
-                            if (value.replaceFormat == 0) { // 通常置換（F1_026）が選択されている場合
-                                if (value.replaceValue1) {
+                            if (mode == 0) { // 通常置換（F1_026）が選択されている場合
+                                if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -561,7 +577,7 @@ module cps003.f.vm {
                                     });
                                 }
                             } else { // 加減算（F1_027）が選択されている場合
-                                if (value.replaceValue1) {
+                                if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_714', messageParams: [item.name, text(value.replaceValue1 > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue1)] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -569,13 +585,13 @@ module cps003.f.vm {
                                 }
                             }
                         } else {
-                            if ([0, 1, 2].indexOf(value.replaceFormat) > -1) {
+                            if ([0, 1, 2].indexOf(mode) > -1) {
                                 confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
                             } else {
-                                if (value.replaceValue1) {
+                                if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -590,8 +606,8 @@ module cps003.f.vm {
                         }
                     }
                 } else {
-                    if (value.replaceFormat == undefined) {
-                        if (value.replaceValue1) {
+                    if (mode == null) {
+                        if (value.replaceValue) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
@@ -605,7 +621,7 @@ module cps003.f.vm {
                     } else {
                         if (item.itemData.amount) {
                             if (value.matchValue) {
-                                if (value.replaceFormat == 0) {
+                                if (mode == 0) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
@@ -626,13 +642,13 @@ module cps003.f.vm {
                             // 画面モード＝時間年休上限モードの場合
                             if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME && item.itemData.itemCode == 'IS00287') {
                                 if (value.matchValue) {
-                                    if (value.replaceFormat == 0) {
+                                    if (mode == 0) {
                                         confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                             setShared('CPS003F_VALUE', value);
                                             close();
                                         });
                                     } else {
-                                        if (value.replaceValue1) {
+                                        if (value.replaceValue) {
                                             confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
                                                 setShared('CPS003F_VALUE', value);
                                                 close();
@@ -645,13 +661,13 @@ module cps003.f.vm {
                                         }
                                     }
                                 } else {
-                                    if (value.replaceFormat == 0) {
+                                    if (mode == 0) {
                                         confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                             setShared('CPS003F_VALUE', value);
                                             close();
                                         });
                                     } else {
-                                        if (value.replaceValue1) {
+                                        if (value.replaceValue) {
                                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                                 setShared('CPS003F_VALUE', value);
                                                 close();
@@ -665,13 +681,13 @@ module cps003.f.vm {
                                     }
                                 }
                             } else {
-                                if ([0, 1, 2].indexOf(value.replaceFormat) > -1) {
+                                if ([0, 1, 2].indexOf(mode) > -1) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
                                 } else {
-                                    if (value.replaceValue1) {
+                                    if (value.replaceValue) {
                                         confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                             setShared('CPS003F_VALUE', value);
                                             close();
@@ -760,40 +776,25 @@ module cps003.f.vm {
 
     // return value
     interface IValueDto {
-        mode: APPLY_MODE;
         // 全て置換する
         replaceAll: boolean;
         // 対象項目
         targetItem: string | string[];
         // 一致する値
         matchValue: any;
+        // 値
+        replaceValue: any | any[]; // 入社年指定 or 対象項目 (string[]), replaceValue is any[]
         // 置換形式 
         replaceFormat: REPLACE_FORMAT;
-        // 値1
-        replaceValue1: any;
-        // 値2
-        replaceValue2: any;
-    }
-
-    enum APPLY_MODE {
-        DATE = 1,
-        STRING = 2,
-        TIME = 3,
-        CLOCK = 4,
-        NUMBER = 5,
-        AMOUNT = 6,
-        SELECTION = 7,
-        DIALOG = 8,
-        WORKTIME = 9,
-        GRANDDATE = 10,
-        TIMEYEAR = 11
     }
 
     enum REPLACE_FORMAT {
-        SAME_AS = 0,        // 入社年月日と同じ, 契約時間　×,
-        PLUS_OR_MIN = 1,    // 年休付与基準日と同じ, 
-        REPLACE_BY_YM = 2,  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
-        REPLACE_BY_YMD = 3  // ONLY MODE 項目が年休付与基準日、特休付与基準日の場合
+        VALUE = 0,          //値指定
+        ADD_OR_SUB = 1,     //加減算
+        HIRE_DATE = 2,      //入社日
+        GRAND_DATE = 3,     //年休付与基準日
+        DESI_YEAR_OE = 4,   //入社年指定
+        CONTRACT_TIME = 5   //契約時間
     }
 
     enum YEAR_OF_JOIN {
