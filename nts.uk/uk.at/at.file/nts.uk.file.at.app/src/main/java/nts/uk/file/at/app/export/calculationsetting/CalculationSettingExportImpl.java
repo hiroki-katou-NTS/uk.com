@@ -224,6 +224,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private static final String column21Sheet10 = "c21";
 	private static final String column22Sheet10 = "c22";
 	private static final String column23Sheet10 = "c23";
+	private static final double defautsuppDays=2.0;
 
 	public SelectFunctionDto getFucntionDto() {
 		SelectFunctionDto selectFunctionDto = finder.findAllSetting();
@@ -1790,7 +1791,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 			if (!Objects.isNull(stampReflectionManagementDto.getAutoStampReflectionClass())) {
 
 				data4.put(column3Sheet4, stampReflectionManagementDto.getAutoStampReflectionClass() == 1
-						? TextResource.localize("KMK013_280") : TextResource.localize("KMK013_279"));
+						? TextResource.localize("KMK013_279") : TextResource.localize("KMK013_280"));
 			} else {
 				data4.put(column3Sheet4, "");
 			}
@@ -2163,8 +2164,17 @@ public class CalculationSettingExportImpl implements MasterListData {
 				if (!Objects.isNull(insufficientFlexHolidayMntDto.getSupplementableDays())) {
 					data8.put(column3Sheet7, insufficientFlexHolidayMntDto.getSupplementableDays() + "日");
 				} else {
-					data8.put(column3Sheet7, "");
+					data8.put(column3Sheet7,"");
 				}
+				MasterData masterData8 = new MasterData(data8, null, "");
+				Map<String, MasterCellData> rowData8 = masterData8.getRowData();
+				getAlignRightsheet7(rowData8);
+				datas.add(masterData8);
+			}else{				
+				Map<String, Object> data8 = new HashMap<>();
+				data8.put(column1Sheet7, TextResource.localize("KMK013_270"));
+				data8.put(column2Sheet7, TextResource.localize("KMK013_271"));				
+				data8.put(column3Sheet7,defautsuppDays+"日");		
 				MasterData masterData8 = new MasterData(data8, null, "");
 				Map<String, MasterCellData> rowData8 = masterData8.getRowData();
 				getAlignRightsheet7(rowData8);
