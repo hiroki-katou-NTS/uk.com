@@ -77,4 +77,13 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("startDate", date);
 	}
 
+	@Override
+	public List<AnnualLeaveTimeRemainingHistory> findBySid(String sid) {
+		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a"
+				+ " WHERE a.sid = :employeeId ORDER BY a.grantDate DESC";
+		return this.queryProxy().query(sql, KrcdtAnnLeaTimeRemainHist.class)
+				.setParameter("employeeId", sid)
+				.getList(item -> item.toDomain());
+	}
+
 }
