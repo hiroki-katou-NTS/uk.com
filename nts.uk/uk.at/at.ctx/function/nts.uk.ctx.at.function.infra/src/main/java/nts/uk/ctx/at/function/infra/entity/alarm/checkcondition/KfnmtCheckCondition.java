@@ -30,6 +30,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.daily.KfnmtExtractionPeriodDaily;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.monthly.KfnmtExtractPeriodMonth;
+import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtExtractMutilMonth;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.KfnmtExtractionPerUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.yearly.KfnmtExtractRangeYear;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -87,6 +88,13 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	})
 	public KfnmtExtractRangeYear extractRangeYear;
 	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumns({
+		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
+		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
+	})
+	public KfnmtExtractMutilMonth mutilMonthYear ;
+	
 	
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily) {
@@ -121,7 +129,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily,
-			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtExtractRangeYear extractRangeYear) {
+			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtExtractRangeYear extractRangeYear, KfnmtExtractMutilMonth mutilMonthYear) {
 		super();
 		this.pk = pk;
 		this.extractionId = extractionId;
@@ -130,6 +138,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.extractionPeriodDaily = extractionPeriodDaily;
 		this.listExtractPerMonth = listExtractPerMonth;
 		this.extractRangeYear = extractRangeYear;
+		this.mutilMonthYear = mutilMonthYear;
 	}
 	
 	
