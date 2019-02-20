@@ -13,7 +13,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualHolidayAlramCondition extends ExtractionCondition{
+public class AnnualHolidayAlarmCondition extends ExtractionCondition{
 
 	private AlarmCheckConAgr alarmCheckConAgr;
 	
@@ -21,8 +21,8 @@ public class AnnualHolidayAlramCondition extends ExtractionCondition{
 	
 	@Override
 	public void changeState(ExtractionCondition extractionCondition) {
-		if (extractionCondition instanceof AnnualHolidayAlramCondition) {
-			AnnualHolidayAlramCondition value = (AnnualHolidayAlramCondition) extractionCondition;
+		if (extractionCondition instanceof AnnualHolidayAlarmCondition) {
+			AnnualHolidayAlarmCondition value = (AnnualHolidayAlarmCondition) extractionCondition;
 			this.alarmCheckConAgr = value.alarmCheckConAgr;
 			this.alarmCheckSubConAgr = value.alarmCheckSubConAgr;
 		}

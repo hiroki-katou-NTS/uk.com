@@ -15,9 +15,9 @@ public class AlarmCheckSubConAgr {
 
 	private boolean narrowLastDay;
 
-	public NumberDayAward numberDayAward;
+	private NumberDayAward numberDayAward;
 
-	public NumOfMonthUnNextHoliday periodUntilNext;
+	private NumOfMonthUnNextHoliday periodUntilNext;
 
 	
 	public AlarmCheckSubConAgr(boolean narrowUntilNext, boolean narrowLastDay, int numberDayAward, int periodUntilNext) {
