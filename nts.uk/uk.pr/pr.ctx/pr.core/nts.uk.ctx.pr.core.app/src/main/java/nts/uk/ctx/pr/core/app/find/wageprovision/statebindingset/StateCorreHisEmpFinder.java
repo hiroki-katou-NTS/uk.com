@@ -43,7 +43,7 @@ public class StateCorreHisEmpFinder {
         List<StateCorreHisEmpSetDto> stateCorreHisEmpSetDto = new ArrayList<>();
         List<EmpCdNameImportDto>  listEmployee = this.findEmploymentAll(cid);
         if(listEmployee == null || listEmployee.isEmpty()){
-            return null;
+            return Collections.emptyList();
         }
         List<StateLinkSetMaster> listStateLinkSetMaster = stateCorreHisEmRepository.getStateLinkSettingMasterByHisId(cid,hisId);
         List<StatementLayout> listStatementLayout = this.getStatementLayout(cid,startYearMonth);

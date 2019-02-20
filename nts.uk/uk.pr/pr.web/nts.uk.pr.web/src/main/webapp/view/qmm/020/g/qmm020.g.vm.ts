@@ -51,9 +51,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     { headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100' , hidden: true},
                     { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
                     { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
-                    { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton' },
+                    { headerText: getText('QMM020_20'), key: 'selectSalary', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton' },
                     { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
-                    { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'BonusButton' },
+                    { headerText: getText('QMM020_22'), key: 'selectBonus', dataType: 'string', width: '75px', unbound: true, ntsControl: 'BonusButton' },
                     { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
 
                 ],
@@ -71,10 +71,20 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                         multipleSelection: true
                     }],
                 ntsControls: [
-                    { name: 'SalaryButton', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 1) }, controlType: 'Button' },
-                    { name: 'BonusButton', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button' }]
+                    { name: 'SalaryButton', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 1) }, controlType: 'Button', enable:  true },
+                    { name: 'BonusButton', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button', enable: true }]
             });
             $("#G3_1").setupSearchScroll("igGrid", true);
+        }
+
+        enableSelectSalary(enable: boolean){
+            if(enable) {
+                $("#G3_1").ntsGrid("enableNtsControls", 'selectSalary', 'Button');
+                $("#G3_1").ntsGrid("enableNtsControls", 'selectBonus', 'Button');
+            } else {
+                $("#G3_1").ntsGrid("disableNtsControls", 'selectSalary', 'Button');
+                $("#G3_1").ntsGrid("disableNtsControls", 'selectBonus', 'Button');
+            }
         }
 
         initScreen(hisId: string){
@@ -90,8 +100,10 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.hisIdSelected(self.listStateCorrelationHisSalary()[self.getIndex(hisId)].hisId);
                 } else {
                     self.listStateCorrelationHisSalary([]);
-                    self.mode(model.MODE.NO_REGIS);
-                    this.loadGird();
+                    self.getStateLinkSettingMasterSalary("0",0).done(()=> {
+                        self.enableSelectSalary(false);
+                        self.mode(model.MODE.NO_REGIS);
+                    });
                 }
             }).always(() => {
                 block.clear();
@@ -128,25 +140,30 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         }
 
-        getStateLinkSettingMasterSalary(hisId: string, startYeaMonth: number){
+        getStateLinkSettingMasterSalary(hisId: string, startYeaMonth: number): JQueryPromise<any>{
             block.invisible();
+            let dfd = $.Deferred();
             let self = this;
             service.getStateLinkSettingMasterSalary(hisId, startYeaMonth).done((stateLinkSettingMaster: Array<model.StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if(self.hisIdSelected() == HIS_ID_TEMP ) {
+                    if (self.hisIdSelected() == HIS_ID_TEMP) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
-                    dialog.info({ messageId: "MsgQ_247" }).then(() => {
+                    dialog.info({messageId: "MsgQ_247"}).then(() => {
                         self.mode(model.MODE.NO_EXIST);
                     });
                 }
                 self.loadGird();
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
             }).always(() => {
                 block.clear();
             });
+            return dfd.promise();
         }
 
         findItem(masterCode){
@@ -229,6 +246,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.transferMethod(params.transferMethod);
                     self.listStateCorrelationHisSalary.unshift(self.createStateCorrelationHisSalary(params.start, self.endYearMonth()));
                     self.hisIdSelected(HIS_ID_TEMP);
+                    self.enableSelectSalary(true);
                 }
                 $("#G1_5_container").focus();
             });
@@ -269,8 +287,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                             self.getStateLinkSettingMasterSalary(self.hisIdSelected(), self.listStateCorrelationHisSalary()[self.index()].startYearMonth);
                         }
                     });
-
-
                 }
                 if(params && params.modeEditHistory == 0) {
                     self.initScreen(null);
@@ -310,7 +326,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
     }
 
-    export class StateCorreHisSalaStateCorrelationHisSalary {
+    export class StateCorrelationHisSalary {
         hisId: string;
         startYearMonth: number;
         endYearMonth: number;
