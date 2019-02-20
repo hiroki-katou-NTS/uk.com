@@ -72,7 +72,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 showAllClosure: false,
                 showPeriod: false,
                 periodFormatYM: false,
-
+                tabindex: 5,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
@@ -159,7 +159,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = getText("KCP009_3");
-            self.tabindex = 6;
+            self.tabindex = 4;
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -477,6 +477,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         showPeriod?: boolean; // 対象期間利用
         periodFormatYM?: boolean; // 対象期間精度
         isInDialog?: boolean;
+        tabindex: number;
 
         /** Required parameter */
         baseDate?: string; // 基準日

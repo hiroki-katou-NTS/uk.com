@@ -100,9 +100,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.hisIdSelected(self.listStateCorrelationHisSalary()[self.getIndex(hisId)].hisId);
                 } else {
                     self.listStateCorrelationHisSalary([]);
-                    self.mode(model.MODE.NO_REGIS);
                     self.getStateLinkSettingMasterSalary("0",0).done(()=> {
                         self.enableSelectSalary(false);
+                        self.mode(model.MODE.NO_REGIS);
                     });
                 }
             }).always(() => {

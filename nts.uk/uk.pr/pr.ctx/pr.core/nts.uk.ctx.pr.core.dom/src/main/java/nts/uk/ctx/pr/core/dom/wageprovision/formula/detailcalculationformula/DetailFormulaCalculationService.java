@@ -254,21 +254,21 @@ public class DetailFormulaCalculationService {
         if (roundingMethod == Rounding.TRUNCATION.value)
             result = Math.floor(result / roundingValue) * roundingValue;
         if (roundingMethod == Rounding.DOWN_1_UP_2.value)
-            result = Math.floor(result / roundingValue + 0.9) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_2_UP_3.value)
             result = Math.floor(result / roundingValue + 0.8) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_3_UP_4.value)
+        if (roundingMethod == Rounding.DOWN_2_UP_3.value)
             result = Math.floor(result / roundingValue + 0.7) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_4_UP_5.value)
+        if (roundingMethod == Rounding.DOWN_3_UP_4.value)
             result = Math.floor(result / roundingValue + 0.6) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_5_UP_6.value)
+        if (roundingMethod == Rounding.DOWN_4_UP_5.value)
             result = Math.floor(result / roundingValue + 0.5) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_6_UP_7.value)
+        if (roundingMethod == Rounding.DOWN_5_UP_6.value)
             result = Math.floor(result / roundingValue + 0.4) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_7_UP_8.value)
+        if (roundingMethod == Rounding.DOWN_6_UP_7.value)
             result = Math.floor(result / roundingValue + 0.3) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_8_UP_9.value)
+        if (roundingMethod == Rounding.DOWN_7_UP_8.value)
             result = Math.floor(result / roundingValue + 0.2) * roundingValue;
+        if (roundingMethod == Rounding.DOWN_8_UP_9.value)
+            result = Math.floor(result / roundingValue + 0.1) * roundingValue;
         if (isNegativeNumber) result = result * -1;
         return result + "";
     }

@@ -700,7 +700,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                     let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)),
                         elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [elementType]);
                     if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
                     if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
                 } else {
@@ -749,10 +749,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return (self.acceptFunctionPostfix.indexOf(elementName) > -1);
             if (elementType == self.VARIABLE)
                 return (self.acceptVariablePostfix.indexOf(elementName) > -1);
-
-            self.setErrorToFormula('MsgQ_233', [elementType]);
             return true;
-
         }
 
         checkFunctionSyntax(formula) {
