@@ -18,7 +18,8 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
             ]);
             self.initScreen();
         }
-        initScreen(){
+
+        initScreen(): JQueryPromise<any>{
             let dfd = $.Deferred();
             let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_M.INPUT);
