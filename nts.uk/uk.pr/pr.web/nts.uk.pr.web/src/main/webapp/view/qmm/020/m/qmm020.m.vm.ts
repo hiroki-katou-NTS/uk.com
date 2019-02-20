@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 if(err)
                     dialog.alertError(err);
             }).always(()=>{
-                $('#multi-list_container').focus();
+                $('#single-list_container').focus();
             });
         }
 
