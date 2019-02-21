@@ -29,7 +29,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGenerator
 		implements PersonInfoMatrixErrorGenerator {
-	private static final String TEMPLATE_FILE = "report/一括登録結果.xlsx";
 	/** The Constant EXTENSION_FILE. */
 	private static final String EXTENSION_FILE = ".xlsx";
 	// số cột của template

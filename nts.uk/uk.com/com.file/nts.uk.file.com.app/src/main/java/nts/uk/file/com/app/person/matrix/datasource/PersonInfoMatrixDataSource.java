@@ -1,6 +1,7 @@
 package nts.uk.file.com.app.person.matrix.datasource;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,6 @@ public class PersonInfoMatrixDataSource {
 	
 	// thông tin của employee
 	private List<GridEmployeeInfoDataSource> detailData;
+	
+	private Map<String, Integer> width;
 }

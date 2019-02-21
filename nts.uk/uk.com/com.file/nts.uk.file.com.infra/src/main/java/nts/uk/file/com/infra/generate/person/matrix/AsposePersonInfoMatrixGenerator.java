@@ -1,6 +1,8 @@
 package nts.uk.file.com.infra.generate.person.matrix;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
+import com.aspose.cells.Column;
 import com.aspose.cells.Font;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
@@ -50,7 +53,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		FixedColumnDisplay fixedCol = new FixedColumnDisplay(dataSource.getFixedHeader().isShowDepartment(),
 				dataSource.getFixedHeader().isShowWorkplace(), dataSource.getFixedHeader().isShowPosition(),
 				dataSource.getFixedHeader().isShowEmployment(), dataSource.getFixedHeader().isShowClassification());
-		
+		setWidthColum(worksheet, dataSource);
 		List<GridHeaderData> gridHeader =  converHeaderData(dataSource.getDynamicHeader());
 		printPage(worksheet);
         int numberOfColumnHeader = numberOfColumnHeader(dataSource, gridHeader);
@@ -400,6 +403,50 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	}
 	
 	/**
+	 * setWidthColum
+	 * @param worksheet
+	 * @param dataSource
+	 */
+	private void setWidthColum(Worksheet worksheet, PersonInfoMatrixDataSource dataSource) {
+		Map<String, Integer> width = dataSource.getWidth();
+		List<Integer> widthLst = new ArrayList<>();
+		FixedColumnDisplay fixedCol = dataSource.getFixedHeader();
+		List<GridHeaderData> dynamicCol = dataSource.getDynamicHeader();
+		
+		widthLst.add(new Integer(200));
+		widthLst.add(new Integer(300));
+		if(fixedCol.isShowClassification()) {
+			widthLst.add(new Integer(300));
+		}
+		
+		if(fixedCol.isShowDepartment()) {
+			widthLst.add(new Integer(300));
+		}
+		
+		if(fixedCol.isShowEmployment()) {
+			widthLst.add(new Integer(300));
+		}
+		
+		if(fixedCol.isShowPosition()) {
+			widthLst.add(new Integer(300));
+		}
+		
+		if(fixedCol.isShowWorkplace()) {
+			widthLst.add(new Integer(300));
+		}
+		
+		dynamicCol.stream().forEach(c ->{
+			Integer w = width.get(c.getItemCode());
+			widthLst.add(w);
+		});
+		
+		for(int i = 0; i < widthLst.size(); i++) {
+			Column column = worksheet.getCells().getColumns().get(i);
+			column.setWidth(widthLst.get(i).intValue()/7);
+		}
+	}
+	
+	/**
 	 * Sets the title style.
 	 *
 	 * @param cell
@@ -412,6 +459,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setTextWrapped(true);
 		if(isFixed) {
 			style.setForegroundColor(Color.getGray());
 		}else if(!isFixed && isRequired) {
@@ -437,6 +485,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setTextWrapped(true);
 		Font font = style.getFont();
 		font.setName("MS ゴシック");
 		cell.setStyle(style);
