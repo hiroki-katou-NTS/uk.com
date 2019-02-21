@@ -28,7 +28,7 @@ public class AffiliatedCompanyHistoryWebService extends WebService {
 	@Inject
 	private AffiliatedCompanyHistoryFinder affiliatedCompanyHistoryFinder;
 	
-	@Path("getdata}")
+	@Path("getdata")
 	@POST
 	public List<AffCompanyHistItem> getByIDAndBasedate(QueryHistItem query) {
 		//社員ID（List）と基準日から所属会社履歴項目を取得する
