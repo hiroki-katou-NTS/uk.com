@@ -11,6 +11,4 @@ public class EmployeInfoErrorDataSource {
 	private String checkAtr;
 	private String categoryName;
 	private String contentError;
-	
-
 }

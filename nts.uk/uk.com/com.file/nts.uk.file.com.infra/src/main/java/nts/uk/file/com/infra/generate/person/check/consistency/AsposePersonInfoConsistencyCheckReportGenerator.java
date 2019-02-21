@@ -1,4 +1,4 @@
-package nts.uk.file.com.infra.person.check.consistency;
+package nts.uk.file.com.infra.generate.person.check.consistency;
 
 import java.util.List;
 
