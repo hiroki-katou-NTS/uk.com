@@ -4,19 +4,16 @@
 package nts.uk.ctx.at.shared.pubimp.employee;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.pub.employee.ContractTimeEmployee;
+import nts.uk.ctx.at.shared.pub.employee.ContractTimeEmployeePub;
 import nts.uk.ctx.at.shared.pub.employee.ContractTimeEmployeeExport;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -25,7 +22,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
  *
  */
 @Stateless
-public class ContractTimeEmployeePubImpl implements ContractTimeEmployee {
+public class ContractTimeEmployeePubImpl implements ContractTimeEmployeePub {
 
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;

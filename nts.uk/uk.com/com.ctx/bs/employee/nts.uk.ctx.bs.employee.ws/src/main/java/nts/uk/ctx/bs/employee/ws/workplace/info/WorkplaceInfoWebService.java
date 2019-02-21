@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.info.WorkplaceInfoFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.personinfo.DisplayWorkplaceFinder;
+import nts.uk.ctx.bs.employee.app.query.employee.DisplayQuery;
 
 /**
  * The Class WorkplaceInfoWebService.
@@ -73,7 +74,8 @@ public class WorkplaceInfoWebService extends WebService {
     
     @Path("display")
     @POST
-    public List<String> getData(GeneralDate baseDate , List<String> listWorkPlaceID) {
-        return this.displayWorkplaceFinder.getData(baseDate, listWorkPlaceID);
+    public List<String> getData(DisplayQuery query) {
+    	//職場に表示する値を取得する
+        return this.displayWorkplaceFinder.getData(query.getBaseDate(), query.getListWorkplaceID());
     }
 }

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  * @author hieult
  *
  */
-public interface ContractTimeEmployee {
+public interface ContractTimeEmployeePub {
 	
 	List<ContractTimeEmployeeExport> getData(List<String> listEmpID, GeneralDate baseDate);
 }

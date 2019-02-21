@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.setting.matrix.GridSettingCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.matrix.matrixdisplayset.CreateMatrixDisplaySetCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.matrix.personinfomatrixitem.CreatePersonInfoMatrixItemCommandHandler;
@@ -21,11 +22,14 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.matrixdisplayset.MatrixDisplaySetFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.DisplayItemColumnSetFinder;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
+import nts.uk.ctx.pereg.dom.adapter.ContractTimeEmployeeAdapter;
+import nts.uk.ctx.pereg.dom.adapter.ContractTimeEmployeeImport;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
 import nts.uk.shr.pereg.app.find.GridComboBoxSettingQuery;
 import nts.uk.shr.pereg.app.find.ItemNameQuery;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
+import nts.uk.shr.pereg.app.find.dto.ContractTimeQuery;
 
 @Path("ctx/pereg/grid-layout")
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,6 +52,9 @@ public class GridLayoutWebService extends WebService {
 	
 	@Inject 
 	PerInfoItemDefFinder itemFinder;
+	
+	@Inject
+	private ContractTimeEmployeeAdapter adapter;
 
 	@POST
 	@Path("get-data")
@@ -95,4 +102,13 @@ public class GridLayoutWebService extends WebService {
 	public Map<String, String> getItemName(ItemNameQuery query) {
 		return itemFinder.getNamesByCodes(query.getItemCodes());
 	}
+	
+	@POST
+	@Path("get-data/contracttime")
+	public List<ContractTimeEmployeeImport> getData(ContractTimeQuery query){
+		
+		return adapter.getData(query.listEmpID,query.getBaseDate());
+		
+	}
+	
 }
