@@ -187,7 +187,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
             // Remove elements cannot handled
             // self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
-            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME];
+            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.WORKDAY];
         }
 
         // tab 1
@@ -633,7 +633,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkBracket(formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
             for (index = 0; index < formula.length; index++) {
-                currentChar = formula [index];
+                currentChar = formula[index];
                 if (currentChar == self.OPEN_BRACKET) openBracketNum++;
                 if (currentChar == self.CLOSE_BRACKET) closeBracketNum++;
                 if (openBracketNum - closeBracketNum > 10) {
