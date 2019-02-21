@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtExtractMutilMonthPK implements Serializable{
+public class KfnmtExtractAverageMonthPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "EXTRACTION_ID")
@@ -35,7 +35,7 @@ public class KfnmtExtractMutilMonthPK implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KfnmtExtractMutilMonthPK other = (KfnmtExtractMutilMonthPK) obj;
+		KfnmtExtractAverageMonthPK other = (KfnmtExtractAverageMonthPK) obj;
 		if (extractionId == null) {
 			if (other.extractionId != null)
 				return false;
