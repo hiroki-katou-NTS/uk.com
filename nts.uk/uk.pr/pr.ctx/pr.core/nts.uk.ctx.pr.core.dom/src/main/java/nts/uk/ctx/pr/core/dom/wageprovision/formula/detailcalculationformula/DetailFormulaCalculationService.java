@@ -214,7 +214,7 @@ public class DetailFormulaCalculationService {
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
         Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
+        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_236");
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);
@@ -228,6 +228,7 @@ public class DetailFormulaCalculationService {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
+        if (Objects.isNull(formula)) throw new BusinessException("MsgQ_236");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
         }
