@@ -93,6 +93,10 @@
 	z-index: 999;
 }*/
 
+#export-file {
+	margin-left: 100px !important;
+}
+
 td.required {
 	background-color: #FAC002 !important;
 }

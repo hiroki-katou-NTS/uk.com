@@ -476,13 +476,24 @@ module cps003.a.vm {
         
         exportFile() {
             let self = this, $grid = $("#grid"), 
-                matrixData = { categoryId: self.category.catId(), categoryName: self.category.cate().categoryName,
-                    fixedHeader: { isShowDepartment: self.settings.matrixDisplay().departmentATR === IUSE_SETTING.USE,
-                                   isShowWorkplace: self.settings.matrixDisplay().workPlaceATR === IUSE_SETTING.USE,
-                                   isShowPosition: self.settings.matrixDisplay().jobATR === IUSE_SETTING.USE,
-                                   isShowEmployment: self.settings.matrixDisplay().employmentATR === IUSE_SETTING.USE,
-                                   isShowClassification: self.settings.matrixDisplay().clsATR === IUSE_SETTING.USE },
+                matrixData = { categoryId: self.category.catId(), categoryCode: self.category.catCode(), categoryName: self.category.cate().categoryName,
+                    fixedHeader: { isShowDepartment: (self.settings.matrixDisplay() || {}).departmentATR === IUSE_SETTING.USE,
+                                   isShowWorkplace: (self.settings.matrixDisplay() || {}).workPlaceATR === IUSE_SETTING.USE,
+                                   isShowPosition: (self.settings.matrixDisplay() || {}).jobATR === IUSE_SETTING.USE,
+                                   isShowEmployment: (self.settings.matrixDisplay() || {}).employmentATR === IUSE_SETTING.USE,
+                                   isShowClassification: (self.settings.matrixDisplay() || {}).clsATR === IUSE_SETTING.USE },
                     dynamicHeader: _.filter(self.headDatas, (data: IDataHead) => _.find(self.settings.perInfoData(), (info: IPersonInfoSetting) => info.regulationAtr && info.itemCD === data.itemCode)),
+                    width: nts.uk.localStorage.getItem(nts.uk.request.location.current.rawUrl + "/grid").map(w => {
+                        w = JSON.parse(w);
+                        let items = {};
+                        _.forEach(self.settings.perInfoData(), (info: IPersonInfoSetting) => {
+                            let itemWidth = w && w.default && w.default[info.itemCD];
+                            if (!info.regulationAtr || _.isNil(itemWidth)) return;
+                            items[info.itemCD] = itemWidth;
+                        });
+                        
+                        return items;
+                    }).orElse(null),
                     detailData: []
                 };
             
@@ -1393,8 +1404,17 @@ module cps003.a.vm {
             });
         }
 
+        specialItems = {
+            standardDate: [ "IS00279", "IS00295", "IS00302", "IS00309", "IS00316", "IS00323", "IS00330", "IS00337", "IS00344", "IS00351", 
+                            "IS00358", "IS00559", "IS00566", "IS00573", "IS00580", "IS00587", "IS00594", "IS00601", "IS00608", "IS00615", "IS00622" ],
+            workTime: [ "IS00131", "IS00140", "IS00158", "IS00167", "IS00176", "IS00149", "IS00194", "IS00203", "IS00212", "IS00221", "IS00230", "IS00239", "IS00185" ],
+            holidayLimit: [ "IS00287" ],
+            workplace: [ "IS00084", "IS00085" ],
+            department: [ "IS00073" ]
+        }
+        
         settingBatchs() {
-            let self = this,
+            let self = this, $grid = $("#grid"),
                 id = self.category.catId(),
                 ctg = _.first(self.category.items(), m => m.id == id);
 
@@ -1405,7 +1425,102 @@ module cps003.a.vm {
             });
 
             modal("/view/cps/003/f/index.xhtml").onClosed(() => {
-                console.log(getShared('CPS003F_VALUE'));
+                let replaceValue: IReplaceValueDto = getShared('CPS003F_VALUE');
+                if (!replaceValue) return;
+                if (_.find(self.specialItems.standardDate, it => it === replaceValue.targetItem)) {
+                    if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, () => replaceValue.replaceValue);
+                    } else if (replaceValue.replaceFormat === REPLACE_FORMAT.GRAND_DATE) { //　年休付与基準日
+                        // Get 年休社員基本情報
+                        let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
+                        if (empIdList.length > 0) {
+                            service.fetch.basicHolidayEmpInfo(empIdList).done((infos: Array<AnnualLeaveEmpBasicInfo>) => {
+                                let groupByEmpId = _.groupBy(infos, "employeeId");
+                                $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                    if (replaceValue.replaceAll) return true;
+                                    return replaceValue.matchValue === value;
+                                }, (value, rec) => {
+                                    let holidayInfo: Array<AnnualLeaveEmpBasicInfo> = groupByEmpId[rec.employeeId];
+                                    if (holidayInfo) {
+                                        return holidayInfo[0].grantRule.grantStandardDate;
+                                    }
+                                });
+                            });
+                        }
+                    } else if (replaceValue.replaceFormat === REPLACE_FORMAT.HIRE_DATE) {
+                        // TODO: From standardDate and employeeId list, get historyItem and replace
+                        
+                    } else if (replaceValue.replaceFormat === REPLACE_FORMAT.DESI_YEAR_OE) {
+                        // TODO: From standardDate and employeeId list, get historyItem and replace
+                        
+                        if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.SAME) {
+                            // TODO: Replace by historyItem
+                        } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
+                            // TODO: historyItem.year - 1
+                            // replaceValue[1] is 月日
+                        } else {
+                            // TODO: historyItem.year + 1
+                        }
+                    }
+                } else if (_.find(self.specialItems.workTime, it => it === replaceValue.targetItem)) {
+                    _.forEach(replaceValue.targetItem, (item, i) => {
+                        $grid.mGrid("replace", item, (value) => { 
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value; 
+                        }, () => replaceValue.replaceValue[i]);
+                    });
+                } else if (self.specialItems.holidayLimit[0] === replaceValue.targetItem) {
+                    if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, () => replaceValue.replaceValue);
+                    } else if (replaceValue.replaceFormat === REPLACE_FORMAT.CONTRACT_TIME) { // 契約時間
+                        let contractTime = 0;
+                        // TODO: Get contract time
+                        
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, () => replaceValue.replaceValue * contractTime);
+                    }
+                } else if (replaceValue.mode === APPLY_MODE.AMOUNT) {
+                    if (replaceValue.replaceFormat === REPLACE_FORMAT.ADD_OR_SUB) { // 加減算
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (_.isNil(value) || value === "") return false;
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, (value) => replaceValue.replaceValue + value); 
+                    } else if (_.isNil(replaceValue.replaceFormat)) { // 値指定
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, () => replaceValue.replaceValue);
+                    }
+                } else if (_.find(self.specialItems.workplace, it => it === replaceValue.targetItem)) {
+                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        if (replaceValue.replaceAll) return true;
+                        return replaceValue.matchValue === value;
+                    }, () => {
+                        // TODO: Get workplace name from workplaceId replaceValue.replaceValue
+                        let workplaceName = replaceValue.replaceValue;
+                        return workplaceName;
+                    });
+                } else if (_.find(self.specialItems.department, it => it === replaceValue.targetItem)) {
+                } else if (replaceValue.mode === APPLY_MODE.SELECTION) {
+                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        if (replaceValue.replaceAll) return true;
+                        return replaceValue.matchValue === value;
+                    }, () => replaceValue.replaceValue);
+                } else {
+                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        if (replaceValue.replaceAll) return true;
+                        return replaceValue.matchValue === value;
+                    }, () => replaceValue.replaceValue);
+                }
             });
         }
     }
@@ -1730,6 +1845,16 @@ module cps003.a.vm {
         "departmentATR": IUSE_SETTING;
         "employmentATR": IUSE_SETTING;
     }
+    
+    class AnnualLeaveEmpBasicInfo {
+        employeeId: string;
+        companyId: string;
+        grantRule: AnnualLeaveGrantRule;
+    }
+    
+    class AnnualLeaveGrantRule {
+        grantStandardDate: string;
+    }
 
     enum IUSE_SETTING {
         USE = <any>'USE',
@@ -1751,17 +1876,44 @@ module cps003.a.vm {
     }
     
     interface IReplaceValueDto {
+        mode: APPLY_MODE;
         // 全て置換する
         replaceAll: boolean;
         // 対象項目
-        targetItem: string;
+        targetItem: string | string[];
         // 一致する値
         matchValue: any;
+        // 値
+        replaceValue: any | any[]; // 入社年指定 or 対象項目 (string[]), replaceValue is any[]
         // 置換形式 
-        replaceFormat: Number;
-        // 値1
-        replaceValue1: any;
-        // 値2
-        replaceValue2: any;
+        replaceFormat: REPLACE_FORMAT;
+    }
+    
+    enum APPLY_MODE {
+        DATE = 1,
+        STRING = 2,
+        TIME = 3,
+        CLOCK = 4,
+        NUMBER = 5,
+        AMOUNT = 6,
+        SELECTION = 7,
+        WORKTIME = 8,
+        GRANDDATE = 9,
+        TIMEYEAR = 10
+    }
+    
+    enum REPLACE_FORMAT {
+        VALUE = 0,          //値指定
+        ADD_OR_SUB = 1,     //加減算
+        HIRE_DATE = 2,      //入社日
+        GRAND_DATE = 3,     //年休付与基準日
+        DESI_YEAR_OE = 4,   //入社年指定
+        CONTRACT_TIME = 5   //契約時間
+    }
+    
+    enum YEAR_OF_JOIN {
+        NEXT = 0, //翌年
+        SAME = 1, //同年
+        PREV = 2  //前年
     }
 }
