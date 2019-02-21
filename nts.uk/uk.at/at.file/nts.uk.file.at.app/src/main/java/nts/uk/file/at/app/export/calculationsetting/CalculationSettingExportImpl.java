@@ -2119,9 +2119,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 			data5.put(column2Sheet7, "");
 			if (!Objects.isNull(flexSetDto.getFlexNonworkingDayCalc())) {
 				if (flexSetDto.getFlexNonworkingDayCalc() == 1) {
-					data5.put(column3Sheet7, TextResource.localize("KMK013_268"));
-				} else if (flexSetDto.getFlexNonworkingDayCalc() == 0) {
 					data5.put(column3Sheet7, TextResource.localize("KMK013_269"));
+				} else if (flexSetDto.getFlexNonworkingDayCalc() == 0) {
+					data5.put(column3Sheet7, TextResource.localize("KMK013_268"));
 				} else {
 					data5.put(column3Sheet7, "");
 				}
