@@ -158,7 +158,7 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             $div.html($label.val());
-            let width = $div.outerWidth();
+            let width = $label.outerWidth();
             let scrollWidth = $div[0].scrollWidth;
             $div.remove();
             return width < scrollWidth;
