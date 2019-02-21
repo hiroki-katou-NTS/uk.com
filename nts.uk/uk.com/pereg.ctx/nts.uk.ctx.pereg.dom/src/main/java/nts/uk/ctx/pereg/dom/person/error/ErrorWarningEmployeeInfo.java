@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.dom.person.error;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +18,18 @@ public class ErrorWarningEmployeeInfo {
 	//対象者
 	private String employeeId;
 	//対象者社員CD
-	private String employeeCd;
+	private String empCd;
 	//対象者氏名
-	private String employeeName;	
-	//エラー情報一覧
-	private List<ErrorWarningInfoOfRowOrder> errorLst;
+	private String empName;	
+	//行番号
+	private int no;
+	//登録結果
+	private boolean isHideRegister;
+	//区分 - ErrorType
+	private int errorType;
+	//項目名
+	private String itemName;
+	//メッセージ
+	private String message;
 
 }

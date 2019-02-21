@@ -403,11 +403,13 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	}
 	
 	/**
+	 * ý tưởng cho đoan này: khi nhận được width thì làm cho giống index trên header để set width cho cột
 	 * setWidthColum
 	 * @param worksheet
 	 * @param dataSource
 	 */
 	private void setWidthColum(Worksheet worksheet, PersonInfoMatrixDataSource dataSource) {
+		
 		Map<String, Integer> width = dataSource.getWidth();
 		List<Integer> widthLst = new ArrayList<>();
 		FixedColumnDisplay fixedCol = dataSource.getFixedHeader();
@@ -439,7 +441,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 			Integer w = width.get(c.getItemCode());
 			widthLst.add(w);
 		});
-		
+		// chia cho 7 là vì so với tỉ lệ trên grid với excel lệch nhau 7 lần
 		for(int i = 0; i < widthLst.size(); i++) {
 			Column column = worksheet.getCells().getColumns().get(i);
 			column.setWidth(widthLst.get(i).intValue()/7);
@@ -465,7 +467,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		}else if(!isFixed && isRequired) {
 			style.setForegroundColor(Color.getOrange());
 		}else {
-			style.setForegroundColor(Color.getGreenYellow());
+			style.setForegroundColor(Color.fromArgb(207, 241, 165));
 		}
 		Font font = style.getFont();
 		font.setName("MS ゴシック");
