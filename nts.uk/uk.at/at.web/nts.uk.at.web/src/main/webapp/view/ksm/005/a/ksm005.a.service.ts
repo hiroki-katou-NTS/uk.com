@@ -3,9 +3,13 @@ module nts.uk.at.view.ksm005.a {
     export module service {
         export function saveAsExcel(mode: string, standardDate: string, startDate: string, endDate: string): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1] != null ? program[1] : "";
+            let domainType = "KSM005";
+            if (program.length > 1) {
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print', 
-                {domainId: 'MonthlyWorkSetting', domainType: 'KSM005' + programName, 
+                {domainId: 'MonthlyWorkSetting', domainType: domainType, 
                 languageId: 'ja', reportType: 0, mode: mode, 
                 baseDate : moment.utc(standardDate).format(),
                 startDate : moment.utc(startDate).format(), 

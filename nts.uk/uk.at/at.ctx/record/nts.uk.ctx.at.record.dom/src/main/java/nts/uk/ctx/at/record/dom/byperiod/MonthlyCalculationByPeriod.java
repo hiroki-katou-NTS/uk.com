@@ -2,13 +2,13 @@ package nts.uk.ctx.at.record.dom.byperiod;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;

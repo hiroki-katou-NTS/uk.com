@@ -328,9 +328,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// fake data
 		List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
 		StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
-				GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+				GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1740), new TimeWithDayAttr(300));
 		StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
-				GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+				GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1740), new TimeWithDayAttr(300));
 		lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
 		lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
 		stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
@@ -806,6 +806,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// .find(employeeId, processingDate);
 		String workTimeCode = null;
 		String workTypeCode = null;
+		WorkTimeCode workTimeCodeDefault = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getSiftCode();
 		
 		if(workInfoOfDailyPerformanceOpt.isPresent() && workInfoOfDailyPerformanceOpt.get().getRecordInfo() != null){
 			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTypeCode() != null){
@@ -815,8 +816,21 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				workTimeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getSiftCode().v();
 			}
 		}
+		
+		//ドメインモデル「勤務種類」を取得
+		boolean checkWorkType = this.workTypeRepository.findWorkTypeRecord(companyId, workTypeCode);
+		if(checkWorkType == false){
+			//エラー処理
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("023"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
+					new ErrMessageContent(TextResource.localize("Msg_590")));
+			errMesInfos.add(employmentErrMes);
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			return newReflectStampOutput;
+		}
+		
 		// 就業時間帯コードを取得
-		if (workTimeCode == null) {
+		if (workTimeCode == null && checkWorkType == true) {
 			// 休日出勤時の勤務情報を取得する
 			Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
 					.getHolidayWorkSchedule(companyId, employeeId, processingDate, workTypeCode);
@@ -831,6 +845,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 			workTimeCode = singleDaySchedule.get().getWorkTimeCode().isPresent() ? singleDaySchedule.get().getWorkTimeCode().get().v() : null;
 		}
+		//update workTime when work time change
+		workInfoOfDailyPerformanceOpt.get().getRecordInfo().setSiftCode(new WorkTimeCode(workTimeCode));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
 				workTimeCode, AbolishAtr.NOT_ABOLISH);
@@ -892,7 +908,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			} else {
 				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
 			}
-
+			//set worktime default  
+			workInfoOfDailyPerformanceOpt.get().getRecordInfo().setSiftCode(workTimeCodeDefault);
 			// 就業時間帯の休憩時間帯を日別実績に写す
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService

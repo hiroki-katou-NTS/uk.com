@@ -45,8 +45,8 @@ module nts.uk.ui.koExtentions {
                 var displayColumns = extColumns;
             } else {
                 var displayColumns: Array<any> = [
-                    { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                    { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                    { headerText: toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                    { headerText: toBeResource.codeAndName, key: optionsText, dataType: "string" }
                 ];
             }
             
@@ -90,6 +90,10 @@ module nts.uk.ui.koExtentions {
             
             if(!nts.uk.util.isNullOrEmpty(rows)){
                 height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
+                if (window.navigator.userAgent.indexOf("MSIE") > -1 || window.navigator.userAgent.match(/trident/i)
+                    || window.navigator.userAgent.indexOf("Edge") > -1) {
+                    height += rows * 0.4;
+                }
                 
                 let colSettings = [];
                 _.forEach(displayColumns, function (c){

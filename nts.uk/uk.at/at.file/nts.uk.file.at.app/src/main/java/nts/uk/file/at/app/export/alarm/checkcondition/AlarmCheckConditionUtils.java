@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.alarm.checkcondition;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +16,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
@@ -99,6 +99,17 @@ public class AlarmCheckConditionUtils {
 	public static final String KAL003_280 = "アラームリストのチェック条件 複合条件 計算式2_3";
 	public static final String KAL003_281 = "アラームリストのチェック条件 複合条件 グループ1とグループ2の条件";
 	public static final String KAL003_282 = "アラームリストのチェック条件 表示するメッセージ";
+	
+	//agree36
+	public static final String KAL003_283 = "36協定エラーアラームのチェック条件 NO";
+	public static final String KAL003_284 = "36協定エラーアラームのチェック条件 チェック内容";
+	public static final String KAL003_285 = "36協定エラーアラームのチェック条件 表示するメッセージ";
+	public static final String KAL003_286 = "36協定時間年間超過回数チェック  NO";
+	public static final String KAL003_287 = "36協定時間年間超過回数チェック 超過時間";
+	public static final String KAL003_288 = "36協定時間年間超過回数チェック 回数";
+	public static final String KAL003_289 = "36協定時間年間超過回数チェック 表示するメッセージ";
+	
+	
 	
 	
 	public static String getCheckItemStr(Optional<Integer> checkItem) {
@@ -186,8 +197,8 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
-	public static String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
-			Optional<Integer> start, Optional<Integer> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
+	public static <T> String getCondition(Optional<String> targetAttendances,  Optional<Integer> compareAtr, Optional<Integer> conditionAtr,
+			Optional<T> start, Optional<T> end, Optional<Integer> conditionType, Optional<Integer> attendanceItem, 
 			Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos) {
 		StringBuffer condition = new StringBuffer("");
 		String targetAttendancesStr = targetAttendances.isPresent() ? getAttendanceStrFromTarget(targetAttendances.get(), attendanceNameDivergenceDtos, false) : "";
@@ -244,19 +255,19 @@ public class AlarmCheckConditionUtils {
 		if (compareAtr.isPresent()) {
 			switch (compareAtr.get()) {
 			case 0:
-				return TextResource.localize("KAL003_285");
+				return TextResource.localize("KAL003_298");
 			case 1:
-				return TextResource.localize("KAL003_286");
+				return TextResource.localize("KAL003_299");
 			case 2:
-				return TextResource.localize("KAL003_287");
+				return TextResource.localize("KAL003_300");
 			case 3:
-				return TextResource.localize("KAL003_288");
+				return TextResource.localize("KAL003_301");
 			case 4:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 5:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_303");
 			default:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_303");
 			}
 		} else {
 			return null;
@@ -268,15 +279,15 @@ public class AlarmCheckConditionUtils {
 		if (compareAtr.isPresent()) {
 			switch (compareAtr.get()) {
 			case 6:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 7:
-				return TextResource.localize("KAL003_287");
+				return TextResource.localize("KAL003_300");
 			case 8:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			case 9:
-				return TextResource.localize("KAL003_290");
+				return TextResource.localize("KAL003_300");
 			default:
-				return TextResource.localize("KAL003_289");
+				return TextResource.localize("KAL003_302");
 			}
 		} else {
 			return null;
@@ -303,11 +314,11 @@ public class AlarmCheckConditionUtils {
 		if (useAtr.isPresent()) {
 			switch (useAtr.get()) {
 			case 0:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			case 1:
-				return TextResource.localize("KAL003_224");
+				return TextResource.localize("KAL003_237");
 			default:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			}
 		} else {
 			return null;
@@ -318,33 +329,40 @@ public class AlarmCheckConditionUtils {
 		if (filter.isPresent()) {
 			switch (filter.get()) {
 			case 0:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			case 1:
-				return TextResource.localize("KAL003_224");
+				return TextResource.localize("KAL003_237");
 			default:
-				return TextResource.localize("KAL003_225");
+				return TextResource.localize("KAL003_238");
 			}
 
 		} else {
-			return TextResource.localize("KAL003_225");
+			return TextResource.localize("KAL003_238");
 		}
 	}
 	
-	public static String getValueWithConditionAtr(int value, int conditionAtr) {
+	public static <T> String getValueWithConditionAtr(T value, int conditionAtr) {
+		
 		if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
-			return (new CheckedAmountValue(value)).toString();
+			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
 		} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
-			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value);
-			return ((timeDuration.hour() >= 10 ? "" : "0") + timeDuration.hour() 
+			CheckedTimeDuration timeDuration = new CheckedTimeDuration(value instanceof Integer ? (Integer)value : ((Double)value).intValue());
+			return (timeDuration.hour() 
 				+ ":" + (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
 		} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
-			return (new TimeWithDayAttr(value)).getInDayTimeWithFormat();
+			return (new TimeWithDayAttr(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).getRawTimeWithFormat();
 		}  else if (conditionAtr == ConditionAtr.TIMES.value) {
-			return (new CheckedTimesValue(value)).toString();
+			return (new CheckedTimesValue(value instanceof Integer ? (Integer)value : ((Double)value).intValue())).toString();
 		} else if (conditionAtr == ConditionAtr.DAYS.value) {
-			return (new CheckedTimesValueDay(Double.valueOf(value))).toString();
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v())) ;
 		}
 		return "";
+	}
+	
+	private static String formatCurrency(Integer value) {
+		DecimalFormat formatter = new DecimalFormat("#,###");
+		return formatter.format(value);
 	}
 	
 	public static List<Integer> getAttendanceIds(List<DailyReportData> dailyReportDatas) {
@@ -419,7 +437,7 @@ public class AlarmCheckConditionUtils {
 	}
 	
 	public static String getAttendanceStrFromTarget(String targetAttendances, Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos, boolean withDisplayNumber) {
-		StringBuffer attendanceStr = new StringBuffer("");
+		StringBuffer attendanceStrBuilder = new StringBuffer("");
 		if (!StringUtil.isNullOrEmpty(targetAttendances, true)) {
 			List<String> targets = Arrays.stream(targetAttendances.split(",")).collect(Collectors.toList());
 			StringBuffer targetsStr = new StringBuffer("");
@@ -432,18 +450,25 @@ public class AlarmCheckConditionUtils {
 					if (typeTargetAndAttendance.length == 2) {
 						AttendanceNameDivergenceDto dto = attendanceNameDivergenceDtos.get(Integer.valueOf(typeTargetAndAttendance[1]));
 						if (dto != null) {
-							attendanceStr.append(getTargetAtrStr(Integer.valueOf(typeTargetAndAttendance[0])));
+							attendanceStrBuilder.append(getTargetAtrStr(Integer.valueOf(typeTargetAndAttendance[0])));
 							if (withDisplayNumber) {
-								attendanceStr.append("" + dto.getAttendanceItemDisplayNumber());
+								attendanceStrBuilder.append("" + dto.getAttendanceItemDisplayNumber());
 							}
 							
-							attendanceStr.append(dto.getAttendanceItemName());
+							attendanceStrBuilder.append(dto.getAttendanceItemName());
 						}		
 					}
 				}
 			});;
 		}
-		return attendanceStr.toString();
+		
+		//remove start character "+"
+		String attendanceStr = attendanceStrBuilder.toString();
+		if (attendanceStr.startsWith("+")) {
+			attendanceStr = attendanceStr.substring(1);
+		}
+		
+		return attendanceStr;
 	}
 	
 	public static String getTargetAtrStr(int targetAtr) {
@@ -477,39 +502,39 @@ public class AlarmCheckConditionUtils {
 		if (checkItem.isPresent()) {
 			switch (checkItem.get()) {
 			case 0:
-				return TextResource.localize("KAL003_268");
-			case 1:
-				return TextResource.localize("KAL003_269");
-			case 2:
-				return TextResource.localize("KAL003_270");
-			case 3:
-				return TextResource.localize("KAL003_271");
-			case 4:
-				return TextResource.localize("KAL003_272");
-			case 5:
-				return TextResource.localize("KAL003_273");
-			case 6:
-				return TextResource.localize("KAL003_274");
-			case 7:
-				return TextResource.localize("KAL003_275");
-			case 8:
-				return TextResource.localize("KAL003_276");
-			case 9:
-				return TextResource.localize("KAL003_277");
-			case 10:
-				return TextResource.localize("KAL003_278");
-			case 11:
-				return TextResource.localize("KAL003_279");
-			case 12:
-				return TextResource.localize("KAL003_280");
-			case 13:
 				return TextResource.localize("KAL003_281");
-			case 14:
+			case 1:
 				return TextResource.localize("KAL003_282");
-			case 15:
+			case 2:
 				return TextResource.localize("KAL003_283");
+			case 3:
+				return TextResource.localize("KAL003_284");
+			case 4:
+				return TextResource.localize("KAL003_285");
+			case 5:
+				return TextResource.localize("KAL003_286");
+			case 6:
+				return TextResource.localize("KAL003_287");
+			case 7:
+				return TextResource.localize("KAL003_288");
+			case 8:
+				return TextResource.localize("KAL003_289");
+			case 9:
+				return TextResource.localize("KAL003_290");
+			case 10:
+				return TextResource.localize("KAL003_291");
+			case 11:
+				return TextResource.localize("KAL003_292");
+			case 12:
+				return TextResource.localize("KAL003_293");
+			case 13:
+				return TextResource.localize("KAL003_294");
+			case 14:
+				return TextResource.localize("KAL003_295");
+			case 15:
+				return TextResource.localize("KAL003_296");
 			default:
-				return TextResource.localize("KAL003_268");
+				return TextResource.localize("KAL003_281");
 			}
 		} else {
 			return null;
@@ -546,6 +571,24 @@ public class AlarmCheckConditionUtils {
 		}
 	}
 	
+	public static <T> String getValueWithConditionAtrMonth(T value, int checkTypeItem) {
+		if (checkTypeItem == 4) {
+			CheckedTimeDuration timeDuration = new CheckedTimeDuration(
+					value instanceof Integer ? (Integer) value : ((Double) value).intValue());
+			return (timeDuration.hour() + ":"
+					+ (timeDuration.minute() >= 10 ? "" : "0") + timeDuration.minute());
+		} else if (checkTypeItem == 5) {
+			return (String.format ("%.1f", (new CheckedTimesValueDay(
+					value instanceof Integer ? ((Integer) value).doubleValue() : ((Double) value))).v()));
+		} else if (checkTypeItem == 6) {
+			return (new CheckedTimesValue(value instanceof Integer ? (Integer) value : ((Double) value).intValue()))
+					.toString();
+		} else if (checkTypeItem == 7) {
+			return (value instanceof Integer ? formatCurrency((Integer)value) : formatCurrency(((Double)value).intValue()));
+		}
+		
+		return "";
+	}
 	
 	public static String getTypeCheckVacationStr(Optional<Integer> typeCheckVacation)  {
 		if (typeCheckVacation.isPresent()) {

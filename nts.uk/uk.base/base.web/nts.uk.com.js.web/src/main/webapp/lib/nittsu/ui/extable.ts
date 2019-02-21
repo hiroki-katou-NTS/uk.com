@@ -409,8 +409,8 @@ module nts.uk.ui.exTable {
                     update.deleteRows(self.$container);
                 });
                 $area.appendChild($rowDel);
-                let dftRowAddTxt = "新規行の追加";
-                let dftRowDelTxt = "行の削除";
+                let dftRowAddTxt = toBeResource.addNewRow;
+                let dftRowDelTxt = toBeResource.deleteRow;
                 if (updateF.addNew) {
                     $rowAdd.classList.add(updateF.addNew.buttonClass || "proceed");
                     $rowAdd.textContent = updateF.addNew.buttonText || dftRowAddTxt;    

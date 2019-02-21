@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 
 /**
@@ -26,7 +28,7 @@ public interface AbsenceReflectService {
 	 * @param workTypeCode
 	 * @param isReflect
 	 */
-	public WorkInfoOfDailyPerformance reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect, WorkInfoOfDailyPerformance dailyInfor);
+	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect, IntegrationOfDaily dailyInfor);
 	/**
 	 * 開始終了時刻の反映
 	 * @param employeeId
@@ -34,6 +36,8 @@ public interface AbsenceReflectService {
 	 * @param workTypeCode
 	 */
 	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode);
+	
+	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, IntegrationOfDaily dailyInfor);
 	/**
 	 * 開始終了時刻をクリアするかチェックする
 	 * @param workTypeCode
@@ -41,5 +45,5 @@ public interface AbsenceReflectService {
 	 */
 	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode);
 	
-	
+	public List<IntegrationOfDaily> getByAbsenceReflect(WorkChangeCommonReflectPara param, boolean isPre);
 }

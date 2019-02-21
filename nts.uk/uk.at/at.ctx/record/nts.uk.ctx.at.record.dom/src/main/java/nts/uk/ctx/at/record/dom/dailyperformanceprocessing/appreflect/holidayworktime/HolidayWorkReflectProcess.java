@@ -16,7 +16,7 @@ public interface HolidayWorkReflectProcess {
 	 * @param scheReflectFlg
 	 * @param scheAndRecordSameChangeFlg
 	 */
-	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, 
+	public void updateScheWorkTimeType(String employeeId, 
 			GeneralDate baseDate, 
 			String workTypeCode, 
 			String workTimeCode, 
@@ -44,7 +44,7 @@ public interface HolidayWorkReflectProcess {
 	 * @param baseDate
 	 * @param mapWorkTimeFrame 休出時間1～10
 	 */
-	public IntegrationOfDaily reflectWorkTimeFrame(String employeeId, 
+	public void reflectWorkTimeFrame(String employeeId, 
 			GeneralDate baseDate, 
 			Map<Integer, Integer> mapWorkTimeFrame, 
 			IntegrationOfDaily dailyData);

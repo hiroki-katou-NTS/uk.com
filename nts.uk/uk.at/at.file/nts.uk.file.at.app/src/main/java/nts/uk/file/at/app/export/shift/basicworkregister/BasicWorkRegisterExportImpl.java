@@ -36,7 +36,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
  *
  */
 @Stateless
-@DomainID(value = "BasicWorkrRegister")
+@DomainID(value = "BasicWorkRegister")
 public class BasicWorkRegisterExportImpl implements MasterListData {
 
 	@Inject
@@ -205,8 +205,8 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 				List<WorkplaceBasicWorkData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					WorkplaceBasicWorkData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//						|| (!firstObject.getHierarchyCode().isPresent() && !firstObject.getWorkplaceCode().isPresent())) {
 						datas.add(newWorkplaceMasterData(dataByCode));
 					}
 				}

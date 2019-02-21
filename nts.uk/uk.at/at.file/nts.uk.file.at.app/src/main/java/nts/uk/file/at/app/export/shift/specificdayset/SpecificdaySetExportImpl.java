@@ -29,6 +29,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -52,7 +53,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		List<SheetData> sheetDatas = new ArrayList<>();
 		// add the work place sheet
 		SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query),
-				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"));
+				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"),MasterListMode.FISCAL_YEAR_RANGE);
 		sheetDatas.add(sheetWorkplaceData);
 		
 		return sheetDatas;
@@ -95,11 +96,6 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM002_93"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM002_94"), ColumnTextAlign.LEFT, "", true));
 
-		//TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
 		return columns;
 	}
 
@@ -130,6 +126,13 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM002_98");
+	}
+	
+	
+
+	@Override
+	public MasterListMode mainSheetMode() {
+		return MasterListMode.FISCAL_YEAR_RANGE;
 	}
 
 	private Optional<MasterData> newCompanyMasterData(String yearMonth,
@@ -292,8 +295,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 				List<SpecificdaySetWorkplaceReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					SpecificdaySetWorkplaceReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//							|| (!firstObject.getHierarchyCode().isPresent()
+//							&& !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = dataByCode.stream()
 								.collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
 						AtomicInteger index = new AtomicInteger(0);

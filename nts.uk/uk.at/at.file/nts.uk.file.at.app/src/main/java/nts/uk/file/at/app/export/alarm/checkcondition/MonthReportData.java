@@ -43,6 +43,7 @@ public class MonthReportData {
 	private Optional<String> checkItem;
 	//16: アラームリストのチェック条件 休暇種類(TypeCheckVacation.java)
 	private Optional<String> typeCheckVacation;
+	private Optional<Integer> typeCheckVacationInt;
 	//17: アラームリストのチェック条件 休暇項目
 	private Optional<String> vacationItems;
 	
@@ -55,9 +56,9 @@ public class MonthReportData {
 	private Optional<Integer> compareAtrInt;
 	private Optional<String> compareAtr;
 	//20: アラームリストのチェック条件 値１
-	private Optional<Integer> startValue;
+	private Optional<Double> startValue;
 	//21: アラームリストのチェック条件 値２
-	private Optional<Integer> endValue;
+	private Optional<Double> endValue;
 	//22: アラームリストのチェック条件 複合条件 グループ１
 	private Optional<String> conditionOperatorGroup1;
 	//23:アラームリストのチェック条件 複合条件 計算式
@@ -68,9 +69,9 @@ public class MonthReportData {
 	//23_3
 	private Optional<Integer> conditionAtr1Group1;
 	//23-4	
-	private Optional<Integer> start1Group1;
+	private Optional<Double> start1Group1;
 	//23-5
-	private Optional<Integer> end1Group1;
+	private Optional<Double> end1Group1;
 	//23-6
 	private Optional<Integer> conditionType1Group1;
 	//23-7
@@ -84,9 +85,9 @@ public class MonthReportData {
 	// 24_3
 	private Optional<Integer> conditionAtr2Group1;
 	// 24-4
-	private Optional<Integer> start2Group1;
+	private Optional<Double> start2Group1;
 	// 24-5
-	private Optional<Integer> end2Group1;
+	private Optional<Double> end2Group1;
 	// 24-6
 	private Optional<Integer> conditionType2Group1;
 	// 24-7
@@ -100,9 +101,9 @@ public class MonthReportData {
 	// 25_3
 	private Optional<Integer> conditionAtr3Group1;
 	// 25-4
-	private Optional<Integer> start3Group1;
+	private Optional<Double> start3Group1;
 	// 25-5
-	private Optional<Integer> end3Group1;
+	private Optional<Double> end3Group1;
 	// 25-6
 	private Optional<Integer> conditionType3Group1;
 	// 25-7
@@ -121,9 +122,9 @@ public class MonthReportData {
 	// 28_3
 	private Optional<Integer> conditionAtr1Group2;
 	// 28-4
-	private Optional<Integer> start1Group2;
+	private Optional<Double> start1Group2;
 	// 28-5
-	private Optional<Integer> end1Group2;
+	private Optional<Double> end1Group2;
 	// 28-6
 	private Optional<Integer> conditionType1Group2;
 	// 28-7
@@ -137,9 +138,9 @@ public class MonthReportData {
 	// 29_3
 	private Optional<Integer> conditionAtr2Group2;
 	// 29-4
-	private Optional<Integer> start2Group2;
+	private Optional<Double> start2Group2;
 	// 29-5
-	private Optional<Integer> end2Group2;
+	private Optional<Double> end2Group2;
 	// 29-6
 	private Optional<Integer> conditionType2Group2;
 	// 29-7
@@ -153,15 +154,14 @@ public class MonthReportData {
 	// 30_3
 	private Optional<Integer> conditionAtr3Group2;
 	// 30-4
-	private Optional<Integer> start3Group2;
+	private Optional<Double> start3Group2;
 	// 30-5
-	private Optional<Integer> end3Group2;
+	private Optional<Double> end3Group2;
 	// 30-6
 	private Optional<Integer> conditionType3Group2;
 	// 30-7
 	private Optional<Integer> attendanceItem3Group2;
 	
-	private Optional<String> insDate;
 	//31: アラームリストのチェック条件 複合条件 グループ1とグループ2の条件
 	private Optional<String> operatorBetweenGroups;
 	//32: アラームリストのチェック条件 表示するメッセージ
@@ -173,14 +173,14 @@ public class MonthReportData {
 	//HOLIDAY_COMPARE_OPERATOR_19, NUMBER_DAY_DIFF_HOLIDAY_1_20, NUMBER_DAY_DIFF_HOLIDAY_2_21
 	private Optional<Integer> compareOperatorInt;
 	private Optional<String> compareOperatorHoliday;
-	private Optional<Integer> numdayHoliday1;
-	private Optional<Integer> numdayHoliday2;
+	private Optional<Double> numdayHoliday1;
+	private Optional<Double> numdayHoliday2;
 	
 	/* 残数チェック*/
     //CHECK_REMAIN_NUMBER(3, "Enum_TypeMonCheckItem_CheckRemainNumber"),
 	//VACATION_COMPARE_ATR_19, VACATION_START_VALUE_20, VACATION_END_VALUE_21
 	private Optional<Integer> vacationCompareAtrInt;
 	private Optional<String> vacationCompareAtr;
-	private Optional<Integer> vacationStartValue;
-	private Optional<Integer> vacationEndValue;
+	private Optional<Double> vacationStartValue;
+	private Optional<Double> vacationEndValue;
 }

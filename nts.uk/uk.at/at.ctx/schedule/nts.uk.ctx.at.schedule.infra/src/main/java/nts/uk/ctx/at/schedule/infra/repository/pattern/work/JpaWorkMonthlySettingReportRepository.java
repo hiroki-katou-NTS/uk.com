@@ -19,13 +19,14 @@ import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class JpaWorkMonthlySettingReportRepository extends JpaRepository implements WorkMonthlySettingReportRepository {
 	private static final String GET_WORK_MONTHLY_SET_UPDATE = (new StringBuffer()
-			.append("SELECT d.M_PATTERN_CD, d.M_PATTERN_NAME AS NAME, a.YMD_K AS DATE,")
-			.append("c.CD, c.NAME AS WORK_TYPE_NAME, b.WORKTIME_CD, b.NAME AS WORK_TIME_NAME")
+			.append("SELECT d.M_PATTERN_CD, d.M_PATTERN_NAME AS NAME, a.YMD_K AS DATE ,")
+			.append("a.WORK_TYPE_CD, c.NAME AS WORK_TYPE_NAME, a.WORKING_CD, b.NAME AS WORK_TIME_NAME, a1.EVENT_NAME")
 			.append(" FROM KSCMT_MONTH_PATTERN d")
 			.append(" LEFT JOIN KSCMT_WORK_MONTH_SET a ON d.CID = a.CID AND d.M_PATTERN_CD = a.M_PATTERN_CD ")
 			.append(" AND a.YMD_K >= ?startYm AND a.YMD_K <= ?endYm ")
 			.append(" LEFT JOIN KSHMT_WORKTYPE c ON c.CID = a.CID AND c.CD = a.WORK_TYPE_CD")
 			.append(" LEFT JOIN KSHMT_WORK_TIME_SET b ON b.CID = a.CID AND b.WORKTIME_CD =  a.WORKING_CD")
+			.append(" LEFT JOIN KSMMT_COMPANY_EVENT a1 ON a1.CID = a.CID AND a1.YMD_K =  a.YMD_K")
 			.append(" WHERE d.CID = ?companyId ")
 			.append(" ORDER BY d.M_PATTERN_CD ASC, a.YMD_K ASC"))
 			.toString();
@@ -33,6 +34,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 	private static final String GET_PERSION_WORK_MONTH_SET = (new StringBuffer()
 			.append("SELECT DISTINCT a.SCD, a.BUSINESS_NAME,")
 			.append(" c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, '') as M_PATTERN_NAME")
+			.append(", a.SID")
 			.append(" FROM KSHMT_WORKING_COND c ")
 //			.append(" FROM EMPLOYEE_DATA_VIEW a")
 			.append(" LEFT JOIN EMPLOYEE_DATA_VIEW a ON c.SID = a.SID AND c.CID = a.CID ")
@@ -102,9 +104,16 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		String workingTypeName = (String) object[4];
 		String workingCD = (String) object[5];
 		String workTimeName = (String) object[6];
+		String eventName = (String) object[7];
 		if (workTypeCD != null) {
 			workSetNameBuf.append(workTypeCD);
-			workSetNameBuf.append(workingTypeName);
+			if (workingTypeName != null) {
+				workSetNameBuf.append(workingTypeName);
+			}
+			else {
+				workSetNameBuf.append(TextResource.localize("KSM005_84"));
+			}
+			
 			if (workingCD != null) {
 				workSetNameBuf.append("," + workingCD);
 				if (workTimeName != null) {
@@ -120,7 +129,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		WorkMonthlySettingReportData domain = WorkMonthlySettingReportData.createFromJavaType(
 				pattenCode, patternName, date, 
 				!StringUtil.isNullOrEmpty(workSetName, true) 
-				? Optional.ofNullable(workSetName) : Optional.empty());
+				? Optional.ofNullable(workSetName) : Optional.empty(),eventName);
 		return domain;
 	}
 	
@@ -140,6 +149,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		//a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, d.MONTHLY_PATTERN, e.M_PATTERN_NAME
 		String scd = (String) object[0];
 		String name = (String) object[1];
+		
 		GeneralDate startDate = null;
 		if (object[2] != null) {
 			String startTimeStamp = ((Timestamp)object[2]).toString();
@@ -157,8 +167,8 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		if (!StringUtil.isNullOrEmpty(patternCode, true) && StringUtil.isNullOrEmpty(patternName, true)) {
 			patternName = TextResource.localize("KSM005_84");
 		}
-		
-		PersionalWorkMonthlySettingReportData domain = PersionalWorkMonthlySettingReportData.createFromJavaType(
+		String sid = (String) object[6];
+		PersionalWorkMonthlySettingReportData domain = PersionalWorkMonthlySettingReportData.createFromJavaType(sid, 
 				scd, name, startDate, endDate, patternCode, patternName);
 		return domain;
 	}

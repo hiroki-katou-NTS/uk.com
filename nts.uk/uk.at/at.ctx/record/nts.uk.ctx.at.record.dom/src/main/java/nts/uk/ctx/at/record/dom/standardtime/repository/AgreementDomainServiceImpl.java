@@ -12,27 +12,6 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.UseClassificationAtr;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmThreeMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmTwoMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmTwoWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmWeek;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorFourWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorThreeMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorTwoMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorTwoWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorWeek;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitFourWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -73,7 +52,7 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 	
 	/** 36協定基本設定を取得する */
 	@Override
-	public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+	public BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 			WorkingSystem workingSystem) {
 		
 		// 「36協定単位設定」を取得する
@@ -98,7 +77,9 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 						companyId, laborSystemAtr, classCd);
 				if (basicSettingIdOpt.isPresent()){
 					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
-					if (basicAgreementSetOpt.isPresent()) return basicAgreementSetOpt.get();
+					if (basicAgreementSetOpt.isPresent()) {
+						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+					}
 				}
 			}
 		}
@@ -111,7 +92,9 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 				val basicSettingIdOpt = this.agreementTimeWorkPlaceRepository.find(workplaceId, laborSystemAtr);
 				if (basicSettingIdOpt.isPresent()){
 					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
-					if (basicAgreementSetOpt.isPresent()) return basicAgreementSetOpt.get();
+					if (basicAgreementSetOpt.isPresent()) {
+						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+					}
 				}
 			}
 		}
@@ -125,7 +108,9 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 						companyId, employmentCd, laborSystemAtr);
 				if (basicSettingIdOpt.isPresent()){
 					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
-					if (basicAgreementSetOpt.isPresent()) return basicAgreementSetOpt.get();
+					if (basicAgreementSetOpt.isPresent()) {
+						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+					}
 				}
 			}
 		}
@@ -135,32 +120,14 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 		if (agreementTimeOfCmpOpt.isPresent()){
 			val basicAgreementSetOpt = this.basicAgreementSetRepository.find(
 					agreementTimeOfCmpOpt.get().getBasicSettingId());
-			if (basicAgreementSetOpt.isPresent()) return basicAgreementSetOpt.get();
+			if (basicAgreementSetOpt.isPresent()) {
+				return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+			}
 		}
 		
 		// 全ての値を0で返す
-		return new BasicAgreementSetting(
-				new String(),
-				new AlarmWeek(0),
-				new ErrorWeek(0),
-				new LimitWeek(0),
-				new AlarmTwoWeeks(0),
-				new ErrorTwoWeeks(0),
-				new LimitTwoWeeks(0),
-				new AlarmFourWeeks(0),
-				new ErrorFourWeeks(0),
-				new LimitFourWeeks(0),
-				new AlarmOneMonth(0),
-				new ErrorOneMonth(0),
-				new LimitOneMonth(0),
-				new AlarmTwoMonths(0),
-				new ErrorTwoMonths(0),
-				new LimitTwoMonths(0),
-				new AlarmThreeMonths(0),
-				new ErrorThreeMonths(0),
-				new LimitThreeMonths(0),
-				new AlarmOneYear(0),
-				new ErrorOneYear(0),
-				new LimitOneYear(0));
+		return BasicAgreementSettings.of(
+				BasicAgreementSetting.createFromJavaType(new String(),
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));	
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.alarm.checkcondition;
+package nts.uk.file.at.infra.alarm.checkcondition;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -10,7 +10,17 @@ import javax.ejb.Stateless;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
+import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData;
+import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckCondQuery;
+import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckConditionReportRepository;
+import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckConditionUtils;
+import nts.uk.file.at.app.export.alarm.checkcondition.DailyReportData;
+import nts.uk.file.at.app.export.alarm.checkcondition.MonthReportData;
+import nts.uk.file.at.app.export.alarm.checkcondition.MulMonthReportData;
+import nts.uk.file.at.app.export.alarm.checkcondition.Schedule4WeekReportData;
 
 @Stateless
 public class JpaAlarmCheckConditionReportRepository extends JpaRepository implements AlarmCheckConditionReportRepository{
@@ -44,7 +54,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				record.getString("FILTER_BY_JOB"),
 				record.getString("JOB_IDS"),
 				record.getString("FILTER_BY_BUSINESSTYPE"),
-				record.getString("BUSINESSTYPE_CDS"));
+				record.getString("BUSINESSTYPE_CDS"),
+				record.getInt("W4D4_CHECK_COND"));
 	}
 	
 	
@@ -87,13 +98,14 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		//10: チェック対象範囲 勤務種別
 		dailyReportData.setFilterWorkType(AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))));
 		//11: チェック対象範囲 勤務種別対象
-		dailyReportData.setWorktypes(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
+		dailyReportData.setWorktypeselections(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
 		//12: 日別実績のエラーアラーム
 		dailyReportData.setDailyErrorAlarms(Optional.ofNullable(record.getString("DAILY_ERROR_ALARMS_12")));
 		 
 		Optional<Integer> userAtr = Optional.ofNullable(record.getInt("USE_ATR"));
 		dailyReportData.setUseAtrCond(userAtr);
 		if (userAtr.isPresent() && userAtr.get() == 1) {
+			dailyReportData.setInsDate(record.getString("INS_DATE"));
 			//14: チェック条件 名称
 			dailyReportData.setNameCond(Optional.ofNullable(record.getString("NAME_COND_14")));
 			//15: チェック条件 チェック項目
@@ -150,7 +162,6 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			dailyReportData.setGroup2UseAtr(Optional.ofNullable(AlarmCheckConditionUtils.getUseAtrStr(group2UseAtr)));
 			dailyReportData.setGroup2UseAtrInt(group2UseAtr);
 			if (group2UseAtr.isPresent() && group2UseAtr.get() == 1) {
-				dailyReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
 				//27(チェック条件 複合条件 グループ2)
 				dailyReportData.setConditionOperatorGroup2(Optional.ofNullable(AlarmCheckConditionUtils.getOperatorStr(Optional.ofNullable(record.getInt("CONDITION_OPERATOR_GROUP_2_27")))));
 				
@@ -249,10 +260,13 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		if (userAtrCond.isPresent() && userAtrCond.get() == 1) {
 			mulMonthReportData.setConditionAtrCond(Optional.ofNullable(record.getInt("CONDITION_ATR_COND")));
 			mulMonthReportData.setConditionTypeCond(Optional.ofNullable(record.getInt("CONDITION_TYPE_COND")));
-			mulMonthReportData.setCompareAtrCond(Optional.ofNullable(
-					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_COND")))));
-			mulMonthReportData.setStartValueCond(Optional.ofNullable(record.getInt("START_VALUE_COND")));
-			mulMonthReportData.setEndValueCond(Optional.ofNullable(record.getInt("END_VALUE_COND")));
+			Optional<Integer> compareInt = Optional.ofNullable(record.getInt("COMPARE_ATR_COND"));
+			mulMonthReportData.setCompareAtrCondInt(compareInt);
+			mulMonthReportData.setCompareAtrCond(Optional.ofNullable(AlarmCheckConditionUtils.getCompareAtrStr(compareInt)));
+			mulMonthReportData.setStartValueCond(Optional.ofNullable(record.getDouble("START_VALUE_COND")));
+			if (compareInt.isPresent() && compareInt.get() >= RangeCompareType.BETWEEN_RANGE_OPEN.value) {
+				mulMonthReportData.setEndValueCond(Optional.ofNullable(record.getDouble("END_VALUE_COND")));
+			}
 		}
 
 		// AVG
@@ -261,10 +275,13 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		if (userAtrAvg.isPresent() && userAtrAvg.get() == 1) {
 			mulMonthReportData.setConditionAtrAvg(Optional.ofNullable(record.getInt("CONDITION_ATR_AVG")));
 			mulMonthReportData.setConditionTypeAvg(Optional.ofNullable(record.getInt("CONDITION_TYPE_AVG")));
-			mulMonthReportData.setCompareAtrAvg(Optional.ofNullable(
-					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_AVG")))));
-			mulMonthReportData.setStartValueAvg(Optional.ofNullable(record.getInt("START_VALUE_AVG")));
-			mulMonthReportData.setEndValueAvg(Optional.ofNullable(record.getInt("END_VALUE_AVG")));
+			Optional<Integer> compareInt = Optional.ofNullable(record.getInt("COMPARE_ATR_AVG"));
+			mulMonthReportData.setCompareAtrAvgInt(compareInt);
+			mulMonthReportData.setCompareAtrAvg(Optional.ofNullable(AlarmCheckConditionUtils.getCompareAtrStr(compareInt)));
+			mulMonthReportData.setStartValueAvg(Optional.ofNullable(record.getDouble("START_VALUE_AVG")));
+			if (compareInt.isPresent() && compareInt.get() >= RangeCompareType.BETWEEN_RANGE_OPEN.value) {
+				mulMonthReportData.setEndValueAvg(Optional.ofNullable(record.getDouble("END_VALUE_AVG")));
+			}
 		}
 
 		// CONT
@@ -274,10 +291,12 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 			mulMonthReportData.setContinueMonth(Optional.ofNullable(record.getInt("CONTINUOUS_MONTH")));
 			mulMonthReportData.setConditionAtrCont(Optional.ofNullable(record.getInt("CONDITION_ATR_CONT")));
 			mulMonthReportData.setConditionTypeCont(Optional.ofNullable(record.getInt("CONDITION_TYPE_CONT")));
-			mulMonthReportData.setCompareAtrCont(Optional.ofNullable(
-					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_CONT")))));
-			mulMonthReportData.setStartValueCont(Optional.ofNullable(record.getInt("START_VALUE_CONT")));
-			mulMonthReportData.setEndValueCont(Optional.ofNullable(record.getInt("END_VALUE_CONT")));
+			Optional<Integer> compareInt = Optional.ofNullable(record.getInt("COMPARE_ATR_CONT"));
+			mulMonthReportData.setCompareAtrContInt(compareInt);
+			mulMonthReportData.setCompareAtrCont(Optional.ofNullable(AlarmCheckConditionUtils.getCompareAtrStr(compareInt)));
+			mulMonthReportData.setStartValueCont(Optional.ofNullable(record.getDouble("START_VALUE_CONT")));
+			if (compareInt.isPresent() && compareInt.get() >= RangeCompareType.BETWEEN_RANGE_OPEN.value)
+				mulMonthReportData.setEndValueCont(Optional.ofNullable(record.getDouble("END_VALUE_CONT")));
 		}
 
 		// COSP
@@ -289,14 +308,16 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_OPERATOR_COSP")))));
 			mulMonthReportData.setConditionAtrCosp(Optional.ofNullable(record.getInt("CONDITION_ATR_COSP")));
 			mulMonthReportData.setConditionTypeCosp(Optional.ofNullable(record.getInt("CONDITION_TYPE_COSP")));
-			mulMonthReportData.setCompareAtrCosp(Optional.ofNullable(
-					AlarmCheckConditionUtils.getCompareAtrStr(Optional.ofNullable(record.getInt("COMPARE_ATR_COSP")))));
-			mulMonthReportData.setStartValueCosp(Optional.ofNullable(record.getInt("START_VALUE_COSP")));
-			mulMonthReportData.setEndValueCosp(Optional.ofNullable(record.getInt("END_VALUE_COSP")));
+			Optional<Integer> compareInt = Optional.ofNullable(record.getInt("COMPARE_ATR_COSP"));
+			mulMonthReportData.setCompareAtrCospInt(compareInt);
+			mulMonthReportData.setCompareAtrCosp(Optional.ofNullable(AlarmCheckConditionUtils.getCompareAtrStr(compareInt)));
+			mulMonthReportData.setStartValueCosp(Optional.ofNullable(record.getDouble("START_VALUE_COSP")));
+			if (compareInt.isPresent() && compareInt.get() >= RangeCompareType.BETWEEN_RANGE_OPEN.value)
+				mulMonthReportData.setEndValueCosp(Optional.ofNullable(record.getDouble("END_VALUE_COSP")));
 		}
 		// 22(チェック条件 表示するメッセージ)
 		mulMonthReportData.setMessage(Optional.ofNullable(record.getString("MESSAGE_DISPLAY_22")));
-		mulMonthReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
+		mulMonthReportData.setInsDate(record.getString("INS_DATE"));
 
 		return mulMonthReportData;
 	}
@@ -362,22 +383,27 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareOperatorHoliday(Optional.ofNullable(AlarmCheckConditionUtils
 						.getCompareAtrStr(compareOperatorInt)));
 				monthReportData.setCompareOperatorInt(compareOperatorInt);
-				monthReportData.setNumdayHoliday1(Optional.ofNullable(record.getInt("NUMBER_DAY_DIFF_HOLIDAY_1_20")));
-				monthReportData.setNumdayHoliday2(Optional.ofNullable(record.getInt("NUMBER_DAY_DIFF_HOLIDAY_2_21")));
+				monthReportData.setNumdayHoliday1(Optional.ofNullable(record.getDouble("NUMBER_DAY_DIFF_HOLIDAY_1_20")));
+				monthReportData.setNumdayHoliday2(Optional.ofNullable(record.getDouble("NUMBER_DAY_DIFF_HOLIDAY_2_21")));
 			}
 			
 			if (checkItem.isPresent() && checkItem.get() == TypeMonCheckItem.CHECK_REMAIN_NUMBER.value) {
 				//16: アラームリストのチェック条件 休暇種類(TypeCheckVacation.java)
-				monthReportData.setTypeCheckVacation(Optional.ofNullable(AlarmCheckConditionUtils.getTypeCheckVacationStr(Optional.ofNullable(record.getInt("TYPE_CHECK_VACATION_16")))));
+				Optional<Integer> typeCheckItemInt =  Optional.ofNullable(record.getInt("TYPE_CHECK_VACATION_16"));
+				monthReportData.setTypeCheckVacationInt(typeCheckItemInt);
+				monthReportData.setTypeCheckVacation(Optional.ofNullable(AlarmCheckConditionUtils.getTypeCheckVacationStr(typeCheckItemInt)));
 				//17: アラームリストのチェック条件 休暇項目
-				monthReportData.setVacationItems(Optional.ofNullable(record.getString("VACATION_ITEMS_17")));
+				if (typeCheckItemInt.isPresent() 
+						&& typeCheckItemInt.get() == TypeCheckVacation.SPECIAL_HOLIDAY.value) {
+					monthReportData.setVacationItems(Optional.ofNullable(record.getString("VACATION_ITEMS_17")));
+				}
 				//VACATION_COMPARE_ATR_19, VACATION_START_VALUE_20, VACATION_END_VALUE_21
 				Optional<Integer> vacationCompareAtrInt = Optional.ofNullable(record.getInt("VACATION_COMPARE_ATR_19"));
 				monthReportData.setVacationCompareAtr(Optional.ofNullable(AlarmCheckConditionUtils
 						.getCompareAtrStr(vacationCompareAtrInt)));
 				monthReportData.setVacationCompareAtrInt(vacationCompareAtrInt);
-				monthReportData.setVacationStartValue(Optional.ofNullable(record.getInt("VACATION_START_VALUE_20")));
-				monthReportData.setVacationEndValue(Optional.ofNullable(record.getInt("VACATION_END_VALUE_21")));
+				monthReportData.setVacationStartValue(Optional.ofNullable(record.getDouble("VACATION_START_VALUE_20")));
+				monthReportData.setVacationEndValue(Optional.ofNullable(record.getDouble("VACATION_END_VALUE_21")));
 			}
 			
 			if (checkItem.isPresent() && checkItem.get() != TypeMonCheckItem.CERTAIN_DAY_OFF.value
@@ -397,9 +423,9 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				// TIME_WITH_DAY=2, AMOUNT_VALUE=3, DAYS=4)
 				monthReportData.setConditionAtr(Optional.ofNullable(record.getInt("CONDITION_ATR")));
 				// 20(アラームリストのチェック条件 値１)
-				monthReportData.setStartValue(Optional.ofNullable(record.getInt("START_VALUE_20")));
+				monthReportData.setStartValue(Optional.ofNullable(record.getDouble("START_VALUE_20")));
 				// 21(アラームリストのチェック条件 値２)
-				monthReportData.setEndValue(Optional.ofNullable(record.getInt("END_VALUE_21")));
+				monthReportData.setEndValue(Optional.ofNullable(record.getDouble("END_VALUE_21")));
 
 				// 22(アラームリストのチェック条件 複合条件 グループ１(LogicalOperator.java))
 				monthReportData.setConditionOperatorGroup1(Optional.ofNullable(AlarmCheckConditionUtils
@@ -411,8 +437,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr1Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_23_2")));
 				monthReportData
 						.setConditionAtr1Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_23_3")));
-				monthReportData.setStart1Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_23_4")));
-				monthReportData.setEnd1Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_23_5")));
+				monthReportData.setStart1Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_23_4")));
+				monthReportData.setEnd1Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_23_5")));
 				monthReportData
 						.setConditionType1Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_23_6")));
 				monthReportData
@@ -423,8 +449,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr2Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_24_2")));
 				monthReportData
 						.setConditionAtr2Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_24_3")));
-				monthReportData.setStart2Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_24_4")));
-				monthReportData.setEnd2Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_24_5")));
+				monthReportData.setStart2Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_24_4")));
+				monthReportData.setEnd2Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_24_5")));
 				monthReportData
 						.setConditionType2Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_24_6")));
 				monthReportData
@@ -435,8 +461,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr3Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_25_2")));
 				monthReportData
 						.setConditionAtr3Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_25_3")));
-				monthReportData.setStart3Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_25_4")));
-				monthReportData.setEnd3Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_25_5")));
+				monthReportData.setStart3Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_25_4")));
+				monthReportData.setEnd3Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_25_5")));
 				monthReportData
 						.setConditionType3Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_25_6")));
 				monthReportData
@@ -448,8 +474,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 						.setGroup2UseAtr(Optional.ofNullable(AlarmCheckConditionUtils.getUseAtrStr(group2UseAtr)));
 				monthReportData.setGroup2UseAtrInt(group2UseAtr);
 				if (group2UseAtr.isPresent() && group2UseAtr.get() == 1) {
-					monthReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
-					// 27(アラームリストのチェック条件 複合条件 グループ２)
+					//monthReportData.setInsDate(Optional.ofNullable(record.getString("INS_DATE")));
+					//27(アラームリストのチェック条件 複合条件 グループ２)
 					monthReportData.setConditionOperatorGroup2(Optional.ofNullable(AlarmCheckConditionUtils
 							.getOperatorStr(Optional.ofNullable(record.getInt("CONDITION_OPERATOR_GROUP_2_27")))));
 
@@ -460,8 +486,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr1Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_28_2")));
 					monthReportData
 							.setConditionAtr1Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_28_3")));
-					monthReportData.setStart1Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_28_4")));
-					monthReportData.setEnd1Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_28_5")));
+					monthReportData.setStart1Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_28_4")));
+					monthReportData.setEnd1Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_28_5")));
 					monthReportData
 							.setConditionType1Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_28_6")));
 					monthReportData.setAttendanceItem1Group2(
@@ -473,8 +499,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr2Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_29_2")));
 					monthReportData
 							.setConditionAtr2Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_29_3")));
-					monthReportData.setStart2Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_29_4")));
-					monthReportData.setEnd2Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_29_5")));
+					monthReportData.setStart2Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_29_4")));
+					monthReportData.setEnd2Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_29_5")));
 					monthReportData
 							.setConditionType2Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_29_6")));
 					monthReportData.setAttendanceItem2Group2(
@@ -486,8 +512,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr3Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_30_2")));
 					monthReportData
 							.setConditionAtr3Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_30_3")));
-					monthReportData.setStart3Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_30_4")));
-					monthReportData.setEnd3Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_30_5")));
+					monthReportData.setStart3Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_30_4")));
+					monthReportData.setEnd3Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_30_5")));
 					monthReportData
 							.setConditionType3Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_30_6")));
 					monthReportData.setAttendanceItem3Group2(
@@ -503,5 +529,38 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		}
 		
 		return monthReportData;
+	}
+
+	@SneakyThrows
+	@Override
+	public List<Agree36ReportData> getAgree36Conditions(String companyId) {
+		List<Agree36ReportData>  result = new ArrayList<>();
+		try(PreparedStatement stmt = this.connection().prepareStatement(AlarmCheckCondQuery.SELECT_AGREE36)) {
+            stmt.setString(1,companyId);
+            result = new NtsResultSet(stmt.executeQuery()).getList(x -> toDomainAgree36(x));
+        } 
+		
+		return result;
+	}
+	
+	/**
+	 * toDomanin calendar company
+	 * @param entity
+	 * @return
+	 */
+	private Agree36ReportData toDomainAgree36(NtsResultSet.NtsResultRecord record) {
+		return Agree36ReportData.createFromJavaType(
+				record.getString("CD_1"),
+				record.getString("NAME_2"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_EMP_4"))),
+				record.getString("EMP_CDS_5"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_CLS_6"))),
+				record.getString("CLS_CDS_7"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_JOB_8"))),
+				record.getString("JOB_IDS_9"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))),
+				record.getString("BUSINESSTYPE_CDS_11"),
+				record.getString("AGREE_COND_ERRS"),
+				record.getString("COND_OT_ERRS"));
 	}
 }

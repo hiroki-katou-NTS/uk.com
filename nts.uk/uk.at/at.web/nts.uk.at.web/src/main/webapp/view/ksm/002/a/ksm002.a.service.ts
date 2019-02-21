@@ -69,10 +69,14 @@ module ksm002.a.service {
     
     export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1] != null ? program[1] : "";
+        let domainType = "KSM002";
+        if (program.length > 1) {
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', 
-            domainType: 'KSM002' + programName, 
-            languageId: 'ja', reportType: 0, mode: mode, 
+            domainType: domainType, 
+            languageId: 'ja', reportType: 0, 
             startDate : moment.utc(startDate).format(), 
             endDate : moment.utc(endDate).format()});
     }

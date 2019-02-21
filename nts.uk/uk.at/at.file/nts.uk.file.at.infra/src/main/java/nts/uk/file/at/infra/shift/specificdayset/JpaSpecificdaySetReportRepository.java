@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.shift.specificdayset;
+package nts.uk.file.at.infra.shift.specificdayset;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,6 +12,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetCompanyReportData;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetReportRepository;
+import nts.uk.file.at.app.export.shift.specificdayset.SpecificdaySetWorkplaceReportData;
 
 @Stateless
 public class JpaSpecificdaySetReportRepository extends JpaRepository implements SpecificdaySetReportRepository {
