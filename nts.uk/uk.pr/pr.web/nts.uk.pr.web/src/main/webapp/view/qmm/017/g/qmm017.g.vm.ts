@@ -15,7 +15,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
 
         OPEN_CURLY_BRACKET = '{';
         CLOSE_CURLY_BRACKET = '}';
-        COMMA_CHAR = ',';
+        COMMA_CHAR = '、';
+        HALF_SIZE_COMMA_CHAR = ',';
         PLUS = '＋';
         SUBTRACT = 'ー';
         MULTIPLICITY = '×';
@@ -29,6 +30,14 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         GREATER_OR_EQUAL = '≧';
         EQUAL = '＝';
         DIFFERENCE = '≠';
+        HALF_SIZE_PLUS = '+';
+        HALF_SIZE_SUBTRACT = '-';
+        HALF_SIZE_LESS_OR_EQUAL = '≤';
+        HALF_SIZE_GREATER_OR_EQUAL = '≥';
+        HALF_SIZE_EQUAL = '=';
+        PROGRAMING_MULTIPLICITY = '*';
+        PROGRAMING_DIVIDE = '/';
+        PROGRAMMING_DIFFERENCE = '#';
 
         PAYMENT = '支給';
         DEDUCTION = '控除';
@@ -65,6 +74,13 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
         ].join("|");
 
+        operators = [this.OPEN_BRACKET, this.CLOSE_BRACKET, this.PLUS, this.HALF_SIZE_PLUS,
+            this.SUBTRACT, this.HALF_SIZE_SUBTRACT, this.MULTIPLICITY, this.PROGRAMING_MULTIPLICITY,
+            this.DIVIDE, this.PROGRAMING_DIVIDE, this.POW, this.LESS, this.GREATER,
+            this.LESS_OR_EQUAL, this.GREATER_OR_EQUAL, this.EQUAL, this.DIFFERENCE,
+            this.HALF_SIZE_LESS_OR_EQUAL, this.HALF_SIZE_GREATER_OR_EQUAL, this.HALF_SIZE_EQUAL,
+            this.PROGRAMMING_DIFFERENCE, this.COMMA_CHAR, this.HALF_SIZE_COMMA_CHAR];
+
         processYearMonthAndReferenceTime: any;
 
         constructor() {
@@ -77,7 +93,6 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.formulaListItem = params.formulaListItem;
             self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
-
             if (/Chrome/.test(navigator.userAgent)) {
                 $('#G1_2').ntsFixedTable({height: 279});
             } else {
@@ -97,7 +112,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     formulaItem = _.find(self.formulaListItem, {formulaName: formulaName});
                     if (!formulaItem) {
-                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaName]});
+                        self.setErrorToFormula('MsgQ_248', [self.FORMULA, formulaName]);
                     }
                     registerContent = 'calc_00' + formulaItem.formulaCode;
                     embeddedFormulaElement[registerContent] = null;
@@ -170,19 +185,76 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     formulaCode = key.substring(7);
                     formulaItem = _.find(self.formulaListItem, {formulaCode: formulaCode});
                     if (!formulaItem) {
-                        dialog.alertError({messageId: 'MsgQ_248', messageParams: [self.FORMULA, formulaCode]});
+                        self.setErrorToFormula('MsgQ_248', [self.FORMULA, formulaCode]);
                     }
                     displayContent = self.FORMULA + self.OPEN_CURLY_BRACKET + formulaItem.formulaName + self.CLOSE_CURLY_BRACKET;
                     formula = formula.replace(new RegExp(displayContent, 'g'), data[key]);
                 });
                 self.formulaContent(formula);
                 self.extractInputParameter(formula);
+                self.validateSyntax();
                 $('#G1_2_container').focus();
             }).fail(function (err) {
                 block.clear();
                 dialog.alertError({messageId: err.messageId});
             })
         }
+
+        validateSyntax() {
+            let self = this;
+            let formula = self.formulaContent();
+            self.checkOperatorAndDivideZero(formula);
+            self.checkBracket(formula);
+        }
+
+        checkOperatorAndDivideZero(formula) {
+            let self = this, regex = new RegExp('([' + self.separators + '])');
+            let formulaElements: any = formula.split(regex).filter(item => {
+                return item && item.length
+            });
+            let self = this, currentChar, nextChar, operators = self.operators;
+            if ((formulaElements[formulaElements.length - 1] && self.operators.indexOf(formulaElements[formulaElements.length - 1]) > 1) || self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_235', []);
+            for (index = 0; index < formulaElements.length; index++) {
+                currentChar = formulaElements[index];
+                if (operators.indexOf(currentChar) > -1) {
+                    nextChar = formulaElements[index + 1];
+                    if (operators.indexOf(nextChar) > -1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
+                        self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
+                    }
+                    if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
+                }
+            }
+        }
+
+        checkBracket(formula) {
+            let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
+            for (index = 0; index < formula.length; index++) {
+                currentChar = formula[index];
+                if (currentChar == self.OPEN_BRACKET) openBracketNum++;
+                if (currentChar == self.CLOSE_BRACKET) closeBracketNum++;
+                if (openBracketNum - closeBracketNum > 10) {
+                    self.setErrorToFormula('MsgQ_237', []);
+                    return;
+                }
+                if (openBracketNum - closeBracketNum < 0) {
+                    self.setErrorToFormula('MsgQ_231', []);
+                    return;
+                }
+            }
+            if (openBracketNum != closeBracketNum) {
+                self.setErrorToFormula('MsgQ_231', []);
+                return;
+            }
+        }
+
+        setErrorToFormula(messageId: string, messageParams: Array) {
+            let isHasUniqueMessage = false;
+            if (messageId == "MsgQ_231") {
+                isHasUniqueMessage = _.some(nts.uk.ui.errors.getErrorList(), {errorCode: 'MsgQ_231'})
+            }
+            if (!isHasUniqueMessage) $('#G1_12').ntsError('set', {messageId: messageId, messageParams: messageParams});
+        }
+
 
         // calculate via aspose cell
         calculateInServer() {
