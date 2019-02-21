@@ -273,7 +273,6 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						if (!CollectionUtil.isEmpty(listRowUsePerCode)) {
 							AtomicInteger index = new AtomicInteger(0);
 							listRowUsePerCode.stream()
-									.sorted(Comparator.nullsLast(Comparator.comparing(DailyReportData::getInsDate)))
 									.forEachOrdered(row -> {
 										datas.add(buildDailyReportData(row, index.get(), attendanceNameDivergenceDtos));
 										index.getAndIncrement();
