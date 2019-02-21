@@ -106,7 +106,8 @@ public class GridLayoutWebService extends WebService {
 	@POST
 	@Path("get-data/contracttime")
 	public List<ContractTimeEmployeeImport> getData(ContractTimeQuery query){
-		
+		//アルゴリズム「社員の契約時間を取得する」を実行する
+		//(Thực hiện thuật toán [Lấy thời gian hợp đồng của employee])
 		return adapter.getData(query.listEmpID,query.getBaseDate());
 		
 	}
