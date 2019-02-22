@@ -25,7 +25,7 @@ public class TmpAnnualHolidayMng extends AggregateRoot{
 	 */
 	private String workTypeCode;
 	/**
-	 * 勤務種類
+	 * 使用日数
 	 */
 	private UseDay useDays;
 }
