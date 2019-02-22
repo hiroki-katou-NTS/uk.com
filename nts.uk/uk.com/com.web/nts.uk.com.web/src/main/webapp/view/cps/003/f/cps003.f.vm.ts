@@ -405,7 +405,7 @@ module cps003.f.vm {
                         ITEM_SINGLE_TYPE.SELECTION,
                         ITEM_SINGLE_TYPE.SEL_RADIO].indexOf(item.itemData.dataType) > -1) {
                         value.mode = APPLY_MODE.SELECTION;
-                        value.replaceValue = item.value.value;
+                        value.replaceValue = item.value.value0;
                         value.replaceFormat = REPLACE_FORMAT.VALUE;
                     } else {
                         if (['IS00131', 'IS00140',

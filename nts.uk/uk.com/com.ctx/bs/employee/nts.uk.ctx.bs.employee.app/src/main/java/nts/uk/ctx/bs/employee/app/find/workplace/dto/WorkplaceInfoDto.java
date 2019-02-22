@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
@@ -14,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
 /**
  * The Class WorkplaceInfoDto.
  */
+@NoArgsConstructor
 public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
 
     /** The company id. */
@@ -140,5 +142,11 @@ public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
     public void setOutsideWkpCode(OutsideWorkplaceCode outsideWkpCode) {
         this.outsideWkpCode = outsideWkpCode.v();
     }
+    public WorkplaceInfoDto (String workplaceId,String workplaceCode , String wkpDisplayName){
+		this.workplaceId = workplaceId;
+		this.workplaceCode = workplaceCode;
+		this.wkpDisplayName = workplaceCode+" "+wkpDisplayName ;
+		
+	}
 
 }

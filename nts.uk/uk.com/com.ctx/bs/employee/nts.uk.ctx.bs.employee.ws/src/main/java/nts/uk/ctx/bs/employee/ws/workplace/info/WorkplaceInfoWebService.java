@@ -74,7 +74,7 @@ public class WorkplaceInfoWebService extends WebService {
     
     @Path("display")
     @POST
-    public List<String> getData(DisplayQuery query) {
+    public List<WorkplaceInfoDto> getData(DisplayQuery query) {
     	//職場に表示する値を取得する
         return this.displayWorkplaceFinder.getData(query.getBaseDate(), query.getListWorkplaceID());
     }

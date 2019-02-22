@@ -26,15 +26,17 @@ public class AffiliatedCompanyHistoryFinder {
 	private AffCompanyHistRepository affCompanyHistRepository;
 	
 	//社員ID（List）と基準日から所属会社履歴項目を取得する
-public List<AffCompanyHistItem> getByIDAndBasedate(GeneralDate baseDate , List<String> listempID){
+public List<AffCompanyHistItemDto> getByIDAndBasedate(GeneralDate baseDate , List<String> listempID){
 	//ドメインモデル「所属会社履歴（社員別）」を取得する
 	//(Lấy domain [AffCompanyHistByEmployee])
 	List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployeeListAndBaseDate(listempID, baseDate);
 	List<List<AffCompanyHistByEmployee>> listAffCompanyHistByEmployee = listAffCompanyHist.stream().map(c ->c.getLstAffCompanyHistByEmployee()).collect(Collectors.toList());
-	List<AffCompanyHistItem> data = new ArrayList<>();
+	List<AffCompanyHistItemDto> data = new ArrayList<>();
+
 	for (List<AffCompanyHistByEmployee> list : listAffCompanyHistByEmployee) {
 		for (AffCompanyHistByEmployee c : list) {
-			data.addAll(c.getLstAffCompanyHistoryItem());
+			AffCompanyHistItemDto a= new AffCompanyHistItemDto(c.getSId(), c.getLstAffCompanyHistoryItem());
+			data.add(a);
 		}
 	}
 	return data;

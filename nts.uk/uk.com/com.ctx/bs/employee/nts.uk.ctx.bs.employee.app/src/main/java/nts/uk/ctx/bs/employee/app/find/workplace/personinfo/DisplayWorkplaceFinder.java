@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -31,39 +32,40 @@ public class DisplayWorkplaceFinder {
 	private WorkplaceRepository workplaceRepository;
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepository;
-	public List<String> getData(GeneralDate baseDate , List<String> listWorkPlaceID){
+	public List<WorkplaceInfoDto> getData(GeneralDate baseDate , List<String> listWorkPlaceID){
 		String companyId = AppContexts.user().companyId();
-		if(baseDate == null ||listWorkPlaceID.isEmpty()){
+		if (baseDate == null || listWorkPlaceID.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
-			//アルゴリズム「職場IDから職場を取得する」を実行する
-			//(Thực hiện thuật toán [Lấy WorkPlace từ workplaceID])
-			//ドメインモデル「職場」を取得する
-			List<String> histIds = new ArrayList<>();
-			List<Workplace> listWorkPlace = workplaceRepository.findWorkplaces(companyId, listWorkPlaceID, baseDate);
-			List<String> wkpIds =listWorkPlace.stream().map(c ->c.getWorkplaceId()).collect(Collectors.toList());
-			List<List<WorkplaceHistory>> listWorkplaceHistory = listWorkPlace.stream().map(c ->c.getWorkplaceHistory()).collect(Collectors.toList());
-			for (List<WorkplaceHistory> list : listWorkplaceHistory) {
-				for (WorkplaceHistory workplaceHistory : list) {
-					String histID =  workplaceHistory.identifier();
-					histIds.add(histID);
-				}
+
+		// アルゴリズム「職場IDから職場を取得する」を実行する
+		// (Thực hiện thuật toán [Lấy WorkPlace từ workplaceID])
+		// ドメインモデル「職場」を取得する
+		List<String> histIds = new ArrayList<>();
+		List<Workplace> listWorkPlace = workplaceRepository.findWorkplaces(companyId, listWorkPlaceID, baseDate);
+		List<String> wkpIds = listWorkPlace.stream().map(c -> c.getWorkplaceId()).collect(Collectors.toList());
+		List<List<WorkplaceHistory>> listWorkplaceHistory = listWorkPlace.stream().map(c -> c.getWorkplaceHistory())
+				.collect(Collectors.toList());
+		for (List<WorkplaceHistory> list : listWorkplaceHistory) {
+			for (WorkplaceHistory workplaceHistory : list) {
+				String histID = workplaceHistory.identifier();
+				histIds.add(histID);
 			}
-			List<WorkplaceInfo> listWorkplaceInfo = workplaceInfoRepository.findByWkpIdsAndHistIds(companyId, wkpIds, histIds);
-			List<String> result = new ArrayList<>();
-			for (WorkplaceInfo workplaceInfo : listWorkplaceInfo) {
-				String data = workplaceInfo.getWorkplaceCode() +" "+ workplaceInfo.getWkpDisplayName().v();
-				result.add(data);
-			}
-			
-			if(listWorkplaceInfo.isEmpty()){
-				return Arrays.asList("#CPS001_107");
-						
-			}
-			
+		}
+		List<WorkplaceInfoDto> result = new ArrayList<>();
+		List<WorkplaceInfo> listWorkplaceInfo = workplaceInfoRepository.findByWkpIdsAndHistIds(companyId, wkpIds,
+				histIds);
+		if (listWorkplaceInfo.isEmpty()) {
+			WorkplaceInfoDto c = new WorkplaceInfoDto(null, null, "#CPS001_107");
+			result.add(c);
+			return result;
+		}
+		for (WorkplaceInfo workplaceInfo : listWorkplaceInfo) {
+			WorkplaceInfoDto a = new WorkplaceInfoDto(workplaceInfo.getWorkplaceId(),
+					workplaceInfo.getWorkplaceCode().v(), workplaceInfo.getWkpDisplayName().v());
+			result.add(a);
+		}
 		return result;
-		
-	
-}
+
+	}
 }
