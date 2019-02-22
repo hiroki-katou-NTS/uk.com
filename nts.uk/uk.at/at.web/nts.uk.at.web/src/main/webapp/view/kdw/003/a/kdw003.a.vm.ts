@@ -792,7 +792,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             $("#dpGrid").mGrid("updateCell", rowId, item, value, false, true);
-            self.inputProcess(rowId, item, value, changeSpr31, changeSpr34).done(value => {
+            self.inputProcessCommon(rowId, item, value, changeSpr31, changeSpr34).done(value => {
                 _.each(value.cellEdits, itemResult => {
                     $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true, true);
                 })
@@ -1154,7 +1154,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.initScreenSPR = 1;
                             self.clickFromExtract = false;
                             self.showTextStyle = false;
-                            errorAll = true;
+                            errorAll = false;
                             errorNoReload = false;
                         }
 
@@ -1332,7 +1332,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).toISOString()
                 }
             }
-            self.removeErrorRefer();
+            //self.removeErrorRefer();
             let dfd = $.Deferred();
             service.calculation(dataParent).done((data) => {
                 self.flagCalculation = true;
@@ -3772,7 +3772,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return dfd.promise();
         }
 
-        inputProcess(rowId, columnKey, value, changeSpr31 ?: boolean, changeSpr34 ?: boolean) {
+        inputProcess(rowId, columnKey, value) {
+            return __viewContext.vm.inputProcessCommon(rowId, columnKey, value);
+        }
+
+        inputProcessCommon(rowId, columnKey, value, changeSpr31 ?: boolean, changeSpr34 ?: boolean): JQueryPromise<any>{
             let dfd = $.Deferred(),
                 keyId: any,
                 valueError: any,
@@ -3806,6 +3810,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             }
 
+            let valueErrorRow = _.find(__viewContext.vm.workTypeNotFound, data => {
+                    return data.rowId == rowId;
+                });
+            
             let itemChange = _.find(ITEM_CHANGE, function(o) { return o === Number(keyId); });
             if (itemChange == undefined) {
                 dfd.resolve({ id: rowId, item: columnKey, value: value });
@@ -3814,7 +3822,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
                 //                    return data.rowId == rowId && columnKey != "A29";
                 //                });
-                if (valueError != undefined || hasErrorValidate != undefined) {
+                if (valueError != undefined || hasErrorValidate != undefined || valueErrorRow != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();
@@ -3879,9 +3887,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                 }
             }
-            return dfd.promise();
+            return dfd.promise(); 
         }
-
         getDataShare(data: any) {
             var self = this;
             var param = {

@@ -8,7 +8,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 年度から集計期間を取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetAgreementPeriodFromYear {
 

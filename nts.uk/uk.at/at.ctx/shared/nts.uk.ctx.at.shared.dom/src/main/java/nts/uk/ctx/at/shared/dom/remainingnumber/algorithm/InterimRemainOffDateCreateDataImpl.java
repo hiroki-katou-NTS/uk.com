@@ -492,7 +492,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return outData;
 		}
 		//振替可能時間と1日の時間を比較する
-		if(timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
+		if(transferSetting.getDesignatedTime().getOneDayTime() != null && timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
 			//半日の時間をチェックする
 			//振替可能時間と半日の時間を比較する
 			if(transferSetting.getDesignatedTime().getHalfDayTime().v() > 0

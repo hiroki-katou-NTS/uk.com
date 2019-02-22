@@ -17,11 +17,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
@@ -101,7 +98,7 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 		int totalMinutes = 0;
 		
 		// 年月期間分ループ
-		for (YearMonth procYm = period.start(); procYm.lessThan(period.end()); procYm.addMonths(1)) {
+		for (val procYm : period.yearMonthsBetween()) {
 			
 			// 年月の締め日を取得
 			val closureHisOpt = closure.getHistoryByYearMonth(procYm);
@@ -163,8 +160,6 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId, YearMonth yearMonth,
 			GeneralDate criteria) {
 		
-		AgreMaxAverageTimeMulti result = new AgreMaxAverageTimeMulti();
-		
 		// 月別集計で必要な会社別設定を取得　（36協定時間用）
 		MonAggrCompanySettings companySets = MonAggrCompanySettings.loadSettingsForAgreement(
 				companyId, this.repositories);
@@ -216,81 +211,38 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			maxMinutes = basicAgreementSet.getLimitOneMonth().v();
 		}
 		
-		// 36協定上限複数月平均時間を作成する
-		result = AgreMaxAverageTimeMulti.of(new LimitOneMonth(maxMinutes), new ArrayList<>());
-		
-		// 月数分ループ
-		for (Integer monNum = 6; monNum >= 1; monNum--) {
-		
-			// 36協定平均時間の計算
-			{
-				// 期間を計算
-				YearMonthPeriod period = new YearMonthPeriod(yearMonth.addMonths(-(monNum-1)), yearMonth);
-
-				// 管理期間の36協定時間リスト
-				List<AgreementTimeOfManagePeriod> agreTimeOfMngPeriods = new ArrayList<>();
-				
-				// 取得した年月期間の月数分ループ
-				for (YearMonth procYm = period.start(); procYm.lessThan(period.end()); procYm.addMonths(1)) {
-					
-					// 年月の締め日を取得
-					val closureHisOpt = closure.getHistoryByYearMonth(procYm);
-					if (!closureHisOpt.isPresent()) continue;
-					val closureHis = closureHisOpt.get();
-					
-					// 年月から集計期間を取得
-					val aggrPeriodOpt = agreementOpeSet.getAggregatePeriodByYearMonth(procYm);
-					if (!aggrPeriodOpt.isPresent()) continue;
-					val aggrPeriod = aggrPeriodOpt.get();
-					
-					// 集計前の月別実績データを確認する
-					MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
-							employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(), this.repositories);
-					
-					// 36協定時間の集計
-					MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
-					val agreTimeOfMngPeriodOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
-							companyId, employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(),
-							aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), companySets, employeeSets,
-							monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
-					if (agreTimeOfMngPeriodOpt.isPresent()){
-						agreTimeOfMngPeriods.add(agreTimeOfMngPeriodOpt.get());
-					}
-				}
-				
-				// 36協定複数月平均時間の計算　（集計結果が1件以上ある時のみ）
-				if (agreTimeOfMngPeriods.size() > 0) {
-					
-					// 合計時間
-					int totalMinutes = 0;
-					
-					// 労働時間の合計
-					for (val agreTimeOfMngPeriod : agreTimeOfMngPeriods) {
-						val breakdown = agreTimeOfMngPeriod.getAgreementMaxTime().getBreakdown();
-						totalMinutes += breakdown.getTotalTime().v();
-					}
-					
-					// 合計時間を期間数で除算
-					int averageMinutes = totalMinutes / agreTimeOfMngPeriods.size();
-					
-					// 36協定上限各月平均時間を作成
-					YearMonthPeriod addPeriod = new YearMonthPeriod(
-							agreTimeOfMngPeriods.get(0).getYearMonth(),
-							agreTimeOfMngPeriods.get(agreTimeOfMngPeriods.size()-1).getYearMonth());
-					AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
-							addPeriod,
-							new AttendanceTimeYear(totalMinutes),
-							new AttendanceTimeMonth(averageMinutes),
-							AgreMaxTimeStatusOfMonthly.NORMAL);
-					
-					// 36協定複数月平均時間の状態チェック
-					agreMaxAveTime.errorCheck(result.getMaxTime());
-					
-					// 36協定上限各月平均時間を返す
-					result.getAverageTimeList().add(agreMaxAveTime);
-				}
+		// 管理期間の36協定時間を取得　（過去6ヶ月分）
+		List<AgreementTimeOfManagePeriod> agreTimeOfMngPeriodList = new ArrayList<>();
+		for (val procYm : allPeriod.yearMonthsBetween()) {
+			
+			// 年月の締め日を取得
+			val closureHisOpt = closure.getHistoryByYearMonth(procYm);
+			if (!closureHisOpt.isPresent()) continue;
+			val closureHis = closureHisOpt.get();
+			
+			// 年月から集計期間を取得
+			val aggrPeriodOpt = agreementOpeSet.getAggregatePeriodByYearMonth(procYm);
+			if (!aggrPeriodOpt.isPresent()) continue;
+			val aggrPeriod = aggrPeriodOpt.get();
+			
+			// 集計前の月別実績データを確認する
+			MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+					employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(), this.repositories);
+			
+			// 36協定時間の集計
+			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+			val agreTimeOfMngPeriodOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+					companyId, employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(),
+					aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), companySets, employeeSets,
+					monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
+			if (agreTimeOfMngPeriodOpt.isPresent()){
+				agreTimeOfMngPeriodList.add(agreTimeOfMngPeriodOpt.get());
 			}
 		}
+
+		// 36協定上限複数月平均時間を作成する
+		AgreMaxAverageTimeMulti result = AgreementTimeOfManagePeriod.calcMaxAverageTimeMulti(
+				yearMonth, new LimitOneMonth(maxMinutes), agreTimeOfMngPeriodList);
 		
 		// 36協定上限複数月平均時間を返す
 		return Optional.of(result);
