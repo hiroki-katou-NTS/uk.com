@@ -74,6 +74,9 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	@Override
 	public Optional<EmployeeImport> getByPid(String companyId, String pid) {
 		EmpInfoByCidSidExport emExport = empInfoByCidSidPub.getEmpInfoBySidCid(pid, companyId);
+		if(emExport == null){
+			return Optional.empty();
+		}
 		EmployeeImport emImport = new EmployeeImport(emExport.getCid(), emExport.getPid(), emExport.getSid(),
 				emExport.getScd());
 		return Optional.of(emImport);

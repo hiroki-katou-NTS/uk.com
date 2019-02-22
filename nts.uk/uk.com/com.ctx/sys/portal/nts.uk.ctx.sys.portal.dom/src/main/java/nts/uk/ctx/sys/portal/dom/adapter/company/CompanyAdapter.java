@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface CompanyAdapter {
 	
-	List<String> getCompanyIdList(String userId, String personId);
+	List<String> getCompanyIdList(String userId, String contractCd);
 	
 	Optional<CompanyDto> getCompany(String companyId);
 }
