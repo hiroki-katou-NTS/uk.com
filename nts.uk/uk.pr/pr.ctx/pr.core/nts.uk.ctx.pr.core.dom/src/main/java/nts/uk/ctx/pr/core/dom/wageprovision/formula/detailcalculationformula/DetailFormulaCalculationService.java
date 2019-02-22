@@ -214,7 +214,7 @@ public class DetailFormulaCalculationService {
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
         Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
+        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_236");
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);
@@ -228,6 +228,7 @@ public class DetailFormulaCalculationService {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
+        if (Objects.isNull(formula)) throw new BusinessException("MsgQ_236");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
         }
@@ -254,21 +255,21 @@ public class DetailFormulaCalculationService {
         if (roundingMethod == Rounding.TRUNCATION.value)
             result = Math.floor(result / roundingValue) * roundingValue;
         if (roundingMethod == Rounding.DOWN_1_UP_2.value)
-            result = Math.floor(result / roundingValue + 0.9) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_2_UP_3.value)
             result = Math.floor(result / roundingValue + 0.8) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_3_UP_4.value)
+        if (roundingMethod == Rounding.DOWN_2_UP_3.value)
             result = Math.floor(result / roundingValue + 0.7) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_4_UP_5.value)
+        if (roundingMethod == Rounding.DOWN_3_UP_4.value)
             result = Math.floor(result / roundingValue + 0.6) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_5_UP_6.value)
+        if (roundingMethod == Rounding.DOWN_4_UP_5.value)
             result = Math.floor(result / roundingValue + 0.5) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_6_UP_7.value)
+        if (roundingMethod == Rounding.DOWN_5_UP_6.value)
             result = Math.floor(result / roundingValue + 0.4) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_7_UP_8.value)
+        if (roundingMethod == Rounding.DOWN_6_UP_7.value)
             result = Math.floor(result / roundingValue + 0.3) * roundingValue;
-        if (roundingMethod == Rounding.DOWN_8_UP_9.value)
+        if (roundingMethod == Rounding.DOWN_7_UP_8.value)
             result = Math.floor(result / roundingValue + 0.2) * roundingValue;
+        if (roundingMethod == Rounding.DOWN_8_UP_9.value)
+            result = Math.floor(result / roundingValue + 0.1) * roundingValue;
         if (isNegativeNumber) result = result * -1;
         return result + "";
     }

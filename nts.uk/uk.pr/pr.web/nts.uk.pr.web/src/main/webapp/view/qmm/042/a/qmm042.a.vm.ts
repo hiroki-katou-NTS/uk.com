@@ -114,9 +114,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                         headerText: getText("QMM042_13"), key: 'amountOfMoney', dataType: 'string', width: "150px",
                         columnCssClass: 'currency-symbol',
                         constraint: {
-                            cDisplayType: "Currency",
-                            min: self.priceValidator.constraint.min,
-                            max: self.priceValidator.constraint.max,
+                            primitiveValue: "SalaryUnitPrice",
                             required: true
                         }
                     }

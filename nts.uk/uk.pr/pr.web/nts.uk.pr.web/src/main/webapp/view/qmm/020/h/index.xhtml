@@ -2,20 +2,20 @@
     <div class="sidebar-content-header" style = "min-width: 1000px;">
 
             <span class = "title">#{i18n.getText('QMM020_11')}</span>
-            <button id="A1_1" tabindex="2" class="proceed"
+            <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="click: registerHisIndividual, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
-        <button id="A1_3" tabindex="4"
+        <button id="A1_3" tabindex="2"
                 data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
 
-            <button id="A1_4" tabindex="5"
+            <button id="A1_4" tabindex="3"
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
 
     </div>
     <div style="margin-top: 15px; min-width: 1000px;" class="contents-area" id ="H_CCG" >
         <div id="com-ccg001"></div>
         <div id = "H1_1" style="margin-left: 70px; ">
-            <div  tabindex = "6" id="emp-component" style="margin-left: 10px;"></div>
+            <div  tabindex = "4" id="emp-component" style="margin-left: 10px;"></div>
         </div>
   <!--      <div id="H1_2">
 
@@ -26,13 +26,13 @@
             </div>
             <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="H2_3" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
+                    <button id="H2_3" tabindex="6" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
 
-                    <button id="H2_4" data-bind="click: openKScreen, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                    <button id="H2_4" tabindex="7" data-bind="click: openKScreen, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
                 <div style="margin-top: 10px">
-                    <table  id="H1_5"  data-bind="ntsGridList: {
+                    <table id="H1_5"  tabindex="8" data-bind="ntsGridList: {
                                             height: 165,
                                             rows:6,
                                             dataSource: listStateCorrelationHis,
@@ -57,7 +57,7 @@
             <div class="control-group" id="label_H3_4" style="margin-top: 20px;">
                 <div data-bind="ntsFormLabel: {}">
                     <span class="label">#{i18n.getText('QMM020_20')}</span>
-                    <button id="H3_4" data-bind="click: selectSalary, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
+                    <button id="H3_4" tabindex="9" data-bind="click: selectSalary, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
                     <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
                     <span style="margin-left: 10px;" data-bind="text: salaryName"></span>
                 </div>
@@ -66,12 +66,11 @@
             <div id="label_H3_5" class="control-group" style="margin-top: 15px;">
                 <div data-bind="ntsFormLabel: {}" >
                     <span class="label">#{i18n.getText('QMM020_22')}</span>
-                    <button id="H3_5" data-bind=" click: selectBonus, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
+                    <button id="H3_5" tabindex="10" data-bind=" click: selectBonus, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
                     <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
                     <span style="margin-left: 10px;" data-bind="text: bonusName"></span>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

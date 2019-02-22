@@ -169,6 +169,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
+                    self.listStateLinkSettingMaster([]);
                     dialog.info({ messageId: "Msg_306" }).then(() => {
                         self.mode(model.MODE.NO_EXIST);
                     });

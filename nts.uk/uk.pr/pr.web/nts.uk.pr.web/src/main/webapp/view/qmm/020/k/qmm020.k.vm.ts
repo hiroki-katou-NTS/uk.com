@@ -25,9 +25,9 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             self.innitView(params);
 
         }
-        submit(){
+        submit() {
             let self = this;
-            let data : any = {
+            let data: any = {
                 cid: '',
                 historyID: self.params().hisId,
                 startYearMonth: self.startYearMonthPeriod(),
@@ -35,37 +35,49 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 modeEditHistory: self.methodEditing(),
                 type: self.params().modeScreen,
                 masterCode: self.params().masterCode,
-                isUpdate : self.startYearMonthPeriod() > self.params().startLastYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod(),
-                employeeId : self.params().employeeId
+                isUpdate: self.startYearMonthPeriod() > self.params().startLastYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod(),
+                employeeId: self.params().employeeId
             };
-            nts.uk.pr.view.qmm020.k.service.editHistoryProcess(data).done(()=>{
-                if(self.methodEditing() == EDIT_METHOD.UPDATE){
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        let data : any ={
+
+            if (self.methodEditing() == EDIT_METHOD.UPDATE) {
+                nts.uk.pr.view.qmm020.k.service.editHistoryProcess(data).done(() => {
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
+                        let data: any = {
                             modeEditHistory: self.methodEditing()
                         };
                         setShared(model.PARAMETERS_SCREEN_K.OUTPUT, data);
                         close();
                     });
-                    return;
-                }
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    let data : any ={
-                        modeEditHistory: self.methodEditing()
-                    };
-                    setShared(model.PARAMETERS_SCREEN_K.OUTPUT, data);
-                    close();
+                }).fail((err) => {
+                    if (err) {
+                        dialog.alertError(err).then(() => {
+                            $('#K1_7').focus();
+                        });
+
+                    }
+
                 });
-            }).fail((err) =>{
-                if(err){
-                    dialog.alertError(err).then(()=>{
-                        $('#K1_7').focus();
+            } else {
+                nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+                    nts.uk.pr.view.qmm020.k.service.editHistoryProcess(data).done(() => {
+                        nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(function () {
+                            let data: any = {
+                                modeEditHistory: self.methodEditing()
+                            };
+                            setShared(model.PARAMETERS_SCREEN_K.OUTPUT, data);
+                            close();
+                        }).fail((err) => {
+                            if (err) {
+                                dialog.alertError(err).then(() => {
+                                    $('#K1_7').focus();
+                                });
+                            }
+                        });
                     });
-
-                }
-
-            });
+                });
+            }
         }
+
         innitView(params:any){
             let self = this;
             self.params(params);

@@ -187,7 +187,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
             // Remove elements cannot handled
             // self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
-            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME];
+            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.WORKDAY];
         }
 
         // tab 1
@@ -633,7 +633,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkBracket(formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
             for (index = 0; index < formula.length; index++) {
-                currentChar = formula [index];
+                currentChar = formula[index];
                 if (currentChar == self.OPEN_BRACKET) openBracketNum++;
                 if (currentChar == self.CLOSE_BRACKET) closeBracketNum++;
                 if (openBracketNum - closeBracketNum > 10) {
@@ -700,7 +700,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                     let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)),
                         elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [elementType]);
                     if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
                     if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
                 } else {
@@ -749,10 +749,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return (self.acceptFunctionPostfix.indexOf(elementName) > -1);
             if (elementType == self.VARIABLE)
                 return (self.acceptVariablePostfix.indexOf(elementName) > -1);
-
-            self.setErrorToFormula('MsgQ_233', [elementType]);
             return true;
-
         }
 
         checkFunctionSyntax(formula) {
