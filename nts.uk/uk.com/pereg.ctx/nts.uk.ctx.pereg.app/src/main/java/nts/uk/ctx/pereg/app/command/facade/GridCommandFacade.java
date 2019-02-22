@@ -14,9 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.uk.ctx.pereg.dom.person.error.ErrorType;
 import nts.uk.ctx.pereg.dom.person.error.ErrorWarningEmployeeInfo;
-import nts.uk.ctx.pereg.dom.person.error.ErrorWarningInfoOfRowOrder;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.GridInputContainer;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
@@ -67,8 +65,7 @@ public class GridCommandFacade {
 				
 				PeregInputContainer container = new PeregInputContainer(input.getPersonId(), input.getEmployeeId(), Arrays.asList(input.getInput()));
 				
-				ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(input.getEmployeeId(),
-						input.getEmployeeCd(), input.getEmployeeName(),new ArrayList<>());
+			
 				
 				try {
 					
@@ -88,12 +85,8 @@ public class GridCommandFacade {
 								.filter(c -> {return c.itemCode().equals(itemCode);}).findFirst();
 						
 						if (itemOptional.isPresent()) {
-							
-							ErrorWarningInfoOfRowOrder order = new ErrorWarningInfoOfRowOrder(
-									itemOptional.get().itemName(), 1, input.getOrder(), exp.getMessage());
-							
-							errorWarning.setErrorLst(Arrays.asList(order));
-							
+							ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(input.getEmployeeId(),
+									input.getEmployeeCd(), input.getEmployeeName(), input.getOrder(), true, 1, itemOptional.get().itemName(), exp.getMessage());							
 							errorLstSync.add(errorWarning);
 							
 						}

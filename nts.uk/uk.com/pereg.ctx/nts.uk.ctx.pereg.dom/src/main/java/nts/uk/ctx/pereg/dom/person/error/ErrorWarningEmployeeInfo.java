@@ -24,7 +24,7 @@ public class ErrorWarningEmployeeInfo {
 	//行番号
 	private int no;
 	//登録結果
-	private boolean isHideRegister;
+	private boolean isDisplayRegister;
 	//区分 - ErrorType
 	private int errorType;
 	//項目名
