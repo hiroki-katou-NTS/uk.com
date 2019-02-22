@@ -4,17 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
-import nts.uk.shr.com.primitive.WorkplaceCode;
 
 /**
  * The Class WorkplaceInfoDto.
  */
+@NoArgsConstructor
 public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
 
     /** The company id. */
