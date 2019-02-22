@@ -10,6 +10,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
+import nts.uk.shr.com.primitive.WorkplaceCode;
 
 /**
  * The Class WorkplaceInfoDto.
@@ -140,5 +141,11 @@ public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
     public void setOutsideWkpCode(OutsideWorkplaceCode outsideWkpCode) {
         this.outsideWkpCode = outsideWkpCode.v();
     }
+    public WorkplaceInfoDto (String workplaceId,String workplaceCode , String wkpDisplayName){
+		this.workplaceId = workplaceId;
+		this.workplaceCode = workplaceCode;
+		this.wkpDisplayName = workplaceCode+" "+wkpDisplayName ;
+		
+	}
 
 }

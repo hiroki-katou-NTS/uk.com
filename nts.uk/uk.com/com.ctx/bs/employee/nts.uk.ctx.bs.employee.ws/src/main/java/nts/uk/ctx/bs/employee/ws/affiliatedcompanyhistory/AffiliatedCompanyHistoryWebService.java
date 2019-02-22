@@ -12,10 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffCompanyHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffiliatedCompanyHistoryFinder;
 import nts.uk.ctx.bs.employee.app.query.employee.QueryHistItem;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 
 /**
  * @author hieult
@@ -30,7 +29,7 @@ public class AffiliatedCompanyHistoryWebService extends WebService {
 	
 	@Path("getdata")
 	@POST
-	public List<AffCompanyHistItem> getByIDAndBasedate(QueryHistItem query) {
+	public List<AffCompanyHistItemDto> getByIDAndBasedate(QueryHistItem query) {
 		//社員ID（List）と基準日から所属会社履歴項目を取得する
 		return this.affiliatedCompanyHistoryFinder.getByIDAndBasedate(query.getBaseDate(), query.getListEmpID());
 	}
