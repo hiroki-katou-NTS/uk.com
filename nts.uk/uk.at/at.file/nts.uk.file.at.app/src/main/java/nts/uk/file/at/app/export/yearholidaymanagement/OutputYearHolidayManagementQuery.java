@@ -10,7 +10,6 @@ import nts.arc.time.GeneralDateTime;
 @NoArgsConstructor
 public class OutputYearHolidayManagementQuery {
 	String programName;
-	String companyName;
 	GeneralDateTime exportTime;
 	// 対象期間
 	int selectedDateType;

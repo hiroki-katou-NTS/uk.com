@@ -1,7 +1,10 @@
 package nts.uk.file.at.infra.yearholidaymanagement;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.ejb.Stateless;
@@ -46,8 +49,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 			String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
 					.getCompanyName();
-			reportContext.setHeader(0, "&8&\"MS ゴシック\"" + companyName);
+			reportContext.setHeader(0, "&9&\"MS ゴシック\"" + companyName);
 			reportContext.setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KDR002_10"));
+			DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+			reportContext.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 			String exportTime = query.getExportTime().toString();
 			Worksheet normalSheet = worksheets.get(0);
 			String normalSheetName = TextResource.localize("KMK003_309");
