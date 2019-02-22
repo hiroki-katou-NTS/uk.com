@@ -120,6 +120,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         ]);
         pageBreakSelected: KnockoutObservable<string> = ko.observable(0);
 
+        closureDate: KnockoutObservable<Closure> = ko.observable();
+
         constructor() {
             let self = this;
         }
@@ -135,7 +137,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             for (let employeeSearch of dataList) {
                 let employee: UnitModel = {
                     code: employeeSearch.employeeCode,
+                    employeeId: employeeSearch.employeeId,
                     name: employeeSearch.employeeName,
+                    workplaceCode: employeeSearch.workplaceCode,
+                    workplaceId: employeeSearch.workplaceId,
                     workplaceName: employeeSearch.workplaceName
                 };
                 employeeSearchs.push(employee);
@@ -166,9 +171,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-            service.findClosureByEmpID().done(function(data) {
-                if (data) {
-                    self.setDataWhenStart(data);
+            service.findClosureByEmpID().done(function(closure) {
+                if (closure) {
+                    self.setDataWhenStart(closure);
+                    self.closureDate(closure.closureMonth);
                 } else {
                     alError({ messageId: 'Msg_1134' });
                 }
@@ -182,58 +188,122 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             return dfd.promise();
         }
 
-        setDataWhenStart(data) {
+        setDataWhenStart(closure) {
             let self = this;
-            char.restore("printInfo").done((printInfo) => {
-                if (printInfo) {
-                    self.setPrintInfo(data, printInfo);
+            char.restore("screenInfo").done((screenInfo: IScreenInfo) => {
+                if (screenInfo) {
+                    self.setScreenInfo(closure, screenInfo);
                 } else {
-                    self.printDate(data.closureMonth);
+                    self.printDate(closure.closureMonth);
                 }
             });
         }
 
-        //set print Info
+        //set screen Info
 
-        setPrintInfo(closure, printInfo) {
+        setScreenInfo(closure, screenInfo: IScreenInfo) {
             let self = this;
-            self.selectedDateType(printInfo.selectedDateType);
-            self.selectedReferenceType(printInfo.selectedReferenceType);
-            if (printInfo.printDate) {
-                self.printDate(printInfo.printDate);
+            self.selectedDateType(screenInfo.selectedDateType);
+            self.selectedReferenceType(screenInfo.selectedReferenceType);
+            if (screenInfo.printDate) {
+                self.printDate(screenInfo.printDate);
             } else {
                 self.printDate(closure.closureMonth);
             }
-            self.pageBreakSelected(printInfo.pageBreakSelected);
+            self.pageBreakSelected(screenInfo.pageBreakSelected);
         }
 
         /**
          * function export excel button
          */
-        private exportButton() {
-            let self = this;
+        public exportButton() {
+            let self = this,
+                printQuery = new PrintQuery(self);
+
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+
+            //印刷前チェック処理
             if (!self.selectedEmployeeCode().length) {
                 alError({ messageId: 'Msg_884' });
                 return;
             }
-
-            let printInfo = {
-                selectedDateType: self.selectedDateType(),
-                selectedReferenceType: self.selectedReferenceType(),
-                printDate: self.printDate(),
-                pageBreakSelected: self.pageBreakSelected()
+            //事前条件①および②をチェックする
+            if (printQuery.selectedDateType == 1) {
+                self.checkClosureDate().done((isNoError) => {
+                    if (!isNoError) {
+                        alError({ messageId: "Msg_1500" });
+                        return;
+                    } else {
+                        self.doPrint(printQuery);
+                    }
+                });
+            } else {
+                self.doPrint(printQuery);
             }
-            char.save('printInfo', printInfo);
-
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.clear();
+        }
+        
+        public doPrint(printQuery) {
+            block.invisible();
+            service.exportExcel(printQuery).done(() => {
+            }).fail(function(res: any) {
+                alError({ messageId: res.messageId });
+            }).always(() => {
+                block.clear();
+            });
+            char.save('screenInfo', printQuery.toScreenInfo());
         }
 
+        public checkClosureDate() : JQueryPromise<any>{
+            let self = this,
+                closureId = self.closureId(),
+                isNotError = true,
+                dfd = $.Deferred() ;
+            block.invisible();
+            service.findClosureById(closureId).done((closureData) => {
 
+                //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 < 指定月→ 出力エラー　(#Msg_1500)
+                if (closureData.closureSelected) {
+                    if (closureData.month < self.printDate()) {
+                        dfd.resolve(false);
+                    } else {
+                        dfd.resolve(true);
+                    }
+                }
+                else {
+                    //is mean 社員範囲選択の就業締め日 = 全締め
+                    //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 < 指定月→ 出力エラー　(#Msg_1500)
+                    block.invisible();
+                    service.findAllClosure().done((closures) => {
+                        _.forEach(closures, (closure) => {
+                            if (closure.month < self.printDate()) {
+                                dfd.resolve(false);
+                            }
+                        });
+                        dfd.resolve(true);
+                    }).always(() => {
+                        block.clear();
+                    });
+
+                }
+            }).always(() => {
+                block.clear();
+            });
+
+              return dfd.promise();
+        }
+
+    }
+
+    export interface UnitModel {
+        code: string;
+        employeeId: string;
+        name?: string;
+        workplaceCode?: string;
+        workplaceId?: string;
+        workplaceName?: string;
     }
 
     export class ListType {
@@ -241,6 +311,44 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+    export class PrintQuery {
+        // 対象期間
+        selectedDateType: number;
+        // 参照区分
+        selectedReferenceType: number;
+        // 参照区分
+        printDate: number;
+        // 改ページ区分
+        pageBreakSelected: number;
+        selectedEmployees: Array<UnitModel>;
+
+        constructor(screen: ScreenModel) {
+            let self = this;
+            self.selectedDateType = screen.selectedDateType();
+            self.selectedReferenceType = screen.selectedReferenceType();
+            self.printDate = screen.printDate();
+            self.pageBreakSelected = screen.pageBreakSelected();
+            self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code); });
+
+        }
+
+        public toScreenInfo() {
+            let self = this;
+            return {
+                selectedDateType: self.selectedDateType,
+                selectedReferenceType: self.selectedReferenceType,
+                printDate: self.printDate,
+                pageBreakSelected: self.pageBreakSelected
+            }
+        }
+    }
+
+    export interface IScreenInfo {
+        selectedDateType: number,
+        selectedReferenceType: number,
+        printDate: number,
+        pageBreakSelected: number
     }
 
     export class SelectType {
