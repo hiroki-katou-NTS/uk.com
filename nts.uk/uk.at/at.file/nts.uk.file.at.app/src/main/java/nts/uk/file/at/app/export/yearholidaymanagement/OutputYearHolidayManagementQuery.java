@@ -4,10 +4,14 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 
 @Data
 @NoArgsConstructor
 public class OutputYearHolidayManagementQuery {
+	String programName;
+	String companyName;
+	GeneralDateTime exportTime;
 	// 対象期間
 	int selectedDateType;
 	// 参照区分

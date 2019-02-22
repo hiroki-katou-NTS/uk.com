@@ -313,6 +313,9 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         static EMPLOYEE = 4;
     }
     export class PrintQuery {
+        programName: string;
+        companyName: string;
+        exportTime: string;
         // 対象期間
         selectedDateType: number;
         // 参照区分
@@ -324,7 +327,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         selectedEmployees: Array<UnitModel>;
 
         constructor(screen: ScreenModel) {
-            let self = this;
+            let self = this,
+                program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            self.programName = "KDR002" + (program[1] != null ? program[1] : ""); 
+            self.companyName = "";
+            self.exportTime = moment();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
             self.printDate = screen.printDate();
