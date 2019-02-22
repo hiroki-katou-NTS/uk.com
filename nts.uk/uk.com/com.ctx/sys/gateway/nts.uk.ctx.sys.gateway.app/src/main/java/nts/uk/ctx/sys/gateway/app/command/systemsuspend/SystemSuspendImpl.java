@@ -88,25 +88,28 @@ public class SystemSuspendImpl implements SystemSuspendService {
 		return new SystemSuspendOutput(true, "", msg);
 	}
 
+	//#EA修正.3127
+	//2019.02.22 hoatt
 	private UsageStopOutput checkUsageStop(String contractCD, String companyCD){
-		// ドメインモデル「システム全体の利用停止」を取得する
-		Optional<StopBySystem> opStopBySystem = stopBySystemRepository.findByKey(contractCD);
-		if(opStopBySystem.isPresent()){
-			// ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする
-			if(opStopBySystem.get().getSystemStatus()==SystemStatusType.STOP){
+		//ドメインモデル「会社単位の利用停止」を取得する
+		Optional<StopByCompany> opStopByCom = stopByCompanyRepository.findByKey(contractCD, companyCD);
+		if(opStopByCom.isPresent()){//取得できる
+			//ドメインモデル「会社単位の利用停止.システム利用状態」をチェックする
+			if(opStopByCom.get().getSystemStatus()==SystemStatusType.STOP){
 				// 「利用停止する」、　【システム全体の利用停止.利用停止モード】を返す
-				return new UsageStopOutput(true, opStopBySystem.get().getStopMode(), opStopBySystem.get().getStopMessage().v());
+				return new UsageStopOutput(true, opStopByCom.get().getStopMode(), opStopByCom.get().getStopMessage().v());
 			}
 		}
-		// ドメインモデル「会社単位の利用停止」を取得する
-		Optional<StopByCompany> opStopByCompany = stopByCompanyRepository.findByKey(contractCD, companyCD);
-		if(!opStopByCompany.isPresent()){
+		//取得できない
+		//ドメインモデル「システム全体の利用停止」を取得する
+		Optional<StopBySystem> opStopBySystem = stopBySystemRepository.findByKey(contractCD);
+		if(!opStopBySystem.isPresent()){
 			// 「利用停止しない」を返す
 			return new UsageStopOutput(false, StopModeType.ADMIN_MODE, "");
 		}
-		if(opStopByCompany.get().getSystemStatus()==SystemStatusType.STOP){
-			// 「利用停止する」、　【会社単位の利用停止.利用停止モード】を返す
-			return new UsageStopOutput(true, opStopByCompany.get().getStopMode(), opStopByCompany.get().getStopMessage().v()); 
+		if(opStopBySystem.get().getSystemStatus()==SystemStatusType.STOP){
+			//「利用停止する」、　【システム全体の利用停止.利用停止モード】を返す
+			return new UsageStopOutput(true, opStopBySystem.get().getStopMode(), opStopBySystem.get().getStopMessage().v()); 
 		} 
 		// 「利用停止しない」を返す
 		return new UsageStopOutput(false, StopModeType.ADMIN_MODE, "");
