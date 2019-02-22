@@ -19,9 +19,9 @@ import com.aspose.cells.Worksheet;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.pereg.dom.person.error.ErrorWarningEmployeeInfo;
-import nts.uk.ctx.pereg.dom.person.error.ErrorWarningInfoOfRowOrder;
 import nts.uk.file.com.app.person.matrix.PersonInfoMatrixErrorGenerator;
+import nts.uk.file.com.app.person.matrix.datasource.ErrorWarningEmployeeInfoDataSource;
+import nts.uk.file.com.app.person.matrix.datasource.ErrorWarningInfoOfRowOrderDataSource;
 import nts.uk.file.com.app.person.matrix.datasource.PersonMatrixErrorDataSource;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -135,7 +135,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 
 	private void printEmployeeInfo(Worksheet worksheet, PersonMatrixErrorDataSource dataSource, int row) {
 		Cells cells = worksheet.getCells();
-		List<ErrorWarningEmployeeInfo> errorEmployeeInfoLst = dataSource.getErrorEmployeeInfoLst();
+		List<ErrorWarningEmployeeInfoDataSource> errorEmployeeInfoLst = dataSource.getErrorEmployeeInfoLst();
 		int colFix = 0;
 		if (dataSource.isDisplayE1_006()) {
 			colFix = 4;
@@ -143,7 +143,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 			colFix = 3;
 		}
 		for (int i = 0; i < errorEmployeeInfoLst.size(); i++) {
-			ErrorWarningEmployeeInfo employee = errorEmployeeInfoLst.get(i);
+			ErrorWarningEmployeeInfoDataSource employee = errorEmployeeInfoLst.get(i);
 			// in ra những cột cố định
 			for (int col = 0; col < colFix; col++) {
 				Cell cell = cells.get(row, col);
@@ -155,7 +155,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 					cell.setValue(employee.getEmployeeName());
 					break;
 				case 2:
-					cell.setValue(String.valueOf(employee.getErrorLst().get(0).getRowOrder()));
+					cell.setValue(String.valueOf(employee.getOrder()));
 					break;
 				case 3:
 					cell.setValue("X");
@@ -168,7 +168,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 			// in ra những item lỗi
 			int sizeError = employee.getErrorLst().size();
 			for (int j = 0; j < sizeError; j++) {
-				ErrorWarningInfoOfRowOrder errorItem = employee.getErrorLst().get(j);
+				ErrorWarningInfoOfRowOrderDataSource errorItem = employee.getErrorLst().get(j);
 
 				for (int col = colFix; col < NUMBEROFCOL; col++) {
 					Cell cell = cells.get(row, col);
