@@ -135,6 +135,11 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 		
 		
 	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.BASE_DATE;
+	}
 	
 	private Map<String, Object> putEntryMasterDatas(){
 		 Map<String, Object> data = new HashMap<>();

@@ -14,6 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @DomainID(value = "SetWorkingHoursAndDays")
 @Stateless
@@ -328,6 +329,11 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	}
 
 	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.YEAR_RANGE;
+	}
+
+	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
@@ -365,7 +371,9 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 			if (Integer.valueOf(usage[2].toString()) == 1) {
 				SheetData sheetDataEmployment = SheetData.builder().mainData(this.getMasterDatasEmployment(query))
 						.mainDataColumns(this.getHeaderEmploymentColumns())
-						.sheetName(TextResource.localize("KMK004_191")).build();
+						.sheetName(TextResource.localize("KMK004_191"))
+						.mode(MasterListMode.YEAR_RANGE)
+						.build();
 				sheetDatas.add(sheetDataEmployment);
 			}
 
@@ -373,7 +381,9 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 			if (Integer.valueOf(usage[1].toString()) == 1) {
 				SheetData sheetDataWorkPlace = SheetData.builder().mainData(this.getMasterDatasWorkPlace(query))
 						.mainDataColumns(this.getHeaderWorkPlaceColumns())
-						.sheetName(TextResource.localize("KMK004_192")).build();
+						.sheetName(TextResource.localize("KMK004_192"))
+						.mode(MasterListMode.YEAR_RANGE)
+						.build();
 				sheetDatas.add(sheetDataWorkPlace);
 			}
 
@@ -381,6 +391,7 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 			if (Integer.valueOf(usage[0].toString()) == 1) {
 				SheetData sheetDataEmployee = SheetData.builder().mainData(this.getMasterDatasEmployee(query))
 						.mainDataColumns(this.getHeaderEmployeeColumns()).sheetName(TextResource.localize("KMK004_190"))
+						.mode(MasterListMode.YEAR_RANGE)
 						.build();
 				sheetDatas.add(sheetDataEmployee);
 			}

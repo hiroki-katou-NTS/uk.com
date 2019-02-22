@@ -59,11 +59,12 @@ public class DayCalendarExportImpl implements MasterListData {
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"),MasterListMode.FISCAL_YEAR_RANGE);
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), 
+				 getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"),MasterListMode.FISCAL_YEAR_RANGE);
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"),MasterListMode.FISCAL_YEAR_RANGE);
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"), MasterListMode.FISCAL_YEAR_RANGE);
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -75,11 +76,9 @@ public class DayCalendarExportImpl implements MasterListData {
 		 
 		return TextResource.localize("KSM004_56");
 	}
-	
-	
 
 	@Override
-	public MasterListMode mainSheetMode() {		
+	public MasterListMode mainSheetMode(){
 		return MasterListMode.FISCAL_YEAR_RANGE;
 	}
 
