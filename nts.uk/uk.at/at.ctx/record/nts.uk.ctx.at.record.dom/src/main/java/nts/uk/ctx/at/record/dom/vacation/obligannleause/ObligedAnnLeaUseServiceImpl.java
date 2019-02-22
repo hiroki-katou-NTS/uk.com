@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaGrantInfoOutput;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -29,6 +30,9 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Inject
 	private GetAnnLeaUsedDays getAnnLeaUsedDays;
+	/** ドメインサービス：締め */
+	@Inject
+	private ClosureService closureService;
 	/** 前回付与日から次回付与日までの期間を取得 */
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
@@ -107,13 +111,17 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		String employeeId = obligedAnnualLeaveUse.getEmployeeId();
 		AnnLeaGrantInfoOutput result = new AnnLeaGrantInfoOutput(employeeId);
 		
-		// 仮設定（設計不備）
-		YearMonth ym = YearMonth.of(2019, 2);
-		GeneralDate criteria = GeneralDate.ymd(2019, 2, 21);
+		// 基準日　←　システム日付
+		GeneralDate criteria = GeneralDate.today();
+
+		// 社員に対応する処理締めを取得する
+		val closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
+		if (closure == null) return result;
+		YearMonth currentMonth = closure.getClosureMonth().getProcessingYm();
 		
 		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得
 		val periodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodGrantDate(
-				AppContexts.user().companyId(), employeeId, ym, criteria);
+				AppContexts.user().companyId(), employeeId, currentMonth, criteria);
 		if (!periodOpt.isPresent()) return result;
 		val period = periodOpt.get();
 		

@@ -73,6 +73,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
@@ -236,15 +237,15 @@ public class CalculationSettingExportImpl implements MasterListData {
 		List<SheetData> sheetDatas = new ArrayList<>();
 		// sheet 2
 		SheetData settingwrokhour = new SheetData(getDataSettingWorkingHours(query),
-				getHeaderColumnsSettingWorkingHours(query), null, null, TextResource.localize("KMK013_427"));
+				getHeaderColumnsSettingWorkingHours(query), null, null, TextResource.localize("KMK013_427"), MasterListMode.NONE);
 		sheetDatas.add(settingwrokhour);
 		// sheet 3
 		SheetData timeZoneSetting = new SheetData(getDataLateNightTimeZoneSetting(query),
-				getHeaderColumnsLateNightTimeZoneSetting(query), null, null, TextResource.localize("KMK013_428"));
+				getHeaderColumnsLateNightTimeZoneSetting(query), null, null, TextResource.localize("KMK013_428"), MasterListMode.NONE);
 		sheetDatas.add(timeZoneSetting);
 		// sheet 4
 		SheetData dataEmbossSetting = new SheetData(getDataEmbossSetting(query), getHeaderColumnsEmbossSetting(query),
-				null, null, TextResource.localize("KMK013_429"));
+				null, null, TextResource.localize("KMK013_429"), MasterListMode.NONE);
 		sheetDatas.add(dataEmbossSetting);
 		// sheet 5
 		String companyId = AppContexts.user().companyId();
@@ -252,7 +253,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 		if (optTempWorkUse.isPresent() && !Objects.isNull(optTempWorkUse.get().getUseClassification())
 				&& optTempWorkUse.get().getUseClassification().value == 1) {
 			SheetData dataTemporaryWorkSetting = new SheetData(getDataTemporaryWorkSetting(query),
-					getHeaderColumnsTemporaryWorkSetting(query), null, null, TextResource.localize("KMK013_430"));
+					getHeaderColumnsTemporaryWorkSetting(query), null, null, TextResource.localize("KMK013_430"), MasterListMode.NONE);
 			sheetDatas.add(dataTemporaryWorkSetting);
 		}
 		// sheet6
@@ -260,7 +261,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 		if (optAggSetting.isPresent() && !Objects.isNull(optAggSetting.get().getUseDeformedLabor())
 				&& optAggSetting.get().getUseDeformedLabor().value == 1) {
 			SheetData dataSettingOfDeformedLabor = new SheetData(getDataSettingOfDeformedLabor(query),
-					getHeaderColumnsSettingOfDeformedLabor(query), null, null, TextResource.localize("KMK013_432"));
+					getHeaderColumnsSettingOfDeformedLabor(query), null, null, TextResource.localize("KMK013_432"), MasterListMode.NONE);
 			sheetDatas.add(dataSettingOfDeformedLabor);
 		}
 		// sheet7
@@ -268,35 +269,40 @@ public class CalculationSettingExportImpl implements MasterListData {
 		if (optFlexWorkSet.isPresent() && !Objects.isNull(optFlexWorkSet.get().getUseFlexWorkSetting())
 				&& optFlexWorkSet.get().getUseFlexWorkSetting().value == 1) {
 			SheetData dataFlexWorkSetting = new SheetData(getDataFlexWorkSetting(query),
-					getHeaderColumnsFlexWorkSetting(query), null, null, TextResource.localize("KMK013_433"));
+					getHeaderColumnsFlexWorkSetting(query), null, null, TextResource.localize("KMK013_433"), MasterListMode.NONE);
 			sheetDatas.add(dataFlexWorkSetting);
 		}
 		// sheet8
 		SheetData dataStatutorySettings = new SheetData(getDataStatutorySettings(query),
-				getHeaderColumnsStatutorySettings(query), null, null, TextResource.localize("KMK013_435"));
+				getHeaderColumnsStatutorySettings(query), null, null, TextResource.localize("KMK013_435"), MasterListMode.NONE);
 		sheetDatas.add(dataStatutorySettings);
 		// sheet9
 
 		SheetData dataCalculationProjectInherentSetting = new SheetData(getDataCalculationProjectInherentSetting(query),
 				getHeaderColumnsCalculationProjectInherentSetting(query), null, null,
-				TextResource.localize("KMK013_437"));
+				TextResource.localize("KMK013_437"), MasterListMode.NONE);
 		sheetDatas.add(dataCalculationProjectInherentSetting);
 		// sheet 10
 
 		SheetData dataZerotimeCrossingcalculationSettin = new SheetData(
 				getDataZerotimeCrossingcalculationSetting(query),
 				getHeaderColumnsZerotimeCrossingcalculationSetting(query), null, null,
-				TextResource.localize("KMK013_438"));
+				TextResource.localize("KMK013_438"), MasterListMode.NONE);
 		sheetDatas.add(dataZerotimeCrossingcalculationSettin);
 		// sheet 11
 		SheetData dataSettingOfverticalmonthly = new SheetData(getDataSettingOfverticalmonthly(query),
-				getHeaderColumnsSettingOfverticalmonthly(query), null, null, TextResource.localize("KMK013_439"));
+				getHeaderColumnsSettingOfverticalmonthly(query), null, null, TextResource.localize("KMK013_439"), MasterListMode.NONE);
 		sheetDatas.add(dataSettingOfverticalmonthly);
 		// sheet 12
 		SheetData dataRoundingSettingOfMonthly = new SheetData(getDataRoundingSettingOfMonthly(query),
-				getHeaderColumnsRoundingSettingOfMonthly(query), null, null, TextResource.localize("KMK013_440"));
+				getHeaderColumnsRoundingSettingOfMonthly(query), null, null, TextResource.localize("KMK013_440"), MasterListMode.NONE);
 		sheetDatas.add(dataRoundingSettingOfMonthly);
 		return sheetDatas;
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 	@Override

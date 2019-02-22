@@ -324,9 +324,8 @@ module nts.uk.at.view.kwr001.c {
                             if (_.size(dataScrD.lstAtdChoose.msgErr)) {
                                 nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
                                     self.saveData(dataScrD);
-                                } 
+                                });
                             }else {
-
                                 self.saveData(dataScrD);
                             }
 

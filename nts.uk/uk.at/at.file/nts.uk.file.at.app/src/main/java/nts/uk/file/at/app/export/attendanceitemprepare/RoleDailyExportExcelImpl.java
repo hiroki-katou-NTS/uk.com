@@ -40,6 +40,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
 *
@@ -132,15 +133,15 @@ public class RoleDailyExportExcelImpl {
         // add the work place sheet
         List<SheetData> sheetDatas = new ArrayList<>();
         SheetData sheet1 = new SheetData(getMasterDatas(query,listEmployeeRoleDto,authSeting,listAttItemNameNoAuth),
-                getHeaderColumns(query), null, null, TextResource.localize("KDW006_138"));
+                getHeaderColumns(query), null, null, TextResource.localize("KDW006_138"), MasterListMode.NONE);
         SheetData sheet2 = new SheetData(getMasterDatasSheet2(query,listAttItemNameNoAuth,listConItem),
-                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_139"));
+                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_139"), MasterListMode.NONE);
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBusinessType,mapMonthlyBz,
         		mapAttNameMonthlys,maplistBzDaily,mapAttNameDailys,companyId,mapAttNameMonthlys,mode,mapBz),
-                getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_142"));
+                getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_142"), MasterListMode.NONE);
 
         SheetData sheet6 = new SheetData(getMasterDatasSheet6(query,mapTypeByEmpAndGroup,headerSheet6),
-                getHeaderColumnsSheet6(query,headerSheet6), null, null, TextResource.localize("KDW006_144"));
+                getHeaderColumnsSheet6(query,headerSheet6), null, null, TextResource.localize("KDW006_144"), MasterListMode.NONE);
 
         sheetDatas.add(sheet1);
         sheetDatas.add(sheet2);
@@ -148,7 +149,7 @@ public class RoleDailyExportExcelImpl {
         sheetDatas.add(sheet3);
         if(mode==1){
         	SheetData sheet5 = new SheetData(getMasterDatasSheet5(query,listBzTypeSort),
-        			getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_143"));
+        			getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_143"), MasterListMode.NONE);
         	sheetDatas.add(sheet5);
         }
         sheetDatas.add(sheet6);
