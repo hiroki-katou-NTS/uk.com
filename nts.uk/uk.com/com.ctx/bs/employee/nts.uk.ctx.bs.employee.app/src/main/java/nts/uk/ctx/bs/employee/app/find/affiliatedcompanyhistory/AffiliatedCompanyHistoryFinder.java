@@ -5,7 +5,6 @@ package nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,14 +29,24 @@ public List<AffCompanyHistItemDto> getByIDAndBasedate(GeneralDate baseDate , Lis
 	//ドメインモデル「所属会社履歴（社員別）」を取得する
 	//(Lấy domain [AffCompanyHistByEmployee])
 	List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployeeListAndBaseDate(listempID, baseDate);
-	List<List<AffCompanyHistByEmployee>> listAffCompanyHistByEmployee = listAffCompanyHist.stream().map(c ->c.getLstAffCompanyHistByEmployee()).collect(Collectors.toList());
 	List<AffCompanyHistItemDto> data = new ArrayList<>();
-
-	for (List<AffCompanyHistByEmployee> list : listAffCompanyHistByEmployee) {
-		for (AffCompanyHistByEmployee c : list) {
-			AffCompanyHistItemDto a= new AffCompanyHistItemDto(c.getSId(), c.getLstAffCompanyHistoryItem());
-			data.add(a);
+	for(AffCompanyHist aff: listAffCompanyHist){
+		if (aff == null) {
+			continue;
 		}
+
+		AffCompanyHistByEmployee empHist = aff.getLstAffCompanyHistByEmployee().get(0);
+
+		if (empHist == null) {
+			continue;
+		}
+
+		AffCompanyHistItem histItem = empHist.getLstAffCompanyHistoryItem().get(0);
+
+		if (histItem == null) {
+			continue;
+		}
+		data.add(new AffCompanyHistItemDto(empHist.getSId(), histItem.getHistoryId(), histItem.isDestinationData(), histItem.start(), histItem.end()));
 	}
 	return data;
 }
