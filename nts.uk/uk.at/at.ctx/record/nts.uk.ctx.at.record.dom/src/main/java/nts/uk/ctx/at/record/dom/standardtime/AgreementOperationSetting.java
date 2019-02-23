@@ -237,4 +237,16 @@ public class AgreementOperationSetting extends AggregateRoot {
 				source.getAgreementTime(),
 				source.getAgreementMaxTime());
 	}
+	
+	/**
+	 * 超過回数の残数
+	 * @param excessTimes 超過回数
+	 * @return 残回数
+	 */
+	// 2019.2.23 ADD shuichi_ishida
+	public int getRemainTimes(int excessTimes){
+		
+		// 残回数を返す
+		return this.numberTimesOverLimitType.value - excessTimes;
+	}
 }
