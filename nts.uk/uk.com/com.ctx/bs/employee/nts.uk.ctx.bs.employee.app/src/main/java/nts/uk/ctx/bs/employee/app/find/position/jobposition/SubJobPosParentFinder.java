@@ -50,6 +50,12 @@ public class SubJobPosParentFinder implements PeregFinder<AffiDeptAndSubJobPos>{
 		return null;
 	}
 
+	@Override
+	public List<AffiDeptAndSubJobPos> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }

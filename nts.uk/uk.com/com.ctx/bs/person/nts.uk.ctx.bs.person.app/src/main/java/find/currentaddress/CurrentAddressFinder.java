@@ -63,4 +63,10 @@ public class CurrentAddressFinder implements PeregFinder<CurrentAddressDto>{
 		return null;
 	}
 
+	@Override
+	public List<CurrentAddressDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

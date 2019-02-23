@@ -96,4 +96,10 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<TempAbsHisItemDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

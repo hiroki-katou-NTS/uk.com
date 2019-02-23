@@ -52,4 +52,10 @@ public class SpecialLeaveGrantDto20Finder implements PeregFinder<SpecialLeaveGra
 		return null;
 	}
 
+	@Override
+	public List<SpecialLeaveGrantDto20> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

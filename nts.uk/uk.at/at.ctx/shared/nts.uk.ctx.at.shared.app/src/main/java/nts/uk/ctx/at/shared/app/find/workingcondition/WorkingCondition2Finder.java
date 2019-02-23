@@ -87,4 +87,10 @@ public class WorkingCondition2Finder implements PeregFinder<WorkingCondition2Dto
 			return wcRepo.getByHistoryId(query.getInfoId());
 		}
 	}
+
+	@Override
+	public List<WorkingCondition2Dto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

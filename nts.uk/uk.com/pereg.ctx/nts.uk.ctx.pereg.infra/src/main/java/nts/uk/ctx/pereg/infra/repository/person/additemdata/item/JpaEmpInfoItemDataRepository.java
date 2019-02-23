@@ -41,6 +41,9 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd";
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE_2
 			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId = :recordId";
+	
+	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_IDS_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE_2
+			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId IN :recordId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID = SELECT_ALL_INFO_ITEM_NO_WHERE_2
 			+ " WHERE id.ppemtEmpInfoItemDataPk.perInfoDefId = :perInfoDefId AND id.ppemtEmpInfoItemDataPk.recordId = :recordId";
@@ -257,5 +260,15 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			.getList());
 		});
 		return item.size() > 0;
+	}
+
+	@Override
+	public List<EmpInfoItemData> getAllInfoItemByRecordId(List<String> recordIds) {
+		List<Object[]> lstEntity = this.queryProxy()
+				.query(SELECT_ALL_INFO_ITEM_BY_RECODE_IDS_QUERY_STRING, Object[].class)
+				.setParameter("recordId", recordIds).getList();
+		if (lstEntity == null)
+			return new ArrayList<>();
+		return lstEntity.stream().map(c -> toDomainNew(c)).collect(Collectors.toList());
 	}
 }

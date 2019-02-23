@@ -53,5 +53,11 @@ public class FamilyMemberFinder implements PeregFinder<FamilyMemberDto>{
 		return null;
 	}
 
+	@Override
+	public List<FamilyMemberDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

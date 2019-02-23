@@ -103,4 +103,10 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<ShortWorkTimeDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

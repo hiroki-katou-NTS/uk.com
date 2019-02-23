@@ -86,4 +86,10 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<CareLeaveInfoDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

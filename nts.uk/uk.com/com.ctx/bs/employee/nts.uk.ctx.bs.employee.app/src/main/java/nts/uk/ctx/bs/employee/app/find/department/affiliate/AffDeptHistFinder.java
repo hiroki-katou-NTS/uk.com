@@ -89,4 +89,10 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 		}
 		return new ArrayList<>();
 	}
+
+	@Override
+	public List<AffDeptHistDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

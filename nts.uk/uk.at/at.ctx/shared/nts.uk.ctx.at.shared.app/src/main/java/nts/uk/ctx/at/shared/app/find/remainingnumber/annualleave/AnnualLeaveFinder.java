@@ -111,4 +111,10 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 		return null;
 	}
 
+	@Override
+	public List<AnnualLeaveDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

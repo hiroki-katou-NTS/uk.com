@@ -61,4 +61,10 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<PeregStampCardDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

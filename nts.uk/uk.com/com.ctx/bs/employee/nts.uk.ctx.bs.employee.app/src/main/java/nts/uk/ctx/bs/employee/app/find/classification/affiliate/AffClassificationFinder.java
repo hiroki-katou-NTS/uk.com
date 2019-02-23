@@ -102,4 +102,10 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	}
 
+	@Override
+	public List<AffClassificationDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

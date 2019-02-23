@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.employment.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,26 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public List<EmploymentHistoryDto> getAllData(List<PeregQuery> query) {
+		String cid = AppContexts.user().companyId();
+		List<String> sids = query.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		GeneralDate standardDate  = query.size() > 0? query.get(0).getStandardDate() : GeneralDate.today();
+		Map<String, DateHistoryItem> dateHistLst = this.empHistRepo.getByEmployeeIdAndStandardDate(cid, sids,standardDate);
+		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
+		List<EmploymentHistoryItem> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds);
+		List<EmploymentHistoryDto> result = employmentHist.stream().map( c -> {
+			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
+			return EmploymentHistoryDto.createFromDomain(date, c );
+		}).collect(Collectors.toList());
+		if(query.size() > result.size()) {
+			for(int i  = result.size(); i < query.size() ; i++) {
+				result.add(null);
+			}
+		}
+		return result;
 	}
 
 }

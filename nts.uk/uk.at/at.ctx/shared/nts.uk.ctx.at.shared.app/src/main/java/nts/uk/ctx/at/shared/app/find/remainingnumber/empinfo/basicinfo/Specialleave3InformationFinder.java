@@ -51,4 +51,10 @@ public class Specialleave3InformationFinder implements PeregFinder<Specialleave3
 		return null;
 	}
 
+	@Override
+	public List<Specialleave3informationDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

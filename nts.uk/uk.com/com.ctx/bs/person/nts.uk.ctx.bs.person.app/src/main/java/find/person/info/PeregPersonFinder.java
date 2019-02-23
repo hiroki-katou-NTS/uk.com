@@ -56,4 +56,10 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 		return null;
 	}
 
+	@Override
+	public List<PersonDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,6 +94,45 @@ public class LayoutingProcessor {
 		val finderClass = this.finders.get(query.getCategoryCode());
 		return finderClass.getListFirstItems(query);
 	}
+	
+	/**
+	 * find all by sids
+	 * @param query
+	 * @return
+	 */
+	public List<PeregDto> findAllData(List<PeregQuery> query) {
+		
+		if (query.size() == 0) {
+			return new ArrayList<>();
+		}
+		
+		// get domain data
+		val finderClass = this.finders.get(query.get(0).getCategoryCode());
+		
+		if (finderClass == null)
+			return null;
+		
+		List<?> objectDto =  finderClass.findAllData(query);
+		
+		if (objectDto.size() == 0) {
+			return new ArrayList<>();
+		}
+		
+		List<PeregDomainDto> domainDto = objectDto.stream().map(c-> (PeregDomainDto) c).collect(Collectors.toList());
+
+
+		List<String> recordIds = domainDto.stream().map(c -> c.getRecordId()).collect(Collectors.toList());
+		
+		// get optional data
+		Map<String,List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
+		
+		List<PeregDto> peregDtoLst =  domainDto.stream().map(c ->{
+			return new PeregDto(c, finderClass.dtoClass(), optionalItems.get(c.getRecordId()));
+		}).collect(Collectors.toList());
+		
+		return peregDtoLst;
+	}
+
 
 	private List<OptionalItemDataDto> getUserDefData(DataClassification personEmpType, String recordId) {
 		if (personEmpType == DataClassification.PERSON) {
@@ -100,6 +140,23 @@ public class LayoutingProcessor {
 		}
 		else {
 			return empOptRepo.getData(recordId);
+		}
+
+	}
+	
+	/**
+	 * getUserDefData by recordIds
+	 * 
+	 * @param personEmpType
+	 * @param recordId
+	 * @return
+	 */
+	private Map<String, List<OptionalItemDataDto>> getUserDefData(DataClassification personEmpType,
+			List<String> recordIds) {
+		if (personEmpType == DataClassification.PERSON) {
+			return perOptRepo.getDatas(recordIds);
+		} else {
+			return empOptRepo.getDatas(recordIds);
 		}
 
 	}

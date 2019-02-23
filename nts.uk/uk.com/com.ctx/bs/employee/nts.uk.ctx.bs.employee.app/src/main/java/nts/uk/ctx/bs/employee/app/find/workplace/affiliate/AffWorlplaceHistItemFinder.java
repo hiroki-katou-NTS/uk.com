@@ -100,4 +100,10 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		}
 		return new ArrayList<>();
 	}
+
+	@Override
+	public List<AffWorlplaceHistItemDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

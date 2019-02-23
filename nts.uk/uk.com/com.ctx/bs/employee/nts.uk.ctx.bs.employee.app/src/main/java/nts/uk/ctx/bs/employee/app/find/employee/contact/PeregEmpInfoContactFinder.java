@@ -56,5 +56,11 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 		return null;
 	}
 
+	@Override
+	public List<EmpInfoContactDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

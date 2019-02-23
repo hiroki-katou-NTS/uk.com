@@ -101,4 +101,10 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<AffJobTitleDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

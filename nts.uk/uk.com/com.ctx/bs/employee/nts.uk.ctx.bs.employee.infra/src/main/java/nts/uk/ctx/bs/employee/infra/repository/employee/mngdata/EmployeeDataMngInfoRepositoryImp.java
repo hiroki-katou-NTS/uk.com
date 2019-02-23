@@ -405,15 +405,42 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-
-		// Split query.
-		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployeeDataMngInfo.class)
-					.setParameter("companyId", companyId).setParameter("employeeIds", subList).getList());
+		List<EmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			
+			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
+					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " and CID = ?";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				stmt.setString(subList.size() + 1, companyId);
+				List<EmployeeDataMngInfo> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtEmployeeDataMngInfo e = new BsymtEmployeeDataMngInfo();
+					e.bsymtEmployeeDataMngInfoPk = new BsymtEmployeeDataMngInfoPk();
+					e.bsymtEmployeeDataMngInfoPk.sId = r.getString("SID");
+					e.bsymtEmployeeDataMngInfoPk.pId = r.getString("PID");
+					e.companyId = r.getString("CID");
+					e.employeeCode = r.getString("SCD");
+					e.delStatus = r.getInt("DEL_STATUS_ATR");
+					e.delDateTmp = r.getGeneralDateTime("DEL_DATE");
+					e.removeReason = r.getString("REMV_REASON");
+					e.extCode = r.getString("EXT_CD");
+					return toDomain(e);
+				});
+				
+				resultList.addAll(subResults);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-
-		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
+		
+		
+		return resultList;
 	}
 
 	/*
@@ -681,5 +708,43 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		});
 
 		return data;
+	}
+
+	@Override
+	public List<EmployeeSimpleInfo> findBySidsAndPids(List<String> sids, List<String> pids) {
+		List<EmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			
+			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
+					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " and PID in (" + NtsStatement.In.createParamsString(pids) + ")"
+					+ " and CID";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				
+				List<EmployeeDataMngInfo> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtEmployeeDataMngInfo e = new BsymtEmployeeDataMngInfo();
+					e.bsymtEmployeeDataMngInfoPk = new BsymtEmployeeDataMngInfoPk();
+					e.bsymtEmployeeDataMngInfoPk.sId = r.getString("SID");
+					e.bsymtEmployeeDataMngInfoPk.pId = r.getString("PID");
+					e.companyId = r.getString("CID");
+					e.employeeCode = r.getString("SCD");
+					e.delStatus = r.getInt("DEL_STATUS_ATR");
+					e.delDateTmp = r.getGeneralDateTime("DEL_DATE");
+					e.removeReason = r.getString("REMV_REASON");
+					e.extCode = r.getString("EXT_CD");
+					return toDomain(e);
+				});
+				
+				resultList.addAll(subResults);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return null;
 	}
 }

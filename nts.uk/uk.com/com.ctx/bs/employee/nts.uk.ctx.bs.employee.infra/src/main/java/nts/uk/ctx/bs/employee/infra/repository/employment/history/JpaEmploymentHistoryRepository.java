@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
@@ -299,5 +300,34 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			mapResult.put(sid, hist.get(0));
 		}
 		return mapResult;
+	}
+
+	@Override
+	public Map<String, DateHistoryItem> getByEmployeeIdAndStandardDate(String cid, List<String> sids,
+			GeneralDate standardDate) {
+		Map<String, DateHistoryItem> result = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select * FROM BSYMT_EMPLOYMENT_HIST where CID =? and START_DATE <= ? and END_DATE >= ? and SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
+					;
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
+				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
+				int size = subList.size() + 3;
+				for (int i = 4 ; i <= size; i++) {
+					stmt.setString(i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					result.put(rec.getString("SID"), new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
+				});
+				
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+		});
+		return result;
 	}
 }

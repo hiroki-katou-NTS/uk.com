@@ -99,4 +99,10 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 		return null;
 	}
 
+	@Override
+	public List<BusinessTypeDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

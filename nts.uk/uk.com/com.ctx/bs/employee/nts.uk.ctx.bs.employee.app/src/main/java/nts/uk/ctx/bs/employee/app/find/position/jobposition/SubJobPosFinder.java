@@ -49,4 +49,10 @@ public class SubJobPosFinder implements PeregFinder<SubJobPositionDto>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<SubJobPositionDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

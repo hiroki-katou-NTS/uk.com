@@ -118,4 +118,10 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		return null;
 	}
 
+	@Override
+	public List<OtherHolidayInfoDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

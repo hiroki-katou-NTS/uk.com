@@ -63,4 +63,10 @@ public class JobTitleMainFinder implements PeregFinder<JobTitleMainDto>{
 		return null;
 	}
 
+	@Override
+	public List<JobTitleMainDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

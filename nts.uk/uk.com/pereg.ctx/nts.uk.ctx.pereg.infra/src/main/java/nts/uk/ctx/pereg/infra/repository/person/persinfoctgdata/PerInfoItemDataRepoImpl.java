@@ -42,6 +42,11 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.recordId = :recordId";
 	
+	private static final String GET_BY_RIDS = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
+			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " where itemData.primaryKey.recordId IN :recordId";
+	
 	private static final String GET_BY_ITEM_DEF_ID_AND_RECORD_ID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -252,6 +257,24 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 				.getList());
 		});
 		return itemLst.size() > 0;
+	}
+
+	@Override
+	public List<PersonInfoItemData> getAllInfoItemByRecordId(List<String> recordIds) {
+		if (recordIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		List<PpemtPerInfoItemData> entities = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_RIDS, PpemtPerInfoItemData.class)
+					.setParameter("recordId", subList).getList());
+		});
+		
+		return entities.stream()
+				.map(ent -> PersonInfoItemData.createFromJavaType(ent.primaryKey.perInfoDefId, ent.primaryKey.recordId,
+						ent.saveDataAtr, ent.stringVal, ent.intVal, ent.dateVal))
+				.collect(Collectors.toList());
 	}
 
 }

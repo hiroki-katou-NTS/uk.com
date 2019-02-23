@@ -63,4 +63,10 @@ public class AffiliationDepartmentFinder implements PeregFinder<AffiliationDepar
 		return null;
 	}
 
+	@Override
+	public List<AffiliationDepartmentDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

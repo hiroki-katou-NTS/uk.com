@@ -63,4 +63,10 @@ public class AssgWorkPlaceFinder implements PeregFinder<AssgWorkPlaceDto>{
 		return null;
 	}
 
+	@Override
+	public List<AssgWorkPlaceDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

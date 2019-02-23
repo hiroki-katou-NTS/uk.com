@@ -80,4 +80,14 @@ public interface EmploymentHistoryRepository {
 	 * @return
 	 */
 	Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate standardDate);
+	
+	/**
+	 * @author lanlt
+	 * get list Employee by sids, cid, standar
+	 * @param cid
+	 * @param sids
+	 * @param standardDate
+	 * @return
+	 */
+	Map<String, DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
 }

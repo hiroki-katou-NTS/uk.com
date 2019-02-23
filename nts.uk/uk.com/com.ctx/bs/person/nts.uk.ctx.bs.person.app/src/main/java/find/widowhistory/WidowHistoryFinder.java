@@ -64,6 +64,12 @@ public class WidowHistoryFinder implements PeregFinder<WidowHistoryDto>{
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<WidowHistoryDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }

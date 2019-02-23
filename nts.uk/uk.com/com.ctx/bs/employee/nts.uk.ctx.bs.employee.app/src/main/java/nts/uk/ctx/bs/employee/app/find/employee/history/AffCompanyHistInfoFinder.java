@@ -100,4 +100,10 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<AffCompanyHistInfoDto> getAllData(List<PeregQuery> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
