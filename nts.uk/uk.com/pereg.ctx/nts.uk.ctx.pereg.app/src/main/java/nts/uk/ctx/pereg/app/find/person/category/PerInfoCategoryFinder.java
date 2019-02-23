@@ -203,6 +203,7 @@ public class PerInfoCategoryFinder {
 					} else {
 						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES);
 					}
+					break;
 				case MULTIINFO:
 					// create new data case
 					if (isSelfAuth) {
@@ -212,6 +213,7 @@ public class PerInfoCategoryFinder {
 						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES
 								&& personInfoCategoryAuth.getOtherAllowAddMulti() == PersonInfoPermissionType.YES);
 					}
+					break;
 				default: // HISTORY
 					// create new data case
 					if (isSelfAuth) {
@@ -221,6 +223,7 @@ public class PerInfoCategoryFinder {
 						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES
 								&& personInfoCategoryAuth.getOtherAllowAddHis() == PersonInfoPermissionType.YES);
 					}
+					break;
 				}
 			});
 		}
