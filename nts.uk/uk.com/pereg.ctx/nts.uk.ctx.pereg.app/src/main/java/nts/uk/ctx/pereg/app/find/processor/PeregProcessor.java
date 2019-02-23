@@ -130,7 +130,7 @@ public class PeregProcessor {
 		
 		// map PersonInfoItemDefinition →→ PerInfoItemDefForLayoutDto
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = getPerItemDefForLayout(perInfoCtg, contractCode,
-				roleId, employeeId, isSelfAuth);
+				roleId, isSelfAuth);
 		if (lstPerInfoItemDefForLayout.isEmpty()) {
 			return new EmpMaintLayoutDto();
 		}
@@ -158,8 +158,8 @@ public class PeregProcessor {
 		LoginUserContext loginUser = AppContexts.user();
 
 		String categoryId = query.getCategoryId(),
+				//loginEmpId = loginUser.employeeId(),
 				contractCode = loginUser.contractCode(),
-				loginEmpId = loginUser.employeeId(),
 				roleId = loginUser.roles().forPersonalInfo();
 		
 		List<String> employeeIds = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
@@ -178,6 +178,9 @@ public class PeregProcessor {
 		if(permisions.size() == 0) {
 			return new ArrayList<>();			
 		}
+		
+		// get item for self and other (self map key is true)
+		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = getPerItemDefForLayout(perInfoCtg, contractCode, roleId);
 		
 		
 		// get PerInfoItemDefForLayoutDto
@@ -296,10 +299,78 @@ public class PeregProcessor {
 		List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
 		MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
+	}	
+
+	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
+			String roleId) {
+		// get per info item def with order
+		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
+				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), contractCode);
+
+		List<PersonInfoItemDefinition> parentItemDefinitionList = fullItemDefinitionList.stream()
+				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
+
+		List<PerInfoItemDefForLayoutDto> lstSelf = new ArrayList<>(), lstOther = new ArrayList<>();
+
+		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
+				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
+				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
+
+		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
+			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
+
+			// check authority
+			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
+			
+			if (personInfoItemAuth == null) {
+				continue;
+			}
+			
+			PersonInfoAuthType selfRole = personInfoItemAuth.getSelfAuth(),
+					otherRole = personInfoItemAuth.getOtherAuth();
+
+			if (selfRole != PersonInfoAuthType.HIDE) {
+				// convert item-definition to layoutDto
+				ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+	
+				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i, role);
+	
+				// get and convert childrenItems
+				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
+	
+	 			itemDto.setLstChildItemDef(childrenItems);
+	
+	 			lstSelf.add(itemDto);
+			}
+			
+			if(otherRole != PersonInfoAuthType.HIDE) {
+				// convert item-definition to layoutDto
+				ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+	
+				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i, role);
+	
+				// get and convert childrenItems
+				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
+	
+	 			itemDto.setLstChildItemDef(childrenItems);
+	
+	 			lstOther.add(itemDto);				
+			}
+		}
+
+		return new HashMap<Boolean, List<PerInfoItemDefForLayoutDto>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(true, lstSelf);
+				put(false, lstOther);
+			}			
+		};
 	}
 
 	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
-			String roleId, String employeeId, boolean isSelf) {
+			String roleId, boolean isSelf) {
 
 		// get per info item def with order
 		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
@@ -319,9 +390,11 @@ public class PeregProcessor {
 
 			// check authority
 			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
+			
 			if (personInfoItemAuth == null) {
 				continue;
 			}
+			
 			PersonInfoAuthType roleOfItem = isSelf ? personInfoItemAuth.getSelfAuth()
 					: personInfoItemAuth.getOtherAuth();
 
@@ -345,33 +418,5 @@ public class PeregProcessor {
 		}
 
 		return lstReturn;
-	}
-	
-	//get PerItemDefForLayout theo list Emp cho CPS 003
-	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayoutByListEmp(PersonInfoCategory category, String contractCode,
-			String roleId, List<String> employeeId, List<Boolean> isSelf) {
-		// get per info item def with order
-		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
-				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), contractCode);
-		
-		List<PersonInfoItemDefinition> parentItemDefinitionList = fullItemDefinitionList.stream()
-				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
-		
-		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
-		
-		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
-				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
-				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
-		
-		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
-			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
-			// check authority
-			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
-			if (personInfoItemAuth == null) {
-				continue;
-			}			
-		}
-
-		return null;
 	}
 }
