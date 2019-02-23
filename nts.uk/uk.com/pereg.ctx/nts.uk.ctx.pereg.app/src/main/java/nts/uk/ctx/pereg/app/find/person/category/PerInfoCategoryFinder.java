@@ -173,6 +173,61 @@ public class PerInfoCategoryFinder {
 			}
 		}
 	}
+	
+	/**
+	 * Multi check permision of current User for list Employees in CPS003
+	 * 
+	 * @param empIds
+	 * @param perInfoCtg
+	 * @param roleId
+	 * @return
+	 */
+	public HashMap<String, Boolean> checkCategoryMultiAuth(List<String> empIds, PersonInfoCategory perInfoCtg,
+			String roleId) {
+		HashMap<String, Boolean> permisions = new HashMap<String, Boolean>();
+
+		// get perInfoCtgAuth
+		Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId());
+
+		if (perInfoCtgAuth.isPresent()) {
+			empIds.stream().forEach(id -> {
+				boolean isSelfAuth = AppContexts.user().employeeId().equals(id);
+
+				PersonInfoCategoryAuth personInfoCategoryAuth = perInfoCtgAuth.get();
+
+				switch (perInfoCtg.getCategoryType()) {
+				case SINGLEINFO:
+					if (isSelfAuth) {
+						permisions.put(id, personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES);
+					} else {
+						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES);
+					}
+				case MULTIINFO:
+					// create new data case
+					if (isSelfAuth) {
+						permisions.put(id, personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES
+								&& personInfoCategoryAuth.getSelfAllowAddMulti() == PersonInfoPermissionType.YES);
+					} else {
+						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES
+								&& personInfoCategoryAuth.getOtherAllowAddMulti() == PersonInfoPermissionType.YES);
+					}
+				default: // HISTORY
+					// create new data case
+					if (isSelfAuth) {
+						permisions.put(id, personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES
+								&& personInfoCategoryAuth.getSelfAllowAddHis() == PersonInfoPermissionType.YES);
+					} else {
+						permisions.put(id, personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES
+								&& personInfoCategoryAuth.getOtherAllowAddHis() == PersonInfoPermissionType.YES);
+					}
+				}
+			});
+		}
+
+		return permisions;
+	}
+	
 	//
 	// vinhpx: end
 

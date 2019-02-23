@@ -17,14 +17,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
@@ -44,8 +42,9 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.GridComboBoxSettingQuery;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
-import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
 @Stateless
 public class GridPeregProcessor {
@@ -115,38 +114,37 @@ public class GridPeregProcessor {
 
 		// get body
 		if (!CollectionUtil.isEmpty(query.getLstEmployee())) {
+			
 			List<PerEmpData> personDatas = employeeMngRepo.getEmploymentInfos(query.getLstEmployee(), query.getStandardDate());
-			List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+			
+			PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(perInfoCtg.getPersonInfoCategoryId(),
+					perInfoCtg.getCategoryCode().v(), query.getStandardDate(),
+					personDatas.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
+			
+			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+						
+			if (!CollectionUtil.isEmpty(layouts)) {
+				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+				
+				parallel.forEach(personDatas, pdt -> {
+					layouts.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
+							.ifPresent(dto -> {
+								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(pdt.getPersonId(),
+										pdt.getEmployeeId(), new CodeName(pdt.getEmployeeCode(), pdt.getEmployeeName()),
+										pdt.getEmployeeBirthday(),
+										new CodeName(pdt.getDepartmentCode(), pdt.getDepartmentName()),
+										new CodeName(pdt.getWorkplaceCode(), pdt.getWorkplaceName()),
+										new CodeName(pdt.getPositionCode(), pdt.getPositionName()),
+										new CodeName(pdt.getEmploymentCode(), pdt.getEmploymentName()),
+										new CodeName(pdt.getClassificationCode(), pdt.getClassificationName()),
+										dto.getItems());
 
-			this.parallel.forEach(personDatas, pdt -> {
+								resultsSync.add(syncDto);
+							});
+				});
 
-				// Miss infoId (get infoId by baseDate)
-				PeregQuery subq = PeregQuery.createQueryCategory(null, perInfoCtg.getCategoryCode().v(),
-						pdt.getEmployeeId(), pdt.getPersonId());
-
-				subq.setCategoryId(query.getCategoryId());
-				subq.setStandardDate(query.getStandardDate());
-
-				EmpMaintLayoutDto dto = layoutProcessor.getCategoryDetail(subq);
-
-				List<LayoutPersonInfoValueDto> items = dto.getClassificationItems().stream()
-						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
-
-				resultsSync.add(new GridEmployeeInfoDto(pdt.getPersonId(), pdt.getEmployeeId(),
-						new CodeName(pdt.getEmployeeCode(), pdt.getEmployeeName()),
-						pdt.getEmployeeBirthday(),
-						new CodeName(pdt.getDepartmentCode(), pdt.getDepartmentName()),
-						new CodeName(pdt.getWorkplaceCode(), pdt.getWorkplaceName()),
-						new CodeName(pdt.getPositionCode(),pdt.getPositionName()),
-						new CodeName(pdt.getEmploymentCode(), pdt.getEmploymentName()),
-						new CodeName(pdt.getClassificationCode(), pdt.getClassificationName()),
-						items.stream()
-								.map(m -> new GridEmpBody(m.getItemCode(), m.getItemParentCode(), m.getActionRole(),
-										m.getValue(), m.getTextValue(), m.getRecordId(), m.getLstComboBoxValue()))
-								.collect(Collectors.toList())));
-			});
-
-			geDto.setBodyDatas(new ArrayList<>(resultsSync));
+				geDto.setBodyDatas(new ArrayList<>(resultsSync));
+			}
 		}
 
 		return geDto;
@@ -192,10 +190,11 @@ public class GridPeregProcessor {
 		}
 
 		return lstReturn;
-	}    
-	
+	}
+
 	/**
 	 * Get list option for dropdownlist in CPS003F
+	 * 
 	 * @return
 	 */
 	public List<ComboBoxObject> getComboBox(GridComboBoxSettingQuery query) {
