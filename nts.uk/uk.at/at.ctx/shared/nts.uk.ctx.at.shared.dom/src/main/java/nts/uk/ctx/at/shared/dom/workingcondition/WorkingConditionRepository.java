@@ -81,5 +81,14 @@ public interface WorkingConditionRepository {
 	 * @param employeeId the employee id
 	 */
 	void delete(String employeeId);
+	/**
+	 * fixed r
+	 * get WorkingCondtion by sids, cid, baseDate
+	 * @param employeeIds
+	 * @param baseDate
+	 * @param cid
+	 * @return
+	 */
+	List<WorkingCondition> getBySidsAndCid(List<String> employeeIds,GeneralDate baseDate, String cid);
 
 }

@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -87,10 +89,38 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 			return wcRepo.getByHistoryId(query.getInfoId());
 		}
 	}
+	
+	private List<WorkingCondition> getWorkingCondition(List<PeregQuery> query) {
+		if (query.size() > 0) {
+			return new ArrayList<>();
+		}
+		GeneralDate standarDate = query.get(0).getStandardDate();
+		String cid = AppContexts.user().companyId();
+		List<String> employeeIds = query.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		return wcRepo.getBySidsAndCid(employeeIds, standarDate, cid);
+	}
+	
 
 	@Override
 	public List<WorkingConditionDto> getAllData(List<PeregQuery> query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<WorkingCondition>  workingCondiditions = getWorkingCondition(query);
+		Map<String, DateHistoryItem> dateHistLst = new HashMap<>();
+		workingCondiditions.stream().forEach(c -> {
+			dateHistLst.put(c.getEmployeeId(), c.getDateHistoryItem().get(0));
+		});
+		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
+		List<WorkingConditionItem>  workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds);
+		
+		List<WorkingConditionDto> result = workingCondiditionItems.stream().map(c -> {
+			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
+			return WorkingConditionDto.createWorkingConditionDto(date, c);
+		}).collect(Collectors.toList());
+		if(query.size() > result.size()) {
+			for(int i  = result.size(); i < query.size() ; i++) {
+				result.add(new WorkingConditionDto(""));
+			}
+		}
+		return result;
 	}
 }

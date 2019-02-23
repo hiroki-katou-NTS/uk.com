@@ -425,4 +425,54 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 						.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<WorkingCondition> getBySidsAndCid(List<String> employeeIds, GeneralDate baseDate, String cid) {
+		// Check exist
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return Collections.emptyList();
+		}
+				
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCond> cq = criteriaBuilder.createQuery(KshmtWorkingCond.class);
+
+		// root data
+		Root<KshmtWorkingCond> root = cq.from(KshmtWorkingCond.class);
+
+		// select root
+		cq.select(root);
+		
+		List<KshmtWorkingCond> result =  new ArrayList<>();
+		
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			
+			// eq company id
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), cid));
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
+					criteriaBuilder.lessThan(root.get(KshmtWorkingCond_.endD), baseDate),
+					criteriaBuilder.greaterThan(root.get(KshmtWorkingCond_.strD), baseDate))));
+
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			// creat query
+			TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
+			
+			result.addAll(query.getResultList());
+		});
+
+		return result.parallelStream()
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
+				.values().parallelStream()
+				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
 }
