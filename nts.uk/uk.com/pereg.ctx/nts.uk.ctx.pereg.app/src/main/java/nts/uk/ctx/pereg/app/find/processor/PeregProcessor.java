@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.common.StampCardLength;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -145,20 +147,42 @@ public class PeregProcessor {
 		return new EmpMaintLayoutDto(classItemList);
 
 	}
-	//DTO CPS 003
-	public List<EmpMaintLayoutDto> getCategoryDetailByListEmp(PeregQueryByListEmp query) {
+	
+	/**
+	 * Processor for layout in cps003
+	 * @param query
+	 * @return
+	 */
+	public List<EmpMainCategoryDto> getCategoryDetailByListEmp(PeregQueryByListEmp query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
-		String contractCode = loginUser.contractCode();
-		String loginEmpId = loginUser.employeeId();
-		String roleId = loginUser.roles().forPersonalInfo();
-		String categoryId = query.getCategoryId();
+
+		String categoryId = query.getCategoryId(),
+				contractCode = loginUser.contractCode(),
+				loginEmpId = loginUser.employeeId(),
+				roleId = loginUser.roles().forPersonalInfo();
+		
+		List<String> employeeIds = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+
 		// get category
-		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(categoryId, contractCode).get();
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(categoryId, contractCode).orElse(null);
+
+		// if not has category, return null list
+		if (perInfoCtg == null) {
+			return new ArrayList<>();
+		}
+		
+		HashMap<String, Boolean> permisions = perInfoCategoryFinder.checkCategoryMultiAuth(employeeIds, perInfoCtg, roleId);
+		
+		// if not has permision, return null list
+		if(permisions.size() == 0) {
+			return new ArrayList<>();			
+		}
+		
+		
 		// get PerInfoItemDefForLayoutDto
 		// Check xem list nhan vien co quyen Auth hay khong 
-		
-		
+				
 		return null;
 	}
 	
@@ -329,21 +353,25 @@ public class PeregProcessor {
 		// get per info item def with order
 		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
 				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), contractCode);
+		
 		List<PersonInfoItemDefinition> parentItemDefinitionList = fullItemDefinitionList.stream()
 				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
+		
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
+		
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
+		
 		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
 			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
 			// check authority
 			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
 			if (personInfoItemAuth == null) {
 				continue;
-			}
-			
-		}		
+			}			
+		}
+
 		return null;
 	}
 }
