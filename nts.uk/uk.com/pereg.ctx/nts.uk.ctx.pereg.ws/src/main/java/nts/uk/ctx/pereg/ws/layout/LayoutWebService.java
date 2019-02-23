@@ -18,8 +18,10 @@ import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
+import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
 import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
 
@@ -36,6 +38,9 @@ public class LayoutWebService extends WebService {
 	
 	@Inject
 	private PeregProcessor layoutProcessor;
+	
+	@Inject
+	private LayoutingProcessor layoutingProcessor;
 
 	@Inject 
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
@@ -78,6 +83,12 @@ public class LayoutWebService extends WebService {
 		return this.layoutProcessor.getCategoryDetail(query);
 	}
 	
+//	@Path("find/gettabdetail")
+//	@POST
+//	public EmpMaintLayoutDto getTabDetail(List<PeregQuery> query){
+//		return this.layoutProcessor.getCategoryDetail(query);
+//	}
+	
 	
 	@Path("calDayTime/{sid}/{specialCD}")
 	@POST
@@ -110,5 +121,15 @@ public class LayoutWebService extends WebService {
 	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation specialLeaveInfo){
 		return getSPHolidayNextGrantDate.getSPHolidayGrantDate(specialLeaveInfo);
 	}
+	@Path("a")
+	@POST
+	public PeregDto getA(PeregQuery query){
+		return layoutingProcessor.findSingle(query);
+	}
 	
+	@Path("b")
+	@POST
+	public List<PeregDto> getB(List<PeregQuery> query){
+		return layoutingProcessor.findAllData(query);
+	}
 }

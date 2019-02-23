@@ -313,9 +313,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				stmt.setString(1, cid);
 				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
 				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
-				int size = subList.size() + 3;
-				for (int i = 4 ; i <= size; i++) {
-					stmt.setString(i, subList.get(i));
+				for (int i = 0 ; i < subList.size(); i++) {
+					stmt.setString( 4 + i, subList.get(i));
 				}
 
 				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {

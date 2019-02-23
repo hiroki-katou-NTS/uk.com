@@ -106,7 +106,8 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		}).collect(Collectors.toList());
 		if(query.size() > result.size()) {
 			for(int i  = result.size(); i < query.size() ; i++) {
-				result.add(null);
+				result.add(new EmploymentHistoryDto("", null, null,
+						null, null));
 			}
 		}
 		return result;

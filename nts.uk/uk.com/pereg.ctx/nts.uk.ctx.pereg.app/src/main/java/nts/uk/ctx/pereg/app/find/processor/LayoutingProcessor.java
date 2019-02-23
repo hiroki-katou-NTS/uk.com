@@ -119,9 +119,8 @@ public class LayoutingProcessor {
 		}
 		
 		List<PeregDomainDto> domainDto = objectDto.stream().map(c-> (PeregDomainDto) c).collect(Collectors.toList());
-
-
-		List<String> recordIds = domainDto.stream().map(c -> c.getRecordId()).collect(Collectors.toList());
+		
+		List<String> recordIds = domainDto.stream().filter(c -> c !=null).map(c -> c.getRecordId()).collect(Collectors.toList());
 		
 		// get optional data
 		Map<String,List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
@@ -129,7 +128,6 @@ public class LayoutingProcessor {
 		List<PeregDto> peregDtoLst =  domainDto.stream().map(c ->{
 			return new PeregDto(c, finderClass.dtoClass(), optionalItems.get(c.getRecordId()));
 		}).collect(Collectors.toList());
-		
 		return peregDtoLst;
 	}
 
