@@ -3,11 +3,10 @@
  */
 package nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory;
 
-import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author hieult
@@ -15,17 +14,18 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
  */
 @Getter
 @Setter	
+@AllArgsConstructor
 public class AffCompanyHistItemDto {
 
 	/** 社員ID */
 	private String employeeID;
-
-	/** 履歴 */
-	private List<AffCompanyHistItem> lstAffCompanyHistoryItem;
 	
-	public AffCompanyHistItemDto (String employeeID , List<AffCompanyHistItem> lstAffCompanyHistoryItem ){
-		this.employeeID = employeeID;
-		this.lstAffCompanyHistoryItem = lstAffCompanyHistoryItem;
-	}
+	private String historyId;
+	
+	private boolean destinationData;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 
 }
