@@ -17,8 +17,10 @@ public class OutputYearHolidayManagementQuery {
 	int selectedReferenceType;
 	// 参照区分
 	Integer printDate;
-	// 改ページ区分
+	// 参照の選択
 	int pageBreakSelected;
 	//selectedEmployees
 	List<EmployeeInfo>  selectedEmployees;
+	
+	List<ClosurePrintDto> closureData;
 }

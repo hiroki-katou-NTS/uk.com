@@ -38,6 +38,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         lstLabelInfomation: KnockoutObservableArray<string>;
         infoPeriodDate: KnockoutObservable<string>;
         lengthEmployeeSelected: KnockoutObservable<string>;
+        
+        closureData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         ccgcomponent: GroupOption = {
             /** Common properties */
@@ -217,8 +219,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
          * function export excel button
          */
         public exportButton() {
-            let self = this,
-                printQuery = new PrintQuery(self);
+            let self = this;
 
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -231,18 +232,19 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 return;
             }
             //事前条件①および②をチェックする
-            if (printQuery.selectedDateType == 1) {
-                self.checkClosureDate().done((isNoError) => {
+            self.checkClosureDate().done((isNoError) => {
+                let printQuery = new PrintQuery(self);
+                if (printQuery.selectedDateType == 1) {
                     if (!isNoError) {
                         alError({ messageId: "Msg_1500" });
                         return;
                     } else {
                         self.doPrint(printQuery);
                     }
-                });
-            } else {
-                self.doPrint(printQuery);
-            }
+                } else {
+                    self.doPrint(printQuery);
+                }
+            });
         }
         
         public doPrint(printQuery) {
@@ -266,6 +268,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
                 //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 < 指定月→ 出力エラー　(#Msg_1500)
                 if (closureData.closureSelected) {
+                    self.closureData([closureData]);
                     if (closureData.month < self.printDate()) {
                         dfd.resolve(false);
                     } else {
@@ -277,6 +280,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 < 指定月→ 出力エラー　(#Msg_1500)
                     block.invisible();
                     service.findAllClosure().done((closures) => {
+                        self.closureData(closures);
                         _.forEach(closures, (closure) => {
                             if (closure.month < self.printDate()) {
                                 dfd.resolve(false);
@@ -324,6 +328,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // 改ページ区分
         pageBreakSelected: number;
         selectedEmployees: Array<UnitModel>;
+        closureData:any
 
         constructor(screen: ScreenModel) {
             let self = this,
@@ -335,7 +340,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.printDate = screen.printDate();
             self.pageBreakSelected = screen.pageBreakSelected();
             self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code); });
-
+            self.closureData = screen.closureData();
         }
 
         public toScreenInfo() {
