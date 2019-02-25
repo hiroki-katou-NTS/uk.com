@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -64,7 +65,7 @@ public class CurrentAddressFinder implements PeregFinder<CurrentAddressDto>{
 	}
 
 	@Override
-	public List<CurrentAddressDto> getAllData(List<PeregQuery> query) {
+	public List<CurrentAddressDto> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

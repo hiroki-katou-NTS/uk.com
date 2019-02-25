@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -53,7 +54,7 @@ public class SpecialLeaveGrantDto15Finder implements PeregFinder<SpecialLeaveGra
 	}
 
 	@Override
-	public List<SpecialLeaveGrantDto15> getAllData(List<PeregQuery> query) {
+	public List<SpecialLeaveGrantDto15> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

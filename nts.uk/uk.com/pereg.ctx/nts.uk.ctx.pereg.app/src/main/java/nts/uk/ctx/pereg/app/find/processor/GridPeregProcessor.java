@@ -124,9 +124,9 @@ public class GridPeregProcessor {
 			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
 						
 			if (!CollectionUtil.isEmpty(layouts)) {
-				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+				List<GridEmployeeInfoDto> resultsSync = new ArrayList<>();
 				
-				parallel.forEach(personDatas, pdt -> {
+				personDatas.stream().forEach(pdt -> {
 					layouts.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
 							.ifPresent(dto -> {
 								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(pdt.getPersonId(),
@@ -143,7 +143,7 @@ public class GridPeregProcessor {
 							});
 				});
 
-				geDto.setBodyDatas(new ArrayList<>(resultsSync));
+				geDto.setBodyDatas(resultsSync);
 			}
 		}
 

@@ -11,6 +11,7 @@ import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -57,7 +58,7 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 	}
 
 	@Override
-	public List<EmpInfoContactDto> getAllData(List<PeregQuery> query) {
+	public List<EmpInfoContactDto> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -16,6 +16,7 @@ import nts.uk.shr.pereg.app.find.PeregEmpOptRepository;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -100,14 +101,14 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public List<PeregDto> findAllData(List<PeregQuery> query) {
+	public List<PeregDto> findAllData(PeregQueryByListEmp query) {
 		
-		if (query.size() == 0) {
+		if (query.getEmpInfos().size() == 0) {
 			return new ArrayList<>();
 		}
 		
 		// get domain data
-		val finderClass = this.finders.get(query.get(0).getCategoryCode());
+		val finderClass = this.finders.get(query.getCategoryCode());
 		
 		if (finderClass == null)
 			return null;

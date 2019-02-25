@@ -127,9 +127,9 @@ public class LayoutWebService extends WebService {
 		return layoutingProcessor.findSingle(query);
 	}
 	
-	@Path("b")
+	/*@Path("b")
 	@POST
 	public List<PeregDto> getB(List<PeregQuery> query){
 		return layoutingProcessor.findAllData(query);
-	}
+	}*/
 }

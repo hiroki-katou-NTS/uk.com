@@ -24,6 +24,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -90,25 +91,27 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		}
 	}
 	
-	private List<WorkingCondition> getWorkingCondition(List<PeregQuery> query) {
-		if (query.size() > 0) {
+	private List<WorkingCondition> getWorkingCondition(PeregQueryByListEmp query) {
+		if (query.getEmpInfos().size() > 0) {
 			return new ArrayList<>();
 		}
-		GeneralDate standarDate = query.get(0).getStandardDate();
+		GeneralDate standarDate = query.getStandardDate();
 		String cid = AppContexts.user().companyId();
-		List<String> employeeIds = query.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> employeeIds = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		return wcRepo.getBySidsAndCid(employeeIds, standarDate, cid);
 	}
 	
 
 	@Override
-	public List<WorkingConditionDto> getAllData(List<PeregQuery> query) {
+	public List<WorkingConditionDto> getAllData(PeregQueryByListEmp query) {
 		List<WorkingCondition>  workingCondiditions = getWorkingCondition(query);
+		
 		Map<String, DateHistoryItem> dateHistLst = new HashMap<>();
 		workingCondiditions.stream().forEach(c -> {
 			dateHistLst.put(c.getEmployeeId(), c.getDateHistoryItem().get(0));
 		});
+		
 		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
 		List<WorkingConditionItem>  workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds);
 		
@@ -116,8 +119,9 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
 			return WorkingConditionDto.createWorkingConditionDto(date, c);
 		}).collect(Collectors.toList());
-		if(query.size() > result.size()) {
-			for(int i  = result.size(); i < query.size() ; i++) {
+		
+		if(query.getEmpInfos().size() > result.size()) {
+			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
 				result.add(new WorkingConditionDto(""));
 			}
 		}

@@ -37,7 +37,7 @@ public interface PeregFinder<T> {
 	 * @param query
 	 * @return
 	 */
-	List<T> getAllData(List<PeregQuery> query);
+	List<T> getAllData(PeregQueryByListEmp query);
 
 	default PeregDomainDto findSingle(PeregQuery query) {
 		return this.getSingleData(query);
@@ -51,7 +51,7 @@ public interface PeregFinder<T> {
 		return this.getListFirstItems(query);
 	}
 	
-	default List<T> findAllData(List<PeregQuery> query) {
+	default List<T> findAllData(PeregQueryByListEmp query) {
 		return this.getAllData(query);
 	}
 }

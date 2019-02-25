@@ -142,10 +142,10 @@ public class PeregProcessor {
 
 		// special process with category CS00069 item IS00779. change string
 		// length
-		stampCardLength.updateLength(perInfoCtg, classItemList);
+		int digit = stampCardLength.getDigitOfStamp();
+		stampCardLength.updateLength(perInfoCtg, classItemList, digit);
 
 		return new EmpMaintLayoutDto(classItemList);
-
 	}
 	
 	/**
@@ -172,6 +172,11 @@ public class PeregProcessor {
 			return new ArrayList<>();
 		}
 		
+		/**
+		 * Get permision of current user for category (one by one employee)
+		 * key: employeeId
+		 * value: has or not has permision 
+		 */
 		HashMap<String, Boolean> permisions = perInfoCategoryFinder.checkCategoryMultiAuth(employeeIds, perInfoCtg, roleId);
 		
 		// if not has permision, return null list
@@ -182,13 +187,19 @@ public class PeregProcessor {
 		// get item for self and other (self map key is true)
 		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = getPerItemDefForLayout(perInfoCtg, contractCode, roleId);
 		
+		List<Object> classItemList = getDataClassItemListForGrid(query, perInfoCtg, perItems);
+
+		//int digit = stampCardLength.getDigitOfStamp();
+		classItemList.stream().forEach(f -> {
+			// set default value
+			//initDefaultValue.setDefaultValue(classItemList);
+
+			// special process with category CS00069 item IS00779. change string length
+			//stampCardLength.updateLength(perInfoCtg, classItemList, digit);
+		});
 		
-		// get PerInfoItemDefForLayoutDto
-		// Check xem list nhan vien co quyen Auth hay khong 
-				
 		return null;
 	}
-	
 	
 	private List<LayoutPersonInfoClsDto> getDataClassItemList(PeregQuery query, PersonInfoCategory perInfoCtg,
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
@@ -199,7 +210,6 @@ public class PeregProcessor {
 		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef, perInfoCtg);
 
 		if (perInfoCtg.isFixed()) {
-
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 
 			if (peregDto != null) {
@@ -208,6 +218,7 @@ public class PeregProcessor {
 				
 				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
 				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+				
 				for (String itemCode : standardDateItemCodes) {
 					if (itemValueMap.containsKey(itemCode)) {
 						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
@@ -215,7 +226,6 @@ public class PeregProcessor {
 					}
 				}
 			}
-
 		} else {
 			switch (perInfoCtg.getCategoryType()) {
 			case SINGLEINFO:
@@ -225,7 +235,6 @@ public class PeregProcessor {
 				setOptionDataWithRecordId(perInfoCtg, classItemList, query);
 				break;
 			}
-
 		}
 		
 		// get Combo-Box List
@@ -234,22 +243,41 @@ public class PeregProcessor {
 
 		return classItemList;
 	}
+	
+	private List<Object> getDataClassItemListForGrid(PeregQueryByListEmp query, PersonInfoCategory perInfoCtg, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+		// combo-box sẽ lấy dựa theo các ngày startDate của từng category
+		GeneralDate comboBoxStandardDate = GeneralDate.today();
+
+		List<LayoutPersonInfoClsDto> selfClassItemList = creatClassItemList(perItems.get(true), perInfoCtg),
+				otherClassItemList = creatClassItemList(perItems.get(false), perInfoCtg);
+
+		if (perInfoCtg.isFixed()) {
+			layoutingProcessor.findAllData(query);
+		} else {
+			
+		}
+
+		return null;
+	}
 
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
 		return lstClsItem.stream().map(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+			
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
 			layoutPerInfoClsDto.setPersonInfoCategoryCD(item.getPerInfoCtgCd());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, perInfoCtg));
+			
 			if (item.getItemTypeState().getItemType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
 					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, perInfoCtg));
 				});
 			}
+			
 			return layoutPerInfoClsDto;
 		}).collect(Collectors.toList());
 	}
@@ -260,6 +288,7 @@ public class PeregProcessor {
 			// employee option data
 			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
 					perInfoCtg.getPersonInfoCategoryId());
+			
 			if (!empInfoCtgDatas.isEmpty()) {
 				String recordId = empInfoCtgDatas.get(0).getRecordId();
 				getAndMapEmpOptionItem(recordId, classItemList);
@@ -292,12 +321,14 @@ public class PeregProcessor {
 	private void getAndMapEmpOptionItem(String recordId, List<LayoutPersonInfoClsDto> classItemList) {
 		List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
+		
 		MappingFactory.matchOptionalItemData(recordId, classItemList, empOptionItemData);
 	}
 
 	private void getAndMapPerOptionItem(String recordId, List<LayoutPersonInfoClsDto> classItemList) {
 		List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
+		
 		MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 	}	
 
@@ -325,38 +356,40 @@ public class PeregProcessor {
 			if (personInfoItemAuth == null) {
 				continue;
 			}
-			
+
 			PersonInfoAuthType selfRole = personInfoItemAuth.getSelfAuth(),
 					otherRole = personInfoItemAuth.getOtherAuth();
 
 			if (selfRole != PersonInfoAuthType.HIDE) {
 				// convert item-definition to layoutDto
 				ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-	
-				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i, role);
-	
+
+				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+						i, role);
+
 				// get and convert childrenItems
 				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
-	
-	 			itemDto.setLstChildItemDef(childrenItems);
-	
-	 			lstSelf.add(itemDto);
+
+				itemDto.setLstChildItemDef(childrenItems);
+
+				lstSelf.add(itemDto);
 			}
-			
-			if(otherRole != PersonInfoAuthType.HIDE) {
+
+			if (otherRole != PersonInfoAuthType.HIDE) {
 				// convert item-definition to layoutDto
 				ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-	
-				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i, role);
-	
+
+				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+						i, role);
+
 				// get and convert childrenItems
 				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
-	
-	 			itemDto.setLstChildItemDef(childrenItems);
-	
-	 			lstOther.add(itemDto);				
+
+				itemDto.setLstChildItemDef(childrenItems);
+
+				lstOther.add(itemDto);
 			}
 		}
 

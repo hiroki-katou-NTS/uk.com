@@ -19,6 +19,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -93,23 +94,30 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 	}
 
 	@Override
-	public List<EmploymentHistoryDto> getAllData(List<PeregQuery> query) {
+	public List<EmploymentHistoryDto> getAllData(PeregQueryByListEmp query) {
 		String cid = AppContexts.user().companyId();
-		List<String> sids = query.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		GeneralDate standardDate  = query.size() > 0? query.get(0).getStandardDate() : GeneralDate.today();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		GeneralDate standardDate  = query.getStandardDate();
+		
 		Map<String, DateHistoryItem> dateHistLst = this.empHistRepo.getByEmployeeIdAndStandardDate(cid, sids,standardDate);
 		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
+		
 		List<EmploymentHistoryItem> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds);
+		
 		List<EmploymentHistoryDto> result = employmentHist.stream().map( c -> {
 			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
+			
 			return EmploymentHistoryDto.createFromDomain(date, c );
 		}).collect(Collectors.toList());
-		if(query.size() > result.size()) {
-			for(int i  = result.size(); i < query.size() ; i++) {
+		
+		if(query.getEmpInfos().size() > result.size()) {
+			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
 				result.add(new EmploymentHistoryDto("", null, null,
 						null, null));
 			}
 		}
+		
 		return result;
 	}
 

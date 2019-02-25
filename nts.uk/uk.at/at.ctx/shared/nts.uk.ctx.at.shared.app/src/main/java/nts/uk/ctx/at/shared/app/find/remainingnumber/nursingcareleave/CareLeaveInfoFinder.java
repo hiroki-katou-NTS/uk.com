@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -88,7 +89,7 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 	}
 
 	@Override
-	public List<CareLeaveInfoDto> getAllData(List<PeregQuery> query) {
+	public List<CareLeaveInfoDto> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
