@@ -15,8 +15,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 
 @Stateless
 public class StampCardLength {
-	
-	@Inject 
+
+	@Inject
 	private StampCardEditFinder stampCardEditFinder;
 
 	public void updateLength(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList) {
@@ -24,11 +24,14 @@ public class StampCardLength {
 		if (!perInfoCategory.getCategoryCode().v().equals("CS00069")) {
 			return;
 		}
-		
+
 		List<LayoutPersonInfoValueDto> itemIS00779List = new ArrayList<>();
+		
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			List<LayoutPersonInfoValueDto> itemList = classItem.getItems().stream()
-					.filter(itemDefDto -> itemDefDto.getItemCode().equals("IS00779")).collect(Collectors.toList());
+					.filter(itemDefDto -> itemDefDto.getItemCode().equals("IS00779"))
+					.collect(Collectors.toList());
+			
 			itemIS00779List.addAll(itemList);
 		}
 
@@ -36,6 +39,7 @@ public class StampCardLength {
 
 		itemIS00779List.forEach(itemIS00779 -> {
 			StringItemDto dataTypeState = (StringItemDto) itemIS00779.getItem();
+			
 			dataTypeState.updateStringLength(digitsNumber);
 		});
 
