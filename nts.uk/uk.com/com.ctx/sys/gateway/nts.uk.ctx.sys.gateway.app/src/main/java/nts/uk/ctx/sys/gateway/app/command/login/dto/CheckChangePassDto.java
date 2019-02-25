@@ -18,6 +18,9 @@ public class CheckChangePassDto {
 	/** The show contract. */
 	public boolean showContract;
 	
+	/** param for SystemSuspend */
+	public String successMsg;
+	
 	public CheckChangePassDto() {
 		super();
 	}
