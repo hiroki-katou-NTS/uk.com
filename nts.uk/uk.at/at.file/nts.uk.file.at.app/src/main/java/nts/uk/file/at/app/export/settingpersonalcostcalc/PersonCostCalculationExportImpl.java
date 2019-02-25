@@ -36,13 +36,6 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 	@Inject
 	private PersonCostCalculationFinder personCostCalculationSettingFinder;
 	
-	
-	
-	@Override
-	public MasterListMode mainSheetMode() {
-		return MasterListMode.BASE_DATE;
-	}
-
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
