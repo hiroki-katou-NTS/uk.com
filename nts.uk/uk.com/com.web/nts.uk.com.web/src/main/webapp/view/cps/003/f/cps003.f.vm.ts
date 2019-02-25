@@ -378,13 +378,13 @@ module cps003.f.vm {
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     if (!item.itemData.amount) {
-                        value.mode = APPLY_MODE.AMOUNT;
+                        value.mode = APPLY_MODE.NUMBER;
                         if (item.value.value0) {
                             value.replaceValue = Number(item.value.value0);
                         }
                         value.replaceFormat = REPLACE_FORMAT.VALUE;
                     } else {
-                        value.mode = APPLY_MODE.NUMBER;
+                        value.mode = APPLY_MODE.AMOUNT;
                         if (mode == 0) {
                             if (item.value.value0) {
                                 value.replaceValue = Number(item.value.value0);
