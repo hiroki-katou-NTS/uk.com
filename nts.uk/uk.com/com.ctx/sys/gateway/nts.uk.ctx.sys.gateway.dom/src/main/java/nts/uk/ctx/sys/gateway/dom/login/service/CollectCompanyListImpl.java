@@ -196,8 +196,9 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 //		output：
 //		　会社ID List・・・（１）
 		List<String> lst1 = lstCom.stream().filter(c -> c.getStopMode().equals(StopModeType.ADMIN_MODE))
-				.filter(d -> lstCID.contains(d))
-				.map(d -> d.getContractCd() + "-" + d.getCompanyCd()).collect(Collectors.toList());
+				.map(d -> d.getContractCd() + "-" + d.getCompanyCd())
+				.filter(e -> lstCID.contains(e))
+				.collect(Collectors.toList());
 		//アルゴリズム「権限(ロール)のチェック」を実行する
 //		ログイン者がログイン可能かつ担当者モードで停止中の会社リストの中から、
 //		ログイン者に管理権限がある会社のみ抽出する
@@ -215,8 +216,9 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 //		output：
 //		　会社ID List・・・（３）
 		List<String> lst3 = lstCom.stream().filter(c -> c.getStopMode().equals(StopModeType.PERSON_MODE))
-				.filter(d -> lstCID.contains(d))
-				.map(d -> d.getContractCd() + "-" + d.getCompanyCd()).collect(Collectors.toList());
+				.map(d -> d.getContractCd() + "-" + d.getCompanyCd())
+				.filter(e -> lstCID.contains(e))
+				.collect(Collectors.toList());
 		//アルゴリズム「権限(ロール)のチェック」を実行する
 //		ログイン者がログイン可能かつ担当者モードで停止中の会社リストの中から、
 //		ログイン者に担当権限がある会社のみ抽出する
