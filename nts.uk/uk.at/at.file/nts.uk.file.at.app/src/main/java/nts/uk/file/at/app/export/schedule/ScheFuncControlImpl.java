@@ -27,6 +27,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  * 
@@ -75,18 +76,23 @@ public class ScheFuncControlImpl implements MasterListData {
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		List<SheetData> sheetDatas = new ArrayList<>();
-		SheetData displayControl = new SheetData(displayControlSheet.getMasterDatas(query), displayControlSheet.getHeaderColumns(query), null, null,TextResource.localize("KSM011_130"));	 
+		SheetData displayControl = new SheetData(displayControlSheet.getMasterDatas(query), displayControlSheet.getHeaderColumns(query), null, null,TextResource.localize("KSM011_130"), MasterListMode.NONE);	 
 		sheetDatas.add(displayControl);
 		
-		SheetData workType = new SheetData(workTypeSheet.getMasterDatas(query), workTypeSheet.getHeaderColumns(query), null, null,TextResource.localize("KSM011_131"));	 
+		SheetData workType = new SheetData(workTypeSheet.getMasterDatas(query), workTypeSheet.getHeaderColumns(query), null, null,TextResource.localize("KSM011_131"), MasterListMode.NONE);	 
 		sheetDatas.add(workType);
 		
 		Map<String, Object> map = authorityFuncControlSheet.initSheet();
 		@SuppressWarnings("unchecked")
-		SheetData authoritySheet = new SheetData((List<MasterData>)map.get("listDatas"), (List<MasterHeaderColumn>)map.get("listColumns"), null, null,TextResource.localize("KSM011_132"));	 
+		SheetData authoritySheet = new SheetData((List<MasterData>)map.get("listDatas"), (List<MasterHeaderColumn>)map.get("listColumns"), null, null,TextResource.localize("KSM011_132"), MasterListMode.NONE);	 
 		sheetDatas.add(authoritySheet);
 		
 		return sheetDatas;
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 	
 	/** 

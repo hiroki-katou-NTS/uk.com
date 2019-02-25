@@ -14,6 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "PersonSelectionItem")
@@ -50,5 +51,10 @@ public class PersonSelectionItemExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		datas = personSelectionItemRepository.getDataExport(contractCd, date);
 		return datas;
+	}
+	
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.BASE_DATE;
 	}
 }

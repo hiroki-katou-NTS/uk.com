@@ -9,18 +9,24 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateAtNextHolidayExport;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -42,6 +48,13 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	
 	@Inject
 	private GetClosureStartForEmployee getClosureStartForEmployee;
+	
+	/** 次回年休付与日を計算 */
+	@Inject
+	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
+	/** 年休出勤率を計算する */
+	@Inject
+	private CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
 	
 	/**
 	 * RequestList210
@@ -143,21 +156,57 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	 * RequestList323
 	 * 次回年休付与時点の出勤率・出勤日数・所定日数・年間所定日数を取得する
 	 * 
-	 * @param companyId
-	 * @param employeeId
-	 * @return
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @return 次回年休付与時点出勤率
 	 */
 
 	@Override
 	public Optional<AttendRateAtNextHolidayExport> getDaysPerYear(String companyId, String employeeId) {
-		// ドメインモデル「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-		if(!annualLeaveEmpBasicInfo.isPresent()){
-			return Optional.empty();
-		}
+		
+		AttendRateAtNextHolidayExport result = null;
+		
+		// 「年休社員基本情報」を取得
+		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = this.annLeaEmpBasicInfoRepository.get(employeeId);
+		if (!basicInfoOpt.isPresent()) return Optional.empty();
+		AnnualLeaveEmpBasicInfo basicInfo = basicInfoOpt.get();
+		
 		// 次回年休付与を計算
-//		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
-		return Optional.empty();
+		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
+				companyId, employeeId, Optional.empty(),
+				Optional.empty(), basicInfoOpt, Optional.empty(), Optional.empty());
+		
+		// List先頭の次回年休付与を出力用クラスにセット
+		if (nextAnnLeaGrantList.size() <= 0) return Optional.empty();
+		NextAnnualLeaveGrant nextAnnualLeaveGrant = nextAnnLeaGrantList.get(0);
+
+		// 年休出勤率を計算する
+		Optional<CalYearOffWorkAttendRate> attendanceRateOpt = this.calcAnnLeaAttendanceRate.algorithm(
+				companyId, employeeId, nextAnnualLeaveGrant.getGrantDate(), Optional.empty());
+		Double attendanceRate = 0.0;
+		Double attendanceDays = 0.0;
+		Double predeterminedDays = 0.0;
+		if (attendanceRateOpt.isPresent()) {
+			attendanceRate = attendanceRateOpt.get().getAttendanceRate();
+			attendanceDays = attendanceRateOpt.get().getWorkingDays();
+			predeterminedDays = attendanceRateOpt.get().getPrescribedDays();
+		}
+		
+		// 年休社員基本情報から年間所定日数をセット
+		Double annualPerYearDays = 0.0;
+		if (basicInfo.getWorkingDaysPerYear().isPresent()) {
+			annualPerYearDays = basicInfo.getWorkingDaysPerYear().get().v().doubleValue();
+		}
+		
+		// 次回年休付与時点出勤率を返す
+		result = new AttendRateAtNextHolidayExport(
+				nextAnnualLeaveGrant.getGrantDate(),
+				nextAnnualLeaveGrant.getGrantDays(),
+				new AttendanceRate(attendanceRate),
+				new AttendanceDaysMonth(attendanceDays),
+				new AttendanceDaysMonth(predeterminedDays),
+				new AttendanceDaysMonth(annualPerYearDays));
+		return Optional.ofNullable(result);
 	}
 	
 	

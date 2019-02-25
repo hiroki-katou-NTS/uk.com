@@ -32,7 +32,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 			+ " AND c.sacmtRoleIndiviGrantPK.userID = :userId"
 			+ " AND c.roleId IN :roleIDLst"
 			+ " AND c.strD <= :date AND c.endD >= :date";
-
+	//hoatt
+	private static final String SELECT_BY_DATE_ROLE_CID_TYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " AND c.sacmtRoleIndiviGrantPK.userID = :userId"
+			+ " AND c.strD <= :date AND c.endD >= :date" 
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType != :roleType";
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
@@ -193,6 +198,17 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.getList(c -> c.toDomain()));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<RoleIndividualGrant> getListDifRoleType(String userId, String companyId, int roleType,
+			GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_DATE_ROLE_CID_TYPE, SacmtRoleIndiviGrant.class)
+				.setParameter("companyId", companyId)
+				.setParameter("userId", userId)
+				.setParameter("roleType", roleType)
+				.setParameter("date", date)
+				.getList(c -> c.toDomain());
 	}
 
 }
