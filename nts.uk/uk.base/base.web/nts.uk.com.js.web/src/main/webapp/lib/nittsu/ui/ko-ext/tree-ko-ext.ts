@@ -195,17 +195,25 @@ module nts.uk.ui.koExtentions {
                 $tree.ntsTreeDrag("deselectAll");
                 $tree.find("a").removeClass("ui-state-active");
             } else {
+                let getOffset = function($node){
+                    let offset = $node[0].offsetTop, parent = $node[0].offsetParent;
+                    while(parent.tagName.toLowerCase() != "ul"){
+                        offset+= parent.offsetTop;
+                        parent = parent.offsetParent;
+                    }
+                    return offset;           
+                }
                 if (multiple) {
                     $tree.find("a").removeClass("ui-state-active");
                     selectedValues.forEach(function(val) {
                         let $node = $tree.igTree("nodesByValue", val);
                         if($node.length > 0){
-                           $node.find("a:first").addClass("ui-state-active");
+                            $node.find("a:first").addClass("ui-state-active");
                             let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
                             if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                                 $tree.igTree("toggleCheckstate", $node);
                             }
-                            $tree.scrollTop($node[0].offsetTop - $node[0].offsetTop);
+                            $tree.scrollTop(getOffset($node[0]));      
                         }
                     });
                 } else {
@@ -214,7 +222,7 @@ module nts.uk.ui.koExtentions {
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
                         $tree.igTree("expandToNode", $selectingNode);
-                        $tree.scrollTop($selectingNode[0].offsetTop - $selectingNode[0].offsetTop);
+                        $tree.scrollTop(getOffset($selectingNode[0]));  
                     }
                 }
             }
