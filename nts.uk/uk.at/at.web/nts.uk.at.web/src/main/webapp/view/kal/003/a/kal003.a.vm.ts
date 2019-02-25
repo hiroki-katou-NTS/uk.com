@@ -83,6 +83,22 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
                 self.selectCondition(data);
             });
+            
+            self.tabAnnualHolidaySubCon.narrowUntilNext.subscribe(function(data: any) {
+               if (data == true) {
+                   $("#check-sub-period").trigger("validate");
+               } else {
+                   $("#check-sub-period").ntsError("clear");
+               }
+           });
+            
+           self.tabAnnualHolidaySubCon.narrowLastDay.subscribe(function(data: any) {
+               if (data == true) {
+                   $("#check-sub-last").trigger("validate");
+               } else {
+                   $("#check-sub-last").ntsError("clear");
+               }
+           });
 
         }
 

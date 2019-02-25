@@ -14,7 +14,7 @@
 	</ui:define>
     <div class ="check-sub">
 		<div class ="check-box-sub" tabindex="1" data-bind="ntsCheckBox: { checked: narrowUntilNext, enable: true, text: nts.uk.resource.getText('KAL003_214') }"></div>
-		<input tabindex="2" data-bind="ntsNumberEditor: {
+		<input id = 'check-sub-period' tabindex="2" data-bind="ntsNumberEditor: {
 		    name: nts.uk.resource.getText('KAL003_215'),
 			value: periodUntilNext,
 			constraint: 'NumOfMonthUnNextHoliday',
@@ -22,14 +22,14 @@
                     width: '100',
                     unitID: 'MONTHS'
              },
-			required:  ko.observable(false),
+			required:  ko.observable(true),
 			enable:  narrowUntilNext,
 			readonly:  ko.observable(false)}" />
 		<label>#{i18n.getText('KAL003_216')}</label>
 	</div>
 	<div class ="check-sub">
 		<div tabindex="3" class ="check-box-sub" data-bind="ntsCheckBox: { checked: narrowLastDay, enable: true, text: nts.uk.resource.getText('KAL003_217') }"></div>
-		<input tabindex="4" data-bind="ntsNumberEditor: {
+		<input id = 'check-sub-last' tabindex="4" data-bind="ntsNumberEditor: {
 		    name: nts.uk.resource.getText('KAL003_218'),
 			value: numberDayAward,
 			constraint: 'NumberDayAward',
@@ -37,7 +37,7 @@
                     width: '100',
                     unitID: 'DAYS'
              },
-			required:  ko.observable(false),
+			required:  ko.observable(true),
 			enable:  narrowLastDay,
 			readonly:  ko.observable(false)}" />
 		<label>#{i18n.getText('KAL003_219')}</label>
