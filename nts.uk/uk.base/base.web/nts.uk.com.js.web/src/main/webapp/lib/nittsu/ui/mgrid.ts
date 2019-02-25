@@ -5418,20 +5418,21 @@ module nts.uk.ui.mgrid {
                             if (cbx.optionsMap && !_.isNil(y = cbx.optionsMap[id])) {
                                 options = cbx.optionsList[y];
                             } else options = cbx.options;
-                            let sel = _.find(options, o => o.code === val);
-                            if (sel) { 
-                                su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
-                                $.data($cell, lo.CBX_SELECTED_TD, val);
-                                $cell.textContent = sel ? sel.name : ""; 
-                            }
+                            
+                            let sel = _.find(options, o => o[cbx.optionsValue] === val);
+                            if (_.isNil(val)) val = null;
+                            su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                            $.data($cell, lo.CBX_SELECTED_TD, val);
+                            $cell.textContent = sel ? sel[cbx.optionsText] : "";
                         }
                     } else if (cbx.type === dkn.DATE_PICKER) {
                         let txt, mDate = moment.utc(val, cbx.format, true);
                         if (cbx.formatType !== "ymd") txt = mDate.format(cbx.format[0]);
-                        let date = _.isNil(txt) ? mDate.toDate() : txt;
+                        let date = _.isNil(txt) ? (mDate.isValid() ? mDate.toDate() : mDate._i) : txt;
+                        if (_.isNil(date)) date = null;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                         $.data($cell, v.DATA, date);
-                        $cell.innerHTML = _.isNil(txt) ? mDate.format(cbx.format[0]) : txt;
+                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
                     }
                 }
                 
@@ -5593,14 +5594,14 @@ module nts.uk.ui.mgrid {
                     });
                 });
             },
-            replace: function(key, condition, value) {
+            replace: function(key, condition, value, dr) {
                 if (_.isNil(key) || !_.isFunction(condition) || !_.isFunction(value)) return;
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef || (_.isNumber(_currentPage) && Number(k) !== _currentPage)) return;
                     _.forEach(_mafollicle[k].dataSource, (d, i) => {
-                        if (!condition(d[key])) return;
-                        let setVal = value(d[key]);
-                        _$grid.mGrid("updateCell", d[_pk], key, setVal);
+                        if (!condition(d[key], d)) return;
+                        let setVal = value(d[key], d);
+                        _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                     });
                 });
             },
@@ -6567,6 +6568,7 @@ module nts.uk.ui.mgrid {
                     if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                         delete dirties[id][coord.columnKey];
                     }
+                    return { c: calcCell };
                 } else {
                     if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === "")) 
                         || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
@@ -6892,7 +6894,8 @@ module nts.uk.ui.mgrid {
                             } catch(e) {}
                         }
                     } else if (valueType === "Time") {
-                        value = uk.time.minutesBased.duration.parseString(String(value)).format();
+                        let parsed = uk.time.minutesBased.duration.parseString(String(value));
+                        if (parsed.success) value = parsed.format();
                     } else if (valueType === "Currency") { 
                         let currencyOpts: any = new ui.option.CurrencyEditorOption();
                         currencyOpts.grouplength = constraint.groupLength | 3;
