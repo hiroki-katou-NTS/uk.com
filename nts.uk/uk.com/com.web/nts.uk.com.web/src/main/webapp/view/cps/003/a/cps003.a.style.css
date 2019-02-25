@@ -101,6 +101,10 @@ td.required {
 	background-color: #FAC002 !important;
 }
 
+td.red-color {
+	color: #FF0000;
+}
+
 tr.blue-color {
-	color: blue;
+	color: #0000FF;
 }

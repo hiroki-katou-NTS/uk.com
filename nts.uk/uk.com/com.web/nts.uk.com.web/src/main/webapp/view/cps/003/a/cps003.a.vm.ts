@@ -782,6 +782,16 @@ module cps003.a.vm {
                     _.forEach(d.items, (item: IColumnData, i: number) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
                         if (!dt) return;
+                        if (_.isNil(item.recordId)) {
+                            states.push(new State(record.id, "employeeCode", ["red-color"]));
+                            states.push(new State(record.id, "employeeName", ["red-color"]));
+                            states.push(new State(record.id, "deptName", ["red-color"]));
+                            states.push(new State(record.id, "workplaceName", ["red-color"]));
+                            states.push(new State(record.id, "positionName", ["red-color"]));
+                            states.push(new State(record.id, "employmentName", ["red-color"]));
+                            states.push(new State(record.id, "className", ["red-color"]));
+                        }
+                        
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
