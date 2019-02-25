@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.find.standardtime.dto;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 
 @Data
 public class AgreementTimeOfClassificationDetailDto {
@@ -47,18 +46,9 @@ public class AgreementTimeOfClassificationDetailDto {
 	private int errorOneYear;
 
 	private int limitOneYear;
+	
+    private int upperMonth;
 
-	public static AgreementTimeOfCompanyDto toDomain(BasicAgreementSetting basicAgreementSetting) {
-		return new AgreementTimeOfCompanyDto(basicAgreementSetting.getAlarmWeek().v(),
-				basicAgreementSetting.getErrorWeek().v(), basicAgreementSetting.getLimitWeek().v(),
-				basicAgreementSetting.getAlarmTwoWeeks().v(), basicAgreementSetting.getErrorTwoWeeks().v(),
-				basicAgreementSetting.getLimitTwoWeeks().v(), basicAgreementSetting.getAlarmFourWeeks().v(),
-				basicAgreementSetting.getErrorFourWeeks().v(), basicAgreementSetting.getLimitFourWeeks().v(),
-				basicAgreementSetting.getAlarmOneMonth().v(), basicAgreementSetting.getErrorOneMonth().v(),
-				basicAgreementSetting.getLimitOneMonth().v(), basicAgreementSetting.getAlarmTwoMonths().v(),
-				basicAgreementSetting.getErrorTwoMonths().v(), basicAgreementSetting.getLimitTwoMonths().v(),
-				basicAgreementSetting.getAlarmThreeMonths().v(), basicAgreementSetting.getErrorThreeMonths().v(),
-				basicAgreementSetting.getLimitThreeMonths().v(), basicAgreementSetting.getAlarmOneYear().v(),
-				basicAgreementSetting.getErrorOneYear().v(), basicAgreementSetting.getLimitOneYear().v());
-	}
+    private int upperMonthAverage;
+
 }

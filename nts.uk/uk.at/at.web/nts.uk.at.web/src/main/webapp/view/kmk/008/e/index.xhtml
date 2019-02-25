@@ -12,20 +12,20 @@
 
 	</div>
 	<div class="contents-area">
-		<div tabindex="-1" class="tabpanel-1-contents-area-left" id="tabpanel-1-contents-area-left-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-left" style="width: 500px">
 
 			<div tabindex="-1" id="tree-grid-screen-e" style="width: 450px;"></div>
 
 		</div>
-		<div tabindex="-1" class="tabpanel-1-contents-area-right" id="tabpanel-1-contents-area-right-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-right" 
+				data-bind="with: timeOfWorkPlace" style="width: 500px!important">
 			<div class="lbl-title-employeer-name">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Workplace'])}</div>
-				<span class="label" data-bind="text: currentWorkplaceName"></span>
+				<span class="label" data-bind="text: $parent.currentWorkplaceName"></span>
 			</div>
 			<div class="label">#{i18n.getText('KMK008_6')}</div>
 			<HR />
-			<table class="table-basic-setting-list"
-				data-bind="with: timeOfWorkPlace">
+			<table class="table-basic-setting-list">
 				<tr style="background-color: #E0F59E">
 					<th style="width: 25%">#{i18n.getText('KMK008_18')}</th>
 					<th style="width: 25%">#{i18n.getText('KMK008_19')}</th>
@@ -268,6 +268,38 @@
 						required: false }" /></td>
 				</tr>
 			</table>
+			<div class="label mt10">#{i18n.getText('KMK008_115')}</div>
+			<HR />
+			<div class="upperMonth">
+				<div
+					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_116')}</div>
+				<input class="time-editor-custom-width" tabindex="27"
+					data-bind="ntsTimeEditor: {
+						name: $parent.nameUpperMonth,  
+						constraint: 'AgreementOneMonthTime', 
+						value: upperMonth, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: true }" />
+				<span class="label">#{i18n.getText('KMK008_117')}</span>
+			</div>
+			<div class="upperMonth">
+				<div
+					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_119')}</div>
+				<input class="time-editor-custom-width" tabindex="27"
+					data-bind="ntsTimeEditor: {
+						name: $parent.nameUpperMonthAverage,  
+						constraint: 'AgreementOneMonthTime', 
+						value: upperMonthAverage, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: true }" />
+				<span class="label">#{i18n.getText('KMK008_124')}</span>
+			</div>
 		</div>
 	</div>
 </body>
