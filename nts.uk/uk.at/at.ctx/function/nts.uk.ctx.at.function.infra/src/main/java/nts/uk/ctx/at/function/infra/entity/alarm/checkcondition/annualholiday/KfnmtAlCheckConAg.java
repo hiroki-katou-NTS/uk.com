@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_CON_AG")
+@Table(name = "KFNMT_ALST_CHK_HDPAID_OBL")
 public class KfnmtAlCheckConAg extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -26,15 +26,24 @@ public class KfnmtAlCheckConAg extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KfnmtAlCheckConAgPK pk;
 	
-	@Column(name = "DIST_BY_PERIOD")
+	/**
+	 * 期間按分使用区分
+	 */
+	@Column(name = "DIVIDE_ATR")
 	public int distByPeriod;
 	
+	/**
+	 * 表示するメッセージ
+	 */
 	@Basic
-	@Column(name = "DISPLAY_MESSAGE")
+	@Column(name = "MESSAGE_DISP")
 	public String displayMessage;
 	
+	/**
+	 * 年休使用義務日数
+	 */
 	@Basic
-	@Column(name = "USAGE_OBLI_DAY")
+	@Column(name = "UNDER_LIMIT_DAY")
 	public int usageObliDay;
 
 	@Override
@@ -59,7 +68,8 @@ public class KfnmtAlCheckConAg extends UkJpaEntity implements Serializable{
 	public static KfnmtAlCheckConAg toEntity(String companyId, String code,
 			int category, AlarmCheckConAgr domain) {
 		return new KfnmtAlCheckConAg(new KfnmtAlCheckConAgPK(companyId, category, code),
-				domain.isDistByPeriod() ? 1 : 0, domain.getDisplayMessage().v(), domain.getUsageObliDay().v());
+				domain.isDistByPeriod() ? 1 : 0, domain.getDisplayMessage().isPresent() ? domain.getDisplayMessage().get().v() : null, 
+				domain.getUsageObliDay().v());
 	}
 
 	public AlarmCheckConAgr toDomain() {

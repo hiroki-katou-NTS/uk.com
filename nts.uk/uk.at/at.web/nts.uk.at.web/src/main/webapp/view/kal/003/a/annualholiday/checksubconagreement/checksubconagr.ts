@@ -8,15 +8,41 @@ module nts.uk.at.view.kal003.a.tab {
 
     export class AnnualHolidaySubCon {
         
-        constructor(category: number, listAgreementHour?: Array<model.AgreeCondOt>) {
+        narrowUntilNext: KnockoutObservable<boolean> = ko.observable(false);
+        narrowLastDay: KnockoutObservable<boolean> = ko.observable(false);
+        numberDayAward: KnockoutObservable<number> = ko.observable(null);
+        periodUntilNext: KnockoutObservable<number> = ko.observable(null);
+        
+        constructor(alarmCheckSubConAg?: model.IAlarmCheckSubConAgr) {
+            let self = this;
+            if(alarmCheckSubConAg){
+                this.narrowUntilNext(alarmCheckSubConAg.narrowUntilNext);
+                this.narrowLastDay(alarmCheckSubConAg.narrowLastDay);
+                this.numberDayAward(alarmCheckSubConAg.numberDayAward);
+                this.periodUntilNext(alarmCheckSubConAg.periodUntilNext);
+            }
+        }
+
+        loadData(alarmCheckSubConAg?: model.IAlarmCheckSubConAgr){
+            let self = this;
+            if(alarmCheckSubConAg){
+                self.narrowUntilNext(alarmCheckSubConAg.narrowUntilNext);
+                self.narrowLastDay(alarmCheckSubConAg.narrowLastDay);
+                self.numberDayAward(alarmCheckSubConAg.numberDayAward);
+                self.periodUntilNext(alarmCheckSubConAg.periodUntilNext);
+            }else{
+                self.narrowUntilNext(false);
+                self.narrowLastDay(false);
+                self.numberDayAward(null);
+                self.periodUntilNext(null);
+            }
+        }
+        
+        createNewLine2(): void {
             let self = this;
         }
 
-        createNewLine(): void {
-            let self = this;
-        }
-
-        deleteLine(): void {
+        deleteLine2(): void {
             let self = this;
         }
     }

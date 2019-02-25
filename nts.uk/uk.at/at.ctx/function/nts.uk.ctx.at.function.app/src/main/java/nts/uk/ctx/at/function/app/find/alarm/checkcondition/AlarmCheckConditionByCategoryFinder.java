@@ -250,10 +250,12 @@ public class AlarmCheckConditionByCategoryFinder {
 			AlarmCheckSubConAgr alSubConAgr = annualHolidayAlCon.getAlarmCheckSubConAgr();
 			annualHolidayAlConDto.setAlCheckConAgrDto(alarmCheckConAgr == null ? null
 					: new AlarmCheckConAgrDto(alarmCheckConAgr.isDistByPeriod(),
-							alarmCheckConAgr.getDisplayMessage().v(), alarmCheckConAgr.getUsageObliDay().v()));
+							alarmCheckConAgr.getDisplayMessage().isPresent() ? alarmCheckConAgr.getDisplayMessage().get().v() : null, 
+							alarmCheckConAgr.getUsageObliDay().v()));
 			annualHolidayAlConDto.setAlCheckSubConAgrDto(alSubConAgr == null ? null
 					: new AlarmCheckSubConAgrDto(alSubConAgr.isNarrowUntilNext(), alSubConAgr.isNarrowLastDay(),
-							alSubConAgr.getNumberDayAward().v(), alSubConAgr.getPeriodUntilNext().v()));
+							alSubConAgr.getNumberDayAward().isPresent() ? alSubConAgr.getNumberDayAward().get().v() : null, 
+							alSubConAgr.getPeriodUntilNext().isPresent() ? alSubConAgr.getPeriodUntilNext().get().v() : null));
 		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value,

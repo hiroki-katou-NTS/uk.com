@@ -13,7 +13,7 @@ public class AlarmCheckSubConAgrDto {
 
 	private boolean narrowLastDay;
 
-	private int numberDayAward;
+	private Integer numberDayAward;
 
-	private int periodUntilNext;
+	private Integer periodUntilNext;
 }
