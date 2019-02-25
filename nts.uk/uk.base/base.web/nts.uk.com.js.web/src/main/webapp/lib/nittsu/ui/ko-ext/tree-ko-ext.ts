@@ -199,10 +199,13 @@ module nts.uk.ui.koExtentions {
                     $tree.find("a").removeClass("ui-state-active");
                     selectedValues.forEach(function(val) {
                         let $node = $tree.igTree("nodesByValue", val);
-                        $node.find("a:first").addClass("ui-state-active");
-                        let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
-                        if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
-                            $tree.igTree("toggleCheckstate", $node);
+                        if($node.length > 0){
+                           $node.find("a:first").addClass("ui-state-active");
+                            let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
+                            if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
+                                $tree.igTree("toggleCheckstate", $node);
+                            }
+                            $tree.scrollTop($node[0].offsetTop - $node[0].offsetTop);
                         }
                     });
                 } else {
@@ -211,6 +214,7 @@ module nts.uk.ui.koExtentions {
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
                         $tree.igTree("expandToNode", $selectingNode);
+                        $tree.scrollTop($selectingNode[0].offsetTop - $selectingNode[0].offsetTop);
                     }
                 }
             }
