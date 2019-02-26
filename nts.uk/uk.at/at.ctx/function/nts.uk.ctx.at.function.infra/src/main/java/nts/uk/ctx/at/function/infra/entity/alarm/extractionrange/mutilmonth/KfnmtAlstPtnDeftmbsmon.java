@@ -16,40 +16,40 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondit
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_EXTRACT_AVER_MONTH")
+@Table(name = "KFNMT_ALST_PTN_DEFTMBSMON")
 @NoArgsConstructor
-public class KfnmtExtractAverageMonth extends UkJpaEntity implements Serializable{
+public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KfnmtExtractAverageMonthPK pk;
+	public KfnmtAlstPtnDeftmbsmonPK pk;
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
-	@Column(name = "MONTH")
-	public int month;
+	@Column(name = "STANDARD_MONTH")
+	public int strMonth;
 	
 	
-	@OneToOne(mappedBy = "extractRangeYear", orphanRemoval = true)
+	@OneToOne(mappedBy = "alstPtnDeftmbsmon", orphanRemoval = true)
 	public KfnmtCheckCondition checkCondition;
 	
-	public void fromEntity(KfnmtExtractAverageMonth newEntity) {
-		this.month = newEntity.month;
+	public void fromEntity(KfnmtAlstPtnDeftmbsmon newEntity) {
+		this.strMonth = newEntity.strMonth;
 	}
 	
 	public AverageMonth toDomain() {
-		return new AverageMonth(this.pk.extractionId, this.pk.extractionRange, EnumAdaptor.valueOf(month, StandardMonth.class));
+		return new AverageMonth(this.pk.extractionId, this.pk.extractionRange, this.strMonth);
 	}
 	
-	public KfnmtExtractAverageMonth(AverageMonth domain) {
-		this.pk = new KfnmtExtractAverageMonthPK(domain.getExtractionId(), domain.getExtractionRange().value);
-		this.month = domain.getMonth().value;
+	public KfnmtAlstPtnDeftmbsmon(AverageMonth domain) {
+		this.pk = new KfnmtAlstPtnDeftmbsmonPK(domain.getExtractionId(), domain.getExtractionRange().value);
+		this.strMonth = domain.getStrMonth().value;
 	}
-	public static KfnmtExtractAverageMonth toEntity(AverageMonth domain) {
-		return new KfnmtExtractAverageMonth(domain);
+	public static KfnmtAlstPtnDeftmbsmon toEntity(AverageMonth domain) {
+		return new KfnmtAlstPtnDeftmbsmon(domain);
 	}
 }

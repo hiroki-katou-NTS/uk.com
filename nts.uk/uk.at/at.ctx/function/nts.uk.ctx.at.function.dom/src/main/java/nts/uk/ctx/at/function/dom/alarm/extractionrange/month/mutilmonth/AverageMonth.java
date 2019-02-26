@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth;
 
@@ -8,10 +9,10 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth;
 public class AverageMonth extends ExtractionRangeBase{
 	
 	/** 月前 */
-	private StandardMonth month;
+	private StandardMonth strMonth;
 	
-	public AverageMonth(String extractionId, int extractionRange, StandardMonth month) {
+	public AverageMonth(String extractionId, int extractionRange, int strMonth) {
 		super(extractionId, extractionRange);
-		this.month = month;
+		this.strMonth = EnumAdaptor.valueOf(strMonth, StandardMonth.class);
 	}
 }

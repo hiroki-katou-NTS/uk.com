@@ -24,7 +24,7 @@ module nts.uk.at.view.kal004.share.model {
         extractionUnit?: PeriodUnitDto;
         listExtractionMonthly ?: Array<ExtractionPeriodMonthlyDto>;
         extractionYear ?: ExtractionRangeYearDto;
-        extractionMutilMonth ?: ExtractionMutilMonthDto;
+        extractionMutilMonth ?: ExtractionAverMonthDto;
     }
 
 
@@ -152,10 +152,10 @@ module nts.uk.at.view.kal004.share.model {
          thisYear : number;           
     }
     
-    export interface ExtractionMutilMonthDto{
+    export interface ExtractionAverMonthDto{
          extractionId: string;
          extractionRange: number;
-         standardMonth: number;
+         strMonth: number;
         
     }
 
@@ -190,10 +190,10 @@ module nts.uk.at.view.kal004.share.model {
         extractionPeriodUnit: PeriodUnitCommand;
         listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>=[];
         extractionYear: ExtractionRangeYearCommand;
-        extractionMutilMonth: ExtractionMutilMonthCommand;
+        extractionAverMonth: ExtractionAverageMonthCommand;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
-            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand, extractionMutilMonth: ExtractionMutilMonthCommand) {
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             
@@ -245,6 +245,11 @@ module nts.uk.at.view.kal004.share.model {
                 }else{
                     this.extractionYear =    extractionYear; 
                 }
+                if(extractionAverMonth == null){
+                 this.setDefaultMultiMonth();   
+                }else{
+                   this.extractionAverMonth = extractionAverMonth; 
+                }
             }
             
             
@@ -264,8 +269,8 @@ module nts.uk.at.view.kal004.share.model {
         public setExtractYearly( extractionYear : ExtractionRangeYearCommand){
             this.extractionYear = extractionYear;
         }
-        public setExtractionMutilMonth( extractionMutilMonth : ExtractionMutilMonthCommand){
-            this.extractionMutilMonth = extractionMutilMonth;
+        public setExtractionAverMonth( extractionAverMonth : ExtractionAverageMonthCommand){
+            this.extractionAverMonth = extractionAverMonth;
         }
         
         
@@ -329,10 +334,10 @@ module nts.uk.at.view.kal004.share.model {
         }
         
         public setDefaultMultiMonth(){
-            this.extractionMutilMonth = new ExtractionMutilMonthCommand({
+            this.extractionAverMonth = new ExtractionAverageMonthCommand({
                                         extractionId: "",
                                         extractionRange: 1,
-                                        month: 0   
+                                        strMonth: 0   
                                     });    
         }
     }
@@ -435,14 +440,14 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
     
-    export class ExtractionMutilMonthCommand{
+    export class ExtractionAverageMonthCommand{
         extractionId: string;
         extractionRange: number;
-        month: number;
-        constructor(dto: ExtractionMutilMonthDto){
+        strMonth: number;
+        constructor(dto: ExtractionAverMonthDto){
             this.extractionId = dto.extractionId;
             this.extractionRange = dto.extractionRange;
-            this.month = dto.month;
+            this.strMonth = dto.strMonth;
         }
     }
 

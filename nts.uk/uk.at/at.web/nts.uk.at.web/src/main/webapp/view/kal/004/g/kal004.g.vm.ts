@@ -31,6 +31,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
         daily36: share.ExtractionPeriodDailyCommand;
         listMonthly36: Array<share.ExtractionPeriodMonthlyCommand>;
         yearly36: share.ExtractionRangeYearCommand;
+        averMonth36: share.ExtractionAverageMonthCommand;
         monthly2: share.ExtractionPeriodMonthlyCommand;
         monthly3: share.ExtractionPeriodMonthlyCommand;
         monthly4: share.ExtractionPeriodMonthlyCommand;
@@ -87,7 +88,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             ]);
             self.selectedTab = ko.observable(nts.uk.ui.windows.getShared("selectedTab"));
 
-
+            self.averMonth36 = nts.uk.ui.windows.getShared("averMonth36");
             self.yearly36 = nts.uk.ui.windows.getShared("yearly36");
             self.listMonthly36 = nts.uk.ui.windows.getShared("listMonthly36");
             self.daily36 = nts.uk.ui.windows.getShared("daily36");
@@ -96,7 +97,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.monthly2 = _.find(self.listMonthly36, ['unit', 0]);
             self.monthly3 = _.find(self.listMonthly36, ['unit', 1]);
             self.monthly4 = _.find(self.listMonthly36, ['unit', 2]);
-            self.monthly6 = _.find(self.listMonthly36, ['unit', 2]);
+            
 
             //start date
             self.strSelected = ko.observable(Number(self.daily36.strSpecify));
@@ -169,7 +170,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             });
             
             //tab6
-            self.strMonth6 = ko.observable(self.monthly6.strSpecify - 1);
+            self.strMonth6 = ko.observable(self.averMonth36.strMonth);
             self.strComboMonth6 = ko.observableArray(__viewContext.enums.StandardMonth);
         }
 
@@ -312,7 +313,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             let multiMonthShare = {
                extractionId: "",
                extractionRange: 0,
-               standardMonth : self.strMonth6()
+               strMonth : self.strMonth6()
                 
             }
 
@@ -320,7 +321,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             nts.uk.ui.windows.setShared("daily36Share", daily36Share);
             nts.uk.ui.windows.setShared("listMonth36Share", listMonth36Share);
             nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);
-            nts.uk.ui.windows.setShared("multiMonthShare", multiMonthShare);
+            nts.uk.ui.windows.setShared("averMonth36Share", multiMonthShare);
             nts.uk.ui.windows.close();
         }
         checkForcus(value): any {
