@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 
 /**
  * 
@@ -22,19 +21,26 @@ public class AgreementTimeOfClassification extends AggregateRoot {
 	private LaborSystemtAtr laborSystemAtr;
 
 	private String classificationCode;
+	
+	private AgreementOneMonthTime upperMonth;
+	
+	private AgreementOneMonthTime upperMonthAverage;
 
 	public AgreementTimeOfClassification(String companyId, String basicSettingId, LaborSystemtAtr laborSystemAtr,
-			String classificationCode) {
+			String classificationCode, AgreementOneMonthTime upperMonth, AgreementOneMonthTime upperMonthAverage) {
 		super();
 		this.companyId = companyId;
 		this.basicSettingId = basicSettingId;
 		this.laborSystemAtr = laborSystemAtr;
 		this.classificationCode = classificationCode;
+		this.upperMonth = upperMonth;
+		this.upperMonthAverage = upperMonthAverage;
 	}
 
 	public static AgreementTimeOfClassification createJavaType(String companyId, String basicSettingId,
-			BigDecimal laborSystemAtr, String classificationCode) {
+			int laborSystemAtr, String classificationCode, int upperMonth, int upperMonthAverage) {
 		return new AgreementTimeOfClassification(companyId, basicSettingId,
-				EnumAdaptor.valueOf(laborSystemAtr.intValue(), LaborSystemtAtr.class), classificationCode);
+				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode,
+				new AgreementOneMonthTime(upperMonth), new AgreementOneMonthTime(upperMonthAverage));
 	}
 }

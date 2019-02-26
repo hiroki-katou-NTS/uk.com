@@ -12,6 +12,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -59,7 +60,7 @@ public class AddAgreementTimeOfClassificationCommandHandler
 
 		AgreementTimeOfClassification agreementTimeOfClassification = new AgreementTimeOfClassification(companyId,
 				basicSettingId, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-				command.getClassificationCode());
+				command.getClassificationCode(), new AgreementOneMonthTime(command.getUpperMonth()), new AgreementOneMonthTime(command.getUpperMonthAverage()));
 		
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 

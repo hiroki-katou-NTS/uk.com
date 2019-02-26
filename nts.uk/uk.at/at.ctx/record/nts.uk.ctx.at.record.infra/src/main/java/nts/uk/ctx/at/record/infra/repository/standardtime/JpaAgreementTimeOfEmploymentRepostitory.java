@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +54,11 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 	public void add(AgreementTimeOfEmployment agreementTimeOfEmployment) {
 		this.commandProxy().insert(toEntity(agreementTimeOfEmployment));
 	}
+	
+	@Override
+	public void update(AgreementTimeOfEmployment agreementTimeOfEmployment) {
+		this.commandProxy().update(toEntity(agreementTimeOfEmployment));
+	}
 
 	@Override
 	public void remove(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
@@ -70,6 +74,15 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
 				.setParameter("employmentCategoryCode", employmentCategoryCode, EmploymentCode.class)
 				.getSingle(f -> f.kmkmtAgeementTimeEmploymentPK.basicSettingId);
+	}
+	
+	@Override
+	public Optional<AgreementTimeOfEmployment> find(String companyId, String employmentCategoryCode,
+			LaborSystemtAtr laborSystemAtr) {
+		return this.queryProxy().query(FIND_EMPLOYMENT_DETAIL, KmkmtAgeementTimeEmployment.class)
+				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+				.setParameter("employmentCategoryCode", employmentCategoryCode, EmploymentCode.class)
+				.getSingle(f -> toDomain(f));
 	}
 
 	@Override
@@ -87,18 +100,21 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 		entity.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode = agreementTimeOfEmployment
 				.getEmploymentCategoryCode();
 		entity.kmkmtAgeementTimeEmploymentPK.basicSettingId = agreementTimeOfEmployment.getBasicSettingId();
-		entity.laborSystemAtr = new BigDecimal(agreementTimeOfEmployment.getLaborSystemAtr().value);
+		entity.laborSystemAtr = agreementTimeOfEmployment.getLaborSystemAtr().value;
+		entity.upperMonth = agreementTimeOfEmployment.getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfEmployment.getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
 
-//	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
-//		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
-//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
-//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
-//				kmkmtAgeementTimeEmployment.laborSystemAtr,
-//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
-//
-//		return agreementTimeOfEmployment;
-//	}
+	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
+		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
+				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
+				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
+				kmkmtAgeementTimeEmployment.laborSystemAtr,
+				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode,
+				kmkmtAgeementTimeEmployment.upperMonth, kmkmtAgeementTimeEmployment.upperMonthAverage);
+
+		return agreementTimeOfEmployment;
+	}
 }

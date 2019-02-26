@@ -5,13 +5,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -55,8 +53,8 @@ public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandlerWithR
 		String companyId = login.companyId();
 		String basicSettingId = IdentifierUtil.randomUniqueId();
 
-		AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(companyId, basicSettingId,
-				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
+		AgreementTimeOfCompany agreementTimeOfCompany = AgreementTimeOfCompany.createFromJavaType(companyId, basicSettingId,
+				command.getLaborSystemAtr(), command.getUpperMonth(), command.getUpperMonthAverage());
 
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
