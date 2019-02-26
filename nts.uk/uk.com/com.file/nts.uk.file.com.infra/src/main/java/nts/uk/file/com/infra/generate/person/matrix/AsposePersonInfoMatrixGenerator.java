@@ -438,8 +438,10 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		}
 		
 		dynamicCol.stream().forEach(c ->{
-			Integer w = width.get(c.getItemCode());
-			widthLst.add(w);
+			if(c.getItemTypeState().getItemType() == 2) {
+				Integer w = width.get(c.getItemCode());
+				widthLst.add(w);
+			}
 		});
 		// chia cho 7 là vì so với tỉ lệ trên grid với excel lệch nhau 7 lần
 		for(int i = 0; i < widthLst.size(); i++) {
