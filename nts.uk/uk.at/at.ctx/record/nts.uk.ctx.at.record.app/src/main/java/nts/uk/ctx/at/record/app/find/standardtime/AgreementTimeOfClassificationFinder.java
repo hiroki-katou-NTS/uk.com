@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationListDto;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
@@ -53,13 +54,17 @@ public class AgreementTimeOfClassificationFinder {
 		String companyId = login.companyId();
 		AgreementTimeOfClassificationDetailDto agreementTimeOfClassificationDetail = new AgreementTimeOfClassificationDetailDto();
 
-		// get basicSettingID of Classification selected
-		Optional<String> basicSettingIdOfClass = agreementTimeOfClassificationRepository.findEmploymentBasicSettingID(
+		Optional<AgreementTimeOfClassification> agreementTimeOfClassificationOpt = agreementTimeOfClassificationRepository.find(
 				companyId, EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
-		if (basicSettingIdOfClass.isPresent()) {
+		if (agreementTimeOfClassificationOpt.isPresent()) {
+			AgreementTimeOfClassification agreementTimeOfClassification = agreementTimeOfClassificationOpt.get();
+			agreementTimeOfClassificationDetail.setUpperMonth(agreementTimeOfClassification.getUpperMonth().v());
+			agreementTimeOfClassificationDetail.setUpperMonthAverage(agreementTimeOfClassification.getUpperMonthAverage().v());
+			
+			String basicSettingIdOfClass = agreementTimeOfClassification.getBasicSettingId();
 			// get basicSetting detail of Employment selected
 			Optional<BasicAgreementSetting> basicSettingOfClass = basicAgreementSettingRepository
-					.find(basicSettingIdOfClass.get());
+					.find(basicSettingIdOfClass);
 
 			// set error time + alarm time
 			if (basicSettingOfClass.isPresent()) {
@@ -86,6 +91,7 @@ public class AgreementTimeOfClassificationFinder {
 			} else {
 				return null;
 			}
+			
 		}
 
 		// get basicSettingId of Company
@@ -95,14 +101,17 @@ public class AgreementTimeOfClassificationFinder {
 			// get Limit Time of company
 			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
 					.find(agreementTimeOfCompany.get().getBasicSettingId());
-			// set limit time
-			agreementTimeOfClassificationDetail.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
-			agreementTimeOfClassificationDetail.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
-			agreementTimeOfClassificationDetail.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
-			agreementTimeOfClassificationDetail.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
-			agreementTimeOfClassificationDetail.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
-			agreementTimeOfClassificationDetail.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
-			agreementTimeOfClassificationDetail.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+			if(basicSettingOfCom.isPresent()){
+				BasicAgreementSetting basicArgSet = basicSettingOfCom.get();
+				// set limit time
+				agreementTimeOfClassificationDetail.setLimitWeek(basicArgSet.getLimitWeek().v());
+				agreementTimeOfClassificationDetail.setLimitTwoWeeks(basicArgSet.getLimitTwoWeeks().v());
+				agreementTimeOfClassificationDetail.setLimitFourWeeks(basicArgSet.getLimitFourWeeks().v());
+				agreementTimeOfClassificationDetail.setLimitOneMonth(basicArgSet.getLimitOneMonth().v());
+				agreementTimeOfClassificationDetail.setLimitTwoMonths(basicArgSet.getLimitTwoMonths().v());
+				agreementTimeOfClassificationDetail.setLimitThreeMonths(basicArgSet.getLimitThreeMonths().v());
+				agreementTimeOfClassificationDetail.setLimitOneYear(basicArgSet.getLimitOneYear().v());
+			}
 		}
 
 		return agreementTimeOfClassificationDetail;

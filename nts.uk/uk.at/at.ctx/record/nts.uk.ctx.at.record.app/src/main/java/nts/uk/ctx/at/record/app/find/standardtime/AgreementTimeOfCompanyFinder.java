@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfCompanyDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
@@ -31,17 +32,46 @@ public class AgreementTimeOfCompanyFinder {
 	public AgreementTimeOfCompanyDto findAll(int laborSystemAtr) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
+		AgreementTimeOfCompanyDto result = new AgreementTimeOfCompanyDto();
 
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 
 		if (agreementTimeOfCompany.isPresent()) {
-			String basicSettingId = agreementTimeOfCompany.get().getBasicSettingId();
-			return basicAgreementSettingRepository.find(basicSettingId).map(f -> AgreementTimeOfCompanyDto.toDomain(f))
-					.orElse(null);
+			AgreementTimeOfCompany argTimeCom = agreementTimeOfCompany.get();
+			String basicSettingId = argTimeCom.getBasicSettingId();
+			result.setUpperMonth(argTimeCom.getUpperMonth().v());
+			result.setUpperMonthAverage(argTimeCom.getUpperMonthAverage().v());
 
-		} else {
-			return null;
+			Optional<BasicAgreementSetting> basicAgreementSetting = basicAgreementSettingRepository
+					.find(basicSettingId);
+			if (basicAgreementSetting.isPresent()) {
+				BasicAgreementSetting basicArgSet = basicAgreementSetting.get();
+				result.setAlarmWeek(basicArgSet.getAlarmWeek().v());
+				result.setAlarmTwoWeeks(basicArgSet.getAlarmTwoWeeks().v());
+				result.setAlarmFourWeeks(basicArgSet.getAlarmFourWeeks().v());
+				result.setAlarmOneMonth(basicArgSet.getAlarmOneMonth().v());
+				result.setAlarmTwoMonths(basicArgSet.getAlarmTwoMonths().v());
+				result.setAlarmThreeMonths(basicArgSet.getAlarmThreeMonths().v());
+				result.setAlarmOneYear(basicArgSet.getAlarmOneYear().v());
+
+				result.setErrorWeek(basicArgSet.getErrorWeek().v());
+				result.setErrorTwoWeeks(basicArgSet.getErrorTwoWeeks().v());
+				result.setErrorFourWeeks(basicArgSet.getErrorFourWeeks().v());
+				result.setErrorOneMonth(basicArgSet.getErrorOneMonth().v());
+				result.setErrorTwoMonths(basicArgSet.getErrorTwoMonths().v());
+				result.setErrorThreeMonths(basicArgSet.getErrorThreeMonths().v());
+				result.setErrorOneYear(basicArgSet.getErrorOneYear().v());
+
+				result.setLimitWeek(basicArgSet.getLimitWeek().v());
+				result.setLimitTwoWeeks(basicArgSet.getLimitTwoWeeks().v());
+				result.setLimitFourWeeks(basicArgSet.getLimitFourWeeks().v());
+				result.setLimitOneMonth(basicArgSet.getLimitOneMonth().v());
+				result.setLimitTwoMonths(basicArgSet.getLimitTwoMonths().v());
+				result.setLimitThreeMonths(basicArgSet.getLimitThreeMonths().v());
+				result.setLimitOneYear(basicArgSet.getLimitOneYear().v());
+			}
 		}
+		return result;
 	}
 }
