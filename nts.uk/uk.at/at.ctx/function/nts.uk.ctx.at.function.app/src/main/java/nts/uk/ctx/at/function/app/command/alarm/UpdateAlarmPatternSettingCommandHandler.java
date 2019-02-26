@@ -18,6 +18,12 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.Average
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * Class UpdateAlarmPatternSettingCommandHandler
+ * @author phongtq
+ *
+ */
+
 @Stateless
 public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddAlarmPatternSettingCommand> {
 
@@ -47,6 +53,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		
 		// check domain logic
 		if (domain.selectedCheckCodition()) {
+			// アラームリストのパターンを更新する (Update pattern of alarm list )
 			repo.update(domain);
 		}
 
@@ -78,9 +85,11 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 			AYear extractYear = command.getExtractionYear().toDomain();
 			extractionList.add(extractYear);
 			
+			// Add averageMonth to extractionList
 			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
 			extractionList.add(averageMonth);
 
+			// Set ExtractionId & ExtractionRange
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
 				e.setExtractionRange(extractYear.getExtractionRange());
