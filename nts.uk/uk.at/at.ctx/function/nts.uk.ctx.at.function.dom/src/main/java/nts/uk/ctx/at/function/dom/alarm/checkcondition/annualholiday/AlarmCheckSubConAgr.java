@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,20 +13,32 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AlarmCheckSubConAgr {
 
+	/**
+	 * 次回年休付与日までの期間の条件で絞り込む
+	 */
 	private boolean narrowUntilNext;
 
+	/**
+	 * 前回年休付与日数の条件で絞り込む
+	 */
 	private boolean narrowLastDay;
 
-	private NumberDayAward numberDayAward;
+	/**
+	 * 前回年休付与日数
+	 */
+	private Optional<NumberDayAward> numberDayAward;
 
-	private NumOfMonthUnNextHoliday periodUntilNext;
+	/**
+	 * 次回年休付与日までの期間
+	 */
+	private Optional<NumOfMonthUnNextHoliday> periodUntilNext;
 
 	
-	public AlarmCheckSubConAgr(boolean narrowUntilNext, boolean narrowLastDay, int numberDayAward, int periodUntilNext) {
+	public AlarmCheckSubConAgr(boolean narrowUntilNext, boolean narrowLastDay, Integer numberDayAward, Integer periodUntilNext) {
 		super();
 		this.narrowUntilNext = narrowUntilNext;
 		this.narrowLastDay = narrowLastDay;
-		this.numberDayAward = new NumberDayAward(numberDayAward);
-		this.periodUntilNext = new NumOfMonthUnNextHoliday(periodUntilNext);
+		this.numberDayAward = numberDayAward == null ? Optional.empty() : Optional.of(new NumberDayAward(numberDayAward));
+		this.periodUntilNext = periodUntilNext == null ? Optional.empty() : Optional.of(new NumOfMonthUnNextHoliday(periodUntilNext));
 	}
 }

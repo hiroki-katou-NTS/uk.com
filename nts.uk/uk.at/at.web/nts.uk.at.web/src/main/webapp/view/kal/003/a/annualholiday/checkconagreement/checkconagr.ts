@@ -7,15 +7,33 @@ module nts.uk.at.view.kal003.a.tab {
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class AnnualHolidayCon {
-        constructor(category: number, listAgreementHour?: Array<model.AgreeCondOt>) {
+        
+        distByPeriod: KnockoutObservable<boolean> = ko.observable(false);
+        displayMessage: KnockoutObservable<string> = ko.observable("");
+        usageObliDay: KnockoutObservable<number> = ko.observable(null);
+        
+        constructor() {
             let self = this;
         }
 
-        createNewLine(): void {
+        loadData(alarmCheckConAg?: model.IAlarmCheckConAgr){
+            let self = this;
+            if(alarmCheckConAg){
+                self.distByPeriod(alarmCheckConAg.distByPeriod);
+                self.displayMessage(alarmCheckConAg.displayMessage);
+                self.usageObliDay(alarmCheckConAg.usageObliDay);
+            }else{
+                self.distByPeriod(false);
+                self.displayMessage("");
+                self.usageObliDay(null);
+            }
+        }
+        
+        createNewLine1(): void {
             let self = this;
         }
 
-        deleteLine(): void {
+        deleteLine1(): void {
             let self = this;
         }
     }

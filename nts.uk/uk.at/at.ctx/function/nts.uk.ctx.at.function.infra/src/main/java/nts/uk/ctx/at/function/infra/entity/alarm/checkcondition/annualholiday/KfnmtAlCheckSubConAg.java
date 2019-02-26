@@ -12,15 +12,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckSubConAgr;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_SUB_CON_AG")
+@Table(name = "KFNMT_ALST_CHK_HDPAID")
 public class KfnmtAlCheckSubConAg extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,21 +26,34 @@ public class KfnmtAlCheckSubConAg extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KfnmtAlCheckSubConAgPK pk;
 
+	/**
+	 * 次回期間使用区分
+	 */
 	@Basic
-	@Column(name = "NARROW_UNTIL_NEXT")
+	@Column(name = "NEXT_PERIOD_ATR")
 	public int narrowUntilNext;
-
+	
+	/**
+	 * 次回期間
+	 */
 	@Basic
-	@Column(name = "NARROW_LAST_DAY")
+	@Column(name = "NEXT_PERIOD")
+	public Integer periodUntilNext;
+
+	/**
+	 * 前回年休付与日数使用区分
+	 */
+	@Basic
+	@Column(name = "LASTTIME_DAY_ATR")
 	public int narrowLastDay;
 
+	/**
+	 * 前回年休付与日数
+	 */
 	@Basic
-	@Column(name = "NUMBER_DAY_AWARD")
-	public int numberDayAward;
+	@Column(name = "LASTTIME_DAY")
+	public Integer numberDayAward;
 
-	@Basic
-	@Column(name = "PERIOD_UNTIL_NEXT")
-	public int periodUntilNext;
 
 	@Override
 	protected Object getKey() {
@@ -55,8 +66,8 @@ public class KfnmtAlCheckSubConAg extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "CD", referencedColumnName = "CD", insertable = false, updatable = false) })
 	public KfnmtAlarmCheckConditionCategory condition;
 
-	public KfnmtAlCheckSubConAg(KfnmtAlCheckSubConAgPK pk, int narrowUntilNext, int narrowLastDay, int numberDayAward,
-			int periodUntilNext) {
+	public KfnmtAlCheckSubConAg(KfnmtAlCheckSubConAgPK pk, int narrowUntilNext, int narrowLastDay, Integer numberDayAward,
+			Integer periodUntilNext) {
 		super();
 		this.pk = pk;
 		this.narrowUntilNext = narrowUntilNext;
@@ -68,8 +79,8 @@ public class KfnmtAlCheckSubConAg extends UkJpaEntity implements Serializable {
 	public static KfnmtAlCheckSubConAg toEntity(String companyId, String code, int category,
 			AlarmCheckSubConAgr domain) {
 		return new KfnmtAlCheckSubConAg(new KfnmtAlCheckSubConAgPK(companyId, category, code),
-				domain.isNarrowUntilNext() ? 1 : 0, domain.isNarrowLastDay() ? 1 : 0, domain.getNumberDayAward().v(),
-				domain.getPeriodUntilNext().v());
+				domain.isNarrowUntilNext() ? 1 : 0, domain.isNarrowLastDay() ? 1 : 0, domain.getNumberDayAward().isPresent() ? domain.getNumberDayAward().get().v() : null,
+						domain.getPeriodUntilNext().isPresent() ? domain.getPeriodUntilNext().get().v() : null);
 	}
 
 	public AlarmCheckSubConAgr toDomain() {

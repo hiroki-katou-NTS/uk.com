@@ -63,6 +63,7 @@ module nts.uk.at.view.kal003.share.model {
         monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         //MinhVV add
         mulMonCheckCond : KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
+        annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
         
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -318,6 +319,16 @@ module nts.uk.at.view.kal003.share.model {
             this.listCondOt = ko.observableArray(listCondOt);
             this.listCondError = ko.observableArray(listCondError);
         }
+    }
+    
+    export class AnnualHolidayAlarmCondition{
+        alarmCheckSubConAgr: KnockoutObservable<AlarmCheckSubConAgr>;//tab agreement hour
+        alarmCheckConAgr: KnockoutObservable<AlarmCheckConAgr>;//tab agreement error
+
+        constructor(alarmCheckSubConAgr: AlarmCheckSubConAgr, alarmCheckConAgr: AlarmCheckConAgr) {
+            this.alarmCheckSubConAgr = ko.observable(alarmCheckSubConAgr);
+            this.alarmCheckConAgr = ko.observable(alarmCheckConAgr);
+        } 
     }
 
     export enum CATEGORY {
@@ -2374,6 +2385,63 @@ module nts.uk.at.view.kal003.share.model {
             this.errorAlarm = param.errorAlarm;
             this.messageDisp = ko.observable(param.messageDisp);
             this.name = param.name;
+        }
+    }
+    
+    export interface IAlarmCheckSubConAgr {
+        category: number;
+        code: string;
+        id: string;
+        narrowUntilNext: boolean;
+        narrowLastDay: boolean;
+        numberDayAward: number;
+        periodUntilNext: number;
+    }
+
+    export class AlarmCheckSubConAgr {
+        category: number;
+        code: string;
+        id: string;
+        narrowUntilNext: KnockoutObservable<boolean>;
+        narrowLastDay: KnockoutObservable<boolean>;
+        numberDayAward: KnockoutObservable<number>;
+        periodUntilNext: KnockoutObservable<number>;
+
+        constructor(param: IAlarmCheckSubConAgr) {
+//            this.category = param.category;
+//            this.code = param.code;
+//            this.id = param.id;
+            this.narrowUntilNext = ko.observable(param.narrowUntilNext);
+            this.narrowLastDay =  ko.observable(param.narrowLastDay);
+            this.numberDayAward =  ko.observable(param.numberDayAward);
+            this.periodUntilNext = ko.observable(param.periodUntilNext);
+        }
+    }
+    
+    export interface IAlarmCheckConAgr {
+        category: number;
+        code: string;
+        id: string;
+        distByPeriod: boolean;
+        displayMessage: string;
+        usageObliDay: number;
+    }
+
+    export class AlarmCheckConAgr {
+        category: number;
+        code: string;
+        id: string;
+        distByPeriod: KnockoutObservable<boolean>;
+        displayMessage: KnockoutObservable<string>;
+        usageObliDay: KnockoutObservable<number>;
+
+        constructor(param: IAlarmCheckConAgr) {
+//            this.category = param.category;
+//            this.code = param.code;
+//            this.id = param.id;
+            this.distByPeriod = ko.observable(param.distByPeriod);
+            this.displayMessage =  ko.observable(param.displayMessage);
+            this.usageObliDay =  ko.observable(param.usageObliDay);
         }
     }
 
