@@ -142,7 +142,6 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 		} else {
 			colFix = 3;
 		}
-		/*
 		for (int i = 0; i < errorEmployeeInfoLst.size(); i++) {
 			ErrorWarningEmployeeInfoDataSource employee = errorEmployeeInfoLst.get(i);
 			// in ra những cột cố định
@@ -213,7 +212,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 				Cell cell = cells.get((row - 1), j);
 				setBodyStyle(cell);
 			}
-		}*/
+		}
 
 	}
 
