@@ -83,7 +83,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 { id: 'tab-3', title: getText('KAL004_71'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: getText('KAL004_72'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-5', title: getText('KAL004_73'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-6', title: getText('KAL004_74'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-6', title: getText('KAL004_120'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
 
             ]);
             self.selectedTab = ko.observable(nts.uk.ui.windows.getShared("selectedTab"));
@@ -365,6 +365,11 @@ module nts.uk.at.view.kal004.g.viewmodel {
                     if (self.strSelected4() == 0) {
                         $("#start-tab-5").focus();
                     }
+                }, 50);
+
+            }else if (value == "tab-6") {
+                setTimeout(function() {
+                        $("#start-tab-6").focus();
                 }, 50);
 
             }

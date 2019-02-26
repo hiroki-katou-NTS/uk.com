@@ -78,17 +78,12 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 			AYear extractYear = command.getExtractionYear().toDomain();
 			extractionList.add(extractYear);
 			
+			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
+			extractionList.add(averageMonth);
+
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
 				e.setExtractionRange(extractYear.getExtractionRange());
-			});
-			
-			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
-			extractionList.add(averageMonth);
-			
-			extractionList.forEach(e -> {
-				e.setExtractionId(averageMonth.getExtractionId());
-				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
 		

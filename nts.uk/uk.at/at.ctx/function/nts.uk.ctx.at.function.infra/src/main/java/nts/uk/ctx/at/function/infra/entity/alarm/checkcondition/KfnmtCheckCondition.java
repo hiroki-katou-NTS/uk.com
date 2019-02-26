@@ -253,7 +253,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					listMonth.add((ExtractionPeriodMonth) extractBase);					
 				}else if (extractBase  instanceof AYear){
 					extractYear = (AYear) extractBase;			
-				}else {
+				}else if (extractBase  instanceof AverageMonth){
 					extractAverMonth = (AverageMonth) extractBase;
 				}
 			}
