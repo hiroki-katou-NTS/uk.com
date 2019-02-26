@@ -18,6 +18,7 @@ import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -112,22 +113,20 @@ public class LayoutingProcessor {
 		if (finderClass == null)
 			return null;
 
-		List<?> objectDto = finderClass.findAllData(query);
+		List<GridPeregDto> objectDto = finderClass.findAllData(query);
 
 		if (objectDto.size() == 0) {
 			return new ArrayList<>();
 		}
 
-		List<PeregDomainDto> domainDto = objectDto.stream().map(c -> (PeregDomainDto) c).collect(Collectors.toList());
-
-		List<String> recordIds = domainDto.stream().filter(c -> c != null).map(c -> c.getRecordId())
+		List<String> recordIds = objectDto.stream().map(c -> c.getPeregDomainDto().getRecordId())
 				.collect(Collectors.toList());
 
 		// get optional data
 		Map<String, List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
 
-		List<PeregDto> peregDtoLst = domainDto.stream().map(c -> {
-			return new PeregDto(c, finderClass.dtoClass(), optionalItems.get(c.getRecordId()));
+		List<PeregDto> peregDtoLst = objectDto.stream().map(c -> {
+			return new PeregDto(c.getPeregDomainDto(), finderClass.dtoClass(), optionalItems.get(c.getPeregDomainDto().getRecordId()));
 		}).collect(Collectors.toList());
 
 		return peregDtoLst;
