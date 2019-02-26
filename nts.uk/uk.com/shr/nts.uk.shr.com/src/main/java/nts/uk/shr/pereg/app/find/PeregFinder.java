@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 public interface PeregFinder<T> {
@@ -37,7 +38,7 @@ public interface PeregFinder<T> {
 	 * @param query
 	 * @return
 	 */
-	List<T> getAllData(PeregQueryByListEmp query);
+	List<GridPeregDto> getAllData(PeregQueryByListEmp query);
 
 	default PeregDomainDto findSingle(PeregQuery query) {
 		return this.getSingleData(query);
@@ -51,7 +52,7 @@ public interface PeregFinder<T> {
 		return this.getListFirstItems(query);
 	}
 	
-	default List<T> findAllData(PeregQueryByListEmp query) {
+	default List<GridPeregDto> findAllData(PeregQueryByListEmp query) {
 		return this.getAllData(query);
 	}
 }
