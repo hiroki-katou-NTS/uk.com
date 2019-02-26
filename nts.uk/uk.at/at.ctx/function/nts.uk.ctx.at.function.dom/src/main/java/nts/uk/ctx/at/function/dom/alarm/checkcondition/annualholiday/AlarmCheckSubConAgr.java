@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * @author thanhnx
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
-public class AlarmCheckSubConAgr {
+public class AlarmCheckSubConAgr extends AggregateRoot{
 
 	/**
 	 * 次回年休付与日までの期間の条件で絞り込む

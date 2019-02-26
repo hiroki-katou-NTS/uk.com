@@ -15,8 +15,14 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @AllArgsConstructor
 public class AnnualHolidayAlarmCondition extends ExtractionCondition{
 
+	/**
+	 * 年休アラームチェック条件
+	 */
 	private AlarmCheckConAgr alarmCheckConAgr;
 	
+	/**
+	 * 年休アラームチェック対象者条件
+	 */
 	private AlarmCheckSubConAgr alarmCheckSubConAgr;
 	
 	@Override
