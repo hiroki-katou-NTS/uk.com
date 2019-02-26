@@ -91,8 +91,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 			// Set ExtractionId & ExtractionRange
 			extractionList.forEach( e-> {
-				e.setExtractionId(extractYear.getExtractionId());
-				e.setExtractionRange(extractYear.getExtractionRange());
+				e.setExtractionId(averageMonth.getExtractionId());
+				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
 		

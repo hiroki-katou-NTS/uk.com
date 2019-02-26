@@ -314,7 +314,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             // Set data for averMonth36
             let multiMonthShare = {
                extractionId: "",
-               extractionRange: 0,
+               extractionRange: 4,
                strMonth : self.strMonth6()
                 
             }

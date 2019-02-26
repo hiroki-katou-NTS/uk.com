@@ -336,7 +336,7 @@ module nts.uk.at.view.kal004.share.model {
         public setDefaultMultiMonth(){
             this.extractionAverMonth = new ExtractionAverageMonthCommand({
                                         extractionId: "",
-                                        extractionRange: 1,
+                                        extractionRange: 4,
                                         strMonth: 0   
                                     });    
         }
