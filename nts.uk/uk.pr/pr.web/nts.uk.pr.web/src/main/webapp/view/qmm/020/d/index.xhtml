@@ -2,7 +2,7 @@
     <div class="sidebar-content-header" style = "min-width: 1000px;">
             <span class="title">#{i18n.getText('QMM020_7')}</span>
             <button style="margin-left: 48px" id="A1_1" tabindex="1" class="proceed"
-                    data-bind="click: registerStateCorrelationHisDeparment, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                    data-bind="click: registerStateCorrelationHisDeparment, enable: false">#{i18n.getText('QMM020_1')}</button>
             <button id="A1_3" tabindex="3"
                     data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
 
@@ -16,9 +16,9 @@
             </div>
             <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="D1_3" tabindex="5" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">履歴追加</button>
+                    <button id="D1_3" tabindex="5" data-bind="click: openScreenJ, enable: false">#{i18n.getText('QMM020_13')}</button>
 
-                    <button id="D1_4" tabindex="6" data-bind="click: openScreenK, enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">履歴編集</button>
+                    <button id="D1_4" tabindex="6" data-bind="click: openScreenK, enable: false" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
                 <div style="margin-top: 10px">
