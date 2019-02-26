@@ -87,8 +87,9 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             ]);
             self.selectedTab = ko.observable(nts.uk.ui.windows.getShared("selectedTab"));
-
+            // Get share data from screen A
             self.averMonth36 = nts.uk.ui.windows.getShared("averMonth36");
+            
             self.yearly36 = nts.uk.ui.windows.getShared("yearly36");
             self.listMonthly36 = nts.uk.ui.windows.getShared("listMonthly36");
             self.daily36 = nts.uk.ui.windows.getShared("daily36");
@@ -310,6 +311,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 thisYear: self.strSelected5()
             }
             
+            // Set data for averMonth36
             let multiMonthShare = {
                extractionId: "",
                extractionRange: 0,
@@ -321,6 +323,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             nts.uk.ui.windows.setShared("daily36Share", daily36Share);
             nts.uk.ui.windows.setShared("listMonth36Share", listMonth36Share);
             nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);
+            // Share data to Screen A
             nts.uk.ui.windows.setShared("averMonth36Share", multiMonthShare);
             nts.uk.ui.windows.close();
         }
@@ -366,7 +369,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                         $("#start-tab-5").focus();
                     }
                 }, 50);
-
+            // Focus of tab 複数月平均
             }else if (value == "tab-6") {
                 setTimeout(function() {
                         $("#start-tab-6").focus();
