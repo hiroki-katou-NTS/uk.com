@@ -212,9 +212,9 @@ module nts.uk.pr.view.qmm019.share.model {
      */
     export enum PaymentProportionalAtr {
         // 按分する
-        PROPORTIONAL = 0,
+        PROPORTIONAL = 1,
         // 按分しない
-        NOT_PROPORTIONAL = 1,
+        NOT_PROPORTIONAL = 0,
         // 月１回支給
         PAYMENT_ONE_A_MONTH = 2
     }
