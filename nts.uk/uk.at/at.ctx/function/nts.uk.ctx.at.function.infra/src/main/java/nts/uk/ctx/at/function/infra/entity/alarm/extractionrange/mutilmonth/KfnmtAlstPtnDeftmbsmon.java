@@ -1,0 +1,55 @@
+package nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+@Entity
+@Table(name = "KFNMT_ALST_PTN_DEFTMBSMON")
+@NoArgsConstructor
+public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KfnmtAlstPtnDeftmbsmonPK pk;
+
+	@Override
+	protected Object getKey() {
+		return pk;
+	}
+	
+	@Column(name = "STANDARD_MONTH")
+	public int strMonth;
+	
+	
+	@OneToOne(mappedBy = "alstPtnDeftmbsmon", orphanRemoval = true)
+	public KfnmtCheckCondition checkCondition;
+	
+	public void fromEntity(KfnmtAlstPtnDeftmbsmon newEntity) {
+		this.strMonth = newEntity.strMonth;
+	}
+	
+	public AverageMonth toDomain() {
+		return new AverageMonth(this.pk.extractionId, this.pk.extractionRange, this.strMonth);
+	}
+	
+	public KfnmtAlstPtnDeftmbsmon(AverageMonth domain) {
+		this.pk = new KfnmtAlstPtnDeftmbsmonPK(domain.getExtractionId(), domain.getExtractionRange().value);
+		this.strMonth = domain.getStrMonth().value;
+	}
+	public static KfnmtAlstPtnDeftmbsmon toEntity(AverageMonth domain) {
+		return new KfnmtAlstPtnDeftmbsmon(domain);
+	}
+}

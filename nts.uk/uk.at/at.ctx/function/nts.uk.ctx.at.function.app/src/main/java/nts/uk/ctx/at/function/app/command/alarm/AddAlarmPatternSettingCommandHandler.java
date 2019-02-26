@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -89,6 +90,14 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
 				e.setExtractionRange(extractYear.getExtractionRange());
+			});
+			
+			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
+			extractionList.add(averageMonth);
+			
+			extractionList.forEach(e -> {
+				e.setExtractionId(averageMonth.getExtractionId());
+				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);

@@ -25,11 +25,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.daily.KfnmtExtractionPeriodDaily;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.monthly.KfnmtExtractPeriodMonth;
+import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtAlstPtnDeftmbsmon;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.KfnmtExtractionPerUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.yearly.KfnmtExtractRangeYear;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -87,6 +89,13 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	})
 	public KfnmtExtractRangeYear extractRangeYear;
 	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumns({
+		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
+		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
+	})
+	public KfnmtAlstPtnDeftmbsmon alstPtnDeftmbsmon ;
+	
 	
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily) {
@@ -121,7 +130,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily,
-			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtExtractRangeYear extractRangeYear) {
+			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtExtractRangeYear extractRangeYear, KfnmtAlstPtnDeftmbsmon kfnmtAlstPtnDeftmbsmon) {
 		super();
 		this.pk = pk;
 		this.extractionId = extractionId;
@@ -130,6 +139,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.extractionPeriodDaily = extractionPeriodDaily;
 		this.listExtractPerMonth = listExtractPerMonth;
 		this.extractRangeYear = extractRangeYear;
+		this.alstPtnDeftmbsmon = kfnmtAlstPtnDeftmbsmon;
 	}
 	
 	
@@ -175,6 +185,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			});
 			
 			extractPeriodList.add(extractRangeYear.toDomain());
+			if(alstPtnDeftmbsmon != null)
+			extractPeriodList.add(alstPtnDeftmbsmon.toDomain());
 		}
 
 		List<String> checkConList = this.checkConItems.stream().map(c -> c.pk.checkConditionCD)
@@ -230,6 +242,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			List<ExtractionPeriodMonth> listMonth = new ArrayList<ExtractionPeriodMonth>();
 			ExtractionPeriodDaily extractionPeriodDaily = null;
 			AYear extractYear = null ;
+			AverageMonth extractAverMonth = null;
 			
 			for(ExtractionRangeBase extractBase : domain.getExtractPeriodList()) {
 				
@@ -238,11 +251,11 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					
 				}else if(extractBase  instanceof ExtractionPeriodMonth) {
 					listMonth.add((ExtractionPeriodMonth) extractBase);					
+				}else if (extractBase  instanceof AYear){
+					extractYear = (AYear) extractBase;			
 				}else {
-					extractYear = (AYear) extractBase;
+					extractAverMonth = (AverageMonth) extractBase;
 				}
-				
-				
 			}
 			return new KfnmtCheckCondition(
 					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
@@ -251,7 +264,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily), 
 					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
 					domain.getAlarmCategory().value, e) ).collect(Collectors.toList()),
-					KfnmtExtractRangeYear.toEntity(extractYear));
+					KfnmtExtractRangeYear.toEntity(extractYear),
+					KfnmtAlstPtnDeftmbsmon.toEntity(extractAverMonth));
 			
 		} else {
 			
@@ -292,6 +306,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			});
 			
 			this.extractRangeYear.fromEntity(entity.extractRangeYear);
+			this.alstPtnDeftmbsmon.fromEntity(entity.alstPtnDeftmbsmon);
 		}
 		
 		
