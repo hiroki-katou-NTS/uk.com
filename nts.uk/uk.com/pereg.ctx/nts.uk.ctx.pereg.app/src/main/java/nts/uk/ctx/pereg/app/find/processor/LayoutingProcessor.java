@@ -65,7 +65,6 @@ public class LayoutingProcessor {
 		List<OptionalItemDataDto> optionalItems = getUserDefData(finderClass.dataType(), domainDto.getRecordId());
 
 		return new PeregDto(domainDto, finderClass.dtoClass(), optionalItems);
-
 	}
 
 	/**
@@ -88,11 +87,11 @@ public class LayoutingProcessor {
 			return new PeregDto(domainDto, finderClass.dtoClass(), optionalItems);
 
 		}).collect(Collectors.toList());
-
 	}
 
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		val finderClass = this.finders.get(query.getCategoryCode());
+		
 		return finderClass.getListFirstItems(query);
 	}
 	
@@ -109,26 +108,28 @@ public class LayoutingProcessor {
 		
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
-		
+
 		if (finderClass == null)
 			return null;
-		
-		List<?> objectDto =  finderClass.findAllData(query);
-		
+
+		List<?> objectDto = finderClass.findAllData(query);
+
 		if (objectDto.size() == 0) {
 			return new ArrayList<>();
 		}
-		
-		List<PeregDomainDto> domainDto = objectDto.stream().map(c-> (PeregDomainDto) c).collect(Collectors.toList());
-		
-		List<String> recordIds = domainDto.stream().filter(c -> c !=null).map(c -> c.getRecordId()).collect(Collectors.toList());
-		
+
+		List<PeregDomainDto> domainDto = objectDto.stream().map(c -> (PeregDomainDto) c).collect(Collectors.toList());
+
+		List<String> recordIds = domainDto.stream().filter(c -> c != null).map(c -> c.getRecordId())
+				.collect(Collectors.toList());
+
 		// get optional data
-		Map<String,List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
-		
-		List<PeregDto> peregDtoLst =  domainDto.stream().map(c ->{
+		Map<String, List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
+
+		List<PeregDto> peregDtoLst = domainDto.stream().map(c -> {
 			return new PeregDto(c, finderClass.dtoClass(), optionalItems.get(c.getRecordId()));
 		}).collect(Collectors.toList());
+
 		return peregDtoLst;
 	}
 
@@ -136,11 +137,9 @@ public class LayoutingProcessor {
 	private List<OptionalItemDataDto> getUserDefData(DataClassification personEmpType, String recordId) {
 		if (personEmpType == DataClassification.PERSON) {
 			return perOptRepo.getData(recordId);
-		}
-		else {
+		} else {
 			return empOptRepo.getData(recordId);
 		}
-
 	}
 	
 	/**
@@ -157,7 +156,5 @@ public class LayoutingProcessor {
 		} else {
 			return empOptRepo.getDatas(recordIds);
 		}
-
 	}
-
 }
