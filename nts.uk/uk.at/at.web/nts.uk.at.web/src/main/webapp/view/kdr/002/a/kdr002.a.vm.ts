@@ -339,7 +339,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.selectedReferenceType = screen.selectedReferenceType();
             self.printDate = screen.printDate();
             self.pageBreakSelected = screen.pageBreakSelected();
-            self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code); });
+            self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code) != -1; });
             self.closureData = screen.closureData();
         }
 
