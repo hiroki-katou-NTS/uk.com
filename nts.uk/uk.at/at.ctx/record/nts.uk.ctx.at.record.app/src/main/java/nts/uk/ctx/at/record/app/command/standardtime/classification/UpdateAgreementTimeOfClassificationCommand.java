@@ -56,4 +56,8 @@ public class UpdateAgreementTimeOfClassificationCommand {
 	private int errorOneYear;
 
 	private int limitOneYear;
+	
+	private int upperMonth;
+	
+	private int upperMonthAverage;
 }

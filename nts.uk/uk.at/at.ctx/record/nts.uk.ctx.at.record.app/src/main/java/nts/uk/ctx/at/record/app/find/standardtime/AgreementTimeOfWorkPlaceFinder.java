@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceListDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
@@ -49,14 +50,18 @@ public class AgreementTimeOfWorkPlaceFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		AgreementTimeOfWorkPlaceDetailDto agreementTimeOfWorkPlaceDto = new AgreementTimeOfWorkPlaceDetailDto();
-		// get basicSettingId of workplace selected
-		Optional<String> basicSettingIdOfWorkplace = agreementTimeOfWorkPlaceRepository.find(workplaceId,
+		
+		Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlaceOpt = agreementTimeOfWorkPlaceRepository.findAgreementTimeOfWorkPlace(workplaceId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 		
-		if(basicSettingIdOfWorkplace.isPresent()){
+		if(agreementTimeOfWorkPlaceOpt.isPresent()){
+			AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = agreementTimeOfWorkPlaceOpt.get();
+			agreementTimeOfWorkPlaceDto.setUpperMonth(agreementTimeOfWorkPlace.getUpperMonth().v());
+			agreementTimeOfWorkPlaceDto.setUpperMonthAverage(agreementTimeOfWorkPlace.getUpperMonthAverage().v());
+			
 			// get basicSetting detail of workplace selected
 			Optional<BasicAgreementSetting> basicSettingOfWorkplace = basicAgreementSettingRepository
-					.find(basicSettingIdOfWorkplace.get());
+					.find(agreementTimeOfWorkPlace.getBasicSettingId());
 			// set error time + alarm time
 			if(basicSettingOfWorkplace.isPresent()){
 				agreementTimeOfWorkPlaceDto.setErrorWeek(basicSettingOfWorkplace.get().getErrorWeek().v());

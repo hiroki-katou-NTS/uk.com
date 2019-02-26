@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentListDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
@@ -54,13 +55,16 @@ public class AgreementTimeOfEmploymentFinder {
 		String companyId = login.companyId();
 		AgreementTimeOfEmploymentDetailDto agreementTimeOfEmploymentDetailDto = new AgreementTimeOfEmploymentDetailDto();
 
-		// get basicSettingID of Employment selected
-		Optional<String> basicSettingIdOfEmp = agreementTimeOfEmploymentRepostitory.findEmploymentBasicSettingId(companyId,
+		Optional<AgreementTimeOfEmployment> agreementTimeOfEmploymentOpt = agreementTimeOfEmploymentRepostitory.find(companyId,
 				employmentCategoryCode, EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 		// get basicSetting detail of Employment selected
-		if(basicSettingIdOfEmp.isPresent()){
+		if(agreementTimeOfEmploymentOpt.isPresent()){
+			AgreementTimeOfEmployment agreementTimeOfEmployment = agreementTimeOfEmploymentOpt.get();
+			agreementTimeOfEmploymentDetailDto.setUpperMonth(agreementTimeOfEmployment.getUpperMonth().v());
+			agreementTimeOfEmploymentDetailDto.setUpperMonthAverage(agreementTimeOfEmployment.getUpperMonthAverage().v());
+			
 			Optional<BasicAgreementSetting> basicSettingOfEmp = basicAgreementSettingRepository
-					.find(basicSettingIdOfEmp.get());	
+					.find(agreementTimeOfEmployment.getBasicSettingId());	
 
 			// set error time + alarm time
 			if(basicSettingOfEmp.isPresent()){
