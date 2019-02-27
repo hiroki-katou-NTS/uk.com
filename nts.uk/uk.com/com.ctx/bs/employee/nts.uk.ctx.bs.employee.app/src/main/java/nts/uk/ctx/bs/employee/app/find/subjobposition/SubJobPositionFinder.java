@@ -12,7 +12,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
@@ -66,7 +66,7 @@ public class SubJobPositionFinder implements PeregFinder<SubJobPositionDto>{
 	}
 
 	@Override
-	public List<GridPeregDto> getAllData(PeregQueryByListEmp query) {
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

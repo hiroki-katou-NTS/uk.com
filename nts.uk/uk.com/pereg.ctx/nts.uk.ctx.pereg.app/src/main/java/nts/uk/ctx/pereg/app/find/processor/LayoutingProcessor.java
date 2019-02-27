@@ -18,7 +18,7 @@ import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -113,7 +113,7 @@ public class LayoutingProcessor {
 		if (finderClass == null)
 			return null;
 
-		List<GridPeregDto> objectDto = finderClass.findAllData(query);
+		List<GridPeregDomainDto> objectDto = finderClass.findAllData(query);
 
 		if (objectDto.size() == 0) {
 			return new ArrayList<>();

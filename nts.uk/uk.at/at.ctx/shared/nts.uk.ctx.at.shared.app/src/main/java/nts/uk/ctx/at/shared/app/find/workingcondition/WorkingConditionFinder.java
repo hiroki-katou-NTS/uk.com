@@ -26,7 +26,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
@@ -105,7 +105,7 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 	
 
 	@Override
-	public List<GridPeregDto> getAllData(PeregQueryByListEmp query) {
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		List<WorkingCondition>  workingCondiditions = getWorkingCondition(query);
 		
 		Map<String, DateHistoryItem> dateHistLst = new HashMap<>();
@@ -116,14 +116,14 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
 		List<WorkingConditionItem>  workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds);
 		
-		List<GridPeregDto> result = workingCondiditionItems.stream().map(c -> {
+		List<GridPeregDomainDto> result = workingCondiditionItems.stream().map(c -> {
 			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
-			return new GridPeregDto(c.getEmployeeId(), "", WorkingConditionDto.createWorkingConditionDto(date, c));
+			return new GridPeregDomainDto(c.getEmployeeId(), "", WorkingConditionDto.createWorkingConditionDto(date, c));
 		}).collect(Collectors.toList());
 		
 		if(query.getEmpInfos().size() > result.size()) {
 			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				result.add(new GridPeregDto("", "", new WorkingConditionDto("")));
+				result.add(new GridPeregDomainDto("", "", new WorkingConditionDto("")));
 			}
 		}
 		

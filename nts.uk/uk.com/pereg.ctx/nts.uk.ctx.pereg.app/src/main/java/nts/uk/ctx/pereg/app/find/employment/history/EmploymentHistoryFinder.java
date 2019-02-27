@@ -21,7 +21,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
@@ -95,7 +95,7 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 	}
 
 	@Override
-	public List<GridPeregDto> getAllData(PeregQueryByListEmp query) {
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		String cid = AppContexts.user().companyId();
 		
 		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
@@ -106,15 +106,15 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		
 		List<EmploymentHistoryItem> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds);
 		
-		List<GridPeregDto> result = employmentHist.stream().map( c -> {
+		List<GridPeregDomainDto> result = employmentHist.stream().map( c -> {
 			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
-			return new GridPeregDto(c.getEmployeeId(), "",   EmploymentHistoryDto.createFromDomain(date, c ));
+			return new GridPeregDomainDto(c.getEmployeeId(), "",   EmploymentHistoryDto.createFromDomain(date, c ));
 		}).collect(Collectors.toList());
 		
 		if(query.getEmpInfos().size() > result.size()) {
 			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
 				// cần xem lại đoạn code này @LanLT
-				result.add(new GridPeregDto("", "", new EmploymentHistoryDto("", null, null, null, null)));
+				result.add(new GridPeregDomainDto("", "", new EmploymentHistoryDto("", null, null, null, null)));
 			}
 		}
 		
