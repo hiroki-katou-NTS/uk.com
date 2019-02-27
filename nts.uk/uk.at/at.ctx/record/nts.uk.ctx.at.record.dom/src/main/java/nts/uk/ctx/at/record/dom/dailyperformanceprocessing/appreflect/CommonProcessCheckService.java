@@ -42,9 +42,16 @@ public interface CommonProcessCheckService {
 	 * @param optTimeLeaving
 	 */
 	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId);
-
+	/**
+	 * 
+	 * @param integrationOfDaily
+	 * @param sid
+	 * @param ymd
+	 * @param isOt True: 事前残業申請、False：事前残業申請じゃない
+	 * @return
+	 */
 	public List<IntegrationOfDaily> lstIntegrationOfDaily(IntegrationOfDaily integrationOfDaily, String sid,
-			GeneralDate ymd);
+			GeneralDate ymd, boolean isOt);
 	
 	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
 	
