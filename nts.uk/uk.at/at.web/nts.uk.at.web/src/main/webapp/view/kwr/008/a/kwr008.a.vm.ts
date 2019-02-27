@@ -170,12 +170,12 @@ module nts.uk.at.view.kwr008.a {
                     if (msgId == "") return;
                     let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
                     let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
-                    alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
+                    //alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
                     block.clear();
-                })
+                });
             }
 
             private getMsgEmpError(data: Array<any>, totalErr: number) {

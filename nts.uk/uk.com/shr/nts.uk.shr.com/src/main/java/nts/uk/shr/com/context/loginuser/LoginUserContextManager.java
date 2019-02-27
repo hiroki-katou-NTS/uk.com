@@ -73,7 +73,8 @@ public interface LoginUserContextManager {
 			String companyId,
 			String companyCode,
 			String employeeId,
-			String employeeCode);
+			String employeeCode,
+			boolean isEmployee);
 	
 	/**
 	 * Returns RoleIdSetter to set role IDs of the user.

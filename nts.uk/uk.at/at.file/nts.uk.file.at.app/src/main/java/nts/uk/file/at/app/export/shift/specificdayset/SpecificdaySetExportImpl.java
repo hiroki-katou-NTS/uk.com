@@ -29,6 +29,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -52,7 +53,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		List<SheetData> sheetDatas = new ArrayList<>();
 		// add the work place sheet
 		SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query),
-				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"));
+				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"),MasterListMode.FISCAL_YEAR_RANGE);
 		sheetDatas.add(sheetWorkplaceData);
 		
 		return sheetDatas;
@@ -125,6 +126,13 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM002_98");
+	}
+	
+	
+
+	@Override
+	public MasterListMode mainSheetMode() {
+		return MasterListMode.FISCAL_YEAR_RANGE;
 	}
 
 	private Optional<MasterData> newCompanyMasterData(String yearMonth,

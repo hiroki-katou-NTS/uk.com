@@ -51,6 +51,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 /**
  *
  * @author hoidd
@@ -843,9 +844,9 @@ public class ErrorAlarmWorkRecordExportImpl {
        
        public List<SheetData> extraSheets(MasterListExportQuery query){
               List<SheetData> listSheetData = new ArrayList<>();
-              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_140"));
+              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_140"), MasterListMode.NONE);
               listSheetData.add(sheet1);
-              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_141"));
+              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_141"), MasterListMode.NONE);
               listSheetData.add(sheetDataTwo);
               return listSheetData;
        }

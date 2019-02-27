@@ -37,6 +37,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  * 
@@ -336,7 +337,10 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		return TextResource.localize("KMK009_26");
 	}
 	
-	
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
 
 }
