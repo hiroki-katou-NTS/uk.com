@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 
 /**
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
  */
 @Getter
 @NoArgsConstructor
-public class AlarmCheckConAgr{
+public class AlarmCheckConAgr extends AggregateRoot{
 	
 	/**
 	 * 前回付与からの経過期間が1年未満の場合、期間按分する
