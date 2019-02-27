@@ -199,7 +199,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			}
 			//開始終了時刻の反映
 			this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), integrationOfDaily);
-			List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(integrationOfDaily, absencePara.getEmployeeId(), loopDate);
+			List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(integrationOfDaily, absencePara.getEmployeeId(), loopDate, false);
 			lstOutput.addAll(lstDaily);
 		}
 		
