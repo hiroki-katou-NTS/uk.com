@@ -59,6 +59,11 @@ public class RegisteTimeImpl implements MasterListData {
 	public String mainSheetName() {
 		return TextResource.localize("KMK008_70");
 	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 	
 	
 	/**
@@ -306,6 +311,7 @@ public class RegisteTimeImpl implements MasterListData {
         		 .mainData(this.getMasterDatasSheet2())
                 .mainDataColumns(this.getHeaderColumnsSheet2())
                 .sheetName(TextResource.localize("KMK008_71"))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData2);
         
@@ -321,6 +327,7 @@ public class RegisteTimeImpl implements MasterListData {
                		 .mainData(this.getMasterDatasSheet3())
                        .mainDataColumns(this.getHeaderColumnsSheet3())
                        .sheetName(TextResource.localize("KMK008_72"))
+                       .mode(MasterListMode.NONE)
                        .build();
         	 sheetDatas.add(sheetData3);
         }
@@ -333,6 +340,7 @@ public class RegisteTimeImpl implements MasterListData {
         	
 			SheetData sheetData4 = SheetData.builder().mainData(this.getMasterDatasSheet4())
 					.mainDataColumns(this.getHeaderColumnsSheet4()).sheetName(TextResource.localize("KMK008_73"))
+	                .mode(MasterListMode.NONE)
 					.build();
 			sheetDatas.add(sheetData4);
 		}
@@ -345,6 +353,7 @@ public class RegisteTimeImpl implements MasterListData {
 				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1)) {
 			SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasSheet5())
 					.mainDataColumns(this.getHeaderColumnsSheet5()).sheetName(TextResource.localize("KMK008_74"))
+	                .mode(MasterListMode.NONE)
 					.build();
 			sheetDatas.add(sheetData5);
 		}
@@ -356,6 +365,7 @@ public class RegisteTimeImpl implements MasterListData {
           		 .mainData(this.getMasterDatasSheet6())
                   .mainDataColumns(this.getHeaderColumnsSheet6())
                   .sheetName(TextResource.localize("KMK008_75"))
+                  .mode(MasterListMode.NONE)
                   .build();
         sheetDatas.add(sheetData6);
         /**
@@ -366,6 +376,7 @@ public class RegisteTimeImpl implements MasterListData {
 
 			SheetData sheetData7 = SheetData.builder().mainData(this.getMasterDatasSheet7())
 					.mainDataColumns(this.getHeaderColumnsSheet7()).sheetName(TextResource.localize("KMK008_76"))
+	                .mode(MasterListMode.NONE)
 					.build();
 			sheetDatas.add(sheetData7);
 		}
@@ -377,6 +388,7 @@ public class RegisteTimeImpl implements MasterListData {
 				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1)) {	
 			SheetData sheetData8 = SheetData.builder().mainData(this.getMasterDatasSheet8())
 					.mainDataColumns(this.getHeaderColumnsSheet8()).sheetName(TextResource.localize("KMK008_77"))
+	                .mode(MasterListMode.NONE)
 					.build();
 			sheetDatas.add(sheetData8);
 		}
@@ -390,6 +402,7 @@ public class RegisteTimeImpl implements MasterListData {
 	          		 .mainData(this.getMasterDatasSheet9())
 	                  .mainDataColumns(this.getHeaderColumnsSheet9())
 	                  .sheetName(TextResource.localize("KMK008_78"))
+	                  .mode(MasterListMode.NONE)
 	                  .build();
 	        sheetDatas.add(sheetData9);
 		}

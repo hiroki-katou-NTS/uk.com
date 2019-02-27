@@ -98,5 +98,9 @@ public class JobInfoExportImpl implements MasterListData{
 	public String mainSheetName(){
 		return TextResource.localize("CAS014_51");
 	}
-	
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 }

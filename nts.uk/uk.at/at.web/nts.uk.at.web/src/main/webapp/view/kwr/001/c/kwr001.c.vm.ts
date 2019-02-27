@@ -326,7 +326,6 @@ module nts.uk.at.view.kwr001.c {
                                     self.saveData(dataScrD);
                                 });
                             }else {
-
                                 self.saveData(dataScrD);
                             }
 

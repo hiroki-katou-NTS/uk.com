@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly;
+package nts.uk.ctx.at.shared.dom.monthly;
 
 /**
  * 月別実績の勤怠項目

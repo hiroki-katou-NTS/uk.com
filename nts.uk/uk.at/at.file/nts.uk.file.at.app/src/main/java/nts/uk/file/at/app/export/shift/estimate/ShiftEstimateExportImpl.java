@@ -217,7 +217,7 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		int endDate = query.getEndDate().year();
 		List<SheetData> sheetDatas = new ArrayList<>();
 		SheetData sheetData2 = SheetData.builder().mainData(this.getMasterDatasTwo())
-				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_97")).build();
+				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_97")).mode(MasterListMode.NONE).build();
 
 		SheetData sheetData3 = SheetData.builder().mainData(this.getMasterDatasThree(startDate, endDate))
 				.mainDataColumns(this.getHeaderColumnsThree()).sheetName(TextResource.localize("KSM001_98")).mode(MasterListMode.YEAR_RANGE).build();
@@ -246,6 +246,11 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM001_96");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.gateway.ac.find.grant;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -56,5 +57,21 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 		return listExport.stream().map(c -> {
 			return new RoleIndividualGrantImport(c.getRoleId());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<RoleIndividualGrantImport> getListDifRoleType(String userId, String companyId, int roleType,
+			GeneralDate date) {
+		return roleIndividualGrantExportRepo.getListDifRoleType(userId, companyId, roleType, date)
+				.stream()
+				.map(c -> new RoleIndividualGrantImport(c.getRoleId()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<RoleIndividualGrantImport> getByRoleType(String userId, String companyId, int roleType,
+			GeneralDate date) {
+		return roleIndividualGrantExportRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, date).
+					map(c -> new RoleIndividualGrantImport(c.getRoleId()));
 	}
 }

@@ -54,7 +54,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				record.getString("FILTER_BY_JOB"),
 				record.getString("JOB_IDS"),
 				record.getString("FILTER_BY_BUSINESSTYPE"),
-				record.getString("BUSINESSTYPE_CDS"));
+				record.getString("BUSINESSTYPE_CDS"),
+				record.getInt("W4D4_CHECK_COND"));
 	}
 	
 	
@@ -97,7 +98,7 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 		//10: チェック対象範囲 勤務種別
 		dailyReportData.setFilterWorkType(AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))));
 		//11: チェック対象範囲 勤務種別対象
-		dailyReportData.setWorktypes(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
+		dailyReportData.setWorktypeselections(Optional.ofNullable(record.getString("BUSINESSTYPE_CDS_11")));
 		//12: 日別実績のエラーアラーム
 		dailyReportData.setDailyErrorAlarms(Optional.ofNullable(record.getString("DAILY_ERROR_ALARMS_12")));
 		 
@@ -436,8 +437,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr1Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_23_2")));
 				monthReportData
 						.setConditionAtr1Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_23_3")));
-				monthReportData.setStart1Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_23_4")));
-				monthReportData.setEnd1Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_23_5")));
+				monthReportData.setStart1Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_23_4")));
+				monthReportData.setEnd1Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_23_5")));
 				monthReportData
 						.setConditionType1Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_23_6")));
 				monthReportData
@@ -448,8 +449,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr2Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_24_2")));
 				monthReportData
 						.setConditionAtr2Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_24_3")));
-				monthReportData.setStart2Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_24_4")));
-				monthReportData.setEnd2Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_24_5")));
+				monthReportData.setStart2Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_24_4")));
+				monthReportData.setEnd2Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_24_5")));
 				monthReportData
 						.setConditionType2Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_24_6")));
 				monthReportData
@@ -460,8 +461,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				monthReportData.setCompareAtr3Group1(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_1_25_2")));
 				monthReportData
 						.setConditionAtr3Group1(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_1_25_3")));
-				monthReportData.setStart3Group1(Optional.ofNullable(record.getInt("START_VALUE_GROUP_1_25_4")));
-				monthReportData.setEnd3Group1(Optional.ofNullable(record.getInt("END_VALUE_GROUP_1_25_5")));
+				monthReportData.setStart3Group1(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_1_25_4")));
+				monthReportData.setEnd3Group1(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_1_25_5")));
 				monthReportData
 						.setConditionType3Group1(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_1_25_6")));
 				monthReportData
@@ -485,8 +486,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr1Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_28_2")));
 					monthReportData
 							.setConditionAtr1Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_28_3")));
-					monthReportData.setStart1Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_28_4")));
-					monthReportData.setEnd1Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_28_5")));
+					monthReportData.setStart1Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_28_4")));
+					monthReportData.setEnd1Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_28_5")));
 					monthReportData
 							.setConditionType1Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_28_6")));
 					monthReportData.setAttendanceItem1Group2(
@@ -498,8 +499,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr2Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_29_2")));
 					monthReportData
 							.setConditionAtr2Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_29_3")));
-					monthReportData.setStart2Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_29_4")));
-					monthReportData.setEnd2Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_29_5")));
+					monthReportData.setStart2Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_29_4")));
+					monthReportData.setEnd2Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_29_5")));
 					monthReportData
 							.setConditionType2Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_29_6")));
 					monthReportData.setAttendanceItem2Group2(
@@ -511,8 +512,8 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 							.setCompareAtr3Group2(Optional.ofNullable(record.getInt("COMPARE_ATR_GROUP_2_30_2")));
 					monthReportData
 							.setConditionAtr3Group2(Optional.ofNullable(record.getInt("CONDITION_ATR_GROUP_2_30_3")));
-					monthReportData.setStart3Group2(Optional.ofNullable(record.getInt("START_VALUE_GROUP_2_30_4")));
-					monthReportData.setEnd3Group2(Optional.ofNullable(record.getInt("END_VALUE_GROUP_2_30_5")));
+					monthReportData.setStart3Group2(Optional.ofNullable(record.getDouble("START_VALUE_GROUP_2_30_4")));
+					monthReportData.setEnd3Group2(Optional.ofNullable(record.getDouble("END_VALUE_GROUP_2_30_5")));
 					monthReportData
 							.setConditionType3Group2(Optional.ofNullable(record.getInt("CONDITION_TYPE_GROUP_2_30_6")));
 					monthReportData.setAttendanceItem3Group2(

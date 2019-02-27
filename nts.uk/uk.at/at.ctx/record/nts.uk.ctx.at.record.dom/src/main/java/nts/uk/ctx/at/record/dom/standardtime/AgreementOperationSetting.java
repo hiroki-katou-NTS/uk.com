@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
@@ -78,7 +79,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	 * @param period 月別実績集計期間
 	 * @return 集計期間
 	 */
-	// 2018.3.19 add shuichu_ishida
+	// 2018.3.19 ADD shuichi_ishida
 	public AggregatePeriod getAggregatePeriod(DatePeriod period){
 
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
@@ -114,10 +115,20 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 年月から集計期間を取得
 	 * @param yearMonth 年月
+	 * @return 集計期間
+	 */
+	// 2019.2.14 ADD shuichi_ishida
+	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth){
+		return this.getAggregatePeriodByYearMonth(yearMonth, null);
+	}
+	
+	/**
+	 * 年月から集計期間を取得
+	 * @param yearMonth 年月
 	 * @param closure 締め
 	 * @return 集計期間
 	 */
-	// 2018.3.25 add shuichu_ishida
+	// 2018.3.25 ADD shuichi_ishida
 	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth, Closure closure){
 
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
@@ -149,11 +160,68 @@ public class AgreementOperationSetting extends AggregateRoot {
 	}
 	
 	/**
+	 * 年月を指定して、36協定期間の年月を取得する
+	 * @param yearMonth 年月
+	 * @return 年月
+	 */
+	// 2019.2.14 ADD shuichi_ishida
+	public YearMonth getYearMonthOfAgreementPeriod(YearMonth yearMonth) {
+		
+		YearMonth result = yearMonth;
+		
+		// 起算月を取得
+		int startMon = this.startingMonth.value + 1;
+		
+		// 「年月」の月と起算月を比較
+		if (yearMonth.month() < startMon) {
+			
+			// 年を-1する
+			result = result.addMonths(-12);
+		}
+		
+		// 年月を返す
+		return result;
+	}
+	
+	/**
+	 * 年月期間から36協定期間を取得する
+	 * @param yearMonthPeriod 年月期間
+	 * @return 期間
+	 */
+	// 2019.2.14 ADD shuichi_ishida
+	public Optional<DatePeriod> getAgreementPeriodByYMPeriod(YearMonthPeriod yearMonthPeriod) {
+		
+		// 年月から集計期間を取得　（開始年月）
+		val startAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.start());
+		if (!startAggrPeriodOpt.isPresent()) return Optional.empty();
+		
+		// 年月から集計期間を取得　（終了年月）
+		val endAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.end());
+		if (!endAggrPeriodOpt.isPresent()) return Optional.empty();
+		
+		// 期間を返す
+		return Optional.of(new DatePeriod(
+				startAggrPeriodOpt.get().getPeriod().start(), endAggrPeriodOpt.get().getPeriod().end()));
+	}
+	
+	/**
+	 * 年度から36協定の年月期間を取得する
+	 * @param year 年度
+	 * @return 年月期間
+	 */
+	// 2019.2.15 ADD shuichi_ishida
+	public YearMonthPeriod getYearMonthPeriod(Year year){
+		return new YearMonthPeriod(
+				YearMonth.of(year.v(), this.startingMonth.value + 1),
+				YearMonth.of(year.v() + 1, this.startingMonth.value + 1).previousMonth());
+	}
+	
+	/**
 	 * 36協定Dto（年度の設定）
 	 * @param source 管理期間の36協定時間
 	 * @return 管理期間の36協定時間
 	 */
-	// 2019.2.5 add shuichi_ishida
+	// 2019.2.5 ADD shuichi_ishida
 	public AgreementTimeOfManagePeriod setYearDto(AgreementTimeOfManagePeriod source){
 		
 		if (source == null) return null;
@@ -167,6 +235,18 @@ public class AgreementOperationSetting extends AggregateRoot {
 				source.getYearMonth(),
 				new Year(calcYear),
 				source.getAgreementTime(),
-				source.getBreakdown());
+				source.getAgreementMaxTime());
+	}
+	
+	/**
+	 * 超過回数の残数
+	 * @param excessTimes 超過回数
+	 * @return 残回数
+	 */
+	// 2019.2.23 ADD shuichi_ishida
+	public int getRemainTimes(int excessTimes){
+		
+		// 残回数を返す
+		return this.numberTimesOverLimitType.value - excessTimes;
 	}
 }

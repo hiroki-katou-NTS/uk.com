@@ -17,4 +17,6 @@ public interface RoleAdapter {
 	 * @return the all by id
 	 */
 	List<RoleImport> getAllById(String roleId);
+	
+	public boolean isEmpWhetherLoginerCharge();
 }

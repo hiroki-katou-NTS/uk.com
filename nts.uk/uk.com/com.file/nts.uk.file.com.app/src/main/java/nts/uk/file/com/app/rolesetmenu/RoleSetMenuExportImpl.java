@@ -13,6 +13,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID("RoleSetMenu")
@@ -48,7 +49,10 @@ public class RoleSetMenuExportImpl implements MasterListData {
 		return roleSetMenuRepository.exportDataExcel();
 	}
 
-	
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 	
 	
 }

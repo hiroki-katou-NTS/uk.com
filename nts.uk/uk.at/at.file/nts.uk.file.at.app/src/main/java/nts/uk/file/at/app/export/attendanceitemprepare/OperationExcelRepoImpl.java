@@ -29,6 +29,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 /**
 *
 * @author HoiDD
@@ -65,10 +66,10 @@ public class OperationExcelRepoImpl implements MasterListData {
         // add the work place sheet
         //Sheet 2  共通_機能制限
         SheetData sheetWorkplaceData = new SheetData(getMasterDatasSheetRestriction(query),
-                getHeaderColumnsSheetRestriction(query), null, null,TextResource.localize("KDW006_91") );
+                getHeaderColumnsSheetRestriction(query), null, null,TextResource.localize("KDW006_91"), MasterListMode.NONE);
         //Sheet 3 共通_権限別機能制限
         SheetData sheetRole = new SheetData(getMasterDatasSheetRoled(query, header),
-                getHeaderColumnsSheetRole(query, header), null, null,TextResource.localize("KDW006_105"));
+                getHeaderColumnsSheetRole(query, header), null, null,TextResource.localize("KDW006_105"), MasterListMode.NONE);
         sheetDatas.add(sheetWorkplaceData);
         sheetDatas.add(sheetRole);
         sheetDatas.addAll(roleDailyExportExcelImpl.extraSheets(query));
@@ -138,6 +139,11 @@ public class OperationExcelRepoImpl implements MasterListData {
     public String mainSheetName() {
         return TextResource.localize("KDW006_87");//共通_運用設定 //
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
     private void putDataEmptySetOperation(Map<String, Object> data) {
         data.put("項目", "");

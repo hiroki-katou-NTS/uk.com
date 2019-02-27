@@ -16,6 +16,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value="PerInfoInit")
@@ -65,5 +66,10 @@ public class PerInfoInitValueSetCtgExportImpl implements MasterListData {
 		}
 		datas = perInfoInitValueSetCtgRepository.getDataExport(payroll, personnel, atttendance);
 		return datas;
+	}
+	
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 }
