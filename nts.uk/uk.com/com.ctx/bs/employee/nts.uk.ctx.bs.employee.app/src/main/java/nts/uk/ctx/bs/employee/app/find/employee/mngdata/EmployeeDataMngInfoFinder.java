@@ -2,12 +2,14 @@ package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -57,19 +59,18 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		String cid = AppContexts.user().companyId();
+		List<EmployeeDataMngInfo> domains = edMngRepo.findByListEmployeeId(cid, sids);
+		if (domains.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<GridPeregDomainDto> result = domains.stream().map(c -> {return new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), EmployeeDataMngInfoDto.fromDomain(c));}).collect(Collectors.toList());
+		if(query.getEmpInfos().size() > result.size()) {
+			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
+				result.add(new GridPeregDomainDto(query.getEmpInfos().get(i).getEmployeeId(), query.getEmpInfos().get(i).getPersonId(), new EmployeeDataMngInfoDto(null, null, null)));
+			}
+		}
+		return result;
 	}
-
-//	@Override
-//	public List<PeregDomainDto> getAllData(List<PeregQuery> query) {
-//		List<String> sids = query.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-//		String cid = AppContexts.user().companyId();
-//		List<EmployeeDataMngInfo> domain = edMngRepo.findByListEmployeeId(cid, sids);
-//		if (domain.isEmpty()) {
-//			return new ArrayList<>();
-//		}
-//		// domain.stream().map(c -> EmployeeDataMngInfoDto.fromDomain(c)).collect(Collectors.toList());
-//		return null;
-//	}
 }
