@@ -90,8 +90,8 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 	
 	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
 			 AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
-		if (agreementTimeOfWorkPlace.getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
-				.valueAsMinutes() < agreementTimeOfWorkPlace.getUpperMonth().valueAsMinutes()) {
+		if (agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
+				.valueAsMinutes() < agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
 			return true;
 		}
 		return false;

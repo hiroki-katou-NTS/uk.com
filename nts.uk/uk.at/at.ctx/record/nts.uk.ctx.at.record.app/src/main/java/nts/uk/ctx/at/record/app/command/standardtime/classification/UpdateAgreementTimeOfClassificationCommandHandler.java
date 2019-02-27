@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -70,7 +71,8 @@ public class UpdateAgreementTimeOfClassificationCommandHandler
 			AgreementTimeOfClassification newAgreementTimeOfClassification = new AgreementTimeOfClassification(companyId, 
 					agreementTimeOfClassification.getBasicSettingId(), agreementTimeOfClassification.getLaborSystemAtr(), 
 					agreementTimeOfClassification.getClassificationCode(), 
-					new AgreementOneMonthTime(command.getUpperMonth()), new AgreementOneMonthTime(command.getUpperMonthAverage()));
+					new UpperAgreementSetting(new AgreementOneMonthTime(command.getUpperMonth()),
+							new AgreementOneMonthTime(command.getUpperMonthAverage())));
 			
 			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfClassification.getBasicSettingId(),
 					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),

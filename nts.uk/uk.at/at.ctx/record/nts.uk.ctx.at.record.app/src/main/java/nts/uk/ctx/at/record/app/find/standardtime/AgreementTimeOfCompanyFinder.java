@@ -40,8 +40,8 @@ public class AgreementTimeOfCompanyFinder {
 		if (agreementTimeOfCompany.isPresent()) {
 			AgreementTimeOfCompany argTimeCom = agreementTimeOfCompany.get();
 			String basicSettingId = argTimeCom.getBasicSettingId();
-			result.setUpperMonth(argTimeCom.getUpperMonth().v());
-			result.setUpperMonthAverage(argTimeCom.getUpperMonthAverage().v());
+			result.setUpperMonth(argTimeCom.getUpperAgreementSetting().getUpperMonth().v());
+			result.setUpperMonthAverage(argTimeCom.getUpperAgreementSetting().getUpperMonthAverage().v());
 
 			Optional<BasicAgreementSetting> basicAgreementSetting = basicAgreementSettingRepository
 					.find(basicSettingId);
@@ -70,6 +70,8 @@ public class AgreementTimeOfCompanyFinder {
 				result.setLimitTwoMonths(basicArgSet.getLimitTwoMonths().v());
 				result.setLimitThreeMonths(basicArgSet.getLimitThreeMonths().v());
 				result.setLimitOneYear(basicArgSet.getLimitOneYear().v());
+				
+				result.setUpdateMode(true);
 			}
 		}
 		return result;
