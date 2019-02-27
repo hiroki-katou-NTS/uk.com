@@ -40,4 +40,14 @@ public interface PersonRepository {
 
 	void addNewPerson(Person newPerson);
 	
+	
+	/**
+	 * @author lanlt
+	 * get full domain
+	 * getFullPersonByPersonIds
+	 * @param personIds
+	 * @return
+	 */
+	List<Person> getFullPersonByPersonIds(List<String> personIds);
+	
 }
