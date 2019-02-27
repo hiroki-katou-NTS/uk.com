@@ -872,7 +872,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (isNullOrUndefined(data.timeValue)) {
                 this.timeValue(null);
             } else {
-                this.timeValue(nts.uk.time.format.byId("Clock_Short_HM", data.timeValue));
+                this.timeValue(data.timeValue);
             }
         }
     }
