@@ -186,6 +186,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			
 			extractPeriodList.add(extractRangeYear.toDomain());
 			if(alstPtnDeftmbsmon != null)
+			// Add アラームリストのパターン設定 既定期間(基準月) to extractPeriodList
 			extractPeriodList.add(alstPtnDeftmbsmon.toDomain());
 		}
 
@@ -253,7 +254,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					listMonth.add((ExtractionPeriodMonth) extractBase);					
 				}else if (extractBase  instanceof AYear){
 					extractYear = (AYear) extractBase;			
-				}else {
+				}else if (extractBase  instanceof AverageMonth){
 					extractAverMonth = (AverageMonth) extractBase;
 				}
 			}
@@ -265,6 +266,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
 					domain.getAlarmCategory().value, e) ).collect(Collectors.toList()),
 					KfnmtExtractRangeYear.toEntity(extractYear),
+					// Convert to Entity of 複数月平均基準月
 					KfnmtAlstPtnDeftmbsmon.toEntity(extractAverMonth));
 			
 		} else {
@@ -306,6 +308,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			});
 			
 			this.extractRangeYear.fromEntity(entity.extractRangeYear);
+			// Convert from Entity of 複数月平均基準月
 			this.alstPtnDeftmbsmon.fromEntity(entity.alstPtnDeftmbsmon);
 		}
 		

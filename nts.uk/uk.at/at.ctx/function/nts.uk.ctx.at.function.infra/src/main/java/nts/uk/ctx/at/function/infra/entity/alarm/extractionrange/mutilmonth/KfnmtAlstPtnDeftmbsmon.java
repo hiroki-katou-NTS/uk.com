@@ -9,11 +9,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * アラームリストのパターン設定 既定期間(基準月)
+ * @author phongtq
+ *
+ */
 
 @Entity
 @Table(name = "KFNMT_ALST_PTN_DEFTMBSMON")
@@ -30,6 +34,7 @@ public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
 		return pk;
 	}
 	
+	/** 基準月指定 */
 	@Column(name = "STANDARD_MONTH")
 	public int strMonth;
 	

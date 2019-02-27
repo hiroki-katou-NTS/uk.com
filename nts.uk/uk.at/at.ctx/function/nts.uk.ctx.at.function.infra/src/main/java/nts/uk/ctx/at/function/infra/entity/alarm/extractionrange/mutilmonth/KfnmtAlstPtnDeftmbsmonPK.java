@@ -6,15 +6,23 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * アラームリストのパターン設定 既定期間(基準月)
+ * @author phongtq
+ *
+ */
+
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtAlstPtnDeftmbsmonPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	/** 抽出期間ID */
 	@Column(name = "EXTRACTION_ID")
 	public String extractionId;
 	
+	/** 抽出する範囲  */
 	@Column(name = "EXTRACTION_RANGE")
 	public int extractionRange;
 
