@@ -49,8 +49,8 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		entity.kmkmtAgeementTimeCompanyPK.companyId = agreementTimeOfCompany.getCompanyId();
 		entity.kmkmtAgeementTimeCompanyPK.basicSettingId = agreementTimeOfCompany.getBasicSettingId();
 		entity.laborSystemAtr = agreementTimeOfCompany.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfCompany.getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfCompany.getUpperMonthAverage().valueAsMinutes();
+		entity.upperMonth = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}

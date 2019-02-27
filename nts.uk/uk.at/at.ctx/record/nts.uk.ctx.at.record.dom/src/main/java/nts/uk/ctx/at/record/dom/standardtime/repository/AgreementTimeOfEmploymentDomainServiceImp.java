@@ -87,8 +87,8 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 	
 	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfEmployment agreementTimeOfEmployment) {
-		if (agreementTimeOfEmployment.getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
-				.valueAsMinutes() < agreementTimeOfEmployment.getUpperMonth().valueAsMinutes()) {
+		if (agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
+				.valueAsMinutes() < agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
 			return true;
 		}
 		return false;

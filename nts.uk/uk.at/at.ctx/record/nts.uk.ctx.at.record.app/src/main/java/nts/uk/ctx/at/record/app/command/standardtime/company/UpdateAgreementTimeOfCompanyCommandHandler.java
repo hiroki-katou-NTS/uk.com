@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -67,7 +68,8 @@ public class UpdateAgreementTimeOfCompanyCommandHandler
 			AgreementTimeOfCompany agreementTimeOfCompany = agreementTimeOfCompanyOpt.get();
 			
 			AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(companyId, agreementTimeOfCompany.getBasicSettingId(), 
-					agreementTimeOfCompany.getLaborSystemAtr(), new AgreementOneMonthTime(command.getUpperMonth()), new AgreementOneMonthTime(command.getUpperMonthAverage()));
+					agreementTimeOfCompany.getLaborSystemAtr(), new UpperAgreementSetting(new AgreementOneMonthTime(command.getUpperMonth()),
+							new AgreementOneMonthTime(command.getUpperMonthAverage())));
 			
 			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfCompany.getBasicSettingId(),
 					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),

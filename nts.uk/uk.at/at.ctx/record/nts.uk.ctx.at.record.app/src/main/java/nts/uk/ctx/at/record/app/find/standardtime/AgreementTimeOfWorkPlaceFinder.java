@@ -56,8 +56,8 @@ public class AgreementTimeOfWorkPlaceFinder {
 		
 		if(agreementTimeOfWorkPlaceOpt.isPresent()){
 			AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = agreementTimeOfWorkPlaceOpt.get();
-			agreementTimeOfWorkPlaceDto.setUpperMonth(agreementTimeOfWorkPlace.getUpperMonth().v());
-			agreementTimeOfWorkPlaceDto.setUpperMonthAverage(agreementTimeOfWorkPlace.getUpperMonthAverage().v());
+			agreementTimeOfWorkPlaceDto.setUpperMonth(agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().v());
+			agreementTimeOfWorkPlaceDto.setUpperMonthAverage(agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonthAverage().v());
 			
 			// get basicSetting detail of workplace selected
 			Optional<BasicAgreementSetting> basicSettingOfWorkplace = basicAgreementSettingRepository

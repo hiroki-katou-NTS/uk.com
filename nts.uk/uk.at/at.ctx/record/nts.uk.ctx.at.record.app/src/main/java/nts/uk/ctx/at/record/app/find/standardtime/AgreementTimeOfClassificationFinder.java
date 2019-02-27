@@ -58,8 +58,8 @@ public class AgreementTimeOfClassificationFinder {
 				companyId, EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
 		if (agreementTimeOfClassificationOpt.isPresent()) {
 			AgreementTimeOfClassification agreementTimeOfClassification = agreementTimeOfClassificationOpt.get();
-			agreementTimeOfClassificationDetail.setUpperMonth(agreementTimeOfClassification.getUpperMonth().v());
-			agreementTimeOfClassificationDetail.setUpperMonthAverage(agreementTimeOfClassification.getUpperMonthAverage().v());
+			agreementTimeOfClassificationDetail.setUpperMonth(agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v());
+			agreementTimeOfClassificationDetail.setUpperMonthAverage(agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonthAverage().v());
 			
 			String basicSettingIdOfClass = agreementTimeOfClassification.getBasicSettingId();
 			// get basicSetting detail of Employment selected

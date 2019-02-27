@@ -51,6 +51,8 @@ public class AgreementTimeOfCompanyDto {
 
     private int upperMonthAverage;
     
+    private boolean updateMode;
+    
 }
 
 
