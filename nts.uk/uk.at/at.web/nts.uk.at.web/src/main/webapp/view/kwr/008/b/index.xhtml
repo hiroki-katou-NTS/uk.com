@@ -10,7 +10,7 @@
             <script>
                 var dialogSize = {
                     width : 1200,
-                    height : 610
+                    height : 680
                 };
             </script>
             <com:ValidatorScript>
@@ -112,10 +112,10 @@
                                         name: '#[KWR008_31]',
                                         value : $data.headingName,
                                         required: false,
-                                        enable: $data.sortBy() > 1,
+                                        enable: $data.sortBy() > 2,
                                         constraint: 'ItemOutTblBookHeadingName'}" />
                                 </td>
-                                <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
+                                <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 2">#{i18n.getText('KWR008_34')}</button></td>
                                 <td>
                                     <div id="valOutFormat" tabindex="-1" class="combo-box"
                                                 data-bind="ntsComboBox: {
@@ -125,7 +125,7 @@
                                                     name:'#[KWR008_30]',
                                                     value: $data.valOutFormat,
                                                     optionsText: 'name',
-                                                    enable: $data.sortBy() > 1,
+                                                    enable: $data.sortBy() > 2,
                                                     required: true,
                                                     columns: [{ prop: 'name', length: 2 }]
                                                 }">
@@ -138,25 +138,38 @@
                        </div>
                     </div>    
                     
-                    <div data-bind="visible: currentSetOutputSettingCode().printForm">
-	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
+                    <div data-bind="visible: currentSetOutputSettingCode().printForm, with: currentSetOutputSettingCode" class="multiMonthSet">
+	                    <div style="margin-top: 3px;">
 	                        <!-- B5_1 -->
-	                        <div tabindex="10" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
+	                        <div tabindex="10" class="" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
+	                        <br/>
+	                        <!-- B5_9 -->
+	                        <div tabindex="11" class="" data-bind="ntsCheckBox: { checked: multiMonthDisplay  }">${i18n.getText('KWR008_63')}</div>
 	                    </div>
-	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
+	                    <div data-bind="visible: multiMonthDisplay" style="margin-top: 3px; margin-bottom:5px">
 	                        <!-- B5_2 -->
-	                        <span class="label">#{i18n.getText('KWR008_36')}</span>
+	                        <span class="label check_box_block">#{i18n.getText('KWR008_64')}</span>
 	                        <!-- B5_3 -->
-	                        <div id="B5_3" tabindex="11"  data-bind="ntsRadioBoxGroup: {
+	                        <div id="combo-box_1" data-bind="ntsComboBox: {
+	                        	width: '100px',
+								name: '#[#KWR008_64]',
+								options: contentSelectionOutput,
+								optionsValue: 'value',
+								visibleItemsCount: 3,
+								value: selectedValue,
+								optionsText: 'name',
+								columns: [
+									{ prop: 'name', length: 8 },
+								]}"></div>
+	                        <div id="B5_3" tabindex="11"  data-bind="visible: selectedValue() == 0, ntsRadioBoxGroup: {
 	                            options: $parent.itemRadio,
 	                            optionsValue: 'code',
 	                            optionsText: 'name',
 	                            value: displayFormat}">
 	                        </div>
+	                        <span class="label label36" data-bind="visible: selectedValue() == 1">#{i18n.getText('KWR008_65')}</span>
 	                    </div>
 					</div>
-						
-						
                 </div>
             </div>
         </ui:define>

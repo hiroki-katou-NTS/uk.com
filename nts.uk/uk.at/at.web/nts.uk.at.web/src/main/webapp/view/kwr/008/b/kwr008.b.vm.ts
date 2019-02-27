@@ -40,18 +40,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
 
         selectedPrintForm: KnockoutObservable<number> = ko.observable(0);
-
+        
+        rule36CalculationAverageName: string;
 
         constructor() {
             let self = this;
 
             //B5_3
             self.itemRadio = ko.observableArray([
-                new model.ItemModel(0, getText('KWR008_37')),
-                new model.ItemModel(1, getText('KWR008_38')),
-                new model.ItemModel(2, getText('KWR008_39'))
+                new model.ItemModel(0, getText('KWR008_38')),
+                new model.ItemModel(1, getText('KWR008_39'))
             ]);
             self.rule36CalculationName = getText('KWR008_32');
+            self.rule36CalculationAverageName = getText('KWR008_31');
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i,
                     null,
@@ -59,7 +60,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     '',
                     0,
                     '',
-                    i == 1 //set is 36協定時間 if it's fist OutputItem
+                    (i == 1)||(i == 2) //set is 36協定時間 if it's fist OutputItem
                 ));
             }
             //event select change
@@ -116,7 +117,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                 '',
                                 0,
                                 '',
-                                i == 0, //set is 36協定時間 if it's fist OutputItem
+                                i == 0?true:(i==1?true:false), //set is 36協定時間 if it's fist OutputItem
                                 null);
                         }
                     }).always(function() {
@@ -134,6 +135,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.currentSetOutputSettingCode().printForm(data);
                 if (data == 0) {
                     self.outputItem()[0].useClass(false);
+                    self.outputItem()[1].useClass(false);
                     self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
                     self.currentSetOutputSettingCode().displayFormat(0);
                 }
@@ -151,7 +153,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 write: function(val) {
                     ko.utils.arrayForEach(self.outputItem(), function(item) {
                         item.useClass(val);
-                        if (item.sortBy() == 1 && self.currentSetOutputSettingCode().printForm() == 0) {
+                        if ((item.sortBy() == 1 || item.sortBy() == 2) && self.currentSetOutputSettingCode().printForm() == 0) {
                             item.useClass(false);
                         }
                     });
@@ -171,6 +173,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             let sv1 = service.getValueOutputFormat();
             let sv2 = service.getOutItemSettingCode();
+            
+            
 
             $.when(sv1, sv2).done((data1, data2) => {
                 // get list value output format
@@ -201,7 +205,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         checkEnable36(data) {
             let self = this;
-            if (data.sortBy() == 1 && self.currentSetOutputSettingCode().printForm() == 0)
+            if ((data.sortBy() == 1 || data.sortBy() == 2) && self.currentSetOutputSettingCode().printForm() == 0)
                 return false;
             return true;
         }
@@ -378,11 +382,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     '',
                     0,
                     '',
-                    i == 0 //set is 36協定時間 if it's fist OutputItem
+                    i == 0?true:(i==1?true:false) //set is 36協定時間 if it's fist OutputItem
                 ));
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
-
+            self.outputItem()[1].outputTargetItem(self.rule36CalculationAverageName);
             if (code) {
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
 
@@ -411,13 +415,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.outputItem()[i].updateData(i + 1,
                     null,
                     false,
-                    (i == 0) ? self.rule36CalculationName : '',
+                    (i == 0) ? self.rule36CalculationName : ((i == 1) ? self.rule36CalculationAverageName:''),
                     0,
                     '',
-                    i == 0, //set is 36協定時間 if it's fist OutputItem
+                    i == 0?true:(i==1?true:false), //set is 36協定時間 if it's fist OutputItem
                     null);
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
+            self.outputItem()[1].outputTargetItem(self.rule36CalculationAverageName);
             $("#B3_2").focus();
         }
 
@@ -460,6 +465,15 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         202, //attendanceItemId
                         1, // operation
                         getText('KWR008_32')
+                    )
+                );
+            }
+            if (itemOutByName[1].listOperationSetting().length == 0) {
+                itemOutByName[1].listOperationSetting.push(
+                    new OperationCondition(
+                        202, //attendanceItemId
+                        1, // operation
+                        getText('KWR008_31')
                     )
                 );
             }
@@ -618,6 +632,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
+        
+        contentSelectionOutput: KnockoutObservableArray<ItemEnum> = ko.observableArray([]);
+        selectedValue: KnockoutObservable<string> = ko.observable('1');
+        multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor(param) {
             let self = this;
             self.cd(param ? param.cd || '' : '');
@@ -630,6 +649,24 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.printForm.subscribe(data => {
                 self.printForm(data);
             });
+            var widgets = []; 
+//            var listWidgets = _.remove(__viewContext.enums.WidgetDisplayItemType, function(n){
+//                //remove 「子の看護休残数」 và 「看護休残数」, 計画年休残数
+//                return (n.value != 22 && n.value != 23 && n.value != 18); 
+//                });
+//            listWidgets.forEach(function (value) {
+//                widgets.push(new ItemEnum(value.value.toString(),value.name));
+//            });
+            widgets.push(new ItemEnum(0,'test 01'));
+            widgets.push(new ItemEnum(1,'test 02'));            
+            self.contentSelectionOutput(widgets);
+            
+            self.selectedValue.subscribe((value) => {
+                if(value){
+                        
+                }
+            });
+            
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {
@@ -674,4 +711,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         /** The amount. */
         AMOUNT = 4
     }
-}
+    
+    class ItemEnum {
+        value: string;
+        name: string;
+        constructor(value: string, name: string) {
+            this.value = value;
+            this.name = name;
+        }
+    }

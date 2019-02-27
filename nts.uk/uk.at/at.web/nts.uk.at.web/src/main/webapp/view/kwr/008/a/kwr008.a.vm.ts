@@ -8,7 +8,6 @@ module nts.uk.at.view.kwr008.a {
     import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
-
             ccgcomponent: GroupOption;
             systemTypes: KnockoutObservableArray<any>;
 
@@ -86,6 +85,9 @@ module nts.uk.at.view.kwr008.a {
 
             fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
+            //A11
+            standardMonth: any;
+            showStandardMonth: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -121,6 +123,20 @@ module nts.uk.at.view.kwr008.a {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
+                
+                self.standardMonth = {
+                    value: ko.observable(''),
+                    constraint: 'Height',
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                        placeholder: "",
+                        width: "20px",
+                        textalign: "left"
+                    })),
+                    required: ko.observable(true),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+                self.showStandardMonth = ko.observable(true);
             }
 
             getOutItemSettingCode() {
