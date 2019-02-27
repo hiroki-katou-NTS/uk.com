@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -18,6 +19,8 @@ import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
@@ -42,6 +45,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -187,18 +191,23 @@ public class PeregProcessor {
 		// get item for self and other (self map key is true)
 		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = getPerItemDefForLayout(perInfoCtg, contractCode, roleId);
 		
-		List<Object> classItemList = getDataClassItemListForGrid(query, perInfoCtg, perItems);
+		List<GridLayoutPersonInfoClsDto> classItemList = getDataClassItemListForGrid(query, perInfoCtg, perItems);
 
-		//int digit = stampCardLength.getDigitOfStamp();
+		int digit = stampCardLength.getDigitOfStamp();
 		classItemList.stream().forEach(f -> {
 			// set default value
-			//initDefaultValue.setDefaultValue(classItemList);
+			initDefaultValue.setDefaultValue(f.getLayoutDtos());
 
 			// special process with category CS00069 item IS00779. change string length
-			//stampCardLength.updateLength(perInfoCtg, classItemList, digit);
+			stampCardLength.updateLength(perInfoCtg, f.getLayoutDtos(), digit);
 		});
 		
-		return null;
+		return classItemList.stream().map(cls -> {
+			List<GridEmpBody> items = cls.getLayoutDtos().stream().flatMap(f -> f.getItems().stream())
+				.map(m ->  new GridEmpBody(m.getItemCode(), m.getItemParentCode(), m.getActionRole(), m.getValue(), m.getTextValue(), m.getRecordId(), m.getLstComboBoxValue())).collect(Collectors.toList());						
+
+			return new EmpMainCategoryDto(cls.getEmployeeId(), items);
+		}).collect(Collectors.toList());
 	}
 	
 	private List<LayoutPersonInfoClsDto> getDataClassItemList(PeregQuery query, PersonInfoCategory perInfoCtg,
@@ -244,15 +253,49 @@ public class PeregProcessor {
 		return classItemList;
 	}
 	
-	private List<Object> getDataClassItemListForGrid(PeregQueryByListEmp query, PersonInfoCategory perInfoCtg, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
-		// combo-box sẽ lấy dựa theo các ngày startDate của từng category
-		GeneralDate comboBoxStandardDate = GeneralDate.today();
+	private List<GridLayoutPersonInfoClsDto> getDataClassItemListForGrid(PeregQueryByListEmp query, PersonInfoCategory perInfoCtg, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+		
+		
+		String selfEmployeeId = AppContexts.user().employeeId();
 
 		List<LayoutPersonInfoClsDto> selfClassItemList = creatClassItemList(perItems.get(true), perInfoCtg),
 				otherClassItemList = creatClassItemList(perItems.get(false), perInfoCtg);
 
 		if (perInfoCtg.isFixed()) {
-			layoutingProcessor.findAllData(query);
+			List<GridPeregDto> peregDtoLst = layoutingProcessor.findAllData(query);
+			
+			if (!CollectionUtil.isEmpty(peregDtoLst)) {
+				// Khoi tao list layout tuong ung
+				List<GridLayoutPersonInfoClsDto> lstLayout = peregDtoLst.stream()
+						.map(m -> {
+							// combo-box sẽ lấy dựa theo các ngày startDate của từng category
+							GeneralDate comboBoxStandardDate = GeneralDate.today();
+							
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? selfClassItemList : otherClassItemList);
+							
+							MappingFactory.mapListItemClass(m.getPeregDto(), dto.getLayoutDtos());
+
+							
+							Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(m.getPeregDto());
+							List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+							
+							for (String itemCode : standardDateItemCodes) {
+								if (itemValueMap.containsKey(itemCode)) {
+									comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
+									break;
+								}
+							}
+							
+							// get Combo-Box List
+							layoutControlComboBox.getComboBoxListForSelectionItems(m.getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+									comboBoxStandardDate);
+							
+							return dto;
+						})
+						.collect(Collectors.toList());
+				
+				return lstLayout;
+			}
 		} else {
 			
 		}

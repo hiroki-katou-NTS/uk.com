@@ -45,9 +45,11 @@ public class MappingFactory {
 		});
 
 		// map from option data
-		peregDto.getOptionalItemData()
-				.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
-
+		if (peregDto.getOptionalItemData() != null) {
+			peregDto.getOptionalItemData()
+					.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
+		}
+		
 		return itemCodeValueMap;
 	}
 	

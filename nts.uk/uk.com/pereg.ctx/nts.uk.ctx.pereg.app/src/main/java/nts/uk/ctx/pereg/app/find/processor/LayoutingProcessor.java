@@ -19,6 +19,7 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -101,7 +102,7 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public List<PeregDto> findAllData(PeregQueryByListEmp query) {
+	public List<GridPeregDto> findAllData(PeregQueryByListEmp query) {
 		
 		if (query.getEmpInfos().size() == 0) {
 			return new ArrayList<>();
@@ -125,8 +126,11 @@ public class LayoutingProcessor {
 		// get optional data
 		Map<String, List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
 
-		List<PeregDto> peregDtoLst = objectDto.stream().map(c -> {
-			return new PeregDto(c.getPeregDomainDto(), finderClass.dtoClass(), optionalItems.get(c.getPeregDomainDto().getRecordId()));
+		List<GridPeregDto> peregDtoLst = objectDto.stream().map(c -> {
+			List<OptionalItemDataDto> itemData = optionalItems.get(c.getPeregDomainDto().getRecordId());
+			PeregDto pereg = new PeregDto(c.getPeregDomainDto(), finderClass.dtoClass(), itemData);
+			
+			return new GridPeregDto(c.getEmployeeId(), c.getPersonId(), pereg);
 		}).collect(Collectors.toList());
 
 		return peregDtoLst;
