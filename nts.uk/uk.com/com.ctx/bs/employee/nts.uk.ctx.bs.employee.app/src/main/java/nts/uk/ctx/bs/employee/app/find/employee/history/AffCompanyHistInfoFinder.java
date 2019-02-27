@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.employee.app.find.employee.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -104,7 +107,37 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		// key - pid , value - sid getPersonId getEmployeeId
+		Map<String, String> mapSids = query.getEmpInfos().stream().collect(Collectors.toMap(PeregEmpInfoQuery:: getPersonId, PeregEmpInfoQuery:: getEmployeeId));
+		List<String> sids = mapSids.values().stream().collect(Collectors.toList());
+		List<AffCompanyHist> affComHistDomainLst = this.achFinder.getAffCompanyHistoryOfEmployeeListAndBaseDate(sids , query.getStandardDate());
+		List<String> histIds = new ArrayList<>();
+		for(AffCompanyHist affComHistDomain : affComHistDomainLst) {
+			AffCompanyHistByEmployee empHist = affComHistDomain.getLstAffCompanyHistByEmployee().get(0);
+			if (empHist == null) {
+				result.add(new GridPeregDomainDto(mapSids.get(affComHistDomain.getPId()), affComHistDomain.getPId(), null));
+				continue;
+			}
+
+			AffCompanyHistItem histItem = empHist.getLstAffCompanyHistoryItem().get(0);
+
+			if (histItem == null) {
+				result.add(new GridPeregDomainDto(mapSids.get(affComHistDomain.getPId()), affComHistDomain.getPId(), null));
+				continue;
+			}
+			
+			histIds.add(histItem.getHistoryId());
+		}
+		List<AffCompanyInfo> affCompany = aciFinder.getAffCompanyInfoByHistId(histIds);
+		affComHistDomainLst.stream().forEach(affHist -> {
+			Optional<AffCompanyInfo> affComOpt = affCompany.stream().filter(c -> c.getSid().equals(mapSids.get(affHist.getPId()))).findFirst();
+			if(affComOpt.isPresent()) {
+				result.add(new GridPeregDomainDto(mapSids.get(affHist.getPId()), affHist.getPId(), AffCompanyHistInfoDto.fromDomain(affHist, affComOpt.get())));
+			}
+
+		});
+
+		return result;
 	}
 }

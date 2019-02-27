@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
+import java.util.List;
+
 public interface AffCompanyInfoRepository {
 
 	public void add(AffCompanyInfo domain);
@@ -9,5 +11,12 @@ public interface AffCompanyInfoRepository {
 	public void remove(String histId);
 	
 	public AffCompanyInfo getAffCompanyInfoByHistId(String histId);
+	/**
+	 * lấy tất cả thông tin comInfo theo list histIds
+	 * @author lanlt
+	 * @param histIds
+	 * @return
+	 */
+	public List<AffCompanyInfo> getAffCompanyInfoByHistId(List<String> histIds);
 
 }

@@ -1,8 +1,19 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
@@ -62,5 +73,36 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 
 		return new BsymtAffCompanyInfo(entityPk, domain.getSid(), domain.getRecruitmentClassification().v(), domain.getAdoptionDate(),
 				domain.getRetirementAllowanceCalcStartDate(), null);
+	}
+
+	@Override
+	@SneakyThrows
+	public List<AffCompanyInfo> getAffCompanyInfoByHistId(List<String> histIds) {
+		List<AffCompanyInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_COM_INFO i WHERE i.HIST_ID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+
+				List<AffCompanyInfo> lstObj = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffCompanyInfo entity = new BsymtAffCompanyInfo();
+					entity.bsymtAffCompanyInfoPk = new BsymtAffCompanyInfoPk(r.getString("HIST_ID"));
+					entity.sid = r.getString("SID");
+					entity.recruitmentCategoryCode = r.getString("RECRUIMENT_CATEGORY_CD");
+					entity.adoptionDate = r.getGeneralDate("ADOPTION_DATE");
+					entity.retirementAllowanceCalcStartDate = r.getGeneralDate("RETIREMENT_CALC_STR_D");
+					return toDomain(entity);
+				}).stream().collect(Collectors.toList());
+				resultList.addAll(lstObj);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		return resultList;
 	}
 }
