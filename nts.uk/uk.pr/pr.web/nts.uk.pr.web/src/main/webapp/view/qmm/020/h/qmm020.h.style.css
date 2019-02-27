@@ -23,4 +23,10 @@
 #H1_1 {
     width: 700px;
 }
+#ccg001-btn-search-drawer{
+    z-index: 1;
+}
+.caret-right{
+    z-index: 1 !important;
+}
 
