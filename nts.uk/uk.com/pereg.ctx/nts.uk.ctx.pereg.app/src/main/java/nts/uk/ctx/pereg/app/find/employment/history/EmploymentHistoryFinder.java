@@ -101,20 +101,22 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		GeneralDate standardDate  = query.getStandardDate();
 		
-		Map<String, DateHistoryItem> dateHistLst = this.empHistRepo.getByEmployeeIdAndStandardDate(cid, sids,standardDate);
-		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
+		Map<String, List<DateHistoryItem>> dateHistLst = this.empHistRepo.getByEmployeeIdAndStandardDate(cid, sids,standardDate).stream().collect(Collectors.groupingBy(c -> c.identifier()));
+		List<String> historyIds = dateHistLst.values().stream().map(c -> c.get(0).identifier()).collect(Collectors.toList());
 		
-		List<EmploymentHistoryItem> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds);
+		Map<String,List<EmploymentHistoryItem>> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		
-		List<GridPeregDomainDto> result = employmentHist.stream().map( c -> {
-			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
-			return new GridPeregDomainDto(c.getEmployeeId(), "",   EmploymentHistoryDto.createFromDomain(date, c ));
+		List<GridPeregDomainDto> result = employmentHist.values().stream().map( c -> {
+			EmploymentHistoryItem employeMent = c.get(0);
+			DateHistoryItem date =  dateHistLst.get(employeMent.getHistoryId()).get(0);
+			
+			return new GridPeregDomainDto(employeMent.getEmployeeId(), "",   EmploymentHistoryDto.createFromDomain(date, employeMent ));
 		}).collect(Collectors.toList());
 		
 		if(query.getEmpInfos().size() > result.size()) {
 			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
 				// cần xem lại đoạn code này @LanLT
-				result.add(new GridPeregDomainDto("", "", new EmploymentHistoryDto("", null, null, null, null)));
+				result.add(new GridPeregDomainDto(query.getEmpInfos().get(i).getEmployeeId(), query.getEmpInfos().get(i).getPersonId(), new EmploymentHistoryDto("", null, null, null, null)));
 			}
 		}
 		

@@ -303,11 +303,11 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
-	public Map<String, DateHistoryItem> getByEmployeeIdAndStandardDate(String cid, List<String> sids,
+	public List<DateHistoryItem> getByEmployeeIdAndStandardDate(String cid, List<String> sids,
 			GeneralDate standardDate) {
-		Map<String, DateHistoryItem> result = new HashMap<>();
+		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "select * FROM BSYMT_EMPLOYMENT_HIST where CID =? and START_DATE <= ? and END_DATE >= ? and SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID =? and START_DATE <= ? AND END_DATE >= ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
 					;
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
@@ -318,7 +318,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				}
 
 				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
-					result.put(rec.getString("SID"), new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
+					result.add(new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
 				});
 				
 				

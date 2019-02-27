@@ -89,5 +89,5 @@ public interface EmploymentHistoryRepository {
 	 * @param standardDate
 	 * @return
 	 */
-	Map<String, DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
+	List<DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
 }
