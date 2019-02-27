@@ -42,7 +42,7 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYea
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
@@ -113,7 +113,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
 		HeaderData header = new HeaderData();
 		header.setPrintFormat(printFormat);
-		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
+		header.setMonthsInTotalDisplay(setOutItemsWoSc.getMonthsInTotalDisplay());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
 		// B1_1 + B1_2
 		String periodStr = startYm.until(endYm, ChronoUnit.MONTHS) == 0
@@ -152,7 +152,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 				nts.arc.time.YearMonth.of(endYm.getYear(), endYm.getMonthValue()));
 		// set C2_3, C2_5
 		header.setMonthPeriodLabels(
-				this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getDisplayFormat()));
+				this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getMonthsInTotalDisplay()));
 		// set C1_2
 		header.setMonths(this.createMonthLabels(startYmClone, endYmClone));
 		exportData.setHeader(header);
@@ -163,17 +163,16 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			employeeIds = this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 			// アルゴリズム「年間勤務表の作成」を実行する
 			PeriodAtrOfAgreement periodAtr = null;
-			if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) {
+			if (MonthsInTotalDisplay.TWO_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay())) {
 				periodAtr = PeriodAtrOfAgreement.TWO_MONTHS;
-			} else if (OutputAgreementTime.THREE_MONTH.equals(setOutItemsWoSc.getDisplayFormat())){
+			} else if (MonthsInTotalDisplay.THREE_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay())){
 				periodAtr = PeriodAtrOfAgreement.THREE_MONTHS;
 			}
 			this.createAnnualWorkSchedule36Agreement(cid, exportData, yearMonthPeriod, employeeIds, listItemOut,
 					fiscalYear, startYm, setOutItemsWoSc.isOutNumExceedTime36Agr(), periodAtr, monthLimit);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
-			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, startYm,
-					setOutItemsWoSc.getDisplayFormat());
+			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, startYm);
 		}
 		// 社員を並び替える
 		this.sortEmployees(exportData, endYmd);
@@ -469,8 +468,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * 年間勤務表(勤怠チェックリスト)を作成
 	 */
 	private void createAnnualWorkScheduleAttendance(ExportData exportData, YearMonthPeriod yearMonthPeriod,
-			List<String> employeeIds, List<ItemOutTblBook> listItemOut, YearMonth startYm,
-			OutputAgreementTime displayFormat) {
+			List<String> employeeIds, List<ItemOutTblBook> listItemOut, YearMonth startYm) {
 		// アルゴリズム「任意項目の作成」を実行する
 		this.createOptionalItems(exportData, yearMonthPeriod, employeeIds,
 				listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
@@ -506,11 +504,11 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @return
 	 */
 	private List<String> createMonthPeriodLabels(YearMonth startYm, YearMonth endYm,
-			OutputAgreementTime outputAgreementTime) {
+			MonthsInTotalDisplay monthsInTotalDisplay) {
 		int distances = 0;
-		if (OutputAgreementTime.TWO_MONTH.equals(outputAgreementTime))
+		if (MonthsInTotalDisplay.TWO_MONTH.equals(monthsInTotalDisplay))
 			distances = 2;
-		else if (OutputAgreementTime.THREE_MONTH.equals(outputAgreementTime))
+		else if (MonthsInTotalDisplay.THREE_MONTH.equals(monthsInTotalDisplay))
 			distances = 3;
 		if (distances == 0)
 			return null;

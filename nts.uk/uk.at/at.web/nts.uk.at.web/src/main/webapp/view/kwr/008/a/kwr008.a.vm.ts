@@ -213,6 +213,7 @@ module nts.uk.at.view.kwr008.a {
             openKWR008B() {
                 let self = this;
                 block.invisible();
+                
                 let param = {
                     selectedCd: self.selectedOutputItem()
                 }

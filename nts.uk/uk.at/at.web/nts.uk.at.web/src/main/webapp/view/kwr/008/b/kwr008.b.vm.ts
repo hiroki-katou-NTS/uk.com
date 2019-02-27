@@ -42,14 +42,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         selectedPrintForm: KnockoutObservable<number> = ko.observable(0);
         
         rule36CalculationAverageName: string;
+        
+        contentSelectionOutput: KnockoutObservableArray<ItemEnum> = ko.observableArray([]);
 
         constructor() {
             let self = this;
 
             //B5_3
             self.itemRadio = ko.observableArray([
-                new model.ItemModel(0, getText('KWR008_38')),
-                new model.ItemModel(1, getText('KWR008_39'))
+                new model.ItemModel(1, getText('KWR008_38')),
+                new model.ItemModel(2, getText('KWR008_39'))
             ]);
             self.rule36CalculationName = getText('KWR008_32');
             self.rule36CalculationAverageName = getText('KWR008_31');
@@ -170,12 +172,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             block.invisible();
             //fill data B2_2
+            let KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
 
             let sv1 = service.getValueOutputFormat();
             let sv2 = service.getOutItemSettingCode();
             
+            var widgets = []; 
+            var listWidgets = __viewContext.enums.TotalAverageDisplay;
+            listWidgets.forEach(function(Widgets) {
+                widgets.push(new ItemEnum(Widgets.value.toString(), Widgets.name))
+            });
+            self.contentSelectionOutput(widgets);
             
-
             $.when(sv1, sv2).done((data1, data2) => {
                 // get list value output format
                 let listValOutFormat = [];
@@ -191,7 +199,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }).always(function() {
                 dfd.resolve(self);
                 //get parameter from B
-                let KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
+                
                 if (KWR008BParam && KWR008BParam.selectedCd) {
                     self.selectedCode(KWR008BParam.selectedCd);
                     self.updateMode(KWR008BParam.selectedCd);
@@ -633,7 +641,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
         
-        contentSelectionOutput: KnockoutObservableArray<ItemEnum> = ko.observableArray([]);
         selectedValue: KnockoutObservable<string> = ko.observable('1');
         multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
         
@@ -648,22 +655,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.printForm(param ? param.printForm || 0 : 0);
             self.printForm.subscribe(data => {
                 self.printForm(data);
-            });
-            var widgets = []; 
-//            var listWidgets = _.remove(__viewContext.enums.WidgetDisplayItemType, function(n){
-//                //remove 「子の看護休残数」 và 「看護休残数」, 計画年休残数
-//                return (n.value != 22 && n.value != 23 && n.value != 18); 
-//                });
-//            listWidgets.forEach(function (value) {
-//                widgets.push(new ItemEnum(value.value.toString(),value.name));
-//            });
-            widgets.push(new ItemEnum(0,'test 01'));
-            widgets.push(new ItemEnum(1,'test 02'));            
-            self.contentSelectionOutput(widgets);
+            });     
             
             self.selectedValue.subscribe((value) => {
                 if(value){
-                        
                 }
             });
             
@@ -685,7 +680,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     if (listItemOutput[i].listOperationSetting) {
                         outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);
                     }
-                    self.listItemOutput.push(outputItemData)
+                    self.listItemOutput.push(outputItemData);
                 }
             } else {
                 self.listItemOutput([]);
@@ -720,3 +715,4 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             this.name = name;
         }
     }
+}

@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 
 @Setter
 @Getter
@@ -25,8 +25,9 @@ public class HeaderData {
 	/** C1_2 */
 	private List<String> months;
 	/** C2_2 or C2_4*/
-	private OutputAgreementTime outputAgreementTime;
+	private MonthsInTotalDisplay monthsInTotalDisplay;
 	/** C2_3 or C2_5 */
 	private List<String> monthPeriodLabels;
+	
 	private PrintFormat printFormat;
 }

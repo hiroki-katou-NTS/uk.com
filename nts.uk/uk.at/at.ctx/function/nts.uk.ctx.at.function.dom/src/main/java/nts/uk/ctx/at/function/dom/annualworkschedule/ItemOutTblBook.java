@@ -10,10 +10,11 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBo
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName;
 
 /**
-* 帳表に出力する項目
+* 年間勤務表の月次表示項目
 */
 @Getter
 public class ItemOutTblBook extends DomainObject {
+	
 	private final static String CD_36_AGREEMENT_TIME = "01";
 	/**
 	* 会社ID

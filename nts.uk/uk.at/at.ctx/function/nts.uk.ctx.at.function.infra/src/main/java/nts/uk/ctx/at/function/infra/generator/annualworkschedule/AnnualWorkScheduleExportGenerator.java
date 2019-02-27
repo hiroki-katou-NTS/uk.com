@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 
@@ -22,7 +20,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleGenerator;
@@ -176,9 +174,9 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 		if (!PrintFormat.AGREEMENT_36.equals(headerData.getPrintFormat())) {
 			return;
 		}
-		if (OutputAgreementTime.TWO_MONTH.equals(headerData.getOutputAgreementTime())) {
+		if (MonthsInTotalDisplay.TWO_MONTH.equals(headerData.getMonthsInTotalDisplay())) {
 			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_48"));
-		} else if (OutputAgreementTime.THREE_MONTH.equals(headerData.getOutputAgreementTime())) {
+		} else if (MonthsInTotalDisplay.THREE_MONTH.equals(headerData.getMonthsInTotalDisplay())) {
 			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_49"));
 		}
 

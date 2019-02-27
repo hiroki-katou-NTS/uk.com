@@ -31,18 +31,21 @@ public class SetOutItemsWoScDto
 	*/
 	private boolean outNumExceedTime36Agr;
 
-	/**
-	* 表示形式
-	*/
-	private int displayFormat;
-	
 	/*
 	 * 年間勤務表印刷形式
 	 */
 	private int printForm;
+	
+	private boolean multiMonthDisplay;
+	
+	private int monthsInTotalDisplay;
+	
+	private Integer totalAverageDisplay;
 
 	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
 		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
-									  domain.isOutNumExceedTime36Agr(), domain.getDisplayFormat().value, domain.getPrintForm());
+									  domain.isOutNumExceedTime36Agr(), domain.getPrintForm(),
+									  domain.isMultiMonthDisplay(),domain.getMonthsInTotalDisplay().value,
+									  domain.getTotalAverageDisplay().isPresent()?domain.getTotalAverageDisplay().get().value:null);
 	}
 }

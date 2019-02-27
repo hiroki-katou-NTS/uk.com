@@ -64,11 +64,9 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 						os.getAttendanceItemId(), os.getOperation())).collect(Collectors.toList()));
 			}).collect(Collectors.toList());
 
-		repository.add(SetOutItemsWoSc.createFromJavaType(companyId, addCommand.getCd(),
-														  addCommand.getName(),
-														  addCommand.isOutNumExceedTime36Agr(),
-														  addCommand.getDisplayFormat(),
-														  addCommand.getPrintForm(),
-														  listItemOutTblBook));
+		repository.add(SetOutItemsWoSc.createFromJavaType(companyId, addCommand.getCd(), addCommand.getName(),
+				addCommand.isOutNumExceedTime36Agr(), addCommand.getPrintForm(), listItemOutTblBook,
+				addCommand.isMultiMonthDisplay(), addCommand.getMonthsInTotalDisplay(),
+				addCommand.getTotalAverageDisplay()));
 	}
 }
