@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -115,8 +116,8 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		
 		if(query.getEmpInfos().size() > result.size()) {
 			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				// cần xem lại đoạn code này @LanLT
-				result.add(new GridPeregDomainDto(query.getEmpInfos().get(i).getEmployeeId(), query.getEmpInfos().get(i).getPersonId(), new EmploymentHistoryDto("", null, null, null, null)));
+				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
+				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
 			}
 		}
 		
