@@ -15,6 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.val;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpRemoveCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpRemoveCommandHandler;
@@ -100,6 +102,23 @@ public class EmploymentWebService extends WebService {
 		List<String> names = new ArrayList<>();
 		if (employmentCodes == null || employmentCodes.isEmpty()) return names;
 		names = this.finder.findByCodes(employmentCodes).stream().map(item -> item.getName()).collect(Collectors.toList());
+		return names;
+	}
+	
+	@POST
+	@Path("findNamesByCodesNew")
+	public List<String> findNamesByCodesNew(List<String> employmentCodes) {
+		List<String> names = new ArrayList<>();
+		String nameDefault = I18NText.getText("KAL003_120");
+		if (employmentCodes == null || employmentCodes.isEmpty()) return names;
+		List<EmploymentDto> lstCodeName = this.finder.findByCodes(employmentCodes);
+		val lstCodeHasName = lstCodeName.stream().map(x -> x.getCode()).collect(Collectors.toList());
+		val lstCodeNoName = employmentCodes.stream().filter(x -> !lstCodeHasName.contains(x)).map(x ->{
+			return new EmploymentDto(x, x + " " + nameDefault);
+		}).collect(Collectors.toList());
+		lstCodeName.addAll(lstCodeNoName);
+		lstCodeName = lstCodeName.stream().sorted((x, y) -> x.getCode().compareTo(y.getCode())).collect(Collectors.toList());
+		names = lstCodeName.stream().map(item -> item.getName()).collect(Collectors.toList());
 		return names;
 	}
 	
