@@ -129,7 +129,7 @@ public class LayoutingProcessor {
 		Map<String, List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
 
 		List<GridPeregDto> peregDtoLst = objectDto.stream().map(c -> {
-			List<OptionalItemDataDto> itemData = optionalItems.get(c.getPeregDomainDto().getRecordId());
+			List<OptionalItemDataDto> itemData = optionalItems.get(Optional.ofNullable(c.getPeregDomainDto()).map(m  -> m.getRecordId()).orElse(""));
 			PeregDto pereg = new PeregDto(c.getPeregDomainDto(), finderClass.dtoClass(), itemData);
 			
 			return new GridPeregDto(c.getEmployeeId(), c.getPersonId(), pereg);
