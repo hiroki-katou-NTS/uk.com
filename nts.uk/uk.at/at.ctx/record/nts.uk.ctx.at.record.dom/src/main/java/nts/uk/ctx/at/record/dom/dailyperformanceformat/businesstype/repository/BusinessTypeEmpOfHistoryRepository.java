@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
 
+import java.util.List;
 //import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 //import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 public interface BusinessTypeEmpOfHistoryRepository {
 
@@ -59,6 +61,16 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 * @return BusinessTypeOfEmployeeHistory
 	 */
 	Optional<BusinessTypeOfEmployeeHistory> findByHistoryId(String historyId);
+	
+	/**
+	 * 
+	 * tìm ra tất cả  những DateHisItem theo cid, sids, baseDate
+	 * @param cid
+	 * @param sIds
+	 * @param baseDate
+	 * @author lanlt
+	 */
+	List<DateHistoryItem> getDateHistItemByCidAndSidsAndBaseDate(String cid, List<String> sIds, GeneralDate baseDate);
 	
 
 }

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat.businesstype;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
@@ -197,6 +203,33 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		});
 		
 		return resultList;
+	}
+
+	@Override
+	@SneakyThrows
+	public List<DateHistoryItem> getDateHistItemByCidAndSidsAndBaseDate(String cid, List<String> sIds,
+			GeneralDate baseDate) {
+		List<DateHistoryItem> result= new ArrayList<>();
+		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST WHERE CID = ? AND START_DATE <= ? AND END_DATE >= ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+				stmt.setDate(3, Date.valueOf(baseDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+				
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),  new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE")));
+				});
+				result.addAll(lstObj);
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
 	}
 
 //	@Override

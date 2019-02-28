@@ -49,4 +49,11 @@ public interface BusinessTypeOfEmployeeRepository {
 	 * @return List BusinessTypeOfEmployee
 	 */
 	List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date);
+	
+	/**
+	 * find all by histIds
+	 * @param histIds
+	 * @return
+	 */
+	List<BusinessTypeOfEmployee> findAllByHistIds(List<String> histIds);
 }

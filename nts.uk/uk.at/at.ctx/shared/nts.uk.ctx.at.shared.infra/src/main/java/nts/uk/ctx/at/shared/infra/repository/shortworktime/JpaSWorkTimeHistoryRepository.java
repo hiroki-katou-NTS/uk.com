@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -277,11 +278,12 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	}
 
 	@Override
+	@SneakyThrows
 	public List<DateHistoryItem> finsLstBySidsAndCidAndDate(String cid, List<String> sids, GeneralDate baseDate) {
 		List<DateHistoryItem> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD < ? AND END_YMD > ? AND SID IN ("+NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 		
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
@@ -292,12 +294,6 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 				}
 				
 				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BshmtWorktimeHist history = new BshmtWorktimeHist();
-					history.bshmtWorktimeHistPK.histId= rec.getString("HIST_ID");
-					history.cId = rec.getString("CID");
-					history.bshmtWorktimeHistPK.sid = rec.getString("SID");
-					history.strYmd = rec.getGeneralDate("STR_YMD");
-					history.endYmd = rec.getGeneralDate("END_YMD");
 					return new DateHistoryItem(rec.getString("HIST_ID"),  new DatePeriod(rec.getGeneralDate("STR_YMD"),  rec.getGeneralDate("END_YMD")));
 				});
 				result.addAll(lstObj);

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.B
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -103,8 +105,32 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		String cid = AppContexts.user().companyId();
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		// key - sid , value - pid getEmployeeId getPersonId
+		Map<String, String> mapSids = query.getEmpInfos().stream()
+				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
+		List<DateHistoryItem> dateHistItems = typeEmployeeOfHistoryRepos.getDateHistItemByCidAndSidsAndBaseDate(cid,
+				new ArrayList<String>(mapSids.keySet()), query.getStandardDate());
+		List<BusinessTypeOfEmployee> hisItemLst = typeOfEmployeeRepos
+				.findAllByHistIds(dateHistItems.stream().map(c -> c.identifier()).collect(Collectors.toList()));
+		
+		hisItemLst.stream().forEach(item ->{
+			DateHistoryItem dateHistItem = dateHistItems.stream()
+					.filter(c -> c.identifier().equals(item.getHistoryId())).findFirst().get();
+			result.add(new GridPeregDomainDto(item.getSId(), mapSids.get(item.getSId()),
+					new BusinessTypeDto(dateHistItem.identifier(), dateHistItem.start(), dateHistItem.end(),
+							item.getBusinessTypeCode().v())));
+		});
+		
+		if (query.getEmpInfos().size() > result.size()) {
+			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
+				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
+				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+			}
+		}
+		
+		return result;
 	}
 
 }

@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat.businesstype;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
@@ -142,6 +147,37 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 					.getList(entity -> toDomain(entity)));
 		});
 		return resultList;
+	}
+
+	@Override
+	@SneakyThrows
+	public List < BusinessTypeOfEmployee > findAllByHistIds(List <String> histIds) {
+		 List < BusinessTypeOfEmployee > result = new ArrayList < > ();
+		 
+		 CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			 String sql = "SELECT * FROM KRCMT_BUS_TYPE_SYAIN WHERE HIST_ID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+	
+		  try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			   for (int i = 0; i < subList.size(); i++) {
+			    stmt.setString(i + 1, subList.get(i));
+			   }
+		
+			   List < BusinessTypeOfEmployee > entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+			    KrcmtBusinessTypeOfEmployee entity = new KrcmtBusinessTypeOfEmployee();
+			    entity.krcmtBusinessTypeOfEmployeePK.historyId = rec.getString("HIST_ID");
+			    entity.sId = rec.getString("SID");
+			    entity.businessTypeCode = rec.getString("BUSINESS_TYPE_CD");
+			    
+			    return toDomain(entity);
+		
+			   });
+		
+			   result.addAll(entities);
+		  } catch (SQLException e) {
+		   throw new RuntimeException(e);
+		  }
+		 });
+		 return result;
 	}
 
 }
