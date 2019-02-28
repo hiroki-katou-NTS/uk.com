@@ -205,9 +205,11 @@ module cps003.c.vm {
                                 disabled = true;
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(item.value)) {
-                            record[item.itemCode] = nts.uk.time.minutesBased.clock.dayattr.create(Number(item.value)).shortText;
+                            let toNumber = Number(item.value);
+                            record[item.itemCode] = isNaN(toNumber) ? item.value : nts.uk.time.minutesBased.clock.dayattr.create(toNumber).shortText;
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(item.value)) {
-                            record[item.itemCode] = nts.uk.time.parseTime(item.value, true).format();
+                            let parsed = nts.uk.time.parseTime(item.value, true);
+                            record[item.itemCode] = parsed.success ? parsed.format() : item.value;
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.READONLY) {
                             if (self.category.catCode() === "CS00024" && item.itemCode === "IS00289") {
                                 record[item.itemCode] = !_.isNil(item.value) && item.value !== "" ? nts.uk.time.parseTime(item.value).format() : "";
@@ -744,7 +746,7 @@ module cps003.c.vm {
                 virtualizationMode: "continuous",
                 enter: "right",
                 autoFitWindow: true,
-                errorColumns: [ "employeeCode", "employeeName" ],
+                errorColumns: [ "employeeId", "employeeCode", "employeeName", "rowNumber" ],
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 notice: () => {
                     let $grid = $("#grid");
@@ -772,7 +774,9 @@ module cps003.c.vm {
                 $grid.mGrid("validate");
                 let itemErrors = $grid.mGrid("errors");
                 if (itemErrors && itemErrors.length > 0) {
-                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
+                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
                     modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                         
                     });
@@ -835,7 +839,9 @@ module cps003.c.vm {
                 return;
             }
             
-            setShared("CPS003G_ERROR_LIST", _.map(errors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+            setShared("CPS003G_ERROR_LIST", _.map(errors, err => { 
+                return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                         isDisplayRegister: false, errorType: 0, itemName: err.columnName, message: err.message }; }));
             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                 
             });

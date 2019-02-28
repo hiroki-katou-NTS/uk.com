@@ -82,6 +82,7 @@ module cps003.a.vm {
         gridOptions: any = { columns: [], ntsControls: [], dataSource: [] };
         dataTypes: any = {};
         batchSettingItems: any = [];
+        lockColumns: Array<any> = [];
 
         baseDate: KnockoutObservable<Date> = ko.observable();
         baseDateEnable: KnockoutObservable<boolean> = ko.observable(true);
@@ -322,7 +323,9 @@ module cps003.a.vm {
                 let itemErrors = $grid.mGrid("errors");
                 if (itemErrors && itemErrors.length > 0) {
                     self.hasError(true);
-                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
+                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
                     modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                     
                     });
@@ -480,6 +483,7 @@ module cps003.a.vm {
         }
         
         exportFile() {
+            block();
             let self = this, $grid = $("#grid"), 
                 matrixData = { categoryId: self.category.catId(), categoryCode: self.category.catCode(), categoryName: self.category.cate().categoryName,
                     fixedHeader: { isShowDepartment: (self.settings.matrixDisplay() || {}).departmentATR === IUSE_SETTING.USE,
@@ -514,7 +518,9 @@ module cps003.a.vm {
             nts.uk.request.exportFile("com", "/person/matrix/report/printMatrix", matrixData).done(data => {
                 
             }).fail(mes => {
-            
+                console.log(mes);
+            }).always(() => {
+                unblock();
             });
             
         }
@@ -1894,10 +1900,14 @@ module cps003.a.vm {
             this.positionName = record.positionName;
             this.employmentName = record.employmentName;
             this.classificationName = record.className;
-            _.forEach(_.keys(record), f => {
-                if (_.find(heads, (h: IDataHead) => h.itemCode === f)) {
-                    this.items.push(new GridEmpBodyDataSource(f, record, $grid));
-                }
+//            _.forEach(_.keys(record), f => {
+//                if (_.find(heads, (h: IDataHead) => h.itemCode === f)) {
+//                    this.items.push(new GridEmpBodyDataSource(f, record, $grid));
+//                }
+//            });
+            
+            _.forEach(heads, (h: IDataHead) => {
+                this.items.push(new GridEmpBodyDataSource(h.itemCode, record, $grid));
             });
         }
     }
