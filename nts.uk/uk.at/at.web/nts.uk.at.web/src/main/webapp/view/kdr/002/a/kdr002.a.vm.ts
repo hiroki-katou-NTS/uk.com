@@ -38,7 +38,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         lstLabelInfomation: KnockoutObservableArray<string>;
         infoPeriodDate: KnockoutObservable<string>;
         lengthEmployeeSelected: KnockoutObservable<string>;
-        
+
         closureData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         ccgcomponent: GroupOption = {
@@ -117,8 +117,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         // Page Break Type
         pageBreakTypes: KnockoutObservableArray<any> = ko.observableArray([
-            { name: getText('なし'), code: 0 },
-            { name: getText('職場'), code: 1 }
+            { name: getText('Enum_BreakPageType_NONE'), code: 0 },
+            { name: getText('Enum_BreakPageType_WORKPLACE'), code: 1 }
         ]);
         pageBreakSelected: KnockoutObservable<string> = ko.observable(0);
 
@@ -246,7 +246,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 }
             });
         }
-        
+
         public doPrint(printQuery) {
             block.invisible();
             service.exportExcel(printQuery).done(() => {
@@ -258,11 +258,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             char.save('screenInfo', printQuery.toScreenInfo());
         }
 
-        public checkClosureDate() : JQueryPromise<any>{
+        public checkClosureDate(): JQueryPromise<any> {
             let self = this,
                 closureId = self.closureId(),
                 isNotError = true,
-                dfd = $.Deferred() ;
+                dfd = $.Deferred();
             block.invisible();
             service.findClosureById(closureId).done((closureData) => {
 
@@ -296,7 +296,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 block.clear();
             });
 
-              return dfd.promise();
+            return dfd.promise();
         }
 
     }
@@ -323,17 +323,17 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         selectedDateType: number;
         // 参照区分
         selectedReferenceType: number;
-        // 参照区分
+        // 指定月
         printDate: number;
         // 改ページ区分
         pageBreakSelected: number;
         selectedEmployees: Array<UnitModel>;
-        closureData:any
+        closureData: any
 
         constructor(screen: ScreenModel) {
             let self = this,
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            self.programName = "KDR002" + (program[1] != null ? program[1] : ""); 
+            self.programName = "KDR002" + (program[1] != null ? program[1] : "");
             self.exportTime = moment();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
@@ -353,11 +353,15 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             }
         }
     }
-
+    //年休管理表の出力条件
     export interface IScreenInfo {
+        //対象期間
         selectedDateType: number,
+        //参照区分
         selectedReferenceType: number,
+        //指定月
         printDate: number,
+        //参照の選択
         pageBreakSelected: number
     }
 

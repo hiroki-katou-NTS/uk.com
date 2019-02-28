@@ -15,7 +15,7 @@ public class OutputYearHolidayManagementQuery {
 	int selectedDateType;
 	// 参照区分
 	int selectedReferenceType;
-	// 参照区分
+	// 指定月
 	Integer printDate;
 	// 参照の選択
 	int pageBreakSelected;
