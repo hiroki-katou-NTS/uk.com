@@ -166,18 +166,18 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             };
         }
 
-        /**
-        * start page data 
-        */
+        //起動する
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
+            //社員に対応する処理締めを取得する
             service.findClosureByEmpID().done(function(closure) {
                 if (closure) {
                     self.setDataWhenStart(closure);
                     self.closureDate(closure.closureMonth);
                 } else {
+                    //エラーメッセージ(#Msg_1134)を表示
                     alError({ messageId: 'Msg_1134' });
                 }
                 nts.uk.ui.block.clear();
@@ -193,9 +193,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         setDataWhenStart(closure) {
             let self = this;
             char.restore("screenInfo").done((screenInfo: IScreenInfo) => {
+                //ユーザー固有情報「年休管理表の出力条件」をチェックする
                 if (screenInfo) {
+                    //データあり
                     self.setScreenInfo(closure, screenInfo);
                 } else {
+                    //データなし
                     self.printDate(closure.closureMonth);
                 }
             });
@@ -208,8 +211,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.selectedDateType(screenInfo.selectedDateType);
             self.selectedReferenceType(screenInfo.selectedReferenceType);
             if (screenInfo.printDate) {
+                //指定月 ≠ null
+                //取得したデータを画面に表示する
                 self.printDate(screenInfo.printDate);
             } else {
+                //指定月 = null
+                //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
                 self.printDate(closure.closureMonth);
             }
             self.pageBreakSelected(screenInfo.pageBreakSelected);
