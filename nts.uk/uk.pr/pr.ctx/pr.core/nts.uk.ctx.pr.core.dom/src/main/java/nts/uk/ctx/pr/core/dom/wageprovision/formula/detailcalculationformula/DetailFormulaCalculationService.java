@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepositor
 import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -214,7 +215,7 @@ public class DetailFormulaCalculationService {
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
         Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_236");
+        if (!optDetailFormulaSetting.isPresent()) return "";
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);
@@ -228,7 +229,7 @@ public class DetailFormulaCalculationService {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
-        if (Objects.isNull(formula)) throw new BusinessException("MsgQ_236");
+        if (StringUtils.isBlank(formula)) throw new BusinessException("MsgQ_236");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
         }

@@ -583,7 +583,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         validateSyntaxOnClick() {
             let self = this;
             self.validateSyntax();
-
+            if(self.displayDetailCalculationFormula().trim().length == 0) {
+                self.setErrorToFormula('MsgQ_236', []);
+            }
             if (!nts.uk.ui.errors.hasError()) {
                 dialog.info({messageId: "MsgQ_249"});
                 self.extractFormulaElement();
