@@ -44,9 +44,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 error.clearAll();
                 let self = this;
                 self.index(self.getIndex(data));
-                if (data != '') {
+                if (data != null && data != '') {
                     if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
-                       self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
+                        self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
                     } else {
                         self.getStateLinkSettingMasterIndividual(self.selectedItem(), data, self.listStateCorrelationHis()[self.index()].startYearMonth);
                     }
@@ -284,6 +284,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                         self.employeeInputList.push(new Employee(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.loadKCP009();
+                        if(self.selectedItem() == self.selectedEmployeeObject.employeeId) {
+                            self.getHisIndividual(self.selectedItem(), self.hisIdSelected(null));
+                        }
                         self.selectedItem(self.selectedEmployeeObject.employeeId);
                         dfd.resolve();
                     }

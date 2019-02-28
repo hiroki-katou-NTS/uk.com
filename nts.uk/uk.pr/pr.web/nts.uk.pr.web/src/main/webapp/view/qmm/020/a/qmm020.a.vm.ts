@@ -41,7 +41,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         }
 
         activeSideBar(setting) {
-            if(!setting) {
+            if (!setting) {
                 $("#sidebar").ntsSideBar("hide", 1);
                 $("#sidebar").ntsSideBar("hide", 2);
                 $("#sidebar").ntsSideBar("hide", 3);
@@ -164,7 +164,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
             $("#E1_5_container").focus();
         };
 
-        onSelectTabI(){
+        onSelectTabI() {
             __viewContext.viewModel.viewmodelA.selectedH(0);
             __viewContext.viewModel.viewmodelI.initScreen().done(() => {
                 __viewContext.viewModel.viewmodelI.loadCCg001();
@@ -184,15 +184,9 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
 
         onSelectTabH() {
             __viewContext.viewModel.viewmodelA.selectedH(1);
-            __viewContext.viewModel.viewmodelH.hisIdSelected(null);
-            __viewContext.viewModel.viewmodelH.getHisIndividual(__viewContext.viewModel.viewmodelH.selectedItem(),null).done (() => {
-                __viewContext.viewModel.viewmodelH.loadCCG001();
-                __viewContext.viewModel.viewmodelH.hisIdSelected(__viewContext.viewModel.viewmodelH.hisIdSelected())
-            });
-            __viewContext.viewModel.viewmodelH.initScreen().done(() => {
-                $("#emp-component").focus();
-            });
-
+            __viewContext.viewModel.viewmodelH.initScreen();
+            __viewContext.viewModel.viewmodelH.loadCCG001();
+            $("#emp-component").focus();
         };
     }
 }
