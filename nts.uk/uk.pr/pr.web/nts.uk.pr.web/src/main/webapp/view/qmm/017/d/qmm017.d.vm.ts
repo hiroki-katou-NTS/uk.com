@@ -677,10 +677,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let conditionRegex = new RegExp(self.conditionSeparators.join('|'));
 
             while (formula.indexOf(functionCondition) > -1 || formula.indexOf(functionAnd) > -1 || formula.indexOf(functionOr) > -1) {
-                if (formula.indexOf(functionCondition) > -1) {
-                    startFunctionIndex = formula.lastIndexOf(functionCondition);
-                    endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
-                }
+                startFunctionIndex = formula.lastIndexOf(functionCondition);
+                endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 if (endFunctionIndex == -1) break;
                 formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1), 0);
             }
