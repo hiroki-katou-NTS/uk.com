@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -120,7 +121,8 @@ public class LayoutingProcessor {
 			return new ArrayList<>();
 		}
 
-		List<String> recordIds = objectDto.stream().map(c -> c.getPeregDomainDto().getRecordId())
+		List<String> recordIds = objectDto.stream().map(c -> Optional.ofNullable(c.getPeregDomainDto()).map(m  -> m.getRecordId()).orElse(""))
+				.filter(f -> !f.equals(""))
 				.collect(Collectors.toList());
 
 		// get optional data
