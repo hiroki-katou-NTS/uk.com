@@ -144,6 +144,9 @@ module nts.uk.at.view.kmk008.e {
 
             addUpdateWorkPlace() {
                 let self = this;
+                
+                if(self.workplaceGridList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
                 let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
                 nts.uk.ui.block.invisible();
