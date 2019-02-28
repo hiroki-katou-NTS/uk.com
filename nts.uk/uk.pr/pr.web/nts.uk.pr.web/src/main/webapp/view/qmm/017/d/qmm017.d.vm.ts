@@ -262,14 +262,16 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 let selectedFormulaCode = __viewContext.screenModel.selectedFormula().formulaCode(),
                     selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
                 if (newValue || !newValue && newValue === 0) {
-                    let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function (formula) {
-                        return formula.nestedAtr == model.NESTED_USE_CLS.USE && formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function (item) {
-                            return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
-                        })
-                    }).map(item => {
-                        item.formulaName = _.escape(item.formulaName);
-                        return item;
-                    });
+                    let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList)
+                        .filter(formula =>
+                            formula.nestedAtr == model.NESTED_USE_CLS.USE
+                            && formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING
+                            && formula.formulaCode != selectedFormulaCode
+                            && _.some(formula.history, item => item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth)
+                        ).map(item => {
+                            item.formulaName = _.escape(item.formulaName);
+                            return item;
+                        });
                     this.formulaList(embeddableFormulaList);
                     if (embeddableFormulaList.length > 0) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
                 } else {
@@ -583,7 +585,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         validateSyntaxOnClick() {
             let self = this;
             self.validateSyntax();
-            if(self.displayDetailCalculationFormula().trim().length == 0) {
+            if (self.displayDetailCalculationFormula().trim().length == 0) {
                 self.setErrorToFormula('MsgQ_236', []);
             }
             if (!nts.uk.ui.errors.hasError()) {

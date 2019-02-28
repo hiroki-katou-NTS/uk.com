@@ -214,7 +214,9 @@ public class DetailFormulaCalculationService {
             throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
-        Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
+        //must have at least 1 history item satisfing condition
+        String identifier = formulaHistory.getHistory().stream().filter(e -> e.start().v() <= yearMonth && e.end().v() >= yearMonth).findFirst().get().identifier();
+        Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(identifier);
         if (!optDetailFormulaSetting.isPresent()) return "";
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
