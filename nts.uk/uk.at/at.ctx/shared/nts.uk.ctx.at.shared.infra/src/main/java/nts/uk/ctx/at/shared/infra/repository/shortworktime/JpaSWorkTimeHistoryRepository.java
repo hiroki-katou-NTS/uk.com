@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
@@ -269,5 +274,39 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		return mapResult.values().stream()
 				.map(e -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(e)))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DateHistoryItem> finsLstBySidsAndCidAndDate(String cid, List<String> sids, GeneralDate baseDate) {
+		List<DateHistoryItem> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD < ? AND END_YMD > ? AND SID IN ("+NtsStatement.In.createParamsString(subList) + ")";
+		
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+				stmt.setDate(3, Date.valueOf(baseDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+				
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BshmtWorktimeHist history = new BshmtWorktimeHist();
+					history.bshmtWorktimeHistPK.histId= rec.getString("HIST_ID");
+					history.cId = rec.getString("CID");
+					history.bshmtWorktimeHistPK.sid = rec.getString("SID");
+					history.strYmd = rec.getGeneralDate("STR_YMD");
+					history.endYmd = rec.getGeneralDate("END_YMD");
+					return new DateHistoryItem(rec.getString("HIST_ID"),  new DatePeriod(rec.getGeneralDate("STR_YMD"),  rec.getGeneralDate("END_YMD")));
+				});
+				result.addAll(lstObj);
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		// Return
+		return result;
 	}
 }

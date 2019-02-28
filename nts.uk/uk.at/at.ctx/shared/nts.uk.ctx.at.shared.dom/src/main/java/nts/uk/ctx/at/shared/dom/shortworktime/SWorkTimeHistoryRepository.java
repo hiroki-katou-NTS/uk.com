@@ -64,4 +64,14 @@ public interface SWorkTimeHistoryRepository {
 	 */
 	List<ShortWorkTimeHistory> findLstByEmpAndPeriod(List<String> empIdList, DatePeriod period);
 	
+	
+	/**
+	 * get ShortWorkTimeHis 
+	 * @param cid
+	 * @param sids
+	 * @param baseDate
+	 * @author lanlt
+	 */
+	List<DateHistoryItem> finsLstBySidsAndCidAndDate(String cid, List<String> sids, GeneralDate baseDate);
+	
 }
