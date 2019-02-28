@@ -1,7 +1,10 @@
 package nts.uk.ctx.bs.employee.app.find.employee.contact;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +12,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -60,7 +64,23 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		// key - sid , value - pid   getEmployeeId getPersonId
+		Map<String, String> mapSids = query.getEmpInfos().stream()
+				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
+		List<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByListEmpId(new ArrayList<String>(mapSids.keySet()));
+		
+		empInfoContact.stream().forEach( c -> {
+			result.add(new GridPeregDomainDto( c.getSid(), mapSids.get(c.getSid()), EmpInfoContactDto.fromDomain(c)));
+		});
+
+		if (query.getEmpInfos().size() > result.size()) {
+			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
+				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
+				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+			}
+		}
+		
+		return result;
 	}
 }
