@@ -128,9 +128,13 @@ public class StatementLayoutFinder {
         List<String> sttCodes = statementLayoutHistRepo.getAllStatementLayoutHistByCid(cid, processingDate)
                 .stream().map(x -> x.getStatementCode().v()).collect(Collectors.toList());
         // ドメインモデル「明細書レイアウト」を取得する
-        List<StatementLayoutDto> sttLayouts = statementLayoutRepo.getAllStatementLayoutByCidAndCodes(cid, sttCodes)
-                .stream().map(x -> new StatementLayoutDto(x.getStatementCode().v(), x.getStatementName().v()))
-                .collect(Collectors.toList());
+        List<StatementLayoutDto> sttLayouts = new ArrayList<>();
+        if(sttCodes.size() > 0){
+            sttLayouts = statementLayoutRepo.getAllStatementLayoutByCidAndCodes(cid, sttCodes)
+                    .stream().map(x -> new StatementLayoutDto(x.getStatementCode().v(), x.getStatementName().v()))
+                    .collect(Collectors.toList());
+        }
+
         return sttLayouts;
     }
 

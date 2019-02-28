@@ -91,8 +91,9 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.roundingMethod = params.roundingMethod;
             self.roundingPosition = params.roundingPosition;
             self.formulaListItem = params.formulaListItem;
-            self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
+            self.extractFormula(params.formula);
+
             if (/Chrome/.test(navigator.userAgent)) {
                 $('#G1_2').ntsFixedTable({height: 279});
             } else {

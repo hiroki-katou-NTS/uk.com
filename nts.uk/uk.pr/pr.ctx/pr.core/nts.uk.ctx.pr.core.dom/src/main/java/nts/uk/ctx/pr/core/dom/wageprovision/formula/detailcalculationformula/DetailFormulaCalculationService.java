@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepositor
 import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -173,7 +174,7 @@ public class DetailFormulaCalculationService {
                                            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
                                            Map<String, String> wageTableItem, int yearMonth) {
         // is number or operator
-        if (!isNaN(formulaElement) || formulaElement.length() < 6 ) return formulaElement;
+        if (!isNaN(formulaElement) || formulaElement.length() < 6) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
         String elementCode = formulaElement.substring(6, formulaElement.length());
         if (elementType.startsWith("Func") || elementType.startsWith("vari")) {
@@ -213,8 +214,10 @@ public class DetailFormulaCalculationService {
             throw new BusinessException("MsgQ_248", FORMULA, formulaCode);
         }
         FormulaHistory formulaHistory = optFormulaHistory.get();
-        Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(formulaHistory.getHistory().get(0).identifier());
-        if (!optDetailFormulaSetting.isPresent()) throw new BusinessException("MsgQ_236");
+        //must have at least 1 history item satisfing condition
+        String identifier = formulaHistory.getHistory().stream().filter(e -> e.start().v() <= yearMonth && e.end().v() >= yearMonth).findFirst().get().identifier();
+        Optional<DetailFormulaSetting> optDetailFormulaSetting = detailFormulaSettingRepository.getDetailFormulaSettingById(identifier);
+        if (!optDetailFormulaSetting.isPresent()) return "";
         DetailFormulaSetting detailFormulaSetting = optDetailFormulaSetting.get();
         List<String> formulaElements = detailFormulaSetting.getDetailCalculationFormula().stream().map(item -> item.getFormulaElement().v()).collect(Collectors.toList());
         return getDetailFormulaDisplayContent(formulaElements, yearMonth);
@@ -228,15 +231,20 @@ public class DetailFormulaCalculationService {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
-        if (Objects.isNull(formula)) throw new BusinessException("MsgQ_236");
+        if (StringUtils.isBlank(formula)) throw new BusinessException("MsgQ_236");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
-            formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
+            formula = formula.replace(replaceValue.getKey().toString(), replaceNegativeValue(replaceValue.getValue().toString()));
         }
         formula = calculateSystemVariable(type, formula);
         formula = calculateFunction(formula);
         formula = calculateSuffixFormula(formula) + "";
         if (isNaN(formula)) throw new BusinessException("MsgQ_235");
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
+    }
+
+    private String replaceNegativeValue(String replaceValue) {
+        if (replaceValue.startsWith("-")) return "(" + replaceValue + ")";
+        return replaceValue;
     }
 
     private String roundingResult(Double result, int roundingMethod, int roundingPosition) {
