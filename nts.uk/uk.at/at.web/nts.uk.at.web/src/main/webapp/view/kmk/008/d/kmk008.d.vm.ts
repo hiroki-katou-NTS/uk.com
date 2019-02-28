@@ -109,6 +109,9 @@ module nts.uk.at.view.kmk008.d {
 
             addUpdateData() {
                 let self = this;
+                
+                if(self.employmentList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();

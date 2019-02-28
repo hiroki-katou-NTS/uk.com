@@ -123,6 +123,9 @@ module nts.uk.at.view.kmk008.f {
 
             addUpdateDataClassification() {
                 let self = this;
+                
+                if(self.classificationList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
