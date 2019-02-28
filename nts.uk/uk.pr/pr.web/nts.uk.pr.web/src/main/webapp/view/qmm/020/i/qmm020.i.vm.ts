@@ -102,7 +102,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             let self = this;
             $("#I2_1").ntsGrid({
                 width: '1050px',
-                height: '360px',
+                height: '345px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
                 rowVirtualization: true,
