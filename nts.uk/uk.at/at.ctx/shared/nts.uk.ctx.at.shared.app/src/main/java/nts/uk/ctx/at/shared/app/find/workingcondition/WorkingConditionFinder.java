@@ -117,7 +117,7 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		String cid = AppContexts.user().companyId();
 		List<String> employeeIds = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
-		List<WorkingCondition> workingCondiditions =  repo.getBySidsAndCid(employeeIds, standarDate, cid);
+		List<WorkingCondition> workingCondiditions =  wcRepo.getBySidsAndCid(employeeIds, standarDate, cid);
 
 		Map<String, DateHistoryItem> dateHistLst = new HashMap<>();
 		workingCondiditions.stream().forEach(c -> {
@@ -125,7 +125,7 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		});
 		
 		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
-		List<WorkingConditionItem>  workingCondiditionItems = itemRepo.getByListHistoryID(historyIds);
+		List<WorkingConditionItem>  workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds);
 		
 		List<GridPeregDomainDto> result = workingCondiditionItems.stream().map(c -> {
 			DateHistoryItem date =  dateHistLst.get(c.getEmployeeId());
