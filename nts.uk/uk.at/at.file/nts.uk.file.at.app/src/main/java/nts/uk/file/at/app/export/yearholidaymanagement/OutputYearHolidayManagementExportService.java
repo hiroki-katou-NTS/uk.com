@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.sys.auth.dom.user.User;
 
 @Stateless
 public class OutputYearHolidayManagementExportService extends ExportService<OutputYearHolidayManagementQuery> {

@@ -1,14 +1,13 @@
 package nts.uk.file.at.infra.yearholidaymanagement;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -34,7 +34,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
@@ -69,8 +68,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	private static final String TEMPLATE_FILE = "report/KDR002.xlsx";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
-	private static final int WORK_TIME_NORMAL_START_INDEX = 10;
-	private static final int WORK_TIME_NORMAL_NUM_ROW = 10;
 	private static final int HEADER_ROW = 1;
 	private static final int DES_ROW = 0;
 	private static final int EMP_CODE_COL = 0;
@@ -102,37 +99,35 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
-		// try (AsposeCellsReportContext reportContext =
-		// this.createContext(TEMPLATE_FILE)) {
-		AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-		Workbook workbook = reportContext.getWorkbook();
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+			Workbook workbook = reportContext.getWorkbook();
 
-		WorksheetCollection worksheets = workbook.getWorksheets();
-		String programName = query.getProgramName();
-		// lấy dữ liệu để in
-		List<EmployeeHolidayInformationExport> data = getData(query);
+			WorksheetCollection worksheets = workbook.getWorksheets();
+			String programName = query.getProgramName();
+			// lấy dữ liệu để in
+			List<EmployeeHolidayInformationExport> data = getData(query);
 
-		// thực hiện in
-		String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
-				.getCompanyName();
-		reportContext.setHeader(0, "&9&\"MS ゴシック\"" + companyName);
-		reportContext.setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KDR002_10"));
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
-		reportContext.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-		String exportTime = query.getExportTime().toString();
-		Worksheet normalSheet = worksheets.get(0);
-		String normalSheetName = TextResource.localize("KDR002_10");
+			// thực hiện in
+			String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
+					.getCompanyName();
+			reportContext.setHeader(0, "&9&\"MS ゴシック\"" + companyName);
+			reportContext.setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KDR002_10"));
+			DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+			reportContext.setHeader(2,
+					"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
+			String exportTime = query.getExportTime().toString();
+			Worksheet normalSheet = worksheets.get(0);
+			String normalSheetName = TextResource.localize("KDR002_10");
 
-		printData(normalSheet, programName, companyName, exportTime, data, normalSheetName,
-				WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW, query);
-		worksheets.setActiveSheetIndex(0);
-		reportContext.processDesigner();
-		reportContext.saveAsExcel(this.createNewFile(generatorContext,
-				programName + "_" + query.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+			printData(normalSheet, programName, companyName, exportTime, data, normalSheetName, query);
+			worksheets.setActiveSheetIndex(0);
+			reportContext.processDesigner();
+			reportContext.saveAsExcel(this.createNewFile(generatorContext,
+					programName + "_" + query.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
 
-		// } catch (Exception e) {
-		// throw new RuntimeException(e);
-		// }
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private GeneralDate dateDetermination(List<ClosurePrintDto> closureData, Integer selectedDateType,
@@ -192,7 +187,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 		// đảo xuống dưới để tiện việc map data
 		// 社員分ループ
-		employeeExports.forEach(emp -> {
+		
+		for (int i = 0; i < employeeExports.size(); i++) {
+			EmployeeHolidayInformationExport emp  = employeeExports.get(i);
 			String empId = emp.getEmployeeId();
 			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
 			Optional<AnnualHolidayGrantInfor> holidayInfo = null;
@@ -218,7 +215,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			}
 			emp.setHolidayInfo(holidayInfo);
 			emp.setHolidayDetails(HolidayDetails);
-		});
+		}
+		
+		employeeExports = employeeExports.stream().filter(x -> x.getWorkplace() != null).collect(Collectors.toList());
 		Map<String, List<EmployeeHolidayInformationExport>> resultmap = employeeExports.stream()
 				.collect(Collectors.groupingBy(o -> o.getWorkplace().getWorkplaceCode()));
 
@@ -226,8 +225,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	}
 
 	private void printData(Worksheet worksheet, String programId, String companyName, String exportTime,
-			List<EmployeeHolidayInformationExport> data, String sheetName, int startIndex, int numRow,
-			OutputYearHolidayManagementQuery query) {
+			List<EmployeeHolidayInformationExport> data, String sheetName,OutputYearHolidayManagementQuery query) {
 		try {
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
@@ -236,32 +234,40 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			int currentRow = 2;
 			int beginRow = 0;
 			boolean isBlueBackground = false;
+			DecimalFormat formatter = new DecimalFormat("0.##");
 			for (int i = 0; i < data.size(); i++) {
+				if((currentRow - beginRow) > MAX_ROW + 1){
+					beginRow = currentRow;
+				}
 				EmployeeHolidayInformationExport emp = data.get(i);
 				AnnualHolidayGrantInfor holidayInfo = emp.getHolidayInfo().isPresent() ? emp.getHolidayInfo().get()
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// fix code
-				if (holidayInfo == null) {
-					holidayInfo = createSampleHInfo(query.getPrintDate().toString());
-				}
+//				if (holidayInfo == null) {
+//					holidayInfo = createSampleHInfo(query.getPrintDate().toString());
+//				}
 
 				// fix code
-				if (CollectionUtil.isEmpty(holidayDetails)) {
-					holidayDetails = createHSampleDetails(query.getPrintDate().toString());
-				}
+//				if (CollectionUtil.isEmpty(holidayDetails)) {
+//					holidayDetails = createHSampleDetails(query.getPrintDate().toString());
+//				}
+				//tính tổng số dòng để xác định phân trang nếu data quá quy định
 				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
-				int maxrow = MAX_ROW;
-				if ((((currentRow - beginRow) % maxrow) + dataLine > maxrow)) {
+				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
+						+ emp.getWorkplace().getWorkplaceName();
+				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
+				//tổng số dòng = số dòng data + 1 dòng in WorkPlace (nếu có);
+				int totalLine = dataLine + (!lastWpName.equals(wpName) ? 1 : 0);
+				int maxrow = currentRow < 38 ? MAX_ROW + 1 : MAX_ROW - 3;
+				if (currentRow - beginRow + totalLine > maxrow) {
 					HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
 					pageBreaks.add(currentRow);
 					beginRow = currentRow;
 					lastWPRow = 0;
 				}
 				// Print WP Name
-				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
-						+ emp.getWorkplace().getWorkplaceName();
-				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
+				lastWpName = cells.get(lastWPRow, 0).getStringValue();
 				if (!lastWpName.equals(wpName)) {
 					if (query.getPageBreakSelected() == BreakPageType.WORKPLACE.value && currentRow != 2) {
 
@@ -270,8 +276,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						beginRow = currentRow;
 					}
 					currentRow = printWP(cells, currentRow, wpName);
-
 					lastWPRow = currentRow - 1;
+				} else {
+					if ((currentRow - beginRow) > MAX_ROW + 1) {
+						currentRow = printWP(cells, currentRow, wpName);
+						lastWPRow = currentRow - 1;
+					}
 				}
 
 				// Print EmployeeInfo Region
@@ -285,21 +295,25 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				String empPos = emp.getPosition().getPositionName();
 				cells.get(currentRow + 1, EMP_POS_COL).setValue(empPos);
 				// Print AnnualHolidayGrantInfor
+				if (holidayInfo != null) {
+					// print AnnualHolidayGrant
+					cells.get(currentRow, NEXT_GRANTDATE_COL).setValue(String.valueOf(holidayInfo.getYmd()));
+					int holidayInfoRow = currentRow;
+					for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
+						AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
+						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(String.valueOf(grantInfo.getYmd()));
 
-				// print AnnualHolidayGrant
-				cells.get(currentRow, NEXT_GRANTDATE_COL).setValue(String.valueOf(holidayInfo.getYmd()));
-				int holidayInfoRow = currentRow;
-				for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
-					AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
-					cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(String.valueOf(grantInfo.getYmd()));
+						cells.get(holidayInfoRow, GRANT_DAYS_COL)
+								.setValue(formatter.format(grantInfo.getGrantDays()).toString());
 
-					cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue(String.valueOf(grantInfo.getGrantDays()));
+						cells.get(holidayInfoRow, GRANT_USEDAY_COL)
+								.setValue(formatter.format(grantInfo.getUseDays()).toString());
 
-					cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue(String.valueOf(grantInfo.getUseDays()));
+						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL)
+								.setValue(formatter.format(grantInfo.getRemainDays()).toString());
 
-					cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue(String.valueOf(grantInfo.getRemainDays()));
-
-					holidayInfoRow++;
+						holidayInfoRow++;
+					}
 				}
 				// Print HolidayDetails
 
@@ -327,12 +341,17 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	}
 
 	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails) {
-
+		//mặc định là 2 dòng 
 		int result = 2;
+		//dòng của lineOfDetails  = tổng data /15 + 1 dòng nếu /15 có dư ra
 		int lineOfDetails = holidayDetails.size() / 15 + (holidayDetails.size() % 15 > 0 ? 1 : 0);
-		if (holidayInfo.getLstGrantInfor().size() > 2 || lineOfDetails > 2) {
-			if (holidayInfo.getLstGrantInfor().size() > lineOfDetails) {
-				result = holidayInfo.getLstGrantInfor().size();
+		
+		int LineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
+		//số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2 
+		if (LineOfholidayInfo > 2 || lineOfDetails > 2) {
+			//số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn 
+			if (LineOfholidayInfo > lineOfDetails) {
+				result = LineOfholidayInfo;
 			} else {
 				result = lineOfDetails;
 			}
@@ -346,7 +365,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		for (int i = totalLine; i > 0; i--) {
 			for (int j = 0; j < MAX_COL; j++) {
 				Cell cell = cells.get(newRow - i, j);
-				if (j != NEXT_GRANTDATE_COL) {
+				if (j != NEXT_GRANTDATE_COL && j != EMP_CODE_COL) {
 					if (j == EMP_NAME_COL || j == GRANT_REMAINDAY_COL) {
 						setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
 					} else {
@@ -356,7 +375,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
 						if (isBlueBackground) {
 							setBackGround(cell);
-
 						}
 					}
 				}
@@ -376,7 +394,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private void setBackGround(Cell cell) {
 		Style style = new Style();
 		style.copy(cell.getStyle());
-		style.setForegroundColor(Color.getRed());
+		style.setPattern(BackgroundType.SOLID);
+		style.setForegroundColor(Color.fromArgb(211, 235, 247));
 		cell.setStyle(style);
 	}
 
@@ -403,7 +422,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 			}
 		}
-		style.setForegroundColor(Color.getRed());
 		font.setName("ＭＳ ゴシック");
 		cell.setStyle(style);
 	}
@@ -428,66 +446,67 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		return result;
 	}
 
-	private List<AnnualHolidayGrantDetail> createHSampleDetails(String printDate) {
-
-		Random rand = new Random();
-
-		List<AnnualHolidayGrantDetail> result = new ArrayList<AnnualHolidayGrantDetail>();
-		Integer row = rand.nextInt(7);
-
-		Integer yearNumber = Integer.valueOf(printDate.substring(0, 4));
-		List<Integer> years = new ArrayList<Integer>();
-		for (int i = 0; i < row; i++) {
-			years.add(yearNumber - i);
-		}
-
-		years.forEach(x -> {
-			Integer record = rand.nextInt(20);
-
-			for (int i = 0; i < record; i++) {
-				Integer month = rand.nextInt((12 - 1) + 1) + 1;
-				GeneralDate ymd = GeneralDate.ymd(x, month, rand.nextInt((28 - 1) + 1) + 1);
-
-				double useDays = Double.valueOf(rand.nextInt(2) / 2.0);
-				result.add(new AnnualHolidayGrantDetail("", ymd, useDays,
-						EnumAdaptor.valueOf(rand.nextInt(2), ReferenceAtr.class)));
-			}
-
-		});
-		return result;
-	}
-
-	private AnnualHolidayGrantInfor createSampleHInfo(String printDate) {
-		AnnualHolidayGrantInfor result = new AnnualHolidayGrantInfor();
-
-		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
-		Random rand = new Random();
-
-		Integer record = rand.nextInt(6);
-		GeneralDate year = GeneralDate.ymd(Integer.valueOf(printDate.substring(0, 4)),
-				Integer.valueOf(printDate.substring(4, 6)), rand.nextInt((28 - 1) + 1) + 1).addYears(0 - record);
-		// Integer month = rand.nextInt((Integer.valueOf(printDate.substring(4,
-		// 6)) - 1) + 1) + 1;
-
-		Integer month = rand.nextInt((12 - 1) + 1) + 1;
-		Integer day = rand.nextInt((28 - 1) + 1) + 1;
-		Integer grantDays = rand.nextInt(20);
-		if (month > Integer.valueOf(printDate.substring(4, 6))) {
-			year.addYears(-1);
-		}
-		for (int i = 0; i < record; i++) {
-			Integer useDays = grantDays != 0 ? rand.nextInt(grantDays) : 0;
-			lstGrantInfor.add(new AnnualHolidayGrant(
-					GeneralDate.fromString(String.valueOf(year.year()) + StringUtils.leftPad(month.toString(), 2, '0')
-							+ StringUtils.leftPad(day.toString(), 2, '0'), "yyyyMMdd"),
-					grantDays, useDays, grantDays - useDays));
-
-			year = year.addYears(1);
-		}
-		result.setYmd(year.addYears(1));
-		result.setLstGrantInfor(lstGrantInfor);
-		return result;
-	}
+//	private List<AnnualHolidayGrantDetail> createHSampleDetails(String printDate) {
+//
+//		Random rand = new Random();
+//
+//		List<AnnualHolidayGrantDetail> result = new ArrayList<AnnualHolidayGrantDetail>();
+//		Integer row = rand.nextInt(7);
+//
+//		Integer yearNumber = Integer.valueOf(printDate.substring(0, 4));
+//		List<Integer> years = new ArrayList<Integer>();
+//		for (int i = 0; i < row; i++) {
+//			years.add(yearNumber - i);
+//		}
+//
+//		years.forEach(x -> {
+//			Integer record = rand.nextInt(20);
+//
+//			for (int i = 0; i < record; i++) {
+//				Integer month = rand.nextInt((12 - 1) + 1) + 1;
+//				GeneralDate ymd = GeneralDate.ymd(x, month, rand.nextInt((28 - 1) + 1) + 1);
+//
+//				double useDays = Double.valueOf(rand.nextInt(2) / 2.0);
+//				result.add(new AnnualHolidayGrantDetail("", ymd, useDays,
+//						EnumAdaptor.valueOf(rand.nextInt(2), ReferenceAtr.class)));
+//			}
+//
+//		});
+//		return result;
+//	}
+//
+//	private AnnualHolidayGrantInfor createSampleHInfo(String printDate) {
+//		AnnualHolidayGrantInfor result = new AnnualHolidayGrantInfor();
+//
+//		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
+//		Random rand = new Random();
+//
+//		Integer record = rand.nextInt(6);
+//		GeneralDate year = GeneralDate.ymd(Integer.valueOf(printDate.substring(0, 4)),
+//				Integer.valueOf(printDate.substring(4, 6)), rand.nextInt((28 - 1) + 1) + 1).addYears(0 - record);
+//		// Integer month = rand.nextInt((Integer.valueOf(printDate.substring(4,
+//		// 6)) - 1) + 1) + 1;
+//
+//		Integer month = rand.nextInt((12 - 1) + 1) + 1;
+//		Integer day = rand.nextInt((28 - 1) + 1) + 1;
+//		Integer grantDays = rand.nextInt(20);
+//		if (month > Integer.valueOf(printDate.substring(4, 6))) {
+//			year.addYears(-1);
+//		}
+//		
+//		for (int i = 0; i < record; i++) {
+//			double useDays = grantDays != 0 ? rand.nextInt(grantDays * 2) / 2.0 : 0;
+//			lstGrantInfor.add(new AnnualHolidayGrant(
+//					GeneralDate.fromString(String.valueOf(year.year()) + StringUtils.leftPad(month.toString(), 2, '0')
+//							+ StringUtils.leftPad(day.toString(), 2, '0'), "yyyyMMdd"),
+//					grantDays, useDays, grantDays - useDays));
+//
+//			year = year.addYears(1);
+//		}
+//		result.setYmd(year.addYears(1));
+//		result.setLstGrantInfor(lstGrantInfor);
+//		return result;
+//	}
 
 	private int printWP(Cells cells, int currentRow, String wpName) {
 		cells.get(currentRow, 0).setValue(wpName);
