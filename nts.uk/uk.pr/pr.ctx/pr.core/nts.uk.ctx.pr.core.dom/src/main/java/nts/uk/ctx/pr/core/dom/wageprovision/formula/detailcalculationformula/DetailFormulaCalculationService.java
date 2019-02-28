@@ -174,7 +174,7 @@ public class DetailFormulaCalculationService {
                                            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
                                            Map<String, String> wageTableItem, int yearMonth) {
         // is number or operator
-        if (!isNaN(formulaElement) || formulaElement.length() < 6 ) return formulaElement;
+        if (!isNaN(formulaElement) || formulaElement.length() < 6) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
         String elementCode = formulaElement.substring(6, formulaElement.length());
         if (elementType.startsWith("Func") || elementType.startsWith("vari")) {
@@ -233,13 +233,18 @@ public class DetailFormulaCalculationService {
         // type 3: Trial calculation お試し計算
         if (StringUtils.isBlank(formula)) throw new BusinessException("MsgQ_236");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
-            formula = formula.replace(replaceValue.getKey().toString(), replaceValue.getValue().toString());
+            formula = formula.replace(replaceValue.getKey().toString(), replaceNegativeValue(replaceValue.getValue().toString()));
         }
         formula = calculateSystemVariable(type, formula);
         formula = calculateFunction(formula);
         formula = calculateSuffixFormula(formula) + "";
         if (isNaN(formula)) throw new BusinessException("MsgQ_235");
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
+    }
+
+    private String replaceNegativeValue(String replaceValue) {
+        if (replaceValue.startsWith("-")) return "(" + replaceValue + ")";
+        return replaceValue;
     }
 
     private String roundingResult(Double result, int roundingMethod, int roundingPosition) {
