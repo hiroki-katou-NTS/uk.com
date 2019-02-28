@@ -94,10 +94,10 @@
                         <table id="table-output-items" >
                            <colgroup>
                                 <col width="38"/>
-                                <col width="140"/>
+                                <col width="210"/>
                                 <col width="50"/>
                                 <col width="85"/>
-                                <col width="330"/>
+                                <col width="260"/>
                            </colgroup>
                            <thead>
                               <tr> 
@@ -161,18 +161,18 @@
 								options: $parent.contentSelectionOutput,
 								optionsValue: 'value',
 								visibleItemsCount: 2,
-								value: selectedValue,
+								value: totalAverageDisplay,
 								optionsText: 'name',
 								columns: [
 									{ prop: 'name', length: 8 },
 								]}"></div>
-	                        <div id="B5_3" tabindex="13"  data-bind="visible: selectedValue() == 1, ntsRadioBoxGroup: {
+	                        <div id="B5_3" tabindex="13"  data-bind="visible: totalAverageDisplay() == 1, ntsRadioBoxGroup: {
 	                            options: $parent.itemRadio,
 	                            optionsValue: 'code',
 	                            optionsText: 'name',
-	                            value: displayFormat}">
+	                            value: monthsInTotalDisplay}">
 	                        </div>
-	                        <span class="label label36" data-bind="visible: selectedValue() == 2">#{i18n.getText('KWR008_65')}</span>
+	                        <span class="label label36" data-bind="visible: totalAverageDisplay() == 2">#{i18n.getText('KWR008_65')}</span>
 	                    </div>
 					</div>
                 </div>

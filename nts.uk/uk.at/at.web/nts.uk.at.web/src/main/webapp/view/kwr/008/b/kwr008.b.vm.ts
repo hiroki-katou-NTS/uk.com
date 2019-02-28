@@ -54,7 +54,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 new model.ItemModel(2, getText('KWR008_39'))
             ]);
             self.rule36CalculationName = getText('KWR008_32');
-            self.rule36CalculationAverageName = getText('KWR008_31');
+            self.rule36CalculationAverageName = getText('KWR008_70');
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i,
                     null,
@@ -139,7 +139,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.outputItem()[0].useClass(false);
                     self.outputItem()[1].useClass(false);
                     self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
-                    self.currentSetOutputSettingCode().displayFormat(0);
+                    self.currentSetOutputSettingCode().monthsInTotalDisplay(1);
                 }
             })
 
@@ -481,7 +481,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     new OperationCondition(
                         202, //attendanceItemId
                         1, // operation
-                        getText('KWR008_31')
+                        getText('KWR008_70')
                     )
                 );
             }
@@ -637,11 +637,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
-        displayFormat: KnockoutObservable<number> = ko.observable(0);
+        monthsInTotalDisplay: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
         
-        selectedValue: KnockoutObservable<string> = ko.observable('1');
+        totalAverageDisplay: KnockoutObservable<string> = ko.observable('1');
         multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor(param) {
@@ -651,17 +651,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.name(param ? param.name || '' : '');
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
-            self.displayFormat(param ? param.displayFormat || 0 : 0);
+            self.monthsInTotalDisplay(param ? param.monthsInTotalDisplay || 1 : 1);
             self.printForm(param ? param.printForm || 0 : 0);
             self.printForm.subscribe(data => {
                 self.printForm(data);
             });     
-            
-            self.selectedValue.subscribe((value) => {
-                if(value){
-                }
-            });
-            
+            self.totalAverageDisplay(param ? param.totalAverageDisplay || '1' : '1');
+            self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {

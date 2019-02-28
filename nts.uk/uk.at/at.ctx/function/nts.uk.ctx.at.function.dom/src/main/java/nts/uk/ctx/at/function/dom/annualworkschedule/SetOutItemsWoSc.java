@@ -70,7 +70,7 @@ public class SetOutItemsWoSc extends AggregateRoot {
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
 				printForm,listItemOutTblBook, multiMonthDisplay,
 				EnumAdaptor.valueOf(monthsInTotalDisplay, MonthsInTotalDisplay.class),
-				totalAverageDisplay == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(monthsInTotalDisplay, TotalAverageDisplay.class)));
+				totalAverageDisplay == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(totalAverageDisplay, TotalAverageDisplay.class)));
 	}
 
 	public SetOutItemsWoSc(String cid, OutItemsWoScCode cd, OutItemsWoScName name, boolean outNumExceedTime36Agr,

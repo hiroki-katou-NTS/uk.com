@@ -59,21 +59,21 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	* 複数月表示
 	*/
 	@Basic(optional = false)
-	@Column(name = "MUTIL_MONTH_DISPLAY")
+	@Column(name = "MULTI_MON_DISP")
 	public int multiMonthDisplay;
 	
 	/**
 	* 合計表示の月数
 	*/
 	@Basic(optional = false)
-	@Column(name = "MONTHS_IN_TOTAL_DISPLAY")
+	@Column(name = "SUM_DISP_MONTHS")
 	public int monthsInTotalDisplay;
 	
 	/**
 	* 合計平均表示
 	*/
 	@Basic(optional = true)
-	@Column(name = "TOTAL_AVERAGE_DISPLAY")
+	@Column(name = "SUM_AVG_DISP")
 	public Integer totalAverageDisplay;
 
 	@Override
