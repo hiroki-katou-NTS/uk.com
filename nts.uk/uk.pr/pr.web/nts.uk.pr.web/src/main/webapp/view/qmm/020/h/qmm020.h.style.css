@@ -24,3 +24,9 @@
     width: 700px;
 }
 
+#ccg001-btn-search-drawer{
+    z-index: 1;
+}
+.ccg001-caret-vertical{
+    z-index: 1 !important;
+}
