@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -116,7 +117,13 @@ public class TimeLeavingOfDailyService {
 				if (tlo != null) {
 					tl = mergeWithEditStates(working.getEditState(), tlo, wts);
 				}
-				correctedTlo = updateTimeLeave(companyId, wi, tl, workCondition, wi.getEmployeeId(), wi.getYmd());
+				WorkInfoOfDailyPerformance clonedWI = new WorkInfoOfDailyPerformance(wi.getEmployeeId(), wi.getRecordInfo(), 
+						wi.getScheduleInfo(), wi.getCalculationState(), 
+						wts.getAttendanceTime() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						wi.getYmd(), wi.getDayOfWeek(), wi.getScheduleTimeSheets()) ;
+				
+				correctedTlo = updateTimeLeave(companyId, clonedWI, tl, workCondition, wi.getEmployeeId(), wi.getYmd());
 			} else {
 				return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 			}
