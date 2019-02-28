@@ -99,7 +99,7 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfClassification agreementTimeOfClassification) {
 		if (agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
-				.valueAsMinutes() < agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
+				.valueAsMinutes() > agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
 			return true;
 		}
 		return false;

@@ -86,7 +86,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfCompany agreementTimeOfCompany) {
 		if (agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
-				.valueAsMinutes() < agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
+				.valueAsMinutes() > agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
 			return true;
 		}
 		return false;
