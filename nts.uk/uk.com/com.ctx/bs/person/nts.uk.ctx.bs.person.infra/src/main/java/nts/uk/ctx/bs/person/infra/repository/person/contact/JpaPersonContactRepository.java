@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.person.infra.repository.person.contact;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +9,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
@@ -19,7 +24,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContactPK;
 @Stateless
 public class JpaPersonContactRepository extends JpaRepository implements PersonContactRepository {
 
-	private static final String GET_BY_LIST = "SELECT pc FROM BpsmtPersonContact pc WHERE pc.bpsmtPersonContactPK.pid IN :personIdList";
+//	private static final String GET_BY_LIST = "SELECT pc FROM BpsmtPersonContact pc WHERE pc.bpsmtPersonContactPK.pid IN :personIdList";
 
 	@Override
 	public void add(PersonContact domain) {
@@ -131,13 +136,34 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			return Optional.empty();
 	}
 
+	// sửa thành jdbc, tăng tốc độ truy vấn 
 	@Override
+	@SneakyThrows
 	public List<PersonContact> getByPersonIdList(List<String> personIds) {
 		List<BpsmtPersonContact> entities = new ArrayList<>();
+		
 		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
-				.setParameter("personIdList", subList).getList());
+			String sql = "SELECT * FROM BPSMT_PERSON_CONTACT WHERE PID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 1, subList.get(i));
+				}
+				
+				List<BpsmtPersonContact> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new BpsmtPersonContact(new BpsmtPersonContactPK(rec.getString("PID")),
+							rec.getString("CELL_PHONE_NO"), rec.getString("MAIL_ADDRESS"),
+							rec.getString("MOBILE_MAIL_ADDRESS"), rec.getString("MEMO1"),
+							rec.getString("CONTACT_NAME_1"), rec.getString("PHONE_NO_1"), rec.getString("MEMO2"),
+							rec.getString("CONTACT_NAME_2"), rec.getString("PHONE_NO_2"));
+				});
+				entities.addAll(result);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
+		
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
