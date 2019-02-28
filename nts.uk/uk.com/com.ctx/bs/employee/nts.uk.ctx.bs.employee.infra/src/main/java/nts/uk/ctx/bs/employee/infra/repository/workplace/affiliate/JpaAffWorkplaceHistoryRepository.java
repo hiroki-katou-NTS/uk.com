@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +18,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -48,8 +53,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId = :workplaceId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
-	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+//	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+//			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
 	private static final String SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
@@ -306,21 +311,37 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		}).collect(Collectors.toList());
 	}
 
+	//fix sửa thành jdbc -> tăng tốc độ truy vấn
 	@Override
 	public List<AffWorkplaceHistory> getWorkplaceHistoryByEmpIdsAndDate(GeneralDate baseDate,
 			List<String> employeeIds) {
-		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		List<AffWorkplaceHistory> result = new ArrayList<>();
+		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
-					.setParameter("employeeIds", subList).setParameter("standDate", baseDate).getList());
+			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  START_DATE <= ? AND END_DATE >= ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+
+				List<AffWorkplaceHistory> affWorkplaceHistLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffiWorkplaceHist history = new BsymtAffiWorkplaceHist(r.getString("HIST_ID"),
+							r.getString("SID"), r.getString("CID"), r.getGeneralDate("START_DATE"),
+							r.getGeneralDate("END_DATE"));
+					return toDomain(history);
+				}).stream().collect(Collectors.toList());
+				result.addAll(affWorkplaceHistLst);
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-		if (resultList.isEmpty()) {
-			return Collections.emptyList();
-		}
-		return resultList.stream().map(e -> {
-			AffWorkplaceHistory domain = this.toDomain(e);
-			return domain;
-		}).collect(Collectors.toList());
+
+		return result;
 	}
 
 	@Override
