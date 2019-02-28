@@ -86,7 +86,7 @@ public class AgreMaxTimeOfMonthly {
 	public void errorCheck(){
 		
 		// チェック処理
-		if (this.agreementTime.v() >= this.maxTime.v()) {
+		if (this.maxTime.v() > 0 && this.agreementTime.v() >= this.maxTime.v()) {
 			this.status = AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME;
 			return;
 		}

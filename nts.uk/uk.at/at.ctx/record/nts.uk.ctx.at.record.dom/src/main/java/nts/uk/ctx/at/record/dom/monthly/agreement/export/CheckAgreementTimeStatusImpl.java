@@ -105,6 +105,9 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		// 36協定運用設定を取得
 		val agreementOpeSetOpt = this.agreementOpeSetRepo.find(companyId);
 		
+		// 36協定上限複数月平均時間．上限時間をチェック
+		if (sourceTime.getMaxTime().v() <= 0) return sourceTime;
+		
 		// 36協定上限複数月平均時間を取得　→　取得した件数分ループ
 		for (val averageTime : sourceTime.getAverageTimeList()) {
 			int checkTotalMinutes = averageTime.getTotalTime().v();
