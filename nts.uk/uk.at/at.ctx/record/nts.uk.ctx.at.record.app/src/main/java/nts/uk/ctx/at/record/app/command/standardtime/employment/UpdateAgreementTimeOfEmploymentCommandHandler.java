@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.standardtime.employment;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,9 +85,8 @@ public class UpdateAgreementTimeOfEmploymentCommandHandler
 
 			return this.agreementTimeOfEmploymentDomainService.update(basicAgreementSetting, newAgreementTimeOfEmployment);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
-
 	}
 
 }

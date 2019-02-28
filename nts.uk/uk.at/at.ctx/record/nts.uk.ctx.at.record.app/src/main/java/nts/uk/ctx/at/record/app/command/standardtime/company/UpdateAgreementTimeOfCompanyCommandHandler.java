@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.app.command.standardtime.company;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
@@ -82,7 +87,7 @@ public class UpdateAgreementTimeOfCompanyCommandHandler
 
 			return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting, newAgreementTimeOfCompany);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 }

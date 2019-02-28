@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.standardtime.classification;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,7 +86,7 @@ public class UpdateAgreementTimeOfClassificationCommandHandler
 
 			return this.agreementTimeOfClassificationDomainService.update(basicAgreementSetting, newAgreementTimeOfClassification);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 

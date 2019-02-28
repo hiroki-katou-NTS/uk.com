@@ -38,6 +38,7 @@ module nts.uk.at.view.kmk008.c {
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
+
             }
 
             startPage(): JQueryPromise<any> {
@@ -51,8 +52,8 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
                 }
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
-                    if (data) {
-                        self.timeOfCompany(new TimeOfCompanyModel(data));
+                    self.timeOfCompany(new TimeOfCompanyModel(data));
+                    if (data.updateMode) {
                         self.isUpdate = true;
                     } else {
                         self.isUpdate = false;
@@ -96,7 +97,7 @@ module nts.uk.at.view.kmk008.c {
                 });
                 nts.uk.ui.block.clear();
             }
-            
+                        
             showDialogError(listError: any) {
                 let errorCode = _.split(listError[0], ',');
                 if (errorCode[0] === 'Msg_59') {
@@ -189,7 +190,7 @@ module nts.uk.at.view.kmk008.c {
             limitOneYear: number = 0;
             upperMonth: number = 0;
             upperMonthAverage: number = 0;
-            
+
             constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
