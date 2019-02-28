@@ -95,4 +95,13 @@ public interface TempAbsHistRepository {
 	 */
 	Optional<TempAbsenceHistory> getBySidAndLeave(String cid, String employeeId);
 	
+	/**
+	 * dùng cho màn cps003, mục đích fix response
+	 * Get TemporaryAbsenceHist by cid, sids, standardDate
+	 * @param cid
+	 * @param sids
+	 * @param standardDate
+	 * @return
+	 */
+	List<DateHistoryItem> getAllBySidAndCidAndBaseDate(String cid, List<String> sids, GeneralDate standardDate);
 }

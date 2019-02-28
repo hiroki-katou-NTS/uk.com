@@ -1,7 +1,11 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,8 +13,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
@@ -228,5 +235,50 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
+	}
+	
+	@Override
+	@SneakyThrows
+	public List<DateHistoryItem> getAllBySidAndCidAndBaseDate(String cid, List<String> sids, GeneralDate standardDate) {
+		List<DateHistoryItem> tempAbsHistoryEntities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?" + " AND START_DATE <= ?"
+					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+
+				stmt.setString(1, cid);
+				stmt.setDate(3, Date.valueOf(standardDate.toLocalDate()));
+				stmt.setDate(4, Date.valueOf(standardDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+
+				List<Map<String, Object>> map = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					Map<String, Object> m = new HashMap<>();
+					m.put("HIST_ID", rec.getString("HIST_ID"));
+					m.put("SID", rec.getString("SID"));
+					m.put("CID", rec.getString("CID"));
+					m.put("START_DATE", rec.getGeneralDate("START_DATE"));
+					m.put("END_DATE", rec.getGeneralDate("END_DATE"));
+					return m;
+				});
+				map.stream().collect(Collectors.groupingBy(c -> c.get("SID"),
+						Collectors.collectingAndThen(Collectors.toList(), list -> {
+							TempAbsenceHistory his = new TempAbsenceHistory(list.get(0).get("CID").toString(),
+									list.get(0).get("SID").toString(), list.stream().map(c -> {
+										return new DateHistoryItem(c.get("HIST_ID").toString(), new DatePeriod(
+												(GeneralDate) c.get("START_DATE"), (GeneralDate) c.get("END_DATE")));
+										// tempAbsHistoryEntities.add(his);
+									}).collect(Collectors.toList()));
+							tempAbsHistoryEntities.add(his.getDateHistoryItems().get(0));
+							return his;
+						})));
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return tempAbsHistoryEntities;
 	}
 }

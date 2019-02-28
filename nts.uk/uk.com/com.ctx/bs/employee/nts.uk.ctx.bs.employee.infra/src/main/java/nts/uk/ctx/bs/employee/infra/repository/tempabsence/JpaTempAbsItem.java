@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
@@ -35,8 +39,8 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
 			+ " WHERE h.sid IN :sids AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
-			+ " WHERE hi.histId IN :histIds";
+//	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
+//			+ " WHERE hi.histId IN :histIds";
 	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId) {
@@ -229,22 +233,38 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		}
 
 	}
-
+	
+	//fix sửa thành jdbc -> tăng tốc độ truy vấn
 	@Override
 	public List<TempAbsenceHisItem> getItemByHitoryIdList(List<String> historyIds) {
 		if (historyIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-
 		// ResultList
 		List<BsymtTempAbsHisItem> entities = new ArrayList<>();
+
 		// Split historyIds List if size of historyIds List is greater than 1000
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			List<BsymtTempAbsHisItem> lstBsymtAffCompanyHist = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
-					.setParameter("histIds", subList).getList();
-			entities.addAll(lstBsymtAffCompanyHist);
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIS_ITEM WHERE HIST_ID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				List<BsymtTempAbsHisItem> tempHistItemLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtTempAbsHisItem history = new BsymtTempAbsHisItem(r.getString("HIST_ID"), r.getString("SID"),
+							r.getInt("TEMP_ABS_FRAME_NO"), r.getString("REMARKS"), r.getInt("SO_INS_PAY_CATEGORY"),
+							r.getInt("MULTIPLE"), r.getString("FAMILY_MEMBER_ID"), r.getInt("SAME_FAMILY"),
+							r.getInt("CHILD_TYPE"), r.getGeneralDate("CREATE_DATE"), r.getInt("SPOUSE_IS_LEAVE"),
+							r.getInt("SAME_FAMILY_DAYS"));
+					return history;
+				}).stream().collect(Collectors.toList());
+				entities.addAll(tempHistItemLst);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-		
+
 		return entities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.temporaryabsence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -100,7 +102,27 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String cid = AppContexts.user().companyId();
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		// key - sid , value - pid getEmployeeId getPersonId
+		Map<String, String> mapSids = query.getEmpInfos().stream()
+				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
+		List<DateHistoryItem> dateHistItemLst = this.tempAbsHistRepo.getAllBySidAndCidAndBaseDate(cid, new ArrayList<>(mapSids.keySet()), query.getStandardDate());
+		List<TempAbsenceHisItem> hisItemLst = this.tempAbsItemRepo.getItemByHitoryIdList(dateHistItemLst.stream().map(c -> c.identifier()).collect(Collectors.toList()));
+		
+		hisItemLst.stream().forEach(item ->{
+			DateHistoryItem dateHistItem = dateHistItemLst.stream().filter(c -> c.identifier().equals(item.getHistoryId())).findFirst().get();
+			result.add( new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()),TempAbsHisItemDto.createFromDomain(dateHistItem, item)));
+		});
+		
+		if (query.getEmpInfos().size() > result.size()) {
+			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
+				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
+				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+			}
+		}
+		
+		return result;
 	}
 }
