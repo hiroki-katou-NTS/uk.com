@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.standardtime.workplace;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +79,7 @@ public class UpdateAgreementTimeOfWorkPlaceCommandHandler
 
 			return this.agreementTimeOfWorkPlaceDomainService.update(basicAgreementSetting, newAgreementTimeOfWorkPlace);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
