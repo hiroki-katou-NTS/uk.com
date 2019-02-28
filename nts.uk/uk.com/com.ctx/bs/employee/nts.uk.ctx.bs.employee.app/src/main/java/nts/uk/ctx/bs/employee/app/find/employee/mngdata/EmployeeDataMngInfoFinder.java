@@ -11,6 +11,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -68,7 +69,8 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 		List<GridPeregDomainDto> result = domains.stream().map(c -> {return new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), EmployeeDataMngInfoDto.fromDomain(c));}).collect(Collectors.toList());
 		if(query.getEmpInfos().size() > result.size()) {
 			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				result.add(new GridPeregDomainDto(query.getEmpInfos().get(i).getEmployeeId(), query.getEmpInfos().get(i).getPersonId(), new EmployeeDataMngInfoDto(null, null, null)));
+				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
+				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
 			}
 		}
 		return result;

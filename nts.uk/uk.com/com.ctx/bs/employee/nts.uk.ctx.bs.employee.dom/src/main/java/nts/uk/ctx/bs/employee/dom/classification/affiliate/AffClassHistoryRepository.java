@@ -75,5 +75,13 @@ public interface AffClassHistoryRepository {
 	 * @author hop.nt
 	 */
 	void delete(String histId);
-
+	
+	/**
+	 * get DateHistoryItem theo công ty , list sid, standardDate, mục đích viết response cho màn cps003
+	 * @param cid
+	 * @param employeeIds
+	 * @param standardDate
+	 * @author lanlt
+	 */
+	List<DateHistoryItem> getByEmployeeListWithPeriod(String cid, List<String> employeeIds, GeneralDate standardDate);
 }

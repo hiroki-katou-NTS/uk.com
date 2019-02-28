@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +20,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
@@ -35,8 +40,8 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClas
 @Stateless
 public class JpaAffClassHistItemRepository extends JpaRepository implements AffClassHistItemRepository {
 	
-	private static final String GET_BY_HISTID_LIST = "SELECT ci FROM BsymtAffClassHistItem ci" 
-			+ " WHERE ci.historyId IN :historyIds";
+//	private static final String GET_BY_HISTID_LIST = "SELECT ci FROM BsymtAffClassHistItem ci" 
+//			+ " WHERE ci.historyId IN :historyIds";
 
 	@Override
 	public Optional<AffClassHistItem> getByHistoryId(String historyId) {
@@ -216,26 +221,39 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * thay đổi thành jdbc mục đích fix response
 	 * @see nts.uk.ctx.bs.employee.dom.classification.affiliate.
 	 * AffClassHistItemRepository#getByHistoryIds(java.util.List)
 	 */
 	@Override
+	@SneakyThrows
 	public List<AffClassHistItem> getByHistoryIds(List<String> historyIds) {
 		if (historyIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
-		List<BsymtAffClassHistItem> results = new ArrayList<>();
-		
-		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
-			results.addAll(this.queryProxy()
-					.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
-					.setParameter("historyIds", subIds)
-					.getList());
+
+		List<AffClassHistItem> result = new ArrayList<>();
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIS_ITEM" 
+						+ " WHERE  HIST_ID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				List<AffClassHistItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHistItem history = new BsymtAffClassHistItem();
+					history.historyId = rec.getString("HIST_ID");
+					history.sid = rec.getString("SID");
+					history.classificationCode = rec.getString("CLASSIFICATION_CODE");
+					return toDomain(history);
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
 
-		return results.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+		return result;
 	}
 
 }
