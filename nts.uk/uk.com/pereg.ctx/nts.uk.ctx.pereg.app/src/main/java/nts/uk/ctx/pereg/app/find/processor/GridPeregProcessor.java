@@ -126,18 +126,18 @@ public class GridPeregProcessor {
 			if (!CollectionUtil.isEmpty(layouts)) {
 				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
-				parallel.forEach(personDatas, pdt -> {
-					layouts.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
+				parallel.forEach(layouts, pdt -> {
+					personDatas.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
 							.ifPresent(dto -> {
-								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(pdt.getPersonId(),
-										pdt.getEmployeeId(), new CodeName(pdt.getEmployeeCode(), pdt.getEmployeeName()),
-										pdt.getEmployeeBirthday(),
-										new CodeName(pdt.getDepartmentCode(), pdt.getDepartmentName()),
-										new CodeName(pdt.getWorkplaceCode(), pdt.getWorkplaceName()),
-										new CodeName(pdt.getPositionCode(), pdt.getPositionName()),
-										new CodeName(pdt.getEmploymentCode(), pdt.getEmploymentName()),
-										new CodeName(pdt.getClassificationCode(), pdt.getClassificationName()),
-										dto.getItems());
+								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
+										pdt.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
+										dto.getEmployeeBirthday(),
+										new CodeName(dto.getDepartmentCode(), dto.getDepartmentName()),
+										new CodeName(dto.getWorkplaceCode(), dto.getWorkplaceName()),
+										new CodeName(dto.getPositionCode(), dto.getPositionName()),
+										new CodeName(dto.getEmploymentCode(), dto.getEmploymentName()),
+										new CodeName(dto.getClassificationCode(), dto.getClassificationName()),
+										pdt.getItems());
 
 								resultsSync.add(syncDto);
 							});
