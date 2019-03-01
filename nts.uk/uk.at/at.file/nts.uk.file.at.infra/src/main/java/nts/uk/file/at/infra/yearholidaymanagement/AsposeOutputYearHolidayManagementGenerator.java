@@ -274,14 +274,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// fix code
-				if (holidayInfo == null) {
-					holidayInfo = createSampleHInfo(query.getPrintDate().toString());
-				}
+//				if (holidayInfo == null) {
+//					holidayInfo = createSampleHInfo(query.getPrintDate().toString());
+//				}
 
 				// fix code
-				if (CollectionUtil.isEmpty(holidayDetails)) {
-					holidayDetails = createHSampleDetails(query.getPrintDate().toString());
-				}
+//				if (CollectionUtil.isEmpty(holidayDetails)) {
+//					holidayDetails = createHSampleDetails(query.getPrintDate().toString());
+//				}
 				// tính tổng số dòng để xác định phân trang nếu data quá quy
 				// định
 				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
