@@ -307,8 +307,8 @@ module nts.uk.at.view.kal004.a.model {
             // Create command
             let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
-            let checkPer = _.filter(checkConditonList, (value) => {return value.alarmCategory != 11});
-            let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkPer);
+            //let checkPer = _.filter(checkConditonList, (value) => {return value.alarmCategory != 11});
+            let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
             block.invisible();
             // Call service
             if (self.createMode()) {
