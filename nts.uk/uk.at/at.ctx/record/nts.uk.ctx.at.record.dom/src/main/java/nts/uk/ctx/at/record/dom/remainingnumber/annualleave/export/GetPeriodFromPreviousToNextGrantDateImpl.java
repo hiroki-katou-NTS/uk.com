@@ -84,7 +84,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 1);
 			preDay = preInfor.getGrantDate();
 		}
-		return Optional.of(new DatePeriod(preDay, nextDay));
+		return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));
 	}
 
 }
