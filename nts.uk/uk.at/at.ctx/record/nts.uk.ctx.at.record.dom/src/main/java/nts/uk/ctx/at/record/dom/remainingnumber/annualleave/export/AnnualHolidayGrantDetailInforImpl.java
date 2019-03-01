@@ -36,7 +36,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
 			x.getData().getRecAbsData().stream().forEach(y -> {
-				if(y.getRemainManaID() == annData.getAnnualId()) {
+				if(y.getRemainManaID().equals(annData.getAnnualId())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
 							y.getYmd(),
 							annData.getUseDays().v(),
