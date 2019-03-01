@@ -55,7 +55,7 @@ public class Specialleave9InformationFinder implements PeregFinder<Specialleave9
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		// 社員ID　＝　社員ID　 and 特別休暇コード＝9
+		return specialleaveInformationFinder.getAllData(query, SpecialLeaveCode.CS00033.value);
 	}
 }

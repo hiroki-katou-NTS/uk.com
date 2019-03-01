@@ -1,11 +1,20 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
@@ -138,6 +147,42 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 				.setParameter("useCls", use.value)				
 				.getSingle(item -> toDomain(item));
 		return result;
+	}
+
+	@Override
+	@SneakyThrows
+	public List<SpecialLeaveBasicInfo> getAllBySidsLeaveCd(String cid, List<String> sids, int spLeaveCD) {
+		List<KrcmtSpecialLeaveInfo> entities = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_SPECIAL_LEAVE_INFO WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				stmt.setInt( 2, spLeaveCD);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( 3 + i, subList.get(i));
+				}
+				
+				List<KrcmtSpecialLeaveInfo> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
+					entity.key = new KrcmtSpecialLeaveInfoPK(rec.getString("SID"), rec.getInt("SPECIAL_LEAVE_CD"));
+					entity.cID = rec.getString("CID");
+					entity.useCls = rec.getInt("USE_ATR");
+					entity.appSetting = rec.getInt("APPLICATION_SET");
+					entity.grantDate = rec.getGeneralDate("GRANT_DATE");
+					entity.grantNumber = rec.getInt("GRANTED_DAYS");
+					entity.grantTable =  rec.getString("GRANT_TABLE");
+					return entity;
+				});
+				entities.addAll(result);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }
