@@ -284,7 +284,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
                 if(params){
-                    $("#grid2").ntsGrid("updateRow", item.id, {salaryCode: params.statementCode,salaryLayoutName: params.statementName});
+                    $("#grid2").ntsGrid("updateRow", item.id, {salaryCode: params.statementCode,salaryLayoutName: _.escape(params.statementName)});
                 }
 
             });
@@ -447,9 +447,9 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             this.employeeCode = employeeCode;
             this.employeeName = _.escape(employeeName);
             this.salaryCode = salaryCode;
-            this.salaryLayoutName = _.escape(salaryLayoutName);
+            this.salaryLayoutName = salaryLayoutName;
             this.bonusCode = bonusCode;
-            this.bonusLayoutName = _.escape(bonusLayoutName);
+            this.bonusLayoutName = bonusLayoutName;
         }
     }
 

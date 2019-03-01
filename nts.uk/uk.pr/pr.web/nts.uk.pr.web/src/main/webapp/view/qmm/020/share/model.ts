@@ -37,6 +37,7 @@ module nts.uk.pr.view.qmm020.share.model {
 
     export function displayCodeAndName(code: string, name: string){
         let display : string;
+        name = _.escape(name);
         display = "";
         if(code != null)
             display = display + code.toString();
