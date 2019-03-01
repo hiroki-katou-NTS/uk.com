@@ -231,6 +231,20 @@
 						</div>
 						<div class ='radioButton5'
 							data-bind="ntsRadioButton: {checked: strSelected5, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio5'}"></div>														
+					</div>
+					<div  class="tab-content-6 tab-size"  >
+						<div id = "startLabel"><span >#{i18n.getText('KAL004_118')}</span></div>
+						<div id="start-tab-6" class='comboboxMonth6'
+									data-bind="ntsComboBox: {
+											options: strComboMonth6,
+											optionsValue: 'value',
+											value: strMonth6,
+											visibleItemsCount: 13,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>															
 					</div>					
 				</div>						
 			</div>
