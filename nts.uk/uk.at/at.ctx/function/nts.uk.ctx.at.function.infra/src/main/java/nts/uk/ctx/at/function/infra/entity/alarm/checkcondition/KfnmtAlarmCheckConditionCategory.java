@@ -30,12 +30,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Number;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondErr;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOt;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckConAg;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckSubConAg;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
@@ -93,6 +96,12 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtMulMonAlarmCond mulMonAlarmCond;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfnmtAlCheckConAg alCheckConAg;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfnmtAlCheckSubConAg alCheckSubConAg;
 
 	@Override
 	protected Object getKey() {
@@ -103,7 +112,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KrcmtDailyAlarmCondition dailyAlarmCondition,
 			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
-			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond) {
+			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg, KfnmtAlCheckSubConAg alCheckSubConAg) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -116,6 +125,8 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		this.listCondErr = listCondErr;
 		this.listCondOt = listCondOt;
 		this.mulMonAlarmCond = mulMonAlarmCond;
+		this.alCheckConAg = alCheckConAg;
+		this.alCheckSubConAg = alCheckSubConAg;
 	}
 	/**
 	 * convert from entity to domain 
@@ -160,6 +171,12 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case MULTIPLE_MONTH:
 			extractionCondition = entity.mulMonAlarmCond == null ? null : entity.mulMonAlarmCond.toDomain();
+			
+		case ATTENDANCE_RATE_FOR_HOLIDAY:
+			extractionCondition = entity.alCheckConAg == null && entity.alCheckSubConAg == null ? null
+					: new AnnualHolidayAlarmCondition(
+							entity.alCheckConAg == null ? null : entity.alCheckConAg.toDomain(),
+							entity.alCheckSubConAg == null ? null : entity.alCheckSubConAg.toDomain());
 			break;
 		default:
 			break;
@@ -234,7 +251,19 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 				domain.getCategory() == AlarmCategory.MULTIPLE_MONTH
 								? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
 										domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
-								: null
+								: null,
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY  
+				&& (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
+				&& ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr() != null
+				? KfnmtAlCheckConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
+						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr())
+				: null,
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY 
+			    && (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
+			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
+				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
+						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr())
+				: null
 		);
 	}
 

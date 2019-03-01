@@ -9,6 +9,6 @@ public interface AgreementTimeOfCompanyDomainService {
 	
 	List<String> add(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany);
 	
-	List<String> update(BasicAgreementSetting basicAgreementSetting);
+	List<String> update(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany);
 
 }
