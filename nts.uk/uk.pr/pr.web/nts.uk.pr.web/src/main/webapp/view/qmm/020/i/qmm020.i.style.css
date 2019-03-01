@@ -23,3 +23,8 @@
 .table .cell:nth-child(5) {
     width: 50px;
 }
+.no_regis {
+    width: 100%;
+    height: 100%;
+    background-color:  #FEC6C6;
+}
