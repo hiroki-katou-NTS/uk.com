@@ -106,9 +106,9 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // reference type
         referenceTypes: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([
             //A3_6
-            { name: getText('KDR002_6'), code: 0 }, // 現在の情報
+            { name: getText('KDR002_6'), code: 0 }, // 実績のみ
             //A3_7
-            { name: getText('KDR002_7'), code: 1 } // 過去の情報
+            { name: getText('KDR002_7'), code: 1 } // スケジュール・申請含む
         ]);
         selectedReferenceType: KnockoutObservable<number> = ko.observable(0);
 
@@ -116,9 +116,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         printDate: KnockoutObservable<number> = ko.observable(Number(moment().format("YYYYMM")));
 
         // Page Break Type
+        // A4_3
         pageBreakTypes: KnockoutObservableArray<any> = ko.observableArray([
-            { name: getText('Enum_BreakPageType_NONE'), code: 0 },
-            { name: getText('Enum_BreakPageType_WORKPLACE'), code: 1 }
+            { name: getText('Enum_BreakPageType_NONE'), code: 0 }, //なし
+            { name: getText('Enum_BreakPageType_WORKPLACE'), code: 1 } //職場
         ]);
         pageBreakSelected: KnockoutObservable<string> = ko.observable(0);
 
@@ -340,7 +341,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         constructor(screen: ScreenModel) {
             let self = this,
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            self.programName = "KDR002" + (program[1] != null ? program[1] : "");
+            self.programName = (program[1] != null ? program[1] : "");
             self.exportTime = moment();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
