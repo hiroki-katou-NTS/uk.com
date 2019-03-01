@@ -285,7 +285,7 @@ public class DetailFormulaCalculationService {
 
     private String calculateSystemVariable(int type, String formulaElement) {
         if (type != 0 && type != 2) return "";
-        Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndReferenceTime();
+        Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndWorkingDayNumber();
         int startFunctionIndex, endFunctionIndex;
         String systemVariable, systemVariableResult;
         while (formulaElement.contains(VARIABLE)) {
@@ -307,8 +307,8 @@ public class DetailFormulaCalculationService {
             return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
         if (functionName.equals(PROCESSING_YEAR_MONTH))
             return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
-        if (functionName.equals(REFERENCE_TIME))
-            return "\"" + processYearMonthAndReferenceTime.get("referenceDate") + "\"";
+        if (functionName.equals(WORKDAY))
+            return "\"" + processYearMonthAndReferenceTime.get("workingDayNumber") + "\"";
         throw new BusinessException("MsgQ_233", systemVariable);
     }
 

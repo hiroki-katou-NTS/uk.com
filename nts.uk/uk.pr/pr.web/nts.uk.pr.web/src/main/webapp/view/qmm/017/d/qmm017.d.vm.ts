@@ -626,7 +626,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         checkResultIsNotNumber(formula) {
             let self = this;
-            if (formula.startsWith(self.VARIABLE) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.AND))
+            if ((formula.startsWith(self.VARIABLE) && !formula.startsWith(self.combineElementTypeAndName(self.VARIABLE, self.WORKDAY)))
+                || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.AND))
                 || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR))
                 || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
                 || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION))
