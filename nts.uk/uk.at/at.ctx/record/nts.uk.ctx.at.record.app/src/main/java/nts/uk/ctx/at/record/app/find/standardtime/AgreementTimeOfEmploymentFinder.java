@@ -60,8 +60,8 @@ public class AgreementTimeOfEmploymentFinder {
 		// get basicSetting detail of Employment selected
 		if(agreementTimeOfEmploymentOpt.isPresent()){
 			AgreementTimeOfEmployment agreementTimeOfEmployment = agreementTimeOfEmploymentOpt.get();
-			agreementTimeOfEmploymentDetailDto.setUpperMonth(agreementTimeOfEmployment.getUpperMonth().v());
-			agreementTimeOfEmploymentDetailDto.setUpperMonthAverage(agreementTimeOfEmployment.getUpperMonthAverage().v());
+			agreementTimeOfEmploymentDetailDto.setUpperMonth(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().v());
+			agreementTimeOfEmploymentDetailDto.setUpperMonthAverage(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().v());
 			
 			Optional<BasicAgreementSetting> basicSettingOfEmp = basicAgreementSettingRepository
 					.find(agreementTimeOfEmployment.getBasicSettingId());	

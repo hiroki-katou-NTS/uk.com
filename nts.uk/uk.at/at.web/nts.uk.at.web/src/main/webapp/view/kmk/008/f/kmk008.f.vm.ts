@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmk008.f {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+
     
     export module viewmodel {
         export class ScreenModel {
@@ -44,13 +45,14 @@ module nts.uk.at.view.kmk008.f {
             nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
             nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
             nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+            
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
                 self.currentClassificationName = ko.observable("");
-                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
+                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -91,9 +93,9 @@ module nts.uk.at.view.kmk008.f {
                 let dfd = $.Deferred();
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
                 } else {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
                 self.selectedCode('');
                 self.getalreadySettingList();
@@ -121,6 +123,9 @@ module nts.uk.at.view.kmk008.f {
 
             addUpdateDataClassification() {
                 let self = this;
+                
+                if(self.classificationList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
@@ -246,7 +251,7 @@ module nts.uk.at.view.kmk008.f {
             limitOneYear: KnockoutObservable<string> = ko.observable(null);
             upperMonth: KnockoutObservable<string> = ko.observable(null);
             upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
-
+            
             constructor(data: any) {
                 let self = this;
                 if (!data) return;
@@ -302,7 +307,7 @@ module nts.uk.at.view.kmk008.f {
             limitOneYear: number = 0;
             upperMonth: number = 0;
             upperMonthAverage: number = 0;
-
+            
             constructor(data: TimeOfClassificationModel, laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;

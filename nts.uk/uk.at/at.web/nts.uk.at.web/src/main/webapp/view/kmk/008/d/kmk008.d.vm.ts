@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk008.d {
                 self.isUpdate = true;
                 self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentEmpName = ko.observable("");
-                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
+                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -91,9 +91,9 @@ module nts.uk.at.view.kmk008.d {
                 let dfd = $.Deferred();
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Employment}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Employment}']));
                 } else {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
                 self.selectedCode('');
                 self.getalreadySettingList();
@@ -109,6 +109,9 @@ module nts.uk.at.view.kmk008.d {
 
             addUpdateData() {
                 let self = this;
+                
+                if(self.employmentList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
@@ -137,17 +140,6 @@ module nts.uk.at.view.kmk008.d {
                     nts.uk.ui.block.clear();
                 });
                 nts.uk.ui.block.clear();
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
             }
 
             removeData() {
@@ -217,6 +209,17 @@ module nts.uk.at.view.kmk008.d {
                 if (empSelectIndex == empLength - 1) {
                     self.selectedCode(self.employmentList()[empSelectIndex - 1].code);
                     return;
+                }
+            }
+            
+            showDialogError(listError: any) {
+                let errorCode = _.split(listError[0], ',');
+                if (errorCode[0] === 'Msg_59') {
+                    let periodName = getText(errorCode[1]);
+                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
+                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
+                } else {
+                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
                 }
             }
         }

@@ -104,8 +104,8 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		entity.kmkmtAgeementTimeWorkPlacePK.basicSettingId = agreementTimeOfWorkPlace.getBasicSettingId();
 		entity.kmkmtAgeementTimeWorkPlacePK.workPlaceId = agreementTimeOfWorkPlace.getWorkplaceId();
 		entity.laborSystemAtr = agreementTimeOfWorkPlace.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfWorkPlace.getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfWorkPlace.getUpperMonthAverage().valueAsMinutes();
+		entity.upperMonth = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}

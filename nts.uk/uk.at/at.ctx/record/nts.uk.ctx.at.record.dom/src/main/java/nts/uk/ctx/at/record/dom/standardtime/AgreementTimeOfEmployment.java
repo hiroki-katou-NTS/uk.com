@@ -7,40 +7,39 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 
 /**
+ * 雇用３６協定時間
  * 
  * @author nampt
  *
  */
 @Getter
 public class AgreementTimeOfEmployment extends AggregateRoot {
-
+	// 会社ID
 	private String companyId;
-
+	// 基本設定
 	private String basicSettingId;
-
+	// 労働制
 	private LaborSystemtAtr laborSystemAtr;
-
+	// 雇用区分コード
 	private String employmentCategoryCode;
-	
-	private AgreementOneMonthTime upperMonth;
-
-	private AgreementOneMonthTime upperMonthAverage;
+	// 上限規制
+	private UpperAgreementSetting upperAgreementSetting;
 
 	public AgreementTimeOfEmployment(String companyId, String basicSettingId, LaborSystemtAtr laborSystemAtr,
-			String employmentCategoryCode, AgreementOneMonthTime upperMonth, AgreementOneMonthTime upperMonthAverage) {
+			String employmentCategoryCode, UpperAgreementSetting upperAgreementSetting) {
 		super();
 		this.companyId = companyId;
 		this.basicSettingId = basicSettingId;
 		this.laborSystemAtr = laborSystemAtr;
 		this.employmentCategoryCode = employmentCategoryCode;
-		this.upperMonth = upperMonth;
-		this.upperMonthAverage = upperMonthAverage;
+		this.upperAgreementSetting = upperAgreementSetting;
 	}
 
 	public static AgreementTimeOfEmployment createJavaType(String companyId, String basicSettingId,
 			int laborSystemAtr, String employmentCategoryCode, int upperMonth, int upperMonthAverage) {
 		return new AgreementTimeOfEmployment(companyId, basicSettingId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), employmentCategoryCode,
-				new AgreementOneMonthTime(upperMonth), new AgreementOneMonthTime(upperMonthAverage));
+				new UpperAgreementSetting(new AgreementOneMonthTime(upperMonth),
+						new AgreementOneMonthTime(upperMonthAverage)));
 	}
 }

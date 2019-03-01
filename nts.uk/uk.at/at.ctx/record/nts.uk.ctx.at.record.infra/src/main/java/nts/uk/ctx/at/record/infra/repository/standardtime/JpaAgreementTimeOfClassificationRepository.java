@@ -106,8 +106,8 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 		entity.kmkmtAgeementTimeClassPK.classificationCode = agreementTimeOfClassification.getClassificationCode();
 		entity.kmkmtAgeementTimeClassPK.companyId = agreementTimeOfClassification.getCompanyId();
 		entity.laborSystemAtr = agreementTimeOfClassification.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfClassification.getUpperMonth().v().intValue();
-		entity.upperMonthAverage = agreementTimeOfClassification.getUpperMonthAverage().v().intValue();
+		entity.upperMonth = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue();
+		entity.upperMonthAverage = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonthAverage().v().intValue();
 
 		return entity;
 	}

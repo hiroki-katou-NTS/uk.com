@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.standardtime.employment;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -69,7 +71,8 @@ public class UpdateAgreementTimeOfEmploymentCommandHandler
 			
 			AgreementTimeOfEmployment newAgreementTimeOfEmployment = new AgreementTimeOfEmployment(companyId, agreementTimeOfEmployment.getBasicSettingId(), 
 					agreementTimeOfEmployment.getLaborSystemAtr(), agreementTimeOfEmployment.getEmploymentCategoryCode(), 
-					new AgreementOneMonthTime(command.getUpperMonth()), new AgreementOneMonthTime(command.getUpperMonthAverage()));
+					new UpperAgreementSetting(new AgreementOneMonthTime(command.getUpperMonth()),
+							new AgreementOneMonthTime(command.getUpperMonthAverage())));
 			
 			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfEmployment.getBasicSettingId(),
 					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),
@@ -82,9 +85,8 @@ public class UpdateAgreementTimeOfEmploymentCommandHandler
 
 			return this.agreementTimeOfEmploymentDomainService.update(basicAgreementSetting, newAgreementTimeOfEmployment);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
-
 	}
 
 }

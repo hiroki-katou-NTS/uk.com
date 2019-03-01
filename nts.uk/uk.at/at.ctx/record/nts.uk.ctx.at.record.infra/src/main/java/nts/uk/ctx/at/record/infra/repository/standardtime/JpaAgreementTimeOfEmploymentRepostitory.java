@@ -101,8 +101,8 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 				.getEmploymentCategoryCode();
 		entity.kmkmtAgeementTimeEmploymentPK.basicSettingId = agreementTimeOfEmployment.getBasicSettingId();
 		entity.laborSystemAtr = agreementTimeOfEmployment.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfEmployment.getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfEmployment.getUpperMonthAverage().valueAsMinutes();
+		entity.upperMonth = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}

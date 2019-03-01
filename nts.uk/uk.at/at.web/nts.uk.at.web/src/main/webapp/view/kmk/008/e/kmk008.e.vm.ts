@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
-    
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk008.e {
             workplaceGridList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-            
+
             nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
             nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
             nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
@@ -44,14 +44,14 @@ module nts.uk.at.view.kmk008.e {
             nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
             nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
             nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
-            
+
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
                 self.currentWorkplaceName = ko.observable("");
-                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
+                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
 
                 self.workplaceGridList = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
@@ -71,7 +71,7 @@ module nts.uk.at.view.kmk008.e {
                     isShowSelectButton: true,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList,
-                    systemType:2
+                    systemType: 2
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
@@ -93,15 +93,16 @@ module nts.uk.at.view.kmk008.e {
                 $(document).ready(function() {
                     $('tabindex').removeAttr("tabindex");
                 });
-                
+
                 if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
                 } else {
-                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
                 self.selectedWorkplaceId('');
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
                     self.getAlreadySettingList();
+                    // self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
@@ -110,23 +111,19 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
-            getAlreadySettingList(): JQueryPromise<any> {
+            getAlreadySettingList() {
                 let self = this;
-                let dfd = $.Deferred();
-                
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
                         self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
-                    if (self.workplaceGridList().length > 0  && !self.isRemove()) {
+                    if (self.workplaceGridList().length > 0) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
-                    dfd.resolve();
                 })
                 self.isRemove(self.isShowAlreadySet());
-                return dfd.promise();
             }
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
@@ -147,6 +144,9 @@ module nts.uk.at.view.kmk008.e {
 
             addUpdateWorkPlace() {
                 let self = this;
+                
+                if(self.workplaceGridList().length == 0) return;
+                
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
                 let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
                 nts.uk.ui.block.invisible();
@@ -182,10 +182,9 @@ module nts.uk.at.view.kmk008.e {
                     .ifYes(() => {
                         let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedWorkplaceId());
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
-                            self.getAlreadySettingList().done(() => {
-                                self.getDetail(self.selectedWorkplaceId());
-                                self.isRemove(false);
-                            });
+                            self.getAlreadySettingList();
+                            self.getDetail(self.selectedWorkplaceId());
+                            self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
@@ -210,7 +209,6 @@ module nts.uk.at.view.kmk008.e {
                     alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
                 }
             }
-
         }
 
         export class TimeOfWorkPlaceModel {
