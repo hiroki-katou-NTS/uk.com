@@ -42,8 +42,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_BY_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId", "AND e.bsymtEmployeeDataMngInfoPk.pId = :pId");
 
-	private static final String SELECT_BY_EMP_ID = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId");
+//	private static final String SELECT_BY_EMP_ID = String.join(" ", SELECT_NO_PARAM,
+//			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId");
 
 	private static final String SELECT_BY_PERSON_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.bsymtEmployeeDataMngInfoPk.pId = :pId");
@@ -128,8 +128,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String FIND_BY_CID_PID_AND_DELSTATUS = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND "
 			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
 	
-	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
-			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
+//	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
+//			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
 	
 	
 	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
@@ -411,7 +411,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
 					+ " from BSYMT_EMP_DTA_MNG_INFO"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
-					+ " and CID = ?";
+					+ " and CID = ? ORDER BY SCD ASC";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
@@ -437,8 +437,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				throw new RuntimeException(e);
 			}
 		});
-		
-		
 		
 		return resultList;
 	}
@@ -708,43 +706,5 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		});
 
 		return data;
-	}
-
-	@Override
-	public List<EmployeeSimpleInfo> findBySidsAndPids(List<String> sids, List<String> pids) {
-		List<EmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			
-			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
-					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
-					+ " and PID in (" + NtsStatement.In.createParamsString(pids) + ")"
-					+ " and CID";
-			
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(i + 1, subList.get(i));
-				}
-				
-				List<EmployeeDataMngInfo> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
-					BsymtEmployeeDataMngInfo e = new BsymtEmployeeDataMngInfo();
-					e.bsymtEmployeeDataMngInfoPk = new BsymtEmployeeDataMngInfoPk();
-					e.bsymtEmployeeDataMngInfoPk.sId = r.getString("SID");
-					e.bsymtEmployeeDataMngInfoPk.pId = r.getString("PID");
-					e.companyId = r.getString("CID");
-					e.employeeCode = r.getString("SCD");
-					e.delStatus = r.getInt("DEL_STATUS_ATR");
-					e.delDateTmp = r.getGeneralDateTime("DEL_DATE");
-					e.removeReason = r.getString("REMV_REASON");
-					e.extCode = r.getString("EXT_CD");
-					return toDomain(e);
-				});
-				
-				resultList.addAll(subResults);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return null;
 	}
 }
