@@ -22,7 +22,7 @@
 .tabpanel-1-contents-area-left {
 	width: 440px;
 	margin-left: 40px;
-	margin-top: 20px;
+	margin-top: 17px;
 	float: left;
 	clean: right;
 }
@@ -74,4 +74,9 @@
 
 .upperMonth *{
 	vertical-align: middle;
+}
+
+#func-notifier-errors {
+	top: 140px !important;
+	left: 125px !important;
 }

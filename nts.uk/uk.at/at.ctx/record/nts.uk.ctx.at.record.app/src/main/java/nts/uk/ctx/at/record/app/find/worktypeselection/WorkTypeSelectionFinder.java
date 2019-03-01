@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,6 +41,23 @@ public class WorkTypeSelectionFinder {
 			if (opt.isPresent()) {
 				String name = opt.get().getBusinessTypeName().v();
 				names.add(name);
+			}
+		}
+		return names;
+	}
+	
+	public List<String> getWorkTypeNamesByCodesHasDefault(List<String> codes) {
+		String companyId = AppContexts.user().companyId();
+		List<String> names = new ArrayList<>();
+		String codeNoName = I18NText.getText("KAL003_120");
+		if (codes == null || codes.isEmpty()) return names;
+		for (String c : codes) {
+			Optional<BusinessType> opt = businessTypeRepository.findByCode(companyId, c);
+			if (opt.isPresent()) {
+				String name = opt.get().getBusinessTypeName().v();
+				names.add(name);
+			}else {
+				names.add(c + " " + codeNoName);
 			}
 		}
 		return names;
