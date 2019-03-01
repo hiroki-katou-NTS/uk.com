@@ -251,7 +251,9 @@ module nts.uk.at.view.kal004.share.model {
                    this.extractionAverMonth = extractionAverMonth; 
                 }
             }
-            
+            if(alarmCategory ==11){
+                this.listExtractionMonthly = null;
+            }
             
         }
 
@@ -273,7 +275,9 @@ module nts.uk.at.view.kal004.share.model {
             this.extractionAverMonth = extractionAverMonth;
         }
         
-        
+        public setDefaultPer(){
+            
+        }
         
         public setDefaultDaily() {
                this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
