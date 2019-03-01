@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.AnnualWorkSheetPrintingForm;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode;
@@ -39,7 +40,7 @@ public class SetOutItemsWoSc extends AggregateRoot {
 	/**
 	 * 年間勤務表印刷形式
 	 */
-	private int printForm;
+	private AnnualWorkSheetPrintingForm printForm;
 
 	private List<ItemOutTblBook> listItemOutTblBook;
 	
@@ -68,13 +69,13 @@ public class SetOutItemsWoSc extends AggregateRoot {
 			int monthsInTotalDisplay, Integer totalAverageDisplay) {
 		return new SetOutItemsWoSc(cid, new OutItemsWoScCode(cd),
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
-				printForm,listItemOutTblBook, multiMonthDisplay,
+				EnumAdaptor.valueOf(printForm, AnnualWorkSheetPrintingForm.class),listItemOutTblBook, multiMonthDisplay,
 				EnumAdaptor.valueOf(monthsInTotalDisplay, MonthsInTotalDisplay.class),
 				totalAverageDisplay == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(totalAverageDisplay, TotalAverageDisplay.class)));
 	}
 
 	public SetOutItemsWoSc(String cid, OutItemsWoScCode cd, OutItemsWoScName name, boolean outNumExceedTime36Agr,
-			int printForm, List<ItemOutTblBook> listItemOutTblBook,
+			AnnualWorkSheetPrintingForm printForm, List<ItemOutTblBook> listItemOutTblBook,
 			boolean multiMonthDisplay, MonthsInTotalDisplay monthsInTotalDisplay,
 			Optional<TotalAverageDisplay> totalAverageDisplay) {
 		super();

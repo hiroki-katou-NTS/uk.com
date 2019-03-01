@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -93,5 +94,10 @@ public class ClosureEmploymentService {
 		
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
+	}
+	
+	public YearMonth getCurentMonth() {
+		String employee = AppContexts.user().employeeId();
+		return closureService.getClosureDataByEmployee(employee, GeneralDate.today()).getClosureMonth().getProcessingYm();
 	}
 }

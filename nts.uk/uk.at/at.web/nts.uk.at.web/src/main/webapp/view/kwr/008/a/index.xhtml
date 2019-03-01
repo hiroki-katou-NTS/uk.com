@@ -74,18 +74,9 @@
 	                    </div>
 	                    
 	                    <!-- A11 -->
-						<div class="standardMonth" data-bind="visible: showStandardMonth() &amp;&amp; printFormat() == 1">
+						<div class="standardMonth" data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1">
 							<span class="label">#{i18n.getText('KWR008_67')}</span>
-							<span data-bind="with: standardMonth"> 
-								<input id="" tabindex="5" data-bind="ntsNumberEditor: {
-									name:'#{i18n.getText('KWR008_67')}',
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</span>
+							<div data-bind="ntsDatePicker: {value: curentMonth, dateFormat: 'yearmonth'}"></div>
 							<span class="label">#{i18n.getText('KWR008_68')}</span>
 						</div>
 

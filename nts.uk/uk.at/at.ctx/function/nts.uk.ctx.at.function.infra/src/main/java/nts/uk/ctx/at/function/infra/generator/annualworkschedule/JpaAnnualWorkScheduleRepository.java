@@ -42,6 +42,7 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYea
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.AnnualWorkSheetPrintingForm;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
@@ -96,9 +97,16 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
 			YearMonth endYm, List<Employee> employees, PrintFormat printFormat, int breakPage, ExcludeEmp excludeEmp,
 			Integer monthLimit) {
+		String employeeId = AppContexts.user().employeeId();
 		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 
+		//複数月平均算出用の基準月を取得する
+		if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay()) {
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
+		}
+		
+		
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc, printFormat);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client

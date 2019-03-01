@@ -44,7 +44,7 @@ public class SetOutItemsWoScDto
 
 	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
 		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
-									  domain.isOutNumExceedTime36Agr(), domain.getPrintForm(),
+									  domain.isOutNumExceedTime36Agr(), domain.getPrintForm().value,
 									  domain.isMultiMonthDisplay(),domain.getMonthsInTotalDisplay().value,
 									  domain.getTotalAverageDisplay().isPresent()?domain.getTotalAverageDisplay().get().value:null);
 	}

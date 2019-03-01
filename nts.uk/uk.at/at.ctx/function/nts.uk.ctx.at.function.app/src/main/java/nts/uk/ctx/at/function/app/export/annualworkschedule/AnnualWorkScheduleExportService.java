@@ -42,6 +42,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		String companyId = AppContexts.user().companyId();
 		AnnualWorkScheduleExportQuery query = context.getQuery();
 		PrintFormat printFormat = EnumAdaptor.valueOf(query.getPrintFormat(), PrintFormat.class);
+		Optional<YearMonth> curentMonth = query.getCurentMonth() == ""?Optional.empty():Optional.of(YearMonth.parse(query.getCurentMonth(), DateTimeFormatter.ofPattern("uuuu/MM")));
 		ExcludeEmp excludeEmp = EnumAdaptor.valueOf(query.getExcludeEmp(), ExcludeEmp.class);
 		List<Employee> employees = query.getEmployees().stream()
 				.map(m -> new Employee(m.getEmployeeId(), m.getCode(), m.getName(), m.getWorkplaceName()))

@@ -87,7 +87,11 @@ module nts.uk.at.view.kwr008.a {
 
             //A11
             standardMonth: any;
-            showStandardMonth: KnockoutObservable<boolean>;
+            
+            curentMonth: KnockoutObservable<string> = ko.observable(null);
+            
+            selectAverage: KnockoutObservable<boolean> = ko.observable(false);
+            
             constructor() {
                 var self = this;
 
@@ -119,6 +123,9 @@ module nts.uk.at.view.kwr008.a {
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
                 });
+                self.selectedOutputItem.subscribe(code => {
+                    self.checkAverage(code);
+                });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
@@ -136,7 +143,13 @@ module nts.uk.at.view.kwr008.a {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.showStandardMonth = ko.observable(true);
+            }
+            
+            checkAverage(code) {
+                var self = this;
+                service.checkAverage(code).done(data => {
+                    self.selectAverage(data);
+                }); 
             }
 
             getOutItemSettingCode() {
@@ -169,6 +182,9 @@ module nts.uk.at.view.kwr008.a {
                     } else {
                         data.fiscalYear = moment.utc(year).get('year');
                     }
+                }
+                if(self.selectAverage() && self.printFormat() == 1){
+                    data.curentMonth = moment(self.curentMonth(),'YYYYMM').format('YYYY/MM');  
                 }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage = self.selectedBreakPage().toString();
@@ -359,13 +375,16 @@ module nts.uk.at.view.kwr008.a {
                         self.endDateString(data.endYearMonth);
                     }
                 });
+                
+                service.getCurentMonth().done((data) => {
+                    self.curentMonth(data);
+                });
 
                 //A4
                 var restoreOutputConditionAnnualWorkSchedule;
                 self.getOutItemSettingCode().done(() => {
                     // A6
-                    restoreOutputConditionAnnualWorkSchedule
-                        = self.restoreOutputConditionAnnualWorkSchedule()
+                    restoreOutputConditionAnnualWorkSchedule = self.restoreOutputConditionAnnualWorkSchedule()
                             .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
                                 if (data) {
                                     self.selectedOutputItem(data.setItemsOutputCd);
@@ -542,6 +561,7 @@ module nts.uk.at.view.kwr008.a {
                 breakPage: string;
                 fiscalYear: string = '';
                 printFormat: number = 0;
+                curentMonth: string = '';
                 constructor() { }
             }
         }

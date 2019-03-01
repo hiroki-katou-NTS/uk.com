@@ -95,7 +95,7 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
 										domain.getName().v(), domain.isOutNumExceedTime36Agr()? 1: 0,
-										domain.getPrintForm(), domain.isMultiMonthDisplay()? 1:0,
+										domain.getPrintForm().value, domain.isMultiMonthDisplay()? 1:0,
 										domain.getMonthsInTotalDisplay().value,
 										domain.getTotalAverageDisplay().isPresent()?domain.getTotalAverageDisplay().get().value:null,
 			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
