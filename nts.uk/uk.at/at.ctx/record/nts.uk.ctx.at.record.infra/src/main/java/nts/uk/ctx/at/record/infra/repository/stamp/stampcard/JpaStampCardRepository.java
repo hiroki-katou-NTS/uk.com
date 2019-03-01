@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -23,7 +24,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	private static final String GET_ALL_BY_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.contractCd = :contractCode ";
 	
-	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids ";
+	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids";
 
 	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
@@ -37,6 +38,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	public static final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
 			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY c.cardNo DESC";
+	
+	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}')";
 
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
@@ -162,17 +165,21 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	@Override
 	public List<StampCard> getLstStampCardByLstSid(List<String> sids) {
-		List<KwkdtStampCard> entities = new ArrayList<>();
+		List<StampCard> domains = new ArrayList<>();
+		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID, KwkdtStampCard.class)
-				.setParameter("sids", subList).getList());
-		});
-		if (entities.isEmpty())
-			return Collections.emptyList();
+			String params = String.join("', '", subList),
+					query = GET_LST_STAMP_BY_SIDS.replaceAll("\\{sids\\}", params);
+			
+			@SuppressWarnings("unchecked")
+			List<Object[]> result = this.getEntityManager().createNativeQuery(query).getResultList();
 
-		return entities.stream()
-				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
-				.collect(Collectors.toList());
+			result.forEach(f -> {
+				domains.add(StampCard.createFromJavaType(f[0].toString(), f[1].toString(), f[2].toString(), GeneralDate.fromString(f[3].toString(), "yyyy-MM-dd"), f[4].toString()));
+			});
+		});
+
+		return domains;
 	}
 
 	@Override

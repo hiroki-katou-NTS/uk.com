@@ -88,24 +88,25 @@ public class MappingFactory {
 	 * @param classItemsOfCategory
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
-		// map data
-		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-		String recordId = peregDto.getDomainDto().getRecordId();
-		
-		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-				
-				Object value = getValue(itemCodeValueMap, valueItem);
-				valueItem.setValue(value);
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
-				valueItem.setRecordId(recordId);
+		if(peregDto != null) {
+			// map data
+			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+			String recordId = peregDto.getDomainDto().getRecordId();
+			
+			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+					
+					Object value = getValue(itemCodeValueMap, valueItem);
+					valueItem.setValue(value);
+					
+					// update 2018/02/22 bug 87560
+					valueItem.setShowColor(false);
+					
+					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+					valueItem.setRecordId(recordId);
+				}
 			}
 		}
-
 	}
 	
 	private static Object getValue(Map<String, Object> itemCodeValueMap, LayoutPersonInfoValueDto valueItem) {

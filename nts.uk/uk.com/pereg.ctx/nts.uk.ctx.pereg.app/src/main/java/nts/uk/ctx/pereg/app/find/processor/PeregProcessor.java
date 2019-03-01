@@ -295,7 +295,7 @@ public class PeregProcessor {
 				
 				return new ArrayList<>(resultsSync);
 			}
-		} else {
+		} else { //for optional category
 			
 		}
 

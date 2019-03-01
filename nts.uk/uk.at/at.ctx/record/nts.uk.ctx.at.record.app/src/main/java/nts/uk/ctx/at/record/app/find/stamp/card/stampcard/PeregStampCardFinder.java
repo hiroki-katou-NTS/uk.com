@@ -65,8 +65,18 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> sids = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		List<StampCard> domains = stampCardRepo.getLstStampCardByLstSid(sids);
+		
+		return domains.stream().map(d -> {
+			String pid = query.getEmpInfos().stream()
+					.filter(f -> f.getEmployeeId().equals(d.getEmployeeId()))
+					.findFirst()
+					.map(m -> m.getPersonId())
+					.orElse("");
+			
+			return new  GridPeregDomainDto(d.getEmployeeId(), pid, PeregStampCardDto.createFromDomain(d));
+		}).collect(Collectors.toList());
 	}
 
 }
