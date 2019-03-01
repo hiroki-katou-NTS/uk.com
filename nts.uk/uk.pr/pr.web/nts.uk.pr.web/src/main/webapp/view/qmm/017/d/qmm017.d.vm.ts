@@ -595,7 +595,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         validateSyntax() {
-            let self = this, formula = self.displayDetailCalculationFormula();
+            let self = this, formula = self.displayDetailCalculationFormula().replace(/\s+/g, '');
             $('#D3_5').ntsError('clear');
             self.checkOperatorAndDivideZero(formula);
             self.checkResultIsNotNumber(formula);

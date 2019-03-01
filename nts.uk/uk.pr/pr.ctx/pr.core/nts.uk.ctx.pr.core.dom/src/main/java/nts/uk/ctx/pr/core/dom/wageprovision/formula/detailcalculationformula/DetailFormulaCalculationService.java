@@ -232,6 +232,7 @@ public class DetailFormulaCalculationService {
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
         if (StringUtils.isBlank(formula)) throw new BusinessException("MsgQ_236");
+        formula = formula.replaceAll("\\s+", "");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceNegativeValue(replaceValue.getValue().toString()));
         }
@@ -243,7 +244,7 @@ public class DetailFormulaCalculationService {
     }
 
     private String replaceNegativeValue(String replaceValue) {
-        if (replaceValue.startsWith("-")) return "(" + replaceValue + ")";
+        if (replaceValue.startsWith("-")) return "(0" + replaceValue + ")";
         return replaceValue;
     }
 
@@ -490,11 +491,9 @@ public class DetailFormulaCalculationService {
             if (functionParameter.length < 3) throw new BusinessException("MsgQ_238", functionName);
             throw new BusinessException("MsgQ_239", functionName);
         }
-        String result1 = calculateSingleCondition(functionParameter[1], false, functionName),
-                result2 = calculateSingleCondition(functionParameter[2], false, functionName);
         String conditionResult = calculateSingleCondition(functionParameter[0], true, functionName);
-        if (conditionResult.toUpperCase().equals("TRUE")) return result1;
-        return result2;
+        if (conditionResult.toUpperCase().equals("TRUE")) return calculateSingleCondition(functionParameter[1], false, functionName);
+        return calculateSingleCondition(functionParameter[2], false, functionName);
     }
 
     private String calculateSingleCondition(String conditionFormula, Boolean mustBeBoolean, String functionName) {
