@@ -589,9 +589,7 @@ module nts.uk.at.view.kaf006.b{
                 endTime1: self.timeEnd1(),
                 startTime2: self.timeStart2(),
                 endTime2: self.timeEnd2(),
-                specHd: specHd,
-                user: self.user,
-                reflectPerState: self.reflectPerState
+                specHd: specHd
              };
              service.updateAbsence(paramInsert).done((data) =>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
