@@ -38,8 +38,8 @@ ko.components.register('kaf022-r', {
                     { code: 1, name: text('KAF022_85') }
                 ]),
                 itemListR3_10: ko.observableArray([
-                    { code: 0, name: text('KAF022_141') },
-                    { code: 1, name: text('KAF022_396') }
+                    { code: 1, name: text('KAF022_141') },
+                    { code: 0, name: text('KAF022_396') }
                 ]),
             };
 
