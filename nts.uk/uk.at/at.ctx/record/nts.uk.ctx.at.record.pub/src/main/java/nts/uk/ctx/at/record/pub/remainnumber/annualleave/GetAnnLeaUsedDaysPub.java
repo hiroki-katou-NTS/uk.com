@@ -18,11 +18,12 @@ public interface GetAnnLeaUsedDaysPub {
 	 * @param employeeId 社員ID
 	 * @param criteria 基準日
 	 * @param referenceAtr 参照先区分
+	 * @param fixedOneYear 1年固定区分
 	 * @return 年休使用合計数
 	 */
 	// RequestList565
 	Optional<AnnualLeaveUsedDayNumber> ofGrantPeriod(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr);
+			ReferenceAtr referenceAtr, boolean fixedOneYear);
 	
 	/**
 	 * 指定した期間の年休使用数を取得する

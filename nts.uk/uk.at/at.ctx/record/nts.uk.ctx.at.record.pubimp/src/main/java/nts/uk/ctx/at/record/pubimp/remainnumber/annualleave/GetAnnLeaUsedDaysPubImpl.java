@@ -26,8 +26,8 @@ public class GetAnnLeaUsedDaysPubImpl implements GetAnnLeaUsedDaysPub {
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> ofGrantPeriod(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr) {
-		return this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr);
+			ReferenceAtr referenceAtr, boolean fixedOneYear) {
+		return this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, fixedOneYear);
 	}
 	
 	/** 指定した期間の年休使用数を取得する */

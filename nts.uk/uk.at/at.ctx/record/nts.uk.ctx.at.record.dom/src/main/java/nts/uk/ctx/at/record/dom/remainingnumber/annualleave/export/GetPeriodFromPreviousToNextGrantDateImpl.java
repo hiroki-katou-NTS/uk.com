@@ -86,5 +86,15 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		}
 		return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));
 	}
-
+	@Override
+	public Optional<DatePeriod> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd) {
+		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
+		Optional<DatePeriod> periodOpt = this.getPeriodYMDGrant(cid, sid, ymd);
+		if (!periodOpt.isPresent()) return Optional.empty();
+		DatePeriod period = periodOpt.get();
+		//終了日を開始日の１年後に更新
+		DatePeriod result = new DatePeriod(period.start(), period.start().addYears(1).addDays(-1));
+		//更新した期間を返す
+		return Optional.of(result);
+	}
 }
