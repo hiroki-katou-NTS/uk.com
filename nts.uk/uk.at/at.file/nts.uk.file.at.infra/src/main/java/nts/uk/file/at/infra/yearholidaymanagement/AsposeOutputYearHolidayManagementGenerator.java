@@ -36,7 +36,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
@@ -274,14 +273,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// fix code
-//				if (holidayInfo == null) {
-//					holidayInfo = createSampleHInfo(query.getPrintDate().toString());
-//				}
+				// if (holidayInfo == null) {
+				// holidayInfo =
+				// createSampleHInfo(query.getPrintDate().toString());
+				// }
 
 				// fix code
-//				if (CollectionUtil.isEmpty(holidayDetails)) {
-//					holidayDetails = createHSampleDetails(query.getPrintDate().toString());
-//				}
+				// if (CollectionUtil.isEmpty(holidayDetails)) {
+				// holidayDetails =
+				// createHSampleDetails(query.getPrintDate().toString());
+				// }
 				// tính tổng số dòng để xác định phân trang nếu data quá quy
 				// định
 				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
@@ -406,7 +407,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param newRow
 	 * @param totalLine
 	 * @param isBlueBackground
-	 * @return trạng thái màu của dòng kế được được in ra (xanh hay trắng)
+	 * @return trạng thái màu của dòng kế được in ra (xanh hay trắng)
 	 */
 	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground) {
 		Style style = new Style();
@@ -466,6 +467,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			style.setVerticalAlignment(TextAlignmentType.CENTER);
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
+		//set chữ vừa 1 cell
+		style.setShrinkToFit(true);
 		Font font = style.getFont();
 		font.setDoubleSize(NORMAL_FONT_SIZE);
 		font.setName("ＭＳ ゴシック");
@@ -505,6 +508,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		return result;
 	}
 
+	/**
+	 * hàm này để tạo data test , sẽ xóa sau
+	 * 
+	 * @param printDate
+	 * @return
+	 */
 	private List<AnnualHolidayGrantDetail> createHSampleDetails(String printDate) {
 
 		Random rand = new Random();
@@ -534,6 +543,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		return result;
 	}
 
+	/**
+	 * hàm này để tạo data test , sẽ xóa sau
+	 * 
+	 * @param printDate
+	 * @return
+	 */
 	private AnnualHolidayGrantInfor createSampleHInfo(String printDate) {
 		AnnualHolidayGrantInfor result = new AnnualHolidayGrantInfor();
 
