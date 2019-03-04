@@ -130,7 +130,7 @@ public class GridPeregProcessor {
 					personDatas.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
 							.ifPresent(dto -> {
 								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
-										pdt.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
+										dto.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
 										dto.getEmployeeBirthday(),
 										new CodeName(dto.getDepartmentCode(), dto.getDepartmentName()),
 										new CodeName(dto.getWorkplaceCode(), dto.getWorkplaceName()),
