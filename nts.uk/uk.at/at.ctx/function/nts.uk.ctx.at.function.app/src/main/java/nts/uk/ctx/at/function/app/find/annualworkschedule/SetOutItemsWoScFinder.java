@@ -29,8 +29,8 @@ public class SetOutItemsWoScFinder
 	public Boolean checkAverage( String setOutCd){
 		String cid = AppContexts.user().companyId();
 		Optional<SetOutItemsWoSc> SetOutItemsWoSc = finder.getSetOutItemsWoScById(cid, setOutCd);
-		if(SetOutItemsWoSc.isPresent() && SetOutItemsWoSc.get().getTotalAverageDisplay().isPresent()) {
-			return SetOutItemsWoSc.get().isMultiMonthDisplay() && SetOutItemsWoSc.get().getTotalAverageDisplay().get() == TotalAverageDisplay.AVERAGE;
+		if(SetOutItemsWoSc.isPresent()) {
+			return SetOutItemsWoSc.get().isMultiMonthDisplay() && SetOutItemsWoSc.get().getTotalAverageDisplay() == TotalAverageDisplay.AVERAGE;
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class HeaderData {
 	/** C1_2 */
 	private List<String> months;
 	/** C2_2 or C2_4*/
-	private MonthsInTotalDisplay monthsInTotalDisplay;
+	private Optional<MonthsInTotalDisplay> monthsInTotalDisplay;
 	/** C2_3 or C2_5 */
 	private List<String> monthPeriodLabels;
 	

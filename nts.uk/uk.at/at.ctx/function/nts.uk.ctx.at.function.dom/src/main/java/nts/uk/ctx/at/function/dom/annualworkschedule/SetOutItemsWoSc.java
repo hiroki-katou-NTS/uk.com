@@ -56,28 +56,28 @@ public class SetOutItemsWoSc extends AggregateRoot {
 	/**
 	* 合計表示の月数
 	*/
-	private MonthsInTotalDisplay monthsInTotalDisplay;
+	private Optional<MonthsInTotalDisplay> monthsInTotalDisplay;
 	
 	/**
 	* 合計平均表示
 	*/
-	private Optional<TotalAverageDisplay> totalAverageDisplay;
+	private TotalAverageDisplay totalAverageDisplay;
 		
 	
 	public static SetOutItemsWoSc createFromJavaType(String cid, String cd, String name, boolean outNumExceedTime36Agr,
 			int printForm, List<ItemOutTblBook> listItemOutTblBook, boolean multiMonthDisplay,
-			int monthsInTotalDisplay, Integer totalAverageDisplay) {
+			Integer monthsInTotalDisplay, int totalAverageDisplay) {
 		return new SetOutItemsWoSc(cid, new OutItemsWoScCode(cd),
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
 				EnumAdaptor.valueOf(printForm, AnnualWorkSheetPrintingForm.class),listItemOutTblBook, multiMonthDisplay,
-				EnumAdaptor.valueOf(monthsInTotalDisplay, MonthsInTotalDisplay.class),
-				totalAverageDisplay == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(totalAverageDisplay, TotalAverageDisplay.class)));
+				monthsInTotalDisplay == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(monthsInTotalDisplay, MonthsInTotalDisplay.class)),
+				EnumAdaptor.valueOf(totalAverageDisplay, TotalAverageDisplay.class));
 	}
 
 	public SetOutItemsWoSc(String cid, OutItemsWoScCode cd, OutItemsWoScName name, boolean outNumExceedTime36Agr,
 			AnnualWorkSheetPrintingForm printForm, List<ItemOutTblBook> listItemOutTblBook,
-			boolean multiMonthDisplay, MonthsInTotalDisplay monthsInTotalDisplay,
-			Optional<TotalAverageDisplay> totalAverageDisplay) {
+			boolean multiMonthDisplay, Optional<MonthsInTotalDisplay> monthsInTotalDisplay,
+			TotalAverageDisplay totalAverageDisplay) {
 		super();
 		this.cid = cid;
 		this.cd = cd;

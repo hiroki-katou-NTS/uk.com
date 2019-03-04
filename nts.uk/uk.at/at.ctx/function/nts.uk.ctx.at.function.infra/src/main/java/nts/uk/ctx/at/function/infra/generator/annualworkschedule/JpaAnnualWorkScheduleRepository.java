@@ -96,16 +96,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
 			YearMonth endYm, List<Employee> employees, PrintFormat printFormat, int breakPage, ExcludeEmp excludeEmp,
-			Integer monthLimit) {
-		String employeeId = AppContexts.user().employeeId();
-		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
+			Integer monthLimit, Optional<YearMonth> baseMonth) {
+		/*	// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
-
-		//複数月平均算出用の基準月を取得する
-		if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay()) {
-			Closure closure = closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
-		}
-		
 		
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc, printFormat);
@@ -177,7 +170,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 				periodAtr = PeriodAtrOfAgreement.THREE_MONTHS;
 			}
 			this.createAnnualWorkSchedule36Agreement(cid, exportData, yearMonthPeriod, employeeIds, listItemOut,
-					fiscalYear, startYm, setOutItemsWoSc.isOutNumExceedTime36Agr(), periodAtr, monthLimit);
+					fiscalYear, startYm, setOutItemsWoSc.isOutNumExceedTime36Agr(), periodAtr, monthLimit, baseMonth);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
 			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, startYm);
@@ -187,8 +180,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// 出力するデータ件数をチェックする
 		if (!exportData.hasDataItemOutput()) {
 			throw new BusinessException("Msg_885");
-		}
-		return exportData;
+		}*/
+		return null;
 	}
 
 	/*
@@ -326,7 +319,13 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private void createAnnualWorkSchedule36Agreement(String cid, ExportData exportData, YearMonthPeriod yearMonthPeriod,
 			List<String> employeeIds, List<ItemOutTblBook> listItemOut, Year fiscalYear, YearMonth startYm,
-			boolean isOutNumExceed, PeriodAtrOfAgreement periodAtr, Integer monthLimit) {
+			boolean isOutNumExceed, PeriodAtrOfAgreement periodAtr, Integer monthLimit, Optional<YearMonth> baseMonth) {
+		
+		
+		
+		
+		
+		
 		Optional<ItemOutTblBook> outputAgreementTime36 = listItemOut.stream().filter(m -> m.isItem36AgreementTime())
 				.findFirst();
 		employeeIds.forEach(empId -> {

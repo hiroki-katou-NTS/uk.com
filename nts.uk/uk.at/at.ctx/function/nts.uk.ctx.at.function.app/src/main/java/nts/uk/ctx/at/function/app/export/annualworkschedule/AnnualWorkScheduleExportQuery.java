@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.app.export.annualworkschedule;
 import java.util.List;
 
 import lombok.Value;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.EmployeeDto;
 
 @Value

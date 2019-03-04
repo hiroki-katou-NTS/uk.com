@@ -38,14 +38,14 @@ public class SetOutItemsWoScDto
 	
 	private boolean multiMonthDisplay;
 	
-	private int monthsInTotalDisplay;
+	private Integer monthsInTotalDisplay;
 	
-	private Integer totalAverageDisplay;
+	private int totalAverageDisplay;
 
 	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
 		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
 									  domain.isOutNumExceedTime36Agr(), domain.getPrintForm().value,
-									  domain.isMultiMonthDisplay(),domain.getMonthsInTotalDisplay().value,
-									  domain.getTotalAverageDisplay().isPresent()?domain.getTotalAverageDisplay().get().value:null);
+									  domain.isMultiMonthDisplay(),domain.getMonthsInTotalDisplay().isPresent()?domain.getMonthsInTotalDisplay().get().value:null,
+									  domain.getTotalAverageDisplay().value);
 	}
 }

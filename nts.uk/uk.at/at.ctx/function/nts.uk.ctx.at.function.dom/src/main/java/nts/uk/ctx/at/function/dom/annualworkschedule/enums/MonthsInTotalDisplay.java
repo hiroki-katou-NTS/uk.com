@@ -13,7 +13,7 @@ public enum MonthsInTotalDisplay {
 	/*
 	 * 3ヶ月表示
 	 * */
-	THREE_MONTH(2, "2ヶ月ごとを出力");
+	THREE_MONTH(2, "3ヶ月ごとを出力");
 
 	/** The value. */
 	public final int value;

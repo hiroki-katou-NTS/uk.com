@@ -65,16 +65,16 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	/**
 	* 合計表示の月数
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SUM_DISP_MONTHS")
-	public int monthsInTotalDisplay;
+	public Integer monthsInTotalDisplay;
 	
 	/**
 	* 合計平均表示
 	*/
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "SUM_AVG_DISP")
-	public Integer totalAverageDisplay;
+	public int totalAverageDisplay;
 
 	@Override
 	protected Object getKey() {
@@ -96,8 +96,8 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
 										domain.getName().v(), domain.isOutNumExceedTime36Agr()? 1: 0,
 										domain.getPrintForm().value, domain.isMultiMonthDisplay()? 1:0,
-										domain.getMonthsInTotalDisplay().value,
-										domain.getTotalAverageDisplay().isPresent()?domain.getTotalAverageDisplay().get().value:null,
+										domain.getMonthsInTotalDisplay().isPresent()?domain.getMonthsInTotalDisplay().get().value:null,
+										domain.getTotalAverageDisplay().value,
 			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
 	}
 }
