@@ -9,14 +9,13 @@ import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificati
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.UseClassificationAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * ドメインサービス実装：36協定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class AgreementDomainServiceImpl implements AgreementDomainService {
@@ -73,12 +72,13 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 			val affClassficationOpt = this.affClassficationAdapter.findByEmployeeId(companyId, employeeId, criteriaDate);
 			if (affClassficationOpt.isPresent()){
 				val classCd = affClassficationOpt.get().getClassificationCode();
-				val basicSettingIdOpt = this.agreementTimeClassRepository.findEmploymentBasicSettingID(
-						companyId, laborSystemAtr, classCd);
-				if (basicSettingIdOpt.isPresent()){
-					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
+				val agreementTimeOfCls = this.agreementTimeClassRepository.find(companyId, laborSystemAtr, classCd);
+				if (agreementTimeOfCls.isPresent()){
+					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(
+							agreementTimeOfCls.get().getBasicSettingId());
 					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+						return BasicAgreementSettings.of(
+								basicAgreementSetOpt.get(), agreementTimeOfCls.get().getUpperAgreementSetting());
 					}
 				}
 			}
@@ -89,11 +89,14 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
 					companyId, employeeId, criteriaDate);
 			for (String workplaceId : workplaceIds){
-				val basicSettingIdOpt = this.agreementTimeWorkPlaceRepository.find(workplaceId, laborSystemAtr);
-				if (basicSettingIdOpt.isPresent()){
-					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
+				val agreementTimeOfWkp = this.agreementTimeWorkPlaceRepository.findAgreementTimeOfWorkPlace(
+						workplaceId, laborSystemAtr);
+				if (agreementTimeOfWkp.isPresent()){
+					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(
+							agreementTimeOfWkp.get().getBasicSettingId());
 					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+						return BasicAgreementSettings.of(
+								basicAgreementSetOpt.get(), agreementTimeOfWkp.get().getUpperAgreementSetting());
 					}
 				}
 			}
@@ -104,12 +107,14 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 			val syEmploymentOpt = this.syEmploymentAdapter.findByEmployeeId(companyId, employeeId, criteriaDate);
 			if (syEmploymentOpt.isPresent()){
 				val employmentCd = syEmploymentOpt.get().getEmploymentCode();
-				val basicSettingIdOpt = this.agreementTimeEmploymentRepository.findEmploymentBasicSettingId(
+				val agreementTimeOfEmp = this.agreementTimeEmploymentRepository.find(
 						companyId, employmentCd, laborSystemAtr);
-				if (basicSettingIdOpt.isPresent()){
-					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());
+				if (agreementTimeOfEmp.isPresent()){
+					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(
+							agreementTimeOfEmp.get().getBasicSettingId());
 					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+						return BasicAgreementSettings.of(
+								basicAgreementSetOpt.get(), agreementTimeOfEmp.get().getUpperAgreementSetting());
 					}
 				}
 			}
@@ -121,13 +126,12 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 			val basicAgreementSetOpt = this.basicAgreementSetRepository.find(
 					agreementTimeOfCmpOpt.get().getBasicSettingId());
 			if (basicAgreementSetOpt.isPresent()) {
-				return BasicAgreementSettings.of(basicAgreementSetOpt.get());
+				return BasicAgreementSettings.of(
+						basicAgreementSetOpt.get(), agreementTimeOfCmpOpt.get().getUpperAgreementSetting());
 			}
 		}
 		
 		// 全ての値を0で返す
-		return BasicAgreementSettings.of(
-				BasicAgreementSetting.createFromJavaType(new String(),
-						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));	
+		return new BasicAgreementSettings();	
 	}
 }

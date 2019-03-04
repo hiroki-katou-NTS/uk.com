@@ -11,5 +11,5 @@ public interface AgreementTimeOfEmploymentDomainService {
 	
 	void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId);
 	
-	List<String> update(BasicAgreementSetting basicAgreementSetting);
+	List<String> update(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfEmployment agreementTimeOfEmployment);
 }

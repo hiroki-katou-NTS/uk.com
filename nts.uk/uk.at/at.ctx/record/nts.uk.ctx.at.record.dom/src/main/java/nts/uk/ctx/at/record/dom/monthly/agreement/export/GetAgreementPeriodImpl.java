@@ -7,10 +7,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 36協定期間を取得
@@ -25,6 +28,9 @@ public class GetAgreementPeriodImpl implements GetAgreementPeriod {
 	/** 年度から集計期間を取得 */
 	@Inject
 	private GetAgreementPeriodFromYear getAgreementPeriodFromYear;
+	/** 36協定運用設定の取得 */
+	@Inject
+	private AgreementOperationSettingRepository agreementOpeSetRepo;
 	
 	/** 年度を指定して36協定期間を取得 */
 	@Override
@@ -39,5 +45,25 @@ public class GetAgreementPeriodImpl implements GetAgreementPeriod {
 		
 		// 期間を返す
 		return resultOpt;
+	}
+	
+	/** 指定日を含む年期間を取得 */
+	@Override
+	public Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
+			Optional<AgreementOperationSetting> agreementOperationSetOpt) {
+		
+		// 「36協定運用設定」を取得する
+		AgreementOperationSetting agreementOpeSet = null;
+		if (agreementOperationSetOpt.isPresent()) {
+			agreementOpeSet = agreementOperationSetOpt.get();
+		}
+		else {
+			val dbAgreOpeSetOpt = this.agreementOpeSetRepo.find(companyId);
+			if (dbAgreOpeSetOpt.isPresent()) agreementOpeSet = dbAgreOpeSetOpt.get(); 
+		}
+		if (agreementOpeSet == null) return Optional.empty(); 
+		
+		// 年月期間を返す
+		return Optional.of(agreementOpeSet.getPeriodYear(criteria));
 	}
 }

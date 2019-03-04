@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.app.command.standardtime.company;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,9 +13,12 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -59,11 +66,17 @@ public class UpdateAgreementTimeOfCompanyCommandHandler
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId,
+		Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
 
-		if (agreementTimeOfCompany.isPresent()) {
-			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfCompany.get().getBasicSettingId(),
+		if (agreementTimeOfCompanyOpt.isPresent()) {
+			AgreementTimeOfCompany agreementTimeOfCompany = agreementTimeOfCompanyOpt.get();
+			
+			AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(companyId, agreementTimeOfCompany.getBasicSettingId(), 
+					agreementTimeOfCompany.getLaborSystemAtr(), new UpperAgreementSetting(new AgreementOneMonthTime(command.getUpperMonth()),
+							new AgreementOneMonthTime(command.getUpperMonthAverage())));
+			
+			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfCompany.getBasicSettingId(),
 					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),
 					new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()),new LimitTwoWeeks(command.getLimitTwoWeeks()),
 					new AlarmFourWeeks(command.getAlarmFourWeeks()),new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
@@ -72,9 +85,9 @@ public class UpdateAgreementTimeOfCompanyCommandHandler
 					new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getLimitThreeMonths()), 
 					new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
 
-			return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting);
+			return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting, newAgreementTimeOfCompany);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 }

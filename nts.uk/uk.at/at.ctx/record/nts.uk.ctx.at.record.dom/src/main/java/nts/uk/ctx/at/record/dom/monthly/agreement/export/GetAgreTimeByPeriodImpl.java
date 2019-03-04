@@ -211,11 +211,11 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 		val workingSystem = workingConditionItemOpt.get().getLaborSystem();
 		
 		// 36協定基本設定を取得する
-		val basicAgreementSet = this.agreementDomainService.getBasicSet(
-				companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
+		val upperAgreementSet = this.agreementDomainService.getBasicSet(
+				companyId, employeeId, criteria, workingSystem).getUpperAgreementSetting();
 		
-		// 上限時間をセット　※　仮記述。正式ではない。
-		int maxMinutes = basicAgreementSet.getLimitOneMonth().v();
+		// 上限時間をセット
+		int maxMinutes = upperAgreementSet.getUpperMonthAverage().v();
 		
 		// 指定年月から6ヶ月前を期間とする
 		YearMonthPeriod allPeriod = new YearMonthPeriod(yearMonth.addMonths(-5), yearMonth);

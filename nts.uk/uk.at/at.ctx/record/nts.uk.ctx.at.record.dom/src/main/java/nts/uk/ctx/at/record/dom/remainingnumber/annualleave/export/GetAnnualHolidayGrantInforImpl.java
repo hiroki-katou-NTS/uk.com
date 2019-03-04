@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
@@ -54,6 +56,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private GetAnnLeaRemNumWithinPeriod annWithinPeriod;
 	@Inject
 	private AnnualLeaveTimeRemainHistRepository annTimeRemainHisRepo;	
+	/** 月別実績の勤怠時間 */
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 	@Override
 	public Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
 			YearMonth ym, GeneralDate ymd) {
@@ -170,8 +178,23 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					lstOutputData.add(outData);
 				}	
 			}
-			
 		}
+		
+		// 年休フレックス補填分の暫定年休管理データを作成
+		{
+			// 「月別実績の勤怠時間」を取得
+			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(sid, datePeriod);
+			for (val attendanceTime : attendanceTimes){
+				
+				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+				val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
+						attendanceTime, attendanceTime.getDatePeriod().end());
+				if (compensFlexOpt.isPresent()) {
+					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(compensFlexOpt.get(), false));
+				}
+			}
+		}
+		
 		lstOutputData = lstOutputData.stream().filter(x -> x.getData().getAnnualHolidayData().isPresent()).collect(Collectors.toList());
 		return lstOutputData;
 	}
