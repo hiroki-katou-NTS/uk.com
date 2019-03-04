@@ -32,13 +32,17 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
                 } else {
                     self.processingDate(processingDate);
                     service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
-                        self.statementLayouts(data);
+                        let dataList : Array<any> = data.map(i => {
+                            return {code: i.statementCode, name: i.statementName, dispname: i.statementCode + " " + i.statementName};
+                        });
+                        ko.utils.arrayPushAll(self.statementLayouts, dataList);
+
                         block.clear();
                     })
                 }
             });
             dfd.resolve();
-            return dfd.promise();
+            return dfd.promise();   
         }
 
         reflect() {
@@ -51,7 +55,11 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
             block.invisible();
             let processingDate = moment(self.processingDate(), "YYYY/MM").format("YYYYMM");
             service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
-                self.statementLayouts(data);
+                let dataList : Array<any> = data.map(i => {
+                    return {code: i.statementCode, name: i.statementName, dispname: i.statementCode + " " + i.statementName};
+                });
+                ko.utils.arrayPushAll(self.statementLayouts, dataList);
+
                 block.clear();
             })
         }
