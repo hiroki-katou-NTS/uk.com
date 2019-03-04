@@ -33,9 +33,9 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
                     self.processingDate(processingDate);
                     service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
                         let dataList : Array<any> = data.map(i => {
-                            return {code: i.statementCode, name: i.statementName, dispname: i.statementCode + " " + i.statementName};
+                            return {statementCode: i.statementCode, statementName: i.statementCode + "　" + i.statementName};
                         });
-                        ko.utils.arrayPushAll(self.statementLayouts, dataList);
+                        self.statementLayouts(dataList);
 
                         block.clear();
                     })
@@ -56,9 +56,9 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
             let processingDate = moment(self.processingDate(), "YYYY/MM").format("YYYYMM");
             service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
                 let dataList : Array<any> = data.map(i => {
-                    return {code: i.statementCode, name: i.statementName, dispname: i.statementCode + " " + i.statementName};
+                    return {statementCode: i.statementCode, statementName: i.statementCode + "　" + i.statementName};
                 });
-                ko.utils.arrayPushAll(self.statementLayouts, dataList);
+                self.statementLayouts(dataList);
 
                 block.clear();
             })
