@@ -258,10 +258,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         public doPrint(printQuery) {
             block.invisible();
             service.exportExcel(printQuery).done(() => {
-            }).fail(function(res: any) {
-                alError({ messageId: res.messageId });
-            }).always(() => {
                 block.clear();
+            }).fail(function(res: any) {
+                block.clear();
+                alError({ messageId: res.messageId });
             });
             char.save('screenInfo', printQuery.toScreenInfo());
         }
