@@ -52,7 +52,7 @@ public class CheckAgreementTimeStatusPubImpl implements CheckAgreementTimeStatus
 	public AgreMaxAverageTimeMulti maxAverageTimeMulti(String companyId, AgreMaxAverageTimeMulti sourceTime,
 			Optional<AttendanceTime> requestTimeOpt, Optional<GeneralDate> requestDateOpt) {
 
-		return this.maxAverageTimeMulti(companyId, sourceTime, requestTimeOpt, requestDateOpt);
+		return this.checkAgreementTimeStatus.maxAverageTimeMulti(companyId, sourceTime, requestTimeOpt, requestDateOpt);
 	}
 	
 	/** 36協定年間時間の状態チェック */
@@ -60,6 +60,6 @@ public class CheckAgreementTimeStatusPubImpl implements CheckAgreementTimeStatus
 	public AgreTimeYearStatusOfMonthly timeYear(AgreementTimeYear agreementTimeYear,
 			Optional<AttendanceTimeYear> requestTimeOpt) {
 		
-		return this.timeYear(agreementTimeYear, requestTimeOpt);
+		return this.checkAgreementTimeStatus.timeYear(agreementTimeYear, requestTimeOpt);
 	}
 }

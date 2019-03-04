@@ -487,7 +487,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 			
 			List<WorkplaceHierarchyDto> listAllWorkPlaces = getListWorkplaceHierarchyDto(workplaceHierarchyDtos, listAllWorkPlaceIds);
 			listAllWorkPlaces = listAllWorkPlaces.stream().sorted(
-					Comparator.comparing(WorkplaceHierarchyDto::getCode, Comparator.nullsLast(String::compareTo)))
+					Comparator.comparing(WorkplaceHierarchyDto::getHierarchyCode, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());
 			
 			if (!CollectionUtil.isEmpty(listAllWorkPlaces)){  

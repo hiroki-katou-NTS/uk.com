@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
@@ -54,6 +56,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private GetAnnLeaRemNumWithinPeriod annWithinPeriod;
 	@Inject
 	private AnnualLeaveTimeRemainHistRepository annTimeRemainHisRepo;	
+	/** 月別実績の勤怠時間 */
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 	@Override
 	public Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
 			YearMonth ym, GeneralDate ymd) {
@@ -63,10 +71,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			return Optional.empty();
 		}
 		DatePeriod period = optPeriod.get();
+		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end().addDays(1), new ArrayList<>());
 		//指定月の締め開始日を取得
 		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ym);
 		if(!optStartDate.isPresent()) {
-			return Optional.empty();
+			return Optional.of(outPut);
 		}
 		GeneralDate startDate = optStartDate.get();
 		//期間内の年休使用明細を取得する
@@ -100,14 +109,14 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				Optional.empty(),
 				Optional.of(true));
 		if(!optAnnualLeaveRemain.isPresent()) {
-			return Optional.empty();
+			return Optional.of(outPut);
 		}
 		AggrResultOfAnnualLeave annualLeaveRemain = optAnnualLeaveRemain.get();
 		//指定月時点の使用数を計算
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, 
-				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList());
+				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), period.start());
 		if(lstAnnRemainHis.isEmpty()) {
-			AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end(), new ArrayList<>());
+			
 			return Optional.of(outPut);
 		}
 		List<AnnualHolidayGrant> lstAnnHolidayGrant = new ArrayList<>();
@@ -118,7 +127,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					a.getDetails().getRemainingNumber().getDays().v());
 			lstAnnHolidayGrant.add(grantData);
 		}
-		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end(), lstAnnHolidayGrant);
+		outPut.setLstGrantInfor(lstAnnHolidayGrant);
 		return Optional.of(outPut);
 	}
 	public Optional<GeneralDate> getStartDateByClosure(String sid, YearMonth ym) {
@@ -169,8 +178,23 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					lstOutputData.add(outData);
 				}	
 			}
-			
 		}
+		
+		// 年休フレックス補填分の暫定年休管理データを作成
+		{
+			// 「月別実績の勤怠時間」を取得
+			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(sid, datePeriod);
+			for (val attendanceTime : attendanceTimes){
+				
+				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+				val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
+						attendanceTime, attendanceTime.getDatePeriod().end());
+				if (compensFlexOpt.isPresent()) {
+					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(compensFlexOpt.get(), false));
+				}
+			}
+		}
+		
 		lstOutputData = lstOutputData.stream().filter(x -> x.getData().getAnnualHolidayData().isPresent()).collect(Collectors.toList());
 		return lstOutputData;
 	}
@@ -193,9 +217,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	
 	@Override
 	public List<AnnualLeaveGrantRemainingData> lstRemainHistory(String sid,
-			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis) {		
+			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis, GeneralDate ymd) {		
 		//付与時点の残数履歴データを取得 
-		List<AnnualLeaveTimeRemainingHistory> annTimeData = annTimeRemainHisRepo.findBySid(sid);
+		List<AnnualLeaveTimeRemainingHistory> annTimeData = annTimeRemainHisRepo.findBySid(sid, ymd);
 		if(annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}

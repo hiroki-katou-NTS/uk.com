@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<com:ValidatorScript>
+      nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.YearlyUsageObDay
+      nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+    </com:ValidatorScript>
+
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+	</ui:define>
+
+    <div>
+    <label style="width: 50px">#{i18n.getText('KAL003_220')}</label>
+    <input id = "con_usage_obli_day" tabindex="12" data-bind="ntsNumberEditor: {
+		    name: nts.uk.resource.getText('KAL003_221'),
+			value: usageObliDay,
+			constraint: 'YearlyUsageObDay',
+			option: {
+                    width: '100',
+                    unitID: 'DAYS'
+             },
+			required:  ko.observable(true),
+			enable:   ko.observable(true),
+			readonly:  ko.observable(false)}" /><br />
+	<label>#{i18n.getText('KAL003_222')}</label><br />
+	<input style="margin-left: 40px; margin-top: 5px" tabindex="13" data-bind="ntsTextEditor: {
+		    name: nts.uk.resource.getText('KAL003_223'),
+			value: displayMessage,
+			constraint: 'MessageDisp',
+			option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            	textmode: 'text',
+            	width: '300px',
+            	textalign: 'left'
+            })),
+			required:  ko.observable(false),
+			enable:   ko.observable(true),
+			readonly:  ko.observable(false)}" /><br />
+	<div style="margin-top: 10px" tabindex="14" data-bind="ntsCheckBox: { checked: distByPeriod, enable: true, text: nts.uk.resource.getText('KAL003_224') }"></div>
+    </div>
+</ui:composition>

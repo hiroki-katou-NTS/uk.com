@@ -249,4 +249,24 @@ public class AgreementOperationSetting extends AggregateRoot {
 		// 残回数を返す
 		return this.numberTimesOverLimitType.value - excessTimes;
 	}
+	
+	/**
+	 * 指定日を含む年期間を取得
+	 * @param criteria 指定年月日
+	 * @return 年月期間
+	 */
+	// 2019.2.28 ADD shuichi_ishida
+	public YearMonthPeriod getPeriodYear(GeneralDate criteria){
+		
+		// 開始年を計算
+		int year = criteria.year();
+		if (criteria.month() < this.startingMonth.value + 1) year--;
+		
+		// 年月期間を計算
+		YearMonth startYm = YearMonth.of(year, this.startingMonth.value + 1);
+		YearMonth endYm = new YearMonth(startYm.v()).addMonths(11);
+		
+		// 年月期間を返す
+		return new YearMonthPeriod(startYm, endYm);
+	}
 }

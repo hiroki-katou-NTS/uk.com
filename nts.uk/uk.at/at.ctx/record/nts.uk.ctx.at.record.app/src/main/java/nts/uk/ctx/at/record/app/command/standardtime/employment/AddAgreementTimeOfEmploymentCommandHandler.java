@@ -5,13 +5,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -56,9 +54,9 @@ public class AddAgreementTimeOfEmploymentCommandHandler extends CommandHandlerWi
 		String companyId = login.companyId();
 		String basicSettingId = IdentifierUtil.randomUniqueId();
 
-		AgreementTimeOfEmployment agreementTimeOfEmployment = new AgreementTimeOfEmployment(companyId, basicSettingId,
-				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-				command.getEmploymentCategoryCode());
+		AgreementTimeOfEmployment agreementTimeOfEmployment =  AgreementTimeOfEmployment.createJavaType(companyId, basicSettingId,
+				command.getLaborSystemAtr(),
+				command.getEmploymentCategoryCode(), command.getUpperMonth(), command.getUpperMonthAverage());
 		
 
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,

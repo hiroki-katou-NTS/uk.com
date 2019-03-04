@@ -27,25 +27,8 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 	public List<String> add(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfCompany agreementTimeOfCompany) {
 
-		List<String> errors = new ArrayList<>();
-		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
-			 */
-			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
-			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
-		}
-
-		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
-			 * 
-			 */
-			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
-		}
-
+		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfCompany);
+		
 		if (errors.isEmpty()) {
 			this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
 			this.basicAgreementSettingRepository.add(basicAgreementSetting);
@@ -54,16 +37,33 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 	}
 
 	@Override
-	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
+	public List<String> update(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany) {
 
-		List<String> errors = new ArrayList<>();
+		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfCompany);
+
+		if (errors.isEmpty()) {
+			this.agreementTimeCompanyRepository.update(agreementTimeOfCompany);
+			this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
+		}
+
+		return errors;
+	}
+	
+	/**
+	 * 登録時チェック処理 (Xử lý check khi ấn đăng ký)
+	 * 
+	 * @param basicAgreementSetting
+	 * @return
+	 */
+	private List<String> checkError(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany){
+		List<String> result = new ArrayList<>();
+		// アラーム時間、エラー時間、限度時間のチェックをする
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
 			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
-			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
+			result.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
 		}
 
 		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
@@ -72,14 +72,24 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			 * 
 			 */
 			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
+			result.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
 		}
-
-		if (errors.isEmpty()) {
-			this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
+		
+		// 上限規制とエラー時間のチェックをする
+		if(checkUpperLimitAndErrorTime(basicAgreementSetting, agreementTimeOfCompany)){
+			result.add("Msg_1488,KMK008_96,KMK008_42,KMK008_120");
 		}
-
-		return errors;
+		
+		return result;
+	}
+	
+	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
+			AgreementTimeOfCompany agreementTimeOfCompany) {
+		if (agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
+				.valueAsMinutes() > agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean checkLimitTimeAndErrorTime(BasicAgreementSetting setting) {

@@ -22,6 +22,9 @@ public enum Period {
 	/** 5: 3ヶ月 (3Month) */
 	Three_Month(5),
 	/** 6: 年間 (Yearly) */
-	Yearly(6);
+	Yearly(6),
+	/** 7:複数月平均 */
+	Months_Average(7);
+	
 	public final int value;
 }

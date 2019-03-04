@@ -40,7 +40,7 @@ public interface AgreementTimeByPeriodPub {
 	 * @return 月別実績の36協定上限時間リスト
 	 */
 	// RequestList548
-	List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period);
+	List<AgreMaxTimeMonthOut> maxTime(String companyId, String employeeId, YearMonthPeriod period);
 
 	/**
 	 * 指定期間36協定上限複数月平均時間の取得

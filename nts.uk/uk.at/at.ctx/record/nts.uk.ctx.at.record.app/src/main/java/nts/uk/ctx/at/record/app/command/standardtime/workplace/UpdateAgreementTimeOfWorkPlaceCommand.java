@@ -56,4 +56,8 @@ public class UpdateAgreementTimeOfWorkPlaceCommand {
 	private int errorOneYear;
 
 	private int limitOneYear;
+	
+    private int upperMonth;
+
+    private int upperMonthAverage;
 }
