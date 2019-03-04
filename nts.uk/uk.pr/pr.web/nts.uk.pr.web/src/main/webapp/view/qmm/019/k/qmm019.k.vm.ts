@@ -62,7 +62,7 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
                     if(messageId != null) {
                         nts.uk.ui.dialog.alertError({ messageId: messageId });
                     } else if((self.printSet() == shareModel.StatementPrintAtr.DO_NOT_PRINT) && ((self.ctgAtr == CategoryAtr.PAYMENT_ITEM) || (self.ctgAtr == CategoryAtr.DEDUCTION_ITEM)) && self.haveItemBreakdownInsite) {
-                        nts.uk.ui.dialog.info({ messageId: "QMsg_" });
+                        nts.uk.ui.dialog.info({ messageId: "MsgQ_246" });
                     } else {
                         setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
                         nts.uk.ui.windows.close();
