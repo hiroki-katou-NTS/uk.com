@@ -2,7 +2,6 @@ package find.person.info;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -64,22 +62,21 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// key - pid , value - sid getPersonId getEmployeeId
-		Map<String, String> mapSids = query.getEmpInfos().stream().collect(Collectors.toMap(PeregEmpInfoQuery:: getPersonId, PeregEmpInfoQuery:: getEmployeeId));
-		List<String> pids  = new ArrayList<String>(mapSids.keySet());
+		List<GridPeregDomainDto> result = new ArrayList<>();
+
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		
 		List<Person> domains = personRepository.getFullPersonByPersonIds(pids);
 		
-		List<GridPeregDomainDto> result = domains.stream().map(c ->  {
-			String sid = mapSids.get(c.getPersonId());
-			return new GridPeregDomainDto (sid, c.getPersonId(), PersonDto.createFromDomain(c));
-		}).collect(Collectors.toList());
-		
-		if(query.getEmpInfos().size() > result.size()) {
-			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
-			}
-		}
+		result.stream().forEach(c ->{
+			Optional<Person> domainOpt = domains.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
+			c.setPeregDomainDto(domainOpt.isPresent() == true ? PersonDto.createFromDomain(domainOpt.get()): null);
+			
+		});
 		
 		return result;
 	}

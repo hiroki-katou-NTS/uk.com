@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,7 +12,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -60,19 +60,25 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+
 		List<EmployeeDataMngInfo> domains = edMngRepo.findByListEmployeeId(cid, sids);
-		if (domains.isEmpty()) {
-			return new ArrayList<>();
-		}
-		List<GridPeregDomainDto> result = domains.stream().map(c -> {return new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), EmployeeDataMngInfoDto.fromDomain(c));}).collect(Collectors.toList());
-		if(query.getEmpInfos().size() > result.size()) {
-			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
-			}
-		}
+
+		domains.stream().map(c -> {return new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), EmployeeDataMngInfoDto.fromDomain(c));}).collect(Collectors.toList());
+		
+		result.stream().forEach(c ->{
+			Optional<EmployeeDataMngInfo> empOpt = domains.stream().filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			c.setPeregDomainDto(empOpt.isPresent() == true ? EmployeeDataMngInfoDto.fromDomain(empOpt.get()) : null);
+		});
+		
 		return result;
 	}
 }
