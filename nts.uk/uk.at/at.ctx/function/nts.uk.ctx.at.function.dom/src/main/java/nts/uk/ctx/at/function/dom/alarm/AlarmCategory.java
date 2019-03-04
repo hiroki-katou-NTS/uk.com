@@ -51,9 +51,9 @@ public enum AlarmCategory {
 	 */
 	ANY_PERIOD(10, "任意期間"),
 	/**
-	 * 年休付与用出勤率
+	 * 年休
 	 */
-	ATTENDANCE_RATE_FOR_HOLIDAY(11,  "年休付与用出勤率"),
+	ATTENDANCE_RATE_FOR_HOLIDAY(11,  "年休"),
 	/**
 	 * ３６協定
 	 */

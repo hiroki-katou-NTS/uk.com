@@ -29,4 +29,10 @@ public class WorkTypeSelectionWebservice {
 	public List<String> getNamesByCodes(List<String> codes) {
 		return this.finder.getWorkTypeNamesByCodes(codes);
 	}
+	
+	@POST
+	@Path("getNamesByCodesNew")
+	public List<String> getNamesByCodesHasDefault(List<String> codes) {
+		return this.finder.getWorkTypeNamesByCodesHasDefault(codes);
+	}
 }

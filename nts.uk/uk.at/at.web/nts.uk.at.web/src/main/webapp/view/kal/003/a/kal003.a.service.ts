@@ -10,10 +10,10 @@ module nts.uk.at.view.kal003.a.service {
         getAllFixedConData: "at/record/erroralarm/fixeddata/getallfixedcondata",
         getDailyErrorAlarmCheck: "at/function/alarm/checkcondition/findDailyErrorAlarmCheck",
         getClsNameByCodes: "bs/employee/classification/getClsNameByCds",
-        getEmpNameByCodes: "bs/employee/employment/findNamesByCodes",
+        getEmpNameByCodes: "bs/employee/employment/findNamesByCodesNew",
         // chua co
         getJobNamesByIds: "bs/employee/jobtitle/getNamesByIds",
-        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodes",
+        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodesNew",
           //monthly
         getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
         

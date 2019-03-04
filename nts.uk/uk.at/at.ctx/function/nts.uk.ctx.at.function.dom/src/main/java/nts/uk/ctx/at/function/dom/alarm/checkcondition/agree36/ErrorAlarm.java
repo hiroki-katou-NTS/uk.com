@@ -12,6 +12,8 @@ public enum ErrorAlarm {
 	/** エラー */
 	Error(0),
 	/** アラーム */
-	Alarm(1);
+	Alarm(1),
+	/**上限規制 */
+	Upper(2);
 	public final int value;
 }

@@ -34,6 +34,7 @@ public interface ReflectStampDomainService {
 
 	// 2.打刻を取得して反映する 
 	// fixbug 105926
+	// class acquireReflectEmbossing gan giong class reflectStampInfo
 	public NewReflectStampOutput acquireReflectEmbossing(String companyID, String employeeID,
 			GeneralDate processingDate, Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
