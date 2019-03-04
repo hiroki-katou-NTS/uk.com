@@ -24,5 +24,12 @@ public interface RervLeaGrantRemDataRepository {
 	void delete(String rsvLeaId);
 	
 	void deleteAfterDate(String employeeId, GeneralDate date);
+	/**
+	 * getAll
+	 * @param employeeId
+	 * @param cId
+	 * @return
+	 */
+	List<ReserveLeaveGrantRemainingData> getAll(String cid, List<String> sids);
 	
 }

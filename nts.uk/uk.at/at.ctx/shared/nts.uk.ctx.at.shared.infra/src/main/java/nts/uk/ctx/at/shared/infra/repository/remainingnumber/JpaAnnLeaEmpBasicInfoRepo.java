@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtAnnLeaBasicInfo;
@@ -13,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtAnnLeaBasic
 @Stateless
 public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEmpBasicInfoRepository {
 	
-	private static final String SELECT_ALL = "SELECT si FROM KrcmtAnnLeaBasicInfo si WHERE si.sid IN :listEmployeeId ";
+//	private static final String SELECT_ALL = "SELECT si FROM KrcmtAnnLeaBasicInfo si WHERE si.sid IN :listEmployeeId ";
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> get(String employeeId) {
 		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaBasicInfo.class);
@@ -25,10 +32,37 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		return Optional.empty();
 	}
 	
-	public List<AnnualLeaveEmpBasicInfo> getAll(List<String> listEmployeeId) {
-		return this.queryProxy().query(SELECT_ALL, KrcmtAnnLeaBasicInfo.class)
-				.setParameter("listEmployeeId", listEmployeeId)
-				.getList(c -> c.toDomain());
+	// chuyển sang jdbc, tăng tốc độ
+	public List<AnnualLeaveEmpBasicInfo> getAll(String cid, List<String> sids) {
+		List<AnnualLeaveEmpBasicInfo> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_ANNLEA_INFO WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 1, subList.get(i));
+				}
+				
+				List<AnnualLeaveEmpBasicInfo> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					KrcmtAnnLeaBasicInfo entity= new KrcmtAnnLeaBasicInfo();
+					entity.sid = r.getString("SID");
+					entity.cid = r.getString("CID");
+					entity.workDaysPerYear = r.getInt("WORK_DAYS_PER_YEAR");
+					entity.workDaysBeforeIntro = r.getInt("WORK_DAYS_BEFORE_INTRO");
+					entity.grantTableCode = r.getString("GRANT_TABLE_CODE");
+					entity.grantStandardDate = r.getGeneralDate("GRANT_STANDARD_DATE");
+					return entity.toDomain();
+				});
+				result.addAll(annualLeavelst);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return result;
 	}
 
 	@Override

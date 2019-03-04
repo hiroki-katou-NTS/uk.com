@@ -1,13 +1,21 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -223,6 +231,55 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("endDate", endDate)
 				.getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+
+	@Override
+	@SneakyThrows
+	public List<AnnualLeaveGrantRemainingData> findByCidAndSids(String cid, List<String> sids) {
+		List<AnnualLeaveGrantRemainingData> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 1, subList.get(i));
+				}
+				
+				List<AnnualLeaveGrantRemainingData> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					KRcmtAnnLeaRemain entity= new KRcmtAnnLeaRemain();
+					entity.annLeavID = r.getString("ANNLEAV_ID");
+					entity.cid = r.getString("CID");
+					entity.sid = r.getString("SID");
+					entity.grantDate = r.getGeneralDate("GRANT_DATE");
+					entity.deadline = r.getGeneralDate("DEADLINE");
+					entity.expStatus = r.getInt("EXP_STATUS");
+					entity.registerType = r.getInt("REGISTER_TYPE");
+					entity.grantDays = r.getDouble("GRANT_DAYS");
+					entity.grantMinutes = r.getInt("GRANT_MINUTES");
+					
+					entity.usedDays = r.getDouble("USED_DAYS");
+					entity.usedMinutes = r.getInt("USED_MINUTES");
+					entity.stowageDays = r.getDouble("STOWAGE_DAYS");
+					entity.remainingDays = r.getInt("REMAINING_DAYS");
+					entity.remaningMinutes = r.getInt("REMAINING_MINUTES");
+					entity.usedPercent = r.getDouble("USED_PERCENT");
+					
+					entity.perscribedDays = r.getDouble("PRESCRIBED_DAYS");
+					entity.deductedDays = r.getDouble("DEDUCTED_DAYS");
+					entity.workingDays = r.getDouble("WORKING_DAYS");
+					return toDomain(entity);
+				});
+				result.addAll(annualLeavelst);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return result;
 	}
 
 }

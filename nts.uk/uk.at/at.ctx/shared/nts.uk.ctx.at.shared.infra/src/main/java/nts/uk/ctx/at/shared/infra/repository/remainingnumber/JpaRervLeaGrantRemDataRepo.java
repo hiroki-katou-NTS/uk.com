@@ -1,13 +1,20 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
@@ -122,5 +129,38 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<ReserveLeaveGrantRemainingData> getAll(String cid, List<String> sids) {
+		List<ReserveLeaveGrantRemainingData> result = new ArrayList<>();
+
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_RVSLEA_REMAIN WHERE CID = ? AND EXP_STATUS = 1 AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( 2 + i, subList.get(i));
+				}
+
+				List<ReserveLeaveGrantRemainingData> annualLeavelst = new NtsResultSet(stmt.executeQuery())
+						.getList(r -> {
+							return ReserveLeaveGrantRemainingData.createFromJavaType(r.getString("RVSLEA_ID"),
+									r.getString("SID"), r.getGeneralDate("GRANT_DATE"), r.getGeneralDate("DEADLINE"),
+									r.getInt("EXP_STATUS"), r.getInt("REGISTER_TYPE"), r.getDouble("GRANT_DAYS"),
+									r.getDouble("USED_DAYS"), r.getDouble("OVER_LIMIT_DAYS"),
+									r.getDouble("REMAINING_DAYS"));
+						});
+				
+				result.addAll(annualLeavelst);
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		return result;
 	}
 }

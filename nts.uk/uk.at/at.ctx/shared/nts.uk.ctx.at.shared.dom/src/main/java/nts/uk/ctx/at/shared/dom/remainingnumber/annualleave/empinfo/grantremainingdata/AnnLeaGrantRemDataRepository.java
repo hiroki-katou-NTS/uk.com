@@ -38,5 +38,13 @@ public interface AnnLeaGrantRemDataRepository {
 	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForUpdate(String employeeId, String annLeavID, GeneralDate grantDate);
 	// get list annual leave grant remaining data by startDate <= grantDate <= endDate
 	List<AnnualLeaveGrantRemainingData> findInDate(String employeeId, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * @author lanlt
+	 * @param cid
+	 * @param employeeId
+	 * @return
+	 */
+	List<AnnualLeaveGrantRemainingData> findByCidAndSids(String cid, List<String> sids);
 
 }

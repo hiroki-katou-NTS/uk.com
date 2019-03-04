@@ -1,10 +1,18 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
@@ -83,6 +91,33 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 			KrcmtAnnLeaMax entity = entityOpt.get();
 			this.commandProxy().remove(entity);
 		}
+	}
+
+	@Override
+	public List<AnnualLeaveMaxData> getAll(String cid, List<String> sids) {
+		List<AnnualLeaveMaxData> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_ANNLEA_MAX WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 1, subList.get(i));
+				}
+				
+				List<AnnualLeaveMaxData> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					return AnnualLeaveMaxData.createFromJavaType( r.getString("SID"),  r.getInt("MAX_TIMES"), r.getInt("USED_TIMES"),
+							r.getInt("MAX_MINUTES"), r.getInt("USED_MINUTES"));
+				});
+				result.addAll(annualLeavelst);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return result;
 	}
 
 }

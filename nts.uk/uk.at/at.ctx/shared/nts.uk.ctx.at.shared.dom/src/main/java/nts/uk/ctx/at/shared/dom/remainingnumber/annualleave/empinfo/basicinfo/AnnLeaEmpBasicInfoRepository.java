@@ -12,6 +12,6 @@ public interface AnnLeaEmpBasicInfoRepository {
 	void update(AnnualLeaveEmpBasicInfo basicInfo);
 	
 	void delete(String employeeId);
-	List<AnnualLeaveEmpBasicInfo> getAll(List<String> listEmployeeId);
+	List<AnnualLeaveEmpBasicInfo> getAll(String cid, List<String> listEmployeeId);
 
 }
