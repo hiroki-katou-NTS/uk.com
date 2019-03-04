@@ -252,7 +252,7 @@ public class TotalWorkingTime {
 																  new AttendanceTime(0),
 																  Collections.emptyList()),
 									Collections.emptyList(),
-									new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList()),
+									new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(),new ArrayList<>()),
 									new WorkTimes(0),
 									new TemporaryTimeOfDaily(Collections.emptyList()),
 									new ShortWorkTimeOfDaily(new WorkTimes(0),
@@ -1092,25 +1092,25 @@ public class TotalWorkingTime {
 					if(timeZone.isUsed())
 					{
 						for(WithinWorkTimeFrame copyItem: recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame()) {
-							TimeWithDayAttr start = copyItem.getTimeSheet().getStart();
-							TimeWithDayAttr end = copyItem.getTimeSheet().getEnd();
 							if(timeZone.getDuplicatedWith(copyItem.getTimeSheet().getTimeSpan()).isPresent()) {
+								TimeWithDayAttr start = copyItem.getTimeSheet().getStart();
+								TimeWithDayAttr end = copyItem.getTimeSheet().getStart();
 								if(copyItem.getTimeSheet().getStart().lessThan(timeZone.getStart())) {
 									start = timeZone.getStart();
 								}
 								if(copyItem.getTimeSheet().getEnd().greaterThan(timeZone.getEnd())) {
 									end = timeZone.getEnd();
 								}
+								copyItem.replaceTimeSheet(new TimeSpanForCalc(start, end));
+								copyItem.replaceOwnDedTimeSheet();
 							}
-							else {
-								end = start;
-							}
-							copyItem.replaceTimeSheet(new TimeSpanForCalc(start, end));
-							copyItem.replaceOwnDedTimeSheet();
-							actualWorkTime = new AttendanceTime(actualWorkTime.v() + copyItem.calcTotalTime(DeductionAtr.Appropriate).valueAsMinutes());
 						}
 					}
 					
+				}
+				for(WithinWorkTimeFrame copyItem: recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame()) {
+					//workTime.addMinutes(copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet).v());
+					actualWorkTime = new AttendanceTime(actualWorkTime.v() + copyItem.calcTotalTime(DeductionAtr.Appropriate).valueAsMinutes());
 				}
 		
 				
