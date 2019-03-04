@@ -81,6 +81,7 @@ module cps003.a.vm {
         headDatas: any;
         gridOptions: any = { columns: [], ntsControls: [], dataSource: [] };
         dataTypes: any = {};
+        initDs: Array<Record>;
         batchSettingItems: any = [];
         lockColumns: Array<any> = [];
 
@@ -368,11 +369,14 @@ module cps003.a.vm {
                     let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
                     if (col) {
                         let val = item.value;
-                        if (item.value instanceof Date) {
-                            val = moment(item.value).format("YYYY/MM/DD");
+                        let text, defValue, defText, initData = _.find(self.initDs, initRec => initRec.id === item.rowId);
+                        if (initData) {
+                            text = self.getText(col.perInfoTypeState, val, item.rowId, col.key, $grid);
+                            defValue = initData[col.key];
+                            defText = self.getText(col.perInfoTypeState, defValue, item.rowId, col.key, $grid);
                         }
                         
-                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
                     }
                 });
                 
@@ -433,6 +437,36 @@ module cps003.a.vm {
                     return null;
                 case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                     return 2;
+            }
+        }
+        
+        getText(perInfoTypeState: any, value: any, id: any, itemCode: any, $grid: any) {
+            if (!perInfoTypeState) return value;
+            switch (perInfoTypeState.dataTypeValue) {
+                case ITEM_SINGLE_TYPE.STRING:
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    return value;
+                case ITEM_SINGLE_TYPE.TIME:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).value(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                case ITEM_SINGLE_TYPE.DATE:
+                    let date = moment(value).format("YYYY/MM/DD");
+                    return { value: date, text: date };
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    let optionItem = _.find($grid.mGrid("optionsList", id, itemCode), item => item.optionValue === value); 
+                    if (optionItem) {
+                        return optionItem.optionText;
+                    }
+                case ITEM_SINGLE_TYPE.READONLY:
+                case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    return value;
+                default:
+                    return value;
             }
         }
         
@@ -508,6 +542,7 @@ module cps003.a.vm {
                         
                         return items;
                     }).orElse(null),
+                    order: $grid.mGrid("columnOrder"),
                     detailData: []
                 };
             
@@ -599,6 +634,7 @@ module cps003.a.vm {
             nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
                 self.convertData(data, settingData).done(() => {
                     self.loadGrid();
+                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
                     self.settings.matrixDisplay.valueHasMutated();
                     self.disableCS00035();
                     unblock();
