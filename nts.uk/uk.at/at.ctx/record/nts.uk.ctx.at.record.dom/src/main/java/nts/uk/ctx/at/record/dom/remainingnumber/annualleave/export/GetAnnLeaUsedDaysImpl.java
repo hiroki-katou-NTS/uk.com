@@ -38,10 +38,10 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> ofGrantPeriod(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr) {
+			ReferenceAtr referenceAtr, boolean fixedOneYear) {
 		
 		// 社員の前回付与日から次回付与日までの年休使用日数を取得
-		val tmpAnnLeaMngExportList = this.ofGrantPeriodProc(employeeId, criteria, referenceAtr);
+		val tmpAnnLeaMngExportList = this.ofGrantPeriodProc(employeeId, criteria, referenceAtr, fixedOneYear);
 		
 		// 年休使用数を合計
 		double annualLeaveUseDays = 0.0;
@@ -84,7 +84,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 	
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	private List<TmpAnnualLeaveMngExport> ofGrantPeriodProc(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr) {
+			ReferenceAtr referenceAtr, boolean fixedOneYear) {
 		
 		List<TmpAnnualLeaveMngExport> results = new ArrayList<>();
 		
@@ -92,11 +92,24 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 		DatePeriod closurePeriod = this.closureService.findClosurePeriod(employeeId, criteria);
 		if (closurePeriod == null) return results;
 		
-		// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-		val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
-				AppContexts.user().companyId(), employeeId, closurePeriod.end());
-		if (!usedPeriodOpt.isPresent()) return results;
-		val usedPeriod = usedPeriodOpt.get();
+		DatePeriod usedPeriod = null;
+		if (fixedOneYear) {
+			
+			// 指定した年月日を基準に、前回付与日から1年後までの期間を取得
+			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodAfterOneYear(
+					AppContexts.user().companyId(), employeeId, closurePeriod.end());
+			if (!usedPeriodOpt.isPresent()) return results;
+			usedPeriod = usedPeriodOpt.get();
+		}
+		else {
+			
+			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
+			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
+					AppContexts.user().companyId(), employeeId, closurePeriod.end());
+			if (!usedPeriodOpt.isPresent()) return results;
+			usedPeriod = usedPeriodOpt.get();
+		}
+		if (usedPeriod == null) return results;
 		
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,

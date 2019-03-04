@@ -36,8 +36,10 @@ public interface GetAnnualHolidayGrantInfor {
 	 * 指定月時点の付与数、使用数を計算
 	 * @param sid 社員ID
 	 * @param lstAnnRemainHis 年休付与残数履歴データ(List)
+	 * @param ymd 指定年月日
 	 * @return 年休付与残数履歴データ(List)
+	 * 
 	 */
-	List<AnnualLeaveGrantRemainingData> lstRemainHistory(String sid, List<AnnualLeaveGrantRemainingData> lstAnnRemainHis);
+	List<AnnualLeaveGrantRemainingData> lstRemainHistory(String sid, List<AnnualLeaveGrantRemainingData> lstAnnRemainHis, GeneralDate ymd);
 	
 }

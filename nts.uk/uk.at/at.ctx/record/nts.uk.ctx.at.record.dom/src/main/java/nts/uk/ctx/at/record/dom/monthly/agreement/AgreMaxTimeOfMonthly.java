@@ -73,11 +73,11 @@ public class AgreMaxTimeOfMonthly {
 		this.maxTime = new LimitOneMonth(0);
 		
 		// 「36協定基本設定」を取得する
-		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
-				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
+		val upperAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem).getUpperAgreementSetting();
 		
 		// 月間の値を取得し、上限時間とする
-		this.maxTime = new LimitOneMonth(basicAgreementSet.getLimitOneMonth().v());
+		this.maxTime = new LimitOneMonth(upperAgreementSet.getUpperMonth().v());
 	}
 	
 	/**
