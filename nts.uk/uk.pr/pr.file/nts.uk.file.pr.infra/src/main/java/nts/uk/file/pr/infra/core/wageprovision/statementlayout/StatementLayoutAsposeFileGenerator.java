@@ -3,8 +3,10 @@ package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.Workbook;
@@ -18,12 +20,18 @@ import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSetti
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByCtgExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutSetExportData;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
 public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerator
 		implements StatementLayoutFileGenerator {
+
+	@Inject
+	private CompanyAdapter company;
+
 	private static final String TEMPLATE_FILE = "report/明細レイアウトの作成.xlsx";
 
 	private static final String REPORT_FILE_NAME = "明細レイアウトの作成.xlsx";
@@ -36,6 +44,10 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			Worksheet ws = wsc.get(0);
 			StatementLayoutPrint sttPrint = new StatementLayoutPrint(wsc, ws);
 			HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
+
+			String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
+			reportContext.setHeader(0, "&11&\"ＭＳ 明朝\"" + companyName);
+
 			int offset = sttPrint.getStatementLayout().getRowCount();
 			for (StatementLayoutSetExportData stt : exportData) {				
 				offset = sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offset);
@@ -60,7 +72,9 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			return offset;
 		}
 		SettingByCtgExportData setByCtg = setByCtgOtp.get();
-		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet();
+		// ※補足3
+		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet().stream()
+                .filter(x -> StatementPrintAtr.PRINT.equals(x.getPrintSet())).collect(Collectors.toList());
 		if (listLineByLineSet.isEmpty()) {
 			return offset;
 		}
@@ -68,8 +82,6 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
 		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
-			// ※補足3
-			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
 				pos = LinePosition.FIRST;

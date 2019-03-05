@@ -35,17 +35,22 @@ public class QpbmtBreakAmount extends UkJpaEntity implements Serializable {
      * 金額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT")
-    public long amount;
+    @Column(name = "BREAKDOWN_ITEM_AMOUNT")
+    public long breakdownItemAmount;
 
     @Override
     protected Object getKey() {
         return breakAmountPk;
     }
 
-    public static List<QpbmtBreakAmount> toEntity(BreakdownAmount domain) {
+    public static List<QpbmtBreakAmount> toEntity(String cid, String sid, int categoryAtr, String itemNameCode, int salaryBonusAtr, BreakdownAmount domain) {
         return domain.getBreakdownAmountList().stream().map(x ->
-                new QpbmtBreakAmount(new QpbmtBreakAmountPk(domain.getHistoryId(),
+                new QpbmtBreakAmount(new QpbmtBreakAmountPk(cid,
+                        sid,
+                        categoryAtr,
+                        itemNameCode,
+                        salaryBonusAtr,
+                        domain.getHistoryId(),
                         x.getBreakdownItemCode().v()),
                         x.getAmount().v()))
                 .collect(Collectors.toList());

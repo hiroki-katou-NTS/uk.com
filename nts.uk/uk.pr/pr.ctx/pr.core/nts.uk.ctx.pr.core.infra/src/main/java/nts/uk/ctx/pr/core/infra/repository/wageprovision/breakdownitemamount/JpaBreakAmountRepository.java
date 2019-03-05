@@ -5,7 +5,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.BreakdownAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.BreakdownAmountList;
 import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.BreakdownAmountRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.breakdownitemamount.QpbmtBreakAmount;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.breakdownitemamount.QpbmtBreakAmountPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -25,8 +24,9 @@ public class JpaBreakAmountRepository extends JpaRepository implements Breakdown
     private Optional<BreakdownAmount> toDomain(List<QpbmtBreakAmount> entity) {
         if (entity.size() > 0) {
             String historyId = entity.get(0).breakAmountPk.historyId;
+
             List<BreakdownAmountList> breakdownAmountList = entity.stream()
-                    .map(item -> new BreakdownAmountList(item.breakAmountPk.breakdownItemCode, item.amount))
+                    .map(item -> new BreakdownAmountList(item.breakAmountPk.breakdownItemCd, item.breakdownItemAmount))
                     .collect(Collectors.toList());
             return Optional.of(new BreakdownAmount(historyId, breakdownAmountList));
         } else {
@@ -45,13 +45,13 @@ public class JpaBreakAmountRepository extends JpaRepository implements Breakdown
     }
 
     @Override
-    public void add(BreakdownAmount domain) {
-        this.commandProxy().insertAll(QpbmtBreakAmount.toEntity(domain));
+    public void add(String cid, String sid, int categoryAtr, String itemNameCode, int salaryBonusAtr,BreakdownAmount domain) {
+        this.commandProxy().insertAll(QpbmtBreakAmount.toEntity(cid,sid,categoryAtr,itemNameCode,salaryBonusAtr,domain));
     }
 
     @Override
-    public void update(BreakdownAmount domain) {
-        this.commandProxy().updateAll(QpbmtBreakAmount.toEntity(domain));
+    public void update(String cid, String sid, int categoryAtr, String itemNameCode, int salaryBonusAtr,BreakdownAmount domain) {
+        this.commandProxy().updateAll(QpbmtBreakAmount.toEntity(cid,sid,categoryAtr,itemNameCode,salaryBonusAtr,domain));
     }
 
     @Override

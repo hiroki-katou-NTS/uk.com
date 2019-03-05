@@ -113,7 +113,6 @@ public class FormulaService {
                 formulaRepository.updateFormulaHistory(formulaCode, beforeYearMonth);
             } catch (IndexOutOfBoundsException e) {
                 formulaRepository.removeByFormulaCode(formulaCode);
-                return;
             }
         });
     }
