@@ -5272,6 +5272,9 @@ module nts.uk.ui.mgrid {
                     let disFormat = su.formatSave(col[0], val);
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                     $.data($cell, v.DATA, disFormat);
+                    if (_zeroHidden && ti.isZero(disFormat, key)) {
+                        $cell.innerHTML = "";
+                    }
                 } else if (dkn.controlType[key] === dkn.CHECKBOX) {
                     let check = $cell.querySelector("input[type='checkbox']");
                     if (!check) return;
@@ -5418,24 +5421,40 @@ module nts.uk.ui.mgrid {
                             if (cbx.optionsMap && !_.isNil(y = cbx.optionsMap[id])) {
                                 options = cbx.optionsList[y];
                             } else options = cbx.options;
-                            let sel = _.find(options, o => o.code === val);
-                            if (sel) { 
-                                su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
-                                $.data($cell, lo.CBX_SELECTED_TD, val);
-                                $cell.textContent = sel ? sel.name : ""; 
-                            }
+                            
+                            let sel = _.find(options, o => o[cbx.optionsValue] === val);
+                            if (_.isNil(val)) val = null;
+                            su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                            $.data($cell, lo.CBX_SELECTED_TD, val);
+                            $cell.textContent = sel ? sel[cbx.optionsText] : "";
                         }
                     } else if (cbx.type === dkn.DATE_PICKER) {
                         let txt, mDate = moment.utc(val, cbx.format, true);
                         if (cbx.formatType !== "ymd") txt = mDate.format(cbx.format[0]);
-                        let date = _.isNil(txt) ? mDate.toDate() : txt;
+                        let date = _.isNil(txt) ? (mDate.isValid() ? mDate.toDate() : mDate._i) : txt;
+                        if (_.isNil(date)) date = null;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                         $.data($cell, v.DATA, date);
-                        $cell.innerHTML = _.isNil(txt) ? mDate.format(cbx.format[0]) : txt;
+                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
                     }
                 }
                 
                 return idx;
+            },
+            optionsList: function(id, key) {
+                let control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
+                if (!control || !controlMap || !(controlDef = controlMap[key])) return null;
+                if (control === dkn.REFER_BUTTON) {
+                    return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                    if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
+                        return control.optionsList[listType];
+                    } else {
+                        return control.options;
+                    }
+                } 
+                
+                return null;
             },
             checkAll: function(key, fixed) {
                 let idxes, rows; 
@@ -5578,14 +5597,14 @@ module nts.uk.ui.mgrid {
                     });
                 });
             },
-            replace: function(key, condition, value) {
+            replace: function(key, condition, value, dr) {
                 if (_.isNil(key) || !_.isFunction(condition) || !_.isFunction(value)) return;
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef || (_.isNumber(_currentPage) && Number(k) !== _currentPage)) return;
                     _.forEach(_mafollicle[k].dataSource, (d, i) => {
-                        if (!condition(d[key])) return;
-                        let setVal = value(d[key]);
-                        _$grid.mGrid("updateCell", d[_pk], key, setVal);
+                        if (!condition(d[key], d)) return;
+                        let setVal = value(d[key], d);
+                        _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                     });
                 });
             },
@@ -6552,6 +6571,7 @@ module nts.uk.ui.mgrid {
                     if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                         delete dirties[id][coord.columnKey];
                     }
+                    return { c: calcCell };
                 } else {
                     if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === "")) 
                         || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
@@ -6560,6 +6580,8 @@ module nts.uk.ui.mgrid {
                             if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                 delete dirties[id][coord.columnKey];
                             }
+                            
+                            rData[coord.columnKey] = cellValue;
                             return { c: calcCell };
                         }
                         $cell.classList.remove(color.ManualEditTarget);
@@ -6649,7 +6671,6 @@ module nts.uk.ui.mgrid {
                             }
                         } else {
                             formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                            t.c.textContent = formatted;
                             if (ng) {
                                 t.c.classList.add(khl.ERROR_CLS);
                                 errDetail = _.find(_errors, err => err.index === coord.rowIdx && err.columnKey === coord.columnKey);
@@ -6665,6 +6686,11 @@ module nts.uk.ui.mgrid {
                             }
                             disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
                             $.data(t.c, v.DATA, disFormat);
+                            if (maf.zeroHidden && ti.isZero(disFormat, coord.columnKey)) {
+                                t.c.textContent = "";
+                            } else {
+                                t.c.textContent = formatted;
+                            }
                         }
                         
                         if (t.colour) t.c.classList.add(t.colour);
@@ -6877,7 +6903,8 @@ module nts.uk.ui.mgrid {
                             } catch(e) {}
                         }
                     } else if (valueType === "Time") {
-                        value = uk.time.minutesBased.duration.parseString(String(value)).format();
+                        let parsed = uk.time.minutesBased.duration.parseString(String(value));
+                        if (parsed.success) value = parsed.format();
                     } else if (valueType === "Currency") { 
                         let currencyOpts: any = new ui.option.CurrencyEditorOption();
                         currencyOpts.grouplength = constraint.groupLength | 3;
@@ -7838,7 +7865,11 @@ module nts.uk.ui.mgrid {
                     kt._adjuster.nostal(table.cols, bodyGroupArr, sumGroupArr);
                     kt._adjuster.handle(); 
                 }
-                if (lo.changeZero(_vessel().zeroHidden)) _vessel().zeroHidden = _zeroHidden;         
+                
+                let tmp = _vessel().zeroHidden;
+                _vessel().zeroHidden = _zeroHidden;
+                _zeroHidden = tmp;
+                if (lo.changeZero(_vessel().zeroHidden)) _zeroHidden = _vessel().zeroHidden;         
                 return;
             }
             
@@ -7876,7 +7907,11 @@ module nts.uk.ui.mgrid {
                     _mafollicle[SheetDef][_currentSheet].bColArr, _mafollicle[SheetDef][_currentSheet].sumColArr);
                 kt._adjuster.handle();
             }
-            if (lo.changeZero(_vessel().zeroHidden)) _vessel().zeroHidden = _zeroHidden;
+            
+            let tmp = _vessel().zeroHidden;
+            _vessel().zeroHidden = _zeroHidden;
+            _zeroHidden = tmp;
+            if (lo.changeZero(_vessel().zeroHidden)) _zeroHidden = _vessel().zeroHidden;
         }
     }
     

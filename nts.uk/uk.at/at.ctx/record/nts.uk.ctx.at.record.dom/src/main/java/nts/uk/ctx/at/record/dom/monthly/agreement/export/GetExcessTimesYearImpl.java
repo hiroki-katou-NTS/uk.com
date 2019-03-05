@@ -2,14 +2,18 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 実装：年間超過回数の取得
@@ -21,6 +25,9 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 	/** 管理期間の36協定時間を取得 */
 	@Inject
 	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
+	/** 36協定運用設定の取得 */
+	@Inject
+	private AgreementOperationSettingRepository agreementOpeSetRepo;
 	
 	/** 年間超過回数の取得 */
 	@Override
@@ -48,6 +55,32 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 		}
 		
 		// 36協定超過情報を返す
-		return AgreementExcessInfo.of(excessCount, yearMonths);
+		return AgreementExcessInfo.of(excessCount, 0, yearMonths);
+	}
+	
+	/** 年間超過回数と残数の取得 */
+	@Override
+	public AgreementExcessInfo andRemainTimes(String employeeId, Year year,
+			Optional<AgreementOperationSetting> agreementOperationSetting) {
+		
+		// 36協定運用設定の取得
+		AgreementOperationSetting agreementOpeSet = null;
+		if (agreementOperationSetting.isPresent()) {
+			agreementOpeSet = agreementOperationSetting.get();
+		}
+		else {
+			val agreementOpeSetOpt = this.agreementOpeSetRepo.find(AppContexts.user().companyId());
+			if (!agreementOpeSetOpt.isPresent()) return new AgreementExcessInfo();
+			agreementOpeSet = agreementOpeSetOpt.get();
+		}
+		
+		// 年間超過回数の取得
+		val timesYear = this.algorithm(employeeId, year);
+		
+		// 超過回数の残数
+		int remainTimes = agreementOpeSet.getRemainTimes(timesYear.getExcessTimes());
+
+		// 36協定超過情報を返す
+		return AgreementExcessInfo.of(timesYear.getExcessTimes(), remainTimes, timesYear.getYearMonths());
 	}
 }

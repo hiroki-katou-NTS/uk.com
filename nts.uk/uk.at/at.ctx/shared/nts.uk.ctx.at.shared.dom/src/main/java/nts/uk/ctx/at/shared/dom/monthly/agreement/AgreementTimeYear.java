@@ -73,7 +73,7 @@ public class AgreementTimeYear implements Cloneable {
 	 */
 	public void errorCheck(){
 		this.status = AgreTimeYearStatusOfMonthly.NORMAL;
-		if (this.recordTime.v() > this.limitTime.v()) {
+		if (this.limitTime.v() > 0 && this.recordTime.v() > this.limitTime.v()) {
 			this.status = AgreTimeYearStatusOfMonthly.EXCESS_LIMIT;
 		}
 	}

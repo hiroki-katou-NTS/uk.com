@@ -113,8 +113,11 @@ module nts.uk.at.view.kal003.share.model {
             ko.computed({
                 read: () => {
                     let fbe = ko.toJS(this.filterByEmployment);
+                    
                     if (!fbe) {
-                        $('[data-bind="with: tabScopeCheck"] #scopechecktab1').trigger('validate');
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
                     }
                 }
             });
@@ -123,7 +126,9 @@ module nts.uk.at.view.kal003.share.model {
                 read: () => {
                     let fbc = ko.toJS(this.filterByClassification);
                     if (!fbc) {
-                        $('[data-bind="with: tabScopeCheck"] #scopechecktab2').trigger('validate');
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
                     }
                 }
             });
@@ -133,8 +138,10 @@ module nts.uk.at.view.kal003.share.model {
                     
                     let fbj = ko.toJS(this.filterByJobTitle);
                     if (!fbj) {
-                        $('[data-bind="with: tabScopeCheck"] #scopechecktab3').trigger('validate');
-                    }
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
+                    } 
                 }
             });
             
@@ -142,7 +149,9 @@ module nts.uk.at.view.kal003.share.model {
                 read: () => {
                     let fbb = ko.toJS(this.filterByBusinessType);
                     if (!fbb) {
-                        $('[data-bind="with: tabScopeCheck"] #scopechecktab4').trigger('validate');
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
                     }
                 }
             });

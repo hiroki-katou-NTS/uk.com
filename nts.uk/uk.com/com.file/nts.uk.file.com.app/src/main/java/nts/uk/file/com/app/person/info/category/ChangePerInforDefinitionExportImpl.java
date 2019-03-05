@@ -8,6 +8,7 @@ import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -181,4 +182,8 @@ public class ChangePerInforDefinitionExportImpl implements MasterListData{
         return perInforDef.stream().map(i -> this.putData(i)).collect(Collectors.toList());
     }
 
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 }

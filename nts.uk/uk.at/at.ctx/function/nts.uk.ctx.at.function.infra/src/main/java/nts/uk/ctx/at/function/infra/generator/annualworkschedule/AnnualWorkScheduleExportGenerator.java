@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 

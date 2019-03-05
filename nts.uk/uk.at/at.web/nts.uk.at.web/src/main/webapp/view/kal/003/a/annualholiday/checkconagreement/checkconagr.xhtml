@@ -15,7 +15,7 @@
 
     <div>
     <label style="width: 50px">#{i18n.getText('KAL003_220')}</label>
-    <input id = "con_usage_obli_day" tabindex="2" data-bind="ntsNumberEditor: {
+    <input id = "con_usage_obli_day" tabindex="12" data-bind="ntsNumberEditor: {
 		    name: nts.uk.resource.getText('KAL003_221'),
 			value: usageObliDay,
 			constraint: 'YearlyUsageObDay',
@@ -27,7 +27,7 @@
 			enable:   ko.observable(true),
 			readonly:  ko.observable(false)}" /><br />
 	<label>#{i18n.getText('KAL003_222')}</label><br />
-	<input style="margin-left: 40px; margin-top: 5px" tabindex="3" data-bind="ntsTextEditor: {
+	<input style="margin-left: 40px; margin-top: 5px" tabindex="13" data-bind="ntsTextEditor: {
 		    name: nts.uk.resource.getText('KAL003_223'),
 			value: displayMessage,
 			constraint: 'MessageDisp',
@@ -39,6 +39,6 @@
 			required:  ko.observable(false),
 			enable:   ko.observable(true),
 			readonly:  ko.observable(false)}" /><br />
-	<div style="margin-top: 10px" tabindex="4" data-bind="ntsCheckBox: { checked: distByPeriod, enable: true, text: nts.uk.resource.getText('KAL003_224') }"></div>
+	<div style="margin-top: 10px" tabindex="14" data-bind="ntsCheckBox: { checked: distByPeriod, enable: true, text: nts.uk.resource.getText('KAL003_224') }"></div>
     </div>
 </ui:composition>
