@@ -63,10 +63,6 @@
     width: 355px;
 }
 
-.table-col-3 > .cell:nth-child(3) .limited-label{
-    width: 350px;
-}
-
 .table-error-alarm > .cell:nth-child(1) {
     width: 130px;
 }
@@ -105,6 +101,7 @@
 
 .table-col-4 > .cell:nth-child(4) .limited-label{
     width: 300px;
+    display: block;
 }
 
 #btn-register {
@@ -138,10 +135,6 @@
 
 .table-origin .acc-content .acc-table .nts-fixed-table .fixed-table tr{
     height: 23px;
-}
-
-.table-origin .acc-content .acc-table .limited-label {
-    width: 200px;
 }
 
 #fixed-table{

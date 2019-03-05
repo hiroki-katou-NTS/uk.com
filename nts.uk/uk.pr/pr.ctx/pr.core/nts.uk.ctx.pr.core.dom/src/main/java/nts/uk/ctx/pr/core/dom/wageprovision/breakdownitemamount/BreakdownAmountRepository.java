@@ -14,9 +14,9 @@ public interface BreakdownAmountRepository
 
     Optional<BreakdownAmount> getAllBreakdownAmountCode(String historyId);
 
-    void add(BreakdownAmount domain);
+    void add(String cid, String sid, int categoryAtr, String itemNameCode, int salaryBonusAtr,BreakdownAmount domain);
 
-    void update(BreakdownAmount domain);
+    void update(String cid, String sid, int categoryAtr, String itemNameCode, int salaryBonusAtr,BreakdownAmount domain);
 
     void remove(String historyId, List<String> lstBreakdownItemCode);
 

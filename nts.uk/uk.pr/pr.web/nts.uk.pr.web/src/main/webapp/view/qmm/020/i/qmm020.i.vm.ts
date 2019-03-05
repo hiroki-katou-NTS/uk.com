@@ -98,11 +98,15 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             return dfd.promise();
         }
 
+
         loadGrid() {
             let self = this;
+            let templateSalary = '{{if ${colorSalary} == 0}} <div class="no_regis">${salary}</div> {{else }} <div class="regis">${salary}</div> {{/if}}';
+            let templateBonus = '{{if ${colorBonus} == 0}} <div class="no_regis">${bonus}</div> {{else }} <div class="regis">${bonus}</div> {{/if}}';
+            let templateMaster = '{{if ${colorMaster} == 0}} <div class="no_regis">${master}</div> {{else }} <div class="regis">${master}</div> {{/if}}';
             $("#I2_1").ntsGrid({
                 width: '1050px',
-                height: '360px',
+                height: '345px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
                 rowVirtualization: true,
@@ -110,11 +114,14 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     {headerText: '', key: 'empId', dataType: 'string', hidden: true},
+                    {headerText: '', key: 'colorSalary', dataType: 'number', hidden: true},
+                    {headerText: '', key: 'colorBonus', dataType: 'number', hidden: true},
+                    {headerText: '', key: 'colorMaster', dataType: 'number', hidden: true},
                     {headerText: getText("QMM020_26"), key: 'empCd', dataType: 'string', width: '120px'},
                     {headerText: getText("QMM020_50"), key: 'empName', dataType: 'string', width: '200px'},
-                    {headerText: getText("QMM020_20"), key: 'salary', dataType: 'string', width: '200px',},
-                    {headerText: getText("QMM020_22"), key: 'bonus', dataType: 'string', width: '200px'},
-                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '310px'}
+                    {headerText: getText("QMM020_20"), key: 'salary', dataType: 'string', width: '200px', template: templateSalary},
+                    {headerText: getText("QMM020_22"), key: 'bonus', dataType: 'string', width: '200px', template: templateBonus},
+                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '310px', template: templateMaster}
                 ],
                 features: [
                     {
@@ -131,8 +138,9 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         name: "Sorting",
                         type: "local"
                     }
-                ],
+                ]
             });
+
         }
 
     }
@@ -155,7 +163,6 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
 
     interface IConfirmPersonSetStatus {
         sid: string;
-
         /**
          * 給与明細書コード
          */
@@ -190,6 +197,9 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
          * 適用マスタ名称
          */
         masterName: string;
+        colorSalary: number;
+        colorBonus: number;
+        colorMaster: number;
     }
 
     class ConfirmPersonSetStatus {
@@ -199,6 +209,9 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
         salary: string;
         bonus: string;
         master: string;
+        colorSalary: number;
+        colorBonus: number;
+        colorMaster: number;
 
         constructor(emp: EmployeeSearchDto, data: IConfirmPersonSetStatus) {
             this.empId = emp.employeeId;
@@ -210,17 +223,23 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             if (data.settingCtg != SettingCls.PERSON && data.settingCtg != SettingCls.COMPANY) {
                 if (!isNullOrUndefined(data.masterCode)) {
                     this.master += "　" + "(" + data.masterCode + "　" + data.masterName + ")"
+                } else {
+                    this.master = "-"
                 }
             }
+            this.colorSalary = isNullOrUndefined(data.salaryCode) ? 0 : 1;
+            this.colorBonus = isNullOrUndefined(data.bonusCode) ? 0 : 1;
+            this.colorMaster = isNullOrUndefined(data.masterCode) ? 0 : 1;
         }
 
         static fromApp(listEmployee: Array<EmployeeSearchDto>, items: Array<IConfirmPersonSetStatus>) {
             let result: Array<ConfirmPersonSetStatus> = [];
+            let id: number = 0;
             _.each(listEmployee, (emp: EmployeeSearchDto) => {
                 let data = _.find(items, (item: IConfirmPersonSetStatus) => {
                     return item.sid == emp.employeeId;
                 });
-                let dto = new ConfirmPersonSetStatus(emp, data);
+                let dto = new ConfirmPersonSetStatus(emp, data, id++);
                 result.push(dto)
             });
             return result;

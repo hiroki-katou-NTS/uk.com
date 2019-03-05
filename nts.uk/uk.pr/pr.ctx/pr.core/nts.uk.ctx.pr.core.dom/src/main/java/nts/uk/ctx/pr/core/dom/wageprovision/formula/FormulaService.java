@@ -113,7 +113,6 @@ public class FormulaService {
                 formulaRepository.updateFormulaHistory(formulaCode, beforeYearMonth);
             } catch (IndexOutOfBoundsException e) {
                 formulaRepository.removeByFormulaCode(formulaCode);
-                return;
             }
         });
     }
@@ -127,17 +126,16 @@ public class FormulaService {
         return formulaRepository.getFormulaByCodes(cid, formulaCodes);
     }
 
-    public Map<String, String> getProcessYearMonthAndReferenceTime () {
-        Map<String, String> processYMAndReferTime = new HashMap<>();
-        processYMAndReferTime.put("processYearMonth", GeneralDate.today().toString("YYYY/MM"));
-        processYMAndReferTime.put("referenceDate", GeneralDate.today().toString());
+    public Map<String, String> getProcessYearMonthAndWorkingDayNumber() {
+        Map<String, String> processYMAndWorkingDayNumber = new HashMap<>();
+        processYMAndWorkingDayNumber.put("processYearMonth", GeneralDate.today().toString("YYYY/MM"));
+        processYMAndWorkingDayNumber.put("workingDayNumber", "0");
         currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(AppContexts.user().companyId(), 1).ifPresent(processDate -> {
-            processYMAndReferTime.put("processYearMonth", processDate.getGiveCurrTreatYear().year() + "/" + String.format("%02d", processDate.getGiveCurrTreatYear().month()));
-            setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v()).ifPresent(setDaySupport -> {
-                processYMAndReferTime.put("referenceDate", setDaySupport.getEmpExtraRefeDate().toString());
-            });
+            processYMAndWorkingDayNumber.put("processYearMonth", processDate.getGiveCurrTreatYear().year() + "/" + String.format("%02d", processDate.getGiveCurrTreatYear().month()));
+            setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v())
+                    .ifPresent(setDaySupport -> processYMAndWorkingDayNumber.put("workingDayNumber", setDaySupport.getNumberWorkDay().toString()));
         });
-        return processYMAndReferTime;
+        return processYMAndWorkingDayNumber;
     }
 
     public GeneralDate getReferenceDate() {

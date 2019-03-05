@@ -1,36 +1,45 @@
 .column-1 {
     width: 215px;
 }
+
 .column-2 {
     margin-left: 215px;
 }
+
 .tab-row {
     margin-top: 10px;
     min-width: 800px;
 }
+
 .tab-row-medium {
     margin-top: 10px;
     min-width: 600px;
 }
+
 .tab-row .row {
     margin-top: 10px;
 }
+
 .fixed-flex-layout > .fixed-flex-layout-left {
     margin-right: -10px;
 }
+
 #C3_1 tr {
     height: 34px;
 }
+
 .large-right-caret::after {
     font-size: 2em;
     color: #97D155 !important;
 }
+
 .large-right-caret-container {
     position: relative;
     left: -5px;
     vertical-align: top;
     margin-top: 115px;
 }
+
 .search-icon {
     position: absolute;
     width: 32px;
@@ -38,6 +47,7 @@
     background: #00B050;
     border-radius: 5px;
 }
+
 .search-icon:before {
     width: 12px;
     height: 12px;
@@ -46,6 +56,7 @@
     top: 6px;
     left: 7px;
 }
+
 .search-icon::after {
     top: 18px;
     left: 22px;
@@ -55,29 +66,35 @@
     background-color: #FFF;
     transform: rotate(-45deg);
 }
+
 .search-icon::before, .search-icon::after {
     content: '';
     position: absolute;
     display: block;
 }
-.large-caret::after{
+
+.large-caret::after {
     font-size: 3em;
     color: #97D155 !important;
 }
+
 .tab-panel-row {
     height: 310px;
 }
+
 .tab-panel-col-1 {
     display: inline-block;
     width: 215px;
     vertical-align: top;
     margin-top: 50px;
 }
+
 .tab-panel-col-2 {
-   width: 215px;
+    width: 215px;
     display: inline-block;
     margin-left: 5px;
 }
+
 .tab-panel-col-3 {
     width: 240px;
     height: 310px;
@@ -85,24 +102,30 @@
     display: inline-block;
     margin-left: 28px;
 }
-#D1_4 div[class^='tab-content']{
+
+#D1_4 div[class^='tab-content'] {
     height: 350px;
 }
+
 .cal-container {
     vertical-align: top;
     display: inline-block;
 }
+
 .cal-container button {
     height: 30px;
     width: 30px;
 }
+
 .search-box-sm input {
     margin-left: 40px;
     width: 120px !important;
 }
+
 .formula-button {
     width: 232px;
 }
+
 .list-box tr td:nth-child(2) {
     display: inline-block;
     white-space: nowrap;
@@ -110,20 +133,24 @@
     text-overflow: ellipsis;
     width: 148px;
 }
+
 .list-box .ui-iggrid .ui-iggrid-tablebody td {
     height: 23px;
 }
+
 .display-notes {
     word-break: break-all;
-    max-height: 275px;
+    height: 263px;
     overflow: auto;
 }
+
 textarea {
     resize: none;
     background: transparent;
     /* color: transparent; */
 }
-#input-content-area{
+
+#input-content-area {
     position: absolute;
     top: 560px;
     left: 100px;
@@ -136,18 +163,21 @@ textarea {
     width: 462px;
     z-index: -9999;
 }
-#input-area{
-    top: 0px;
-    left: 0px;
+
+#input-area {
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
 }
-#cursor-key{
+
+#cursor-key {
     visibility: hidden;
     position: relative;
     z-index: 10;
 }
-#input-cursor{
+
+#input-cursor {
     position: absolute;
     pointer-events: none;
     border-left: 1px solid black;
@@ -156,22 +186,27 @@ textarea {
     cursor: text;
     height: 18px;
 }
-.editor-line{
+
+.editor-line {
     display: block;
 }
-#auto-complete{
+
+#auto-complete {
     position: relative;
     width: 100%;
     height: 100%;
 }
-#auto-complete-container{
+
+#auto-complete-container {
     position: absolute;
     z-index: 1000;
 }
-#auto-complete-container{
+
+#auto-complete-container {
     position: absolute;
     z-index: 9999;
 }
+
 .nts-fixed-body-container.ui-iggrid {
     overflow-x: hidden;
 }

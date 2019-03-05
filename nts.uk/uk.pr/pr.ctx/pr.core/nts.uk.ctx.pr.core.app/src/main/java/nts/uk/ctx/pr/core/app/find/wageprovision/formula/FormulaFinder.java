@@ -85,8 +85,5 @@ public class FormulaFinder {
         return formulaElements;
     }
 
-    public Map<String, String> getProcessYearMonthAndReferenceTime () {
-        return formulaService.getProcessYearMonthAndReferenceTime();
-    }
 }
 
