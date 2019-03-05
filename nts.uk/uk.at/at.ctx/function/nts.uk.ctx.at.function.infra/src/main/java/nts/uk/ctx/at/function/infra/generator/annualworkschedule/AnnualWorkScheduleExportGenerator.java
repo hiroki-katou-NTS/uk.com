@@ -174,10 +174,15 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 		if (!PrintFormat.AGREEMENT_36.equals(headerData.getPrintFormat())) {
 			return;
 		}
-		if (MonthsInTotalDisplay.TWO_MONTH.equals(headerData.getMonthsInTotalDisplay())) {
-			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_48"));
-		} else if (MonthsInTotalDisplay.THREE_MONTH.equals(headerData.getMonthsInTotalDisplay())) {
-			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_49"));
+		if (headerData.getMonthsInTotalDisplay().isPresent()) {
+			if (MonthsInTotalDisplay.TWO_MONTH.equals(headerData.getMonthsInTotalDisplay().get())) {
+				wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_48"));
+			} else if (MonthsInTotalDisplay.THREE_MONTH.equals(headerData.getMonthsInTotalDisplay().get())) {
+				wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_49"));
+			}
+		}
+		if (headerData.isMaximumAgreementTime()) {
+			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_66"));
 		}
 
 		List<String> monthPeriodLabels = headerData.getMonthPeriodLabels();

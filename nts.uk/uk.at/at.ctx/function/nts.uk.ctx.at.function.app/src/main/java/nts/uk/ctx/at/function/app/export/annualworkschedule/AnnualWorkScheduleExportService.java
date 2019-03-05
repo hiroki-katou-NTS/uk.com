@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.export.annualworkschedule;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,8 +19,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -40,7 +37,6 @@ import nts.uk.ctx.at.function.dom.adapter.jobtitle.JobTitleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.jobtitle.JobTitleImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -56,19 +52,15 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleGenerator;
-import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeInfo;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExcludeEmp;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
-import nts.uk.ctx.at.function.dom.annualworkschedule.export.ItemData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreMaxTimeMonthOut;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -92,8 +84,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkScheduleExportQuery> {
-	@Inject
-	private AnnualWorkScheduleRepository repostory;
 	@Inject
 	private AnnualWorkScheduleGenerator generator;
 	@Inject
@@ -210,8 +200,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	@Inject
 	private RegulationInfoEmployeeAdapter employeeAdapter;
 	@Inject
-	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
-	@Inject
 	private ClosureService closureService;
 	@Inject
 	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
@@ -293,11 +281,14 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			employeeIds = this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 			// アルゴリズム「年間勤務表の作成」を実行する
 			PeriodAtrOfAgreement periodAtr = null;
-			if (MonthsInTotalDisplay.TWO_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay().get())) {
-				periodAtr = PeriodAtrOfAgreement.TWO_MONTHS;
-			} else if (MonthsInTotalDisplay.THREE_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay().get())){
-				periodAtr = PeriodAtrOfAgreement.THREE_MONTHS;
+			if (setOutItemsWoSc.getMonthsInTotalDisplay().isPresent() && setOutItemsWoSc.isMultiMonthDisplay() && setOutItemsWoSc.getTotalAverageDisplay() == TotalAverageDisplay.TOTAL) {
+				if (MonthsInTotalDisplay.TWO_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay().get())) {
+					periodAtr = PeriodAtrOfAgreement.TWO_MONTHS;
+				} else if (MonthsInTotalDisplay.THREE_MONTH.equals(setOutItemsWoSc.getMonthsInTotalDisplay().get())) {
+					periodAtr = PeriodAtrOfAgreement.THREE_MONTHS;
+				}
 			}
+
 			this.createAnnualWorkSchedule36Agreement(cid, exportData, yearMonthPeriod, employeeIds, listItemOut, fiscalYear, startYm, setOutItemsWoSc.isOutNumExceedTime36Agr(), periodAtr, monthLimit, baseMonth, setOutItemsWoSc);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
@@ -332,6 +323,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			}
 			HeaderData headerData = exportData.getHeader();
 			headerData.setMonthPeriodLabels(periodLable);
+			headerData.setMaximumAgreementTime(true);
 			exportData.setHeader(headerData);
 		}
 		employeeIds.forEach(empId -> {
