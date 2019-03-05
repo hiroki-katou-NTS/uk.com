@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
@@ -179,9 +178,9 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 	
 	/** 指定月36協定上限月間時間の取得 */
 	@Override
-	public List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period) {
+	public List<AgreMaxTimeMonthOut> maxTime(String companyId, String employeeId, YearMonthPeriod period) {
 
-		List<AgreMaxTimeOfMonthly> results = new ArrayList<>();
+		List<AgreMaxTimeMonthOut> results = new ArrayList<>();
 		
 		// 年月期間を取得　→　年月分ループする
 		for (YearMonth procYm = period.start(); procYm.lessThanOrEqualTo(period.end()); procYm = procYm.nextMonth()) {
@@ -189,11 +188,13 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			// 管理期間の36協定時間を取得
 			val agreementTimeOfMngPrdOpt = this.agreementTimeOfMngPrdRepo.find(employeeId, procYm);
 			if (agreementTimeOfMngPrdOpt.isPresent()) {
-				results.add(agreementTimeOfMngPrdOpt.get().getAgreementMaxTime().getAgreementTime());
+				results.add(AgreMaxTimeMonthOut.of(
+						agreementTimeOfMngPrdOpt.get().getYearMonth(),
+						agreementTimeOfMngPrdOpt.get().getAgreementMaxTime().getAgreementTime()));
 			}
 		}
 		
-		// 月別実績の36協定上限時間リストを返す
+		// 月別実績の36協定月間上限時間リストを返す
 		return results;
 	}
 	
