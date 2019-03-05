@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Getter
 public class BreakdownAmountHis extends AggregateRoot implements ContinuousHistory<YearMonthHistoryItem, YearMonthPeriod, YearMonth> {
+
     /**
      * 会社ID
      */
