@@ -169,12 +169,12 @@ module nts.uk.at.view.kmk005.h {
                     if (model.wid !== '') {
                         // call service to save setting
                         service.saveData(command).done(() => {
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.start();
                         });
                     }
                 } else {
-                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                    alert({ messageId: "Msg_30" });
                 }
             }
 
@@ -189,7 +189,7 @@ module nts.uk.at.view.kmk005.h {
                 if (model.wid !== '') {
                     // call service to delete setting
                     service.saveData(command).done(() => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         self.start();
                     });
                 }
