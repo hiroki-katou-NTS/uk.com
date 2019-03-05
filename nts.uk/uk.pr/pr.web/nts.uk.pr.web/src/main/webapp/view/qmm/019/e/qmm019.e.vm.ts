@@ -234,6 +234,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.screenControl().enableE2_8(false);
             self.screenControl().enableE2_10(false);
             self.screenControl().enableE3_2(false);
+            self.dataScreen().proportionalAtr(shareModel.DeductionProportionalAtr.NOT_PROPORTIONAL.toString());
             self.screenControl().enableE3_6(false);
             self.screenControl().enableE3_9(false);
             self.screenControl().visibleE3_10(false);
