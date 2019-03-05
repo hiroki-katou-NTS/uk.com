@@ -46,11 +46,11 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 		if(domainService.checkDuplicateCode(addCommand.getCd())) {
 			throw new BusinessException("Msg_3");
 		} 
-		int[] itemOutCd = {1};
+		int[] itemOutCd = {2};
 		List<ItemOutTblBook> listItemOutTblBook = addCommand.getListItemOutput().stream()
 			.map(m -> {
 				String itemOutCdStr = (m.isItem36AgreementTime()&& m.getSortBy() == 1)? CD_36_AGREEMENT_TIME :
-									(m.isItem36AgreementTime()&& m.getSortBy() == 2 ? CD_36_AVERAGE : StringUtil.padLeft(String.valueOf(++itemOutCd[1]), 2, '0'));
+									(m.isItem36AgreementTime()&& m.getSortBy() == 2 ? CD_36_AVERAGE : StringUtil.padLeft(String.valueOf(++itemOutCd[0]), 2, '0'));
 				return ItemOutTblBook.createFromJavaType(companyId,
 				addCommand.getCd(), //年間勤務表(36チェックリスト)の出力条件.コード
 				itemOutCdStr,       //帳表に出力する項目.コード auto increment

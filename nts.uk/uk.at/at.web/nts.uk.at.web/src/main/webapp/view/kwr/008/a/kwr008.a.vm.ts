@@ -97,7 +97,6 @@ module nts.uk.at.view.kwr008.a {
 
                 // dump
                 self.selectedEmployee = ko.observableArray([]);
-
                 // initial ccg options
                 self.setDefaultCcg001Option();
 
@@ -155,7 +154,6 @@ module nts.uk.at.view.kwr008.a {
                     _.forEach(dataArr, data => {
                         outItemSettingCode.push(new share.ItemModel(data.cd, data.name));
                     });
-
                     self.outputItem(outItemSettingCode);
                     dfd.resolve();
                 });
@@ -238,6 +236,7 @@ module nts.uk.at.view.kwr008.a {
                             return;
                         } else {
                             self.selectedOutputItem(resultData.selectedCd);
+                            self.selectedOutputItem.valueHasMutated();
                             block.clear();
                         }
                     }).fail(err => {
