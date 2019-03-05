@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -96,6 +98,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(remainData, annData);
 			lstTmpAnnual.add(tmpAnnual);
 		}
+		//社員に対応する処理締めを取得する
+		Closure closureOfEmp = closureService.getClosureDataByEmployee(sid, startDate);
 		//期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = annWithinPeriod.algorithm(cid,
 				sid,
@@ -104,10 +108,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				startDate, 
 				false,
 				false,
-				Optional.of(true),
-				Optional.of(lstTmpAnnual), 
-				Optional.empty(),
-				Optional.of(true));
+				Optional.of(true),//上書きフラグ
+				Optional.of(lstTmpAnnual), //上書き用の暫定年休管理データ
+				Optional.empty(),//前回の年休の集計結果
+				Optional.of(true),//集計開始日を締め開始日とする
+				Optional.of(false), //不足分付与残数データ出力区分
+				ym.greaterThanOrEqualTo(closureOfEmp.getClosureMonth().getProcessingYm()) ? Optional.of(false) : Optional.of(true),//過去月集計モード
+				Optional.of(ym)); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
 			return Optional.of(outPut);
 		}
@@ -184,20 +191,47 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		{
 			// 「月別実績の勤怠時間」を取得
 			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(sid, datePeriod);
+			List<DailyInterimRemainMngData> lstFlex = new ArrayList<>();
 			for (val attendanceTime : attendanceTimes){
 				
 				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
 				val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
 						attendanceTime, attendanceTime.getDatePeriod().end());
 				if (compensFlexOpt.isPresent()) {
-					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(compensFlexOpt.get(), false));
+					lstFlex.add(compensFlexOpt.get());
 				}
 			}
+			for (DailyInterimRemainMngData x : lstFlex) {
+				if(!x.getAnnualHolidayData().isPresent()
+						&& x.getAnnualHolidayData().get().getUseDays().v() <= 1.0) {
+					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
+					continue;
+				}
+				TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
+				double useDays = annualInterim.getUseDays().v();
+				for(double i = 0; useDays - i >= 0; i++) {
+					DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
+					flexTmp.setRecAbsData(x.getRecAbsData());
+					TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng();
+					annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
+					annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
+					if(useDays - i >= 1) {
+						annualInterimTmp.setUseDays(new UseDay(1.0));
+					} else {
+						annualInterimTmp.setUseDays(new UseDay(0.5));
+					}
+					flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
+					
+					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
+				}
+			}
+			
 		}
 		
 		lstOutputData = lstOutputData.stream().filter(x -> x.getData().getAnnualHolidayData().isPresent()).collect(Collectors.toList());
 		return lstOutputData;
 	}
+		
 	private List<DailyInterimRemainMngDataAndFlg> getAnnualHolidayRemainData(String cid, String sid, DatePeriod datePeriod) {
 		
 		List<DailyInterimRemainMngDataAndFlg> lstOutputData = new ArrayList<>();
