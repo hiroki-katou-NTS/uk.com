@@ -1159,7 +1159,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             let result = _.map(data, (item: IBreakdownItemSet) => {
                 return new BreakdownItemSet(item);
             });
-            return result;
+            return _.sortBy(result, ['breakdownItemCode']);
         }
     }
 }
