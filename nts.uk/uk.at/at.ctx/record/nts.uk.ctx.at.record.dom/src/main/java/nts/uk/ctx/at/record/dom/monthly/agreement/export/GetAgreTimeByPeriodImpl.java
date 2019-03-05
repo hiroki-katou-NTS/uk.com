@@ -173,6 +173,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 		// 年間36協定時間を返す
 		return results;
 	}
+					.collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
 
 	@Override
 	public List<AgreementTimeByEmp> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
