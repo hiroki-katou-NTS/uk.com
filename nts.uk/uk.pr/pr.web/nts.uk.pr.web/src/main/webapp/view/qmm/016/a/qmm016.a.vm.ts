@@ -116,9 +116,11 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         let data = cachedData ? JSON.parse(cachedData).map(item => new model.TwoDmsElementItem(item)) : [];
                         if (data.length > 0) {
                             for (let i = 0; i < self.wageTableContent2dData().length; i++) {
-                                let rowData = data[i].listSecondDms();
-                                for (let j = 0; j < self.wageTableContent2dData()[i].listSecondDms().length; j++) {
-                                    self.wageTableContent2dData()[i].listSecondDms()[j].paymentAmount(rowData[j].paymentAmount());
+                                if (data[i]) {
+                                    let rowData = data[i].listSecondDms();
+                                    for (let j = 0; j < self.wageTableContent2dData()[i].listSecondDms().length; j++) {
+                                        self.wageTableContent2dData()[i].listSecondDms()[j].paymentAmount(rowData[j].paymentAmount());
+                                    }
                                 }
                             }
                         } else {
@@ -222,11 +224,12 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                     self.selectedTab('tab-1');
                     self.isSelectedHistory(false);
+                    block.clear();
                 }
             }).fail(error => {
                 dialog.alertError(error);
             }).always(() => {
-                block.clear();
+//                block.clear();
             });
         }
 
@@ -613,6 +616,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             // B2_8、B2_10、B2_11のエラーチェックを行う
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.wageTableContent(new model.WageTableContent(null));
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -625,7 +629,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#B2_8"), $("#B2_10"), $("#B2_11"));
                 if (params.firstElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -640,7 +643,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "MsgQ_250")
+                        $("#B2_8").focus();
+                });
             }).always(() => {
                 block.clear();
             });
@@ -649,6 +655,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createTwoDimensionWageTable() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.wageTableContent(new model.WageTableContent(null));
+            self.listSecondDimension([]);
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -662,7 +670,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#C2_8"), $("#C2_10"), $("#C2_11"));
                 if (params.firstElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -672,7 +679,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
                 params.secondElementRange = self.getElementRange(secondElementRange, $("#C2_15"), $("#C2_17"), $("#C2_18"));
                 if (params.secondElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -700,7 +706,12 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "MsgQ_251")
+                        $("#C2_8").focus();
+                    if (error.messageId == "MsgQ_252")
+                        $("#C2_15").focus();
+                });
             }).always(() => {
                 block.clear();
             });
@@ -709,6 +720,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createThreeDimensionWageTable() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.wageTableContent(new model.WageTableContent(null));
+            self.listThirdDimension([]);
+            self.listSecondDimension([]);
+            self.wageTableContent2dData([]);
             self.fakeSelectedValue(null);
             let params = {
                 historyID: self.selectedHistory().historyID(),
@@ -723,7 +738,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
                 params.firstElementRange = self.getElementRange(firstElementRange, $("#D2_8"), $("#D2_10"), $("#D2_11"));
                 if (params.firstElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -733,7 +747,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
                 params.secondElementRange = self.getElementRange(secondElementRange, $("#D2_15"), $("#D2_17"), $("#D2_18"));
                 if (params.secondElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -743,7 +756,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let thirdElementRange = ko.toJS(self.elementRangeSetting).thirdElementRange;
                 params.thirdElementRange = self.getElementRange(thirdElementRange, $("#D2_22"), $("#D2_24"), $("#D2_25"));
                 if (params.thirdElementRange == null) {
-                    self.wageTableContent(new model.WageTableContent(null));
                     return; 
                 }
             }
@@ -783,7 +795,14 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "MsgQ_251")
+                        $("#D2_8").focus();
+                    if (error.messageId == "MsgQ_252")
+                        $("#D2_15").focus();
+                    if (error.messageId == "MsgQ_253")
+                        $("#D2_22").focus();
+                });
             }).always(() => {
                 block.clear();
             });
@@ -808,6 +827,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createWorkLevelWageTable() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.wageTableContent(new model.WageTableContent(null));
+            self.listThirdDimension([]);
+            self.listSecondDimension([]);
+            self.wageTableContent2dData([]);
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -820,7 +843,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
             params.firstElementRange = self.getElementRange(firstElementRange, $("#F2_8"), $("#F2_10"), $("#F2_11"));
             if (params.firstElementRange == null) {
-                self.wageTableContent(new model.WageTableContent(null));
                 return; 
             }
             
@@ -828,7 +850,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
             params.secondElementRange = self.getElementRange(secondElementRange, $("#F2_15"), $("#F2_17"), $("#F2_18"));
             if (params.secondElementRange == null) {
-                self.wageTableContent(new model.WageTableContent(null));
                 return; 
             }
 
@@ -863,26 +884,31 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "MsgQ_251")
+                        $("#F2_8").focus();
+                    if (error.messageId == "MsgQ_252")
+                        $("#F2_15").focus();
+                });
             }).always(() => {
                 block.clear();
             });
         }
         
         getElementRange(elementRange, controlLower, controlUpper, controlStep): any {
-            if (elementRange.rangeLowerLimit == null || elementRange.rangeLowerLimit == "") {
+            if (!nts.uk.ntsNumber.isNumber(elementRange.rangeLowerLimit, true)) {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlLower.focus();
                 });
                 return null;
             }
-            if (elementRange.rangeUpperLimit == null || elementRange.rangeUpperLimit == "") {
+            if (!nts.uk.ntsNumber.isNumber(elementRange.rangeUpperLimit, true)) {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlUpper.focus();
                 });
                 return null;
             }
-            if (elementRange.stepIncrement == null || elementRange.stepIncrement == "") {
+            if (!nts.uk.ntsNumber.isNumber(elementRange.stepIncrement, true)) {
                 dialog.alertError({ messageId: 'MsgQ_3' }).then(() => {
                     controlStep.focus();
                 });
