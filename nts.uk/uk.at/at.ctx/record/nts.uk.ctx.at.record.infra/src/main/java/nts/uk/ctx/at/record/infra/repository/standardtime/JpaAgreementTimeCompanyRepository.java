@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -37,6 +36,11 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 	public void add(AgreementTimeOfCompany agreementTimeOfCompany) {
 		this.commandProxy().insert(toEntity(agreementTimeOfCompany));
 	}
+	
+	@Override
+	public void update(AgreementTimeOfCompany agreementTimeOfCompany) {
+		this.commandProxy().update(toEntity(agreementTimeOfCompany));
+	}
 
 	private KmkmtAgeementTimeCompany toEntity(AgreementTimeOfCompany agreementTimeOfCompany) {
 		val entity = new KmkmtAgeementTimeCompany();
@@ -44,7 +48,9 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		entity.kmkmtAgeementTimeCompanyPK = new KmkmtAgeementTimeCompanyPK();
 		entity.kmkmtAgeementTimeCompanyPK.companyId = agreementTimeOfCompany.getCompanyId();
 		entity.kmkmtAgeementTimeCompanyPK.basicSettingId = agreementTimeOfCompany.getBasicSettingId();
-		entity.laborSystemAtr = new BigDecimal(agreementTimeOfCompany.getLaborSystemAtr().value);
+		entity.laborSystemAtr = agreementTimeOfCompany.getLaborSystemAtr().value;
+		entity.upperMonth = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
@@ -53,7 +59,7 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		AgreementTimeOfCompany agreementTimeOfCompany = AgreementTimeOfCompany.createFromJavaType(
 				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.companyId,
 				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.basicSettingId,
-				kmkmtAgeementTimeCompany.laborSystemAtr);
+				kmkmtAgeementTimeCompany.laborSystemAtr, kmkmtAgeementTimeCompany.upperMonth, kmkmtAgeementTimeCompany.upperMonthAverage);
 		return agreementTimeOfCompany;
 	}
 

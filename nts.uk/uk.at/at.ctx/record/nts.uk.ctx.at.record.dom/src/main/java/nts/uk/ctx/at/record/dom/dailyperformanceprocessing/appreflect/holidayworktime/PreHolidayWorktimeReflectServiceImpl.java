@@ -105,7 +105,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 		daily.setEditState(lstEditState);*/
 		
-		List<IntegrationOfDaily> lstOutput =  commonService.lstIntegrationOfDaily(daily, holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
+		List<IntegrationOfDaily> lstOutput =  commonService.lstIntegrationOfDaily(daily, holidayWorkPara.getEmployeeId(),
+				holidayWorkPara.getBaseDate(), false);
 		return lstOutput;
 	}
 

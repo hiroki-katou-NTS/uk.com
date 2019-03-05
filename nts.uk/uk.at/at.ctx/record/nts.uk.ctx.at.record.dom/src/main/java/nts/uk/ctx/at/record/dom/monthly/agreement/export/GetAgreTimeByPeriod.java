@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
@@ -39,7 +38,7 @@ public interface GetAgreTimeByPeriod {
 	 * @param period 年月期間
 	 * @return 月別実績の36協定上限時間リスト
 	 */
-	List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period);
+	List<AgreMaxTimeMonthOut> maxTime(String companyId, String employeeId, YearMonthPeriod period);
 
 	/**
 	 * 指定期間36協定上限複数月平均時間の取得

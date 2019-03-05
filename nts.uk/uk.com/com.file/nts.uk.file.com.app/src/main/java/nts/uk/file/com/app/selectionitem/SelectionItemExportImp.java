@@ -23,6 +23,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID("SelectionItem")
@@ -63,6 +64,11 @@ public class SelectionItemExportImp implements MasterListData {
         return datas;
     }
 
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
+	
     private MasterData toData(SelectionItemReportData x) {
         Map<String, MasterCellData> data = new HashMap<>();
         data.put(SelectionItemColumn.CPS016_27, MasterCellData.builder()

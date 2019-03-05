@@ -36,6 +36,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
 *
@@ -83,17 +84,17 @@ public class RoleMonthlyExportExcelImpl  {
         // add the work place sheet
         List<SheetData> sheetDatas = new ArrayList<>();
         SheetData sheet1 = new SheetData(getMasterDatas(query,listEmployeeRoleDto,authSeting,listAttItemNameNoAuth),
-                getHeaderColumns(query), null, null, TextResource.localize("KDW006_145"));
+                getHeaderColumns(query), null, null, TextResource.localize("KDW006_145"), MasterListMode.NONE);
         sheetDatas.add(sheet1);
         SheetData sheet2 = new SheetData(getMasterDatasSheet2(query,listAttItemNameNoAuth,listConItem,mapListRecordMonthly),
-                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_146"));
+                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_146"), MasterListMode.NONE);
         sheetDatas.add(sheet2);
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBzMonthly,mapListRecordMonthly,mapAttNameMonthlys,companyId,mode),
-                getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_147"));
+                getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_147"), MasterListMode.NONE);
         sheetDatas.add(sheet3);
         if(mode==1){
         	 SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
-                     getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
+                     getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"), MasterListMode.NONE);
              sheetDatas.add(sheet4);
         }
        

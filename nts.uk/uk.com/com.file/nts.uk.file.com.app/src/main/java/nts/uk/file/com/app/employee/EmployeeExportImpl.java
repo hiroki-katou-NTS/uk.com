@@ -20,6 +20,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  * 
@@ -95,6 +96,11 @@ public class EmployeeExportImpl implements MasterListData {
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
 		return TextResource.localize("CMM008_14");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 	
 	private void putEmptyData(Map<String, Object> data){

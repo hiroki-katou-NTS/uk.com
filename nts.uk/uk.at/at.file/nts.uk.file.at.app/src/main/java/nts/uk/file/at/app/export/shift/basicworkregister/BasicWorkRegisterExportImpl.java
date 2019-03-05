@@ -27,6 +27,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -49,9 +50,9 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasWorkplace(query), getHeaderColumnsWorkspace(query),
-				 null, null, TextResource.localize("KSM006_25"));
+				 null, null, TextResource.localize("KSM006_25"), MasterListMode.NONE);
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), getHeaderColumnsForClass(query),
-				 null, null, TextResource.localize("KSM006_26"));
+				 null, null, TextResource.localize("KSM006_26"), MasterListMode.NONE);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
 		 return sheetDatas;
@@ -60,6 +61,11 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM006_24");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 	@Override
