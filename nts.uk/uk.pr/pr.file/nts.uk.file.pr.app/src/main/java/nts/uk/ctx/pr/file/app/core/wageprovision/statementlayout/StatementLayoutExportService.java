@@ -265,6 +265,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 					Long commonAmount = paymentItemDetail.getCommonAmount().get().v();
 					paymentEx.setCommonAmount(formatCurrency(commonAmount));
 				}
+				break;
 			default:
 				break;
 			}
@@ -324,6 +325,12 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 					if (statementItemMap.containsKey(key)) {
 						deductionEx.setSupplyOffsetName(statementItemMap.get(key).getName());
 					}
+				}
+				break;
+			case COMMON_AMOUNT:
+				if (deductionItemDetail.getCommonAmount().isPresent()) {
+					Long commonAmount = deductionItemDetail.getCommonAmount().get().v();
+					deductionEx.setCommonAmount(formatCurrency(commonAmount));
 				}
 				break;
 			default:
