@@ -698,12 +698,17 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             });
             for (operand of operands) {
                 if (isNaN(operand)) {
-                    if (!(operand.indexOf(self.OPEN_CURLY_BRACKET) > -1)) {
+                    if (!operand.contains(self.OPEN_CURLY_BRACKET)) {
                         self.setErrorToFormula('MsgQ_233', [operand]);
                         continue;
                     }
-                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)),
-                        elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
+                    if (!operand.contains(self.CLOSE_CURLY_BRACKET)) {
+                        let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.length);
+                        self.setErrorToFormula('MsgQ_233', [operand]);
+                        continue;
+                    }
+                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
                     if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [elementType]);
                     if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
                     if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
