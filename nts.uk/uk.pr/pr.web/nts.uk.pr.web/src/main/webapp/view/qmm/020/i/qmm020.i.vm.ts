@@ -140,7 +140,10 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     }
                 ]
             });
-
+            $('#I2_1_container table tr th').attr( 'tabIndex', -1 );
+            $('#I2_1').attr( 'tabIndex', -1 );
+            $('#I2_1 tr').attr( 'tabIndex', -1 );
+            $('#I2_1 tr td').attr( 'tabIndex', -1 );
         }
 
     }
@@ -229,7 +232,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             }
             this.colorSalary = isNullOrUndefined(data.salaryCode) ? 0 : 1;
             this.colorBonus = isNullOrUndefined(data.bonusCode) ? 0 : 1;
-            this.colorMaster = isNullOrUndefined(data.masterCode) ? 0 : 1;
+            this.colorMaster = this.master === "-" ? 0 : 1;
         }
 
         static fromApp(listEmployee: Array<EmployeeSearchDto>, items: Array<IConfirmPersonSetStatus>) {

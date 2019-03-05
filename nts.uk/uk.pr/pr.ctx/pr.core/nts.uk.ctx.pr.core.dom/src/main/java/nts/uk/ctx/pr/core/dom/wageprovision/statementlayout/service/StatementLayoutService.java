@@ -258,8 +258,8 @@ public class StatementLayoutService {
             return;
         }
 
-        if((layoutPatternClone == StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON.value) ||
-                (layoutPatternClone == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value)) {
+        if((layoutPattern == StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON.value) ||
+                (layoutPattern == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value)) {
             throw new BusinessException("MsgQ_33");
         }
 
