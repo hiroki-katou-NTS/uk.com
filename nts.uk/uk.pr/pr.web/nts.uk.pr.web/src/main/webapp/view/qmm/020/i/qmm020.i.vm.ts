@@ -232,7 +232,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             }
             this.colorSalary = isNullOrUndefined(data.salaryCode) ? 0 : 1;
             this.colorBonus = isNullOrUndefined(data.bonusCode) ? 0 : 1;
-            this.colorMaster = isNullOrUndefined(data.masterCode) ? 0 : 1;
+            this.colorMaster = this.master === "-" ? 0 : 1;
         }
 
         static fromApp(listEmployee: Array<EmployeeSearchDto>, items: Array<IConfirmPersonSetStatus>) {
