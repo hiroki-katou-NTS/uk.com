@@ -141,9 +141,12 @@ module nts.uk.at.view.kwr008.a {
             
             checkAverage(code) {
                 var self = this;
+                block.invisible();
                 service.checkAverage(code).done(data => {
                     self.selectAverage(data);
-                }); 
+                }).always(() => {
+                    block.clear();
+                });
             }
 
             getOutItemSettingCode() {
@@ -416,6 +419,7 @@ module nts.uk.at.view.kwr008.a {
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
                 } else {
+                    $('.nts-input').trigger('validate');
                     $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
