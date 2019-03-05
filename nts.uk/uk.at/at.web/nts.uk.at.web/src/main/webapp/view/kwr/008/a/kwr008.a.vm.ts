@@ -132,16 +132,11 @@ module nts.uk.at.view.kwr008.a {
                 self.maxDaysCumulationByEmp = ko.observable(0);
                 
                 self.standardMonth = {
-                    value: ko.observable(''),
-                    constraint: 'Height',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        placeholder: "",
                         width: "20px",
-                        textalign: "left"
+                        textalign: "right"
                     })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
+                    required: ko.observable(true)
                 };
             }
             
@@ -184,7 +179,7 @@ module nts.uk.at.view.kwr008.a {
                     }
                 }
                 if(self.selectAverage() && self.printFormat() == 1){
-                    data.curentMonth = moment(self.curentMonth(),'YYYYMM').format('YYYY/MM');  
+                    data.curentMonth = self.curentMonth();  
                 }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage = self.selectedBreakPage().toString();
@@ -377,7 +372,7 @@ module nts.uk.at.view.kwr008.a {
                 });
                 
                 service.getCurentMonth().done((data) => {
-                    self.curentMonth(data);
+                    self.curentMonth(data.toString().substring(4));
                 });
 
                 //A4

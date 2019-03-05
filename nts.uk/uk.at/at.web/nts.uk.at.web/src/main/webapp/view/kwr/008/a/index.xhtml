@@ -22,6 +22,7 @@
 			<com:scriptfile path="kwr008.a.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.sys.portal.dom.toppagepart.size.Height
+				nts.uk.shr.com.time.calendar.Month
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -76,8 +77,16 @@
 	                    <!-- A11 -->
 						<div class="standardMonth" data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1">
 							<span class="label">#{i18n.getText('KWR008_67')}</span>
-							<div data-bind="ntsDatePicker: {value: curentMonth, dateFormat: 'yearmonth'}"></div>
-							<span class="label">#{i18n.getText('KWR008_68')}</span>
+							<div data-bind="with: standardMonth" class="date-range-picker">
+								<input id="" tabindex="5" data-bind="ntsNumberEditor: {
+									name:'#{i18n.getText('KWR008_67')}',
+									value: $parent.curentMonth,
+	            					option: option,
+	            					required: required,
+									constraint: 'Month'
+									}" />
+								<span class="label">#{i18n.getText('KWR008_68')}</span>
+							</div>
 						</div>
 
 						<!-- A3 -->

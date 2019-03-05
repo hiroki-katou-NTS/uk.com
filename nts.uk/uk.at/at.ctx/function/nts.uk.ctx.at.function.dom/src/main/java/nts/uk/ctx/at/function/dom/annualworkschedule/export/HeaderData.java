@@ -25,7 +25,7 @@ public class HeaderData {
 	private String empInfoLabel;
 	/** C1_2 */
 	private List<String> months;
-	/** C2_2 or C2_4*/
+	/** C2_2 or C2_4 or C2_6*/
 	private Optional<MonthsInTotalDisplay> monthsInTotalDisplay;
 	/** C2_3 or C2_5 */
 	private List<String> monthPeriodLabels;
