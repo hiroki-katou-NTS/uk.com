@@ -177,7 +177,6 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 		// 年間36協定時間を返す
 		return results;
 	}
-					.collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
 
 	@Override
 	public List<AgreementTimeByEmp> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
@@ -256,7 +255,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 
 		// 36協定基本設定を取得する
 		val basicAgreementSet = this.agreementDomainService.getBasicSet(
-				companyId, employeeId, criteria, workingSystem);
+				companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
 		
 		for (PeriodAtrOfAgreement periodAtr : periodAtrs) {
 			// ループする期間を判断
@@ -283,7 +282,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 
 				// 36協定時間を合計
 				for (val agreeemntTime : agreementTimeList) {
-					result.addMinutesToAgreementTime(agreeemntTime.getAgreementTime().getAgreementTime().v());
+					result.addMinutesToAgreementTime(agreeemntTime.getAgreementTime().getAgreementTime().getAgreementTime().v());
 				}				
 
 				// 取得した限度時間をセット

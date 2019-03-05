@@ -78,7 +78,7 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 			// 状態が「超過」判定の件数をカウント
 			int excessCount = 0;
 			for (val agreementTime : i.getValue()){
-				switch (agreementTime.getAgreementTime().getStatus()){
+				switch (agreementTime.getAgreementTime().getAgreementTime().getStatus()){
 				case EXCESS_LIMIT_ERROR:
 				case EXCESS_LIMIT_ERROR_SP:
 				case EXCESS_EXCEPTION_LIMIT_ALARM:
@@ -90,7 +90,7 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 					break;
 				}
 			}
-			result.put(i.getKey(), AgreementExcessInfo.of(excessCount, yearMonths));
+			result.put(i.getKey(), AgreementExcessInfo.of(excessCount, 0, yearMonths));
 		});
 		
 		
