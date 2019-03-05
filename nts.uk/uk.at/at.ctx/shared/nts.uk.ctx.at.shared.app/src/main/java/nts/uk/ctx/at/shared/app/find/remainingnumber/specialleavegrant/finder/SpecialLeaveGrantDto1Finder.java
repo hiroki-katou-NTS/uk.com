@@ -54,9 +54,11 @@ public class SpecialLeaveGrantDto1Finder implements PeregFinder<SpecialLeaveGran
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getAllData(nts.uk.shr.pereg.app.find.PeregQueryByListEmp)
+	 */
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		return specialLeaveGrantFinder.getAllData(query, SpecialLeaveGrantCode.CS00039.value);
 	}
 }

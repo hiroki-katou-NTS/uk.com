@@ -40,4 +40,11 @@ public interface SpecialLeaveGrantRepository {
 	 */
 	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String cid, List<String> sids , int specialCode, int expirationStatus);
 
+	/**
+	 * @param listEmpID
+	 * @param specialLeaveCD
+	 * @return
+	 */
+	List<SpecialLeaveGrantRemainingData> getAllByListEmpID(List<String> listEmpID, int specialLeaveCD);
+
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,5 @@ public interface PublicHolidayRemainRepository{
 	void update(PublicHolidayRemain domain);
 	
 	void delete(String sid);
+	List<PublicHolidayRemain> getAll(List<String> sids);
 }
