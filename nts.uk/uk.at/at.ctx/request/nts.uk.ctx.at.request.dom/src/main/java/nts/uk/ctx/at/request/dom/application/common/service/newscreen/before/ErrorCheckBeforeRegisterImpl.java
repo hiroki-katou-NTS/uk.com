@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -31,6 +32,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36ErrorInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 //import nts.uk.shr.com.context.AppContexts;
@@ -212,7 +215,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 */
 	private boolean isErrorCheck36TimeLimit(Time36UpperLimitCheckResult result,
 			OvertimeRestAppCommonSetting overtimeSeting) {
-		return result.getErrorFlg() && UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
+		return result.getErrorFlg().size()>0 && UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
 	}
 
 	@Override
@@ -239,8 +242,30 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+			AppOvertimeDetail appOvertimeDetail = result.getAppOvertimeDetail().get();
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(Time36ErrorInfo error : result.getErrorFlg()){
+				switch (error) {
+				case MONTHLY_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間");
+					break;
+				case ANNUAL_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "年間");
+					break;
+				case MAX_MONTH_TIME_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間の上限規制");
+					break;
+				case AVERAGE_MONTH_TIME_ERROR:
+					for(Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth : appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()){
+						Integer number = time36AgreeUpperLimitPerMonth.getPeriod().end().v()-time36AgreeUpperLimitPerMonth.getPeriod().start().v()+1;
+						bundledBusinessExceptions.addMessage("Msg_329", number + "ヶ月平均の上限規制");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -266,11 +291,33 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
-				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+				employeeId, appDate, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+			AppOvertimeDetail appOvertimeDetail = result.getAppOvertimeDetail().get();
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(Time36ErrorInfo error : result.getErrorFlg()){
+				switch (error) {
+				case MONTHLY_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間");
+					break;
+				case ANNUAL_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "年間");
+					break;
+				case MAX_MONTH_TIME_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間の上限規制");
+					break;
+				case AVERAGE_MONTH_TIME_ERROR:
+					for(Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth : appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()){
+						Integer number = time36AgreeUpperLimitPerMonth.getPeriod().end().v()-time36AgreeUpperLimitPerMonth.getPeriod().start().v()+1;
+						bundledBusinessExceptions.addMessage("Msg_329", number + "ヶ月平均の上限規制");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -299,8 +346,30 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+			AppOvertimeDetail appOvertimeDetail = result.getAppOvertimeDetail().get();
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(Time36ErrorInfo error : result.getErrorFlg()){
+				switch (error) {
+				case MONTHLY_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間");
+					break;
+				case ANNUAL_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "年間");
+					break;
+				case MAX_MONTH_TIME_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間の上限規制");
+					break;
+				case AVERAGE_MONTH_TIME_ERROR:
+					for(Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth : appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()){
+						Integer number = time36AgreeUpperLimitPerMonth.getPeriod().end().v()-time36AgreeUpperLimitPerMonth.getPeriod().start().v()+1;
+						bundledBusinessExceptions.addMessage("Msg_329", number + "ヶ月平均の上限規制");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -326,11 +395,33 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
-				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+				appDate, ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+			AppOvertimeDetail appOvertimeDetail = result.getAppOvertimeDetail().get();
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(Time36ErrorInfo error : result.getErrorFlg()){
+				switch (error) {
+				case MONTHLY_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間");
+					break;
+				case ANNUAL_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "年間");
+					break;
+				case MAX_MONTH_TIME_ERROR:
+					bundledBusinessExceptions.addMessage("Msg_329", "月間の上限規制");
+					break;
+				case AVERAGE_MONTH_TIME_ERROR:
+					for(Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth : appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()){
+						Integer number = time36AgreeUpperLimitPerMonth.getPeriod().end().v()-time36AgreeUpperLimitPerMonth.getPeriod().start().v()+1;
+						bundledBusinessExceptions.addMessage("Msg_329", number + "ヶ月平均の上限規制");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
