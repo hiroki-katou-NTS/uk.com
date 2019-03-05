@@ -29,26 +29,19 @@ public class QpbmtBreakAmountHis extends UkJpaEntity implements Serializable
     @EmbeddedId
     public QpbmtBreakAmountHisPk breakAmountHisPk;
 
-    
+
     /**
-    * 給与賞与区分
-    */
+     * 開始年月
+     */
     @Basic(optional = false)
-    @Column(name = "SALARY_BONUS_ATR")
-    public int salaryBonusAtr;
-    
-    /**
-    * 期間
-    */
-    @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
+    @Column(name = "START_YM")
     public int startYearMonth;
-    
+
     /**
-    * 期間
-    */
+     * 終了年月
+     */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
+    @Column(name = "END_YM")
     public int endYearMonth;
     
     @Override
@@ -62,11 +55,11 @@ public class QpbmtBreakAmountHis extends UkJpaEntity implements Serializable
                 (x -> new QpbmtBreakAmountHis(
                         new QpbmtBreakAmountHisPk(
                                 domain.getCid(),
+                                domain.getEmployeeId(),
                                 domain.getCategoryAtr().value,
                                 domain.getItemNameCd().v(),
-                                domain.getEmployeeId(),
+                                domain.getSalaryBonusAtr().value,
                                 x.identifier()),
-                        domain.getSalaryBonusAtr().value,
                         x.start().v(),
                         x.end().v()
                         )).collect(Collectors.toList());

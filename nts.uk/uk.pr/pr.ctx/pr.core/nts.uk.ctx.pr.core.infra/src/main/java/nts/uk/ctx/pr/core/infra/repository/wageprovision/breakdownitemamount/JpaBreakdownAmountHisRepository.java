@@ -23,13 +23,13 @@ public class JpaBreakdownAmountHisRepository extends JpaRepository implements Br
             " AND  f.breakAmountHisPk.categoryAtr =:categoryAtr " +
             " AND  f.breakAmountHisPk.itemNameCd =:itemNameCd " +
             " AND  f.breakAmountHisPk.employeeId =:employeeId" +
-            " AND  f.salaryBonusAtr =:salaryBonusAtr ";
+            " AND  f.breakAmountHisPk.salaryBonusAtr =:salaryBonusAtr ";
     private static final String DELETE_BY_HISTORYID = "DELETE FROM QpbmtBreakAmountHis f" +
             " WHERE  f.breakAmountHisPk.cid =:cid " +
             " AND  f.breakAmountHisPk.categoryAtr =:categoryAtr " +
             " AND  f.breakAmountHisPk.itemNameCd =:itemNameCd " +
             " AND  f.breakAmountHisPk.employeeId =:employeeId" +
-            " AND  f.salaryBonusAtr =:salaryBonusAtr " +
+            " AND  f.breakAmountHisPk.salaryBonusAtr =:salaryBonusAtr " +
             " AND  f.breakAmountHisPk.historyId =:historyId ";
 
     private static final String UPDATE_BY_HISTORYID = "UPDATE QpbmtBreakAmountHis f" +
@@ -38,7 +38,7 @@ public class JpaBreakdownAmountHisRepository extends JpaRepository implements Br
             " AND  f.breakAmountHisPk.categoryAtr =:categoryAtr " +
             " AND  f.breakAmountHisPk.itemNameCd =:itemNameCd " +
             " AND  f.breakAmountHisPk.employeeId =:employeeId" +
-            " AND  f.salaryBonusAtr =:salaryBonusAtr " +
+            " AND  f.breakAmountHisPk.salaryBonusAtr =:salaryBonusAtr " +
             " AND  f.breakAmountHisPk.historyId =:lastHistoryId ";
 
     private static final String UPDATE_BY_LASTHISTORYID = "UPDATE QpbmtBreakAmountHis f" +
@@ -47,7 +47,7 @@ public class JpaBreakdownAmountHisRepository extends JpaRepository implements Br
             " AND  f.breakAmountHisPk.categoryAtr =:categoryAtr " +
             " AND  f.breakAmountHisPk.itemNameCd =:itemNameCd " +
             " AND  f.breakAmountHisPk.employeeId =:employeeId" +
-            " AND  f.salaryBonusAtr =:salaryBonusAtr " +
+            " AND  f.breakAmountHisPk.salaryBonusAtr =:salaryBonusAtr " +
             " AND  f.breakAmountHisPk.historyId =:lastHistoryId ";
 
     private Optional<BreakdownAmountHis> toDomain(List<QpbmtBreakAmountHis> entity) {
@@ -60,7 +60,7 @@ public class JpaBreakdownAmountHisRepository extends JpaRepository implements Br
                     .map(item -> new YearMonthHistoryItem(item.breakAmountHisPk.historyId,
                             new YearMonthPeriod(new YearMonth(item.startYearMonth), new YearMonth(item.endYearMonth))))
                     .collect(Collectors.toList());
-            int salaryBonusAtr = entity.get(0).salaryBonusAtr;
+            int salaryBonusAtr = entity.get(0).breakAmountHisPk.categoryAtr;
             return Optional.of(new BreakdownAmountHis(cid, categoryAtr, itemNameCd, employeeId, period, salaryBonusAtr));
         } else {
             return Optional.empty();

@@ -28,6 +28,13 @@ public class QpbmtBreakAmountHisPk implements Serializable {
     public String cid;
 
     /**
+     * 社員ID
+     */
+    @Basic(optional = false)
+    @Column(name = "SID")
+    public String employeeId;
+
+    /**
      * カテゴリ区分
      */
     @Basic(optional = false)
@@ -42,16 +49,16 @@ public class QpbmtBreakAmountHisPk implements Serializable {
     public String itemNameCd;
 
     /**
-     * 社員ID
+     * 給与賞与区分
      */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+    @Column(name = "SALARY_BONUS_ATR")
+    public int salaryBonusAtr;
 
     /**
      * 履歴ID
      */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
 }
