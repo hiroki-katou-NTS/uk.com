@@ -60,7 +60,7 @@ public class AddBreakdownAmountHisCommandHandler extends CommandHandler<Breakdow
             }
             List<BreakdownAmountList> lstBreakdownAmountList = dataAmout.stream().map(i -> new BreakdownAmountList(i.getBreakdownItemCode(), i.getAmount())).collect(Collectors.toList());
             BreakdownAmount data = new BreakdownAmount(historyIdRd, lstBreakdownAmountList);
-            breakdownAmountRepository.add(data);
+            breakdownAmountRepository.add(cid,employeeId,categoryAtr,itemNameCd,salaryBonusAtr,data);
         }
         else{
             String historyUpdate = command.getHistoryUpdate();
@@ -85,7 +85,7 @@ public class AddBreakdownAmountHisCommandHandler extends CommandHandler<Breakdow
             }
             List<BreakdownAmountList> lstBreakdownAmountList = dataAmout.stream().map(i -> new BreakdownAmountList(i.getBreakdownItemCode(), i.getAmount())).collect(Collectors.toList());
             BreakdownAmount data = new BreakdownAmount(historyUpdate, lstBreakdownAmountList);
-            breakdownAmountRepository.update(data);
+            breakdownAmountRepository.update(cid,employeeId,categoryAtr,itemNameCd,salaryBonusAtr,data);
         }
 
     }

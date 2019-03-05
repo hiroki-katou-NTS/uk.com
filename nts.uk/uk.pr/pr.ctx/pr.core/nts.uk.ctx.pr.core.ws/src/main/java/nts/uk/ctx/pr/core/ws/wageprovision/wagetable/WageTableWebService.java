@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.AddWageTableCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.AddWageTableCommandHandler;
@@ -98,19 +99,40 @@ public class WageTableWebService {
 	@POST
 	@Path("/create-1d-wage-table")
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
-		return contentCreater.createOneDimensionWageTable(params);
+		WageTableContentDto dto = contentCreater.createOneDimensionWageTable(params);
+		if (dto.getList1dElements().size() > 100) {
+			throw new BusinessException("MsgQ_250");
+		}
+		return dto;
 	}
 
 	@POST
 	@Path("/create-2d-wage-table")
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
-		return contentCreater.createTwoDimensionWageTable(params);
+		WageTableContentDto dto = contentCreater.createTwoDimensionWageTable(params);
+		if (dto.getList2dElements().size() > 100) {
+			throw new BusinessException("MsgQ_251");
+		}
+		if (dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
+			throw new BusinessException("MsgQ_252");
+		}
+		return dto;
 	}
 
 	@POST
 	@Path("/create-3d-wage-table")
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
-		return contentCreater.createThreeDimensionWageTable(params);
+		WageTableContentDto dto = contentCreater.createThreeDimensionWageTable(params);
+		if (dto.getList2dElements().size() > 100) {
+			throw new BusinessException("MsgQ_251");
+		}
+		if (dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
+			throw new BusinessException("MsgQ_252");
+		}
+		if (dto.getList3dElements().size() > 100) {
+			throw new BusinessException("MsgQ_253");
+		}
+		return dto;
 	}
 
 }

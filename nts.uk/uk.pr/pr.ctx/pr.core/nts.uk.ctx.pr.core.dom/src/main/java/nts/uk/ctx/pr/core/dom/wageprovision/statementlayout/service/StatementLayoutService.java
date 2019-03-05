@@ -135,6 +135,7 @@ public class StatementLayoutService {
         List<LineByLineSetting> deducationLineList = new ArrayList<>();
         List<SettingByItem> itemsInLine1 = new ArrayList<>();
         List<SettingByItem> itemsInLine2 = new ArrayList<>();
+        List<SettingByItem> itemsInLine3 = new ArrayList<>();
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 1, F101, statementCode, DeductionTotalObjAtr.INSIDE.value));
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 2, F102, statementCode, DeductionTotalObjAtr.INSIDE.value));
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  3, F103, statementCode, DeductionTotalObjAtr.INSIDE.value));
@@ -143,7 +144,14 @@ public class StatementLayoutService {
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  6, F106, statementCode, DeductionTotalObjAtr.OUTSIDE.value));
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  7, F107, statementCode, DeductionTotalObjAtr.INSIDE.value));
         itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  8, F108, statementCode, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine2.add(getNewItemTypeDeduction(histIdNew,  9, F114, statementCode, DeductionTotalObjAtr.OUTSIDE.value));
+
+        SettingByItem itemF114 = getNewItemTypeDeduction(histIdNew, 9, F114, statementCode, DeductionTotalObjAtr.OUTSIDE.value);
+        if (StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value == layoutPattern) {
+            itemsInLine3.add(itemF114);
+            deducationLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 3, itemsInLine3));
+        } else {
+            itemsInLine2.add(itemF114);
+        }
 
         LineByLineSetting line1 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, itemsInLine1);
         LineByLineSetting line2 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, itemsInLine2);
@@ -159,8 +167,6 @@ public class StatementLayoutService {
         listSettingByCtg.add(timeCtgSetting);
 
         if(StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value == layoutPattern) {
-            deducationLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 3, new ArrayList<>()));
-
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, new ArrayList<>()));
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, new ArrayList<>()));
         }
@@ -252,8 +258,8 @@ public class StatementLayoutService {
             return;
         }
 
-        if((layoutPatternClone == StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON.value) ||
-                (layoutPatternClone == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value)) {
+        if((layoutPattern == StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON.value) ||
+                (layoutPattern == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value)) {
             throw new BusinessException("MsgQ_33");
         }
 
