@@ -232,7 +232,6 @@ public class DetailFormulaCalculationService {
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
         if (StringUtils.isBlank(formula)) throw new BusinessException("MsgQ_236");
-        formula = formula.replaceAll("\\s+", "");
         for (Map.Entry replaceValue : replaceValues.entrySet()) {
             formula = formula.replace(replaceValue.getKey().toString(), replaceNegativeValue(replaceValue.getValue().toString()));
         }
@@ -397,14 +396,10 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(YEAR_MONTH)) {
             try {
                 Integer additionalMonth = Integer.parseInt(functionParameter[1]);
-                return "\"" + GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").addMonths(additionalMonth).toString() + "\"";
-            } catch (DateTimeParseException | NumberFormatException e) {
-                try {
-                    Integer additionalMonth = Integer.parseInt(functionParameter[1]);
-                    return "\"" + new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).addMonths(additionalMonth).toString() + "\"";
-                } catch (DateTimeParseException | NumberFormatException e1) {
-                    throw new BusinessException("MsgQ_240", functionName);
-                }
+                YearMonth yearMonth = new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).addMonths(additionalMonth);
+                return "\"" + yearMonth.year() + "/" + (yearMonth.month() < 10 ? "0" + yearMonth.month() : yearMonth.month()) + "\"";
+            } catch (DateTimeParseException | NumberFormatException e1) {
+                throw new BusinessException("MsgQ_240", functionName, "2");
             }
         }
         if (functionName.equals(AND)) {
@@ -415,20 +410,16 @@ public class DetailFormulaCalculationService {
         }
         if (functionName.equals(YEAR_EXTRACTION)) {
             try {
-                return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").year() + "";
-            } catch (DateTimeParseException | NumberFormatException e) {
-                try {
-                    return new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).year() + "";
-                } catch (DateTimeParseException | NumberFormatException e1) {
-                    throw new BusinessException("MsgQ_240", functionName);
-                }
+                return new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).year() + "";
+            } catch (DateTimeParseException | NumberFormatException e1) {
+                throw new BusinessException("MsgQ_240", functionName, "1");
             }
         }
         if (functionName.equals(MONTH_EXTRACTION)) {
             try {
-                return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").month() + "";
-            } catch (DateTimeParseException | NumberFormatException e) {
-                throw new BusinessException("MsgQ_240", functionName);
+                return new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).month() + "";
+            } catch (NumberFormatException e) {
+                throw new BusinessException("MsgQ_240", functionName, "1");
             }
         }
         try {
@@ -492,7 +483,8 @@ public class DetailFormulaCalculationService {
             throw new BusinessException("MsgQ_239", functionName);
         }
         String conditionResult = calculateSingleCondition(functionParameter[0], true, functionName);
-        if (conditionResult.toUpperCase().equals("TRUE")) return calculateSingleCondition(functionParameter[1], false, functionName);
+        if (conditionResult.toUpperCase().equals("TRUE"))
+            return calculateSingleCondition(functionParameter[1], false, functionName);
         return calculateSingleCondition(functionParameter[2], false, functionName);
     }
 
@@ -580,30 +572,34 @@ public class DetailFormulaCalculationService {
 
     private String getMinValue(String[] values) {
         Double minValue = Double.MAX_VALUE, valueInDouble;
+        int index = 0;
         try {
             for (String value : values) {
+                index++;
                 valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble < minValue) {
                     minValue = valueInDouble;
                 }
             }
         } catch (NumberFormatException e) {
-            throw new BusinessException("MsgQ_240", combineElementTypeAndName(FUNCTION, MIN_VALUE));
+            throw new BusinessException("MsgQ_240", MIN_VALUE, index + "");
         }
         return minValue + "";
     }
 
     private String getMaxValue(String[] values) {
         Double minValue = Double.MIN_VALUE, valueInDouble;
+        int index = 0;
         try {
             for (String value : values) {
+                index++;
                 valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
                 if (valueInDouble > minValue) {
                     minValue = valueInDouble;
                 }
             }
         } catch (NumberFormatException e) {
-            throw new BusinessException("MsgQ_240", combineElementTypeAndName(FUNCTION, MAX_VALUE));
+            throw new BusinessException("MsgQ_240", MAX_VALUE, index + "");
         }
         return minValue + "";
     }

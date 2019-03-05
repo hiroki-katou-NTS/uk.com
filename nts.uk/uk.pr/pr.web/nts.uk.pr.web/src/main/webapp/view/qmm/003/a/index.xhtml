@@ -41,9 +41,9 @@
 	            <button tabindex="7" class="danger" data-bind="enable: totalRtp() > 0, click: openDialogQmm003d, timeClick: 500">#{i18n.getText('QMM003_7')}</button>
 	        </div>
 	        <div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
+				<div class="fixed-flex-layout-left" style="padding-top: 6px; padding-left: 20px">
 					<!-- A2_1 -->
-					<div data-bind="ntsPanel:{width: '400px', height: '580px', direction: 'right', showIcon: true, visible: true}">
+					<div data-bind="ntsPanel:{width: '400px', height: '450px', direction: 'right', showIcon: true, visible: true}">
 						<!-- A2_2 -->
 						<div style="width: 400px" tabindex="8"
 							data-bind="ntsSearchBox: {
@@ -59,7 +59,7 @@
 						<table id="rsdTree" tabindex="9"
 							data-bind="ntsTreeGridView:{
 								width: 400,
-								rows: 20,
+								rows: 15,
 								name: '#[#QMM003_8]', 
 								dataSource: items2,
 								value: selectedCode,
@@ -74,7 +74,7 @@
 						<div class="label" data-bind="text: dispTotalRtp" style="padding-top: 10px; text-align: right"></div>
 					</div>
 				</div>
-				<div class="fixed-flex-layout-right" data-bind="with: selectedResidentTaxPayee"  style="padding-top: 20px;">
+				<div class="fixed-flex-layout-right" data-bind="with: selectedResidentTaxPayee"  style="padding-top: 5px;">
 					<div class="valign-center control-group">
 						<!-- A3_1 -->
 						<div data-bind="ntsFormLabel: { required: true, constraint: ['ResidentTaxPayeeCode', 'ResidentTaxPayeeName'] }">#{i18n.getText('QMM003_9')}</div>
@@ -188,7 +188,7 @@
 						<!-- A3_26 -->
 						<div data-bind="ntsFormLabel: { required: false, constraint: 'Memo' }">#{i18n.getText('QMM003_22')}</div>
 						<!-- A3_27 -->
-						<textarea style="height: 150px" tabindex="21" data-bind="ntsMultilineEditor: {
+						<textarea style="height: 43px" tabindex="21" data-bind="ntsMultilineEditor: {
 							value: memo,
 							name: '#[QMM003_22]',
 							constraint: 'Memo',

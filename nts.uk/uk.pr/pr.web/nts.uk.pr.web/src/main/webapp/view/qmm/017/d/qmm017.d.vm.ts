@@ -180,12 +180,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
                 '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
             ];
-            self.conditionSeparators = ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#'];
+            self.conditionSeparators = ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#',];
             self.acceptPrefix = [self.PAYMENT, self.DEDUCTION, self.ATTENDANCE, self.COMPANY_UNIT_PRICE, self.INDIVIDUAL_UNIT_PRICE, self.FUNCTION, self.VARIABLE, self.PERSON, self.FORMULA, self.WAGE_TABLE];
-            // Remove elements cannot handled
+            // Remove pending elements
             // self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
             self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
-            // Remove elements cannot handled
+            // Remove pending elements
             // self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
             self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.WORKDAY];
         }
@@ -364,6 +364,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         // tab 2
         showListUnitPriceItem(unitPriceItemCategory) {
             let self = this;
+            self.unitPriceItemList().map(item => item.name = _.unescape(item.name));
             let unitPriceList = self.companyUnitPriceList;
             if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM) unitPriceList = self.individualUnitPriceList;
             unitPriceList.map(function (item) {
@@ -595,7 +596,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         validateSyntax() {
-            let self = this, formula = self.displayDetailCalculationFormula().replace(/\s+/g, '');
+            let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
             self.checkOperatorAndDivideZero(formula);
             self.checkResultIsNotNumber(formula);
@@ -664,7 +665,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 startOfLastFunctionIndex = formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION);
                 endOfLastFunctionIndex = self.indexOfEndFunction(startOfLastFunctionIndex, formula);
                 singleFunctionContent = formula.substr(startOfLastFunctionIndex, endOfLastFunctionIndex - startOfLastFunctionIndex + 1);
-                formula = formula.replace(singleFunctionContent, singleFunctionContent.replace(textInsideDoubleQuoteRegex, 0));
+                formula = formula.replace(singleFunctionContent, singleFunctionContent.replace(textInsideDoubleQuoteRegex, ""));
                 indexToCheck = startOfLastFunctionIndex;
             }
             return formula;
@@ -820,7 +821,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 } else if (!self.checkDateDataType(functionParameters[0])) {
                     self.setErrorToFormula('MsgQ_240', [functionName, 1]);
                 }
-                return '"' + moment().format("YYYY/MM/DD") + '"';
+                return '"' + moment().format("YYYY/MM") + '"';
             }
             if (functionName == self.YEAR_EXTRACTION || functionName == self.MONTH_EXTRACTION) {
                 if (functionParameters.length > 1) {
@@ -858,10 +859,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         checkDateDataType(functionParameter) {
             let self = this;
-            if (!isNaN(functionParameter)) return false;
-            if (functionParameter.indexOf('"') > -1 && !moment(functionParameter.split('"')[1], "YYYY/MM/DD", true).isValid()) return false;
-            if (functionParameter.startsWith(self.FUNCTION) && !functionParameter.startsWith(self.FUNCTION + self.OPEN_CURLY_BRACKET + self.CONDITIONAL)) return false;
-            return true;
+            if (!moment(functionParameter.split('"')[1], "YYYY/MM", true).isValid()
+                && !moment(functionParameter.split('"')[0], "YYYYMM", true).isValid()
+                && !functionParameter.startsWith(self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YM_DATE))) return false;
+            return !(functionParameter.startsWith(self.FUNCTION) && !functionParameter.startsWith(self.FUNCTION + self.OPEN_CURLY_BRACKET + self.CONDITIONAL));
         }
 
         setErrorToFormula(messageId: string, messageParams: Array) {
@@ -914,7 +915,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.formulaList), {formulaName: elementName}).formulaCode;
             if (formulaElement.startsWith(self.WAGE_TABLE))
                 return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.wageTableList), {name: elementName}).code;
-
         }
 
         combineFormulaElement() {
@@ -985,7 +985,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         combineElementTypeAndName(elementType, elementName) {
             let self = this;
-            return elementType + self.OPEN_CURLY_BRACKET + elementName + self.CLOSE_CURLY_BRACKET;
+            return elementType + self.OPEN_CURLY_BRACKET + _.unescape(elementName) + self.CLOSE_CURLY_BRACKET;
         }
 
         isOperator(operator) {
