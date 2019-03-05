@@ -2,7 +2,6 @@ package find.person.contact;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -64,23 +62,20 @@ public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		List<GridPeregDomainDto> result = new ArrayList<>();
-		// key - pid , value - sid getPersonId getEmployeeId
-		Map<String, String> mapSids = query.getEmpInfos().stream()
-				.collect(Collectors.toMap(PeregEmpInfoQuery::getPersonId, PeregEmpInfoQuery::getEmployeeId));
-		List<PersonContact> personContactLst = perContactRepo
-				.getByPersonIdList(new ArrayList<String>(mapSids.keySet()));
 
-		personContactLst.stream().forEach(c -> {
-			result.add(new GridPeregDomainDto(mapSids.get(c.getPersonId()), c.getPersonId(),
-					PersonContactDto.createFromDomain(c)));
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
+		
+		List<PersonContact> personContactLst = perContactRepo.getByPersonIdList(pids);
 
-		if (query.getEmpInfos().size() > result.size()) {
-			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
-			}
-		}
+		result.stream().forEach(c -> {
+			Optional<PersonContact> perOpt = personContactLst.stream()
+					.filter(emp -> emp.getPersonId().equals(c.getPersonId())).findFirst();
+			c.setPeregDomainDto(perOpt.isPresent() == true ? PersonContactDto.createFromDomain(perOpt.get()) : null);
+		});
 
 		return result;
 	}

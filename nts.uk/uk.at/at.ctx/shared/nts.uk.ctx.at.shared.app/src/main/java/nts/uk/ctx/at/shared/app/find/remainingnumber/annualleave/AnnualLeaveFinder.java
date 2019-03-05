@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -108,12 +107,16 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		List<GridPeregDomainDto> result = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		// key - sid , value - pid   getEmployeeId getPersonId
-		Map<String, String> mapSids = query.getEmpInfos().stream()
-				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
-		List<String> sids = new ArrayList<String> (mapSids.keySet());
+		
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		
 		List<AnnualLeaveDto> resultDto = new ArrayList<>();
 		
 		setEmployeeId(sids, resultDto);
@@ -170,11 +173,12 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 			// 積立年休残数
 			List<ReserveLeaveGrantRemainingData> rervLeaveData = rervLeaveDataList.get(c.getRecordId());
 			c.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveData));
-			
-			result.add(new GridPeregDomainDto(c.getRecordId(), mapSids.get(c.getRecordId()), c));
 		});
 		
-		
+		result.stream().forEach(c ->{
+			AnnualLeaveDto annualLeaveDto = resultDto.stream().filter(dto -> dto.getRecordId().equals(c.getEmployeeId())).findFirst().get();
+			c.setPeregDomainDto(annualLeaveDto);
+		});
 		
 		return result;
 	}

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
@@ -185,188 +184,283 @@ public class SpecialleaveInformationFinder {
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query, int specialLeaveCD) {
 		String cid = AppContexts.user().companyId();
 		List<GridPeregDomainDto> result = new ArrayList<>();
-		// key - sid , value -pid   getEmployeeId getPersonId
-		Map<String, String> mapSids = query.getEmpInfos().stream()
-				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
-		
-		Map<String, List<SpecialLeaveBasicInfo>> spLeaBasicInfo = specialLeaveBasicInfoRepository
-				.getAllBySidsLeaveCd(cid, new ArrayList<String>(mapSids.keySet()), specialLeaveCD).stream()
-				.collect(Collectors.groupingBy(c -> c.getSID()));
-		
-		Map<String, String> dayTimeMap = specialLeaveGrantRemainService.calDayTime(cid,
-				new ArrayList<String>(spLeaBasicInfo.keySet()), specialLeaveCD);
-		
-		for (Map.Entry<String, List<SpecialLeaveBasicInfo>> entry : spLeaBasicInfo.entrySet()) {
-			String key = entry.getKey();
-			List<SpecialLeaveBasicInfo> value = entry.getValue();
-			switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveCode.class)) {
-			case CS00025:
-				Specialleave1InformationDto dto1 = new Specialleave1InformationDto();
-				if (value.size() > 0){
-					dto1 = Specialleave1InformationDto.createFromDomain(value.get(0));
-				}
-				dto1.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto1));
-				break;
-			case CS00026:
-				Specialleave2informationDto dto2 = new Specialleave2informationDto();
-				if (value.size() > 0){
-					dto2 = Specialleave2informationDto.createFromDomain(value.get(0));
-				}
-				dto2.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto2));
-				break;
-			case CS00027:
-				Specialleave3informationDto dto3 = new Specialleave3informationDto();
-				if (value.size() > 0){
-					dto3 = Specialleave3informationDto.createFromDomain(value.get(0));
-				}
-				dto3.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto3));
-				break;
-			case CS00028:
-				Specialleave4informationDto dto4 = new Specialleave4informationDto();
-				if (value.size() > 0){
-					dto4 = Specialleave4informationDto.createFromDomain(value.get(0));
-				}
-				dto4.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto4));
-				break;
-			case CS00029:
-				Specialleave5informationDto dto5 = new Specialleave5informationDto();
-				if (value.size() > 0){
-					dto5 = Specialleave5informationDto.createFromDomain(value.get(0));
-				}
-				dto5.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto5));
-				break;	
-			case CS00030:
-				Specialleave6informationDto dto6 = new Specialleave6informationDto();
-				if (value.size() > 0){
-					dto6 = Specialleave6informationDto.createFromDomain(value.get(0));
-				}	
-				dto6.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto6));
-				break;
-			case CS00031:
-				Specialleave7informationDto dto7 = new Specialleave7informationDto();
-				if (value.size() > 0){
-					dto7 = Specialleave7informationDto.createFromDomain(value.get(0));
-				}
-				dto7.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto7));
-				break;
-			case CS00032:
-				Specialleave8informationDto dto8 = new Specialleave8informationDto();
-				if (value.size() > 0){
-					dto8 = Specialleave8informationDto.createFromDomain(value.get(0));
-				}
-				dto8.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto8));
-				break;
-			case CS00033:
-				Specialleave9informationDto dto9 = new Specialleave9informationDto();
-				if (value.size() > 0){
-					dto9 = Specialleave9informationDto.createFromDomain(value.get(0));
-				}
-				dto9.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto9));
-				break;
-			case CS00034:
-				Specialleave10informationDto dto10 = new Specialleave10informationDto();
-				if (value.size() > 0){
-					dto10 = Specialleave10informationDto.createFromDomain(value.get(0));
-				}
-				dto10.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto10));
-				break;
-			case CS00049:
-				Specialleave11informationDto dto11 = new Specialleave11informationDto();
-				if (value.size() > 0){
-					dto11 = Specialleave11informationDto.createFromDomain(value.get(0));
-				}
-				dto11.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto11));
-				break;
-			case CS00050:
-				Specialleave12informationDto dto12 = new Specialleave12informationDto();
-				if (value.size() > 0){
-					dto12 = Specialleave12informationDto.createFromDomain(value.get(0));
-				}
-				dto12.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto12));
-				break;
-			case CS00051:
-				Specialleave13informationDto dto13 = new Specialleave13informationDto();
-				if (value.size() > 0){
-					dto13 = Specialleave13informationDto.createFromDomain(value.get(0));
-				}
-				dto13.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto13));
-				break;
-			case CS00052:
-				Specialleave14informationDto dto14 = new Specialleave14informationDto();
-				if (value.size() > 0){
-					dto14 = Specialleave14informationDto.createFromDomain(value.get(0));
-				}
-				dto14.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto14));
-				break;
-			case CS00053:
-				Specialleave15informationDto dto15 = new Specialleave15informationDto();
-				if (value.size() > 0){
-					dto15 = Specialleave15informationDto.createFromDomain(value.get(0));
-				}
-				dto15.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto15));
-				break;
-			case CS00054:
-				Specialleave16informationDto dto16 = new Specialleave16informationDto();
-				if (value.size() > 0){
-					dto16 = Specialleave16informationDto.createFromDomain(value.get(0));
-				}
-				dto16.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto16));
-				break;
-			case CS00055:
-				Specialleave17informationDto dto17 = new Specialleave17informationDto();
-				if (value.size() > 0){
-					dto17 = Specialleave17informationDto.createFromDomain(value.get(0));
-				}
-				dto17.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto17));
-				break;
-			case CS00056:
-				Specialleave18informationDto dto18 = new Specialleave18informationDto();
-				if (value.size() > 0){
-					dto18 = Specialleave18informationDto.createFromDomain(value.get(0));
-				}
-				dto18.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto18));
-				break;
-			case CS00057:
-				Specialleave19informationDto dto19 = new Specialleave19informationDto();
-				if (value.size() > 0){
-					dto19 = Specialleave19informationDto.createFromDomain(value.get(0));
-				}
-				dto19.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto19));
-				break;
-			case CS00058:
-				Specialleave20informationDto dto20 = new Specialleave20informationDto();
-				if (value.size() > 0){
-					dto20 = Specialleave20informationDto.createFromDomain(value.get(0));
-				}
-				dto20.setSpHDRemain(dayTimeMap.get(key));
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), dto20));
-				break;
-			default:
-				result.add(new GridPeregDomainDto(key, mapSids.get(key), null));
-			}
-		}
 
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+
+		Map<String, List<SpecialLeaveBasicInfo>> spLeaBasicInfoLst = specialLeaveBasicInfoRepository
+				.getAllBySidsLeaveCd(cid, sids, specialLeaveCD).stream()
+				.collect(Collectors.groupingBy(c -> c.getSID()));
+
+		Map<String, String> dayTimeMap = specialLeaveGrantRemainService.calDayTime(cid, sids, specialLeaveCD);
+
+		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveCode.class)) {
+		case CS00025:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave1InformationDto dto1 = new Specialleave1InformationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto1 = Specialleave1InformationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto1.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto1);
+			});
+			break;
+		case CS00026:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave2informationDto dto = new Specialleave2informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave2informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00027:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave3informationDto dto = new Specialleave3informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave3informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00028:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave4informationDto dto = new Specialleave4informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave4informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00029:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave5informationDto dto = new Specialleave5informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave5informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00030:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave6informationDto dto = new Specialleave6informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave6informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00031:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave7informationDto dto = new Specialleave7informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave7informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00032:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave8informationDto dto = new Specialleave8informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave8informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00033:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave9informationDto dto = new Specialleave9informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave9informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00034:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave10informationDto dto = new Specialleave10informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave10informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00049:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave11informationDto dto = new Specialleave11informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave11informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00050:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave12informationDto dto = new Specialleave12informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave12informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00051:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave13informationDto dto = new Specialleave13informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave13informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00052:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave14informationDto dto = new Specialleave14informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave14informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00053:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave15informationDto dto = new Specialleave15informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave15informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00054:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave16informationDto dto = new Specialleave16informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave16informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00055:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave17informationDto dto = new Specialleave17informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave17informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00056:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave18informationDto dto = new Specialleave18informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave18informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00057:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave19informationDto dto = new Specialleave19informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave19informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		case CS00058:
+			result.stream().forEach(c -> {
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				Specialleave20informationDto dto = new Specialleave20informationDto();
+				if (spLeaBasicInfo != null) {
+					if (spLeaBasicInfo.size() > 0) {
+						dto = Specialleave20informationDto.createFromDomain(spLeaBasicInfo.get(0));
+					}
+				}
+				dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+				c.setPeregDomainDto(dto);
+			});
+			break;
+		default:
+			break;
+		}
 		return result;
-		
 	}
-	
 }

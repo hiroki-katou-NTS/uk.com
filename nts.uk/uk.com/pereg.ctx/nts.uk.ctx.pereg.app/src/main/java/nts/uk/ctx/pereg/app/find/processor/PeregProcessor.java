@@ -273,7 +273,7 @@ public class PeregProcessor {
 					
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
 					
-					MappingFactory.mapListItemClass(m.getPeregDto(), dto.getLayoutDtos());
+					MappingFactory.mapListItemClassCPS003(m.getPeregDto(), dto.getLayoutDtos());
 
 					
 					Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(m.getPeregDto());

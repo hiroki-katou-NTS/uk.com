@@ -5,7 +5,6 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepos
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -106,33 +104,34 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 	}
 
 	@Override
-	public List < GridPeregDomainDto > getAllData(PeregQueryByListEmp query) {
-	    List < GridPeregDomainDto > result = new ArrayList < > ();
-	    // key - sid , value - pid getEmployeeId getPersonId
-	    Map < String, String > mapSids = query.getEmpInfos().stream()
-	        .collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
-	    List < AffJobTitleHistory > affJobLst = affJobTitleRepo
-	        .getListByListHidSid(new ArrayList < String > (mapSids.keySet()), query.getStandardDate());
-	    List < String > histIds = affJobLst.stream().map(c -> c.getHistoryIds().get(0)).collect(Collectors.toList());
-	    List < AffJobTitleHistoryItem > histItems = affJobTitleItemRepo.findByHitoryIds(histIds);
-	    
-	    histItems.stream().forEach(item -> {
-	        Optional < AffJobTitleHistory > affJobTittle = affJobLst.stream()
-	        .filter(c -> c.getHistoryIds().get(0).equals(item.getHistoryId())).findFirst();
-	        if (affJobTittle.isPresent()) {
-	            result.add(new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()),
-	                AffJobTitleDto.createFromDomain(item, affJobTittle.get())));
-	        } else {
-	            result.add(new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()), null));
-	        }
-	    });
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		// key - sid , value - pid getEmployeeId getPersonId
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
-	    if (query.getEmpInfos().size() > result.size()) {
-	        for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
-	            PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-	            result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
-	        }
-	    }
-	    return result;
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+
+		List<AffJobTitleHistory> affJobLst = affJobTitleRepo.getListByListHidSid(sids, query.getStandardDate());
+
+		List<String> histIds = affJobLst.stream().map(c -> c.getHistoryIds().get(0)).collect(Collectors.toList());
+
+		List<AffJobTitleHistoryItem> histItems = affJobTitleItemRepo.findByHitoryIds(histIds);
+
+		result.stream().forEach(c -> {
+			Optional<AffJobTitleHistoryItem> histItemOpt = histItems.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			if (histItemOpt.isPresent()) {
+				Optional<AffJobTitleHistory> affJobTittleOpt = affJobLst.stream()
+						.filter(his -> his.getHistoryIds().get(0).equals(histItemOpt.get().getHistoryId())).findFirst();
+				if (affJobTittleOpt.isPresent()) {
+					c.setPeregDomainDto(AffJobTitleDto.createFromDomain(histItemOpt.get(), affJobTittleOpt.get()));
+				}
+			}
+
+		});
+
+		return result;
 	}
 }

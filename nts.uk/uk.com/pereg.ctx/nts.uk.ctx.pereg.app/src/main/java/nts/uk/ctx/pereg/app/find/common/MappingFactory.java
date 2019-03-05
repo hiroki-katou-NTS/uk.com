@@ -91,6 +91,7 @@ public class MappingFactory {
 		if(peregDto != null) {
 			// map data
 			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+
 			String recordId = peregDto.getDomainDto().getRecordId();
 			
 			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
@@ -104,6 +105,35 @@ public class MappingFactory {
 					
 					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
 					valueItem.setRecordId(recordId);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * dùng cho cps003
+	 * map peregDto to classItemList which is same category
+	 * 
+	 * @param peregDto
+	 * @param classItemsOfCategory
+	 */
+	public static void mapListItemClassCPS003(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
+		if(peregDto != null) {
+			// map data
+			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+
+			
+			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+					
+					Object value = getValue(itemCodeValueMap, valueItem);
+					valueItem.setValue(value);
+					
+					// update 2018/02/22 bug 87560
+					valueItem.setShowColor(false);
+					
+					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+					valueItem.setRecordId(peregDto.getDomainDto() == null ? null: peregDto.getDomainDto().getRecordId());
 				}
 			}
 		}

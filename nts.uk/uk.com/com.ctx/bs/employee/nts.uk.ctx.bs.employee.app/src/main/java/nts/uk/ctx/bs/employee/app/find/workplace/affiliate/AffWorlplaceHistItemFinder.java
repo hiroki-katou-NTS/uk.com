@@ -16,7 +16,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -109,34 +108,32 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 
 		List<GridPeregDomainDto> result = new ArrayList<>();
-		// key - sid , value - pid getEmployeeId getPersonId
-		Map<String, String> mapSids = query.getEmpInfos().stream()
-				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
-		Map<String, List<AffWorkplaceHistory>> affWorkPlaceHist = affWrkplcHistRepo
-				.getWorkplaceHistoryByEmpIdsAndDate(query.getStandardDate(), new ArrayList<>(mapSids.keySet())).stream()
-				.collect(Collectors.groupingBy(c -> c.getHistoryIds().get(0)));
-		List<AffWorkplaceHistoryItem> historyItems = affWrkplcHistItemRepo.findByHistIds(new ArrayList<>(affWorkPlaceHist.keySet()));
-		
-		historyItems.stream().forEach(item -> {
-			List<AffWorkplaceHistory> affWorkplace = affWorkPlaceHist.get(item.getHistoryId());
-			if(affWorkplace != null) {
-				result.add(affWorkplace.size() > 0
-						? new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()),
-								AffWorlplaceHistItemDto.getFirstFromDomain(affWorkplace.get(0), item))
-						: new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()), null));
 
-			}else {
-				result.add(new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()),null));
-			}
-			
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 
-		if (query.getEmpInfos().size() > result.size()) {
-			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+		Map<String, List<AffWorkplaceHistory>> affWorkPlaceHist = affWrkplcHistRepo
+				.getWorkplaceHistoryByEmpIdsAndDate(query.getStandardDate(), sids).stream()
+				.collect(Collectors.groupingBy(c -> c.getHistoryIds().get(0)));
+		
+		List<AffWorkplaceHistoryItem> historyItems = affWrkplcHistItemRepo
+				.findByHistIds(new ArrayList<>(affWorkPlaceHist.keySet()));
+
+		result.stream().forEach(c -> {
+			Optional<AffWorkplaceHistoryItem> histItemOpt = historyItems.stream()
+					.filter(histItem -> histItem.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			if (histItemOpt.isPresent()) {
+				List<AffWorkplaceHistory> affWorkplace = affWorkPlaceHist.get(histItemOpt.get().getHistoryId());
+				if (affWorkplace != null) {
+					c.setPeregDomainDto(affWorkplace.size() > 0
+							? AffWorlplaceHistItemDto.getFirstFromDomain(affWorkplace.get(0), histItemOpt.get())
+							: null);
+				}
 			}
-		}
+		});
 		return result;
 	}
 }

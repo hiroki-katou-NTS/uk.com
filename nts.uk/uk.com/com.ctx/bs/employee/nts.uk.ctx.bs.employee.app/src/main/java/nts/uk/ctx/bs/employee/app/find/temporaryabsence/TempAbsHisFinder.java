@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.app.find.temporaryabsence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,7 +16,6 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -102,27 +100,34 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		
 		String cid = AppContexts.user().companyId();
+
 		List<GridPeregDomainDto> result = new ArrayList<>();
-		// key - sid , value - pid getEmployeeId getPersonId
-		Map<String, String> mapSids = query.getEmpInfos().stream()
-				.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getPersonId));
-		List<DateHistoryItem> dateHistItemLst = this.tempAbsHistRepo.getAllBySidAndCidAndBaseDate(cid, new ArrayList<>(mapSids.keySet()), query.getStandardDate());
-		List<TempAbsenceHisItem> hisItemLst = this.tempAbsItemRepo.getItemByHitoryIdList(dateHistItemLst.stream().map(c -> c.identifier()).collect(Collectors.toList()));
-		
-		hisItemLst.stream().forEach(item ->{
-			DateHistoryItem dateHistItem = dateHistItemLst.stream().filter(c -> c.identifier().equals(item.getHistoryId())).findFirst().get();
-			result.add( new GridPeregDomainDto(item.getEmployeeId(), mapSids.get(item.getEmployeeId()),TempAbsHisItemDto.createFromDomain(dateHistItem, item)));
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
-		
-		if (query.getEmpInfos().size() > result.size()) {
-			for (int i = result.size(); i < query.getEmpInfos().size(); i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+		List<DateHistoryItem> dateHistItemLst = this.tempAbsHistRepo.getAllBySidAndCidAndBaseDate(cid, sids,
+				query.getStandardDate());
+
+		List<TempAbsenceHisItem> hisItemLst = this.tempAbsItemRepo
+				.getItemByHitoryIdList(dateHistItemLst.stream().map(c -> c.identifier()).collect(Collectors.toList()));
+
+		result.stream().forEach(c -> {
+			Optional<TempAbsenceHisItem> histItemOpt = hisItemLst.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			if (histItemOpt.isPresent()) {
+				Optional<DateHistoryItem> dateHistItemOpt = dateHistItemLst.stream()
+						.filter(date -> date.identifier().equals(histItemOpt.get().getHistoryId())).findFirst();
+				c.setPeregDomainDto(dateHistItemOpt.isPresent() == true
+						? TempAbsHisItemDto.createFromDomain(dateHistItemOpt.get(), histItemOpt.get())
+						: null);
 			}
-		}
-		
+
+		});
+
 		return result;
 	}
 }

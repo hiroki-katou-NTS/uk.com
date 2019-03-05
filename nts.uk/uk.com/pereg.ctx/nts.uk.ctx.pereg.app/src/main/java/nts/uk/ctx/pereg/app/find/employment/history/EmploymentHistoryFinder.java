@@ -17,7 +17,6 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -98,29 +97,34 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		String cid = AppContexts.user().companyId();
-		
+
+		List<GridPeregDomainDto> result = new ArrayList<>();
+
 		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		GeneralDate standardDate  = query.getStandardDate();
-		
-		Map<String, List<DateHistoryItem>> dateHistLst = this.empHistRepo.getByEmployeeIdAndStandardDate(cid, sids,standardDate).stream().collect(Collectors.groupingBy(c -> c.identifier()));
-		List<String> historyIds = dateHistLst.values().stream().map(c -> c.get(0).identifier()).collect(Collectors.toList());
-		
-		Map<String,List<EmploymentHistoryItem>> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		
-		List<GridPeregDomainDto> result = employmentHist.values().stream().map( c -> {
-			EmploymentHistoryItem employeMent = c.get(0);
-			DateHistoryItem date =  dateHistLst.get(employeMent.getHistoryId()).get(0);
-			
-			return new GridPeregDomainDto(employeMent.getEmployeeId(), "",   EmploymentHistoryDto.createFromDomain(date, employeMent ));
-		}).collect(Collectors.toList());
-		
-		if(query.getEmpInfos().size() > result.size()) {
-			for(int i  = result.size(); i < query.getEmpInfos().size() ; i++) {
-				PeregEmpInfoQuery emp = query.getEmpInfos().get(i);
-				result.add(new GridPeregDomainDto(emp.getEmployeeId(), emp.getPersonId(), null));
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+
+		Map<String, List<DateHistoryItem>> dateHistLst = this.empHistRepo
+				.getByEmployeeIdAndStandardDate(cid, sids, query.getStandardDate()).stream()
+				.collect(Collectors.groupingBy(c -> c.identifier()));
+
+		List<String> historyIds = dateHistLst.values().stream().map(c -> c.get(0).identifier())
+				.collect(Collectors.toList());
+
+		Map<String, List<EmploymentHistoryItem>> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds)
+				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+
+		result.stream().forEach(c -> {
+			List<EmploymentHistoryItem> histItem = employmentHist.get(c.getEmployeeId());
+			if (histItem != null) {
+				EmploymentHistoryItem employeeMent = histItem.get(0);
+				DateHistoryItem date = dateHistLst.get(employeeMent.getHistoryId()).get(0);
+				c.setPeregDomainDto(EmploymentHistoryDto.createFromDomain(date, employeeMent));
 			}
-		}
-		
+		});
+
 		return result;
 	}
 }
