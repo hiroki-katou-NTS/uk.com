@@ -3,6 +3,7 @@ package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -60,7 +61,9 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			return offset;
 		}
 		SettingByCtgExportData setByCtg = setByCtgOtp.get();
-		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet();
+		// ※補足3
+		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet().stream()
+                .filter(x -> StatementPrintAtr.PRINT.equals(x.getPrintSet())).collect(Collectors.toList());
 		if (listLineByLineSet.isEmpty()) {
 			return offset;
 		}
@@ -68,8 +71,6 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
 		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
-			// ※補足3
-			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
 				pos = LinePosition.FIRST;
