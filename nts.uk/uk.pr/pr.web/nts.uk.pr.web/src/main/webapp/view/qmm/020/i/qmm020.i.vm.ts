@@ -140,7 +140,10 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     }
                 ]
             });
-
+            $('#I2_1_container table tr th').attr( 'tabIndex', -1 );
+            $('#I2_1').attr( 'tabIndex', -1 );
+            $('#I2_1 tr').attr( 'tabIndex', -1 );
+            $('#I2_1 tr td').attr( 'tabIndex', -1 );
         }
 
     }
