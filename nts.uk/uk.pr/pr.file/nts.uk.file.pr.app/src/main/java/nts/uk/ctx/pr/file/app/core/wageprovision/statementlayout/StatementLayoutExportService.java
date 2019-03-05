@@ -2,11 +2,7 @@ package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -74,6 +70,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 		String cid = AppContexts.user().companyId();
 		StatementLayoutExportQuery cmd = exportServiceContext.getQuery();
 		List<String> sttCodes = exportServiceContext.getQuery().getStatementCodes();
+		sttCodes.sort(Comparator.naturalOrder());
 		int processingDate = cmd.getProcessingDate();
 		List<StatementLayoutSetExportData> exportData = new ArrayList<>();
 
