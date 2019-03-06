@@ -39,7 +39,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+/**
+ * 36協定の集計処理
+ * @author tutk
+ *
+ */
 @Stateless
 public class AgreementProcessService {
 	
@@ -103,7 +107,7 @@ public class AgreementProcessService {
 		}
 		
 		
-		
+		//ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		// get List<カテゴリ別アラームチェック条件>
 		List<AlarmCheckConditionByCategory> listAlarmCheck= alarmCheckRepo.findByCategoryAndCode(comId, AlarmCategory.AGREEMENT.value	, checkConditionCodes);
 		
@@ -122,12 +126,13 @@ public class AgreementProcessService {
 				Optional<AgreeNameError> optAgreeName = agreeNameRepo.findById(agreeConditionError.getPeriod().value,
 						agreeConditionError.getErrorAlarm().value);
 				Period periodCheck = agreeConditionError.getPeriod();
-				if (periodCheck == Period.One_Week || periodCheck == Period.Two_Week || periodCheck == Period.Four_Week) {
+				if (periodCheck == Period.One_Week || periodCheck == Period.Two_Week || periodCheck == Period.Four_Week ) {
 					periodCheck = Period.One_Week;
 				}
 				for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
 					if(periodAlarm.getPeriod36Agreement() == periodCheck.value){
 						DatePeriod period = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
+						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
 						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
 								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
