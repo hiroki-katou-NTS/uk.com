@@ -47,7 +47,7 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 			.filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true) && !m.isItem36AgreementTime())
 			.max((m1, m2) -> Integer.compare(Integer.valueOf(m1.getCd()), Integer.valueOf(m2.getCd())));
 
-		int[] itemOutCd = {1};
+		int[] itemOutCd = {2};
 		if (lastItemOutTblBookCommand.isPresent()) {
 			itemOutCd[0] = Integer.valueOf(lastItemOutTblBookCommand.get().getCd());
 		}
