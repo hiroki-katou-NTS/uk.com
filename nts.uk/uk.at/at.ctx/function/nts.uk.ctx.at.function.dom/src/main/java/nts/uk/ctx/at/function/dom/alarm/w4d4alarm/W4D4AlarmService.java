@@ -142,7 +142,7 @@ public class W4D4AlarmService {
 									
 									if (fourW4DCheckCond.isForActualResultsOnly()) {
 										Optional<ValueExtractAlarm> optAlarm = this.checkWithActualResults(emOp.get(), period, listHolidayWorkTypeCode,listWorkInfoOfDailyPerByID);
-										if (optAlarm.isPresent()) // thắc mắc đoạn này, sao check null r mà vẫn add dc 1 gtri null nhỉ?
+										if (optAlarm.isPresent()) 
 											result.add(optAlarm.get());
 									}
 									

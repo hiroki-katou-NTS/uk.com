@@ -120,7 +120,7 @@ module nts.uk.at.view.kal001.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            $("#fixed-table").ntsFixedTable({ height: 280, width: 600 });
+            $("#fixed-table").ntsFixedTable({ height: 500, width: 600 });
             block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 
@@ -271,7 +271,9 @@ module nts.uk.at.view.kal001.a.model {
         visible: KnockoutObservable<boolean>;
         id : number;
         period36Agreement : number;
-        
+        isMultiMonthAverage : KnockoutObservable<boolean>;
+        multiMonthAverage :  KnockoutObservable<number> = ko.observable(190001);;
+        isHoliday : KnockoutObservable<boolean>;
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
@@ -281,25 +283,42 @@ module nts.uk.at.view.kal001.a.model {
             if(dto.category==2 || dto.category==5){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
+                this.isMultiMonthAverage = ko.observable(false);
+                this.isHoliday = ko.observable(false);
                     
             }else if(dto.category ==7 || dto.category == 9 ){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
+                this.isMultiMonthAverage = ko.observable(false);
+                this.isHoliday = ko.observable(false);
                 
             } else if(dto.category ==12){
                 if(dto.categoryName=='36協定　年間'){
                     this.year = ko.observable(dto.year);
                     this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth)); 
                     this.typeInput ="yearmonth"; 
+                    this.isMultiMonthAverage = ko.observable(false);
                                       
                 }else if(dto.categoryName=='36協定　1・2・4週間'){
                     this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
-                    this.typeInput = "fullDate";                     
+                    this.typeInput = "fullDate";     
+                    this.isMultiMonthAverage = ko.observable(false);              
+                    
+                }else if(dto.categoryName=='36協定　複数月平均'){
+                    this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
+                    this.typeInput = "yearmonth";   
+                    this.isMultiMonthAverage = ko.observable(true); 
+                    this.multiMonthAverage(parseInt(dto.startMonth));                 
                     
                 } else{
                     this.dateValue = ko.observable(new DateValue(dto.startMonth, dto.endMonth));
-                     this.typeInput = "yearmonth";
+                    this.typeInput = "yearmonth";
+                    this.isMultiMonthAverage = ko.observable(false);
                 }
+                this.isHoliday = ko.observable(false);
+            } else if(dto.category = CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
+                this.isHoliday = ko.observable(true);
+                this.isMultiMonthAverage = ko.observable(false);
             }
             
             this.id = dto.category + dto.tabOrder +1;
@@ -445,6 +464,22 @@ module nts.uk.at.view.kal001.a.model {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     } 
     
+     export enum CATEGORY {
+        SCHEDULE_DAILY = 0,
+        SCHEDULE_WEEKLY = 1,
+        SCHEDULE_4_WEEK = 2,
+        SCHEDULE_MONTHLY = 3,
+        SCHEDULE_YEAR = 4,
+        DAILY = 5,
+        WEEKLY = 6,
+        MONTHLY = 7,
+        APPLICATION_APPROVAL = 8,
+        MULTIPLE_MONTHS = 9,
+        ANY_PERIOD = 10,
+        ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
+        _36_AGREEMENT = 12,
+        MAN_HOUR_CHECK = 13
+    }
      export class PeriodByCategoryTemp {
         category : number;
         categoryName: string;
@@ -456,18 +491,24 @@ module nts.uk.at.view.kal001.a.model {
         year:  number = 1999;
         visible: boolean;
         id : number;
-        period36Agreement : number;
+        period36Agreement : number; 
            constructor(dto:  PeriodByCategory){
             let self = this;
             this.category = dto.category;
-            this.categoryName = dto.categoryName;    
-            this.startDate = dto.dateValue().startDate;    
-            this.endDate = dto.dateValue().endDate;    
+            this.categoryName = dto.categoryName; 
+            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){   
+                this.startDate = dto.dateValue().startDate;    
+                this.endDate = dto.dateValue().endDate;    
+            }
             this.checkBox = dto.checkBox(); 
             this.required = dto.required();
             this.visible = dto.visible();
             this.year = dto.year();
             this.period36Agreement = dto.period36Agreement;
+            if(dto.category == 12 && dto.categoryName == '36協定　複数月平均'){
+                this.startDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
+                this.endDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
+            }
           }
       }
 }

@@ -184,7 +184,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
 							employeeRecordImport.getEntryDate(), 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 
-							time == null ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/mm/dd")) : time, 
+							time == null ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")) : time, 
 							time == null ? true: false);
 		return nextAnnualLeaveGrant;
 	}
