@@ -9,9 +9,10 @@
     <ui:define name="htmlHead">
         <script>var dialogSize = {width: 765, height: 570};</script>
         <com:ValidatorScript>
-            nts.uk.ctx.pr.core.dom.wageprovision.formula.PaymentAndDeductionItem
-            nts.uk.ctx.pr.core.dom.wageprovision.formula.AttendanceItem
-            nts.uk.ctx.pr.core.dom.wageprovision.formula.CompanyAndIndividualUnitPrice
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.PaymentAndDeductionItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.AttendanceItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.CompanyAndIndividualUnitPrice
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.DetailFormulaString
         </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
@@ -92,6 +93,7 @@
                         <div>
                         <textarea id="G1_12" tabindex="3" style="height: 100px; width: 666px;" data-bind="ntsMultilineEditor: {
                             value: formulaContent,
+                            constraint: 'DetailFormulaString',
                             readonly: true}"/>
                         </div>
                     </div>

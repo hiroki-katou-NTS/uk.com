@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.formula;
+package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMantissaMaxLength;

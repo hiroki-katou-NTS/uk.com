@@ -32,6 +32,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
 
         yearMonthFilter: KnockoutObservable<number>;
+        onTab: KnockoutObservable<number> = ko.observable(0);
+        titleTab: KnockoutObservable<string> = ko.observable('');
         itemClassification: KnockoutObservable<string> = ko.observable('');
         individualPriceCode: KnockoutObservable<string>;
         individualPriceName: KnockoutObservable<string>;
@@ -74,14 +76,14 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             service.employeeReferenceDate().done(function (data) {
                 if (data) {
                     self.reloadCcg001(data.empExtraRefeDate);
-                }
-                else {
+                } else {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
                 }
                 self.loadMGrid();
                 $('#A5_7').focus();
                 block.clear();
                 dfd.resolve(self);
+                self.onSelectTab(self.onTab);
             }).fail((err) => {
                 dialog.alertError(err.message);
                 block.clear();
@@ -172,50 +174,60 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             switch (param) {
                 case 0:
                     //TODO
+                    self.onTab(0);
+                    self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    // $("#sidebar").ntsSideBar("active", param);
+                    $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 1:
                     //TODO
+                    self.onTab(1);
+                    self.titleTab(getText('QMM040_4'));
                     self.itemClassification(getText('QMM040_4'));
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    // $("#sidebar").ntsSideBar("active", param);
+                    $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 2:
                     //TODO
+                    self.onTab(2);
+                    self.titleTab(getText('QMM040_5'));
                     self.itemClassification(getText('QMM040_5'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    // $("#sidebar").ntsSideBar("active", param);
+                    $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 case 3:
                     //TODO
+                    self.onTab(3);
+                    self.titleTab(getText('QMM040_6'));
                     self.itemClassification(getText('QMM040_6'));
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    // $("#sidebar").ntsSideBar("active", param);
+                    $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
                     $('#A5_7').focus();
                     break;
                 default:
                     //TODO
+                    self.onTab(0);
+                    self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     $("#sidebar").ntsSideBar("active", 0);
@@ -337,7 +349,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     errors.clearAll();
-                    //self.selectedEmployee(data.listEmployee);
                     if (data && data.listEmployee.length > 0) {
                         self.employeeList = data.listEmployee;
                         self.filterData();
@@ -385,6 +396,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         showWorktype?: boolean; // 勤種条件
         isMutipleCheck?: boolean; // 選択モード
         isTab2Lazy?: boolean;
+        showOnStart: boolean;
+        tabindex: number;
+
 
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;

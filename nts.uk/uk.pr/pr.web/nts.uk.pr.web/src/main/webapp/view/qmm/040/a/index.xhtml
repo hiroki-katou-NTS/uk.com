@@ -25,13 +25,13 @@
 
     <ui:define name="sidebar">
         <ul class="navigator">
-            <li><a tabindex="-1" href="#tabpanel-1" data-bind = "click: $vm.onSelectTab(0)"
+            <li><a tabindex="-1" href="#tabpanel-1" data-bind = "click: function() {$vm.onSelectTab(0)}"
                    role="tab-navigator">#{i18n.getText('QMM040_3')}</a></li>
-            <li><a tabindex="-1" href="#tabpanel-2" data-bind = "click: $vm.onSelectTab(1)"
+            <li><a tabindex="-1" href="#tabpanel-2" data-bind = "click: function() {$vm.onSelectTab(1)}"
                    role="tab-navigator">#{i18n.getText('QMM040_4')}</a></li>
-            <li><a tabindex="-1" href="#tabpanel-3" data-bind = "click: $vm.onSelectTab(2)"
+            <li><a tabindex="-1" href="#tabpanel-3" data-bind = "click: function() {$vm.onSelectTab(2)}"
                    role="tab-navigator">#{i18n.getText('QMM040_5')}</a></li>
-            <li><a tabindex="-1" href="#tabpanel-4" data-bind = "click: $vm.onSelectTab(3)"
+            <li><a tabindex="-1" href="#tabpanel-4" data-bind = "click: function() {$vm.onSelectTab(3)}"
                    role="tab-navigator">#{i18n.getText('QMM040_6')}</a></li>
         </ul>
     </ui:define>
