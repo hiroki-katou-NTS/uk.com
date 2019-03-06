@@ -240,7 +240,9 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 return;
             }
             //事前条件①および②をチェックする
+            block.invisible();
             self.checkClosureDate().done((isNoError) => {
+                block.clear();
                 let printQuery = new PrintQuery(self);
                 if (printQuery.selectedDateType == 1) {
                     if (!isNoError) {
@@ -252,16 +254,19 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 } else {
                     self.doPrint(printQuery);
                 }
+                
+            }).fail(() => {
+                block.clear();
             });
         }
 
         public doPrint(printQuery) {
             block.invisible();
-            service.exportExcel(printQuery).done(() => {
+            service.exportExcel(printQuery).done((res) => {
                 block.clear();
-            }).fail(function(res: any) {
+            }).fail((res) =>{
                 block.clear();
-                alError({ messageId: res.messageId });
+                alError({ messageId: res.messageId || res.message });
             });
             char.save('screenInfo', printQuery.toScreenInfo());
         }
@@ -271,7 +276,6 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 closureId = self.closureId(),
                 isNotError = true,
                 dfd = $.Deferred();
-            block.invisible();
             service.findClosureById(closureId).done((closureData) => {
 
                 //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 < 指定月→ 出力エラー　(#Msg_1500)
@@ -286,7 +290,6 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 else {
                     //is mean 社員範囲選択の就業締め日 = 全締め
                     //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 < 指定月→ 出力エラー　(#Msg_1500)
-                    block.invisible();
                     service.findAllClosure().done((closures) => {
                         self.closureData(closures);
                         _.forEach(closures, (closure) => {
@@ -295,13 +298,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                             }
                         });
                         dfd.resolve(true);
-                    }).always(() => {
-                        block.clear();
                     });
-
                 }
-            }).always(() => {
-                block.clear();
             });
 
             return dfd.promise();
