@@ -233,6 +233,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.screenControl().enableD2_8(false);
             self.screenControl().enableD2_10(false);
             self.screenControl().enableD3_2(false);
+            self.dataScreen().proportionalAtr(shareModel.PaymentProportionalAtr.NOT_PROPORTIONAL.toString());
             self.screenControl().enableD3_6(false);
             self.screenControl().enableD3_9(false);
             self.screenControl().visibleD3_10(false);
@@ -1158,7 +1159,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             let result = _.map(data, (item: IBreakdownItemSet) => {
                 return new BreakdownItemSet(item);
             });
-            return result;
+            return _.sortBy(result, ['breakdownItemCode']);
         }
     }
 }
