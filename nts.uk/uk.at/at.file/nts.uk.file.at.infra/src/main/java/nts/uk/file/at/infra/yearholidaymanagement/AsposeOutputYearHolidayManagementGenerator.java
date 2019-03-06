@@ -3,13 +3,11 @@ package nts.uk.file.at.infra.yearholidaymanagement;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -324,7 +322,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				String empName = emp.getBusinessName();
 				cells.get(currentRow, EMP_NAME_COL).setValue(empName);
 				// print emp pos
-				String empPos = emp.getPosition().getPositionName();
+				String empPos = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
 				cells.get(currentRow + 1, EMP_POS_COL).setValue(empPos);
 				// Print AnnualHolidayGrantInfor
 				if (holidayInfo != null) {
@@ -505,78 +503,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			result = "(" + result + ")";
 		}
 
-		return result;
-	}
-
-	/**
-	 * hàm này để tạo data test , sẽ xóa sau
-	 * 
-	 * @param printDate
-	 * @return
-	 */
-	private List<AnnualHolidayGrantDetail> createHSampleDetails(String printDate) {
-
-		Random rand = new Random();
-
-		List<AnnualHolidayGrantDetail> result = new ArrayList<AnnualHolidayGrantDetail>();
-		Integer row = rand.nextInt(7);
-
-		Integer yearNumber = Integer.valueOf(printDate.substring(0, 4));
-		List<Integer> years = new ArrayList<Integer>();
-		for (int i = 0; i < row; i++) {
-			years.add(yearNumber - i);
-		}
-
-		years.forEach(x -> {
-			Integer record = rand.nextInt(20);
-
-			for (int i = 0; i < record; i++) {
-				Integer month = rand.nextInt((12 - 1) + 1) + 1;
-				GeneralDate ymd = GeneralDate.ymd(x, month, rand.nextInt((28 - 1) + 1) + 1);
-
-				double useDays = Double.valueOf(rand.nextInt(2) / 2.0);
-				result.add(new AnnualHolidayGrantDetail("", ymd, useDays,
-						EnumAdaptor.valueOf(rand.nextInt(2), ReferenceAtr.class)));
-			}
-
-		});
-		return result;
-	}
-
-	/**
-	 * hàm này để tạo data test , sẽ xóa sau
-	 * 
-	 * @param printDate
-	 * @return
-	 */
-	private AnnualHolidayGrantInfor createSampleHInfo(String printDate) {
-		AnnualHolidayGrantInfor result = new AnnualHolidayGrantInfor();
-
-		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
-		Random rand = new Random();
-
-		Integer record = rand.nextInt(6);
-		GeneralDate year = GeneralDate.ymd(Integer.valueOf(printDate.substring(0, 4)),
-				Integer.valueOf(printDate.substring(4, 6)), rand.nextInt((28 - 1) + 1) + 1).addYears(0 - record);
-
-		Integer month = rand.nextInt((12 - 1) + 1) + 1;
-		Integer day = rand.nextInt((28 - 1) + 1) + 1;
-		Integer grantDays = rand.nextInt(20);
-		if (month > Integer.valueOf(printDate.substring(4, 6))) {
-			year.addYears(-1);
-		}
-
-		for (int i = 0; i < record; i++) {
-			double useDays = grantDays != 0 ? rand.nextInt(grantDays * 2) / 2.0 : 0;
-			lstGrantInfor.add(new AnnualHolidayGrant(
-					GeneralDate.fromString(String.valueOf(year.year()) + StringUtils.leftPad(month.toString(), 2, '0')
-							+ StringUtils.leftPad(day.toString(), 2, '0'), "yyyyMMdd"),
-					grantDays, useDays, grantDays - useDays));
-
-			year = year.addYears(1);
-		}
-		result.setYmd(year.addYears(1));
-		result.setLstGrantInfor(lstGrantInfor);
 		return result;
 	}
 
