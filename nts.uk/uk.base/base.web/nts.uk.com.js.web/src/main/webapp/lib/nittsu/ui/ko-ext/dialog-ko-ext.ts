@@ -338,12 +338,14 @@ module nts.uk.ui.koExtentions {
                     $dialog.html("");
                     $dialog.append($errorboard).append($message);
     
-//                    $dialog.closest("[role='dialog']").show();
-                    $dialog.dialog("open");    
+                    $dialog.closest("[role='dialog']").show();
+                    // hide "x" button
+                    $dialog.closest("[role='dialog']").find(".ui-dialog-titlebar-close").hide();
+                    //$dialog.dialog("open");    
                 }
                 else {
-//                    $dialog.closest("[role='dialog']").hide();
-                    $dialog.dialog("close"); 
+                    $dialog.closest("[role='dialog']").hide();
+                    //$dialog.dialog("close"); 
                 }        
             });
             
