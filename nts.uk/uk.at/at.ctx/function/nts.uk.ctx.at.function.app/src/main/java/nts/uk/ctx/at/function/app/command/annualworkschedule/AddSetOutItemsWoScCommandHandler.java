@@ -66,7 +66,7 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 
 		repository.add(SetOutItemsWoSc.createFromJavaType(companyId, addCommand.getCd(), addCommand.getName(),
 				addCommand.isOutNumExceedTime36Agr(), addCommand.getPrintForm(), listItemOutTblBook,
-				addCommand.isMultiMonthDisplay(), addCommand.getMonthsInTotalDisplay(),
+				addCommand.isMultiMonthDisplay(), addCommand.getTotalAverageDisplay() == 1 ? addCommand.getMonthsInTotalDisplay(): null,
 				addCommand.getTotalAverageDisplay()));
 	}
 }
