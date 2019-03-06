@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -98,6 +99,10 @@ public class ClosureEmploymentService {
 	
 	public YearMonth getCurentMonth() {
 		String employee = AppContexts.user().employeeId();
-		return closureService.getClosureDataByEmployee(employee, GeneralDate.today()).getClosureMonth().getProcessingYm();
+		Closure Closure = closureService.getClosureDataByEmployee(employee, GeneralDate.today());
+		if(Closure == null) {
+			throw new BusinessException("Msg_1134");
+		}
+		return Closure.getClosureMonth().getProcessingYm();
 	}
 }

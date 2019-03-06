@@ -5,6 +5,7 @@ module nts.uk.at.view.kwr008.a {
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import share = nts.uk.at.view.kwr008.share.model;
     import alertError = nts.uk.ui.dialog.alertError;
+    import error = nts.uk.ui.dialog.error;
     import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
@@ -121,9 +122,20 @@ module nts.uk.at.view.kwr008.a {
 
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
                 });
                 self.selectedOutputItem.subscribe(code => {
                     self.checkAverage(code);
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
+                });
+                self.selectAverage.subscribe(() => {
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
                 });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
@@ -354,14 +366,26 @@ module nts.uk.at.view.kwr008.a {
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
-
+            
+            private getCurentMonth(): void {
+                var self = this;
+                block.invisible();
+                service.getCurentMonth().done((data) => {
+                    self.curentMonth(Number(data.toString().substring(4)));
+                }).fail(() => {
+                    error({ messageId: "Msg_1134"}).then(function() { 
+                        block.clear(); 
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            }
             /**
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
                 var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
                     self.isEmployeeCharge(role.employeeCharge);
                 });
@@ -371,10 +395,6 @@ module nts.uk.at.view.kwr008.a {
                         self.startDateString(data.startYearMonth);
                         self.endDateString(data.endYearMonth);
                     }
-                });
-                
-                service.getCurentMonth().done((data) => {
-                    self.curentMonth(Number(data.toString().substring(4)));
                 });
 
                 //A4
@@ -394,6 +414,8 @@ module nts.uk.at.view.kwr008.a {
                                 if (!self.outputItem().length) {
                                     self.selectedOutputItem(null);
                                 }
+                                self.selectedOutputItem.valueHasMutated();
+                                self.printFormat.valueHasMutated();
                             });
                 });
 
