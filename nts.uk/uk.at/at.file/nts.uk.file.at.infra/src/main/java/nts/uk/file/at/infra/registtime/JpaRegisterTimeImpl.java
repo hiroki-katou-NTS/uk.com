@@ -34,8 +34,6 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String END_MONTH = "12";
 	
-	private static final String NAME_MASTER = "マスタ未登録";
-	
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
 			+ "STARTING_MONTH_TYPE,"
 			+ "CLOSING_DATE_ATR,"
@@ -53,7 +51,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
 			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
 			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
-			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY "
+			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
 			+ "FROM  "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN  "
@@ -140,7 +138,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	)"
+			+ " 	),"
+			+ "		bb.UPPER_MONTH,"
+			+ "		bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
@@ -235,7 +235,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 			+ " 	),"
-			+ " HIERARCHY_CD"
+			+ " 	HIERARCHY_CD, "
+			+ "		bb.UPPER_MONTH,"
+			+ "		bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -266,7 +268,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
 			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
-			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
+			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
+			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
 			+ "	 ORDER BY  CASE WHEN (s.HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC, s.HIERARCHY_CD  ";
@@ -352,7 +355,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	)"
+			+ " 	),"
+			+ "		bb.UPPER_MONTH,"
+			+ "		bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
@@ -367,7 +372,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
 			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
 			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
-			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY "
+			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, "
+			+ "bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
 			+ "FROM  "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN  "
@@ -455,7 +461,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " WHERE"
 			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " )"
+			+ " ),"
+			+ "	bb.UPPER_MONTH,"
+			+ "	bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
@@ -551,7 +559,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 			+ " 	), "
-			+ " HIERARCHY_CD"
+			+ " HIERARCHY_CD,"
+			+ "	bb.UPPER_MONTH,"
+			+ "	bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -576,13 +586,14 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
 			+ " ELSE 'マスタ未登録' "
 			+ " END as WKP_NAME,"
-			+ "				s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ "				 s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
 			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
 			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
 			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
-			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
+			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
+			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
 			+ "	 ORDER BY CASE WHEN (HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC , HIERARCHY_CD";
@@ -668,7 +679,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	)"
+			+ " 	),"
+			+ "		bb.UPPER_MONTH,"
+			+ "		bb.UPPER_MONTH_AVERAGE"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
@@ -918,6 +931,28 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .value(objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value("")
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 	
@@ -1003,6 +1038,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 	
@@ -1057,6 +1112,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 	
@@ -1112,6 +1187,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .value(formatTime(((BigDecimal)objects[++param]).intValue()))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 
@@ -1161,6 +1256,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .value(objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 
@@ -1217,6 +1332,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 	
@@ -1272,6 +1407,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(objects[index] != null? formatTime(((BigDecimal)objects[index]).intValue()): "")
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 	
@@ -1325,6 +1480,26 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .value(formatTime(((BigDecimal)objects[++param]).intValue()))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
+		if (rownum == 0) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_117)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else if (rownum == 1) {
+			data.put(RegistTimeColumn.KMK008_115,
+					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115).value(RegistTimeColumn.KMK008_118)
+							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		} else {
+			data.put(RegistTimeColumn.KMK008_115, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_115)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+			data.put(RegistTimeColumn.KMK008_116, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_116)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 
