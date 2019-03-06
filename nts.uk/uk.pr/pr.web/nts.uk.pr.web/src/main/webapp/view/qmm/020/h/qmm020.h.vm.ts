@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 /** Common properties */
                 systemType: 1,
                 showEmployeeSelection: true,
-                showQuickSearchTab: true,
+                showQuickSearchTab: false,
                 showAdvancedSearchTab: true,
                 showBaseDate: false,
                 showClosure: false,
@@ -101,6 +101,10 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.employeeInputList(self.setEmployee(data.listEmployee));
+                    if (!_.isEmpty( self.employeeInputList())) {
+                        self.selectedItem(self.employeeInputList()[0].id);
+                    }
+
                     self.loadKCP009();
                 }
             }
