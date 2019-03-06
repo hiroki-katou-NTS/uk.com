@@ -1034,7 +1034,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // dailyOlds: self.lstDomainOld,
                 //dailyEdits: self.lstDomainEdit,
                 flagCalculation: self.flagCalculation,
-                lstNotFoundWorkType: self.workTypeNotFound
+                lstNotFoundWorkType: self.workTypeNotFound,
+                showDialogError: self.showDialogError
             }
             if (self.displayFormat() == 0) {
                 if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -1117,20 +1118,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.loadRowScreen(false, false).done(() =>{
                                     nts.uk.ui.block.clear();
                                     if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15") {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
+                                        });
                                     }
                                     if (dataAfter.errorMap[6] != undefined) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
+                                            if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                        });
                                     }
                                 });
                             } else {
                                 self.loadRowScreen(true, false).done(() =>{
                                     nts.uk.ui.block.clear();
                                     if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15") {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
+                                        });
                                     }
                                     if (dataAfter.errorMap[6] != undefined) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
+                                            if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                        });
                                     }
                                 });
                                 //nts.uk.ui.block.clear();
@@ -1139,10 +1148,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.loadRowScreen(false, true).done(() =>{
                                 nts.uk.ui.block.clear();
                                 if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15") {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
+                                        });
                                 }
                                 if (dataAfter.errorMap[6] != undefined) {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
+                                        if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                    });
                                 }
                             });
                         }
@@ -1152,10 +1165,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                            self.showErrorDialog(dataAfter.messageAlert);
 //                        } else 
                         if(errorFlex|| (self.flagCalculation && self.hasErrorCalc)){
-                            self.showErrorDialog(dataAfter.messageAlert);
-                        }else {
-                            self.showDialogError = false;
+                            self.showErrorDialog(dataAfter.messageAlert).done(() => {
+                                if (dataAfter.showErrorDialog) self.showErrorDialog();
+                            }); 
                         }
+//                       else {
+//                            //self.showDialogError = false;
+//                            if (dataAfter.showErrorDialog) self.showErrorDialog();
+//                        }
                        // nts.uk.ui.block.clear();
                     } else {
                         let errorAll = false;
@@ -1201,11 +1218,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             errorAll = true;
                         }
                         self.loadRowScreen(false, self.flagCalculation).done(() =>{
+
                              nts.uk.ui.block.clear();
                              if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15") {
-                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                 });
+                             } else {
+                                 if (errorAll || errorFlex || self.hasErrorCalc) {
+                                     self.showErrorDialog(dataAfter.messageAlert).done(() => {
+                                         if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                     });
+                                 } else {
+                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                 }
                              }
-                             if (errorAll || errorFlex || self.hasErrorCalc) self.showErrorDialog(dataAfter.messageAlert);
                              self.hasErrorCalc = false;
                         });
                     }
@@ -1987,6 +2014,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (data.showErrorDialog) {
                             self.showDialogError = true;
                             self.showErrorDialog();
+                        }else{
+                            self.showDialogError = false;
                         }
                     }
                     nts.uk.ui.block.clear();
@@ -2122,8 +2151,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return errorValidateScreeen;
         }
 
-        showErrorDialog(messageAlert ?: string) {
+        showErrorDialog(messageAlert ?: string): JQueryPromise<any> {
             var self = this;
+            let dfd = $.Deferred();
             if(self.openedScreenB) return;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             let lstEmployee = [];
@@ -2262,12 +2292,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 setShared("paramToGetError", param);
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);
-                self.openedScreenB = true;
-                self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml").onClosed(function() {
-                    let errorCodes = nts.uk.ui.windows.getShared('shareToKdw003aa');
-                    self.openedScreenB = false;
+                //self.openedScreenB = true;
+                self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml").onClosed(() =>{
+                     dfd.resolve();
                 });
             }
+           return dfd.promise();
         }
 
         changeExtractionCondition() {

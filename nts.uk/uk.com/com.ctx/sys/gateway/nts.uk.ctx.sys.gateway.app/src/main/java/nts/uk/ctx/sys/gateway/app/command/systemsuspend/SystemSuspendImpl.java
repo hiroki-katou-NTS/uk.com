@@ -94,13 +94,28 @@ public class SystemSuspendImpl implements SystemSuspendService {
 		//ドメインモデル「会社単位の利用停止」を取得する
 		Optional<StopByCompany> opStopByCom = stopByCompanyRepository.findByKey(contractCD, companyCD);
 		if(opStopByCom.isPresent()){//取得できる
+			StopByCompany stopByCom = opStopByCom.get();
 			//ドメインモデル「会社単位の利用停止.システム利用状態」をチェックする
-			if(opStopByCom.get().getSystemStatus()==SystemStatusType.STOP){
-				// 「利用停止する」、　【システム全体の利用停止.利用停止モード】を返す
-				return new UsageStopOutput(true, opStopByCom.get().getStopMode(), opStopByCom.get().getStopMessage().v());
+			if(stopByCom.getSystemStatus()==SystemStatusType.STOP){
+				//EA修正履歴No.3136
+				//2019.03.02 hoatt
+				//ドメインモデル「システム全体の利用停止」を取得する　#106436
+				Optional<StopBySystem> opStopBySystem = stopBySystemRepository.findByKey(contractCD);
+				if(opStopBySystem.isPresent()){
+					StopBySystem stopBySystem = opStopBySystem.get();
+					//ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする　#106436 , ドメインモデル「会社単位の利用停止.利用停止モード」をチェックする　#106436
+					if(stopBySystem.getSystemStatus().equals(SystemStatusType.STOP) &&
+							stopByCom.getStopMode().equals(StopModeType.PERSON_MODE)){//システム:「利用停止中」の場合   & 会社:担当者モード(1)
+						//「利用停止する」、　【システム全体の利用停止.利用停止モード】を返す　#106436
+						return new UsageStopOutput(true, stopBySystem.getStopMode(), stopBySystem.getStopMessage().v());
+					}
+				}
+				//システム:取得できない  || システム:「利用停止中」の以外の場合  || 会社:管理者モード(2)
+				//「利用停止する」、　【会社単位の利用停止.利用停止モード】を返す　#106436
+				return new UsageStopOutput(true, stopByCom.getStopMode(), stopByCom.getStopMessage().v());
 			}
 		}
-		//取得できない
+		//会社:取得できない
 		//ドメインモデル「システム全体の利用停止」を取得する
 		Optional<StopBySystem> opStopBySystem = stopBySystemRepository.findByKey(contractCD);
 		if(!opStopBySystem.isPresent()){

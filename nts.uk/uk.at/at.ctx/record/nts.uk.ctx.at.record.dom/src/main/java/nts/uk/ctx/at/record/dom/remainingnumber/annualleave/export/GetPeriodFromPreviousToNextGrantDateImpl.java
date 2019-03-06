@@ -81,7 +81,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		//取得した付与日の１つ前を取得
 		GeneralDate preDay = employeeInfor.getEntryDate();
 		if(count > 1) {
-			NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 1);
+			NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 2);
 			preDay = preInfor.getGrantDate();
 		}
 		return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));

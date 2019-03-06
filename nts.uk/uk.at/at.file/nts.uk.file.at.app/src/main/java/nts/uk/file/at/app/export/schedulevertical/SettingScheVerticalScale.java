@@ -116,10 +116,10 @@ public class SettingScheVerticalScale implements MasterListData {
 		// column 2
 		switch (rowData.getUseAtr()) {
 		case 0:
-			data.put(column_2, TextResource.localize("KML002_99"));
+			data.put(column_2, TextResource.localize("KML002_100"));
 			break;
 		case 1:
-			data.put(column_2, TextResource.localize("KML002_100"));
+			data.put(column_2, TextResource.localize("KML002_99"));
 			break;
 		default:
 			break;
@@ -133,7 +133,7 @@ public class SettingScheVerticalScale implements MasterListData {
 				
 				List<VerticalTime> listVerTimes = fixedVerticalSettingRepository.findAllVerticalTime(companyId, rowData.getFixedItemAtr());
 				for (VerticalTime time : listVerTimes) {
-					if (time.getDisplayAtr().value == 0){
+					if (time.getDisplayAtr().value == 1){
 						TimeWithDayAttr _time = new TimeWithDayAttr(time.getStartClock().v());
 						if (column3Content.length() <= 0) {
 							column3Content.append(_time.getFullText());
