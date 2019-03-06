@@ -131,7 +131,7 @@ module nts.uk.at.view.kwr008.a {
                 self.maxDaysCumulationByEmp = ko.observable(0);
                 
                 self.standardMonth = {
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                         width: "20px",
                         textalign: "right"
                     })),
@@ -374,7 +374,7 @@ module nts.uk.at.view.kwr008.a {
                 });
                 
                 service.getCurentMonth().done((data) => {
-                    self.curentMonth(data.toString().substring(4));
+                    self.curentMonth(Number(data.toString().substring(4)));
                 });
 
                 //A4
