@@ -74,8 +74,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		DatePeriod period = optPeriod.get();
 		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end().addDays(1), new ArrayList<>());
+		//社員に対応する処理締めを取得する
+		Closure closureOfEmp = closureService.getClosureDataByEmployee(sid, ymd);
 		//指定月の締め開始日を取得
-		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ym);
+		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ym, closureOfEmp.getClosureMonth().getProcessingYm(), ymd);
 		if(!optStartDate.isPresent()) {
 			return Optional.of(outPut);
 		}
@@ -98,8 +100,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(remainData, annData);
 			lstTmpAnnual.add(tmpAnnual);
 		}
-		//社員に対応する処理締めを取得する
-		Closure closureOfEmp = closureService.getClosureDataByEmployee(sid, startDate);
+		
 		//期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = annWithinPeriod.algorithm(cid,
 				sid,
@@ -137,7 +138,21 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		outPut.setLstGrantInfor(lstAnnHolidayGrant);
 		return Optional.of(outPut);
 	}
-	public Optional<GeneralDate> getStartDateByClosure(String sid, YearMonth ym) {
+	/**
+	 * 指定月の締め開始日を取得
+	 * @param sid
+	 * @param ym 指定月
+	 * @param processingYm 締めの当月
+	 * @param ymd 基準日
+	 * @return
+	 */
+	public Optional<GeneralDate> getStartDateByClosure(String sid, YearMonth ym, YearMonth processingYm, GeneralDate ymd) {
+		//INPUT．指定月が当月かどうかを判断する
+		if(ym.greaterThanOrEqualTo(processingYm)) {
+			//社員に対応する締め期間を取得する
+			DatePeriod period = closureService.findClosurePeriod(sid, ymd);
+			return Optional.of(period.start());
+		}
 		//ドメインモデル「年休付与残数履歴データ」を取得
 		List<AnnualLeaveRemainingHistory> lstAnn = annualRepo.getInfoBySidAndYM(sid, ym)
 				.stream().sorted((a,b) 
