@@ -30,6 +30,7 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
             block.invisible();
             service.getAllBank().done((data: Array<any>) => {
                 if (_.isEmpty(data)) {
+                    dfd.resolve();
                     alertError({messageId: "Msg_672"});
                 } else {
                     block.invisible();
