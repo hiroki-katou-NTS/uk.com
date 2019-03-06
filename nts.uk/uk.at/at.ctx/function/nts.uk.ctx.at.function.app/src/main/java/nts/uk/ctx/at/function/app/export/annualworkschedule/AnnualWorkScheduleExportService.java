@@ -269,8 +269,10 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		YearMonth startYmClone = YearMonth.of(startYm.getYear(), startYm.getMonthValue());
 		YearMonth endYmClone = YearMonth.of(endYm.getYear(), endYm.getMonthValue());
 		// 期間
-		// set C2_3, C2_5
-		header.setMonthPeriodLabels(this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getMonthsInTotalDisplay().get()));
+		if(setOutItemsWoSc.getMonthsInTotalDisplay().isPresent()) {
+			// set C2_3, C2_5
+			header.setMonthPeriodLabels(this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getMonthsInTotalDisplay().get()));
+		}
 		// set C1_2
 		header.setMonths(this.createMonthLabels(startYmClone, endYmClone));
 		exportData.setHeader(header);
