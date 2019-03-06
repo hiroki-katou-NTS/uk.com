@@ -395,10 +395,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 		// アルゴリズム「月平均の算出」を実行する
-		data.put(outputAgreementTime36.getCd().v(),
+		/*data.put(outputAgreementTime36.getCd().v(),
 				AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36, listAgreementTimeByMonth,
 						listAgreementTimeByYear, listExcesMonths, startYm, monthsExceeded, monthLimit, periodAtr, header)
-						.calc(false));
+						.calc(false));*/
 		return data;
 	}
 
