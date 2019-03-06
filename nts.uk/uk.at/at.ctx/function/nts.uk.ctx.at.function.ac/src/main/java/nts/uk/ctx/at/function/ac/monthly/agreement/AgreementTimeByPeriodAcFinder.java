@@ -13,7 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxTimeOfMonthlyImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeMonthOut;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -45,7 +45,7 @@ public class AgreementTimeByPeriodAcFinder implements AgreementTimeByPeriodAdapt
 	@Override
 	public List<AgreMaxTimeOfMonthlyImport> maxTime(String companyId, String employeeId, YearMonthPeriod period) {
 		//List<AgreMaxTimeOfMonthly> data = 
-		List<AgreMaxTimeOfMonthly> data = agreementTimeByPeriodPub.maxTime(companyId, employeeId, period);
+		List<AgreMaxTimeMonthOut> data = agreementTimeByPeriodPub.maxTime(companyId, employeeId, period);
 		if(data.isEmpty())
 			return Collections.emptyList();
 		return data.stream().map(c->convertToAgreMaxTimeOfMonthly(c)).collect(Collectors.toList());
@@ -57,11 +57,11 @@ public class AgreementTimeByPeriodAcFinder implements AgreementTimeByPeriodAdapt
 		return agreementTimeByPeriodPub.maxAverageTimeMulti(companyId, employeeId, criteria, yearMonth);
 	}
 	
-	private AgreMaxTimeOfMonthlyImport convertToAgreMaxTimeOfMonthly (AgreMaxTimeOfMonthly export) {
+	private AgreMaxTimeOfMonthlyImport convertToAgreMaxTimeOfMonthly (AgreMaxTimeMonthOut export) {
 		return new AgreMaxTimeOfMonthlyImport(
-				export.getAgreementTime(),
-				new LimitOneMonth(export.getMaxTime().v()),
-				export.getStatus()
+				export.getMaxTime().getAgreementTime(),
+				new LimitOneMonth(export.getMaxTime().getMaxTime().v()),
+				export.getMaxTime().getStatus()
 				);
 	}
 

@@ -116,10 +116,10 @@ public class SettingScheVerticalScale implements MasterListData {
 		// column 2
 		switch (rowData.getUseAtr()) {
 		case 0:
-			data.put(column_2, TextResource.localize("KML002_99"));
+			data.put(column_2, TextResource.localize("KML002_100"));
 			break;
 		case 1:
-			data.put(column_2, TextResource.localize("KML002_100"));
+			data.put(column_2, TextResource.localize("KML002_99"));
 			break;
 		default:
 			break;
