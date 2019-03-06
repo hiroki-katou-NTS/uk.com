@@ -28,6 +28,11 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         }
         submit(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("#C1_9").trigger("validate");
+            if(nts.uk.ui.errors.hasError()){
+                return;
+            }
             block.invisible();
             let data: any = {
                 cId: '',
