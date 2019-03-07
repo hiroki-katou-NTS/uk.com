@@ -202,50 +202,60 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		
-		// 年休フレックス補填分の暫定年休管理データを作成
-		{
-			// 「月別実績の勤怠時間」を取得
-			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(sid, datePeriod);
-			List<DailyInterimRemainMngData> lstFlex = new ArrayList<>();
-			for (val attendanceTime : attendanceTimes){
-				
-				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
-				val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
-						attendanceTime, attendanceTime.getDatePeriod().end());
-				if (compensFlexOpt.isPresent()) {
-					lstFlex.add(compensFlexOpt.get());
-				}
-			}
-			for (DailyInterimRemainMngData x : lstFlex) {
-				if(!x.getAnnualHolidayData().isPresent()) {
-					continue;
-				}
-				TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
-				double useDays = annualInterim.getUseDays().v();
-				if(useDays <= 1.0) {
-					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
-					continue;
-				}
-				for(double i = 0; useDays - i >= 0; i++) {
-					DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
-					flexTmp.setRecAbsData(x.getRecAbsData());
-					TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng();
-					annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
-					annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
-					if(useDays - i >= 1) {
-						annualInterimTmp.setUseDays(new UseDay(1.0));
-					} else {
-						annualInterimTmp.setUseDays(new UseDay(0.5));
-					}
-					flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
-					
-					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
-				}
-			}
-			
-		}
-		
+		// 年休フレックス補填分の暫定年休管理データを作成		
+		lstOutputData = getAnnualHolidayInterimFlexTime(sid, datePeriod, lstOutputData);
+
 		lstOutputData = lstOutputData.stream().filter(x -> x.getData().getAnnualHolidayData().isPresent()).collect(Collectors.toList());
+		return lstOutputData;
+	}
+	/**
+	 * 年休フレックス補填分の暫定年休管理データを作成
+	 * @param sid
+	 * @param datePeriod
+	 * @param lstOutputData
+	 * @return
+	 */
+	private List<DailyInterimRemainMngDataAndFlg> getAnnualHolidayInterimFlexTime(String sid, DatePeriod datePeriod,
+			List<DailyInterimRemainMngDataAndFlg> lstOutputData) {
+		// 「月別実績の勤怠時間」を取得
+		val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(sid, datePeriod);
+		List<DailyInterimRemainMngData> lstFlex = new ArrayList<>();
+		for (val attendanceTime : attendanceTimes){
+			
+			// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+			val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
+					attendanceTime, attendanceTime.getDatePeriod().end());
+			if (compensFlexOpt.isPresent()) {
+				lstFlex.add(compensFlexOpt.get());
+			}
+		}
+		for (DailyInterimRemainMngData x : lstFlex) {
+			if(!x.getAnnualHolidayData().isPresent()
+					|| x.getAnnualHolidayData().get().getUseDays().v() <= 0) {
+				continue;
+			}
+			TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
+			double useDays = annualInterim.getUseDays().v();
+			if(useDays <= 1.0) {
+				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
+				continue;
+			}
+			for(double i = 0; useDays - i > 0; i++) {
+				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
+				flexTmp.setRecAbsData(x.getRecAbsData());
+				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng();
+				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
+				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
+				if(useDays - i >= 1) {
+					annualInterimTmp.setUseDays(new UseDay(1.0));
+				} else {
+					annualInterimTmp.setUseDays(new UseDay(0.5));
+				}
+				flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
+				
+				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
+			}
+		}
 		return lstOutputData;
 	}
 		
