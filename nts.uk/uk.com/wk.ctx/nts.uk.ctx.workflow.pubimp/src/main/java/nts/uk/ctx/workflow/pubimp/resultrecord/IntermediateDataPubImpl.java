@@ -109,9 +109,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	private EmployeeAdapter employeeAdapter;
 
 	@Override
-	public Request133Export getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
+	public Request133Export getAppRootStatusByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
 			Integer rootType) throws BusinessException {
-		List<String> employeeIDLst = Arrays.asList(employeeID);
 		Request133Output result = appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class));
 		return new Request133Export(
 				result.getAppRootStatusLst().stream()
