@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         enableAddHisButton:  KnockoutObservable<boolean> = ko.observable(true);
         enableEditHisButton:  KnockoutObservable<boolean> = ko.observable(true);
         enableRegisterButton:KnockoutObservable<boolean> = ko.observable(true);
+        enableSearchButton:KnockoutObservable<boolean> = ko.observable(true);
         isModeAddHistory: KnockoutObservable<boolean> = ko.observable();
         newHistoryId: KnockoutObservable<string> = ko.observable();
 
@@ -60,7 +61,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     }else{
                         self.currentSelectedHis(firstHistory.hisId);
                     }
-
+                    self.enableSearchButton(true);
                 }else{
                     self.listStateCorrelationHis([]);
                     service.getStateLinkSettingMasterByHisId("0",0).done((data)=>{
@@ -95,6 +96,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             self.enableAddHisButton(true);
             self.enableEditHisButton(false);
             self.enableRegisterButton(false);
+            self.enableSearchButton(false);
             $("#grid2").ntsGrid("disableNtsControls", 'open1', 'Button');
             $("#grid2").ntsGrid("disableNtsControls", 'open', 'Button');
         }
@@ -343,6 +345,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.enableRegisterButton(true);
                     self.transferMode(params.transferMethod);
                     self.currentSelectedHis(self.newHistoryId());
+                    self.enableSearchButton(true);
                     $("#grid2").ntsGrid("enableNtsControls", 'open1', 'Button');
                     $("#grid2").ntsGrid("enableNtsControls", 'open', 'Button');
                 }else if(!params && self.listStateCorrelationHis().length === 0){

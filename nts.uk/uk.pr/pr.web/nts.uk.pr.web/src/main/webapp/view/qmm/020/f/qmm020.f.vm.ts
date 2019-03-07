@@ -22,6 +22,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         baseDate: KnockoutObservable<any> = ko.observable();
         baseDateValue: KnockoutObservable<any> = ko.observable();
         end :KnockoutObservable<any> = ko.observable(999912);
+        enableSearchButton:KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -100,6 +101,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.listStateLinkSettingMaster([]);
                     self.mode(model.MODE.NO_REGIS);
                     self.loadGird();
+                    self.enableSearchButton(false);
                 }
             }).always(() => {
                 block.clear();
@@ -265,6 +267,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.baseDateNew(params.baseDate);
                     self.listStateCorrelationHisPosition.unshift(self.createStateCorrelationHisPosition(params.start, self.end()));
                     self.hisIdSelected(HIS_ID_TEMP);
+                    self.enableSearchButton(true);
                 }
                 $("#F1_5_container").focus();
             });
