@@ -141,7 +141,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	 * 平均時間
 	 */
 	@OneToMany(targetEntity = KrqdtTime36UpLimitPerMonth.class, mappedBy = "appOvertimeDetail", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRQDT_TIME36_UP_LIMIT_PER_MONTH")
+	@JoinTable(name = "KRQDT_APP_OVERTIME_DET_M")
 	public List<KrqdtTime36UpLimitPerMonth> averageTimeLst; 
 	
 	/*
