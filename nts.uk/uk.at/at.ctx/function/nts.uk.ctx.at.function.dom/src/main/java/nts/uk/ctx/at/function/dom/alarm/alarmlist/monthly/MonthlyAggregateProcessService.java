@@ -578,7 +578,7 @@ public class MonthlyAggregateProcessService {
 											List<AttendanceItemName> listAttdNameAddCompare = new ArrayList<>();
 											//get name attdanceName 										
 											if(erAlAtdItemCon.getConditionType()==0){
-												 startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue());											
+												 startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue());											
 												//if type = time
 												if(erAlAtdItemCon.getConditionAtr() == 1) {
 													startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
@@ -611,7 +611,7 @@ public class MonthlyAggregateProcessService {
 													alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";											
 																																		
 											}else {
-												endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
+												endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue());
 												if(erAlAtdItemCon.getConditionAtr() == 1) {
 													endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 												}
@@ -647,7 +647,7 @@ public class MonthlyAggregateProcessService {
 										//get name attdanceName 
 										if(erAlAtdItemCon2.getConditionType()==0){
 											//if type = time
-											 startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue());
+											 startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue());
 											if(erAlAtdItemCon2.getConditionAtr() == 1) {
 											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
 											}
@@ -679,7 +679,7 @@ public class MonthlyAggregateProcessService {
 										if(compare<=5) {
 											alarmDescription2 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
 										}else {
-											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
+											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue());
 											if(erAlAtdItemCon2.getConditionAtr() == 1) {
 												endValue = this.timeToString(erAlAtdItemCon2.getCompareEndValue().intValue());
 											}
@@ -731,8 +731,8 @@ public class MonthlyAggregateProcessService {
 							}else {
 								ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon().get(0);
 								int compare = erAlAtdItemConAdapterDto.getCompareOperator();
-								BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
-								BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
+								Double startValue = erAlAtdItemConAdapterDto.getCompareStartValue().doubleValue();
+								Double endValue = erAlAtdItemConAdapterDto.getCompareEndValue().doubleValue();
 								CompareOperatorText compareOperatorText = convertCompareType(compare);
 								String nameErrorAlarm = "";
 								//0 is monthly,1 is dayly
@@ -773,12 +773,12 @@ public class MonthlyAggregateProcessService {
 									break;
 								case 5 ://日数
 									nameItem = TextResource.localize("KAL010_113");
-									String startValueDays = String.valueOf(startValue.intValue());
+									String startValueDays = String.valueOf(startValue);
 									String endValueDays = "";
 									if(compare<=5) {
 										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueDays);
 									}else {
-										endValueDays = String.valueOf(endValue.intValue());
+										endValueDays = String.valueOf(endValue);
 										if(compare>5 && compare<=7) {
 											alarmDescription = TextResource.localize("KAL010_277",startValueDays,
 													compareOperatorText.getCompareLeft(),
