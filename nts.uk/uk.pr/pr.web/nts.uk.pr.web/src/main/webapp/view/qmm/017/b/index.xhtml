@@ -7,12 +7,12 @@
         <div style="width: 130px; display: inline-block;"
              data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
         <div style="display: inline-block;"
-             data-bind="text: formulaCode"></div>
+             data-bind="text: formulaCode"/>
         <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
-              data-bind="text: formulaName"></span>
+              data-bind="text: formulaName"/>
         <button class = "small master-config-button" tabindex="11" id = "B1_4" data-bind = "click: function(){$vm.doMasterConfiguration()}">#{i18n.getText('QMM017_27')}</button>
         <div style = "display: inline-block" data-bind = "with: $vm.masterBasicCalculationFormula">
-            <div data-bind = "text: displaySetting"></div>
+            <div data-bind = "text: displaySetting"/>
         </div>
     </div>
 </ui:composition>

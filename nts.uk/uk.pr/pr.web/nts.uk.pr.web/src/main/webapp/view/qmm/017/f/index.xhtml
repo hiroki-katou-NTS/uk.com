@@ -7,24 +7,24 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 395, height: 600 };</script>
-        <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="../share/model.js" />
-        <com:scriptfile path="qmm017.f.service.js" />
-        <com:scriptfile path="qmm017.f.vm.js" />
-        <com:stylefile path="qmm017.f.style.css" />
-        <com:scriptfile path="qmm017.f.start.js" />
+        <script>var dialogSize = {width: 395, height: 600};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.f.service.js"/>
+        <com:scriptfile path="qmm017.f.vm.js"/>
+        <com:stylefile path="qmm017.f.style.css"/>
+        <com:scriptfile path="qmm017.f.start.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="contents-area">
             <div style="margin-left: 20px;">
                 <!--E1-1; E1_2; E1_13-->
                 <div class="dialog-first-element">
-                    <div style = "width: 340px; font-size: 1.5rem;" data-bind = "text: standardAmountType"/>
+                    <div style="width: 340px; font-size: 1.5rem;" data-bind="text: standardAmountType"/>
                 </div>
-                <div style ="margin-top: 10px;">
+                <div style="margin-top: 10px;">
                     <!--mix of 3 case-->
-                    <table tabindex="1" id ="item"
+                    <table tabindex="1" id="item"
                            data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM017_135]',
@@ -41,9 +41,9 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex ="2" class="x-large proceed "
+            <button tabindex="2" class="x-large proceed "
                     data-bind="click: decideChangeItemList, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_107')}</button>
-            <button tabindex ="3" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
+            <button tabindex="3" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
 
