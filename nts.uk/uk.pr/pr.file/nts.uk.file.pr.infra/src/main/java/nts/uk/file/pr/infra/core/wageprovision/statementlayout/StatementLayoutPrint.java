@@ -36,13 +36,17 @@ public class StatementLayoutPrint {
 		this.reportRow = wsc.getRangeByName("reportRow");
 	}
 
-    public int printHeader(String code, String name, YearMonth ym, int offset) {
+    public int printHeader(String code, String name, YearMonth ym, int offset, boolean isFirstHeader) {
         String statement = TextResource.localize("QMM019_245") + code + "　" + name + TextResource.localize("QMM019_246");
         String processingDate = TextResource.localize("QMM019_204") + ym.year() + "年" + ym.month() + "月";
-        this.copyRange(this.header, offset);
+		if (isFirstHeader) {
+			this.copyRange(this.header, offset);
+		} else {
+			this.insertRange(this.header, offset);
+		}
         this.printCell("statement", statement, offset);
         this.printCell("processingDate", processingDate, offset);
-        return this.header.getFirstRow() + this.header.getRowCount() + offset;
+        return this.header.getFirstRow() + this.header.getRowCount();
     }
 
 	public int printPaymentItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
@@ -129,7 +133,7 @@ public class StatementLayoutPrint {
 			}
 
 		}
-		return this.paymentRow.getRowCount() + offset;
+		return this.paymentRow.getRowCount();
 	}
 
     private String getA2_4_A2_9(PaymentExportData payment) {
@@ -243,7 +247,7 @@ public class StatementLayoutPrint {
                 this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
             }
 		}
-		return this.deductionRow.getRowCount() + offset;
+		return this.deductionRow.getRowCount();
 	}
 
 	public int printAttendItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
@@ -277,7 +281,7 @@ public class StatementLayoutPrint {
                 this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
             }
 		}
-		return this.attendRow.getRowCount() + offset;
+		return this.attendRow.getRowCount();
 	}
 
 	public int printReportItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
@@ -290,10 +294,10 @@ public class StatementLayoutPrint {
 			// A5_2
 			this.printCell("reportItem" + item.getItemPosition() + "_name", item.getItemName(), offset);
 		}
-		return this.reportRow.getRowCount() + offset;
+		return this.reportRow.getRowCount();
 	}
 
-	private void printHeadItem(CategoryAtr ctg, LinePosition linePosition, int offset) {
+	public void printHeadItem(CategoryAtr ctg, LinePosition linePosition, int offset) {
 		Cell cell;
 		Style style;
 		String labelName = "";
@@ -333,6 +337,12 @@ public class StatementLayoutPrint {
 		switch (linePosition) {
 		case FIRST:
 			this.printCell(labelName, titleValue, offset + offsetLabel);
+
+            cell = this.getFirstCell(rangeName, offset);
+            style = cell.getStyle();
+            style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getEmpty());
+            cell.setStyle(style);
+
 			cell = this.getLastCell(rangeName, offset);
 			style = cell.getStyle();
 			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getEmpty());
@@ -354,9 +364,24 @@ public class StatementLayoutPrint {
 			style = cell.getStyle();
 			style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
 			cell.setStyle(style);
+
+            cell = this.getLastCell(rangeName, offset);
+            style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getEmpty());
+            cell.setStyle(style);
 			break;
 		case FIRST_AND_LAST:
 			this.printCell(labelName, titleValue, offset + offsetLabel);
+
+            cell = this.getFirstCell(rangeName, offset);
+            style = cell.getStyle();
+            style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getEmpty());
+            cell.setStyle(style);
+
+            cell = this.getLastCell(rangeName, offset);
+            style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getEmpty());
+            cell.setStyle(style);
 			break;
 		}
 	}
@@ -383,6 +408,11 @@ public class StatementLayoutPrint {
 		Range newRange = ws.getCells().createRange(firstRow, range.getFirstColumn(), range.getRowCount(),
 				range.getColumnCount());
 		newRange.copyStyle(range);
+	}
+
+	private void insertRange(Range range, int firstRow) {
+		ws.getCells().insertRows(firstRow, range.getRowCount());
+		this.copyRange(range, firstRow);
 	}
 
 	public void deleteOrginRange() {
