@@ -85,8 +85,8 @@ public class AppOvertimeDetailCommand {
 								new LimitOneMonth(limitErrorTime), 
 								new NumberOfMonth(numOfYear36Over), 
 								year36OverMonth.stream().map(x -> new YearMonth(x)).collect(Collectors.toList()), 
-								Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime)), 
-								Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime))), 
+								exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime)), 
+								exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime))), 
 						new Time36AgreeAnnual(
 								new AttendanceTimeYear(actualTime), 
 								new LimitOneYear(0))), 
