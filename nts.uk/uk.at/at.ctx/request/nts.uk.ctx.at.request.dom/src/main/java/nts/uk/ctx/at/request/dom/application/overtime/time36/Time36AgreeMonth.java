@@ -86,11 +86,11 @@ public class Time36AgreeMonth extends DomainObject {
 	}
 
 	public void setExceptionLimitAlarmTime(Integer exceptionLimitAlarmTime){
-		this.exceptionLimitAlarmTime = Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime));
+		this.exceptionLimitAlarmTime = exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime));
 	}
 	
 	public void setExceptionLimitErrorTime(Integer exceptionLimitErrorTime){
-		this.exceptionLimitErrorTime = Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime));
+		this.exceptionLimitErrorTime = exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime));
 	}
 	
 }
