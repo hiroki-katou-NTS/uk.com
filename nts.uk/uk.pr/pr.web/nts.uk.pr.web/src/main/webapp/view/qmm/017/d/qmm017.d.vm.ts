@@ -617,7 +617,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 currentChar = formulaElements[index];
                 if (operators.indexOf(currentChar) > -1) {
                     nextChar = formulaElements[index + 1];
-                    if (operators.indexOf(nextChar) > -1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
+                    if (operators.indexOf(nextChar) > -1 && (nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET)
+                        && !((currentChar == self.HALF_SIZE_COMMA_CHAR || currentChar == self.COMMA_CHAR) && (nextChar == self.SUBTRACT || nextChar == self.HALF_SIZE_SUBTRACT))) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
                     if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
@@ -704,7 +705,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                     let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
                     if (!operand.contains(self.CLOSE_CURLY_BRACKET)) {
-                        let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.length);
                         self.setErrorToFormula('MsgQ_233', [operand]);
                         continue;
                     }

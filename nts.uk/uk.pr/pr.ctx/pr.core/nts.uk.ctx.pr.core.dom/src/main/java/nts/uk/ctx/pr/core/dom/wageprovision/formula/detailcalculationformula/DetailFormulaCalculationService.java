@@ -224,7 +224,7 @@ public class DetailFormulaCalculationService {
     }
 
     private static String combineElementTypeAndName(String elementType, String elementName) {
-        return elementType + OPEN_CURLY_BRACKET + elementName + CLOSE_CURLY_BRACKET;
+        return elementType + OPEN_CURLY_BRACKET + (Objects.isNull(elementName) ? "" : elementName) + CLOSE_CURLY_BRACKET;
     }
 
     public String calculateDisplayCalculationFormula(int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingPosition) {
