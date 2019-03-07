@@ -107,13 +107,11 @@
         </com:ko-if>
         <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
             <div id="tabpanel-3" role="tabpanel" data-bind="with: viewmodelH">
-                <com:ko-if bind="$vm.viewmodelA.selectedH() == 1">
-                <ui:include src="../h/index.xhtml"/>
-                </com:ko-if>
+                    <ui:include src="../h/index.xhtml"/>
             </div>
         </com:ko-if>
         <div id="tabpanel-4" role="tabpanel" data-bind="with: viewmodelI">
-            <ui:include src="../i/index.xhtml"/>
+                <ui:include src="../i/index.xhtml"/>
         </div>
     </ui:define>
 </ui:composition>
