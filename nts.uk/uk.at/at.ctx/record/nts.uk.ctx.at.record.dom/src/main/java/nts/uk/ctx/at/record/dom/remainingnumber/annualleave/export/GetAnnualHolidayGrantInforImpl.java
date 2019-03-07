@@ -217,7 +217,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				}
 			}
 			for (DailyInterimRemainMngData x : lstFlex) {
-				if(!x.getAnnualHolidayData().isPresent()
+				if(x.getAnnualHolidayData().isPresent()
 						&& x.getAnnualHolidayData().get().getUseDays().v() <= 1.0) {
 					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 					continue;
