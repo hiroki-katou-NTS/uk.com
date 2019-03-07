@@ -240,7 +240,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 				continue;
 			}
-			for(double i = 0; useDays - i >= 0; i++) {
+			for(double i = 0; useDays - i > 0; i++) {
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
 				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng();
