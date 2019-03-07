@@ -45,12 +45,12 @@
             </div>
             <div style="border-bottom: #CCCCCC 1px solid; width: 840px; margin-top:-10px; margin-bottom: 10px"></div>
             <div>
-                <div id="G2_3" style="width: 260px" data-bind="
+                <div id="G2_3" tabindex="8" style="width: 260px" data-bind="
                         ntsSearchBox: {
                                 targetKey: 'id',
                                 comId: 'G3_1',
 	                            items: listStateLinkSettingMaster,
-	                            enable: false,
+	                            enable: !enableRegis(),
 	                            selectedKey: 'id',
 	                            fields: ['masterCode', 'categoryName'],
 	                            mode: 'igGrid'}" />
