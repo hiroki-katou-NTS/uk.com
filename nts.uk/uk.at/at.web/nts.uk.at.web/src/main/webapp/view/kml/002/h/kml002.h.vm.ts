@@ -117,8 +117,8 @@ module nts.uk.at.view.kml002 {
                 var self = this;
 
                 self.useCls = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KML002_99") },
-                    { code: 1, name: nts.uk.resource.getText("KML002_100") }
+                    { code: 1, name: nts.uk.resource.getText("KML002_99") },
+                    { code: 0, name: nts.uk.resource.getText("KML002_100") }
                 ]);
                 self.items = ko.observableArray([]);
             }
