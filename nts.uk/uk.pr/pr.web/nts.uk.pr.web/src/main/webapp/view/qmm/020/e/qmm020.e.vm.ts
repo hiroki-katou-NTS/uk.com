@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         classificationList: Array<IClassificationImportDto>;
         listStateLinkSettingMasterInit: Array<model.StateLinkSettingMaster>;
         currentCode: KnockoutObservable<string> = ko.observable(null);
-
+        enableSearchButton:KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             self.hisIdSelected.subscribe((data) => {
@@ -131,6 +131,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                         self.mode(model.MODE.NO_REGIS);
                         self.loadGird();
                         self.enableSelectSalary(false);
+                        self.enableSearchButton(false);
                     }
                 }).always(() => {
                     block.clear();
@@ -264,6 +265,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     self.startYearMonth(params.start);
                     self.endYearMonth(999912);
                     self.enableSelectSalary(true);
+                    self.enableSearchButton(true);
                 }
                 $("#E1_5_container").focus();
             });

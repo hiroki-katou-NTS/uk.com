@@ -12,8 +12,8 @@ import java.math.BigDecimal;
  * 係数固定値
  */
 
-@DecimalMaxValue("99999.99")
-@DecimalMinValue("-99999.99")
+@DecimalMaxValue("999.99")
+@DecimalMinValue("-999.99")
 @DecimalMantissaMaxLength(2)
 public class CoefficientFixedValue extends DecimalPrimitiveValue<CoefficientFixedValue> {
 

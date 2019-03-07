@@ -12,7 +12,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  */
 
 @StringMaxLength(3)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class FormulaCode extends CodePrimitiveValue<FormulaCode> {
 

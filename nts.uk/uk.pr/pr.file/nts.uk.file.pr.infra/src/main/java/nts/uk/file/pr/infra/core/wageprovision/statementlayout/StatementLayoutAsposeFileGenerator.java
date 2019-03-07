@@ -36,6 +36,8 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 
 	private static final String REPORT_FILE_NAME = "明細レイアウトの作成.xlsx";
 
+	private static final int MAX_ROW_PER_PAGE = 55;
+
 	@Override
 	public void generate(FileGeneratorContext fileContext, List<StatementLayoutSetExportData> exportData) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
@@ -49,12 +51,38 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			reportContext.setHeader(0, "&11&\"ＭＳ 明朝\"" + companyName);
 
 			int offset = sttPrint.getStatementLayout().getRowCount();
-			for (StatementLayoutSetExportData stt : exportData) {				
-				offset = sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offset);
-				offset = this.printCtg(sttPrint, stt, CategoryAtr.PAYMENT_ITEM, offset) + 1;
-				offset = this.printCtg(sttPrint, stt, CategoryAtr.DEDUCTION_ITEM, offset) + 1;
-				offset = this.printCtg(sttPrint, stt, CategoryAtr.ATTEND_ITEM, offset);
-				offset = this.printCtg(sttPrint, stt, CategoryAtr.REPORT_ITEM, offset);
+			for (StatementLayoutSetExportData stt : exportData) {
+                int totalLineInPage = 0;
+				int newLine;
+				int offsetBefore;
+
+				offset += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offset, true);
+				newLine = this.printCtg(sttPrint, stt, CategoryAtr.PAYMENT_ITEM, offset, pageBreaks) + 1;
+				offset += newLine;
+				totalLineInPage += newLine;
+
+				offsetBefore = offset;
+				newLine = this.printCtg(sttPrint, stt, CategoryAtr.DEDUCTION_ITEM, offset, pageBreaks) + 1;
+				offset += newLine;
+				totalLineInPage += newLine;
+				if (totalLineInPage > MAX_ROW_PER_PAGE){
+					offset += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+					pageBreaks.add(offsetBefore);
+					totalLineInPage = 0;
+				}
+
+                offsetBefore = offset;
+                newLine = this.printCtg(sttPrint, stt, CategoryAtr.ATTEND_ITEM, offset, pageBreaks);
+                offset += newLine;
+                totalLineInPage += newLine;
+                newLine = this.printCtg(sttPrint, stt, CategoryAtr.REPORT_ITEM, offset, pageBreaks);
+                offset += newLine;
+                totalLineInPage += newLine * 3;
+                if (totalLineInPage > MAX_ROW_PER_PAGE) {
+                    offset += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+                    pageBreaks.add(offsetBefore);
+                }
+
 				pageBreaks.add(offset);
 			}
 			sttPrint.deleteOrginRange();
@@ -65,23 +93,30 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		}
 	}
 
-	private int printCtg(StatementLayoutPrint sttPrint, StatementLayoutSetExportData stt, CategoryAtr ctg, int offset) {
+	private int printCtg(StatementLayoutPrint sttPrint, StatementLayoutSetExportData stt, CategoryAtr ctg, int offset,
+			HorizontalPageBreakCollection pageBreaks) {
+		int totalLine = 0;
+		int totalLineInPage = 0;
+
 		Optional<SettingByCtgExportData> setByCtgOtp = stt.getListSettingByCtg().stream()
 				.filter(x -> ctg.equals(x.getCtgAtr())).findFirst();
 		if (!setByCtgOtp.isPresent()) {
-			return offset;
+			return totalLine;
 		}
 		SettingByCtgExportData setByCtg = setByCtgOtp.get();
 		// ※補足3
 		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet().stream()
                 .filter(x -> StatementPrintAtr.PRINT.equals(x.getPrintSet())).collect(Collectors.toList());
 		if (listLineByLineSet.isEmpty()) {
-			return offset;
+			return totalLine;
 		}
 		listLineByLineSet.sort(Comparator.comparingInt(LineByLineSettingExportData::getLineNumber));
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
-		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
+		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();
+
 		for (LineByLineSettingExportData line : listLineByLineSet) {
+			int newLine;
+			int offsetBefore = offset + totalLine;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
 				pos = LinePosition.FIRST;
@@ -91,10 +126,24 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			} else if (line.getLineNumber() == lastLine) {
 				pos = LinePosition.LAST;
 			}
-			offset = this.printLine(sttPrint, line, ctg, pos, offset);
+			newLine = this.printLine(sttPrint, line, ctg, pos, offset + totalLine);
+			totalLine += newLine;
+			totalLineInPage += newLine;
+			if (totalLineInPage > MAX_ROW_PER_PAGE){
+                // A2_1
+                sttPrint.printHeadItem(ctg, LinePosition.LAST, offsetBefore - newLine);
+                if (pos == LinePosition.LAST) {
+                    sttPrint.printHeadItem(ctg, LinePosition.FIRST_AND_LAST, offsetBefore);
+                } else {
+                    sttPrint.printHeadItem(ctg, LinePosition.FIRST, offsetBefore);
+                }
+                totalLine += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+                pageBreaks.add(offsetBefore);
+                totalLineInPage = 0;
+            }
 		}
 
-		return offset;
+		return totalLine;
 	}
 
 	private int printLine(StatementLayoutPrint sttPrint, LineByLineSettingExportData line, CategoryAtr ctg,
@@ -109,8 +158,8 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		case REPORT_ITEM:
 			return sttPrint.printReportItem(line, pos, offset);
 		case OTHER_ITEM:
-			return offset;
+			return 0;
 		}
-		return offset;
+		return 0;
 	}
 }

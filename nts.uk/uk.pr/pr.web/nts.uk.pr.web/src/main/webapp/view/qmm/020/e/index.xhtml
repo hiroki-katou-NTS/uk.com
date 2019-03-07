@@ -47,8 +47,17 @@
             </div>
             <div style="border-bottom: #CCCCCC 1px solid; width: 840px; margin-top:-10px; margin-bottom: 10px"></div>
             <div>
-                <div style="width: 260px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'masterCode', comId: 'E3_1',
-	items: listStateLinkSettingMaster, selectedKey: 'masterCode', selected: currentCode, fields: ['categoryName', 'masterCode'], mode: 'igGrid'}" />
+                <div style="width: 260px" tabindex="8" data-bind="
+                        ntsSearchBox: {
+                                        searchMode: 'highlight',
+                                        targetKey: 'masterCode',
+                                        comId: 'E3_1',
+	                                    items: listStateLinkSettingMaster,
+	                                    enable: enableSearchButton,
+	                                    selectedKey: 'masterCode',
+	                                    selected: currentCode,
+	                                    fields: ['categoryName', 'masterCode'], mode: 'igGrid'}"
+                />
 
                 <table id="E3_1" ></table>
 
