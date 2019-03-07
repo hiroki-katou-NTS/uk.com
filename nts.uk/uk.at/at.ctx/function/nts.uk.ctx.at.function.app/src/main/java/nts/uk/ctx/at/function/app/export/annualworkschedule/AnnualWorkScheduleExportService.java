@@ -434,10 +434,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			sum += agreMax.getMaxTime().getAgreementTime().v(); 
 		}
 		List<AgreementTimeByPeriodImport> listAgreementTimeByYear = new ArrayList<>();
+		AgreementTimeByPeriodImport byYear = null;
 		if(sum > 0) {
-			AgreementTimeByPeriodImport byYear = new AgreementTimeByPeriodImport(null, null, new AttendanceTimeYear(sum), "", "", "", "", AgreementTimeStatusOfMonthly.NORMAL);
-			listAgreementTimeByYear.add(byYear);
+			byYear = new AgreementTimeByPeriodImport(null, null, new AttendanceTimeYear(sum), "", "", "", "", AgreementTimeStatusOfMonthly.NORMAL);
+		}else {
+			byYear = new AgreementTimeByPeriodImport(null, null, new AttendanceTimeYear(0), "", "", "", "", AgreementTimeStatusOfMonthly.NORMAL);
 		}
+		listAgreementTimeByYear.add(byYear);
 		if (listAgreementTimeByMonth.isEmpty())
 			return new HashMap<>();
 		// 複数月表示をチェック
