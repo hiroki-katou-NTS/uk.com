@@ -217,13 +217,15 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				}
 			}
 			for (DailyInterimRemainMngData x : lstFlex) {
-				if(x.getAnnualHolidayData().isPresent()
-						&& x.getAnnualHolidayData().get().getUseDays().v() <= 1.0) {
-					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
+				if(!x.getAnnualHolidayData().isPresent()) {
 					continue;
 				}
 				TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
 				double useDays = annualInterim.getUseDays().v();
+				if(useDays <= 1.0) {
+					lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
+					continue;
+				}
 				for(double i = 0; useDays - i >= 0; i++) {
 					DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 					flexTmp.setRecAbsData(x.getRecAbsData());
