@@ -183,7 +183,7 @@ module nts.uk.ui.jqueryExtentions {
                 let baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
                 if (_.isEqual(selectedId, baseID)) {
                     let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                    if (chk[0].getAttribute("data-chk") == "off") {
+                    if (chk.attr("data-chk") === "off") {
                         chk.click();
                     }
                 } else {
