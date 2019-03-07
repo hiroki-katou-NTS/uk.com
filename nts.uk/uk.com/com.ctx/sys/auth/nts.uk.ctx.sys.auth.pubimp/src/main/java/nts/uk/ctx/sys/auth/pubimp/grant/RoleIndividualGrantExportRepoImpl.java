@@ -75,4 +75,19 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 		return result;
 	}
 
+	@Override
+	public List<RoleIndividualGrantEx> getListDifRoleType(String userId, String companyId, int roleType,
+			GeneralDate date) {
+		return roleIndividualGrantRepository.getListDifRoleType(userId, companyId, roleType, date).stream()
+				.map(c -> new RoleIndividualGrantEx(c.getUserId(), c.getRoleId(), c.getCompanyId(), c.getRoleType().value, c.getValidPeriod()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<RoleIndividualGrantEx> findByUserCompanyRoleTypeDate(String userId, String companyId, int roleType,
+			GeneralDate date) {
+		return roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userId, companyId, roleType, date)
+				.map(c -> new RoleIndividualGrantEx(c.getUserId(), c.getRoleId(), c.getCompanyId(), c.getRoleType().value, c.getValidPeriod()));
+	}
+
 }

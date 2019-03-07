@@ -77,7 +77,7 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 				workTimeUpdate.updateRecordStartEndTimeReflect(timeReflect);
 			}
 			//日別実績の勤務情報  変更
-			List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, workchangePara.getEmployeeId(), loopDate);
+			List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, workchangePara.getEmployeeId(), loopDate, false);
 			lstOutput.addAll(lstDaily);
 		}
 		return lstOutput;

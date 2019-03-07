@@ -1,3 +1,4 @@
+<div data-bind="let: { $vm: $data }">
 <div data-bind="with: appWorkChange">
 	<!--LEFT CONTENTS -->
 	<div class="left-contents-kaf007">
@@ -351,7 +352,7 @@
 		<div class="valign-center control-group-kaf007 overlay-reason-kaf007"
 			data-bind="if: $parent.typicalReasonDisplayFlg">
 			<!--A11_1 定型理由-->
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_25')}</div>
+			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required: $parent.requiredReason}">#{i18n.getText('KAF007_25')}</div>
 			<!--A12 申請理由（ラベル）-->
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
@@ -368,7 +369,7 @@
 		<div class="valign-center control-group-kaf007"
 			data-bind="if: $parent.showReasonText()">
 			<!--A12 申請理由（ラベル）-->
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF007_27')}</div>
+			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required: $parent.requiredReason}">#{i18n.getText('KAF007_27')}</div>
 			<!--A12_1 申請理由-->
 			<div id="multiline-kaf007">
 				<textarea id="inpReasonTextarea"
@@ -486,4 +487,5 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>

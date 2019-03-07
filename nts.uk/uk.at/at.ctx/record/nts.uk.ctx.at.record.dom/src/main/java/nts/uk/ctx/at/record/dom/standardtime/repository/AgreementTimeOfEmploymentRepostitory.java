@@ -10,9 +10,14 @@ public interface AgreementTimeOfEmploymentRepostitory {
 	
 	void add(AgreementTimeOfEmployment agreementTimeOfEmployment);
 	
+	void update(AgreementTimeOfEmployment agreementTimeOfEmployment);
+	
 	void remove(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr);
 	
 	Optional<String> findEmploymentBasicSettingId(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr);
 
 	List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr);
+
+	Optional<AgreementTimeOfEmployment> find(String companyId, String employmentCategoryCode,
+			LaborSystemtAtr laborSystemAtr);
 }

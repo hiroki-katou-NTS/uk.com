@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -33,6 +34,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionErr
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckConAgr;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckSubConAgr;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
@@ -73,6 +79,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private AlarmCheckConditionByCategoryFinder alarmCheckConByCategoryFinder;
+	
+	@Inject
+	private IAlarmCheckSubConAgrRepository alarmCheckSubConAgrRepository;
+	
+	@Inject
+	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -288,6 +300,43 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				break;
+			case ATTENDANCE_RATE_FOR_HOLIDAY:
+				//AnnualHolidayAlarmCondition
+				val annualHoliday = command.getAnnualHolidayAlCon();
+				AlarmCheckConAgr alarmCheckConAgr = (annualHoliday == null
+						|| annualHoliday.getAlarmCheckConAgr() == null)
+								? null
+								: new AlarmCheckConAgr(annualHoliday.getAlarmCheckConAgr().isDistByPeriod(),
+										annualHoliday.getAlarmCheckConAgr().getDisplayMessage(),
+										annualHoliday.getAlarmCheckConAgr().getUsageObliDay());
+				AlarmCheckSubConAgr alarmCheckSubConAgr = (annualHoliday == null
+						|| annualHoliday.getAlarmCheckSubConAgr() == null)
+								? null
+								: new AlarmCheckSubConAgr(annualHoliday.getAlarmCheckSubConAgr().isNarrowUntilNext(),
+										annualHoliday.getAlarmCheckSubConAgr().isNarrowLastDay(),
+										annualHoliday.getAlarmCheckSubConAgr().getNumberDayAward(),
+										annualHoliday.getAlarmCheckSubConAgr().getPeriodUntilNext());
+				if(alarmCheckConAgr != null) {
+					val optionalSubCon = alarmCheckConAgrRepository.findByKey(companyId, category.value, command.getCode());
+					if(optionalSubCon.isPresent()) {
+						alarmCheckConAgrRepository.update(companyId, category.value, command.getCode(), alarmCheckConAgr);
+					}else {
+						alarmCheckConAgrRepository.insert(companyId, category.value, command.getCode(), alarmCheckConAgr);
+					}
+				}
+				
+				if(alarmCheckSubConAgr != null) {
+					val optionalCon = alarmCheckConAgrRepository.findByKey(companyId, category.value, command.getCode());
+					if(optionalCon.isPresent()) {
+						alarmCheckSubConAgrRepository.update(companyId, category.value, command.getCode(), alarmCheckSubConAgr);
+					}else {
+						alarmCheckSubConAgrRepository.insert(companyId, category.value, command.getCode(), alarmCheckSubConAgr);
+					}
+				}
+				extractionCondition = command.getAnnualHolidayAlCon() == null ? null
+						: new AnnualHolidayAlarmCondition(alarmCheckConAgr, alarmCheckSubConAgr);
+				
+				break;
 			default:
 				break;
 			}
@@ -414,6 +463,23 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				if(listOt.size() > 10){
 					throw new BusinessException("Msg_1242"); 
 				}
+				break;
+			case ATTENDANCE_RATE_FOR_HOLIDAY:
+				val annualHoliday = command.getAnnualHolidayAlCon();
+				AlarmCheckConAgr alarmCheckConAgr = (annualHoliday == null
+						|| annualHoliday.getAlarmCheckConAgr() == null)
+								? null
+								: new AlarmCheckConAgr(annualHoliday.getAlarmCheckConAgr().isDistByPeriod(),
+										annualHoliday.getAlarmCheckConAgr().getDisplayMessage(),
+										annualHoliday.getAlarmCheckConAgr().getUsageObliDay());
+				AlarmCheckSubConAgr alarmCheckSubConAgr = (annualHoliday == null
+						|| annualHoliday.getAlarmCheckSubConAgr() == null)
+								? null
+								: new AlarmCheckSubConAgr(annualHoliday.getAlarmCheckSubConAgr().isNarrowUntilNext(),
+										annualHoliday.getAlarmCheckSubConAgr().isNarrowLastDay(),
+										annualHoliday.getAlarmCheckSubConAgr().getNumberDayAward(),
+										annualHoliday.getAlarmCheckSubConAgr().getPeriodUntilNext());
+				extractionCondition = new AnnualHolidayAlarmCondition(alarmCheckConAgr, alarmCheckSubConAgr);
 				break;
 			default:
 				break;

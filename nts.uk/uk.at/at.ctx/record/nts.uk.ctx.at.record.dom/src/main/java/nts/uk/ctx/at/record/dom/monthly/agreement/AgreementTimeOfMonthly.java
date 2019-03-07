@@ -153,6 +153,12 @@ public class AgreementTimeOfMonthly {
 	 */
 	public void errorCheck(){
 		
+		// 限度エラー時間をチェック　（Redmine#106502）
+		if (this.limitErrorTime.v() <= 0) {
+			this.status = AgreementTimeStatusOfMonthly.NORMAL;
+			return;
+		}
+		
 		// 特例限度アラーム時間に値が入っているか確認する
 		if (!this.exceptionLimitAlarmTime.isPresent()){
 			

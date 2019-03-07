@@ -136,33 +136,12 @@ module nts.uk.pr.view.ccg007.b {
 
                 blockUI.invisible();
                 service.submitLogin(submitData).done(function(messError: CheckChangePassDto) {
-                    if (messError.showContract) {
-                        self.openContractAuthDialog();
-                    }
-                    else {
-                        //check MsgError
-                        if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
-                            if (messError.showChangePass) {
-                                self.OpenDialogE();
-                            } else {
-                                nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
-                                self.password("");
-                            }
-                        } else {
-                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
-                            //Remove LoginInfo
-                            nts.uk.characteristics.remove("form1LoginInfo").done(function() {
-                                //check SaveLoginInfo
-                                if (self.isSaveLoginInfo()) {
-                                    //Save LoginInfo
-                                    nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
-                                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                                    });
-                                } else {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                                }
-                            });
-                        }
+                    if(!nts.uk.util.isNullOrUndefined(messError.successMsg)&&!nts.uk.util.isNullOrEmpty(messError.successMsg)){
+                        nts.uk.ui.dialog.info({ messageId: messError.successMsg }).then(()=>{
+                            self.doSuccessLogin(messError);      
+                        });
+                    } else {    
+                        self.doSuccessLogin(messError);    
                     }
                     blockUI.clear();
                 }).fail(function(res:any) {
@@ -174,6 +153,38 @@ module nts.uk.pr.view.ccg007.b {
                     }
                     blockUI.clear();
                 });
+            }
+            
+            private doSuccessLogin(messError: CheckChangePassDto){
+                var self = this;    
+                if (messError.showContract) {
+                    self.openContractAuthDialog();
+                }
+                else {
+                    //check MsgError
+                    if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
+                        if (messError.showChangePass) {
+                            self.OpenDialogE();
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
+                            self.password("");
+                        }
+                    } else {
+                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
+                        //Remove LoginInfo
+                        nts.uk.characteristics.remove("form1LoginInfo").done(function() {
+                            //check SaveLoginInfo
+                            if (self.isSaveLoginInfo()) {
+                                //Save LoginInfo
+                                nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                });
+                            } else {
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                            }
+                        });
+                    }
+                }
             }
             
             //open dialog E 

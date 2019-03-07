@@ -3,10 +3,12 @@ package nts.uk.ctx.sys.portal.ws.webmenu;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.AddPersonalTyingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.ChangeCompanyCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.ChangeCompanyCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.webmenu.ChangeCompanyResult;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.PersonTypingCommand;
@@ -70,6 +73,8 @@ public class WebMenuWebService extends WebService {
 	
 	@Inject
 	private SessionLowLayer sessionLowLayer;
+	@Context
+	private HttpServletRequest request;
 
 	@POST
 	@Path("add")
@@ -167,10 +172,13 @@ public class WebMenuWebService extends WebService {
 	
 	@POST
 	@Path("changeCompany")
-	public JavaTypeResult<String> changeCompany(String companyId) {
-		ChangeCompanyCommand command = new ChangeCompanyCommand(companyId); 
-		changeCompanyCommandHandler.handle(command);
-		return new JavaTypeResult<String>(command.getPersonName());
+	public ChangeCompanyResult changeCompany(String companyId) {
+		String path = request.getHeader("PG-Path");
+		String[] arr = path.substring(7).split("/");
+		ChangeCompanyCommand command = new ChangeCompanyCommand(companyId);
+		command.setScreenID(arr[5].toUpperCase());
+		String msgResult = changeCompanyCommandHandler.handle(command);
+		return new ChangeCompanyResult(command.getPersonName(), msgResult);
 	}
 	
 	@POST
