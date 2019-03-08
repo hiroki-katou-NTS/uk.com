@@ -262,9 +262,27 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			// 法定内休出の勤怠項目IDを全て取得
 			List<Integer> attendanceItems = outsideOTSettingService.getAllAttendanceItemIdsForLegalBreak(companyID);
 			// INPUT．法定内休出の勤怠項目IDの枠を合計する
-			for(Integer attendanceItem : attendanceItems){
-				statutoryInternalTime += attendanceItem;
+			List<Integer> breakFrNo = new ArrayList<>();
+			List<MonthlyItems> breakTimeItems = MonthlyItems.findBreakTime();
+			boolean targetFlex = false;
+			for (Integer itemId : attendanceItems) {
+				Optional<MonthlyItems> itemBreakTimeOtp = breakTimeItems
+						.stream().filter(x -> x.itemId == itemId)
+						.findFirst();
+				if (itemBreakTimeOtp.isPresent()) {
+					if (!breakFrNo.contains(itemBreakTimeOtp.get().frameNo)) {
+						breakFrNo.add(itemBreakTimeOtp.get().frameNo);
+					}
+				}
 			}
+			Optional<Integer> flexExessOtp = attendanceItems.stream()
+				.filter(x -> x == MonthlyItems.FLEX_EXCESS_TIME.itemId)
+				.findFirst();
+			if(flexExessOtp.isPresent()){
+				targetFlex = true;
+			}
+			Time36AgreementTargetItem legalBreakTimes = new Time36AgreementTargetItem(new ArrayList<>(), breakFrNo, targetFlex);
+			statutoryInternalTime = this.calcBreakAppTime(appTimeItems, legalBreakTimes);
 		}
 		appUpperLimitTime = appTime + statutoryInternalTime;
 		appOvertimeDetail.getTime36Agree().updateAppTime(appTime);
