@@ -94,7 +94,7 @@ module nts.uk.ui.koExtentions {
             var gridHeaderHeight = 24;
             container.igGrid({
                 width: width + "px",
-                height: (data.rows * 28 + gridHeaderHeight) + "px",
+                height: (data.rows * 23 + gridHeaderHeight) + "px",
                 primaryKey: optionValue,
                 columns: iggridColumns,
                 virtualization: true,
