@@ -34250,6 +34250,15 @@ var nts;
                             }
                         });
                     }
+                    function isCheckedAll($grid) {
+                        if ($grid.data("igGrid") && $grid.igGridSelection('option', 'multipleSelection')) {
+                            var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                            if (chk.attr("data-chk") === "on") {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
                     function getSelectRow($grid) {
                         var row = null;
                         if ($grid.data("igGrid")) {
@@ -34290,7 +34299,7 @@ var nts;
                             var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
                             if (_.isEqual(selectedId, baseID)) {
                                 var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                if (chk[0].getAttribute("data-chk") == "off") {
+                                if (chk.attr("data-chk") === "off") {
                                     chk.click();
                                 }
                             }
@@ -34821,7 +34830,10 @@ var nts;
                                 }
                             }
                             if (clickCheckBox) {
-                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                                var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                                if (chk.attr("data-chk") === "off") {
+                                    chk.click();
+                                }
                             }
                             else {
                                 $grid.ntsGridList('setSelected', value.length === 0 ? (!multiple ? undefined : value) : value);
@@ -40758,6 +40770,31 @@ var nts;
                             });
                         }
                         return $grid;
+                    }
+                    function exporeTo($grid, exposeFunction) {
+                        var row = null;
+                        if ($grid.igGridSelection('option', 'multipleSelection')) {
+                            var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                            if (chk.attr("data-chk") === "off") {
+                                return;
+                            }
+                        }
+                        var selectedRows = $grid.igGrid("selectedRows");
+                        var keyProperty = $grid.igGrid("option", "primaryKey");
+                        var sourceKeys = _.map($grid.igGrid("option", "dataSource"), function (o) { return o[keyProperty]; });
+                        var selectedKeys = _.map(selectedRows, function (o) { return o["id"]; });
+                        if (_.isEqual(_.sortBy(_.uniq(sourceKeys)), _.sortBy(_.uniq(selectedKeys)))) {
+                            return;
+                        }
+                        if (selectedRows) {
+                            row = selectedRows[0];
+                        }
+                        else {
+                            row = $grid.igGrid("selectedRow");
+                        }
+                        if (row) {
+                            exposeFunction(row);
+                        }
                     }
                     function getSelectRowIndex($grid, selectedValue) {
                         var dataSource = $grid.igGrid("option", "dataSource");
