@@ -79,6 +79,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 	private static final int HEADER_ROW = 1;
 	private static final int DES_ROW = 0;
+	private static final int WP_COL = 0;
+	private static final int PRINT_DATE_COL = 8;
 	private static final int EMP_CODE_COL = 0;
 	private static final int EMP_NAME_COL = 1;
 	private static final int EMP_POS_COL = 0;
@@ -106,10 +108,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private RegulationInfoEmployeeAdapter empAdaptor;
 	@Inject
 	private EmployeeInformationPub empInfo;
-	/** 並列化処理 */
 	@Inject
 	private ManagedParallelWithContext parallel;
-
 	@Inject
 	private WorkplaceConfigRepository wpConfigRepo;
 	@Inject
@@ -248,18 +248,21 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// đảo xuống dưới để tiện việc map data
 		// 社員分ループ
 
-//		employeeExports.forEach(employee -> {
-//			getHolidayData(selectedDateType, employee, query, baseDate, companyId);
-//		});
+		// employeeExports.forEach(employee -> {
+		// getHolidayData(selectedDateType, employee, query, baseDate,
+		// companyId);
+		// });
 
-		 List<EmployeeHolidayInformationExport> itemValuesSyncs =  Collections.synchronizedList(new ArrayList<EmployeeHolidayInformationExport>(employeeExports));
-		
+		List<EmployeeHolidayInformationExport> itemValuesSyncs = Collections
+				.synchronizedList(new ArrayList<EmployeeHolidayInformationExport>(employeeExports));
+
 		this.parallel.forEach(itemValuesSyncs, employee -> {
 			String empId = employee.getEmployeeId();
 			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
 			Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
 			List<AnnualHolidayGrantDetail> HolidayDetails = Collections.emptyList();
-			boolean isSelectCurrent = EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.CURRENT);
+			boolean isSelectCurrent = EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class)
+					.equals(PeriodToOutput.CURRENT);
 			if (isSelectCurrent) {
 				// 社員に対応する処理締めを取得する
 				Closure closure = closureService.getClosureDataByEmployee(empId, baseDate);
@@ -279,11 +282,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, printDate, baseDate);
 
 			}
-
+			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
+					.collect(Collectors.toList());
 			employee.setHolidayInfo(holidayInfo);
 			employee.setHolidayDetails(HolidayDetails);
 		});
-		
+
 		employeeExports = itemValuesSyncs;
 
 		Map<WorkplaceHolidayExport, List<EmployeeHolidayInformationExport>> resultmap = employeeExports.stream()
@@ -317,36 +321,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	}
 
-	private void getHolidayData(Integer selectedDateType, EmployeeHolidayInformationExport employee,
-			OutputYearHolidayManagementQuery query, GeneralDate baseDate, String companyId) {
-		String empId = employee.getEmployeeId();
-		ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
-		Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
-		List<AnnualHolidayGrantDetail> HolidayDetails = Collections.emptyList();
-		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.CURRENT)) {
-			// 社員に対応する処理締めを取得する
-			Closure closure = closureService.getClosureDataByEmployee(empId, baseDate);
-			// アルゴリズム「年休付与情報を取得」を実行する
-			// RQ550
-			holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType,
-					closure.getClosureMonth().getProcessingYm(), baseDate);
-			// アルゴリズム「年休明細情報を取得」を実行する
-			HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType,
-					closure.getClosureMonth().getProcessingYm(), baseDate);
-		}
-		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
-			YearMonth printDate = YearMonth.of(query.getPrintDate());
-			// アルゴリズム「年休付与情報を取得」を実行する
-			holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, printDate, baseDate);
-			// アルゴリズム「年休明細情報を取得」を実行する
-			HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, printDate, baseDate);
-
-		}
-
-		employee.setHolidayInfo(holidayInfo);
-		employee.setHolidayDetails(HolidayDetails);
-	}
-
 	/**
 	 * set dữ liệu vào worksheet
 	 * 
@@ -364,7 +338,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		try {
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
-			setHeader(cells);
+			setHeader(cells, query);
 			int lastWPRow = 2;
 			int currentRow = 2;
 			int beginRow = 0;
@@ -378,7 +352,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				AnnualHolidayGrantInfor holidayInfo = emp.getHolidayInfo().isPresent() ? emp.getHolidayInfo().get()
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
-				// tính tổng số dòng để xác định phân trang nếu data quá quy định
+				// tính tổng số dòng để xác định phân trang nếu data quá quy
+				// định
 				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
 				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
@@ -620,6 +595,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private int printWP(Cells cells, int currentRow, String wpName) {
 		cells.get(currentRow, 0).setValue(wpName);
 
+		Range workPlaceRange = cells.createRange(currentRow, WP_COL, 1, 9);
+		workPlaceRange.merge();
+
 		setWPStyle(currentRow, cells);
 
 		currentRow++;
@@ -649,10 +627,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * set Header cho tài liệu
 	 * 
 	 * @param cells
+	 * @param query
 	 */
-	private void setHeader(Cells cells) {
+	private void setHeader(Cells cells, OutputYearHolidayManagementQuery query) {
 		// Header Data
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
+		cells.get(DES_ROW, PRINT_DATE_COL).setValue(genDateText(query));
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
 		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_14"));
@@ -675,6 +655,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(HEADER_ROW, 20).setValue(TextResource.localize("KDR002_32"));
 
 		cells.get(HEADER_ROW, 21).setValue(TextResource.localize("KDR002_38"));
+	}
+
+	private String genDateText(OutputYearHolidayManagementQuery query) {
+		String result = "";
+		if (EnumAdaptor.valueOf(query.getSelectedDateType(), PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
+			String dateString = query.getPrintDate().toString();
+			result = TextResource.localize("KDR002_8") + "：" + dateString.substring(0, 4) + '/'
+					+ dateString.substring(4, 6);
+		}
+		return result;
 	}
 
 }
