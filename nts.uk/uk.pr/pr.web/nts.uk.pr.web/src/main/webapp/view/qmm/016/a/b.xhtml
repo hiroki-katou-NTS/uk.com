@@ -1,7 +1,7 @@
 <div style="width: 857px">
     <div class="flex valign-center tab-row">
         <!--B1_1 賃金テーブルコード/名称 -->
-        <div id="B1_1" style="width: 110px;"
+        <div id="B1_1"  style="width: 110px;"
              data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
         <!--B1_2 賃金テーブルコード -->
         <!--B1_3 賃金テーブル名称-->
@@ -51,27 +51,33 @@
 	                    </td>
 	                    <td style="text-align: center;" data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-	                            <input id="B2_8" data-bind="ntsNumberEditor: { 
-	                            		required: true, 
-	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
-	                            		constraint: 'RangeLowerLimit', 
-	                            		value: rangeLowerLimit, 
-	                            		name: '#[QMM016_30]', 
+                                <div tabindex="1">
+                                    <input id="B2_8"  data-bind="ntsNumberEditor: {
+	                            		required: true,
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
+	                            		constraint: 'RangeLowerLimit',
+	                            		value: rangeLowerLimit,
+	                            		name: '#[QMM016_30]',
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+                                </div>
+
 	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-	                            <input id="B2_10" data-bind="ntsNumberEditor: { 
-	                            		required: true, 
-	                            		enable: $vm.updateMode() &amp;&amp; 
-	                            		$vm.isSelectedHistory(), 
-	                            		constraint: 'RangeUpperLimit', 
-	                            		value: rangeUpperLimit, 
+	                            <div tabindex="2">
+                                    <input id="B2_10"  data-bind="ntsNumberEditor: {
+	                            		required: true,
+	                            		enable: $vm.updateMode() &amp;&amp;
+	                            		$vm.isSelectedHistory(),
+	                            		constraint: 'RangeUpperLimit',
+	                            		value: rangeUpperLimit,
 	                            		name: '#[QMM016_32]',
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+                                </div>
+
 	                        </div>
 	                    </td>
 	                    <td style="text-align: center;" data-bind="if: masterNumericClassification() == 1">
-	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-	                            <input id="B2_11" data-bind="ntsNumberEditor: { 
+	                        <div tabindex="3" data-bind="with: $vm.elementRangeSetting().firstElementRange">
+	                            <input id="B2_11"  data-bind="ntsNumberEditor: {
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; 
 	                            		$vm.isSelectedHistory(), 
@@ -86,13 +92,15 @@
             </table>
         </div>
     </div>
-    <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+    <div class="tab-row" tabindex="4" style="margin-left: 75px; width: 500px; text-align: center;">
         <button data-bind="click: $vm.createOneDimensionWageTable" style="width: 400px;"
                 class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
     </div>
-    <div class="tab-row" style="margin-top: 40px;">
+    <div  class="tab-row" style="margin-top: 40px;">
         <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-        <button style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+        <div tabindex="5">
+            <button style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+        </div>
     </div>
     <hr></hr>
     <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length >0">

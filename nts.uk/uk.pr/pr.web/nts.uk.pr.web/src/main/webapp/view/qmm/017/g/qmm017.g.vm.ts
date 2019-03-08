@@ -206,6 +206,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let formula = self.formulaContent();
             self.checkOperatorAndDivideZero(formula);
             self.checkBracket(formula);
+            self.checkInputContent(formula);
         }
 
         checkOperatorAndDivideZero(formula) {
@@ -219,7 +220,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 currentChar = formulaElements[index];
                 if (operators.indexOf(currentChar) > -1) {
                     nextChar = formulaElements[index + 1];
-                    if (operators.indexOf(nextChar) > -1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
+                    if (operators.indexOf(nextChar) > -1 && (nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET)
+                        && !((currentChar == self.HALF_SIZE_COMMA_CHAR || currentChar == self.COMMA_CHAR) && (nextChar == self.SUBTRACT || nextChar == self.HALF_SIZE_SUBTRACT))) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
                     if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
@@ -246,6 +248,63 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 self.setErrorToFormula('MsgQ_231', []);
                 return;
             }
+        }
+
+        checkInputContent(formula) {
+            let self = this, operand, prevOperand, operands, dotIndex,
+                separators: string = self.separators,
+                formula = self.replaceTextInsideDoubleQuote(formula);
+            operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
+                return (item && item.length);
+            });
+            for (operand of operands) {
+                if (isNaN(operand)) {
+                    if (!operand.contains(self.OPEN_CURLY_BRACKET)) {
+                        self.setErrorToFormula('MsgQ_233', [operand]);
+                        continue;
+                    }
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
+                    if (!operand.contains(self.CLOSE_CURLY_BRACKET)) {
+                        self.setErrorToFormula('MsgQ_233', [operand]);
+                        continue;
+                    }
+                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
+                    if(!elementName) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                } else {
+                    dotIndex = operand.indexOf('.');
+                    if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
+                }
+                prevOperand = operand;
+            }
+        }
+
+        replaceTextInsideDoubleQuote(formula) {
+            let self = this, indexToCheck = formula.length, startOfLastFunctionIndex = -1, endOfLastFunctionIndex,
+                singleFunctionContent;
+            let textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/g;
+            while (formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION) > -1) {
+                startOfLastFunctionIndex = formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION);
+                endOfLastFunctionIndex = self.indexOfEndFunction(startOfLastFunctionIndex, formula);
+                singleFunctionContent = formula.substr(startOfLastFunctionIndex, endOfLastFunctionIndex - startOfLastFunctionIndex + 1);
+                formula = formula.replace(singleFunctionContent, singleFunctionContent.replace(textInsideDoubleQuoteRegex, ""));
+                indexToCheck = startOfLastFunctionIndex;
+            }
+            return formula;
+        }
+
+        indexOfEndFunction(startFunctionIndex, formula) {
+            let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
+            for (index = startFunctionIndex; index < formula.length; index++) {
+                currentChar = formula [index];
+                if (currentChar == self.OPEN_BRACKET) openBracketNum++;
+                if (currentChar == self.CLOSE_BRACKET) {
+                    closeBracketNum++;
+                    if (openBracketNum > 0 && openBracketNum == closeBracketNum) {
+                        return index;
+                    }
+                }
+            }
+            return -1;
         }
 
         setErrorToFormula(messageId: string, messageParams: Array) {

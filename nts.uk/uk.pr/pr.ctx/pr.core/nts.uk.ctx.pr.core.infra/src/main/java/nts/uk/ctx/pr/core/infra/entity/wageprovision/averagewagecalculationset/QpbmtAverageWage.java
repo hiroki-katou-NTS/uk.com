@@ -47,7 +47,7 @@ public class QpbmtAverageWage extends UkJpaEntity implements Serializable
     /**
     * 日数端数処理方法
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "DAYS_FRACTION_PROCESSING")
     public Integer daysFractionProcessing;
     
@@ -68,7 +68,12 @@ public class QpbmtAverageWage extends UkJpaEntity implements Serializable
         return new AverageWageCalculationSet(this.averageWagePk.cid, this.exceptionFormula, this.obtainAttendanceDays, this.daysFractionProcessing, this.decimalPointCutoffSegment);
     }
     public static QpbmtAverageWage toEntity(AverageWageCalculationSet domain) {
-        return new QpbmtAverageWage(new QpbmtAverageWagePk(domain.getCId()),domain.getExceptionFormula().v(), domain.getDaysAttendance().getObtainAttendanceDays().value, domain.getDaysAttendance().getDaysFractionProcessing().map(i->i.value).orElse(null), domain.getDecimalPointCutoffSegment().value);
+        return new QpbmtAverageWage(
+                new QpbmtAverageWagePk(domain.getCId()),
+                domain.getExceptionFormula().v(),
+                domain.getDaysAttendance().getObtainAttendanceDays().value,
+                domain.getDaysAttendance().getDaysFractionProcessing().map(i->i.value).orElse(0),
+                domain.getDecimalPointCutoffSegment().value);
     }
 
 }

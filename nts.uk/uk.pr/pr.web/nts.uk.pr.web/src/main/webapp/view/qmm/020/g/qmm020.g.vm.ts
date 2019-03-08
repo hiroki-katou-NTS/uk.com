@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         loadGird(){
             let self = this;
             $("#G3_1").ntsGrid({
-                height: '433px',
+                height: '340px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,
