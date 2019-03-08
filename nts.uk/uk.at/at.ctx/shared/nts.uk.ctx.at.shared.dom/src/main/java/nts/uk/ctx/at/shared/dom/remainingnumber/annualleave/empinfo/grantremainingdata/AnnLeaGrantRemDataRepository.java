@@ -39,4 +39,5 @@ public interface AnnLeaGrantRemDataRepository {
 	// get list annual leave grant remaining data by startDate <= grantDate <= endDate
 	List<AnnualLeaveGrantRemainingData> findInDate(String employeeId, GeneralDate startDate, GeneralDate endDate);
 
+	List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate);
 }
