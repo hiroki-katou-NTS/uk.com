@@ -8,7 +8,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.whethertoche
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.whethertocheck.narrowuntilnext.NarrowUntilNext;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.YearlyUsageObDay;
 /**
  * チェック対象か判断
  * @author tutk
