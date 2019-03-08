@@ -320,6 +320,16 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay() && setOutItemsWoSc.getTotalAverageDisplay() == TotalAverageDisplay.AVERAGE) {
 			List<AgreMaxAverageTime> listAgreMaxAverageTimeImport =  this.createMonthlyAverage(cid, employeeIds.get(0), datePeriod.end(), nts.arc.time.YearMonth.of(fiscalYear.v(), baseMonth));
 			List<String> periodLable = new ArrayList<>();
+			//sort by start date
+			for (int i=0; i< listAgreMaxAverageTimeImport.size();i++) {
+				for(int j = i+1; j<listAgreMaxAverageTimeImport.size();j++) {
+					if(listAgreMaxAverageTimeImport.get(j).getPeriod().start().greaterThan(listAgreMaxAverageTimeImport.get(i).getPeriod().start())) {
+						val tg = listAgreMaxAverageTimeImport.get(i);
+						listAgreMaxAverageTimeImport.set(i, listAgreMaxAverageTimeImport.get(j));
+						listAgreMaxAverageTimeImport.set(j, tg);
+					}
+				}
+			}
 			for (AgreMaxAverageTime agreMaxAverage: listAgreMaxAverageTimeImport) {
 				periodLable.add(agreMaxAverage.getPeriod().start().month() + "～" +  agreMaxAverage.getPeriod().end().month());
 			}
