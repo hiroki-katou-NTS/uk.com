@@ -529,8 +529,12 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @return
 	 */
 	private Map<String, EmployeeData> getEmployeeInfo(List<Employee> employees, List<String> employeeIds, LocalDate endYmd) {
-		// init Employee name map
-		Map<String, String> empNameMap = employees.stream().collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
+		
+		Map<String, String> empNameMap = new HashMap<>();
+		for (Employee employee : employees) {
+			empNameMap.put(employee.getEmployeeId(), employee.getName());
+		}
+		//employees.stream().collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
 		Map<String, EmployeeData> employeesData = new HashMap<>();
 		employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
 				GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
