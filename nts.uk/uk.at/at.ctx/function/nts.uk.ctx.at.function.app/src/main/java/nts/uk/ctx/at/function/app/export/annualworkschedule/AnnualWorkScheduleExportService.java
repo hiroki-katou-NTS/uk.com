@@ -314,7 +314,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		//ドメインモデル「36協定運用設定」を取得する
 		Optional<AgreementOperationSetting> agreementOperationSetting = agreementOperationSettingRepository.find(cid);
 		//年度を指定して36協定期間を取得 - get RequestList554
-		DatePeriod datePeriod = getAgreementPeriodPub.byYear(cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear).get();
+		Optional<DatePeriod> period = getAgreementPeriodPub.byYear(cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear);
+		if(!period.isPresent()) {
+			throw new BusinessException("Msg_1513");
+		}
+		DatePeriod datePeriod = period.get(); 
 		YearMonthPeriod yearMonthPeriodRQL554 = new YearMonthPeriod(datePeriod.start().yearMonth(),datePeriod.end().yearMonth());
 		
 		if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay() && setOutItemsWoSc.getTotalAverageDisplay() == TotalAverageDisplay.AVERAGE) {
