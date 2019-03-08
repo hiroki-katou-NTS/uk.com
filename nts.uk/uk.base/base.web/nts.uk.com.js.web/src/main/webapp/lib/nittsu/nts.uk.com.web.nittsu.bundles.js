@@ -27846,6 +27846,9 @@ var nts;
                                 var disFormat = su.formatSave(col[0], val);
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                                 $.data($cell, v.DATA, disFormat);
+                                if (_zeroHidden && ti.isZero(disFormat, key)) {
+                                    $cell.innerHTML = "";
+                                }
                             }
                             else if (dkn.controlType[key] === dkn.CHECKBOX) {
                                 var check = $cell.querySelector("input[type='checkbox']");
@@ -28003,25 +28006,44 @@ var nts;
                                         }
                                         else
                                             options = cbx_1.options;
-                                        var sel = _.find(options, function (o) { return o.code === val; });
-                                        if (sel) {
-                                            su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
-                                            $.data($cell, lo.CBX_SELECTED_TD, val);
-                                            $cell.textContent = sel ? sel.name : "";
-                                        }
+                                        var sel = _.find(options, function (o) { return o[cbx_1.optionsValue] === val; });
+                                        if (_.isNil(val))
+                                            val = null;
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel[cbx_1.optionsText] : "";
                                     }
                                 }
                                 else if (cbx_1.type === dkn.DATE_PICKER) {
                                     var txt = void 0, mDate = moment.utc(val, cbx_1.format, true);
                                     if (cbx_1.formatType !== "ymd")
                                         txt = mDate.format(cbx_1.format[0]);
-                                    var date = _.isNil(txt) ? mDate.toDate() : txt;
+                                    var date = _.isNil(txt) ? (mDate.isValid() ? mDate.toDate() : mDate._i) : txt;
+                                    if (_.isNil(date))
+                                        date = null;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                                     $.data($cell, v.DATA, date);
-                                    $cell.innerHTML = _.isNil(txt) ? mDate.format(cbx_1.format[0]) : txt;
+                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
                                 }
                             }
                             return idx;
+                        },
+                        optionsList: function (id, key) {
+                            var control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
+                            if (!control || !controlMap || !(controlDef = controlMap[key]))
+                                return null;
+                            if (control === dkn.REFER_BUTTON) {
+                                return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                            }
+                            else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                                if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
+                                    return control.optionsList[listType];
+                                }
+                                else {
+                                    return control.options;
+                                }
+                            }
+                            return null;
                         },
                         checkAll: function (key, fixed) {
                             var idxes, rows;
@@ -28167,17 +28189,17 @@ var nts;
                                 });
                             });
                         },
-                        replace: function (key, condition, value) {
+                        replace: function (key, condition, value, dr) {
                             if (_.isNil(key) || !_.isFunction(condition) || !_.isFunction(value))
                                 return;
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef || (_.isNumber(_currentPage) && Number(k) !== _currentPage))
                                     return;
                                 _.forEach(_mafollicle[k].dataSource, function (d, i) {
-                                    if (!condition(d[key]))
+                                    if (!condition(d[key], d))
                                         return;
-                                    var setVal = value(d[key]);
-                                    _$grid.mGrid("updateCell", d[_pk], key, setVal);
+                                    var setVal = value(d[key], d);
+                                    _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                                 });
                             });
                         },
@@ -29201,6 +29223,7 @@ var nts;
                                 if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                     delete dirties[id][coord.columnKey];
                                 }
+                                return { c: calcCell };
                             }
                             else {
                                 if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === ""))
@@ -29210,6 +29233,7 @@ var nts;
                                         if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                             delete dirties[id][coord.columnKey];
                                         }
+                                        rData[coord.columnKey] = cellValue;
                                         return { c: calcCell };
                                     }
                                     $cell.classList.remove(color.ManualEditTarget);
@@ -29299,7 +29323,6 @@ var nts;
                                     }
                                     else {
                                         formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                                        t.c.textContent = formatted;
                                         if (ng) {
                                             t.c.classList.add(khl.ERROR_CLS);
                                             errDetail = _.find(_errors, function (err) { return err.index === coord.rowIdx && err.columnKey === coord.columnKey; });
@@ -29316,6 +29339,12 @@ var nts;
                                         }
                                         disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
                                         $.data(t.c, v.DATA, disFormat);
+                                        if (maf.zeroHidden && ti.isZero(disFormat, coord.columnKey)) {
+                                            t.c.textContent = "";
+                                        }
+                                        else {
+                                            t.c.textContent = formatted;
+                                        }
                                     }
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
@@ -29545,7 +29574,9 @@ var nts;
                                     }
                                 }
                                 else if (valueType === "Time") {
-                                    value = uk.time.minutesBased.duration.parseString(String(value)).format();
+                                    var parsed = uk.time.minutesBased.duration.parseString(String(value));
+                                    if (parsed.success)
+                                        value = parsed.format();
                                 }
                                 else if (valueType === "Currency") {
                                     var currencyOpts = new ui.option.CurrencyEditorOption();
@@ -30494,8 +30525,11 @@ var nts;
                                 kt._adjuster.nostal(table.cols, bodyGroupArr_1, sumGroupArr);
                                 kt._adjuster.handle();
                             }
+                            var tmp_2 = _vessel().zeroHidden;
+                            _vessel().zeroHidden = _zeroHidden;
+                            _zeroHidden = tmp_2;
                             if (lo.changeZero(_vessel().zeroHidden))
-                                _vessel().zeroHidden = _zeroHidden;
+                                _zeroHidden = _vessel().zeroHidden;
                             return;
                         }
                         _maxFreeWidth = _mafollicle[SheetDef][_currentSheet].maxWidth;
@@ -30529,8 +30563,11 @@ var nts;
                             kt._adjuster.nostal(_mafollicle[SheetDef][_currentSheet].hColArr, _mafollicle[SheetDef][_currentSheet].bColArr, _mafollicle[SheetDef][_currentSheet].sumColArr);
                             kt._adjuster.handle();
                         }
+                        var tmp = _vessel().zeroHidden;
+                        _vessel().zeroHidden = _zeroHidden;
+                        _zeroHidden = tmp;
                         if (lo.changeZero(_vessel().zeroHidden))
-                            _vessel().zeroHidden = _zeroHidden;
+                            _zeroHidden = _vessel().zeroHidden;
                     }
                     gp.hopto = hopto;
                 })(gp = mgrid.gp || (mgrid.gp = {}));

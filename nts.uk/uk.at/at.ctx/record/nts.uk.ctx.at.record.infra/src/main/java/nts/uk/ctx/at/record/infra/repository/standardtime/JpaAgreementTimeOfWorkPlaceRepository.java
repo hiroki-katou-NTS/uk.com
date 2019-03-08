@@ -22,7 +22,7 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 
 	private static final String DELETE_BY_ONE_KEY;
 
-//	private static final String FIND_BY_KEY;
+	private static final String FIND_BY_KEY;
 
 	private static final String FIND_WORKPLACE_SETTING;
 
@@ -34,12 +34,12 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
 		DELETE_BY_ONE_KEY = builderString.toString();
 
-//		builderString = new StringBuilder();
-//		builderString.append("SELECT a ");
-//		builderString.append("FROM KmkmtAgeementTimeWorkPlace a ");
-//		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.workPlaceId = :workPlaceId ");
-//		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
-//		FIND_BY_KEY = builderString.toString();
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementTimeWorkPlace a ");
+		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.workPlaceId = :workPlaceId ");
+		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
+		FIND_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -58,6 +58,11 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	@Override
 	public void add(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
 		this.commandProxy().insert(toEntity(agreementTimeOfWorkPlace));
+	}
+	
+	@Override
+	public void update(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
+		this.commandProxy().update(toEntity(agreementTimeOfWorkPlace));
 	}
 
 	@Override
@@ -81,11 +86,15 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 				return rec.getString("BASIC_SETTING_ID");
 			});
 		}
-		// return this.queryProxy().query(FIND_BY_KEY,
-		// KmkmtAgeementTimeWorkPlace.class)
-		// .setParameter("workPlaceId", workplaceId)
-		// .setParameter("laborSystemAtr", laborSystemAtr.value)
-		// .getSingle(f -> f.kmkmtAgeementTimeWorkPlacePK.basicSettingId);
+	}
+	
+	@Override
+	public Optional<AgreementTimeOfWorkPlace> findAgreementTimeOfWorkPlace(String workplaceId,
+			LaborSystemtAtr laborSystemAtr) {
+
+		return this.queryProxy().query(FIND_BY_KEY, KmkmtAgeementTimeWorkPlace.class)
+				.setParameter("workPlaceId", workplaceId).setParameter("laborSystemAtr", laborSystemAtr.value)
+				.getSingle(f -> toDomain(f));
 	}
 
 	private KmkmtAgeementTimeWorkPlace toEntity(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
@@ -94,16 +103,19 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		entity.kmkmtAgeementTimeWorkPlacePK = new KmkmtAgeementTimeWorkPlacePK();
 		entity.kmkmtAgeementTimeWorkPlacePK.basicSettingId = agreementTimeOfWorkPlace.getBasicSettingId();
 		entity.kmkmtAgeementTimeWorkPlacePK.workPlaceId = agreementTimeOfWorkPlace.getWorkplaceId();
-		entity.laborSystemAtr = new BigDecimal(agreementTimeOfWorkPlace.getLaborSystemAtr().value);
+		entity.laborSystemAtr = agreementTimeOfWorkPlace.getLaborSystemAtr().value;
+		entity.upperMonth = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
 
-//	private static AgreementTimeOfWorkPlace toDomain(KmkmtAgeementTimeWorkPlace kmkmtAgeementTimeWorkPlace) {
-//		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
-//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
-//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
-//				kmkmtAgeementTimeWorkPlace.laborSystemAtr);
-//		return agreementTimeOfWorkPlace;
-//	}
+	private static AgreementTimeOfWorkPlace toDomain(KmkmtAgeementTimeWorkPlace kmkmtAgeementTimeWorkPlace) {
+		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
+				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
+				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
+				kmkmtAgeementTimeWorkPlace.laborSystemAtr,
+				kmkmtAgeementTimeWorkPlace.upperMonth, kmkmtAgeementTimeWorkPlace.upperMonthAverage);
+		return agreementTimeOfWorkPlace;
+	}
 }

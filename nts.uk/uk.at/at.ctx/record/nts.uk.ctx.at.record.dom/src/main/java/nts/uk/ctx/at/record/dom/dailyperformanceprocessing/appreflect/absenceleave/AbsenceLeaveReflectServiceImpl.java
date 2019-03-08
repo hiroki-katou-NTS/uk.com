@@ -283,7 +283,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		this.reflectScheStartEndTime(param, isPre, dailyInfor);
 		//勤種就時開始終了の反映
 		this.reflectRecordStartEndTime(param, dailyInfor);
-		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getBaseDate());
+		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getBaseDate(), false);
 		return lstDaily;
 	}
 

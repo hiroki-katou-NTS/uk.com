@@ -46,7 +46,6 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
@@ -62,6 +61,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
+import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
@@ -105,10 +105,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The company information adapter. */
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
-
-	/** The list company adapter. */
-	@Inject
-	private ListCompanyAdapter listCompanyAdapter;
 
 	/** The manager. */
 	@Inject
@@ -174,6 +170,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	
 	@Inject
 	private StatusEmploymentAdapter statusEmploymentAdapter;
+	@Inject
+	private CollectCompanyList collectComList;
 	
 	/** The sy job title adapter. */
 	@Inject
@@ -367,45 +365,38 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/**
 	 * CCG007-B.セッション生成
-	 *
-	 * @param user
-	 *            the user
-	 * @return the check change pass dto
+	 * @param user ユーザ
 	 */
-	// init session
-	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
-				user.getAssociatePersonId().get());
-		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
-		} else {
-			// get employee
-			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatePersonId().get());
-
-			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
-				// Check employee deleted status.
-				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
+	//EA修正履歴 No.3033
+	public void initSession(UserImportNew user) {
+		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
+		List<String> lstCID = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
+		String assePersonId = user.getAssociatePersonId().isPresent() ? user.getAssociatePersonId().get() : null;
+		if (lstCID.isEmpty()) {//取得できた場合　会社Listの件数　=　０
+			//「ログインユーザコンテキスト」に情報設定（会社情報・社員情報はセットしません。） 
+			//個人ID　＝　「ユーザ.紐付け先個人ID」
+			manager.loggedInAsUser(user.getUserId(), assePersonId, user.getContractCode(), null, null);
+		} else {//取得できた場合　会社Listの件数　＞　０
+			Optional<EmployeeImport> opEm = Optional.empty();
+			if(assePersonId != null){//ユーザ．紐付先個人ID　≠　Null
+				//Imported（GateWay）「社員」を取得する (Imported (GateWay) Acquire 'Employee')
+				opEm = employeeAdapter.getByPid(lstCID.get(FIST_COMPANY), assePersonId);
 			}
-
-			// save to session
-			CompanyInformationImport companyInformation = this.companyInformationAdapter
-					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
-						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
-			} else {
-				// set info to session
-				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
+			//Imported（GateWay）「会社情報」を取得する(Imported (GateWay) Acquire "company information")
+			CompanyInformationImport comInfo = this.companyInformationAdapter
+					.findById(lstCID.get(FIST_COMPANY));
+			//「ログインユーザコンテキスト」に会社情報・社員情報をセットします。
+			String contractCD = AppContexts.system().isOnPremise() ? "000000000000" : user.getContractCode();
+			if(opEm.isPresent()){
+				manager.loggedInAsEmployee(user.getUserId(), assePersonId, contractCD, 
+						comInfo.getCompanyId(), comInfo.getCompanyCode(), opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
+			}else{
+				manager.loggedInAsUser(user.getUserId(), assePersonId, contractCD, comInfo.getCompanyId(), comInfo.getCompanyCode());
 			}
 		}
+		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
 		this.setRoleId(user.getUserId());
-
-		return new CheckChangePassDto(false, null, false);
 	}
-
 	/**
 	 * Check after login.
 	 *
@@ -718,7 +709,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		GeneralDate date = GeneralDate.today();
 		// 切替可能な会社一覧を取得する Get list company
-		List<String> companyIds = this.getListCompany(userId, date, roleType);
+		List<String> companyIds = this.getListCompany(userId, date, roleType, contractCode);
 
 		if (companyIds.isEmpty()) {
 			Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -856,7 +847,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the list company
 	 */
 	// 切替可能な会社一覧を取得する
-	private List<String> getListCompany(String userId, GeneralDate date, Integer roleType) {
+	private List<String> getListCompany(String userId, GeneralDate date, Integer roleType, String contractCode) {
 
 		// ドメインモデル「ロール個人別付与」を取得する (get List RoleIndividualGrant)
 		List<RoleIndividualGrantImport> roles = this.roleIndividualGrantAdapter.getByUserIDDateRoleType(userId, date,
@@ -935,8 +926,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-
-		return lstCompanyFinal;
+		//EA修正履歴 No.3031
+		List<String> lstResult = collectComList.checkStopUse(contractCode, lstCompanyFinal, userId);
+		return lstResult;
 	}
 
 	/**

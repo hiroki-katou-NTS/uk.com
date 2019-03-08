@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 public class DailyInterimRemainMngDataAndFlg {
 	private DailyInterimRemainMngData data;
 	/**
-	 * 「Workを考慮した月次処理用の暫定残数管理データを作成する」から取得した場合 True
+	 * 「Workを考慮した月次処理用の暫定残数管理データを作成する」 or ﾌﾚｯｸｽ補填から取得した場合 True
 	 * 「暫定年休管理データを取得」から取得した場合 false
 	 */
 	private boolean referenceFlg;

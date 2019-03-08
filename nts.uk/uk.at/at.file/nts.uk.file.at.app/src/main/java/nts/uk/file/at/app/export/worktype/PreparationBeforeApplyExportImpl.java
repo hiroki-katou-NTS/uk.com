@@ -8,6 +8,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -1109,7 +1110,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         EnumSet.allOf(Sheet.class)
                 .forEach( i ->{
                     SheetData extra = new SheetData(this.getData(i,extraData),
-                            getHeaderColumns(i), null, null, getSheetName(i));
+                            getHeaderColumns(i), null, null, getSheetName(i), MasterListMode.NONE);
                     sheetData.add(extra);
                 });
         return sheetData;
@@ -1119,6 +1120,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     public String mainSheetName() {
         return TextResource.localize("KAF022_453");
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
     private String getSheetName(Sheet sheet){
         switch (sheet) {

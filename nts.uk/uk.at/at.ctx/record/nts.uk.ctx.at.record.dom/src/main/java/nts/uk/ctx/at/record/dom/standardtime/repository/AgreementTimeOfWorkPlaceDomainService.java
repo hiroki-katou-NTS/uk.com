@@ -9,7 +9,7 @@ public interface AgreementTimeOfWorkPlaceDomainService {
 	
 	List<String> add(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace, BasicAgreementSetting basicAgreementSetting);
 	
-	List<String> update(BasicAgreementSetting basicAgreementSetting);
+	List<String> update(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfWorkPlace agreementTimeOfWorkPlace);
 	
 	void remove(String basicSettingId, String workPlaceId, int laborSystemAtr);
 

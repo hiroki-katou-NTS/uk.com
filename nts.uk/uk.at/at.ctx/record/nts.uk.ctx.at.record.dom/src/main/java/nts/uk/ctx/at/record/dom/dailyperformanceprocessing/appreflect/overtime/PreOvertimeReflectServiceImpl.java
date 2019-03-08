@@ -187,7 +187,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		//予定開始終了時刻の反映 
 		priorProcess.startAndEndTimeReflectSche(param, changeFlg, dailyInfor);
 		//開始終了時刻の反映
-		startEndtimeOffReflect.startEndTimeOffReflect(param, dailyInfor);
+		//startEndtimeOffReflect.startEndTimeOffReflect(param, dailyInfor);
 
 		//残業時間を反映する
 		//残業枠時間
@@ -205,7 +205,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		
 		//日別実績の修正からの計算
 		//○日別実績を置き換える Replace daily performance	
-		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getDateInfo());
+		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getDateInfo(), true);
 		return lstDaily;
 	}
 	

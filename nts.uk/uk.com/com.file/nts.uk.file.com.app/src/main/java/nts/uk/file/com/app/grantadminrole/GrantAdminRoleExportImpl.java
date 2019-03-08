@@ -6,6 +6,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,7 +48,12 @@ public class GrantAdminRoleExportImpl implements MasterListData {
     public String mainSheetName(){
 		return TextResource.localize("CAS012_44");
 	}
-    
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.BASE_DATE;
+	}
+	
     private List<MasterData> getMasterDatasCompanyManager(MasterListExportQuery query){
         GeneralDate date = query.getBaseDate();
         return grantAdminRoleRepository.getDataExportCompanyManagerMode(RoleType.COMPANY_MANAGER.value,new Date(date.date().getTime()));
@@ -85,12 +91,14 @@ public class GrantAdminRoleExportImpl implements MasterListData {
                 .mainData(this.getMasterDatasCompanyManager(query))
                 .mainDataColumns(this.getHeaderColumnsCompanyManager())
                 .sheetName(TextResource.localize("CAS012_45"))
+                .mode(MasterListMode.BASE_DATE)
                 .build();
 
         SheetData sheetData2 = SheetData.builder()
                 .mainData(this.getMasterDatasGroupCompanyManager(query))
                 .mainDataColumns(this.getHeaderColumns(query))
                 .sheetName(TextResource.localize("CAS012_46"))
+                .mode(MasterListMode.BASE_DATE)
                 .build();
 
         sheetDatas.add(sheetData1);
