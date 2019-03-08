@@ -218,6 +218,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.map(x -> EmployeeHolidayInformationExport.fromEmpInfo(x)).collect(Collectors.toList());
 		// lại bỏ những data bị lỗi không có WP ID
 		employeeExports = employeeExports.stream().filter(x -> x.getWorkplace() != null).collect(Collectors.toList());
+		//sắp xếp theo employeeCode
+		employeeExports = employeeExports.stream().sorted((a, b) -> a.getEmployeeCode().compareTo(b.getEmployeeCode()))
+				.collect(Collectors.toList());
 		// 職場IDから階層コードを取得する
 		List<String> workplaceIds = employeeExports.stream().map(x -> {
 			return x.getWorkplace().getWorkplaceId();
