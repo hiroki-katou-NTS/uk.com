@@ -24,7 +24,7 @@ public class LastGrantedInfo {
 
 	public Optional<AnnualLeaveGrantRemainingData> getLastGrantedInfo(String employeeId,GeneralDate baseDate) {
 		//ドメインモデル「年休付与残数データ」を取得
-		List<AnnualLeaveGrantRemainingData> listdata = annLeaGrantRemDataRepo.find(employeeId,baseDate);
+		List<AnnualLeaveGrantRemainingData> listdata = annLeaGrantRemDataRepo.findBySidAndDate(employeeId,baseDate);
 		if(listdata.isEmpty())
 			return Optional.empty();
 		//sort DESC
