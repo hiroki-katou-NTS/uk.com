@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
     import windows = nts.uk.ui.windows;
+    import modal = nts.uk.ui.windows.sub.modal;
     import shareModel = nts.uk.pr.view.qmm019.share.model;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
@@ -146,18 +147,20 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
 
         register() {
             let self = this;
-            block.invisible();
-            let dto = {
-                categoryAtr: self.categoryAtr,
-                itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.listItemSetting
-            };
-            service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
-                self.itemNames(StatementItem.fromApp(data));
-            }).fail(err => {
-                alertError(err);
-            }).always(() => {
-                block.clear();
+            modal("/view/qmm/012/b/index.xhtml").onClosed(() => {
+                block.invisible();
+                let dto = {
+                    categoryAtr: self.categoryAtr,
+                    itemNameCdSelected: self.params.itemNameCode,
+                    itemNameCdExcludeList: self.params.listItemSetting
+                };
+                service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
+                    self.itemNames(StatementItem.fromApp(data));
+                }).fail(err => {
+                    alertError(err);
+                }).always(() => {
+                    block.clear();
+                });
             });
         }
 

@@ -9,6 +9,7 @@ module nts.uk.pr.view.qmm012.b {
 
     export module viewModel {
         export class ScreenModel {
+            isDialog: KnockoutObservable<boolean> = ko.observable(false);
             
             // category comboBox
             categoryList: KnockoutObservableArray<model.ItemModel>;
@@ -27,6 +28,7 @@ module nts.uk.pr.view.qmm012.b {
             
             constructor() {
                 let self = this;
+                self.isDialog(!nts.uk.ui.windows.getSelf().isRoot);
                 
                 // category comboBox
                 self.categoryList = ko.observableArray([
@@ -577,6 +579,10 @@ module nts.uk.pr.view.qmm012.b {
                         $("#B3_3").focus();
                     }
                 });
+            }
+
+            public closeDialog(): void {
+                nts.uk.ui.windows.close();
             }
             
         }

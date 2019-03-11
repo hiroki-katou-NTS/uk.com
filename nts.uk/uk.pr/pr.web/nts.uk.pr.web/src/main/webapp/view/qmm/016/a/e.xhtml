@@ -48,15 +48,13 @@
                 </table>
             </div>
         </div>
-        <div tabindex="1" class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
-            <button data-bind="click: $vm.createWageTableQualification" style="width: 400px;"
+        <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+            <button tabindex="12" data-bind="click: $vm.createWageTableQualification" style="width: 400px;"
                     class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
         </div>
         <div class="tab-row" style="margin-top: 40px;">
             <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-           <div tabindex="2">
-               <button style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
-           </div>
+            <button tabindex="13" style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
         </div>
         <hr></hr>
         <div class="tab-row E5_1" style="margin-top: 20px;"
@@ -87,8 +85,7 @@
                             <div class="limited-label" data-bind="text: qualificationName"></div>
                         </th>
                         <td>
-                            <div tabindex="3">
-                                <input class="input-amount" data-bind="ntsNumberEditor: {
+                            <input class="input-amount" data-bind="ntsNumberEditor: {
                                                     name: '#[QMM016_39]',
                                                     value: wageTablePaymentAmount,
                                                     constraint: 'WageTablePaymentAmount',
@@ -97,7 +94,6 @@
                                                         width: '120px'
                                                     },
                                                     required: true}"/>
-                            </div>
                         </td>
                         <td style="vertical-align: top"  data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualificationCode().length}, text: $parent.displayPaymentMethod">
                         </td>

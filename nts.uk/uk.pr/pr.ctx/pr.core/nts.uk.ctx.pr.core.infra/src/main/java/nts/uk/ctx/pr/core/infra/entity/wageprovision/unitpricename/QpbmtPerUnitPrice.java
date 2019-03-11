@@ -36,28 +36,28 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "NAME")
+    @Column(name = "INDIVIDUAL_UNIT_PRICE_NAME")
     public String name;
     
     /**
     * 廃止区分
     */
     @Basic(optional = false)
-    @Column(name = "ABOLITION")
+    @Column(name = "DEPRECATED_ATR")
     public int abolition;
     
     /**
     * 略名
     */
     @Basic(optional = false)
-    @Column(name = "SHORT_NAME")
+    @Column(name = "INDIVIDUAL_UNIT_PRICE_ABNAME")
     public String shortName;
     
     /**
     * 統合コード
     */
     @Basic(optional = true)
-    @Column(name = "INTEGRATION_CODE")
+    @Column(name = "INTERGRATE_CD")
     public String integrationCode;
     
     /**
@@ -84,37 +84,37 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
     /**
     * 対象区分
     */
-    @Basic(optional = true)
-    @Column(name = "TARGET_CLASSIFICATION")
-    public Integer targetClassification;
+    @Basic(optional = false)
+    @Column(name = "TARGET_ATR")
+    public int targetClassification;
     
     /**
     * 月給者
     */
-    @Basic(optional = true)
-    @Column(name = "MONTHLY_SALARY")
-    public Integer monthlySalary;
+    @Basic(optional = false)
+    @Column(name = "TARGET_ATR_MONTHLYPAY")
+    public int monthlySalary;
     
     /**
     * 日給月給者
     */
-    @Basic(optional = true)
-    @Column(name = "MONTHLY_SALARY_PERDAY")
-    public Integer monthlySalaryPerday;
+    @Basic(optional = false)
+    @Column(name = "TARGET_ATR_MONTHVARIABLEPAY")
+    public int monthlySalaryPerday;
     
     /**
     * 日給者
     */
-    @Basic(optional = true)
-    @Column(name = "DAY_PAYEE")
-    public Integer dayPayee;
+    @Basic(optional = false)
+    @Column(name = "TARGET_ATR_DAYPAY")
+    public int dayPayee;
     
     /**
     * 時給者
     */
-    @Basic(optional = true)
-    @Column(name = "HOURLY_PAY")
-    public Integer hourlyPay;
+    @Basic(optional = false)
+    @Column(name = "TARGET_ATR_HOURLYPAY")
+    public int hourlyPay;
     
     @Override
     protected Object getKey()
@@ -140,11 +140,11 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
 
         this.unitPriceType = setting.getUnitPriceType().value;
         this.settingAtr = setting.getFixedWage().getSettingAtr().value;
-        this.targetClassification = setting.getFixedWage().getEveryoneEqualSet().map(x -> Integer.valueOf(x.getTargetClassification().value)).orElse(null);
-        this.monthlySalary = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalary().value)).orElse(null);
-        this.monthlySalaryPerday = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalaryPerday().value)).orElse(null);
-        this.dayPayee = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getDayPayee().value)).orElse(null);
-        this.hourlyPay = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getHourlyPay().value)).orElse(null);
+        this.targetClassification = setting.getFixedWage().getEveryoneEqualSet().map(x -> Integer.valueOf(x.getTargetClassification().value)).orElse(0);
+        this.monthlySalary = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalary().value)).orElse(0);
+        this.monthlySalaryPerday = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getMonthlySalaryPerday().value)).orElse(0);
+        this.dayPayee = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getDayPayee().value)).orElse(0);
+        this.hourlyPay = setting.getFixedWage().getPerSalaryContractType().map(x -> Integer.valueOf(x.getHourlyPay().value)).orElse(0);
     }
 
 }

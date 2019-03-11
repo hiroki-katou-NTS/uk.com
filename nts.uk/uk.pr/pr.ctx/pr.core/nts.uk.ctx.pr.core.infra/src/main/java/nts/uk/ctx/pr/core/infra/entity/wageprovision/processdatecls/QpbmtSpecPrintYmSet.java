@@ -34,7 +34,7 @@ public class QpbmtSpecPrintYmSet extends UkJpaEntity implements Serializable {
      * 印字年月
      */
     @Basic(optional = false)
-    @Column(name = "PRINT_DATE")
+    @Column(name = "PRINT_YM")
     public int printDate;
 
     @Override

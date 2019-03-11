@@ -29,12 +29,12 @@ public class ProcessInformation extends AggregateRoot {
 	/**
 	 * 処理区分名称
 	 */
-	private ProcessCls processCls;
+	private ProcessCls processName;
 
-	public ProcessInformation(String cid, int processCateNo, int deprecatCate, String processCls) {
+	public ProcessInformation(String cid, int processCateNo, int deprecatCate, String processName) {
 		this.cid = cid;
 		this.processCateNo = processCateNo;
 		this.deprecatCate = EnumAdaptor.valueOf(deprecatCate, AbolitionAtr.class);
-		this.processCls = new ProcessCls(processCls);
+		this.processName = new ProcessCls(processName);
 	}
 }

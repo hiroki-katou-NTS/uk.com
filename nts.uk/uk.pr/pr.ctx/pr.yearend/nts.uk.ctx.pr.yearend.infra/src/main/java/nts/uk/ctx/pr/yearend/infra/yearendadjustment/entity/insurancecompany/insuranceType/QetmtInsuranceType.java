@@ -41,7 +41,7 @@ public class QetmtInsuranceType extends UkJpaEntity implements Serializable
     * 区分
     */
     @Basic(optional = false)
-    @Column(name = "ATR_OF_INSURANCE_TYPE")
+    @Column(name = "INSURANCE_TYPE_ATR")
     public int atrOfInsuranceType;
     
     @Override
