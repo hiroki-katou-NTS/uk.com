@@ -2039,40 +2039,38 @@ module nts.uk.at.view.kmf022 {
                 let self = this;
                 let data = allData.appOt;
                 let otRest = allData.otRestAppCom;
-                setTimeout(() =>
-                    if (data && otRest) {
-                        self.selectedIdB4(data.workTypeChangeFlag);
-                        self.selectedIdB6(data.flexJExcessUseSetAtr);
-                        self.selectedIdB8(otRest.bonusTimeDisplayAtr);
-                        self.selectedIdB10(otRest.divergenceReasonFormAtr);
-                        self.selectedIdB12(otRest.divergenceReasonInputAtr);
-    
-                        self.selectedIdB15(otRest.performanceDisplayAtr);
-                        self.selectedIdB17(otRest.preDisplayAtr);
-                        self.selectedIdB19(otRest.calculationOvertimeDisplayAtr);
-                        self.selectedIdB21(otRest.extratimeDisplayAtr);
-    
-                        self.selectedIdB24(otRest.preExcessDisplaySetting);
-                        self.selectedIdB26(otRest.performanceExcessAtr);
-                        self.selectedIdB28(data.priorityStampSetAtr);
-                        self.selectedIdB30(otRest.extratimeExcessAtr);
-                        self.selectedIdB32(otRest.appDateContradictionAtr);
-                        //                    self.selectedIdB18(data.flexExcessUseSetAtr);
-                        //                    self.selectedIdB19(data.priorityStampSetAtr);
-                        self.selectedIdR2_8(data.preTypeSiftReflectFlg);
-                        self.selectedIdR2_11(data.preOvertimeReflectFlg);
-                        self.selectedIdR2_15(data.postTypesiftReflectFlg);
-                        self.selectedIdR2_18(data.postWorktimeReflectFlg);
-                        self.selectedIdR2_21(data.postBreakReflectFlg);
-                        self.selectedCodeR2_22(data.restAtr);
-                        //                    self.selectedIdB31(data.calendarDispAtr);
-                        //                    self.selectedIdB32(data.instructExcessOtAtr);
-                        //                    self.selectedCodeB33(data.unitAssignmentOvertime);
-                        //                    self.selectedIdB34(data.useOt);
-                        //                    self.selectedIdB35(data.earlyOverTimeUseAtr);
-                        //                    self.selectedIdB36(data.normalOvertimeUseAtr);
-                    }
-                }, 300);
+                if (data && otRest) {
+                    self.selectedIdB4(data.workTypeChangeFlag);
+                    self.selectedIdB6(data.flexJExcessUseSetAtr);
+                    self.selectedIdB8(otRest.bonusTimeDisplayAtr);
+                    self.selectedIdB10(otRest.divergenceReasonFormAtr);
+                    self.selectedIdB12(otRest.divergenceReasonInputAtr);
+
+                    self.selectedIdB15(otRest.performanceDisplayAtr);
+                    self.selectedIdB17(otRest.preDisplayAtr);
+                    self.selectedIdB19(otRest.calculationOvertimeDisplayAtr);
+                    self.selectedIdB21(otRest.extratimeDisplayAtr);
+
+                    self.selectedIdB24(otRest.preExcessDisplaySetting);
+                    self.selectedIdB26(otRest.performanceExcessAtr);
+                    self.selectedIdB28(data.priorityStampSetAtr);
+                    self.selectedIdB30(otRest.extratimeExcessAtr);
+                    self.selectedIdB32(otRest.appDateContradictionAtr);
+                    //                    self.selectedIdB18(data.flexExcessUseSetAtr);
+                    //                    self.selectedIdB19(data.priorityStampSetAtr);
+                    self.selectedIdR2_8(data.preTypeSiftReflectFlg);
+                    self.selectedIdR2_11(data.preOvertimeReflectFlg);
+                    self.selectedIdR2_15(data.postTypesiftReflectFlg);
+                    self.selectedIdR2_18(data.postWorktimeReflectFlg);
+                    self.selectedIdR2_21(data.postBreakReflectFlg);
+                    self.selectedCodeR2_22(data.restAtr);
+                    //                    self.selectedIdB31(data.calendarDispAtr);
+                    //                    self.selectedIdB32(data.instructExcessOtAtr);
+                    //                    self.selectedCodeB33(data.unitAssignmentOvertime);
+                    //                    self.selectedIdB34(data.useOt);
+                    //                    self.selectedIdB35(data.earlyOverTimeUseAtr);
+                    //                    self.selectedIdB36(data.normalOvertimeUseAtr);
+                }
             }
             initDataC(allData: any): void {
                 let self = this;
