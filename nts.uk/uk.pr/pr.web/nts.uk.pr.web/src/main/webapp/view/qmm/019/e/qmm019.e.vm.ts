@@ -183,11 +183,11 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                                                        wageTable: any,
                                                        statementItemName: any) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
-                if (!isNullOrUndefined(dedu)) {
-                    self.deductionItemSet().setData(dedu);
-                    self.loadControlE2_9();
-                    self.assignItemRangeSet();
-                }
+
+                self.deductionItemSet().setData(dedu);
+                self.loadControlE2_9();
+                self.assignItemRangeSet();
+
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
@@ -1027,8 +1027,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IErrorAlarmRangeSetting) {
-            this.upperLimitSetting.setData(data.upperLimitSetting);
-            this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            if (isNullOrUndefined(data)) {
+                this.upperLimitSetting.setData(null);
+                this.lowerLimitSetting.setData(null);
+            } else {
+                this.upperLimitSetting.setData(data.upperLimitSetting);
+                this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            }
         }
     }
 
@@ -1053,8 +1058,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IErrorAlarmValueSetting) {
-            this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
-            this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            if (isNullOrUndefined(data)) {
+                this.valueSettingAtr(false);
+                this.rangeValue(null);
+            } else {
+                this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
+                this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            }
         }
     }
 
@@ -1083,11 +1093,20 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IDeductionItemSet) {
-            this.deductionItemAtr(data.deductionItemAtr);
-            this.deductionItemAtrText(shareModel.getDeductionItemAtrText(data.deductionItemAtr));
-            this.breakdownItemUseAtr(data.breakdownItemUseAtr);
-            this.errorRangeSetting.setData(data.errorRangeSetting);
-            this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            if (isNullOrUndefined(data)){
+                this.deductionItemAtr(null);
+                this.deductionItemAtrText(null);
+                this.breakdownItemUseAtr(null);
+                this.errorRangeSetting.setData(null);
+                this.alarmRangeSetting.setData(null);
+            } else{
+                this.deductionItemAtr(data.deductionItemAtr);
+                this.deductionItemAtrText(shareModel.getDeductionItemAtrText(data.deductionItemAtr));
+                this.breakdownItemUseAtr(data.breakdownItemUseAtr);
+                this.errorRangeSetting.setData(data.errorRangeSetting);
+                this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            }
+
         }
     }
 
