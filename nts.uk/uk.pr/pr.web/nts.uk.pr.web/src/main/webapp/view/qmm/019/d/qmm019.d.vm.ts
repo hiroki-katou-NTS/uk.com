@@ -483,18 +483,20 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
         register() {
             let self = this;
-            block.invisible();
-            let dto = {
-                categoryAtr: self.categoryAtr,
-                itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.listItemSetting
-            };
-            service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
-                self.itemNames(StatementItem.fromApp(data));
-            }).fail(err => {
-                alertError(err);
-            }).always(() => {
-                block.clear();
+            modal("/view/qmm/012/b/index.xhtml").onClosed(() => {
+                block.invisible();
+                let dto = {
+                    categoryAtr: self.categoryAtr,
+                    itemNameCdSelected: self.params.itemNameCode,
+                    itemNameCdExcludeList: self.params.listItemSetting
+                };
+                service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
+                    self.itemNames(StatementItem.fromApp(data));
+                }).fail(err => {
+                    alertError(err);
+                }).always(() => {
+                    block.clear();
+                });
             });
         }
 
