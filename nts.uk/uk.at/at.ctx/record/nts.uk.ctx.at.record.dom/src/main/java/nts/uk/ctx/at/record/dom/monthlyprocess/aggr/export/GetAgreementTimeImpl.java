@@ -139,7 +139,7 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			// 「36協定基本設定」を取得する
 			val basicAgreementSet = this.repositories.getAgreementDomainService().getBasicSet(
 					companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
-			limitMinutes = basicAgreementSet.getLimitOneYear().v();
+			limitMinutes = basicAgreementSet.getErrorOneYear().v();
 		}
 		
 		// 36協定年間時間を作成

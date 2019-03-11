@@ -191,7 +191,7 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 					}
 				}
 
-				// 期間内の結果がある場合のみ
+				// 期間内の結果がある場合
 				if (existYm.size() > 0) {
 
 					// 有効期間の計算
@@ -211,13 +211,27 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 					
 					// 36協定上限各月平均時間を作成
 					AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
-							existPeriod,
+							period,
 							new AttendanceTimeYear(totalMinutes),
 							new AttendanceTimeMonth(averageMinutes.intValue()),
 							AgreMaxTimeStatusOfMonthly.NORMAL);
 					
 					// 36協定複数月平均時間の状態チェック
 					agreMaxAveTime.errorCheck(result.getMaxTime());
+					
+					// 36協定上限各月平均時間を返す
+					result.getAverageTimeList().add(agreMaxAveTime);
+				}
+				else {
+					
+					// 期間内の結果がない場合、0で返す
+					
+					// 36協定上限各月平均時間を作成
+					AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
+							period,
+							new AttendanceTimeYear(0),
+							new AttendanceTimeMonth(0),
+							AgreMaxTimeStatusOfMonthly.NORMAL);
 					
 					// 36協定上限各月平均時間を返す
 					result.getAverageTimeList().add(agreMaxAveTime);
