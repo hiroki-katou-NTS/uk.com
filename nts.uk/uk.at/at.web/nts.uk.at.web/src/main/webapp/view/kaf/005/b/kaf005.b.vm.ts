@@ -201,6 +201,7 @@ module nts.uk.at.view.kaf005.b {
             
             initData(data: any) {
                 var self = this;
+                self.requiredReason(data.requireAppReasonFlg);
                 self.version = data.application.version;
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
