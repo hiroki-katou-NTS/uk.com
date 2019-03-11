@@ -63,6 +63,7 @@ public class MonthlyUpdateMgr {
 			ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
 		CalcPeriodForClosureProcValue calculatedResult = calcPeriod.algorithm(companyId, empId, closureId);
+		//アルゴリズム「締め処理すべき集計期間を計算」を実行する
 		switch (calculatedResult.getState()) {
 		case EXIST:
 			ClosurePeriod closurePeriod = calculatedResult.getClosurePeriod().get();
@@ -71,9 +72,11 @@ public class MonthlyUpdateMgr {
 			executeProcess(monthlyClosureLogId, empId, closurePeriod);
 			logProcess.monthlyClosureUpdatePersonLogProcess(monthlyClosureLogId, empId, personLog);
 			break;
+			//「対象締め処理期間なし」が返ってきた場合
 		case NOT_EXIST:
 			mClosurePerLogRepo.delete(monthlyClosureLogId, empId);
 			break;
+			//「既に締め処理済み」が返ってきた場合
 		case PROCESSED:
 			MonthlyClosureUpdatePersonLog personLog2 = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
 					MonthlyClosurePersonExecutionResult.ALREADY_CLOSURE, MonthlyClosurePersonExecutionStatus.COMPLETE);

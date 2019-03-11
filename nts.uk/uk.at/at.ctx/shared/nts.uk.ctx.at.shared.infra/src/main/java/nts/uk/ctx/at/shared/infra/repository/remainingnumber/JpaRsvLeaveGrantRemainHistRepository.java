@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata.KrcdtReserveLeaveRemainHist;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata.KrcdtReserveLeaveRemainHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -23,13 +24,14 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 
 	@Override
 	public void addOrUpdate(ReserveLeaveGrantRemainHistoryData domain, String cid) {
-		Optional<KrcdtReserveLeaveRemainHist> entityOpt = this.queryProxy().find(domain.getRsvLeaID(),
+		KrcdtReserveLeaveRemainHistPK krcdtReserveLeaveRemainHistPK = new KrcdtReserveLeaveRemainHistPK(domain.getEmployeeId(),
+				domain.getYearMonth().v(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
+				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0, domain.getGrantDate());
+		Optional<KrcdtReserveLeaveRemainHist> entityOpt = this.queryProxy().find(krcdtReserveLeaveRemainHistPK,
 				KrcdtReserveLeaveRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtReserveLeaveRemainHist entity = entityOpt.get();
-			entity.sid = domain.getEmployeeId();
 			entity.cid = cid;
-			entity.grantDate = domain.getGrantDate();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -38,10 +40,6 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 			entity.overLimitDays = domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
 					? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null;
 			entity.remainingDays = domain.getDetails().getRemainingNumber().v();
-			entity.yearMonth = domain.getYearMonth().v();
-			entity.closureId = domain.getClosureId().value;
-			entity.closeDay = domain.getClosureDate().getClosureDay().v();
-			entity.isLastDay = domain.getClosureDate().getLastDayOfMonth() ? 1 : 0;
 			this.commandProxy().update(entity);
 		} else
 			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain, cid));
@@ -49,7 +47,7 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate) {
-		String sql = "DELETE FROM KrcdtReserveLeaveRemainHist a WHERE a.sid = :employeeId and a.yearMonth = :ym AND a.closureId = :closureId AND a.closeDay = :closeDay AND a.isLastDay = :isLastDay";
+		String sql = "DELETE FROM KrcdtReserveLeaveRemainHist a WHERE a.krcdtReserveLeaveRemainHistPK.sid = :employeeId and a.krcdtReserveLeaveRemainHistPK.yearMonth = :ym AND a.krcdtReserveLeaveRemainHistPK.closureId = :closureId AND a.krcdtReserveLeaveRemainHistPK.closeDay = :closeDay AND a.krcdtReserveLeaveRemainHistPK.isLastDay = :isLastDay";
 		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
 				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);

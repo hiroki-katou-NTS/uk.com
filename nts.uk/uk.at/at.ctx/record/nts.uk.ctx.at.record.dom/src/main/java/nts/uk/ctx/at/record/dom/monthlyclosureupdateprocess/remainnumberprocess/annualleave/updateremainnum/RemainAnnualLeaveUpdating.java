@@ -55,7 +55,7 @@ public class RemainAnnualLeaveUpdating {
 	 */
 	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
-		deleteDataAfterCurrentMonth(period, empId);
+//		deleteDataAfterCurrentMonth(period, empId);
 //		if (output != null) {
 			updateRemainAnnualLeaveNumber(output, period, empId);
 			updateMaxAnnualLeaveNumber(output, period, empId);
@@ -141,7 +141,7 @@ public class RemainAnnualLeaveUpdating {
 					data.getGrantDate());
 			boolean found = false;
 			for (AnnualLeaveGrantRemainingData d : lstDomain) {
-				if (d.getAnnLeavID().equals(data.getAnnLeavID())) {
+				if (d.getEmployeeId().equals(data.getEmployeeId()) && d.getGrantDate().equals(data.getGrantDate())) {
 					// update
 					annLeaveRemainRepo.update(data);
 					found = true;

@@ -19,16 +19,21 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Getter
 public class ReserveLeaveGrantRemainHistoryData extends AggregateRoot {
 
-	/**
-	 * 積立年休付与残数データID
-	 */
-	private String rsvLeaID;
 
 	/**
 	 * 社員ID
 	 */
 	private String employeeId;
 
+	// 年月
+	private YearMonth yearMonth;
+
+	// 締めID
+	private ClosureId closureId;
+
+	// 締め日
+	private ClosureDate closureDate;
+	
 	/**
 	 * 付与日
 	 */
@@ -54,44 +59,35 @@ public class ReserveLeaveGrantRemainHistoryData extends AggregateRoot {
 	 */
 	private ReserveLeaveNumberInfo details;
 
-	// 年月
-	private YearMonth yearMonth;
 
-	// 締めID
-	private ClosureId closureId;
-
-	// 締め日
-	private ClosureDate closureDate;
-
-	public ReserveLeaveGrantRemainHistoryData(String id, String employeeId, GeneralDate grantDate, GeneralDate deadline,
+	public ReserveLeaveGrantRemainHistoryData(String employeeId, YearMonth yearMonth, Integer closureId, ClosureDate closureDate, GeneralDate grantDate, GeneralDate deadline,
 			int expirationStatus, int registerType, double grantDays, double usedDays, Double overLimitDays,
-			double remainDays, YearMonth yearMonth, Integer closureId, ClosureDate closureDate) {
+			double remainDays) {
 		super();
-		this.rsvLeaID = id;
 		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
+		this.closureDate = closureDate;
 		this.grantDate = grantDate;
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 		this.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
-		this.yearMonth = yearMonth;
-		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
-		this.closureDate = closureDate;
+
 	}
 
 	public ReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainingData data, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
 		super();
-		this.rsvLeaID = data.getRsvLeaID();
 		this.employeeId = data.getEmployeeId();
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
 		this.grantDate = data.getGrantDate();
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
 		this.details = data.getDetails();
-		this.yearMonth = yearMonth;
-		this.closureId = closureId;
-		this.closureDate = closureDate;
 	}
 
 }

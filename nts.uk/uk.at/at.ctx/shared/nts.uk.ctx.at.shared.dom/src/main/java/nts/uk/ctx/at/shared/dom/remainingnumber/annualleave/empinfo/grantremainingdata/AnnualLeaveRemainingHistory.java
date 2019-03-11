@@ -20,7 +20,6 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Getter
 public class AnnualLeaveRemainingHistory extends AggregateRoot {
 
-	private String annLeavID;
 
 	private String cid;
 	/**
@@ -32,6 +31,15 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 	 * 付与日
 	 */
 	private GeneralDate grantDate;
+	
+	// 年月
+	private YearMonth yearMonth;
+
+	// 締めID
+	private ClosureId closureId;
+
+	// 締め日
+	private ClosureDate closureDate;
 
 	/**
 	 * 期限日
@@ -58,23 +66,18 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 	 */
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
-	// 年月
-	private YearMonth yearMonth;
 
-	// 締めID
-	private ClosureId closureId;
 
-	// 締め日
-	private ClosureDate closureDate;
-
-	public AnnualLeaveRemainingHistory(String annLeavID, String cID, String employeeId, GeneralDate grantDate,
+	public AnnualLeaveRemainingHistory(String cID, String employeeId, Integer yearMonth,
+			Integer clousureId, Integer closureDay, Boolean isLastDayOfMonth, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
-			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays, Integer yearMonth,
-			Integer clousureId, Integer closureDay, Boolean isLastDayOfMonth) {
+			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		this.cid = cID;
-		this.annLeavID = annLeavID;
 		this.employeeId = employeeId;
+		this.yearMonth = new YearMonth(yearMonth);
+		this.closureId = EnumAdaptor.valueOf(clousureId, ClosureId.class);
+		this.closureDate = new ClosureDate(closureDay, isLastDayOfMonth);
 		this.grantDate = grantDate;
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
@@ -89,25 +92,22 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 		} else {
 			this.annualLeaveConditionInfo = Optional.empty();
 		}
-		this.yearMonth = new YearMonth(yearMonth);
-		this.closureId = EnumAdaptor.valueOf(clousureId, ClosureId.class);
-		this.closureDate = new ClosureDate(closureDay, isLastDayOfMonth);
+		
 	}
 
 	public AnnualLeaveRemainingHistory(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
 			ClosureDate closureDate) {
 		this.cid = data.getCid();
-		this.annLeavID = data.getAnnLeavID();
 		this.employeeId = data.getEmployeeId();
+		this.yearMonth = yearMonth;
+		this.closureId = clousureId;
+		this.closureDate = closureDate;
 		this.grantDate = data.getGrantDate();
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
 		this.details = data.getDetails();
 		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
-		this.yearMonth = yearMonth;
-		this.closureId = clousureId;
-		this.closureDate = closureDate;
 	}
 
 }
