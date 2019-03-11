@@ -209,7 +209,6 @@ module nts.uk.at.view.kaf005.b {
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
-                self.requiredReason(data.displayAppReasonContentFlg);
                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
                 self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                 self.displayBonusTime(data.displayBonusTime);
