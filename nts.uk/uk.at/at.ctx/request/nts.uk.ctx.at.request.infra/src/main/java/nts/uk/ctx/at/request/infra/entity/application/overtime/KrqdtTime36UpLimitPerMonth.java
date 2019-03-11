@@ -27,14 +27,6 @@ public class KrqdtTime36UpLimitPerMonth extends UkJpaEntity {
 	public KrqdpTime36UpLimitPerMonthPK pk;
 	
 	/*
-	 * 期間
-	 */
-	@Column(name = "START_YM")
-	public Integer periodYearStart;
-	@Column(name = "END_YM")
-	public Integer periodYearEnd;
-	
-	/*
 	 * 平均時間
 	 */
 	@Column(name = "AVE_TIME")

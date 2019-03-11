@@ -58,6 +58,41 @@ public class AppOvertimeDetailDto {
 	 * 36年間超過回数
 	 */
 	private int numOfYear36Over;
+	
+	/*
+	 * 実績時間
+	 */
+	public Integer actualTimeAnnual;
+	
+	/*
+	 * 限度時間
+	 */
+	public Integer limitTime;
+	
+	/*
+	 * 申請時間
+	 */
+	public Integer appTimeAgreeUpperLimit;
+	
+	/*
+	 * 時間外時間
+	 */
+	public Integer overTime;
+	
+	/*
+	 * 上限時間
+	 */
+	public Integer upperLimitTimeMonth;
+	
+	/*
+	 * 平均時間
+	 */
+	public List<Time36UpLimitMonthDto> averageTimeLst;
+	
+	/*
+	 * 上限時間
+	 */
+	public Integer upperLimitTimeAverage;
 
 	public static AppOvertimeDetailDto fromDomain(Optional<AppOvertimeDetail> domainOtp) {
 		if (!domainOtp.isPresent()) {
@@ -71,6 +106,15 @@ public class AppOvertimeDetailDto {
 				domain.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime().isPresent() ? domain.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime().get().v() : null,
 				domain.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime().isPresent() ? domain.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime().get().v() : null,
 				domain.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(x -> x.v()).collect(Collectors.toList()),
-				domain.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v());
+				domain.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v(),
+				domain.getTime36Agree().getAgreeAnnual().getActualTime().v(),
+				domain.getTime36Agree().getAgreeAnnual().getLimitTime().v(),
+				domain.getTime36AgreeUpperLimit().getApplicationTime().v(),
+				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().getOverTime().v(),
+				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().getUpperLimitTime().v(),
+				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()
+					.stream().map(x -> new Time36UpLimitMonthDto(x.getPeriod().start().v(), x.getPeriod().end().v(), x.getAverageTime().v(), x.getTotalTime().v()))
+					.collect(Collectors.toList()),
+				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getUpperLimitTime().v());
 	}
 }

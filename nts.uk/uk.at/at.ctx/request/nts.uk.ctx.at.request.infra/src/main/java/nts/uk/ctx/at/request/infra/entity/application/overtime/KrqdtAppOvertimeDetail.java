@@ -194,7 +194,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 						), 
 						new Time36AgreeUpperLimitAverage(
 								averageTimeLst.stream().map(x -> new Time36AgreeUpperLimitPerMonth(
-										new YearMonthPeriod(new YearMonth(x.periodYearStart), new YearMonth(x.periodYearEnd)), 
+										new YearMonthPeriod(new YearMonth(x.pk.periodYearStart), new YearMonth(x.pk.periodYearEnd)), 
 										new AttendanceTimeMonth(x.averageTime), 
 										new AttendanceTimeYear(x.totalTime))).collect(Collectors.toList()), 
 								new LimitOneMonth(upperLimitTimeAverage)
@@ -230,9 +230,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().getUpperLimitTime().v(), 
 				domain.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().getAverageTimeLst()
 							.stream().map(x -> new KrqdtTime36UpLimitPerMonth(
-									new KrqdpTime36UpLimitPerMonthPK(domain.getCid(), domain.getAppId()),
-									x.getPeriod().start().v(),
-									x.getPeriod().end().v(),
+									new KrqdpTime36UpLimitPerMonthPK(domain.getCid(), domain.getAppId(), x.getPeriod().start().v(), x.getPeriod().end().v()),
 									x.getAverageTime().v(),
 									x.getTotalTime().v(),
 									null)).collect(Collectors.toList()), 
