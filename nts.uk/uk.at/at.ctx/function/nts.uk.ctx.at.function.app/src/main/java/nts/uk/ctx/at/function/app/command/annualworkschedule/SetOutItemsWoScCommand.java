@@ -28,16 +28,17 @@ public class SetOutItemsWoScCommand {
 	* 36協定時間を超過した月数を出力する
 	*/
 	private boolean outNumExceedTime36Agr;
-
-	/**
-	* 表示形式
-	*/
-	private int displayFormat;
 	
 	/*
 	 * 年間勤務表印刷形式
 	 */
 	private int printForm;
+	
+	private boolean multiMonthDisplay;
+	
+	private int monthsInTotalDisplay;
+	
+	private Integer totalAverageDisplay;
 
 	private List<ItemOutTblBookCommand> listItemOutput;
 }
