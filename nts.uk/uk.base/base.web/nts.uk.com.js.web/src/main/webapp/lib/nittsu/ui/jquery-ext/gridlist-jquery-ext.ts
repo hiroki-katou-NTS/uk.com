@@ -139,6 +139,17 @@ module nts.uk.ui.jqueryExtentions {
             });
         }
         
+        function isCheckedAll($grid: JQuery){
+            if ($grid.data("igGrid") && $grid.igGridSelection('option', 'multipleSelection')) {
+                let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                if (chk.attr("data-chk") === "on") {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
         function getSelectRow($grid: JQuery) {
             var row = null;
             
@@ -179,7 +190,16 @@ module nts.uk.ui.jqueryExtentions {
             deselectAll($grid);
 
             if ($grid.igGridSelection('option', 'multipleSelection')) {
-                (<Array<string>>selectedId).forEach(id => $grid.igGridSelection('selectRowById', id));
+                // for performance when select all
+                let baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                if (_.isEqual(selectedId, baseID)) {
+                    let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                    if (chk.attr("data-chk") === "off") {
+                        chk.click();
+                    }
+                } else {
+                    (<Array<string>>selectedId).forEach(id => $grid.igGridSelection('selectRowById', id));
+                }
             } else {
                 $grid.igGridSelection('selectRowById', selectedId);
             }
@@ -776,7 +796,10 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 if (clickCheckBox) {
-                    $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                    let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                    if (chk.attr("data-chk") === "off") {
+                        chk.click();
+                    }
                 } else {
                     $grid.ntsGridList('setSelected', value.length === 0 ? (!multiple ? undefined : value) : value);    
                 }
