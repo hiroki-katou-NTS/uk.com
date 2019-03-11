@@ -50,4 +50,12 @@ public interface PersonRepository {
 	 */
 	List<Person> getFullPersonByPersonIds(List<String> personIds);
 	
+	
+	/**
+	 * @author lanlt
+	 * Update all person 取得した「個人」を更新する
+	 * @param person
+	 */
+	void updateAll(List<Person> domains);
+	
 }
