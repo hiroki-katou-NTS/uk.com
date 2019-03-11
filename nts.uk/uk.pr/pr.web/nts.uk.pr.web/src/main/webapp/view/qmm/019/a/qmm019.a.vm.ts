@@ -768,6 +768,15 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             for(let settingByItem: SettingByItem of self.listSetByItem()) {
                 if(settingByItem.isFixed()) self.hasFixed(true);
             }
+
+            // check hasFixed line when swap item fixed
+            self.listSetByItem.subscribe((newValue) => {
+                let hasFixed = false;
+                for(let settingByItem: SettingByItem of newValue) {
+                    if(settingByItem.isFixed()) hasFixed = true;
+                }
+                newValue[0].parent.hasFixed(hasFixed);
+            })
         }
 
         public editLine(): void {
