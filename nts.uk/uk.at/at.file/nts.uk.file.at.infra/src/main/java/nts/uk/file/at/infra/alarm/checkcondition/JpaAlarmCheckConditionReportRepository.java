@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData;
+import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckAnnualHolidayData;
 import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckCondQuery;
 import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckConditionReportRepository;
 import nts.uk.file.at.app.export.alarm.checkcondition.AlarmCheckConditionUtils;
@@ -562,5 +563,33 @@ public class JpaAlarmCheckConditionReportRepository extends JpaRepository implem
 				record.getString("BUSINESSTYPE_CDS_11"),
 				record.getString("AGREE_COND_ERRS"),
 				record.getString("COND_OT_ERRS"));
+	}
+
+	@SneakyThrows
+	@Override
+	public List<AlarmCheckAnnualHolidayData> getAnnualHoliday(String companyId) {
+		List<AlarmCheckAnnualHolidayData>  result = new ArrayList<>();
+		try(PreparedStatement stmt = this.connection().prepareStatement(AlarmCheckCondQuery.SELECT_ANNUAL_HOLIDAY)) {
+            stmt.setString(1,companyId);
+            result = new NtsResultSet(stmt.executeQuery()).getList(x -> toDomainAnnualHoliday(x));
+        } 
+		
+		return result;
+	}
+	
+	private AlarmCheckAnnualHolidayData toDomainAnnualHoliday(NtsResultSet.NtsResultRecord record) {
+		return AlarmCheckAnnualHolidayData.createFromJavaType(
+				record.getString("CD_1"),
+				record.getString("NAME_2"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_EMP_4"))),
+				record.getString("EMP_CDS_5"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_CLS_6"))),
+				record.getString("CLS_CDS_7"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_JOB_8"))),
+				record.getString("JOB_IDS_9"),
+				AlarmCheckConditionUtils.getFilterStr(Optional.ofNullable(record.getInt("FILTER_BY_BUSINESSTYPE_10"))),
+				record.getString("BUSINESSTYPE_CDS_11"),
+				record.getString("HDPAID"),
+				record.getString("OBL"));
 	}
 }
