@@ -61,7 +61,7 @@ public class JpaSalIndAmountNameRepository extends JpaRepository implements SalI
 
     @Override
     public void remove(String cid, String individualPriceCode, int cateIndicator) {
-        this.commandProxy().remove(QpbmtSalIndAmountName.class, new QpbmtSalIndAmountNamePk(cid, individualPriceCode, cateIndicator));
+        this.commandProxy().remove(QpbmtSalIndAmountName.class, new QpbmtSalIndAmountNamePk(cid, cateIndicator, individualPriceCode));
     }
 
 

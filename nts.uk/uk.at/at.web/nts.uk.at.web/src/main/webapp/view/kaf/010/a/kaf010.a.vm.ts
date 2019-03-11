@@ -408,7 +408,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
 
         setErrorA6_8() {
-            $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+            $('.breakTimesCheck').ntsError('set', { messageId: 'MsgB_1', messageParams: [nts.uk.resource.getText("KAF010_56")] });
         }
 
         clearErrorA6_8() {
@@ -440,6 +440,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             
             //block screen
             nts.uk.ui.block.invisible();
+            /*
             let appReason: string,
                 divergenceReason: string;
                 appReason = self.getReason(
@@ -457,7 +458,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
                 return;
             }
-            divergenceReason = self.getReason(
+            */
+            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
+            
+            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
+                return;
+            }
+            
+            let divergenceReason = self.getReason(
                 self.displayDivergenceReasonForm(),
                 self.selectedReason2(),
                 self.reasonCombo2(),
@@ -480,7 +489,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
-                applicationReason: appReason,
+                applicationReason: textAreaReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
                 workClockStart1: self.timeStart1(),
@@ -501,7 +510,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 sendMail: self.checkBoxValue(),
                 leaveAppID: self.leaverAppID(),
                 uiType: self.uiType(),
-                calculateFlag: self.calculateFlag()
+                calculateFlag: self.calculateFlag(),
+                appReasonID: comboBoxReason
             };
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {                
@@ -728,10 +738,18 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
-                self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
-                dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
-                    nts.uk.ui.block.clear(); 
-                });
+                if(res.messageId=="Msg_424"){
+                    self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
+                    dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });    
+                } else if(res.messageId=="Msg_1508"){ 
+                    dialog.alertError({messageId:"Msg_1508", messageParams: [res.parameterIds[0]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });   
+                } else {
+                    nts.uk.ui.block.clear();    
+                }
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -826,6 +844,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         findBychangeAppDateData(data: any) {
             var self = this;
             let overtimeDto = data;
+            if(overtimeDto.displayPrePostFlg==0){
+                self.prePostSelected(overtimeDto.application.prePostAtr);        
+            }
+            
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.restTimeDisFlg(self.restTimeDisFlg());

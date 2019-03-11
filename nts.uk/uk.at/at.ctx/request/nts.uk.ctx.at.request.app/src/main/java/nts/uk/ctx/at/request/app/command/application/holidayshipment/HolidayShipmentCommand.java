@@ -12,4 +12,8 @@ public class HolidayShipmentCommand {
 	private String recAppID;
 	private Long appVersion;
 	private String memo;
+	private String comboBoxReason;
+    private String textAreaReason;
+    private Integer user;
+    private Integer reflectPerState;
 }

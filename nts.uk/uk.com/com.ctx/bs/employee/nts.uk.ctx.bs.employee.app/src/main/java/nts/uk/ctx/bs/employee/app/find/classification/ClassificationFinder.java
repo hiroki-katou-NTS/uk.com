@@ -47,7 +47,7 @@ public class ClassificationFinder {
 		Optional<Classification> optClassification = this.repository.findClassification(companyId, code);
 		
 		if (!optClassification.isPresent()) {
-			dto.setName(code + I18NText.getText("KMF004_163"));
+			dto.setName(code + " " +I18NText.getText("KMF004_163"));
 			return dto;
 		}
 		

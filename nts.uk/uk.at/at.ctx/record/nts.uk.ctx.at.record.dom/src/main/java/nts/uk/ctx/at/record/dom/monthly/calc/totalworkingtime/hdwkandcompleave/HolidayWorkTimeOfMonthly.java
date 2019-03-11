@@ -151,9 +151,11 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		if (aggregateAtr == MonthlyAggregateAtr.MONTHLY) isAggregateHolidayWork = true;
 		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			
+			// 2019.3.8 UPD shuichi_ishida 36上限計算で法内休出計上が必要なため、下の判定は一旦廃止　（法改正：統合テスト結果より）
 			// 休出を集計するか確認する
-			isAggregateHolidayWork = this.confirmAggregateHolidayWork(
-					companyId, workInfo, excessOutsideTimeSet, companySets, repositories);
+			//isAggregateHolidayWork = this.confirmAggregateHolidayWork(
+			//		companyId, workInfo, excessOutsideTimeSet, companySets, repositories);
+			isAggregateHolidayWork = true;
 		}
 		if (isAggregateHolidayWork){
 			
@@ -490,6 +492,10 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 						
 						// 取得した休出枠時間を「フレックス時間」に入れる
 						flexTime.addHolidayWorkTimeFrameTime(ymd, holidayWorkFrameTimeSrc);
+						
+						// 取得した休出枠時間を「集計休出時間」に入れる　（法定内休出時間）　（Redmine#106235）
+						val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
+						targetHolidayWorkTime.addLegalHdwkAndTransInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
 						continue;
 					}
 				}

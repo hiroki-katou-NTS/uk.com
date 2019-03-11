@@ -18,6 +18,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
     import PaymentTotalObjAtr = nts.uk.pr.view.qmm019.share.model.PaymentTotalObjAtr;
     import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
+    import DeductionTotalObjAtr = nts.uk.pr.view.qmm019.share.model.DeductionTotalObjAtr
     import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
     import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
     import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
@@ -768,6 +769,15 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             for(let settingByItem: SettingByItem of self.listSetByItem()) {
                 if(settingByItem.isFixed()) self.hasFixed(true);
             }
+
+            // check hasFixed line when swap item fixed
+            self.listSetByItem.subscribe((newValue) => {
+                let hasFixed = false;
+                for(let settingByItem: SettingByItem of newValue) {
+                    if(settingByItem.isFixed()) hasFixed = true;
+                }
+                newValue[0].parent.hasFixed(hasFixed);
+            })
         }
 
         public editLine(): void {
@@ -821,13 +831,18 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                         if(params.printSet == StatementPrintAtr.DO_NOT_PRINT) {
                             for(let settingByItem: SettingByItem of self.listSetByItem()) {
-                                if((settingByItem.paymentItemDetailSet != null) &&
-                                    (String(settingByItem.paymentItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
-                                    settingByItem.paymentItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                if(settingByItem.paymentItemDetailSet != null) {
+                                    if (settingByItem.paymentItemDetailSet.totalObj == PaymentTotalObjAtr.INSIDE.toString()) {
+                                        settingByItem.paymentItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE.toString();
+                                    } else if (settingByItem.paymentItemDetailSet.totalObj == PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
+                                        settingByItem.paymentItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString();
+                                    }
                                 }
 
-                                if((settingByItem.deductionItemDetailSet != null) && (String(settingByItem.deductionItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
-                                    settingByItem.deductionItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                if(settingByItem.deductionItemDetailSet != null) {
+                                    if (settingByItem.deductionItemDetailSet.totalObj == DeductionTotalObjAtr.INSIDE.toString()) {
+                                        settingByItem.deductionItemDetailSet.totalObj = DeductionTotalObjAtr.OUTSIDE.toString();
+                                    }
                                 }
                             }
                         }

@@ -13,5 +13,9 @@ public interface SystemOperationSettingAdapter {
 	 * else return empty optional
 	 */
 	public Optional<String> stopUseConfirm();
+	/**
+	 * システム利用停止の確認_ログイン前
+	 */
+	public SystemSuspendOut stopUseConfirm_loginBf(String contractCD, String companyCD, int loginMethod, String programID, String screenID);
 	
 }

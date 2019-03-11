@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 //import lombok.extern.slf4j.Slf4j;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
@@ -145,8 +146,10 @@ public class AggregateMonthlyRecordServiceProc {
 	private List<EditStateOfMonthlyPerformance> editStates;
 
 	/** 会社ID */
+	@Setter
 	private String companyId;
 	/** 社員ID */
+	@Setter
 	private String employeeId;
 	/** 年月 */
 	private YearMonth yearMonth;
@@ -156,10 +159,12 @@ public class AggregateMonthlyRecordServiceProc {
 	private ClosureDate closureDate;
 	
 	/** 月別集計で必要な会社別設定 */
+	@Setter
 	private MonAggrCompanySettings companySets;
 	/** 月別集計で必要な社員別設定 */
 	private MonAggrEmployeeSettings employeeSets;
 	/** 月の計算中の日別実績データ */
+	@Setter
 	private MonthlyCalculatingDailys monthlyCalculatingDailys;
 	/** 集計前の月別実績データ */
 	private MonthlyOldDatas monthlyOldDatas;
@@ -1011,7 +1016,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * Workを考慮した月次処理用の暫定残数管理データを作成する
 	 * @param period 期間
 	 */
-	private void createDailyInterimRemainMngs(DatePeriod period){
+	public void createDailyInterimRemainMngs(DatePeriod period){
 		
 		// 【参考：旧処理】　月次処理用の暫定残数管理データを作成する
 		//this.dailyInterimRemainMngs = this.interimRemOffMonth.monthInterimRemainData(

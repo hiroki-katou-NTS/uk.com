@@ -18,8 +18,15 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * Class AddAlarmPatternSettingCommandHandler
+ * @author phongtq
+ *
+ */
 
 @Stateless
 public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlarmPatternSettingCommand> {
@@ -52,6 +59,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			
 			// check domain logic
 			if (domain.selectedCheckCodition()) {
+				// アラームリストのパターンを新規登録する (Add pattern of alarm list )
 				repo.create(domain);
 			}
 			
@@ -89,6 +97,16 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
 				e.setExtractionRange(extractYear.getExtractionRange());
+			});
+			
+			// Add averageMonth to extractionList
+			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
+			extractionList.add(averageMonth);
+			
+			// Set ExtractionId & ExtractionRange
+			extractionList.forEach(e -> {
+				e.setExtractionId(averageMonth.getExtractionId());
+				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);

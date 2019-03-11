@@ -100,7 +100,7 @@ public class WageTableWebService {
 	@Path("/create-1d-wage-table")
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = contentCreater.createOneDimensionWageTable(params);
-		if (dto.getList1dElements().size() > 100) {
+		if (dto.getList1dElements().get(0).getMasterCode() == null && dto.getList1dElements().size() > 100) {
 			throw new BusinessException("MsgQ_250");
 		}
 		return dto;
@@ -110,10 +110,11 @@ public class WageTableWebService {
 	@Path("/create-2d-wage-table")
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = contentCreater.createTwoDimensionWageTable(params);
-		if (dto.getList2dElements().size() > 100) {
+		if (dto.getList2dElements().get(0).getMasterCode() == null && dto.getList2dElements().size() > 100) {
 			throw new BusinessException("MsgQ_251");
 		}
-		if (dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
+		if (dto.getList2dElements().get(0).getListSecondDms().get(0).getMasterCode() == null
+				&& dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
 			throw new BusinessException("MsgQ_252");
 		}
 		return dto;
@@ -123,13 +124,14 @@ public class WageTableWebService {
 	@Path("/create-3d-wage-table")
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = contentCreater.createThreeDimensionWageTable(params);
-		if (dto.getList2dElements().size() > 100) {
+		if (dto.getList2dElements().get(0).getMasterCode() == null && dto.getList2dElements().size() > 100) {
 			throw new BusinessException("MsgQ_251");
 		}
-		if (dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
+		if (dto.getList2dElements().get(0).getListSecondDms().get(0).getMasterCode() == null
+				&& dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
 			throw new BusinessException("MsgQ_252");
 		}
-		if (dto.getList3dElements().size() > 100) {
+		if (dto.getList3dElements().get(0).getMasterCode() == null && dto.getList3dElements().size() > 100) {
 			throw new BusinessException("MsgQ_253");
 		}
 		return dto;

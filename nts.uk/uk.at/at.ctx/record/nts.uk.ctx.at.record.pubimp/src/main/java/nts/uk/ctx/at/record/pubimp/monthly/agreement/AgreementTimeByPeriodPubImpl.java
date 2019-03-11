@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByEmpExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeMonthOut;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriod;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
@@ -20,6 +22,11 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 指定期間36協定時間の取得
@@ -54,22 +61,31 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 				domain.getExceptionLimitAlarmTime(),
 				domain.getStatus());
 	}
+
+	@Override
+	public List<AgreementTimeByEmpExport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
+													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs) {
+		return this.getAgreTimeByPeriod.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs)
+				.stream().map(AgreementTimeByEmpExport::fromDomain).collect(Collectors.toList());
+	}
 	
 	/** 指定月36協定上限月間時間の取得 */
 	@Override
-	public List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period) {
+	public List<AgreMaxTimeMonthOut> maxTime(String companyId, String employeeId, YearMonthPeriod period) {
 
 		return this.getAgreTimeByPeriod.maxTime(companyId, employeeId, period)
 				.stream().map(c -> toPub(c)).collect(Collectors.toList());
 	}
 	
-	private AgreMaxTimeOfMonthly toPub(
-			nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly domain){
+	private AgreMaxTimeMonthOut toPub(
+			nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreMaxTimeMonthOut domain){
 		
-		return AgreMaxTimeOfMonthly.of(
-				domain.getAgreementTime(),
-				new LimitOneMonth(domain.getMaxTime().v()),
-				domain.getStatus());
+		return AgreMaxTimeMonthOut.of(
+				domain.getYearMonth(),
+				AgreMaxTimeOfMonthly.of(
+						domain.getMaxTime().getAgreementTime(),
+						new LimitOneMonth(domain.getMaxTime().getMaxTime().v()),
+						domain.getMaxTime().getStatus()));
 	}
 	
 	/** 指定期間36協定上限複数月平均時間の取得 */

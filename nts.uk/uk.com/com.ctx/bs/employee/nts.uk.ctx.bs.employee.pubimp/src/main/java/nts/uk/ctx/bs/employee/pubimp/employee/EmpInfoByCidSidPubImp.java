@@ -43,7 +43,9 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		Optional<EmployeeDataMngInfo> empOpt = empDataMngRepo.findByCidPid(cid, pid);
 
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
-		if (empOpt.isPresent()) {
+		if(!empOpt.isPresent()){
+			return null;
+		}
 			empDataMng = empOpt.get();
 
 			result.setSid(empDataMng.getEmployeeId());
@@ -74,7 +76,6 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 					}
 				}
 			}
-		}
 
 		return result;
 	}

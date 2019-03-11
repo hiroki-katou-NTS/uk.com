@@ -183,11 +183,11 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                                                        wageTable: any,
                                                        statementItemName: any) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
-                if (!isNullOrUndefined(dedu)) {
-                    self.deductionItemSet().setData(dedu);
-                    self.loadControlE2_9();
-                    self.assignItemRangeSet();
-                }
+
+                self.deductionItemSet().setData(dedu);
+                self.loadControlE2_9();
+                self.assignItemRangeSet();
+
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
@@ -437,11 +437,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
          */
         condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            if (self.params.printSet == shareModel.StatementPrintAtr.DO_NOT_PRINT) {
-                if (self.dataScreen().totalObject() == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
-                    self.dataScreen().totalObject(shareModel.DeductionTotalObjAtr.OUTSIDE.toString());
-                }
-            }
             if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(null));
             } else {
@@ -459,18 +454,20 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         register() {
             let self = this;
-            block.invisible();
-            let dto = {
-                categoryAtr: self.categoryAtr,
-                itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.listItemSetting
-            };
-            service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
-                self.itemNames(StatementItem.fromApp(data));
-            }).fail(err => {
-                alertError(err);
-            }).always(() => {
-                block.clear();
+            modal("/view/qmm/012/b/index.xhtml").onClosed(() => {
+                block.invisible();
+                let dto = {
+                    categoryAtr: self.categoryAtr,
+                    itemNameCdSelected: self.params.itemNameCode,
+                    itemNameCdExcludeList: self.params.listItemSetting
+                };
+                service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
+                    self.itemNames(StatementItem.fromApp(data));
+                }).fail(err => {
+                    alertError(err);
+                }).always(() => {
+                    block.clear();
+                });
             });
         }
 
@@ -830,6 +827,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.clearError("#E3_13");
                 self.checkError("#E3_13");
             });
+            self.itemRangeSet.errorUpRangeValAmount.subscribe(() => {
+                self.clearError("#E3_13");
+                self.checkError("#E3_13");
+            });
 
             self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
                 self.itemRangeSet.alarmUpRangeValAmount(null);
@@ -840,6 +841,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.clearError("#E3_20");
             });
             self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
+                self.clearError("#E3_20");
+                self.checkError("#E3_20");
+            });
+            self.itemRangeSet.alarmUpRangeValAmount.subscribe(() => {
                 self.clearError("#E3_20");
                 self.checkError("#E3_20");
             });
@@ -1025,8 +1030,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IErrorAlarmRangeSetting) {
-            this.upperLimitSetting.setData(data.upperLimitSetting);
-            this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            if (isNullOrUndefined(data)) {
+                this.upperLimitSetting.setData(null);
+                this.lowerLimitSetting.setData(null);
+            } else {
+                this.upperLimitSetting.setData(data.upperLimitSetting);
+                this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            }
         }
     }
 
@@ -1051,8 +1061,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IErrorAlarmValueSetting) {
-            this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
-            this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            if (isNullOrUndefined(data)) {
+                this.valueSettingAtr(false);
+                this.rangeValue(null);
+            } else {
+                this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
+                this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            }
         }
     }
 
@@ -1081,11 +1096,20 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IDeductionItemSet) {
-            this.deductionItemAtr(data.deductionItemAtr);
-            this.deductionItemAtrText(shareModel.getDeductionItemAtrText(data.deductionItemAtr));
-            this.breakdownItemUseAtr(data.breakdownItemUseAtr);
-            this.errorRangeSetting.setData(data.errorRangeSetting);
-            this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            if (isNullOrUndefined(data)){
+                this.deductionItemAtr(null);
+                this.deductionItemAtrText(null);
+                this.breakdownItemUseAtr(null);
+                this.errorRangeSetting.setData(null);
+                this.alarmRangeSetting.setData(null);
+            } else{
+                this.deductionItemAtr(data.deductionItemAtr);
+                this.deductionItemAtrText(shareModel.getDeductionItemAtrText(data.deductionItemAtr));
+                this.breakdownItemUseAtr(data.breakdownItemUseAtr);
+                this.errorRangeSetting.setData(data.errorRangeSetting);
+                this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            }
+
         }
     }
 

@@ -29,4 +29,22 @@ public interface RoleIndividualGrantExportRepo {
 			String userId, String companyId, int roleType, GeneralDate date);
 	
 	List<RoleIndividualGrantEx> getByUserIDDateRoleType(String userID, GeneralDate date , int roleType);
+	/**
+	 * @author hoatt
+	 * @param userId
+	 * @param companyId
+	 * @param roleType
+	 * @param date
+	 * @return
+	 */
+	List<RoleIndividualGrantEx> getListDifRoleType(String userId, String companyId, int roleType, GeneralDate date);
+	/**
+	 * @author hoatt
+	 * @param userId
+	 * @param companyId
+	 * @param roleType
+	 * @param date
+	 * @return
+	 */
+	Optional<RoleIndividualGrantEx> findByUserCompanyRoleTypeDate(String userId, String companyId, int roleType, GeneralDate date);
 }

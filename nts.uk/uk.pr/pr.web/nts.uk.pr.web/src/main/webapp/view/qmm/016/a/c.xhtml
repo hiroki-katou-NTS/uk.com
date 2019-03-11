@@ -37,7 +37,7 @@
 	                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
 	                    <th class="ui-widget-header">
 	                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
-	                        <button style="display: inline-block"
+	                        <button tabindex="-1" style="display: inline-block"
 	                                data-bind="ntsHelpButton: {image: '../resource/＃QMM017_2.png', position: 'bottom left'}">?
 	                        </button>
 	                    </th>
@@ -53,42 +53,33 @@
 	                    <td style="text-align: center;"
 	                        data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-								<div tabindex="1">
-									<input id="C2_8" data-bind="ntsNumberEditor: {
-	                            		required: true,
-                            			enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-                            			constraint: 'RangeLowerLimit',
-                            			value: rangeLowerLimit,
-                            			name: '#[QMM016_30]',
+	                            <input tabindex="12" id="C2_8" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+                            			enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+                            			constraint: 'RangeLowerLimit', 
+                            			value: rangeLowerLimit, 
+                            			name: '#[QMM016_30]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-								</div>
-
 	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-	                            <div tabindex="2">
-									<input id="C2_10" data-bind="ntsNumberEditor: {
-	                            		required: true,
-	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-	                            		constraint: 'RangeUpperLimit',
-	                            		value: rangeUpperLimit,
-	                            		name: '#[QMM016_32]',
+	                            <input tabindex="13" id="C2_10" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeUpperLimit', 
+	                            		value: rangeUpperLimit, 
+	                            		name: '#[QMM016_32]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-								</div>
-
 	                        </div>
 	                    </td>
 	                    <td style="text-align: center;"
 	                        data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-								<div  tabindex="3">
-									<input id="C2_11" data-bind="ntsNumberEditor: {
-	                            		required: true,
-	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-	                            		constraint: 'StepIncrement',
-	                            		value: stepIncrement,
-	                            		name: '#[QMM016_33]',
+	                            <input tabindex="14" id="C2_11" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'StepIncrement', 
+	                            		value: stepIncrement, 
+	                            		name: '#[QMM016_33]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-								</div>
-
 	                        </div>
 	                    </td>
 	                </tr>
@@ -100,40 +91,33 @@
 	                    <td style="text-align: center;"
 	                        data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-	                           <div tabindex="4">
-								   <input id="C2_15" data-bind="ntsNumberEditor: {
-	                            		required: true,
-	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-	                            		constraint: 'RangeLowerLimit',
-	                            		value: rangeLowerLimit,
-	                            		name: '#[QMM016_30]',
+	                            <input tabindex="15" id="C2_15" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeLowerLimit', 
+	                            		value: rangeLowerLimit, 
+	                            		name: '#[QMM016_30]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-							   </div>
 	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-	                            <div tabindex="5">
-									<input id="C2_17" data-bind="ntsNumberEditor: {
-	                            		required: true,
-                            			enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-                            			constraint: 'RangeUpperLimit',
-                            			value: rangeUpperLimit,
-                            			name: '#[QMM016_32]',
+	                            <input tabindex="16" id="C2_17" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+                            			enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+                            			constraint: 'RangeUpperLimit', 
+                            			value: rangeUpperLimit, 
+                            			name: '#[QMM016_32]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-								</div>
-
 	                        </div>
 	                    </td>
 	                    <td style="text-align: center;"
 	                        data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-	                            <div tabindex="6">
-									<input id="C2_18" data-bind="ntsNumberEditor: {
-	                            		required: true,
-	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
-	                            		constraint: 'StepIncrement',
-	                            		value: stepIncrement,
-	                            		name: '#[QMM016_33]',
+	                            <input tabindex="17" id="C2_18" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'StepIncrement', 
+	                            		value: stepIncrement, 
+	                            		name: '#[QMM016_33]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-								</div>
 	                        </div>
 	                    </td>
 	                </tr>
@@ -141,15 +125,13 @@
             </table>
         </div>
     </div>
-    <div tabindex="7" class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
-        <button data-bind="click: $vm.createTwoDimensionWageTable" style="width: 400px;"
+    <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+        <button tabindex="18" data-bind="click: $vm.createTwoDimensionWageTable" style="width: 400px;"
                 class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
     </div>
     <div class="tab-row" style="margin-top: 40px;">
         <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-        <div tabindex="8">
-			<button style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
-		</div>
+        <button tabindex="19" style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
     <div id="C5" class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length >0">
@@ -215,7 +197,7 @@
 					                <tr>
 					                    <com:ko bind="listSecondDms" tag="foreach">
 								            <td style="border: 1px solid #CCC; vertical-align: middle;">
-					 				            <div tabindex="9" style="height: 32px; width: 150px; text-align: center;">
+					 				            <div style="height: 32px; width: 150px; text-align: center;">
 					 				            	<input class="input-amount" data-bind="ntsNumberEditor: {
 						  								option: { grouplength: 3, width: '120px' }, 
 						   								name: '#[QMM016_39]', 
