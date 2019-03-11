@@ -28,21 +28,21 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button data-bind="click: createQualificationGroup , enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
-            <button class="proceed" data-bind="click: registerQualificationGroup,enable: $root.errors.isEmpty"
+            <button tabindex="1" data-bind="click: createQualificationGroup , enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
+            <button tabindex="2" class="proceed" data-bind="click: registerQualificationGroup,enable: $root.errors.isEmpty"
                     >#{i18n.getText('QMM016_2')}</button>
-            <button class="danger"
+            <button tabindex="3" class="danger"
                     data-bind="click: deleteQualificationGroup , enable: screenMode() == 1">#{i18n.getText('QMM016_58')}</button>
-            <button data-bind="click: closeDialog">#{i18n.getText('QMM016_59')}</button>
+            <button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM016_59')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div id="content-left" class="fixed-flex-layout-left">
                 <div data-bind="ntsPanel:{width: '240px', height: '420px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
-                    <div style="width: 240px"
+                    <div tabindex="5" style="width: 240px"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'qualificationGroupCode', comId: 'H2_3',
                         items: qualificationGroupList, selected: selectedQualificationGroupCode, selectedKey: 'laborOfficeCode', fields: ['qualificationGroupCode', 'qualificationGroupName'], mode: 'igGrid'}"/>
-                    <table id="H2_3"
+                    <table id="H2_3" tabindex="6"
                            data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM016_60]',
@@ -62,9 +62,9 @@
                 <div class="control-group valign-center" data-bind = "with: selectedQualification">
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true, constraint: ['QualificationGroupCode', 'QualificationGroupName']}">#{i18n.getText('QMM016_8')}</div>
-                    <input id = "H3_1"
+                    <input id = "H3_1" tabindex="7"
                            data-bind="ntsTextEditor: {constraint: 'QualificationGroupCode', value: qualificationGroupCode, name: '#[QMM016_61]', required: true , enable: $vm.screenMode() == 0}"/>
-                    <input id = "H3_2" style="margin-left: 5px;"
+                    <input id = "H3_2" tabindex="8" style="margin-left: 5px;"
                            data-bind="ntsTextEditor: {constraint: 'QualificationGroupName',value: qualificationGroupName, name: '#[QMM016_62]', required: true}"/>
                 </div>
                 <div data-bind = "with: selectedQualification" class="control-group valign-center" style="width: 631px">
@@ -72,7 +72,7 @@
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_51')}</div>
                     <button style="display: inline-block"
                             data-bind="ntsHelpButton: {image: '../resource/＃QMM017_4.png', position: 'bottom left'}">?</button>
-                    <div style = "margin-left: 15px" data-bind="ntsComboBox: {
+                    <div tabindex="9" style = "margin-left: 15px" data-bind="ntsComboBox: {
                         width: '230px',
                         name: '#[QMM016_63]',
                         options: paymentMethodItem,
@@ -97,7 +97,7 @@
                 		<hr/>
                 	</div>
                     <div class="flex valign-center row" style="clear: both; padding-left: 10px; padding-right: 10px">
-                        <div id="swap-list" data-bind="ntsSwapList: {
+                        <div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
                             height: 330,
                             dataSource: qualificationInformationList,

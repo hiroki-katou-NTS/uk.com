@@ -37,7 +37,7 @@
 	                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
 	                    <th class="ui-widget-header">
 	                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
-	                        <button style="display: inline-block"
+	                        <button tabindex="-1" style="display: inline-block"
 	                                data-bind="ntsHelpButton: {image: '../resource/＃QMM017_1.png', position: 'bottom left'}">?</button>
 	                    </th>
 	                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
@@ -51,7 +51,7 @@
 	                    </td>
 	                    <td style="text-align: center;" data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-	                            <input id="B2_8" data-bind="ntsNumberEditor: { 
+	                            <input id="B2_8" tabindex="12" data-bind="ntsNumberEditor: { 
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
 	                            		constraint: 'RangeLowerLimit', 
@@ -59,7 +59,7 @@
 	                            		name: '#[QMM016_30]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
 	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-	                            <input id="B2_10" data-bind="ntsNumberEditor: { 
+	                            <input id="B2_10" tabindex="13" data-bind="ntsNumberEditor: { 
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; 
 	                            		$vm.isSelectedHistory(), 
@@ -71,7 +71,7 @@
 	                    </td>
 	                    <td style="text-align: center;" data-bind="if: masterNumericClassification() == 1">
 	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-	                            <input id="B2_11" data-bind="ntsNumberEditor: { 
+	                            <input id="B2_11" tabindex="14" data-bind="ntsNumberEditor: { 
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; 
 	                            		$vm.isSelectedHistory(), 
@@ -87,12 +87,12 @@
         </div>
     </div>
     <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
-        <button data-bind="click: $vm.createOneDimensionWageTable" style="width: 400px;"
+        <button tabindex="15" data-bind="click: $vm.createOneDimensionWageTable" style="width: 400px;"
                 class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
     </div>
     <div class="tab-row" style="margin-top: 40px;">
         <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-        <button style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+        <button tabindex="16" style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
     <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length >0">
