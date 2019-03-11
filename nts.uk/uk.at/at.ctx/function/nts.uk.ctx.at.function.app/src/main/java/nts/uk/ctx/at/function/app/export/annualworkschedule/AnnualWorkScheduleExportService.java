@@ -320,7 +320,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 		DatePeriod datePeriod = period.get(); 
 		YearMonthPeriod yearMonthPeriodRQL554 = new YearMonthPeriod(datePeriod.start().yearMonth(),datePeriod.end().yearMonth());
-		
+		boolean average = false;
+		//並び順 = 2  & 使用区分 = 使用する(Thứ tự =2 and phần sử dụng = sử dụng)
 		if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay() && setOutItemsWoSc.getTotalAverageDisplay() == TotalAverageDisplay.AVERAGE) {
 			List<AgreMaxAverageTime> listAgreMaxAverageTimeImport =  this.createMonthlyAverage(cid, employeeIds.get(0), datePeriod.end(), nts.arc.time.YearMonth.of(fiscalYear.v(), baseMonth));
 			List<String> periodLable = new ArrayList<>();
@@ -341,8 +342,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			headerData.setMonthPeriodLabels(periodLable);
 			headerData.setMaximumAgreementTime(true);
 			exportData.setHeader(headerData);
+			average = true;
 		}
-		employeeIds.forEach(empId -> {
+		for (String empId : employeeIds) {
 			EmployeeData empData = exportData.getEmployees().get(empId);
 			Map<String, AnnualWorkScheduleData> annualWorkScheduleData = new HashMap<>();
 			//sort by order -- 並び順をチェック
@@ -359,17 +361,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					annualWorkScheduleData.putAll(this.create36AgreementTime(cid, yearMonthPeriod, empId, itemOutTblBook, fiscalYear, startYm, isOutNumExceed, periodAtr, monthLimit, exportData.getHeader() == null ? new ArrayList<>(): (exportData.getHeader().getMonthPeriodLabels()== null? new ArrayList<>(): exportData.getHeader().getMonthPeriodLabels()), agreementOperationSetting));
 					empData.setAnnualWorkSchedule(annualWorkScheduleData);
 				}else if(itemOutTblBook.getSortBy() == 2 && itemOutTblBook.isUseClassification()) {
-					//並び順 = 2  & 使用区分 = 使用する(Thứ tự =2 and phần sử dụng = sử dụng)
-					boolean average = false;
-					if(setOutItemsWoSc.getPrintForm() == AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36 && setOutItemsWoSc.isMultiMonthDisplay() && setOutItemsWoSc.getTotalAverageDisplay() == TotalAverageDisplay.AVERAGE) {
-						average	= true;
-					}
 					annualWorkScheduleData.putAll(this.create36MaximumAgreementTimeForOneMonth(cid, yearMonthPeriodRQL554, empId, itemOutTblBook, fiscalYear, startYm, average, periodAtr, monthLimit, exportData.getHeader() == null ? new ArrayList<>(): (exportData.getHeader().getMonthPeriodLabels()== null? new ArrayList<>(): exportData.getHeader().getMonthPeriodLabels()), datePeriod.end(), baseMonth));
 					empData.setAnnualWorkSchedule(annualWorkScheduleData);
 				}
 			}
-			
-		});
+		}
 		// アルゴリズム「任意項目の作成」を実行する
 		this.createOptionalItems(exportData, yearMonthPeriod, employeeIds, listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()), startYm);
 		// 対象の社員IDをエラーリストに格納する
@@ -481,6 +477,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * 36協定上限時間の複数月平均を取得する
 	 * */
 	private List<AgreMaxAverageTime> createMonthlyAverage(String companyId, String employeeId, GeneralDate criteria, nts.arc.time.YearMonth yearMonth) {
+		//get requestList547
 		Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti = getAgreTimeByPeriod.maxAverageTimeMulti(companyId, employeeId, criteria, yearMonth);
 		if(agreMaxAverageTimeMulti.isPresent()) {
 			return agreMaxAverageTimeMulti.get().getAverageTimeList();
