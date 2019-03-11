@@ -114,12 +114,8 @@ public class ViewContext extends UIComponentBase {
 		builder.append("operationSetting: { ");
 		builder.append("mode: " + operationSetting.getMode().value);
 		builder.append(", type: " + operationSetting.getType().value);
-		String temp = StringUtils.chomp(operationSetting.getMessage());
-		while(temp != null && !temp.equals(StringUtils.chomp(temp))){
-			temp = StringUtils.chomp(temp);
-		}
-		
-		builder.append(", message: " + formatValue(temp));
+		builder.append(", message: " + formatValue(operationSetting.getMessage() == null 
+					? null : operationSetting.getMessage().replaceAll("\\r", "").replaceAll("\\n", "")));
 		builder.append(", state: " + operationSetting.getState().value);
 		builder.append("} ");
 	}
