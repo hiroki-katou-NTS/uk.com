@@ -65,7 +65,13 @@ public class ImplementationResultFinder {
 		}
 		
 		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).collect(Collectors.toList());
-		
+		result = result.stream().sorted((x, y) ->{
+			if(x.getPersonCode().equals(y.getPersonCode())) {
+				return x.getDisposalDay().compareTo(y.getDisposalDay());
+			}else {
+				return x.getPersonCode().compareTo(y.getPersonCode());
+			}
+		}).collect(Collectors.toList());
 		personInfoErrMessageLogResultDto.setListResult(result);
 
 		return personInfoErrMessageLogResultDto;
