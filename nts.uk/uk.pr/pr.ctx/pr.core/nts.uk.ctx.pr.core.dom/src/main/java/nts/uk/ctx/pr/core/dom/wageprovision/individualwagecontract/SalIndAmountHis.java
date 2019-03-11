@@ -18,6 +18,10 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 public class SalIndAmountHis extends AggregateRoot {
 
     /**
+     * 会社ID
+     */
+    public String cid;
+    /**
      * 個人金額コード
      */
     private String perValCode;
@@ -42,8 +46,9 @@ public class SalIndAmountHis extends AggregateRoot {
      */
     private SalBonusCate salBonusCate;
 
-    public SalIndAmountHis(String perValCode, String empId, int cateIndicator, List<GenericHistYMPeriod> period, int salBonusCate) {
+    public SalIndAmountHis(String cid, String perValCode, String empId, int cateIndicator, List<GenericHistYMPeriod> period, int salBonusCate) {
         super();
+        this.cid = cid;
         this.empId = empId;
         this.perValCode = perValCode;
         this.salBonusCate = EnumAdaptor.valueOf(salBonusCate, SalBonusCate.class);

@@ -194,7 +194,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		workUpdate.updateWorkTimeType(reflectData, false, daily);
 		//開始終了時刻の反映
 		this.reflectRecordStartEndTime(param, daily);			
-		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(daily, param.getEmployeeId(), param.getBaseDate());
+		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(daily, param.getEmployeeId(), param.getBaseDate(), false);
 		return lstDaily;
 	}
 

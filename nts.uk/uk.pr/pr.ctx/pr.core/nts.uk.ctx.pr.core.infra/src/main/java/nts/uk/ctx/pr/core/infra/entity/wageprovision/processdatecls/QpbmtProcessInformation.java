@@ -40,8 +40,8 @@ public class QpbmtProcessInformation extends UkJpaEntity implements Serializable
 	 * 処理区分名称
 	 */
 	@Basic(optional = false)
-	@Column(name = "PROCESS_CLS")
-	public String processCls;
+	@Column(name = "PROCESS_DIVISION_NAME")
+	public String processName;
 
 	@Override
 	protected Object getKey() {
@@ -50,12 +50,12 @@ public class QpbmtProcessInformation extends UkJpaEntity implements Serializable
 
 	public ProcessInformation toDomain() {
 		return new ProcessInformation(this.processInformationPk.cid, this.processInformationPk.processCateNo,
-				this.deprecatCate, this.processCls);
+				this.deprecatCate, this.processName);
 	}
 
 	public static QpbmtProcessInformation toEntity(ProcessInformation domain) {
 		return new QpbmtProcessInformation(new QpbmtProcessInformationPk(domain.getCid(), domain.getProcessCateNo()),
-				domain.getDeprecatCate().value, domain.getProcessCls().v());
+				domain.getDeprecatCate().value, domain.getProcessName().v());
 	}
 
 }

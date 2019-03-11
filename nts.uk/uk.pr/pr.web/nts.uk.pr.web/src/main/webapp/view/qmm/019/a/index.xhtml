@@ -152,13 +152,13 @@
                                                                         allowDrop: ko.observable('true'),
                                                                         connectClass: 'item-sort',
                                                                         beforeMove: preventStopSort}">
-                                                <div class="item limited-label" data-bind="
-                                                                    text: shortName,
+                                                <div class="item" data-bind="
                                                                     click: openSetting,
                                                                     css: id,
                                                                     style: { background: (itemId() == null) ? '#E0F59E' : isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                             color: isFixed() ? '#FFF' : '#404040'},
                                                                     attr: { tabindex: (itemId() != null) ? '15' : '16'}">
+                                                                    <span class="limited-label" data-bind="text: shortName, style: { width: shortName() == '＋' ? '100%' : '99%' }"></span>
                                                 </div>
                                             </div>
                                         </div>

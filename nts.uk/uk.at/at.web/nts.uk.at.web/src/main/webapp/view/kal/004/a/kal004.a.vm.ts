@@ -161,10 +161,15 @@ module nts.uk.at.view.kal004.a.model {
                     if (categoryInputed) {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
-                        let listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
+                        let listMonthly = [];
+                        if(categoryInputed.alarmCategory == 11){
+                            listMonthly== null;
+                        }else{
+                            listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
+                        }
                         let yearly = categoryInputed.extractionYear ==null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
-                        
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly));
+                        let averMonth = categoryInputed.extractionAverMonth ==null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth));
                     } else {
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null));
                     }
@@ -302,6 +307,7 @@ module nts.uk.at.view.kal004.a.model {
             // Create command
             let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
+            //let checkPer = _.filter(checkConditonList, (value) => {return value.alarmCategory != 11});
             let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
             block.invisible();
             // Call service

@@ -46,7 +46,7 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 		boolean isRecord = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
 		//時刻の反映
 		scheTimeReflect.reflectTime(para, isRecord, dailyInfor);			
-		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, para.getEmployeeId(), para.getDateData());
+		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, para.getEmployeeId(), para.getDateData(), false);
 		return lstDaily;
 	}
 }

@@ -21,7 +21,12 @@ public enum ExtractionRange {
 	/**
 	 * 周期
 	 */
-	WEEK(3, "周期");
+	WEEK(3, "周期"),
+	
+	/**
+	 * 基準月指定
+	 */
+	DES_STANDARD_MONTH(4, "基準月指定");
 	
 	/** The value. */
 	public final int value;
