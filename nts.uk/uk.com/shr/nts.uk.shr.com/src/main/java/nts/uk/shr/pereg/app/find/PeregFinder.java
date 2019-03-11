@@ -39,6 +39,8 @@ public interface PeregFinder<T> {
 	 * @return
 	 */
 	List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query);
+	
+	List<PeregDomainDto> getAllDataByList(PeregQueryByListEmp query);
 
 	default PeregDomainDto findSingle(PeregQuery query) {
 		return this.getSingleData(query);

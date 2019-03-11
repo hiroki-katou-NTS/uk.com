@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -122,7 +123,11 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
+		String CID = AppContexts.user().companyId();
+		List<String> listEmp = query.getEmpInfos().stream().map(c ->c.getEmployeeId()).collect(Collectors.toList());
+		List<PublicHolidayRemain> listHolidayRemain = publicHolidayRemainRepository.getAll(listEmp);
+		List<ExcessLeaveInfo> excessLeave = excessLeaveInfoRepository.getAll(listEmp, CID);
+		
 		return null;
 	}
 }
