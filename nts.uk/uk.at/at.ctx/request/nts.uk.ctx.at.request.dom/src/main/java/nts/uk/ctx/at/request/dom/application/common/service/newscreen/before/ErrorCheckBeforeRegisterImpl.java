@@ -200,19 +200,10 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	}
 
 	/**
-	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 	 */
 	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
-		// 時間外表示区分が表示する OR 時間外超過区分がチェックする（登録不可）
 		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr());
-	}
-
-	/**
-	 * 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-	 */
-	private boolean isErrorCheck36TimeLimit(Time36UpperLimitCheckResult result,
-			OvertimeRestAppCommonSetting overtimeSeting) {
-		return result.getErrorFlg().size()>0 && UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
 	}
 
 	@Override
@@ -225,7 +216,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -258,7 +249,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -271,7 +262,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
 				employeeId, appDate, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 			for(String error : result.getErrorFlg()){
 				bundledBusinessExceptions.addMessage("Msg_329", error);
@@ -291,7 +282,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -324,7 +315,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -337,7 +328,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
 				appDate, ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 			for(String error : result.getErrorFlg()){
 				bundledBusinessExceptions.addMessage("Msg_329", error);
