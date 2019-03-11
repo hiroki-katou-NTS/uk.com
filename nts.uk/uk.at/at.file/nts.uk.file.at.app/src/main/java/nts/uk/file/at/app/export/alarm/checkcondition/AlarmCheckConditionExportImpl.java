@@ -35,6 +35,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -57,13 +58,13 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		List<SheetData> sheetDatas = new ArrayList<>();
 		SheetData sheetDailyData = new SheetData(getMasterDatasDaily(query), getHeaderColumnsDaily(query), null, null,
-				TextResource.localize("KAL003_258"));
+				TextResource.localize("KAL003_258"), MasterListMode.NONE);
 		SheetData sheetMonthData = new SheetData(getMasterDatasMonth(query), getHeaderColumnsMonth(query),
-				null, null, TextResource.localize("KAL003_275"));
+				null, null, TextResource.localize("KAL003_275"), MasterListMode.NONE);
 		SheetData sheetMulMonthData = new SheetData(getMasterDatasMulMonth(query), getHeaderColumnsMulMonth(query),
-				null, null, TextResource.localize("KAL003_280"));
+				null, null, TextResource.localize("KAL003_280"), MasterListMode.NONE);
 		SheetData sheetAgree36Data = new SheetData(getMasterDatasAgree36(query), getHeaderColumnsAgree36(query),
-				null, null, TextResource.localize("KAL003_312"));
+				null, null, TextResource.localize("KAL003_312"), MasterListMode.NONE);
 		
 		sheetDatas.add(sheetDailyData);
 		sheetDatas.add(sheetMonthData);
@@ -76,6 +77,11 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KAL003_241");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 	@Override
@@ -273,7 +279,6 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 						if (!CollectionUtil.isEmpty(listRowUsePerCode)) {
 							AtomicInteger index = new AtomicInteger(0);
 							listRowUsePerCode.stream()
-									.sorted(Comparator.nullsLast(Comparator.comparing(DailyReportData::getInsDate)))
 									.forEachOrdered(row -> {
 										datas.add(buildDailyReportData(row, index.get(), attendanceNameDivergenceDtos));
 										index.getAndIncrement();

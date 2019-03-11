@@ -251,32 +251,47 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         }
 
         checkInputContent(formula) {
-            let self = this, operand, prevOperand, operands, dotIndex,
+            let self = this, operand, operands,
                 separators: string = self.separators,
-                formula = self.replaceTextInsideDoubleQuote(formula);
+                formula = self.replaceTextInsideDoubleQuote(formula),
+                formulaRegex = new RegExp(/(?<=}|$)/g);
             operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
             for (operand of operands) {
-                if (isNaN(operand)) {
-                    if (!operand.contains(self.OPEN_CURLY_BRACKET)) {
-                        self.setErrorToFormula('MsgQ_233', [operand]);
-                        continue;
-                    }
-                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
-                    if (!operand.contains(self.CLOSE_CURLY_BRACKET)) {
-                        self.setErrorToFormula('MsgQ_233', [operand]);
-                        continue;
-                    }
-                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    if(!elementName) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                let operandArray = operand.split(formulaRegex);
+                if(operandArray.length > 1) {
+                    self.setErrorToFormula('MsgQ_256', []);
+                    operandArray.forEach(operandItem => self.checkOperand(operandItem));
                 } else {
-                    dotIndex = operand.indexOf('.');
-                    if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
+                    self.checkOperand(operand);
                 }
-                prevOperand = operand;
             }
         }
+
+        checkOperand(operand) {
+            let self = this;
+            if (isNaN(operand)) {
+                if (!operand.contains(self.OPEN_CURLY_BRACKET) || !operand.contains(self.CLOSE_CURLY_BRACKET)) {
+                    self.setErrorToFormula('MsgQ_233', [operand]);
+                } else {
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
+                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.indexOf(self.CLOSE_CURLY_BRACKET));
+
+                    if (self.acceptPrefix.indexOf(elementType) < 0) {
+                        self.setErrorToFormula('MsgQ_233', [elementType]);
+                    }
+                    if (!self.checkElementName(elementType, elementName)) {
+                        self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    }
+                    if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
+                }
+            } else {
+                let dotIndex = operand.indexOf('.');
+                if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
+            }
+        }
+
 
         replaceTextInsideDoubleQuote(formula) {
             let self = this, indexToCheck = formula.length, startOfLastFunctionIndex = -1, endOfLastFunctionIndex,

@@ -35,7 +35,7 @@ public class QetmtEarthQuakeInsu extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "EARTHQUAKE_NAME")
+    @Column(name = "EARTHQUAKE_INSU_NAME")
     public String earthquakeName;
     
     @Override

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 
 /**
  * 36協定基本設定
@@ -12,6 +14,8 @@ public class BasicAgreementSettings {
 
 	/** 36協定基本設定 */
 	private BasicAgreementSetting basicAgreementSetting;
+	/** 36協定上限規制 */
+	private UpperAgreementSetting upperAgreementSetting;
 	
 	/**
 	 * コンストラクタ
@@ -19,6 +23,9 @@ public class BasicAgreementSettings {
 	public BasicAgreementSettings() {
 		this.basicAgreementSetting = BasicAgreementSetting.createFromJavaType(new String(),
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		this.upperAgreementSetting = new UpperAgreementSetting(
+				new AgreementOneMonthTime(0),
+				new AgreementOneMonthTime(0));
 	}
 	
 	/**
@@ -27,10 +34,12 @@ public class BasicAgreementSettings {
 	 * @return 36協定基本設定
 	 */
 	public static BasicAgreementSettings of(
-			BasicAgreementSetting basicAgreementSetting) {
+			BasicAgreementSetting basicAgreementSetting,
+			UpperAgreementSetting upperAgreementSetting) {
 		
 		BasicAgreementSettings domain = new BasicAgreementSettings();
-		domain.basicAgreementSetting = basicAgreementSetting;
+		if (basicAgreementSetting != null) domain.basicAgreementSetting = basicAgreementSetting;
+		if (upperAgreementSetting != null) domain.upperAgreementSetting = upperAgreementSetting;
 		return domain;
 	}
 }

@@ -1,4 +1,4 @@
-<div>
+<div data-bind="let: { $vm: $data }">
 	<!--LEFT CONTENTS -->
 	<div class="left-contents-009">
 		<div class="valign-center control-group" data-bind = "visible: !employeeFlag()">
@@ -279,7 +279,7 @@
 		<!--定型理由 -->
 		<div class="valign-top control-group overlay-reason"
 			data-bind="if: displayTypicalReason()">
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required: requiredReason}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
 								name: '#[KAF009_26]',
@@ -294,7 +294,7 @@
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-top "
 			data-bind="if: displayReason()">
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {constraint: 'AppReason', required: requiredReason}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: { value: multilContent,

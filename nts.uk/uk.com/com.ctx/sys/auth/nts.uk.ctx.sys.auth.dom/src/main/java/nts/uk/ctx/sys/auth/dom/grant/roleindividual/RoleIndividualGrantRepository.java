@@ -78,5 +78,14 @@ public interface RoleIndividualGrantRepository {
 	Optional<RoleIndividualGrant> findByDetail(String userId, String companyId, int roleType, List<String> roleIDLst, GeneralDate date);
 	
 	List<RoleIndividualGrant> findRoleIndividual( String companyId, int roleType, List<String> roleIDLst, GeneralDate date);
-
+	/**
+	 * @author hoatt
+	 * ドメインモデル「ロール個人別付与」を取得する
+	 * @param ユーザID  userId
+	 * @param 会社ID companyId
+	 * @param ロール種類 ＜＞ ? roleType
+	 * @param 日付 date
+	 * @return
+	 */
+	List<RoleIndividualGrant> getListDifRoleType(String userId, String companyId, int roleType, GeneralDate date);
 }

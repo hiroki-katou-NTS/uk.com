@@ -38,7 +38,7 @@ public class QpbmtSpecPrintYmSetPk implements Serializable {
 	 * 処理年月
 	 */
 	@Basic(optional = false)
-	@Column(name = "PROCESS_DATE")
+	@Column(name = "PROCESS_YM")
 	public int processDate;
 
 }

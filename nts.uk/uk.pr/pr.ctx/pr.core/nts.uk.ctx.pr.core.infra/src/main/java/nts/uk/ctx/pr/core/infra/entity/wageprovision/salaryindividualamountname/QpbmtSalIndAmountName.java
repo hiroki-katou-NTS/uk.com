@@ -50,7 +50,7 @@ public class QpbmtSalIndAmountName extends UkJpaEntity implements Serializable {
     }
 
     public static QpbmtSalIndAmountName toEntity(SalIndAmountName domain) {
-        return new QpbmtSalIndAmountName(new QpbmtSalIndAmountNamePk(domain.getCId(), domain.getIndividualPriceCode().v(),domain.getCateIndicator().value),  domain.getIndividualPriceName().v());
+        return new QpbmtSalIndAmountName(new QpbmtSalIndAmountNamePk(domain.getCId(),domain.getCateIndicator().value, domain.getIndividualPriceCode().v()),  domain.getIndividualPriceName().v());
     }
 
 }

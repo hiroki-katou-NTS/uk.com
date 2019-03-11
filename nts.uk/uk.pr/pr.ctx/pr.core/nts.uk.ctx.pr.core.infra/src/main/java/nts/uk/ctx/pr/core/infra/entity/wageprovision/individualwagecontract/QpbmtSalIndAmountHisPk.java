@@ -20,40 +20,46 @@ import lombok.NoArgsConstructor;
 public class QpbmtSalIndAmountHisPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     /**
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     public String empId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
     
     /**
     * 給与賞与区分
     */
     @Basic(optional = false)
-    @Column(name = "SAL_BONUS_CATE")
+    @Column(name = "SALARY_BONUS_ATR")
     public int salBonusCate;
     
     /**
     * カテゴリ区分
     */
     @Basic(optional = false)
-    @Column(name = "CATE_INDICATOR")
+    @Column(name = "CATEGORY_ATR")
     public int cateIndicator;
     
     /**
     * 個人金額コード
     */
     @Basic(optional = false)
-    @Column(name = "PER_VAL_CODE")
+    @Column(name = "PER_VAL_CD")
     public String perValCode;
     
 }

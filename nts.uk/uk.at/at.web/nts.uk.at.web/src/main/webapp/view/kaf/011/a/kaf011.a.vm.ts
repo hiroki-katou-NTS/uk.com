@@ -211,7 +211,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (isRecCreate) {
                 let wkTimeCd = self.recWk().wkTimeCD();
                 if (!wkTimeCd) {
-                    $('#recTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                    $('#recTimeBtn').ntsError('set', { messageId: 'MsgB_2', messageParams: [text('KAF011_30')] });
                     isError = true;
                 }
             }
@@ -228,7 +228,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 if (isUseWkTime) {
                     let wkTimeCd = self.absWk().wkTimeCD();
                     if (!wkTimeCd) {
-                        $('#absTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                        $('#absTimeBtn').ntsError('set', { messageId: 'MsgB_2', messageParams: [text('KAF011_30')] });
                         isError = true;
                     }
                 }
@@ -265,9 +265,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let isControlError = self.validateControl();
             if (isControlError) { return; }
 
-            let isCheckReasonError = !self.checkReason(),
-                checkBoxValue = self.checkBoxValue();
-            if (isCheckReasonError) { return; }
+            // let isCheckReasonError = !self.checkReason(),
+            let checkBoxValue = self.checkBoxValue();
+            // if (isCheckReasonError) { return; }
             block.invisible();
             service.save(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
