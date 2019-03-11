@@ -33,7 +33,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             self.ccgcomponent = {
                 showEmployeeSelection: false, // 検索タイプ
                 systemType: 1,
-                showQuickSearchTab: true,
+                showQuickSearchTab: false,
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
