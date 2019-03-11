@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,12 +16,15 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.excessleave.KrcmtExcessLeaveInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -312,7 +320,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 
-
 	@Override
 	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDYMD, KrcmtLeaveManaData.class)
@@ -322,6 +329,43 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("subHDAtr", state.value)
 				.getList();
 		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Map <String ,Double> getAllBySidWithsubHDAtr(String cid, List<String> sids, int state) {
+		List<KrcmtLeaveManaData> entities = new ArrayList<>();
+		Map <String ,Double> result = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_LEAVE_MANA_DATA WHERE  CID = ? AND SUB_HD_ATR = ?   AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setInt(2, state);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+				List<KrcmtLeaveManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtLeaveManaData entity = new KrcmtLeaveManaData();
+					entity.leaveID = rec.getString("LEAVE_MANA_ID");
+					entity.cID = rec.getString("CID");
+					entity.sID = rec.getString("SID");
+					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
+					return entity;
+			
+				});
+				//.mapToDouble(i -> i.getUnUsedDays().v()).sum();
+				Map<String, List<KrcmtLeaveManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
+				dataMap.entrySet().parallelStream().forEach(c ->{
+					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.unUsedDays).sum());
+				} );
+			
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+		
 	}
 	
 }

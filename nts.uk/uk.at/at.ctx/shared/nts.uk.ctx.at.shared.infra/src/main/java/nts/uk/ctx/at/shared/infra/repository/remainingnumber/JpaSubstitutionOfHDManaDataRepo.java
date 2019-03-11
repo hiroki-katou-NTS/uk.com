@@ -1,17 +1,26 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -211,6 +220,48 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository#getAllBysiDRemCod(java.lang.String, java.util.List)
+	 */
+	@Override
+	public Map<String, Double> getAllBysiDRemCod(String cid, List<String> sids) {
+		Map <String ,Double> result = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_SUB_OF_HD_MANA_DATA WHERE  CID = ?  AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<KrcmtSubOfHDManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtSubOfHDManaData entity = new KrcmtSubOfHDManaData();
+					entity.cID = rec.getString("CID");
+					entity.sID = rec.getString("SID");
+					entity.remainDays = rec.getDouble("REMAIN_DAYS");
+					return entity;
+			
+				});
+				Map<String, List<KrcmtSubOfHDManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
+				dataMap.entrySet().parallelStream().forEach(c ->{
+					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.remainDays).sum());
+				});
+			
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository#getAllBysiDRemCod(java.lang.String, java.util.List)
+	 */
+	
 
 
 

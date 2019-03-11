@@ -1,18 +1,27 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
@@ -250,6 +259,42 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("unUsedDays", unUse)
 				.setParameter("stateAtr", state.value).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository#getSidWithCod(java.lang.String, java.util.List, int)
+	 */
+	@Override
+	public Map<String ,Double> getAllSidWithCod(String cid, List<String> sid, int state) {
+		Map <String ,Double> result = new HashMap<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_PAYOUT_MANA_DATA WHERE  CID = ? AND STATE_ATR = ?   AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<KrcmtPayoutManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
+					
+					entity.cID = rec.getString("CID");
+					entity.sID = rec.getString("SID");
+					entity.stateAtr = rec.getInt("STATE_ATR");
+					return entity;
+			
+				});
+				Map<String, List<KrcmtPayoutManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
+				dataMap.entrySet().parallelStream().forEach(c ->{
+					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.unUsedDays).sum());
+				});
+			
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
 	}
 
 }
