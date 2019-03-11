@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
@@ -20,10 +22,14 @@ import nts.uk.shr.com.operation.SystemOperationSetting.SystemOperationMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopType;
 import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
+import nts.uk.shr.com.operation.SystemSuspendOut;
 
 @Stateless
 public class SystemOperationSettingAdapterImpl implements SystemOperationSettingAdapter {
 
+	@Inject
+	private SystemSuspendService sysSuspendSv;
+	
 	@Inject
 	private StopBySystemRepository stopBySysRepo;
 
@@ -62,7 +68,6 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 					comSet.getUsageStopMessage() == null ? "" : comSet.getUsageStopMessage().v()); 
 		}
 		return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
-
 	}
 
 	@Override
@@ -191,5 +196,9 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		}
 
 	}
-
+	@Override
+	public SystemSuspendOut stopUseConfirm_loginBf(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
+		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend_BefLog(contractCD, companyCD, loginMethod, programID, screenID);
+		return new SystemSuspendOut(sys.isError(), sys.getMsgID(), sys.getMsgContent());
+	}
 }

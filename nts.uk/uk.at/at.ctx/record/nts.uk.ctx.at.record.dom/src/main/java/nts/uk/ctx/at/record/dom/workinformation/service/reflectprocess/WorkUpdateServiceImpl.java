@@ -832,11 +832,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				return;
 			}
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+					new TimeWithDayAttr(data.getStartTime()),
+					null,
+					StampSourceInfo.GO_STRAIGHT_APPLICATION);
+			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
 					new TimeWithDayAttr(data.getEndTime()),
 					null,
 					StampSourceInfo.GO_STRAIGHT_APPLICATION);
-			TimeActualStamp timeActualStamp = new TimeActualStamp(workStamp, workStamp, 0);
-			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, timeActualStamp);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
+			TimeActualStamp endtimeActualStamp = new TimeActualStamp(null, endWorkStamp, 0);
+			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, endtimeActualStamp);
 		} else {
 			timeLeavingWork = lstTimeLeavingWorks.get(0);
 		}
@@ -1112,13 +1117,18 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		}
 		TimeLeavingWork timeLeavingWork = null;
-		if(lstTimeLeavingWorks.isEmpty()) {
+		if(lstTimeLeavingWorks.isEmpty()) {			
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+					new TimeWithDayAttr(data.getStartTime()),
+					null,
+					StampSourceInfo.GO_STRAIGHT_APPLICATION);
+			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
 					new TimeWithDayAttr(data.getEndTime()),
 					null,
 					StampSourceInfo.GO_STRAIGHT_APPLICATION);
-			TimeActualStamp timeActualStamp = new TimeActualStamp(workStamp, workStamp, 0);
-			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, timeActualStamp);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
+			TimeActualStamp endtimeActualStamp = new TimeActualStamp(null, endWorkStamp, 0);
+			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, endtimeActualStamp);
 		} else {
 			timeLeavingWork = lstTimeLeavingWorks.get(0);
 		}

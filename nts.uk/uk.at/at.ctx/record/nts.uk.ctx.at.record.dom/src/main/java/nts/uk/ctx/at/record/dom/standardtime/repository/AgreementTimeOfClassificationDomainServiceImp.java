@@ -29,24 +29,7 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 	public List<String> add(AgreementTimeOfClassification agreementTimeOfClassification,
 			BasicAgreementSetting basicAgreementSetting) {
 
-		List<String> errors = new ArrayList<>();
-		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
-			 */
-			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
-			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
-		}
-
-		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
-			 * 
-			 */
-			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
-		}
+		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfClassification);
 
 		if (errors.isEmpty()) {
 			this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
@@ -56,28 +39,12 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 	}
 
 	@Override
-	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
+	public List<String> update(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfClassification agreementTimeOfClassification) {
 
-		List<String> errors = new ArrayList<>();
-		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
-			 */
-			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
-			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
-		}
-
-		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
-			/**
-			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
-			 * 
-			 */
-			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
-			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
-		}
-
+		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfClassification);
+		
 		if (errors.isEmpty()) {
+			this.agreementTimeOfClassificationRepository.update(agreementTimeOfClassification);
 			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		}
 
@@ -92,6 +59,50 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 		this.agreementTimeOfClassificationRepository.remove(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
 
+	}
+	
+
+	/**
+	 * 登録時チェック処理 (Xử lý check khi ấn đăng ký)
+	 * 
+	 * @param basicAgreementSetting
+	 * @return
+	 */
+	private List<String> checkError(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfClassification agreementTimeOfClassification){
+		List<String> result = new ArrayList<>();
+		// アラーム時間、エラー時間、限度時間のチェックをする
+		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
+			/**
+			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
+			 */
+			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
+			result.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
+		}
+
+		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
+			/**
+			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
+			 * 
+			 */
+			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
+			result.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
+		}
+		
+		// 上限規制とエラー時間のチェックをする
+		if(checkUpperLimitAndErrorTime(basicAgreementSetting, agreementTimeOfClassification)){
+			result.add("Msg_1488,KMK008_96,KMK008_42,KMK008_120");
+		}
+		
+		return result;
+	}
+	
+	private boolean checkUpperLimitAndErrorTime(BasicAgreementSetting basicAgreementSetting,
+			AgreementTimeOfClassification agreementTimeOfClassification) {
+		if (agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue() > 0 && basicAgreementSetting.getErrorOneMonth()
+				.valueAsMinutes() > agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().valueAsMinutes()) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean checkLimitTimeAndErrorTime(BasicAgreementSetting setting) {
