@@ -38,8 +38,8 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             self.initComponent();
             self.listDeadline = ko.observableArray([]);
             self.outputAtr = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                { code: 0, name: nts.uk.resource.getText("KSM011_9") }
             ]);
             let arr: any = [];
             for (let i = 0; i <= 31; i++) {
