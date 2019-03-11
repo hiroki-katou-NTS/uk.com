@@ -94,7 +94,7 @@ module nts.uk.ui.koExtentions {
             var gridHeaderHeight = 24;
             container.igGrid({
                 width: width + "px",
-                height: (data.rows * 28 + gridHeaderHeight) + "px",
+                height: (data.rows * 23 + gridHeaderHeight) + "px",
                 primaryKey: optionValue,
                 columns: iggridColumns,
                 virtualization: true,
@@ -195,7 +195,7 @@ module nts.uk.ui.koExtentions {
                         if (ko.toJS(data.required) && _.isEmpty(ko.toJS(data.value)) && $container.data("enable")) {
                             $element
                                 .addClass('error')
-                                .ntsError("set", nts.uk.resource.getMessage("FND_E_REQ_SELECT", [ko.toJS(data.name)]), "FND_E_REQ_SELECT");
+                                .ntsError("set", nts.uk.resource.getMessage("MsgB_2", [ko.toJS(data.name)]), "MsgB_2");
                         } else {
                             $element.removeClass('error')
                                 .ntsError("clear");

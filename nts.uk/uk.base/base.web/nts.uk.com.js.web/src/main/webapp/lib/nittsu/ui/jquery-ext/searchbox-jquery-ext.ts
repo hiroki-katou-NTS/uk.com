@@ -46,6 +46,31 @@ module nts.uk.ui.jqueryExtentions {
             return $grid;
         }
         
+        function exporeTo($grid: JQuery, exposeFunction: Function){
+            var row = null;
+            if ($grid.igGridSelection('option', 'multipleSelection')) {
+                let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                if (chk.attr("data-chk") === "off") {
+                    return;
+                }
+            }
+            var selectedRows = $grid.igGrid("selectedRows");
+            var keyProperty = $grid.igGrid("option", "primaryKey");
+            var sourceKeys = _.map($grid.igGrid("option", "dataSource"), (o) => o[keyProperty]);
+            var selectedKeys = _.map(selectedRows, (o) => o["id"]);
+            if (_.isEqual(_.sortBy(_.uniq(sourceKeys)), _.sortBy(_.uniq(selectedKeys)))) {
+                return;    
+            }
+            if (selectedRows) {
+                row = selectedRows[0];
+            } else {
+                row = $grid.igGrid("selectedRow");
+            }
+            if (row) {
+                exposeFunction(row);
+            }
+        } 
+        
         function getSelectRowIndex($grid: JQuery, selectedValue): number {
             let dataSource = $grid.igGrid("option", "dataSource");
             let primaryKey = $grid.igGrid("option", "primaryKey");
@@ -193,7 +218,7 @@ module nts.uk.ui.jqueryExtentions {
                     if(nts.uk.util.isNullOrEmpty(result.options)){
                         let mes = '';
                         if(searchMode === "highlight"){
-                            mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
+                            mes = nts.uk.resource.getMessage("MsgB_25");
                         } else {
                             mes = nts.uk.ui.toBeResource.targetNotFound;    
                         }
@@ -249,7 +274,7 @@ module nts.uk.ui.jqueryExtentions {
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(() => { 
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("MsgB_24")).then(() => { 
                         $input.focus(); 
 //                        $input.select();
                     });

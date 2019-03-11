@@ -90,7 +90,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	protected void handle(ExportServiceContext<AnnualWorkScheduleExportQuery> context) {
 		String companyId = AppContexts.user().companyId();
 		AnnualWorkScheduleExportQuery query = context.getQuery();
@@ -98,7 +98,10 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		//・基準月（画面AのA11_2）
 		Integer baseMonth = query.getCurentMonth();
 		ExcludeEmp excludeEmp = EnumAdaptor.valueOf(query.getExcludeEmp(), ExcludeEmp.class);
-		List<Employee> employees = query.getEmployees().stream().map(m -> new Employee(m.getEmployeeId(), m.getCode(), m.getName(), m.getWorkplaceName())).collect(Collectors.toList());
+		List<Employee> employees = query.getEmployees().stream()
+                .distinct()
+				.map(m -> new Employee(m.getEmployeeId(), m.getCode(), m.getName(), m.getWorkplaceName()))
+				.collect(Collectors.toList());
 		Year fiscalYear = null;
 		YearMonth startYm = null;
 		YearMonth endYm = null;
