@@ -351,8 +351,9 @@ public class FacadeUtils {
 		}
 		return listItemResult;
 	}
-
+	
 	/**
+	 * dùng cho cps001. cps002
 	 * Get list Default item exclude item in screen
 	 * @param listCategoryCode
 	 * @param listItemCodeInScreen
@@ -379,6 +380,45 @@ public class FacadeUtils {
 		listItemResult.addAll(processHistoryPeriod(categoryCode,listItemCodeInScreen,sid, listItemIfo));		
 		
 		return listItemResult.stream().filter(i-> !listItemCodeInScreen.contains(i.itemCode())).collect(Collectors.toList());
+	}
+
+	/**
+	 * dùng cho cps003
+	 * Map<String, String> employees : pid - sid
+	 * Get list Default item exclude item in screen
+	 * @param listCategoryCode
+	 * @param listItemCodeInScreen
+	 * @return
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public Map<String, List<ItemValue>> getListDefaultItem(String categoryCode, List<String> listItemCodeInScreen,
+			List<ItemBasicInfo> listItemIfo, Map<String, String> employees) {
+
+		Map<String, List<ItemValue>> itemsBySid = new HashMap<>();
+		Map<String, List<ItemValue>> result = new HashMap<>();
+		try {
+			Method method = FacadeUtils.class.getMethod(FUNCTION_NAME + categoryCode, List.class);
+			@SuppressWarnings("unchecked")
+			List<ItemValue> value = (List<ItemValue>) method.invoke(new FacadeUtils(), listItemIfo);
+			employees.forEach((k, v) -> {
+				itemsBySid.put(v, value);
+			});
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		itemsBySid.putAll(processHistoryPeriod(categoryCode, listItemCodeInScreen, employees, listItemIfo));
+
+		itemsBySid.forEach((k, v) -> {
+			result.put(k,
+					v.stream().filter(i -> !listItemCodeInScreen.contains(i.itemCode())).collect(Collectors.toList()));
+		});
+
+		return result;
 	}
 	
 	/**
@@ -441,6 +481,71 @@ public class FacadeUtils {
 			return Optional.of(hist.getHistory().get().start());
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * dùng cho màn cps003, tối ưu time
+	 * Map<String, String> employees Map<pid, sid>
+	 * Set default item for history category
+	 * @param categoryCode
+	 * @param listItemCodeInScreen
+	 * @param sid
+	 * @return
+	 */
+	public Map<String, List<ItemValue>> processHistoryPeriod(String categoryCode, List<String> listItemCodeInScreen,
+			Map<String, String> employees, List<ItemBasicInfo> listItemIfo) {
+
+		Map<String, List<ItemValue>> result = new HashMap<>();
+		
+		int dataType = DataTypeValue.DATE.value;
+
+		Map<String, Optional<GeneralDate>> hireDate = getHireDate(employees);
+
+		hireDate.forEach((k, v) -> {
+			if (!v.isPresent()) {
+				result.put(k, new ArrayList<>());
+			} else if (historyCategoryCodeList.contains(categoryCode)) {
+				String startDateItemCode = startDateItemCodes.get(categoryCode);
+				String endDateItemCode = endDateItemCodes.get(categoryCode);
+
+				if (!listItemCodeInScreen.stream().anyMatch(item -> item.equals(startDateItemCode))) {
+					result.put(k, Arrays.asList(createItem(startDateItemCode, dataType, v.get().toString(),
+							v.get().toString(), listItemIfo)));
+				}
+				if (!listItemCodeInScreen.stream().anyMatch(item -> item.equals(endDateItemCode))) {
+					result.put(k, Arrays.asList(createItem(endDateItemCode, dataType, GeneralDate.max().toString(),
+							GeneralDate.max().toString(), listItemIfo)));
+				}
+
+			}
+		});
+		return result;
+	}
+	
+	
+	/**
+	 * dùng cho màn cps003
+	 * Get hire date
+	 * @param Map<pid, sid>
+	 * @return Map<sid, Optional<GeneralDate>>
+	 */
+	public Map<String, Optional<GeneralDate>> getHireDate(Map<String, String> employees) {
+		Map<String, Optional<GeneralDate>> result = new HashMap<>();
+		List<AffCompanyHist> affcomLst = affCompanyHistRepository
+				.getAffCompanyHistoryOfEmployees(new ArrayList<>(employees.values()));
+		employees.forEach((k, v) -> {
+			Optional<AffCompanyHist> affcomOpt = affcomLst.stream().filter(c -> c.getPId().equals(k)).findFirst();
+			if (affcomOpt.isPresent()) {
+				AffCompanyHistByEmployee hist = affcomOpt.get().getAffCompanyHistByEmployee(v);
+				if (hist.getHistory().isPresent()) {
+					result.put(v, Optional.of(hist.getHistory().get().start()));
+				}
+			} else {
+				result.put(v, Optional.empty());
+			}
+
+		});
+		return result;
 	}
 	
 	/**

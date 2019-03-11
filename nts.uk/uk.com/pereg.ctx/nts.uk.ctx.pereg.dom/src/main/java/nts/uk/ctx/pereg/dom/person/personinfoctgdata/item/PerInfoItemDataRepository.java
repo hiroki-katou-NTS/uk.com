@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.dom.person.personinfoctgdata.item;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -50,5 +49,19 @@ public interface PerInfoItemDataRepository {
 	 * @return
 	 */
 	List<PersonInfoItemData> getAllInfoItemByRecordId(List<String> recordId);
+	
+	/**
+	 * @author lanlt
+	 * Add items data
+	 * @param domains
+	 */
+	void addAll(List<PersonInfoItemData> domains);
+	
+	/**
+	 * @author lanlt
+	 * Update items data
+	 * @param domains
+	 */
+	void updateAll(List<PersonInfoItemData> domains);
 
 }
