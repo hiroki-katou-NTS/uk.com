@@ -90,4 +90,32 @@ public interface EmploymentHistoryRepository {
 	 * @return
 	 */
 	List<DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
+	
+	/**
+	 * @author lanlt
+	 * get all by cid and sids
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	List<EmploymentHistory> getAllByCidAndSids(String cid, List<String> sids);
+	
+	/**
+	 * @author lanlt
+	 * addAll EmploymentHistory
+	 * @param employmentHistories
+	 */
+	void addAll(List<EmploymentHistory> employmentHistories);
+	
+	/**
+	 * addAll dateHistoryItems
+	 * @param employmentHists
+	 */
+	
+	void addAll(Map<String, DateHistoryItem> employmentHists);
+	/**
+	 * Update all employment history
+	 * @param itemToBeUpdateds
+	 */
+	void updateAll(List<DateHistoryItem> itemToBeUpdateds);
 }

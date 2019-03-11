@@ -121,4 +121,15 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	Map<String, EmpmInfo> getLstDetailEmpHistItem(String companyId, List<String> lstSID, GeneralDate date);
 
+	/**
+	 * Add all employments
+	 * @param domains
+	 */
+	void addAll(List<EmploymentHistoryItem> domains);
+	
+	/**
+	 * Update all employments
+	 * @param domains
+	 */
+	void updateAll(List<EmploymentHistoryItem> domains);
 }

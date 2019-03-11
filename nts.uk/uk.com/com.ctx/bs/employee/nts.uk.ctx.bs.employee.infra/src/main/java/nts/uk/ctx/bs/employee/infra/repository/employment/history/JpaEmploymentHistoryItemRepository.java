@@ -26,6 +26,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
@@ -575,5 +576,74 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			mapResult.put(sid, empInfo.get(0));
 		}
 		return mapResult;
+	}
+
+	@Override
+	public void addAll(List<EmploymentHistoryItem> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_EMPLOYMENT_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, EMP_CD,"
+				+ " SALARY_SEGMENT)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, SID_VAL, EMP_CD_VAL, SALARY_SEGMENT_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("EMP_CD_VAL", "'" + c.getEmploymentCode().v() + "'");
+			sql = sql.replace("SALARY_SEGMENT_VAL", c.getSalarySegment() != null ? ""+ c.getSalarySegment().value +"" :  "null");
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<EmploymentHistoryItem> domains) {
+		String UP_SQL = "UPDATE BSYMT_EMPLOYMENT_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " EMP_CD = EMP_CD_VAL, SALARY_SEGMENT = SALARY_SEGMENT_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("EMP_CD_VAL", "'" + c.getEmploymentCode().v()+ "'");
+			sql = sql.replace("SALARY_SEGMENT_VAL", c.getSalarySegment() != null ? ""+ c.getSalarySegment().value +"" :  "null");
+			 
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 }
