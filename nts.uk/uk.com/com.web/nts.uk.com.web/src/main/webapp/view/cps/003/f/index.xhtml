@@ -64,7 +64,7 @@
 							enable: true 
 						}"></div>
 					<div class="form-group filter-box">
-						<div data-bind="cps003fFilter: { itemData: itemData, value: filter, enable: ko.computed(() => ko.toJS(applyFor) != 'all') }"></div>
+						<div data-bind="cps003fFilter: { itemData: itemData, value: filter, enable: ko.computed(function(){return ko.toJS(applyFor) != 'all'}) }"></div>
 						<div class="filter-desc">#{i18n.getText('CPS003_79')}</div>
 					</div>
 					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_80')}</div>

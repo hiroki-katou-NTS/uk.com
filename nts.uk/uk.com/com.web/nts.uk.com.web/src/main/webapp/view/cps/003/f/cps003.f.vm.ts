@@ -272,8 +272,8 @@ module cps003.f.vm {
 
             ko.computed({
                 read: () => {
-                    let itemData = self.currentItem.itemData(),
-                        rep: any = self.currentItem.value();
+                    let itemData = self.currentItem.itemData() || {},
+                        rep: any = self.currentItem.value() || {};
 
                     if (itemData.amount && rep.mode == 2) {
                         self.currentItem.textView(text('CPS003_95'));
@@ -297,12 +297,12 @@ module cps003.f.vm {
                     replaceFormat: undefined
                 };
 
-            $('input').trigger('validate');
+            $('input:not([disabled])').trigger('validate');
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
+            
             switch (item.itemData.dataType) {
                 default:
                     break;
