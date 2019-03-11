@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItem;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItemCustom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemName;
@@ -80,8 +81,12 @@ public class QpbmtSettingByItem {
 
         if(settingByItem instanceof SettingByItemCustom) {
             SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
-            payItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> QpbmtPayItemDetailSet.toEntity(i)).orElse(null);
-            ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i)).orElse(null);
+            if (CategoryAtr.PAYMENT_ITEM.value == categoryAtr){
+                payItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> QpbmtPayItemDetailSet.toEntity(i)).orElse(null);
+            }
+            if (CategoryAtr.DEDUCTION_ITEM.value == categoryAtr){
+                ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i)).orElse(null);
+            }
             itemRangeSet = settingByItemCustom.getItemRangeSetting().map(i -> QpbmtStateItemRangeSet.toEntity(i)).orElse(null);
         }
 
