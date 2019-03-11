@@ -17,14 +17,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 public class ReserveLeaveGrantTimeRemainHistoryData extends AggregateRoot {
 
 	/**
-	 * 積立年休付与残数データID
-	 */
-	private String rsvLeaID;
-
-	/**
 	 * 社員ID
 	 */
 	private String employeeId;
+	
+
+	// 付与処理日
+	private GeneralDate grantProcessDate;
 
 	/**
 	 * 付与日
@@ -51,33 +50,29 @@ public class ReserveLeaveGrantTimeRemainHistoryData extends AggregateRoot {
 	 */
 	private ReserveLeaveNumberInfo details;
 
-	// 付与処理日
-	private GeneralDate grantProcessDate;
 
-	public ReserveLeaveGrantTimeRemainHistoryData(String id, String employeeId, GeneralDate grantDate,
+	public ReserveLeaveGrantTimeRemainHistoryData(String employeeId, GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
-			Double overLimitDays, double remainDays, GeneralDate grantProcessDate) {
+			Double overLimitDays, double remainDays) {
 		super();
-		this.rsvLeaID = id;
 		this.employeeId = employeeId;
+		this.grantProcessDate = grantProcessDate;
 		this.grantDate = grantDate;
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 		this.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
-		this.grantProcessDate = grantProcessDate;
 	}
 
 	public ReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
 		super();
-		this.rsvLeaID = data.getRsvLeaID();
 		this.employeeId = data.getEmployeeId();
+		this.grantProcessDate = grantProcessDate;
 		this.grantDate = data.getGrantDate();
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
 		this.details = data.getDetails();
-		this.grantProcessDate = grantProcessDate;
 	}
 
 }
