@@ -20,6 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
@@ -202,7 +203,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				stmt.setString(1, cid);
 				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
 				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
-				for (int i = 4; i < subList.size(); i++) {
+				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(4 + i, subList.get(i));
 				}
 				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
@@ -221,5 +222,122 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		});
 
 		return result;
+	}
+
+	@Override
+	public List<AffClassHistory> getBySidsWithCid(String cid, List<String> sids) {
+		List<BsymtAffClassHistory> entityLst = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+					+ " WHERE  CID = ?" 
+					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<BsymtAffClassHistory> entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHistory history = new BsymtAffClassHistory();
+					history.historyId = rec.getString("HIST_ID");
+					history.cid = rec.getString("CID");
+					history.sid = rec.getString("SID");
+					history.startDate = rec.getGeneralDate("START_DATE");
+					history.endDate = rec.getGeneralDate("END_DATE");
+					return history;
+				}).stream().collect(Collectors.toList());
+				entityLst.addAll(entities);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		entityLst.sort((o1, o2) -> {
+			int tmp = o1.sid.compareTo(o2.sid);
+			if (tmp != 0) return tmp;
+			return o1.startDate.compareTo(o2.startDate);
+		});
+		
+		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entityLst.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		
+		String companyId = AppContexts.user().companyId();
+		List<AffClassHistory> resultList = new ArrayList<>();
+		entitiesByEmployee.forEach((employeeId, entitiesOfEmp) -> {
+			List<DateHistoryItem> historyItems = convertToHistoryItems(entitiesOfEmp);
+			resultList.add(new AffClassHistory(companyId, employeeId, historyItems));
+		});
+		return resultList;
+	}
+
+	@Override
+	public void addAll(List<AffClassHistory> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HISTORY (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, CID, SID,"
+				+ " START_DATE, END_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+
+		GeneralDateTime insertTime = GeneralDateTime.now();
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = INS_SQL;
+			DateHistoryItem dateHistItem = c.getPeriods().get(0);
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCompanyId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
+
+			sb.append(sql);
+		});
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
+
+	@Override
+	public void updateAll(List<DateHistoryItem> domains) {
+		String UP_SQL = "UPDATE BSYMT_AFF_CLASS_HISTORY SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("START_DATE_VAL", "'" + c.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  c.end() + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.identifier() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 }

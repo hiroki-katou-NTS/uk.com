@@ -1,0 +1,100 @@
+package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepositoryService;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.MidAffClass;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
+
+@Stateless
+public class UpdateAffListClassCommandHandler extends CommandHandler<List<UpdateAffClassificationCommand>>
+		implements PeregUpdateListCommandHandler<UpdateAffClassificationCommand> {
+	@Inject
+	private AffClassHistoryRepository affClassHistoryRepo;
+
+	@Inject
+	private AffClassHistItemRepository affClassHistItemRepo;
+
+	@Inject
+	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
+
+	@Override
+	public String targetCategoryCd() {
+		return "CS00004";
+	}
+
+	@Override
+	public Class<?> commandClass() {
+		return UpdateAffClassificationCommand.class;
+	}
+
+	@Override
+	protected void handle(CommandHandlerContext<List<UpdateAffClassificationCommand>> context) {
+		List<UpdateAffClassificationCommand> command = context.getCommand();
+		String cid = AppContexts.user().companyId();
+		List<MidAffClass> histories = new ArrayList<>();
+		List<AffClassHistItem> items = new ArrayList<>();
+		List<String> errors = new ArrayList<>();
+		// sidsPidsMap
+		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
+		// một công ty nên tất item của các nhân viên được hiển thị giống nhau
+		// vì vậy mà mình sẽ kiểm tra startDate của nhân viên đầu tiên trong list để
+		// check xem có hiển thị trên màn hình ko?
+		UpdateAffClassificationCommand updateFirst = command.get(0);
+		if (updateFirst.getStartDate() != null) {
+			Map<String, List<AffClassHistory>> affClassHisMap = affClassHistoryRepo.getBySidsWithCid(cid, sids)
+					.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			command.parallelStream().forEach(c -> {
+				if (affClassHisMap.containsKey(c.getEmployeeId())) {
+					List<AffClassHistory> affClassHistLst = affClassHisMap.get(c.getEmployeeId());
+					if (affClassHistLst.size() > 0) {
+						AffClassHistory historyOption = affClassHistLst.get(0);
+						Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().parallelStream()
+								.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
+						if (itemToBeUpdateOpt.isPresent()) {
+							historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							histories.add(new MidAffClass(historyOption, itemToBeUpdateOpt.get()));
+
+							// update history item
+							AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(),
+									c.getHistoryId(), c.getClassificationCode());
+							items.add(historyItem);
+						} else {
+							errors.add(c.getEmployeeId());
+						}
+
+					} else {
+						errors.add(c.getEmployeeId());
+					}
+
+				} else {
+					errors.add(c.getEmployeeId());
+				}
+			});
+
+			affClassHistoryRepositoryService.updateAll(histories);
+			affClassHistItemRepo.updateAll(items);
+
+		}
+	}
+
+}

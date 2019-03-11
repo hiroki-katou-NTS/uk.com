@@ -70,5 +70,15 @@ public interface AffClassHistItemRepository {
 	 * @return
 	 */
 	List<AffClassHistItem> getByHistoryIds(List<String> historyIds);
+	/**
+	 * add All AffClassHistItem
+	 * @param domains
+	 */
+	void addAll(List<AffClassHistItem> domains); 
+	/**
+	 * update All AffClassHistItem
+	 * @param domains
+	 */
+	void updateAll(List<AffClassHistItem> domains); 
 
 }

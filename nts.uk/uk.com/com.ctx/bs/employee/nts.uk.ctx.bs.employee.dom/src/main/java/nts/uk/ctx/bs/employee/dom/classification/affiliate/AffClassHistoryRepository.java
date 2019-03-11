@@ -84,4 +84,28 @@ public interface AffClassHistoryRepository {
 	 * @author lanlt
 	 */
 	List<DateHistoryItem> getByEmployeeListWithPeriod(String cid, List<String> employeeIds, GeneralDate standardDate);
+	
+	/**
+	 * get DateHistoryItem theo công ty , list sid, mục đích viết response cho màn cps003 (gọi từ add command)
+	 * @param cid
+	 * @param employeeIds
+	 * @param standardDate
+	 * @author lanlt
+	 */
+	List<AffClassHistory> getBySidsWithCid(String cid, List<String> sids);
+	
+	
+	/**
+	 * add domain history
+	 * @param history
+	 * @author lanlt
+	 */
+	void addAll(List<AffClassHistory> domains);
+	
+	/**
+	 * update domain history
+	 * @param history
+	 * @author lanlt
+	 */
+	void updateAll(List<DateHistoryItem> domains);
 }

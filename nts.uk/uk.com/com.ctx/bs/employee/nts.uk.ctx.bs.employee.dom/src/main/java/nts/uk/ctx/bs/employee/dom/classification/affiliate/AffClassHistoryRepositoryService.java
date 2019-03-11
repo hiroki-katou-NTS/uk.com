@@ -1,7 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -71,5 +74,69 @@ public class AffClassHistoryRepositoryService {
 		affClassHistoryRepo.update(beforeItemOpt.get());
 
 	}
+
+	/**
+	 * @author lanlt
+	 * add list domain history - cps003
+	 * add last item and update before items
+	 * @param history
+	 */
+	public void addAll(List<AffClassHistory> history){
+		List<AffClassHistory> historiesInsertLst = new ArrayList<>();
+		history.parallelStream().forEach(c ->{
+			if (c.getPeriods().isEmpty()) {
+				return;
+			}
+			List<DateHistoryItem> periods = c.getPeriods();
+			DateHistoryItem historyItem = periods.get(periods.size() - 1);
+			historiesInsertLst.add(new AffClassHistory(c.getCompanyId(), c.getEmployeeId(), Arrays.asList(historyItem)));
+		});
+		
+		if (!historiesInsertLst.isEmpty()) {
+			affClassHistoryRepo.addAll(historiesInsertLst);
+			updateAllItemBefore(historiesInsertLst);
+		}
+	}
+	
+	/**
+	 * @author lanlt
+	 * updateAllItemBefore - cps003
+	 * @param histories
+	 */
+	private void updateAllItemBefore(List<AffClassHistory> histories) {
+		List<DateHistoryItem> dateHistItem = new ArrayList<>();
+		// Update item before
+		histories.parallelStream().forEach(c ->{
+			DateHistoryItem historyItem  = c.getPeriods().get(0);
+			Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
+			if (!beforeItemOpt.isPresent()) {
+				return;
+			}
+			dateHistItem.add(beforeItemOpt.get());
+				
+		});
+		if(!dateHistItem.isEmpty()) {
+			affClassHistoryRepo.updateAll(dateHistItem);
+		}
+	}
+	
+	/**
+	 * update All domain history - cps003
+	 * update All item and nearly item
+	 * @param history
+	 */
+	public void updateAll(List<MidAffClass> midAffClass){
+		List<DateHistoryItem> dateHistItems = midAffClass.parallelStream().map(c -> c.getItem()).collect(Collectors.toList());
+		affClassHistoryRepo.updateAll(dateHistItems);
+		// Update item before and after
+		
+		List<AffClassHistory> historiesInsertLst = new ArrayList<>();
+		midAffClass.parallelStream().forEach(c ->{
+			historiesInsertLst.add(new AffClassHistory(c.getHistory().getCompanyId(), c.getHistory().getEmployeeId(), Arrays.asList(c.getItem())));
+		});
+		updateAllItemBefore(historiesInsertLst);
+	}
+	
+	
 
 }
