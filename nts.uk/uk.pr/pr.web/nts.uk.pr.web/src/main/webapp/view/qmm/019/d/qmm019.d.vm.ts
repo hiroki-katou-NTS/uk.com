@@ -835,6 +835,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.clearError("#D3_13");
                 self.checkError("#D3_13");
             });
+            self.itemRangeSet.errorUpRangeValAmount.subscribe(() => {
+                self.clearError("#D3_13");
+                self.checkError("#D3_13");
+            });
 
             self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
                 self.itemRangeSet.alarmUpRangeValAmount(null);
@@ -845,6 +849,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.clearError("#D3_20");
             });
             self.itemRangeSet.alarmLowerLimitSetAtr.subscribe(() => {
+                self.clearError("#D3_20");
+                self.checkError("#D3_20");
+            });
+            self.itemRangeSet.alarmUpRangeValAmount.subscribe(() => {
                 self.clearError("#D3_20");
                 self.checkError("#D3_20");
             });

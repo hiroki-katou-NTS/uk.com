@@ -568,6 +568,14 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.itemRangeSet.errorLoRangeValNum(null);
                 self.clearError("#F3_25");
             });
+            self.itemRangeSet.errorUpRangeValTime.subscribe(() => {
+                self.clearError("#F3_21");
+                self.checkError("#F3_21");
+            });
+            self.itemRangeSet.errorUpRangeValNum.subscribe(() => {
+                self.clearError("#F3_25");
+                self.checkError("#F3_25");
+            });
             self.itemRangeSet.errorLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_21");
                 self.checkError("#F3_21");
@@ -588,6 +596,14 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.clearError("#F3_23");
                 self.itemRangeSet.alarmLoRangeValNum(null);
                 self.clearError("#F3_27");
+            });
+            self.itemRangeSet.alarmUpRangeValTime.subscribe(() => {
+                self.clearError("#F3_23");
+                self.checkError("#F3_23");
+            });
+            self.itemRangeSet.alarmUpRangeValNum.subscribe(() => {
+                self.clearError("#F3_27");
+                self.checkError("#F3_27");
             });
             self.itemRangeSet.alarmLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_23");
