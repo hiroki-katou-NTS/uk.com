@@ -58,4 +58,16 @@ public interface AffCompanyHistRepository {
 	List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 	
 	List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
+	/**
+	 * @author lanlt
+	 * add new affiliation histories  
+	 * @param domains
+	 */
+	void addAll(List<AffCompanyHistCustom> domains);
+	/**
+	 * @author lanlt
+	 * update all AffCompanyHistItems
+	 * @param items
+	 */
+	void updateAll(List<AffCompanyHistItem> items);
 }

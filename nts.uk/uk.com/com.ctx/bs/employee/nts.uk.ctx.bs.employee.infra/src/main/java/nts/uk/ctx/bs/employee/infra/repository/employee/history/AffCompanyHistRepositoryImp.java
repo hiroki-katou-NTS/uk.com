@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.sql.SQLException;
 
 import javax.ejb.Stateless;
 
@@ -21,9 +21,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
@@ -472,6 +474,81 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			return Collections.emptyList();
 		}
 		return listSid;
+	}
+
+	@Override
+	public void addAll(List<AffCompanyHistCustom> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
+				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG," + "  PID, SID, HIST_ID, CID, "
+				+ "  DESTINATION_DATA, START_DATE , END_DATE) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, PID_VAL, SID_VAL, HIST_ID_VAL, CID_VAL, DESTINATION_DATA_VAL, START_DATE_VAL, END_DATE_VAL); ";
+
+		String cid = AppContexts.user().companyId();
+		GeneralDateTime insertTime = GeneralDateTime.now();
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("PID_VAL", "'" + c.getPid() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getSid() + "'");
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistItem().getHistoryId() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("DESTINATION_DATA_VAL",
+					"" + BooleanUtils.toInteger(c.getHistItem().isDestinationData()) + "");
+			sql = sql.replace("START_DATE_VAL", "'" + c.getHistItem().start() + "'");
+			sql = sql.replace("END_DATE_VAL", "'" + c.getHistItem().end() + "'");
+
+			sb.append(sql);
+		});
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<AffCompanyHistItem> domains) {
+		String UP_SQL = "UPDATE BSYMT_AFF_COM_HIST SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ "  DESTINATION_DATA = DESTINATION_DATA_VAL, START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL "
+				+ "  WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("DESTINATION_DATA_VAL", "" + BooleanUtils.toInteger(c.isDestinationData())+"");
+			sql = sql.replace("START_DATE_VAL", "'" + c.getDatePeriod().start() +"'");
+			sql = sql.replace("END_DATE_VAL", "'" + c.getDatePeriod().end() +"'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 }

@@ -13,11 +13,13 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfoPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCompanyInfoRepository {
@@ -104,5 +106,75 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 		});
 
 		return resultList;
+	}
+
+	@Override
+	public void addAll(List<AffCompanyInfo> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
+				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG,"
+				+ "  HIST_ID, SID,  RECRUIMENT_CATEGORY_CD , ADOPTION_DATE, RETIREMENT_CALC_STR_D) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, HIST_ID_VAL, SID_VAL, RECRUIMENT_CATEGORY_CD_VAL, ADOPTION_DATE_VAL, RETIREMENT_CALC_STR_D_VAL); ";
+		
+		
+    	GeneralDateTime insertTime = GeneralDateTime.now();
+    	String insCcd = AppContexts.user().companyCode();
+    	String insScd = AppContexts.user().employeeCode();
+    	String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg =  insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd +"'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg +"'");
+			
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("SID_VAL", "'" + c.getSid() +"'");
+			sql = sql.replace("RECRUIMENT_CATEGORY_CD_VAL", c.getRecruitmentClassification()== null? "null": "'" + c.getRecruitmentClassification().v() +"'");
+			sql = sql.replace("ADOPTION_DATE_VAL", c.getAdoptionDate() == null? "null": "'" + c.getAdoptionDate() +"'");
+			sql = sql.replace("RETIREMENT_CALC_STR_D_VAL", c.getRetirementAllowanceCalcStartDate()== null? "null": "'" + c.getRetirementAllowanceCalcStartDate() +"'");
+			
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);		
+		
+	}
+
+	@Override
+	public void updateAll(List<AffCompanyInfo> domains) {
+		String UP_SQL = "UPDATE BSYMT_AFF_COM_INFO SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ "  RECRUIMENT_CATEGORY_CD = RECRUIMENT_CATEGORY_CD_VAL, ADOPTION_DATE = ADOPTION_DATE_VAL, RETIREMENT_CALC_STR_D = RETIREMENT_CALC_STR_D_VAL"
+				+ "  WHERE HIST_ID = HIST_ID_VAL ;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("RECRUIMENT_CATEGORY_CD_VAL", c.getRecruitmentClassification() == null? "null": "'" + c.getRecruitmentClassification().v() +"'");
+			sql = sql.replace("ADOPTION_DATE_VAL", c.getAdoptionDate() == null? "null": "'" + c.getAdoptionDate() +"'");
+			sql = sql.replace("RETIREMENT_CALC_STR_D_VAL", c.getRetirementAllowanceCalcStartDate() == null? "null": "'" + c.getRetirementAllowanceCalcStartDate() +"'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 }
