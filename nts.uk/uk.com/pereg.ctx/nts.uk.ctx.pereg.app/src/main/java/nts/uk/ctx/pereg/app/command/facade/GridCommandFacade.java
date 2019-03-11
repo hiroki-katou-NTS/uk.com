@@ -1,28 +1,24 @@
 package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.uk.ctx.pereg.dom.person.error.ErrorWarningEmployeeInfo;
-import nts.uk.shr.pereg.app.ItemValue;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.command.GridInputContainer;
-import nts.uk.shr.pereg.app.command.PeregInputContainer;
+import nts.uk.shr.pereg.app.command.PeregInputContainerCps003;
 
 @ApplicationScoped
 public class GridCommandFacade {
 	@Inject
-	private PeregCommandFacade commandFacade;
+	private PeregCommonCommandFacade commandFacade;
 
 	@Inject
 	private ManagedParallelWithContext parallel;
@@ -58,41 +54,14 @@ public class GridCommandFacade {
 		List<Object> resultsSync = Collections.synchronizedList(new ArrayList<>());
 		
 		List<Object> errorLstSync = Collections.synchronizedList(new ArrayList<>());
+		List<PeregInputContainerCps003>  containerLst = new ArrayList<>();
 		
 		try { 
 			
 			this.parallel.forEach(gridInputContainer.getEmployees(), input -> {
-				
-				PeregInputContainer container = new PeregInputContainer(input.getPersonId(), input.getEmployeeId(), Arrays.asList(input.getInput()));
-				
-			
-				
-				try {
-					
-					Object obj = commandFacade.registerHandler(container);
-					
-					resultsSync.add(obj);
-					
-				} catch (Throwable t) {
-					
-					BusinessException exp = (BusinessException) t.getCause();
-					
-					if (startDateItemCodes.containsKey(input.getInput().getCategoryCd())) {
-						
-						String itemCode = startDateItemCodes.get(input.getInput().getCategoryCd());
-						
-						Optional<ItemValue> itemOptional = input.getInput().getItems().stream()
-								.filter(c -> {return c.itemCode().equals(itemCode);}).findFirst();
-						
-						if (itemOptional.isPresent()) {
-							ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(input.getEmployeeId(),
-									input.getEmployeeCd(), input.getEmployeeName(), input.getOrder(), true, 1, itemOptional.get().itemName(), exp.getMessage());							
-							errorLstSync.add(errorWarning);
-							
-						}
-					}
-				}
+				containerLst.add(new PeregInputContainerCps003(input.getPersonId(), input.getEmployeeId(), input.getInput()));
 			});
+			this.commandFacade.registerHandler(containerLst, gridInputContainer.getEditMode(), gridInputContainer.getBaseDate());
 		} catch (Throwable t) {
 			
 			throw t;

@@ -17,8 +17,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -47,19 +45,17 @@ import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcess
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
-import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
-import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
-import nts.uk.shr.pereg.app.command.PeregDeleteCommand;
-import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
-import nts.uk.shr.pereg.app.command.PeregInputContainer;
-import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregInputContainerCps003;
+import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommandHandler;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommand;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommandHandler;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddListCommandHandler;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefListUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
 @ApplicationScoped
 public class PeregCommonCommandFacade {
@@ -68,28 +64,21 @@ public class PeregCommonCommandFacade {
 	private PerInfoCategoryRepositoty ctgRepo;
 
 	@Inject
-	private PeregCommandHandlerCollector handlerCollector;
+	private PeregListCommandHandlerCollector handlerCollector;
 
 	/** Command handlers to add */
-	private Map<String, PeregAddCommandHandler<?>> addHandlers;
+	private Map<String, PeregAddListCommandHandler<?>> addHandlers;
 
 	/** Command handlers to update */
-	private Map<String, PeregUpdateCommandHandler<?>> updateHandlers;
-
-	/** Command handlers to delete */
-	private Map<String, PeregDeleteCommandHandler<?>> deleteHandlers;
+	private Map<String, PeregUpdateListCommandHandler<?>> updateHandlers;
 
 	/** this handles command to add data defined by user. */
 	@Inject
-	private PeregUserDefAddCommandHandler userDefAdd;
+	private PeregUserDefAddListCommandHandler userDefAdd;
 
 	/** this handles command to update data defined by user. */
 	@Inject
-	private PeregUserDefUpdateCommandHandler userDefUpdate;
-
-	/** this handles command to delete data defined by user. */
-	@Inject
-	private PeregUserDefDeleteCommandHandler userDefDelete;
+	private PeregUserDefListUpdateCommandHandler userDefUpdate;
 
 	@Inject
 	private ItemDefFinder itemDefFinder;
@@ -175,67 +164,32 @@ public class PeregCommonCommandFacade {
 
 		this.updateHandlers = this.handlerCollector.collectUpdateHandlers().stream()
 				.collect(Collectors.toMap(h -> h.targetCategoryCd(), h -> h));
-
-		this.deleteHandlers = this.handlerCollector.collectDeleteHandlers().stream()
-				.collect(Collectors.toMap(h -> h.targetCategoryCd(), h -> h));
 	}
 	
-	public Object registerHandler(PeregInputContainer inputContainer) {
-		
+	public Object registerHandler(List<PeregInputContainerCps003> inputContainerLst, int modeUpdate, GeneralDate baseDate) {
 		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -99, () -> {
-		
-			String recordId = null;
-			PersonCorrectionLogParameter target  = null;
-			List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
-			String employeeId = inputContainer.getEmployeeId();
-			// get user info
-			UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
-			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
 			
-			if (userAuth.size() > 0) {
-				user = userAuth.get(0);
-			}
+			Map<String, PersonCorrectionLogParameter> target  = new HashMap<>();
+			Map<String, String> mapSidPid = inputContainerLst.parallelStream().collect(Collectors.toMap(PeregInputContainerCps003::getEmployeeId, PeregInputContainerCps003::getPersonId));
+			Map<String, List<UserAuthDto>> userMaps = this.userFinder.getByListEmp(new ArrayList<>(mapSidPid.keySet())).stream().collect(Collectors.groupingBy(c -> c.getEmpID()));
+			userMaps.entrySet().parallelStream().forEach(c ->{
+				List<UserAuthDto> userLst = c.getValue();
+				if(userLst != null || !userLst.isEmpty()) {
+					target.put(c.getKey(), new PersonCorrectionLogParameter(userLst.get(0).getUserID(), c.getKey(),
+							userLst.get(0).getEmpName(), PersonInfoProcessAttr.UPDATE, null));
+				}
+			});
 			
-			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getEmpName(),
-						PersonInfoProcessAttr.UPDATE, null);
-			// DELETE COMMAND
-			this.delete(inputContainer, ctgCode);
+			this.add(inputContainerLst, target, baseDate);
+			this.update(inputContainerLst, baseDate,  target);
 			
-			// ADD COMMAND
-			recordId = this.add(inputContainer, target, user);
-	
-			// UPDATE COMMAND
-			this.update(inputContainer, target, user);
-	
-
 			
-			return recordId;
+			
+			return null;
 		});
 		
-		
-		return new Object[] { recId };
+		return null;
 	}
-	
-	public void deleteHandler(PeregDeleteCommand command) {
-		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -88, () -> {
-	
-			List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
-			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
-			UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId(), "", "");
-	
-			if (userAuth.size() > 0) {
-				user = userAuth.get(0);
-			}
-	
-			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(user.getUserID(), command.getEmployeeId(),
-					user.getEmpName(), PersonInfoProcessAttr.UPDATE, null);
-			
-			DataCorrectionContext.setParameter(target.getHashID(), target);
-	
-			this.delete(command, ctgCode);
-		});
-	}
-
 	/**
 	 * hàm này viết cho cps001 Handles add commands.
 	 * 
@@ -243,32 +197,39 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public String add(PeregInputContainer container, PersonCorrectionLogParameter target, UserAuthDto user) {
-		return addNonTransaction(container, false, target, user);	
+	public List<String> add(List<PeregInputContainerCps003> containerLst, Map<String, PersonCorrectionLogParameter> target, GeneralDate baseDate) {
+		return addNonTransaction(containerLst, target, baseDate);	
 	}
 
-	@Transactional
-	public String addForCPS002(PeregInputContainer container, PersonCorrectionLogParameter target) {
-		return addNonTransaction(container, true, target, null);
-	}
-
-	private String addNonTransaction(PeregInputContainer container, boolean isCps002, PersonCorrectionLogParameter target, UserAuthDto user) {
-		// Filter input category
-		List<ItemsByCategory> addInputs = container.getInputs().stream()
-				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-
+	private List<String> addNonTransaction(List<PeregInputContainerCps003> containerLst, Map<String, PersonCorrectionLogParameter> target, GeneralDate baseDate) {
 		List<String> recordIds = new ArrayList<String>();
-		String personId = container.getPersonId();
-		String employeeId = container.getEmployeeId();
+		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
+		containerLst.stream().forEach(c ->{
+			ItemsByCategory itemByCtg = c.getInputs();
+			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > 0) {
+				containerAdds.add(c);
+			}
+			
+		});
+		if(containerAdds.size() == 0) {
+			return recordIds; 
+		}
+		
+		
+		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+			updateInputForAdd(containerAdds);
+			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
+			
+		});
+		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 
-		// Getall items by category id
-		Map<String, List<ItemBasicInfo>> itemByCtgId = perInfoItemDefRepositoty
-				.getItemCDByListCategoryIdWithAbolition(container.getInputs().stream()
-						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
+		// Get all items by category id
+		Map<String, List<ItemBasicInfo>> itemsByCtgId = perInfoItemDefRepositoty
+				.getItemCDByListCategoryIdWithAbolition(Arrays.asList(itemFirstByCtg.getCategoryId()),
 						AppContexts.user().contractCode());
 		
 		// Filter required item
-		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemByCtgId.entrySet().stream()
+		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemsByCtgId.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
 						.filter(info -> info.getRequiredAtr() == 1 && info.getAbolitionAtr() == 0).collect(Collectors.toList())));
 		
@@ -276,66 +237,57 @@ public class PeregCommonCommandFacade {
 		// Item missing
 		List<ItemBasicInfo> itemExclude = new ArrayList<>();
 		
-		addInputs.forEach(ctg -> {
-			List<String> listScreenItem = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
-			// Set all default item
-			List<ItemValue>	 listDefault = facadeUtils.getListDefaultItem(ctg.getCategoryCd(), listScreenItem,
-					container.getEmployeeId(),itemByCtgId.get(ctg.getCategoryId()) );
-			ctg.getItems().addAll(listDefault);
+		// vì những item của các nhân viên đều được hiển thị giống nhau nên mình sẽ lấy
+		// list item đầu tiên của nhân viên đầu tiên trong list employee đó thực hiện  mục đích đó
+		List<String> listItemCodeInScreen = itemFirstByCtg.getItems().stream().map(i -> i.itemCode())
+				.collect(Collectors.toList());
+		
+		Map<String, String> employees = containerAdds.stream()
+				.collect(Collectors.toMap(PeregInputContainerCps003::getPersonId, PeregInputContainerCps003::getEmployeeId));
 
-			List<String> listItemAfter = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
+		Map<String, List<ItemValue>> itemsDefaultLstBySid = facadeUtils.getListDefaultItem(itemFirstByCtg.getCategoryCd(),
+				listItemCodeInScreen, itemsByCtgId.get(itemFirstByCtg.getCategoryId()), employees);
 
-			if (requiredItemByCtgId.containsKey(ctg.getCategoryId())) {
+		containerAdds.parallelStream().forEach(c -> {
+			ItemsByCategory itemByCtg = c.getInputs();
+			List<ItemValue> itemDefaultLst = itemsDefaultLstBySid.get(c.getEmployeeId());
+			if (itemDefaultLst != null) {
+				c.getInputs().getItems().addAll(itemDefaultLst);
+			}
+			
+			List<String> listItemAfter = itemByCtg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
 
-				itemExclude.addAll(requiredItemByCtgId.get(ctg.getCategoryId()).stream()
+			if (requiredItemByCtgId.containsKey(itemByCtg.getCategoryId())) {
+
+				itemExclude.addAll(requiredItemByCtgId.get(itemByCtg.getCategoryId()).stream()
 						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
 			}
 
 		});
 		
 		// If there is missing item throw error
-		if (!itemExclude.isEmpty() && isCps002) {
-			throw new BusinessException("Msg_1351",
-					String.join(",", itemExclude.stream().map(i -> i.getItemName()).collect(Collectors.toList())));
-		} else if (!itemExclude.isEmpty() && !isCps002) {
+		if (!itemExclude.isEmpty()) {
 			throw new BusinessException("Msg_1353");
 		}
-
-		if (isCps002 == false) {
-			if (addInputs.size() > 0) {
-				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
-					updateInputForAdd(addInputs);
-					setParamsForCPS001(employeeId, personId, PersonInfoProcessAttr.ADD, addInputs, target);
-				});
-			}
-		}
-
-		addInputs.forEach(itemsByCategory -> {
-			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
-
-			// In case of optional category fix category doesn't exist
-			String recordId = null;
-
-			if (handler != null && itemsByCategory.isHaveSomeSystemItems()) {
-				val result = handler.handlePeregCommand(personId, employeeId, itemsByCategory);
-				// pass new record ID that was generated by add domain command
-				recordId = result.getAddedRecordId();
-			}
-
+		
+		
+		// đoạn này viết log
+		
+		
+		// đoạn này viết command
+		val handler = this.addHandlers.get(itemFirstByCtg.getCategoryCd());
+		
+		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
+			val result = handler.handlePeregCommand(containerAdds);
 			// pass new record ID that was generated by add domain command
-			// handler
-			val commandForUserDef = new PeregUserDefAddCommand(personId, employeeId, recordId, itemsByCategory);
+			recordIds.addAll(result.stream().map(c -> c.getAddedRecordId()).collect(Collectors.toList()));
+		    // xử lí cho những item optional
+			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.parallelStream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
-
-			// Keep record id to focus in UI
-			recordIds.add(recordId);
-		});
-
-		if (recordIds.size() == 1) {
-			return recordIds.get(0);
+		
 		}
 
-		return null;
+		return recordIds;
 	}
 
 	/**
@@ -345,45 +297,53 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public void update(PeregInputContainer container, PersonCorrectionLogParameter target, UserAuthDto user) {
-		List<ItemsByCategory> updateInputs = container.getInputs().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-
-		if (updateInputs != null && !updateInputs.isEmpty()) {
+	public void update(List<PeregInputContainerCps003> container, GeneralDate baseDate, Map<String, PersonCorrectionLogParameter> target) {
+		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
+		container.stream().forEach(c ->{
+			ItemsByCategory itemByCtg = c.getInputs();
+			if(itemByCtg.getRecordId() != null && itemByCtg.getRecordId().indexOf("noData") == -1) {
+				containerAdds.add(c);
+			}
+			
+		});
+		if(containerAdds.size() > 0) {
+			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
+			// đoạn này viết log
 			DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
-				setParamsForCPS001(container.getEmployeeId(), container.getPersonId(), PersonInfoProcessAttr.UPDATE, updateInputs, target);
+				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
 			});
-			updateInputCategories(container, updateInputs);
-		}
 
-		updateInputs.forEach(itemsByCategory -> {
-			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
+			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
+			updateInputCategoriesCps003(containerAdds , baseDate);
+
+			// vì categoryCode của các nhân viên trong màn cps003 đều giống nhau nên mình sẽ
+			// lấy itemByCtg của thằng nhân viên đầu tiên
+			val handler = this.updateHandlers.get(itemFirstByCtg.getCategoryCd());
 
 			// In case of optional category fix category doesn't exist
 			if (handler != null) {
-				handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
+				handler.handlePeregCommand(containerAdds);
 			}
 
-			val commandForUserDef = new PeregUserDefUpdateCommand(container.getPersonId(), container.getEmployeeId(),
-					itemsByCategory);
+			val commandForUserDef = container.parallelStream().map(c -> {
+				return new PeregUserDefUpdateCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs());
+			}).collect(Collectors.toList());
 
 			this.userDefUpdate.handle(commandForUserDef);
-			
-			
-		});
-		
+		}
 		
 	}
 
 	//update input for case ADD
-	private void updateInputForAdd(List<ItemsByCategory> inputs) {
+	private void updateInputForAdd(List<PeregInputContainerCps003> containerLst) {
 		// Add item invisible to list
-		for (ItemsByCategory itemByCategory : inputs) {
-			itemByCategory.getItems().stream().forEach(c -> {
-				c.setValueBefore(null);
-				c.setContentBefore(null);
+		
+		containerLst.parallelStream().forEach(c ->{
+			c.getInputs().getItems().stream().forEach(item -> {
+				item.setValueBefore(null);
+				item.setContentBefore(null);
 			});
-		}
+		});
 	}
 
 	/**
@@ -394,52 +354,57 @@ public class PeregCommonCommandFacade {
 	 * @param inputs
 	 * @param target
 	 */
-	private void setParamsForCPS001(String sid, String pid, PersonInfoProcessAttr isAdd, List<ItemsByCategory> inputs, PersonCorrectionLogParameter target) {
-		if (target != null) {
+	private void setParamsForCPS001(List<PeregInputContainerCps003> containerLst,  PersonInfoProcessAttr isAdd, Map<String, PersonCorrectionLogParameter> targets, GeneralDate standardDate) {
+		if (targets.size() > 0 && !containerLst.isEmpty()) {
+			// Do tất cả nhân viên đều có categoryCode giống nhau nên 
+			// mình sẽ lấy ra nhân viên đầu tiên để xử lý một số phần chung
+			PeregInputContainerCps003 firstEmp = containerLst.get(0);
+			List<DateRangeDto> ctgCodes = this.ctgRepo.dateRangeCode();
+			List<PeregEmpInfoQuery> empInfos = new ArrayList<>();
+			containerLst.parallelStream().forEach(c ->{
+				empInfos.add(new PeregEmpInfoQuery(c.getPersonId(),  c.getEmployeeId(), c.getInputs().getRecordId()));
+			});
+			PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(firstEmp.getInputs().getCategoryId(), firstEmp.getInputs().getCategoryCd(), standardDate, empInfos);
+			Map<String, List<ItemValue>> itemValueBySids = this.getItemInvisiblesCPS003(queryByListEmp, firstEmp.getInputs() , isAdd);
 			
-			String stringKey = null;
-			ReviseInfo reviseInfo = null;
-			List<DateRangeDto> ctgCode = this.ctgRepo.dateRangeCode();
-
-			for (ItemsByCategory input : inputs) {
-				DateRangeDto dateRange = null;
+			containerLst.parallelStream().forEach(c ->{
+				String stringKey = null;
 				CategoryType ctgType = null;
-				if (input.getCategoryCd().equals(category21)) {
-					ctgType = CategoryType.CONTINUOUSHISTORY;
-				} else {
-					ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
-				}
+				ReviseInfo reviseInfo = null;
+				DateRangeDto dateRange = null;
+				ItemsByCategory input = c.getInputs();
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),sid, pid);
-				query.setCategoryId(input.getCategoryId());
+				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),c.getEmployeeId(), c.getPersonId());
+				query.setCategoryId(c.getInputs().getCategoryId());
+				
 				List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
-				List<ItemValue> invisibles = this.getItemInvisibles(query, input, isAdd);
-				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
+				List<ItemValue> invisibles = itemValueBySids.get(c.getEmployeeId());
+				ctgType = EnumAdaptor.valueOf(firstEmp.getInputs().getCategoryType(), CategoryType.class);
+				Optional<DateRangeDto> dateRangeOp = ctgCodes.stream().filter(ctgCode -> ctgCode.getCtgCode().equals(input.getCategoryCd())).findFirst();
 				boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
 						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 
 				if(input.getCategoryCd().equals("CS00003")) {
-					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
+					dateRange = new DateRangeDto(c.getInputs().getCategoryCd(), "IS00020", "IS00021");
 				} else {
 					dateRange = isHistory == true? dateRangeOp.get(): null;
 				}
-
 				List<ItemValue> itemLogs = input.getItems() == null ?
-						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
-				for (ItemValue c : invisibles) {
+						new ArrayList<>() :   input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
+				for (ItemValue item : invisibles) {
 					switch (ctgType) {
 					case SINGLEINFO:
 					case MULTIINFO:
-						if (specialItemCode.contains(c.itemCode())) {
-							itemLogs.add(c);
+						if (specialItemCode.contains(item.itemCode())) {
+							itemLogs.add(item);
 						}
 						break;
 					case DUPLICATEHISTORY:
 					case CONTINUOUSHISTORY:
 					case NODUPLICATEHISTORY:
 					case CONTINUOUS_HISTORY_FOR_ENDDATE:
-						if (c.itemCode().equals(dateRange.getStartDateCode())) {
-							itemLogs.add(c);
+						if (item.itemCode().equals(dateRange.getStartDateCode())) {
+							itemLogs.add(item);
 						}
 						break;
 					default:
@@ -477,10 +442,10 @@ public class PeregCommonCommandFacade {
 								
 							}else {									
 								// trường hợp tạo mới hoàn toàn category
-								for (ComboBoxObject c : historyLst) {
-									if (c.getOptionValue() != null) {
+								for (ComboBoxObject combox : historyLst) {
+									if (combox.getOptionValue() != null) {
 										// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
-										String[] history = c.getOptionText().split("~");
+										String[] history = combox.getOptionText().split("~");
 										switch (isAdd) {
 										case ADD:
 											info = InfoOperateAttr.ADD_HISTORY;
@@ -530,8 +495,8 @@ public class PeregCommonCommandFacade {
 					}
 					
 					if (ItemValue.filterItem(item) != null) {
-						input.getItems().stream().forEach(c ->{
-							if(item.itemCode().equals(c.itemCode())) {
+						input.getItems().stream().forEach(itemMid ->{
+							if(item.itemCode().equals(itemMid.itemCode())) {
 								ItemValue convertItem = ItemValue.setContentForCPS001(item);
 								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
 							}
@@ -551,13 +516,14 @@ public class PeregCommonCommandFacade {
 				}
 				
 				if (ctgTarget != null && lstItemInfo.size() > 0) {
-
+					PersonCorrectionLogParameter target = targets.get(c.getEmployeeId());
 					DataCorrectionContext.setParameter(target.getHashID(), target);
 					DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 				}
 				stringKey = null;
 				reviseInfo = null;
-			}
+			
+			});
 		}
 	}
 	
@@ -612,65 +578,53 @@ public class PeregCommonCommandFacade {
 			return null;
 		}
 	}
-
-	private void updateInputCategories(PeregInputContainer container, List<ItemsByCategory> updateInputs) {
+	
+	/**
+	 * updateInputCategoriesCps003
+	 * @param containerLst
+	 * @param standardDate
+	 */
+	private void updateInputCategoriesCps003(List<PeregInputContainerCps003> containerLst, GeneralDate standardDate) {
+		//PeregQueryByListEmp query = new PeregQueryByListEmp();
+		// Do thông tin của categoryId, categoryCode, standardDate của các nhân viên giống nhau
+		// nên mình sẽ lấy nhân viên đầu tiên
+		PeregInputContainerCps003 inputContainer = containerLst.get(0);
+		List<PeregEmpInfoQuery> empInfos = new ArrayList<>();
+		containerLst.parallelStream().forEach(c ->{
+			empInfos.add(new PeregEmpInfoQuery(c.getPersonId(),  c.getEmployeeId(), c.getInputs().getRecordId()));
+		});
+		PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(inputContainer.getInputs().getCategoryId(), inputContainer.getInputs().getCategoryCd(), standardDate, empInfos);
 		// Add item invisible to list
-		for (ItemsByCategory itemByCategory : updateInputs) {
-			
-			PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(),
-					itemByCategory.getCategoryCd(), container.getEmployeeId(), container.getPersonId());
-			List<ItemValue> invisibles = this.getItemInvisibles(query, itemByCategory, PersonInfoProcessAttr.UPDATE);
-			itemByCategory.getItems().addAll(invisibles);
-		}
+		Map<String, List<ItemValue>> invisibles = this.getItemInvisiblesCPS003(queryByListEmp, inputContainer.getInputs() , PersonInfoProcessAttr.UPDATE);
+		containerLst.parallelStream().forEach(c ->{
+			List<ItemValue> items = invisibles.get(c.getEmployeeId());
+			c.getInputs().getItems().addAll(items);
+		});
 	}
 	
 	/**
+	 * dùng cho màn cps003
 	 * lấy ra những item không được hiển thị trên màn hình layouts
 	 * @param query
 	 * @param itemByCategory
 	 * @return
 	 */
-	private List<ItemValue> getItemInvisibles(PeregQuery query, ItemsByCategory itemByCategory, PersonInfoProcessAttr isAdd){
+	private Map<String, List<ItemValue>> getItemInvisiblesCPS003(PeregQueryByListEmp query, ItemsByCategory itemFirst, PersonInfoProcessAttr isAdd){
+		Map<String, List<ItemValue>> result = new HashMap<>();
 		if(isAdd == PersonInfoProcessAttr.UPDATE) {
-			List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
-			
-			List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
+			// Do số lượng item của các nhân viên đều giống nhau nên mình sẽ lấy ra
+			// itemsByCtg của nhân viên đầu tiên rồi lọc ra itemCode được hiển thị trên màn hình
+			List<String> visibleItemCodes = itemFirst.getItems().stream().map(ItemValue::itemCode)
 					.collect(Collectors.toList());
-			return fullItems.stream().filter(i -> {
-				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-			}).collect(Collectors.toList());
+			Map<String, List<ItemValue>> fullItems = itemDefFinder.getFullListItemDefCPS003(query);
+			fullItems.entrySet().parallelStream().forEach(c ->{
+				List<ItemValue> items = c.getValue().stream().filter(i -> {
+					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+				}).collect(Collectors.toList());
+				result.put(c.getKey(), items);
+			});
 		}
-		return new ArrayList<>();
-	}
-
-
-	@Transactional
-	public void updateForCPS002(PeregInputContainer container) {
-		List<ItemsByCategory> updateInputs = container.getInputs().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-
-		if (updateInputs != null && !updateInputs.isEmpty()) {
-			// Add item invisible to list
-			for (ItemsByCategory itemByCategory : updateInputs) {
-				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(),
-						itemByCategory.getCategoryCd(), container.getEmployeeId(), container.getPersonId());
-
-				itemByCategory.getItems().addAll(this.getItemInvisibles(query, itemByCategory, PersonInfoProcessAttr.ADD));
-			}
-		}
-
-		updateInputs.forEach(itemsByCategory -> {
-			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
-			
-			// In case of optional category fix category doesn't exist
-			if (handler != null) {
-				handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
-			}
-			
-			val commandForUserDef = new PeregUserDefUpdateCommand(container.getPersonId(), container.getEmployeeId(),
-					itemsByCategory);
-			this.userDefUpdate.handle(commandForUserDef);
-		});
+		return result;
 	}
 	
 	/**
@@ -682,131 +636,4 @@ public class PeregCommonCommandFacade {
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
 		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
-
-	/**
-	 * @param inputContainer
-	 *            delete data when click register cps001
-	 */
-	private void delete(PeregInputContainer inputContainer, List<DateRangeDto> ctgCode) {
-		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete())
-				.map(x -> new PeregDeleteCommand(inputContainer.getPersonId(), inputContainer.getEmployeeId(),
-						x.getCategoryId(), x.getCategoryType(), x.getCategoryCd(), x.getCategoryName(), x.getRecordId(), x.getItems()))
-				.collect(Collectors.toList());
-
-		deleteInputs.forEach(deleteCommand -> delete(deleteCommand, ctgCode));
-	}
-
-	/**
-	 * Handles delete command.
-	 * 
-	 * @param command
-	 *            command
-	 */
-	@Transactional
-	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
-		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
-			
-			List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
-					command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
-	
-			List<String> visibleItemCodes = command.getInputs().stream().map(ItemValue::itemCode)
-					.collect(Collectors.toList());
-	
-			List<ItemValue> mergerItem = fullItems.stream().filter(i -> {
-				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-			}).collect(Collectors.toList());
-			
-			mergerItem.addAll(command.getInputs());
-	
-			/*
-			 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
-			 * DUPLICATEHISTORY(5), CONTINUOUS_HISTORY_FOR_ENDDATE(6);
-			 */
-			TargetDataKey dKey = TargetDataKey.of("");
-			List<PersonCorrectionItemInfo> itemInfo = new ArrayList<PersonCorrectionItemInfo>();
-			Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
-			switch (command.getCategoryType()) {
-			case 2:
-				Optional<ItemValue> itemValue = mergerItem.stream().findFirst();
-	
-				if (itemValue.isPresent()) {
-					ItemValue _itemValue = itemValue.get();
-					String valueAfter = Optional.ofNullable(_itemValue.valueAfter()).orElse(""),
-							viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
-	
-					if (!valueAfter.trim().isEmpty()) {
-						_itemValue.setValueAfter(null);
-					}
-	
-					if (!viewAfter.trim().isEmpty()) {
-						_itemValue.setContentAfter(null);
-					}
-	
-					dKey = TargetDataKey.of(_itemValue.valueBefore());
-					itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_itemValue));
-				}			
-				break;
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-				Optional<DateRangeDto> ddto = ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode()))
-						.findFirst();
-	
-				if (ddto.isPresent()) {
-					Optional<ItemValue> startDate = mergerItem.stream()
-							.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
-					Optional<ItemValue> endDate = mergerItem.stream()
-							.filter(f -> f.itemCode().equals(ddto.get().getEndDateCode())).findFirst();
-	
-					if (startDate.isPresent()) {
-						ItemValue _startDate = startDate.get();
-						String valueAfter = Optional.ofNullable(_startDate.valueAfter()).orElse(""),
-								viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
-						
-						if(!valueAfter.trim().isEmpty()) {
-							_startDate.setValueAfter(null);
-						}
-	
-						if(!viewAfter.trim().isEmpty()) {
-							_startDate.setContentAfter(null);
-						}
-						
-						dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
-						itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_startDate));
-					}
-	
-					int ctype = command.getCategoryType();
-					// save revise for continue, noduplicate history
-					if ((ctype == 3 || ctype == 6) && endDate.isPresent()) {
-						ItemValue _endDate = endDate.get();
-						rInfo = startDate.map(m -> {
-							GeneralDate date = GeneralDate.fromString(m.valueBefore(), "yyyy/MM/dd").addDays(-1);
-							return new ReviseInfo(_endDate.itemName(), ctype == 3? Optional.ofNullable(GeneralDate.fromString(valueEndate, "yyyy/MM/dd")): Optional.ofNullable(date), Optional.empty(),
-									Optional.empty());
-						});
-					}
-					
-					
-				}
-				break;
-			}
-	
-			// Add category correction data
-			PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(
-					command.getCategoryId(), command.getCategoryName(), InfoOperateAttr.deleteOf(command.getCategoryType()),
-					itemInfo, dKey, rInfo);
-	
-			DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
-	
-			val handler = this.deleteHandlers.get(command.getCategoryCode());
-			if (handler != null) {
-				handler.handlePeregCommand(command);
-			}
-	
-			val commandForUserDef = new PeregUserDefDeleteCommand(command);
-			this.userDefDelete.handle(commandForUserDef);
-		});
-	}
-
 }
