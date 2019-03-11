@@ -263,7 +263,9 @@ public class AlarmCheckConditionByCategoryFinder {
 						domain.getExtractTargetCondition().isFilterByBusinessType(), domain.getExtractTargetCondition().getLstEmploymentCode(), domain.getExtractTargetCondition().getLstClassificationCode(),
 						domain.getExtractTargetCondition().getLstJobTitleId(), domain.getExtractTargetCondition().getLstBusinessTypeCode()),
 				domain.getListRoleId(), schedule4WCondition,
-				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(), dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(), lstWorkRecordExtraCon, listFixedConditionWkRecord),
+				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(), dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(), 
+						lstWorkRecordExtraCon.stream().sorted((x,y)->x.getSortOrderBy() - y.getSortOrderBy()).collect(Collectors.toList()), 
+						listFixedConditionWkRecord),
 				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon,listEralCheckIDOld), new AlarmChkCondAgree36Dto(listCondError, listCondOt), 
 				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos,listEralCheckMulMonIDOld), annualHolidayAlConDto);
 	}
