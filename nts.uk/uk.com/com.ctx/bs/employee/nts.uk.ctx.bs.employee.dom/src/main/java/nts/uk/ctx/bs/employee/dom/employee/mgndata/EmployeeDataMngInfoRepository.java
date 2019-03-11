@@ -156,4 +156,11 @@ public interface EmployeeDataMngInfoRepository {
 	 * */
 	List<PerEmpData> getEmploymentInfos(List<String> sids, GeneralDate baseDate);
 	
+	/**
+	 * update all domain
+	 * @param domains
+	 * @author lanlt
+	 */
+	void updateAll(List<EmployeeDataMngInfo> domains);
+	
 }

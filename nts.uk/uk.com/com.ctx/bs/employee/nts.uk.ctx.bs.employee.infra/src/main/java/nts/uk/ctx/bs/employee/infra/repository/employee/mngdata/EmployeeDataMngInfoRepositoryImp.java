@@ -23,6 +23,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -442,6 +443,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	/*
+	 * 2019.03.06 chuyển sang jdbc, mục đích tăng hiệu năng cho màn cps003
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -449,19 +451,42 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	 * #findByListEmployeeCode(java.lang.String, java.util.List)
 	 */
 	@Override
+	@SneakyThrows
 	public List<EmployeeDataMngInfo> findByListEmployeeCode(String companyId, List<String> employeeCodes) {
 		// fix bug empty list
 		if (CollectionUtil.isEmpty(employeeCodes)) {
 			return new ArrayList<>();
 		}
-
 		// Split query.
-		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+		List<EmployeeDataMngInfo> result = new ArrayList<>();
+		
 		CollectionUtil.split(employeeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployeeDataMngInfo.class)
-					.setParameter("companyId", companyId).setParameter("listEmployeeCode", subList).getList());
+			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO WHERE CID = ? AND SCD IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, companyId);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<EmployeeDataMngInfo> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtEmployeeDataMngInfo e = new BsymtEmployeeDataMngInfo();
+					e.bsymtEmployeeDataMngInfoPk = new BsymtEmployeeDataMngInfoPk();
+					e.bsymtEmployeeDataMngInfoPk.sId = r.getString("SID");
+					e.bsymtEmployeeDataMngInfoPk.pId = r.getString("PID");
+					e.companyId = r.getString("CID");
+					e.employeeCode = r.getString("SCD");
+					e.delStatus = r.getInt("DEL_STATUS_ATR");
+					e.delDateTmp = r.getGeneralDateTime("DEL_DATE");
+					e.removeReason = r.getString("REMV_REASON");
+					e.extCode = r.getString("EXT_CD");
+					return toDomain(e);
+				});
+				result.addAll(subResults);
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		return result;
 	}
 
 	// duong tv end code
@@ -706,5 +731,31 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		});
 
 		return data;
+	}
+
+	@Override
+	public void updateAll(List<EmployeeDataMngInfo> domains) {		
+		String UP_SQL = "UPDATE BSYMT_EMP_DTA_MNG_INFO SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ "  SCD = SCD_VAL, EXT_CD = EXT_CD_VAL WHERE SID = SID_VAL AND PID = PID_VAL AND CID = CID_VAL; ";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			sql = sql.replace("SCD_VAL", "'" + c.getEmployeeCode().v() +"'");
+			sql = sql.replace("EXT_CD_VAL", "'" + c.getExternalCode().v() +"'");
+			
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
+			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");
+			sql = sql.replace("CID_VAL", "'" + c.getCompanyId() +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
 	}
 }
