@@ -64,11 +64,13 @@ public class AppOvertimeDetailDto {
 			return null;
 		}
 		AppOvertimeDetail domain = domainOtp.get();
-		return new AppOvertimeDetailDto(domain.getApplicationTime().v(), domain.getYearMonth().v(),
-				domain.getActualTime().v(), domain.getLimitErrorTime().v(), domain.getLimitAlarmTime().v(),
-				domain.getExceptionLimitErrorTime().isPresent() ? domain.getExceptionLimitErrorTime().get().v() : null,
-				domain.getExceptionLimitAlarmTime().isPresent() ? domain.getExceptionLimitAlarmTime().get().v() : null,
-				domain.getYear36OverMonth().stream().map(x -> x.getOverMonth().v()).collect(Collectors.toList()),
-				domain.getNumOfYear36Over().v());
+		return new AppOvertimeDetailDto(domain.getTime36Agree().getApplicationTime().v(), domain.getYearMonth().v(),
+				domain.getTime36Agree().getAgreeMonth().getActualTime().v(), 
+				domain.getTime36Agree().getAgreeMonth().getLimitErrorTime().v(), 
+				domain.getTime36Agree().getAgreeMonth().getLimitAlarmTime().v(),
+				domain.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime().isPresent() ? domain.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime().get().v() : null,
+				domain.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime().isPresent() ? domain.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime().get().v() : null,
+				domain.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(x -> x.v()).collect(Collectors.toList()),
+				domain.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v());
 	}
 }

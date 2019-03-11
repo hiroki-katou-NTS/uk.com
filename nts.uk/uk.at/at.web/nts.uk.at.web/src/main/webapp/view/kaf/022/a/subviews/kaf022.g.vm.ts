@@ -24,7 +24,8 @@ ko.components.register('kaf022-g', {
                 ]),
                 itemListG26: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
-                    { code: 1, name: text('KAF022_175') }
+                    { code: 1, name: text('KAF022_175') },
+                    { code: 2, name: text('KAF022_652') }
                 ]),
                 itemListG28: ko.observableArray([
                     { code: 1, name: text('KAF022_173') },
@@ -291,12 +292,16 @@ ko.components.register('kaf022-g', {
                 <tr>
                     <td class="color-header" id="g35" data-bind = "text: text('KAF022_431')"></td>
                     <td>
-                        <div class="blockrow" id="g36" tabindex="3" data-bind="ntsRadioBoxGroup: {
-                            options: $gv.itemListG26,
-                            optionsValue: 'code',
-                            optionsText: 'name',
-                            value: $gv.selectedIdG36,
-                            enable: true}">
+                        <div data-bind="foreach: $gv.itemListG26">
+                            <div style="display:inline-block" data-bind="style: { width: $index() < 2 ? '199px' : '210px' }">
+                                <span class="ntsControl">
+                                    <label class="ntsRadioBox">
+                                        <input type="radio" name="textRadio" data-bind="checkedValue: code, checked: $gv.selectedIdG36, enable: true" />
+                                        <span class="box"></span>                                       
+                                        <div style="display:inline-block" class="label" data-bind="style: { width: '80%' }, text: name"></div>
+                                    </label>
+                                </span>
+                            </div>
                         </div>
                     </td>
                 </tr>
