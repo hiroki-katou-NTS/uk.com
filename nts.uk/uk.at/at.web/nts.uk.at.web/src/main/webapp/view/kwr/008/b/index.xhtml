@@ -6,27 +6,32 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
-        <ui:define name="htmlHead">
-            <script>
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>
                 var dialogSize = {
                     width : 1200,
-                    height : 610
+                    height : 680
                 };
             </script>
-            <com:ValidatorScript>
+			<com:ValidatorScript>
                 nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
                 nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName
                 nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName
             </com:ValidatorScript>
-            <com:scriptfile set="IGNITE" />
-            <com:scriptfile path="../share/model.js" />
-            <com:stylefile path="kwr008.b.style.css" />
-            <com:scriptfile path="kwr008.b.start.js" />
-            <com:scriptfile path="kwr008.b.vm.js" />
-            <com:scriptfile path="kwr008.b.service.js" />
-        </ui:define>
+            <com:EnumScript>
+				nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay
+				nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay
+			</com:EnumScript>
+			
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="kwr008.b.style.css" />
+			<com:scriptfile path="kwr008.b.start.js" />
+			<com:scriptfile path="kwr008.b.vm.js" />
+			<com:scriptfile path="kwr008.b.service.js" />
+		</ui:define>
 
-        <ui:define name="content">
+		<ui:define name="content">
             <div id="functions-area">
                 <button tabindex="1" data-bind="click: registerMode, enable: !isNewMode()">#{i18n.getText('KWR008_18')}</button>
                 <button tabindex="2" data-bind="click: doRegister, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KWR008_19')}</button>
@@ -89,10 +94,10 @@
                         <table id="table-output-items" >
                            <colgroup>
                                 <col width="38"/>
-                                <col width="140"/>
+                                <col width="210"/>
                                 <col width="50"/>
                                 <col width="85"/>
-                                <col width="330"/>
+                                <col width="260"/>
                            </colgroup>
                            <thead>
                               <tr> 
@@ -112,10 +117,10 @@
                                         name: '#[KWR008_31]',
                                         value : $data.headingName,
                                         required: false,
-                                        enable: $data.sortBy() > 1,
+                                        enable: $data.sortBy() > 2,
                                         constraint: 'ItemOutTblBookHeadingName'}" />
                                 </td>
-                                <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
+                                <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 2">#{i18n.getText('KWR008_34')}</button></td>
                                 <td>
                                     <div id="valOutFormat" tabindex="-1" class="combo-box"
                                                 data-bind="ntsComboBox: {
@@ -125,7 +130,7 @@
                                                     name:'#[KWR008_30]',
                                                     value: $data.valOutFormat,
                                                     optionsText: 'name',
-                                                    enable: $data.sortBy() > 1,
+                                                    enable: $data.sortBy() > 2,
                                                     required: true,
                                                     columns: [{ prop: 'name', length: 2 }]
                                                 }">
@@ -138,25 +143,38 @@
                        </div>
                     </div>    
                     
-                    <div data-bind="visible: currentSetOutputSettingCode().printForm">
-	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
+                    <div data-bind="visible: currentSetOutputSettingCode().printForm, with: currentSetOutputSettingCode" class="multiMonthSet">
+	                    <div style="margin-top: 3px;">
 	                        <!-- B5_1 -->
-	                        <div tabindex="10" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
+	                        <div tabindex="10" class="" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
+	                        <br/>
+	                        <!-- B5_9 -->
+	                        <div tabindex="11" class="" data-bind="ntsCheckBox: { checked: multiMonthDisplay  }">${i18n.getText('KWR008_63')}</div>
 	                    </div>
-	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
+	                    <div data-bind="visible: multiMonthDisplay" style="margin-top: 3px; margin-bottom:5px">
 	                        <!-- B5_2 -->
-	                        <span class="label">#{i18n.getText('KWR008_36')}</span>
+	                        <span class="label check_box_block">#{i18n.getText('KWR008_64')}</span>
 	                        <!-- B5_3 -->
-	                        <div id="B5_3" tabindex="11"  data-bind="ntsRadioBoxGroup: {
+	                        <div id="combo-box_1" tabindex="12"  data-bind="ntsComboBox: {
+	                        	width: '100px',
+								name: '#[#KWR008_64]',
+								options: $parent.contentSelectionOutput,
+								optionsValue: 'value',
+								visibleItemsCount: 2,
+								value: totalAverageDisplay,
+								optionsText: 'name',
+								columns: [
+									{ prop: 'name', length: 8 },
+								]}"></div>
+	                        <div id="B5_3" tabindex="13"  data-bind="visible: totalAverageDisplay() == 1, ntsRadioBoxGroup: {
 	                            options: $parent.itemRadio,
 	                            optionsValue: 'code',
 	                            optionsText: 'name',
-	                            value: displayFormat}">
+	                            value: monthsInTotalDisplay}">
 	                        </div>
+	                        <span class="label label36" data-bind="visible: totalAverageDisplay() == 2">#{i18n.getText('KWR008_65')}</span>
 	                    </div>
 					</div>
-						
-						
                 </div>
             </div>
         </ui:define>

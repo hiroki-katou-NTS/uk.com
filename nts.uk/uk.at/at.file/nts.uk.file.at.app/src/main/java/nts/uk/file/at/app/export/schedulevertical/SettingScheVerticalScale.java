@@ -125,7 +125,7 @@ public class SettingScheVerticalScale implements MasterListData {
 			break;
 		}
 		// column 3
-		if (rowData.getUseAtr() == 0){
+		if (rowData.getUseAtr() == 1){
 			StringBuffer column3Content = new StringBuffer();
 			switch (rowData.getFixedItemAtr()) {
 			case 0:
