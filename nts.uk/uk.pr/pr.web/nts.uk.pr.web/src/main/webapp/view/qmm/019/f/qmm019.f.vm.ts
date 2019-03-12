@@ -48,10 +48,15 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             $("[data-toggle='userguide-not-register']").ntsUserGuide();
 
             self.codeSelected.subscribe(value => {
+                if (isNullOrUndefined(value)) return;
                 block.invisible();
                 let itemName: StatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
                 });
+                if (isNullOrUndefined(itemName)) {
+                    block.clear();
+                    return;
+                };
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
                 self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
@@ -346,6 +351,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 };
                 service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                     self.itemNames(StatementItem.fromApp(data));
+                    self.codeSelected.valueHasMutated();
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {

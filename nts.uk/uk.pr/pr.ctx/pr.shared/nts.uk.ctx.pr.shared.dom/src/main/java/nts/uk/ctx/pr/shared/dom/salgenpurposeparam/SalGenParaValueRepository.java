@@ -9,14 +9,5 @@ import java.util.List;
 public interface SalGenParaValueRepository
 {
 
-    List<SalGenParaValue> getAllSalGenParaValue();
-
-    Optional<SalGenParaValue> getSalGenParaValueById(String hisId);
-
-    void add(SalGenParaValue domain);
-
-    void update(SalGenParaValue domain);
-
-    void remove(String hisId);
 
 }
