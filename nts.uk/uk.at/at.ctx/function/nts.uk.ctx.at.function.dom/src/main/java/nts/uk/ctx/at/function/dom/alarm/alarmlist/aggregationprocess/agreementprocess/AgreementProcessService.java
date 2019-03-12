@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
@@ -137,7 +138,8 @@ public class AgreementProcessService {
 						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
 								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
-							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName));	
+							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
+									period.start()));	
 						}
 					}
 				}
@@ -175,7 +177,9 @@ public class AgreementProcessService {
 		return result;
 	}
 	
-	private List<ValueExtractAlarm> generationValueExtractAlarm(Map<String, EmployeeSearchDto> mapEmployee, List<CheckedAgreementResult> checkAgreementsResult,AgreeConditionError agreeConditionError,Optional<AgreeNameError> optAgreeName){
+	private List<ValueExtractAlarm> generationValueExtractAlarm(Map<String, EmployeeSearchDto> mapEmployee, List<CheckedAgreementResult> checkAgreementsResult,AgreeConditionError agreeConditionError,Optional<AgreeNameError> optAgreeName,
+			Period periodCheck, GeneralDate startDate
+			){
 		List<ValueExtractAlarm> lstReturn = new ArrayList<>();
 		for (CheckedAgreementResult checkedAgreementResult : checkAgreementsResult) {
 			if(checkedAgreementResult.isCheckResult()){
@@ -187,12 +191,44 @@ public class AgreementProcessService {
 				//alarm name
 				String alarmItem = optAgreeName.isPresent() ? optAgreeName.get().getName().v() : "" ;
 				//カテゴリ
-				String alarmContent = TextResource.localize("KAL010_203",alarmItem,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+				String alarmContent = "";
+				if(checkedAgreementResult.getErrorAlarm() == ErrorAlarm.Upper) {
+					if(periodCheck == Period.Months_Average) {
+						alarmContent =  alarmItemByMonth(startDate,checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth());
+						alarmContent = TextResource.localize("KAL010_203",alarmContent,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+					}else {
+						alarmContent = TextResource.localize("KAL010_203",TextResource.localize("KAL010_211"),formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+					}
+				}else {
+					alarmContent = TextResource.localize("KAL010_203",alarmItem,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+				}
+				//カテゴリ
 				lstReturn.add(new ValueExtractAlarm(workPlaceId,checkedAgreementResult.getEmpId(),alarmValueDate,
 						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v()));
 			}
 		}
 		return lstReturn;
+	}
+	
+	private String alarmItemByMonth(GeneralDate yearMonthDefault,YearMonth yearMonthError) {
+		String alarmItem = "";
+		int month = yearMonthDefault.yearMonth().month();
+		if(yearMonthDefault.yearMonth().year()>yearMonthError.year()) {
+			month = month + 12;
+		}
+		if((month-yearMonthError.month()) == 1) {
+			alarmItem = TextResource.localize("KAL010_212");
+		}else if((month-yearMonthError.month()) == 2) {
+			alarmItem = TextResource.localize("KAL010_213");
+		}else if((month-yearMonthError.month()) == 3) {
+			alarmItem = TextResource.localize("KAL010_214");
+		}else if((month-yearMonthError.month()) == 4) {
+			alarmItem = TextResource.localize("KAL010_215");
+		}else if((month-yearMonthError.month()) == 5) {
+			alarmItem = TextResource.localize("KAL010_216");
+		}
+		return alarmItem ;
+		
 	}
 	
 	private String yearmonthToString(YearMonth yearMonth){
