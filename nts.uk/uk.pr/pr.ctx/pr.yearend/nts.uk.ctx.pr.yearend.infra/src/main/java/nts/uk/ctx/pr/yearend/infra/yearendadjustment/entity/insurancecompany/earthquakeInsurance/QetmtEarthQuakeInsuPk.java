@@ -32,7 +32,7 @@ public class QetmtEarthQuakeInsuPk implements Serializable
     * コード
     */
     @Basic(optional = false)
-    @Column(name = "EARTHQUAKE_INSU_CD")
+    @Column(name = "INSURANCE_EARTHQ_CD")
     public String earthquakeCode;
     
 }

@@ -32,7 +32,7 @@ public class QetmtInsuranceTypePk implements Serializable
     * 生命保険コード
     */
     @Basic(optional = false)
-    @Column(name = "LIFE_INSURANCE_CD")
+    @Column(name = "INSURANCE_LIFE_CD")
     public String lifeInsuranceCode;
     
     /**
