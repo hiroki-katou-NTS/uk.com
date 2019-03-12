@@ -84,7 +84,7 @@
 														}"></div>
 					<div class="table cm-table" data-bind="if: inputReasonsDisp() != 0">
 						<div class="cell cm-column1">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_10')}</div>	
+							<div data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF002_10')}</div>	
 						</div>
 						<div class="cell cm-column2-kaf002">
 							<span class="cm-combo-box" data-bind="ntsComboBox: {
@@ -101,7 +101,7 @@
 					</div>
 					<div class="table cm-table" data-bind="if: detailReasonDisp() != 0">
 						<div class="cell cm-column1">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_11')}</div>	
+							<div data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF002_11')}</div>	
 						</div>
 						<div class="cell cm-column2-kaf002">
 							<span>
