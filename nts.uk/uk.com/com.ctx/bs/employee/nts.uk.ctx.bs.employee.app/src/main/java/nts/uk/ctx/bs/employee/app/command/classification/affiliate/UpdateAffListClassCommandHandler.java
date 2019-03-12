@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 		String cid = AppContexts.user().companyId();
 		List<MidAffClass> histories = new ArrayList<>();
 		List<AffClassHistItem> items = new ArrayList<>();
+		Map<String, List<AffClassHistory>> affClassHisMaps = new HashMap<>();
 		List<String> errors = new ArrayList<>();
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
@@ -62,25 +64,19 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 		if (updateFirst.getStartDate() != null) {
 			Map<String, List<AffClassHistory>> affClassHisMap = affClassHistoryRepo.getBySidsWithCid(cid, sids)
 					.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			affClassHisMaps.putAll(affClassHisMap);
+			}
 			command.parallelStream().forEach(c -> {
-				if (affClassHisMap.containsKey(c.getEmployeeId())) {
-					List<AffClassHistory> affClassHistLst = affClassHisMap.get(c.getEmployeeId());
-					if (affClassHistLst.size() > 0) {
-						AffClassHistory historyOption = affClassHistLst.get(0);
-						Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().parallelStream()
-								.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
-						if (itemToBeUpdateOpt.isPresent()) {
-							historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),
-									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-							histories.add(new MidAffClass(historyOption, itemToBeUpdateOpt.get()));
-
-							// update history item
-							AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(),
-									c.getHistoryId(), c.getClassificationCode());
-							items.add(historyItem);
-						} else {
-							errors.add(c.getEmployeeId());
-						}
+			if (c.getStartDate() != null) {
+				List<AffClassHistory> affClassHistLst = affClassHisMaps.get(c.getEmployeeId());
+				if (affClassHistLst != null) {
+					AffClassHistory historyOption = affClassHistLst.get(0);
+					Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().parallelStream()
+							.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
+					if (itemToBeUpdateOpt.isPresent()) {
+						historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),
+								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+						histories.add(new MidAffClass(historyOption, itemToBeUpdateOpt.get()));
 
 					} else {
 						errors.add(c.getEmployeeId());
@@ -89,12 +85,26 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 				} else {
 					errors.add(c.getEmployeeId());
 				}
+
+			} else {
+				errors.add(c.getEmployeeId());
+			}
+				
+			// update history item
+			AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(), c.getHistoryId(),
+					c.getClassificationCode());
+			items.add(historyItem);
+
 			});
 
-			affClassHistoryRepositoryService.updateAll(histories);
-			affClassHistItemRepo.updateAll(items);
-
+			if(!histories.isEmpty()) {
+				affClassHistoryRepositoryService.updateAll(histories);
+			}
+			
+			if(!items.isEmpty()) {
+				affClassHistItemRepo.updateAll(items);
+			}
 		}
-	}
+	
 
 }
