@@ -89,6 +89,36 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 
+	// move JpaAnnualWorkScheduleRepository class to here
+	@Inject
+	private SetOutItemsWoScRepository setOutItemsWoScRepository;
+	@Inject
+	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
+	@Inject
+	private EmployeeInformationAdapter employeeInformationAdapter;
+	@Inject
+	private CompanyAdapter companyAdapter;
+	@Inject
+	private RegulationInfoEmployeeAdapter employeeAdapter;
+	@Inject
+	private ClosureService closureService;
+	@Inject
+	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
+	@Inject
+	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
+	@Inject
+	private JobTitleAdapter jobTitleAdapter;
+	@Inject
+	private AgreementOperationSettingRepository agreementOperationSettingRepository;
+	@Inject
+	private GetAgreementPeriod getAgreementPeriodPub;
+	@Inject
+	private GetAgreTimeByPeriod getAgreTimeByPeriod;
+	@Inject
+	private GetExcessTimesYear getExcessTimesYear;
+
+	public static final String YM_FORMATER = "uuuu/MM";
+	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	protected void handle(ExportServiceContext<AnnualWorkScheduleExportQuery> context) {
@@ -190,37 +220,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		ym.append(month);
 		return YearMonth.parse(ym.toString(), DateTimeFormatter.ofPattern("uuuu/MM"));
 	}
-	
-	// move JpaAnnualWorkScheduleRepository class to here
-	@Inject
-	private SetOutItemsWoScRepository setOutItemsWoScRepository;
-	@Inject
-	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
-	@Inject
-	private EmployeeInformationAdapter employeeInformationAdapter;
-	@Inject
-	private CompanyAdapter companyAdapter;
-	@Inject
-	private RegulationInfoEmployeeAdapter employeeAdapter;
-	@Inject
-	private ClosureService closureService;
-	@Inject
-	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
-	@Inject
-	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
-	@Inject
-	private JobTitleAdapter jobTitleAdapter;
-	@Inject
-	private AgreementOperationSettingRepository agreementOperationSettingRepository;
-	@Inject
-	private GetAgreementPeriod getAgreementPeriodPub;
-	@Inject
-	private GetAgreTimeByPeriod getAgreTimeByPeriod;
-	@Inject
-	private GetExcessTimesYear getExcessTimesYear;
-	
-	
-	public static final String YM_FORMATER = "uuuu/MM";	
 	
 	/**
 	 * Create data export*/
