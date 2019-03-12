@@ -27,7 +27,7 @@ module nts.uk.at.view.kdr002.a {
 
             });
 
-            $('#A1_1').focus();
+            $('#date_type_group').focus();
         });
     });
 }
