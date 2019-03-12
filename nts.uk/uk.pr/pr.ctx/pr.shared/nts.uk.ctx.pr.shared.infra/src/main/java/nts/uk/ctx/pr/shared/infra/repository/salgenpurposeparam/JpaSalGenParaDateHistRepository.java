@@ -101,7 +101,10 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     public void updateSalGenParaValue(String paraNo,SalGenParaValue domainSalGenParaValue) {
         Optional<SalGenParaDateHistory> monthHistoryOptional =  getSalGenParaDateHistById(paraNo,AppContexts.user().companyId(),domainSalGenParaValue.getHistoryId());
 
-        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(monthHistoryOptional.get().getDateHistoryItem().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),AppContexts.user().companyId(),paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
+        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(monthHistoryOptional.get().getDateHistoryItem().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),
+                paraNo,
+                AppContexts.user().companyId(),
+                domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
 
     }
 
