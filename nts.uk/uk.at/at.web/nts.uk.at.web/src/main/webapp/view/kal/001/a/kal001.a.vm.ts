@@ -136,7 +136,9 @@ module nts.uk.at.view.kal001.a.model {
                         self.alarmCodeChange();
                         dfd.resolve();
                     }).fail((errorCheckTime) =>{
-                        alertError(errorCheckTime);
+                        alertError(errorCheckTime).then(function() {
+                                nts.uk.request.jumpToTopPage();
+                            });
                     }).always(()=>{
                         $('#extract').focus();
                         block.clear();    
