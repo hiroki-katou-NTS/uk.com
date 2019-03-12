@@ -113,5 +113,9 @@ public class QqsmtSalGenPrDateHis extends UkJpaEntity implements Serializable
                 targetAtr.map(i -> i.value).orElse(null),
                 selection.map(i -> i.intValue()).orElse(null));
     }
+    public SalGenParaValue toDomain() {
+        return new SalGenParaValue(this.salGenPrDateHisPk.hisId, this.selection, this.availableAtr, this.numberValue, this.characterValue, this.timeValue, this.targetAtr);
+    }
+
 
 }

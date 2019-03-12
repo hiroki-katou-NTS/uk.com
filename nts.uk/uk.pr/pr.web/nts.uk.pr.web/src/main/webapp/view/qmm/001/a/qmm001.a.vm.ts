@@ -263,7 +263,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         getSalGenParaValue(hisId: string, type:number) {
             let self  = this;
             if(hisId != HIS_ID_TEMP){
-                service.getSalGenParaValue(hisId).done((item: SalGenParaValue) => {
+                service.getSalGenParaValue(hisId,self.modeHistory()).done((item: SalGenParaValue) => {
                     if(item==null){
                         return;
                     }

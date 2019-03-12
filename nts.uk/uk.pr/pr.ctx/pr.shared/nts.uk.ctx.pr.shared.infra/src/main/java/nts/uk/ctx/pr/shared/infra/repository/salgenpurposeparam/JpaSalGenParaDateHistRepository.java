@@ -85,7 +85,7 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     public Optional<SalGenParaValue> getSalGenParaValueById(String hisId) {
         return this.queryProxy().query(SELECT_BY_KEY_HIS_ID, QqsmtSalGenPrDateHis.class)
                 .setParameter("hisId", hisId)
-                .getSingle(c->null);
+                .getSingle(c->c.toDomain());
     }
 
     @Override

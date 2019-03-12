@@ -52,9 +52,9 @@ public class SalGenParaIdentificationWebService extends WebService {
         return mSalGenParamOptionsFinder.getAllSalGenParamOptions(paraNo);
     }
     @POST
-    @Path("getSalGenParaValue/{hisId}")
-    public SalGenParaValueDto getSalGenParaValue(@PathParam("hisId") String hisId) {
-        return mSalGenParaValueFinder.getAllSalGenParaValue(hisId);
+    @Path("getSalGenParaValue/{hisId}/{modeHistory}")
+    public SalGenParaValueDto getSalGenParaValue(@PathParam("hisId") String hisId,@PathParam("modeHistory") int modeHistory) {
+        return mSalGenParaValueFinder.getAllSalGenParaValue(hisId,modeHistory);
     }
     @POST
     @Path("getSalGenParaDateHistory/{hisId}")
