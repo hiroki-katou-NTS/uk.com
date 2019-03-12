@@ -9,7 +9,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -93,5 +95,14 @@ public class ClosureEmploymentService {
 		
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
+	}
+	
+	public YearMonth getCurentMonth() {
+		String employee = AppContexts.user().employeeId();
+		Closure Closure = closureService.getClosureDataByEmployee(employee, GeneralDate.today());
+		if(Closure == null) {
+			throw new BusinessException("Msg_1134");
+		}
+		return Closure.getClosureMonth().getProcessingYm();
 	}
 }

@@ -43,6 +43,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         actualCancelType: KnockoutObservable<string> = ko.observable('');
 
         appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(new AppComonSetting());
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -55,6 +56,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode(self.appID()).done(function(data) {
+                //申請制限設定.申請理由が必須
+                self.requiredReason(data.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.ListTypeReason(_.map(data.listApplicationReasonDto, x => { return { reasonID: x.reasonID, reasonTemp: x.reasonTemp }; }));
                 if (data.listApplicationReasonDto) {

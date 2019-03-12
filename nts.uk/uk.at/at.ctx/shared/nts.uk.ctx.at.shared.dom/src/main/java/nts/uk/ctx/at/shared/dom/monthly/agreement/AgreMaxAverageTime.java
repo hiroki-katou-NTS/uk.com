@@ -78,6 +78,7 @@ public class AgreMaxAverageTime implements Cloneable {
 	 */
 	public void errorCheck(LimitOneMonth limitTime){
 		this.status = AgreMaxTimeStatusOfMonthly.NORMAL;
+		if (limitTime.v() <= 0) return;
 		if (this.averageTime.v() > limitTime.v()) {
 			this.status = AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME;
 		}
