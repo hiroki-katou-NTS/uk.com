@@ -25,7 +25,7 @@ module.exports = (env) => {
         entry: {
             vendor: [
                 'lodash',
-                //'moment',
+                'moment',
                 'vue',
                 //'jquery',
                 //'jqueryui',

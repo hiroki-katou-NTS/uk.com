@@ -92,8 +92,8 @@ module.exports = (env) => {
                 }
             },
             minimizer: [
-                new UglifyJsPlugin({
-                    cache: true,
+                //new UglifyJsPlugin({
+                    /*cache: true,
                     parallel: true,
                     uglifyOptions: {
                         compress: true,
@@ -103,8 +103,8 @@ module.exports = (env) => {
                             comments: false
                         }
                     },
-                    sourceMap: false
-                }),
+                    sourceMap: false*/
+                //}),
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: require("cssnano"),
                     cssProcessorOptions: {
@@ -142,7 +142,7 @@ module.exports = (env) => {
                 // Point sourcemap entries to the original file locations on disk
                 moduleFilenameTemplate: path.relative(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist'), '[resourcePath]')
             }),
-            //new PackageWarFile()
+            new PackageWarFile({ prod: env && env.prod })
         ],
         devServer: {
             hot: true,
