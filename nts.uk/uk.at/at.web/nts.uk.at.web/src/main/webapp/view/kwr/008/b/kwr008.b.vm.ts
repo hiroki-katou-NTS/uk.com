@@ -69,7 +69,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.selectedCode.subscribe((code) => {
                 _.defer(() => { errors.clearAll() });
                 errors.clearAll();
-
                 block.invisible();
                 if (code) {
                     service.getListItemOutput(code).done(r => {
@@ -133,15 +132,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             });
 
-            this.selectedPrintForm.subscribe(data => {
-                self.currentSetOutputSettingCode().printForm(data);
+            self.selectedPrintForm.subscribe(data => {
                 if (data == 0) {
                     self.outputItem()[0].useClass(false);
                     self.outputItem()[1].useClass(false);
-                    self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
-                    self.currentSetOutputSettingCode().monthsInTotalDisplay(1);
+                } else if (data == 1 && self.selectedCode()) {
+                    service.getListItemOutput(self.selectedCode()).done(r => {
+                        if(r){
+                            self.outputItem()[0].useClass(_.find(r, ['cd', '01']).useClass);
+                            self.outputItem()[1].useClass(_.find(r, ['cd', '02']).useClass);       
+                        }
+                    });
                 }
-            })
+            });
 
             self.isCheckedAll = ko.computed({
                 read: function() {
@@ -155,7 +158,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 write: function(val) {
                     ko.utils.arrayForEach(self.outputItem(), function(item) {
                         item.useClass(val);
-                        if ((item.sortBy() == 1 || item.sortBy() == 2) && self.currentSetOutputSettingCode().printForm() == 0) {
+                        if ((item.sortBy() == 1 || item.sortBy() == 2) && self.selectedPrintForm() == 0) {
                             item.useClass(false);
                         }
                     });
@@ -213,7 +216,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         checkEnable36(data) {
             let self = this;
-            if ((data.sortBy() == 1 || data.sortBy() == 2) && self.currentSetOutputSettingCode().printForm() == 0)
+            if ((data.sortBy() == 1 || data.sortBy() == 2) && self.selectedPrintForm() == 0)
                 return false;
             return true;
         }
@@ -485,7 +488,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     )
                 );
             }
-
+            if(self.selectedPrintForm()==0){
+                self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
+            }
+            self.currentSetOutputSettingCode().printForm(self.selectedPrintForm());
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
             let data: model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
 

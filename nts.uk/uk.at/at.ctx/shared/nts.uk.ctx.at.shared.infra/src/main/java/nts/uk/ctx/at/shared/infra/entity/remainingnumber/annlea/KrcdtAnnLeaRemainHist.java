@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -12,112 +14,100 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
- * @author HungTT - 年休付与残数履歴データ
- *
+ * @author phongtq
+ * 年休付与残数履歴データ
  */
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_REMAIN_HIST")
-public class KrcdtAnnLeaRemainHist extends UkJpaEntity {
+@Table(name = "KRCDT_ANNLEA_REMAIN_HIST ")
+public class KrcdtAnnLeaRemainHist extends UkJpaEntity implements Serializable{
+	
+	@EmbeddedId
+	public KrcdtAnnLeaRemainHistPK  krcdtAnnLeaRemainHistPK;  
 
-	@Id
-	@Column(name = "ANNLEAV_ID")
-	public String annLeavID;
-
+	/** 会社ID */
 	@Column(name = "CID")
 	public String cid;
 
-	@Column(name = "SID")
-	public String sid;
-
-	@Column(name = "GRANT_DATE")
-	public GeneralDate grantDate;
-
+	/** 期限日 */
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
 
+	/** 期限切れ状態 */
 	@Column(name = "EXP_STATUS")
 	public int expStatus;
 
+	/** 登録種別 */
 	@Column(name = "REGISTER_TYPE")
 	public int registerType;
 
+	/** 付与日数 */
 	@Column(name = "GRANT_DAYS")
 	public double grantDays;
 
+	/** 付与時間 */
 	@Column(name = "GRANT_MINUTES")
 	@Basic(optional = true)
 	public Integer grantMinutes;
 
+	/** 使用日数 */
 	@Column(name = "USED_DAYS")
 	public double usedDays;
 
+	/** 使用時間 */
 	@Column(name = "USED_MINUTES")
 	@Basic(optional = true)
 	public Integer usedMinutes;
 
+	/** 積崩し日数 */
 	@Column(name = "STOWAGE_DAYS")
 	@Basic(optional = true)
 	public Double stowageDays;
 
+	/** 残日数 */
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
 
+	/** 残時間*/
 	@Column(name = "REMAINING_MINUTES")
 	@Basic(optional = true)
 	public Integer remaningMinutes;
 
+	/** 使用率 */
 	@Column(name = "USED_PERCENT")
 	public double usedPercent;
 
+	/** 所定日数 */
 	@Column(name = "PRESCRIBED_DAYS")
 	@Basic(optional = true)
 	public Double prescribedDays;
 
+	/** 控除日数 */
 	@Column(name = "DEDUCTED_DAYS")
 	@Basic(optional = true)
 	public Double deductedDays;
 
+	/** 労働日数 */
 	@Column(name = "WORKING_DAYS")
 	@Basic(optional = true)
 	public Double workingDays;
 
-	// 年月
-	@Column(name = "YM")
-	@Basic(optional = false)
-	public Integer yearMonth;
-
-	// 締めID
-	@Column(name = "CLOSURE_ID")
-	@Basic(optional = false)
-	public Integer closureId;
-
-	// 締め日.日
-	@Column(name = "CLOSURE_DAY")
-	@Basic(optional = false)
-	public Integer closeDay;
-
-	// 締め日.末日とする
-	@Column(name = "IS_LAST_DAY")
-	@Basic(optional = false)
-	public Integer isLastDay;
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected Object getKey() {
-		return annLeavID;
+		return krcdtAnnLeaRemainHistPK;
 	}
 
-	public KrcdtAnnLeaRemainHist(String annLeavID, String cid, String sid, GeneralDate grantDate, GeneralDate deadline,
+	public KrcdtAnnLeaRemainHist(String cid, String sid, int yearMonth, int closureId,
+			int closeDay, int isLastDay, GeneralDate grantDate, GeneralDate deadline,
 			int expStatus, int registerType, double grantDays, Integer grantMinutes, double usedDays,
 			Integer usedMinutes, Double stowageDays, double remainingDays, Integer remaningMinutes, double usedPercent,
-			Double prescribedDays, Double deductedDays, Double workingDays, Integer yearMonth, int closureId,
-			Integer closeDay, Integer isLastDay) {
+			Double prescribedDays, Double deductedDays, Double workingDays) {
 		super();
-		this.annLeavID = annLeavID;
 		this.cid = cid;
-		this.sid = sid;
-		this.grantDate = grantDate;
+		this.krcdtAnnLeaRemainHistPK = new KrcdtAnnLeaRemainHistPK(sid, yearMonth, closureId, closeDay, isLastDay, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;
 		this.registerType = registerType;
@@ -132,16 +122,20 @@ public class KrcdtAnnLeaRemainHist extends UkJpaEntity {
 		this.prescribedDays = prescribedDays;
 		this.deductedDays = deductedDays;
 		this.workingDays = workingDays;
-		this.yearMonth = yearMonth;
-		this.closureId = closureId;
-		this.closeDay = closeDay;
-		this.isLastDay = isLastDay;
+		
 	}
 
 	public static KrcdtAnnLeaRemainHist fromDomain(AnnualLeaveRemainingHistory domain) {
-		return new KrcdtAnnLeaRemainHist(domain.getAnnLeavID(), domain.getCid(), domain.getEmployeeId(),
-				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
-				domain.getRegisterType().value, domain.getDetails().getGrantNumber().getDays().v(),
+		return new KrcdtAnnLeaRemainHist(
+				domain.getCid(), 
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
+				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0,
+				domain.getGrantDate(), 
+				domain.getDeadline(), 
+				domain.getExpirationStatus().value,
+				domain.getRegisterType().value, 
+				domain.getDetails().getGrantNumber().getDays().v(),
 				domain.getDetails().getGrantNumber().getMinutes().isPresent()
 						? domain.getDetails().getGrantNumber().getMinutes().get().v() : null,
 				domain.getDetails().getUsedNumber().getDays().v(),
@@ -158,17 +152,15 @@ public class KrcdtAnnLeaRemainHist extends UkJpaEntity {
 				domain.getAnnualLeaveConditionInfo().isPresent()
 						? domain.getAnnualLeaveConditionInfo().get().getDeductedDays().v() : null,
 				domain.getAnnualLeaveConditionInfo().isPresent()
-						? domain.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null,
-				domain.getYearMonth().v(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
-				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
+						? domain.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null);
 	}
 
 	public AnnualLeaveRemainingHistory toDomain() {
-		return new AnnualLeaveRemainingHistory(this.annLeavID, this.cid, this.sid, this.grantDate, this.deadline,
+		return new AnnualLeaveRemainingHistory(this.cid, krcdtAnnLeaRemainHistPK.sid , krcdtAnnLeaRemainHistPK.yearMonth, krcdtAnnLeaRemainHistPK.closureId, krcdtAnnLeaRemainHistPK.closeDay,
+				krcdtAnnLeaRemainHistPK.isLastDay == 1, krcdtAnnLeaRemainHistPK.grantDate, this.deadline,
 				this.expStatus, this.registerType, this.grantDays, this.grantMinutes, this.usedDays, this.usedMinutes,
 				this.stowageDays, this.remainingDays, this.remaningMinutes, this.usedPercent, this.prescribedDays,
-				this.deductedDays, this.workingDays, this.yearMonth, this.closureId, this.closeDay,
-				this.isLastDay == 1);
+				this.deductedDays, this.workingDays);
 	}
 
 }

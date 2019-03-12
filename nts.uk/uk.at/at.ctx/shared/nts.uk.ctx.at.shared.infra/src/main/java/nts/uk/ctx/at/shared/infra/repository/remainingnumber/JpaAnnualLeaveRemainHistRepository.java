@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHist;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -24,17 +25,13 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 
 	@Override
 	public void addOrUpdate(AnnualLeaveRemainingHistory domain) {
-		Optional<KrcdtAnnLeaRemainHist> opt = this.queryProxy().find(domain.getAnnLeavID(),
+		KrcdtAnnLeaRemainHistPK krcdtAnnLeaRemainHistPK = new KrcdtAnnLeaRemainHistPK(domain.getEmployeeId(), domain.getYearMonth().v(),
+				domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth() ? 1 : 0, domain.getGrantDate());
+		Optional<KrcdtAnnLeaRemainHist> opt = this.queryProxy().find(krcdtAnnLeaRemainHistPK,
 				KrcdtAnnLeaRemainHist.class);
 		if (opt.isPresent()) {
 			KrcdtAnnLeaRemainHist entity = opt.get();
 			entity.cid = domain.getCid();
-			entity.sid = domain.getEmployeeId();
-			entity.yearMonth = domain.getYearMonth().v();
-			entity.closureId = domain.getClosureId().value;
-			entity.closeDay = domain.getClosureDate().getClosureDay().v();
-			entity.isLastDay = domain.getClosureDate().getLastDayOfMonth() ? 1 : 0;
-			entity.grantDate = domain.getGrantDate();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -63,7 +60,7 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 
 	@Override
 	public void delete(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate) {
-		String sql = "DELETE FROM KrcdtAnnLeaRemainHist a WHERE a.sid = :employeeId and a.yearMonth = :ym AND a.closureId = :closureId AND a.closeDay = :closeDay AND a.isLastDay = :isLastDay";
+		String sql = "DELETE FROM KrcdtAnnLeaRemainHist a WHERE a.krcdtAnnLeaRemainHistPK.sid = :employeeId and a.krcdtAnnLeaRemainHistPK.yearMonth = :ym AND a.krcdtAnnLeaRemainHistPK.closureId = :closureId AND a.krcdtAnnLeaRemainHistPK.closeDay = :closeDay AND a.krcdtAnnLeaRemainHistPK.isLastDay = :isLastDay";
 		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
 				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
@@ -72,8 +69,8 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 	@Override
 	public List<AnnualLeaveRemainingHistory> getInfoBySidAndYM(String sid, YearMonth ym) {
 		String sql = "SELECT c FROM KrcdtAnnLeaRemainHist c "
-				+ " WHERE c.sid = :sid"
-				+ " AND c.yearMonth = :yearMonth";
+				+ " WHERE c.krcdtAnnLeaRemainHistPK.sid = :sid"
+				+ " AND c.krcdtAnnLeaRemainHistPK.yearMonth = :yearMonth";
 		return this.queryProxy().query(sql, KrcdtAnnLeaRemainHist.class)
 				.setParameter("sid", sid)
 				.setParameter("yearMonth", ym)
