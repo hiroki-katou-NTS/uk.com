@@ -208,7 +208,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			return x.getEmployeeId();
 		}).collect(Collectors.toList());
 		// <<Public>> 社員を並べ替える
-		empIds = empAdaptor.sortEmployee(companyId, empIds, SystemType.EMPLOYMENT.value, 1, 1, GeneralDateTime.now());
+		//empIds = empAdaptor.sortEmployee(companyId, empIds, SystemType.EMPLOYMENT.value, 1, 1, GeneralDateTime.now());
 
 		// <<Public>> 社員の情報を取得する
 		EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder().toGetWorkplace(true)
@@ -270,12 +270,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				// 社員に対応する処理締めを取得する
 				Closure closure = closureService.getClosureDataByEmployee(empId, baseDate);
 				// アルゴリズム「年休付与情報を取得」を実行する
-				// RQ550
-				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType,
-						closure.getClosureMonth().getProcessingYm(), baseDate);
-				// アルゴリズム「年休明細情報を取得」を実行する
-				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType,
-						closure.getClosureMonth().getProcessingYm(), baseDate);
+				if (closure != null && closure.getClosureMonth() != null) {
+					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
+					// RQ550
+					holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, yearMonthInput,
+							baseDate);
+					// アルゴリズム「年休明細情報を取得」を実行する
+					HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
+							baseDate);
+
+				}
 			}
 			if (!isSelectCurrent) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
