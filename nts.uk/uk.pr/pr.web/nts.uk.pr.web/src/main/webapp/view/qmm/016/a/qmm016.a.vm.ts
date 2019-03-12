@@ -57,6 +57,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.selectedTab('tab-1');
                     self.updateMode(false);
                     self.isSelectedHistory(false);
+                    self.tabs()[1].enable(false);
                     $("#A5_2").focus();
                 } else {
                     self.wageTableContent2dData([]);
@@ -165,7 +166,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText("QMM016_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.computed(() => { return self.updateMode() && self.isSelectedHistory(); }), visible: ko.observable(true) }
+                { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
         }
@@ -219,11 +220,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     let selectedHistory = _.find(selectedWageTable.histories, { historyID: selectedHistoryID });
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                     self.isSelectedHistory(true);
+                    self.tabs()[1].enable(true);
                     self.showSettingDataByValue(identifier);
                 } else {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                     self.selectedTab('tab-1');
                     self.isSelectedHistory(false);
+                    self.tabs()[1].enable(false);
                     block.clear();
                 }
             }).fail(error => {
