@@ -47,7 +47,7 @@ public class SalGenHistoryService {
                 salGenParaDateHistory = objectHis.get();
             }
             salGenParaDateHistory.add(dateHistoryItem);
-            this.addDateHistory(dateHistoryItem, cId,paraNo);
+            this.addDateHistory(dateHistoryItem, salGenParaValue,cId,paraNo);
             this.updateItemDateBefore(objectHis.get(), dateHistoryItem, cId,paraNo);
             this.addSalGenParaValue(paraNo,salGenParaValue);
         }
@@ -73,11 +73,11 @@ public class SalGenHistoryService {
 
     //add DateTime History
 
-    private void addDateHistory(DateHistoryItem itemtoBeAdded, String cId, String paraNo){
+    private void addDateHistory(DateHistoryItem itemtoBeAdded,SalGenParaValue domainSalGenParaValue, String cId, String paraNo){
         if(itemtoBeAdded == null){
             return;
         }
-        mSalGenParaDateHistRepository.add(itemtoBeAdded,null,paraNo,cId);
+        mSalGenParaDateHistRepository.add(itemtoBeAdded,domainSalGenParaValue,paraNo,cId);
     }
     private void updateItemDateBefore(SalGenParaDateHistory salGenParaDateHistory, DateHistoryItem item, String cId, String paraNo){
         Optional<DateHistoryItem> itemToBeUpdated = salGenParaDateHistory.immediatelyBefore(item);
