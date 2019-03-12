@@ -15,4 +15,4 @@ UK Mobile (using bootstrap).
 1. Run two command for deploy
   - ```npm run webpack:vendor:prod```
   - ```npm run webpack:prod```
-2. Copy wwwroot folder to webservice.
+2. Copy war file in wwwroot folder to webservice.
