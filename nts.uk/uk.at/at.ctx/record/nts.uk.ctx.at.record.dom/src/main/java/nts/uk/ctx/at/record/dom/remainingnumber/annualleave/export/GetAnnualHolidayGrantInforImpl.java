@@ -269,8 +269,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				datePeriod);
 		if(mapRemainData != null) {
 			for (DailyInterimRemainMngData y : mapRemainData.values()) {
-				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
-				lstOutputData.add(outData);
+				if(y.getAnnualHolidayData().isPresent()) {
+					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
+					lstOutputData.add(outData);	
+				}				
 			}
 		}
 		return lstOutputData;
