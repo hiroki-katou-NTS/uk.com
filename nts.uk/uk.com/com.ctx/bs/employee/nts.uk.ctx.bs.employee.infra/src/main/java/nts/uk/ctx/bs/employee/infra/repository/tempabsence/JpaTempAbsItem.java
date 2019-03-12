@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
@@ -26,6 +27,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.SickLeave;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -266,6 +268,399 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		});
 
 		return entities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void addAll(List<TempAbsenceHisItem> domains) {
+		String INTER = "INSERT INTO BSYMT_TEMP_ABS_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, TEMP_ABS_FRAME_NO,"
+				+ " REMARKS, SO_INS_PAY_CATEGORY";
+		TempAbsenceHisItem tempAbsenceHisItem = domains.get(0);
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		int tempAbsenceFrNo = tempAbsenceHisItem.getTempAbsenceFrNo().v().intValue();
+		switch(tempAbsenceFrNo) {
+		
+		case 1:
+			INTER = INTER + ")" + " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+			String INS_SQL1 = INTER;
+			domains.parallelStream().forEach(c ->{
+				Leave leave = (Leave) c;
+				String sql = INS_SQL1;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + leave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + leave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", c.getRemarks()== null? "null" : "'" + leave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", leave.getSoInsPayCategory() == null? "null": "" +  leave.getSoInsPayCategory().intValue() + "");
+				sb.append(sql);
+			});
+			break;
+		case 2:
+			INTER = INTER + ", MULTIPLE) "+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, MULTIPLE_VAL); ";
+			String INS_SQL2 = INTER;
+			domains.parallelStream().forEach(c ->{
+				MidweekClosure midweek = (MidweekClosure) c;
+				String sql = INS_SQL2;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + midweek.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + midweek.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", midweek.getRemarks()== null? "null" : "'" + midweek.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", midweek.getSoInsPayCategory() == null? "null": "" +  midweek.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("MULTIPLE_VAL", midweek.getMultiple() == null? "null": midweek.getMultiple().booleanValue() == true? "1": "0");
+				sb.append(sql);
+			});
+			break;
+		case 3:
+			INTER = INTER + ", FAMILY_MEMBER_ID)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID_VAL); ";
+			String INS_SQL3 = INTER;
+			domains.parallelStream().forEach(c ->{
+				AfterChildbirth childBirth = (AfterChildbirth) c;
+				String sql = INS_SQL3;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + childBirth.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + childBirth.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", childBirth.getRemarks()== null? "null" : "'" + childBirth.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", childBirth.getSoInsPayCategory() == null? "null": "" +  childBirth.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("FAMILY_MEMBER_ID_VAL", childBirth.getFamilyMemberId() == null? "null": "'"+ childBirth.getFamilyMemberId()+ "'");
+				sb.append(sql);
+			});
+			break;
+		case 4:
+			INTER = INTER + ", CREATE_DATE, SPOUSE_IS_LEAVE)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, CREATE_DATE_VAL, SPOUSE_IS_LEAVE_VAL); ";
+			String INS_SQL4 = INTER;
+			domains.parallelStream().forEach(c ->{
+				ChildCareHoliday childCare = (ChildCareHoliday) c;
+				String sql = INS_SQL4;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + childCare.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + childCare.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", childCare.getRemarks()== null? "null" : "'" + childCare.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", childCare.getSoInsPayCategory() == null? "null": "" +  childCare.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("CREATE_DATE_VAL", childCare.getCreateDate() == null? "null": "'"+ childCare.getCreateDate()+ "'");
+				sql = sql.replace("SPOUSE_IS_LEAVE_VAL", childCare.getSpouseIsLeave() == null? "null":  childCare.getSpouseIsLeave().booleanValue() == true? "1": "0");
+				sb.append(sql);
+			});
+			break;
+		case 5:
+			INTER = INTER + ", SAME_FAMILY, SAME_FAMILY_DAYS, FAMILY_MEMBER_ID)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY_VAL, SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID_VAL); ";
+			String INS_SQL5 = INTER;
+			domains.parallelStream().forEach(c ->{
+				CareHoliday careLeave = (CareHoliday) c;
+				String sql = INS_SQL5;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + careLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + careLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", careLeave.getRemarks()== null? "null" : "'" + careLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", careLeave.getSoInsPayCategory() == null? "null": "" +  careLeave.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("SAME_FAMILY_VAL", careLeave.getSameFamily() == null? "null": careLeave.getSameFamily().booleanValue() == true? "1":"0");
+				sql = sql.replace("SAME_FAMILY_DAYS_VAL", careLeave.getSameFamilyDays() == null? "null": ""+ careLeave.getSameFamilyDays().intValue()+ "");
+				sql = sql.replace("FAMILY_MEMBER_ID_VAL", careLeave.getFamilyMemberId() == null? "null": "'" + careLeave.getFamilyMemberId() + "'");
+				sb.append(sql);
+			});
+			break;
+		case 6:
+			INTER = INTER + ")"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+			String INS_SQL6 = INTER;
+			domains.parallelStream().forEach(c ->{
+				SickLeave sickLeave = (SickLeave) c;
+				String sql = INS_SQL6;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", sickLeave.getRemarks()== null? "null" : "'" + sickLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave.getSoInsPayCategory() == null? "null": "" +  sickLeave.getSoInsPayCategory().intValue() + "");
+	
+				sb.append(sql);
+			});
+			break;
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+			INTER = INTER + ")"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+			String INS_SQL = INTER;
+			domains.parallelStream().forEach(c ->{
+				SickLeave sickLeave = (SickLeave) c;
+				String sql = INS_SQL;
+				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+				sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+				sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", sickLeave.getRemarks()== null? "null" : "'" + sickLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave.getSoInsPayCategory() == null? "null": "" +  sickLeave.getSoInsPayCategory().intValue() + "");
+	
+				sb.append(sql);
+			});
+			break;
+		default:
+			break;
+		}
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
+
+	@Override
+	public void updateAll(List<TempAbsenceHisItem> domains) {
+		String INTER = "UPDATE BSYMT_TEMP_ABS_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,";
+		String _WHERE =" WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL AND TEMP_ABS_FRAME_NO = TEMP_ABS_FRAME_NO_VAL";
+		TempAbsenceHisItem tempAbsenceHisItem = domains.get(0);		
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg =  AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		int tempAbsenceFrNo = tempAbsenceHisItem.getTempAbsenceFrNo().v().intValue();
+		switch(tempAbsenceFrNo) {
+		
+		case 1:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
+			//HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL
+			String INS_SQL1 = INTER;
+			domains.parallelStream().forEach(c ->{
+				Leave leave = (Leave) c;
+				String sql = INS_SQL1;
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + leave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + leave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", c.getRemarks()== null? "null" : "'" + leave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", leave.getSoInsPayCategory() == null? "null": "" +  leave.getSoInsPayCategory().intValue() + "");
+				sb.append(sql);
+			});
+			break;
+		case 2:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, MULTIPLE = MULTIPLE_VAL " + _WHERE;
+
+			String INS_SQL2 = INTER;
+			domains.parallelStream().forEach(c ->{
+				MidweekClosure midweek = (MidweekClosure) c;
+				String sql = INS_SQL2;
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + midweek.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + midweek.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", midweek.getRemarks()== null? "null" : "'" + midweek.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", midweek.getSoInsPayCategory() == null? "null": "" +  midweek.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("MULTIPLE_VAL", midweek.getMultiple() == null? "null": midweek.getMultiple().booleanValue() == true? "1": "0");
+				sb.append(sql);
+			});
+			break;
+		case 3:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID = FAMILY_MEMBER_ID_VAL " + _WHERE;
+			String INS_SQL3 = INTER;
+			domains.parallelStream().forEach(c ->{
+				AfterChildbirth childBirth = (AfterChildbirth) c;
+				String sql = INS_SQL3;
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + childBirth.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + childBirth.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", childBirth.getRemarks()== null? "null" : "'" + childBirth.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", childBirth.getSoInsPayCategory() == null? "null": "" +  childBirth.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("FAMILY_MEMBER_ID_VAL", childBirth.getFamilyMemberId() == null? "null": "'"+ childBirth.getFamilyMemberId()+ "'");
+				sb.append(sql);
+			});
+			break;
+		case 4:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, CREATE_DATE = CREATE_DATE_VAL, SPOUSE_IS_LEAVE = SPOUSE_IS_LEAVE_VAL " + _WHERE;
+			String INS_SQL4 = INTER;
+			domains.parallelStream().forEach(c ->{
+				ChildCareHoliday childCare = (ChildCareHoliday) c;
+				String sql = INS_SQL4;
+				
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + childCare.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + childCare.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", childCare.getRemarks()== null? "null" : "'" + childCare.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", childCare.getSoInsPayCategory() == null? "null": "" +  childCare.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("CREATE_DATE_VAL", childCare.getCreateDate() == null? "null": "'"+ childCare.getCreateDate()+ "'");
+				sql = sql.replace("SPOUSE_IS_LEAVE_VAL", childCare.getSpouseIsLeave() == null? "null":  childCare.getSpouseIsLeave().booleanValue() == true? "1": "0");
+				sb.append(sql);
+			});
+			break;
+		case 5:
+			
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY = SAME_FAMILY_VAL, SAME_FAMILY_DAYS = SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID = FAMILY_MEMBER_ID_VAL " + _WHERE;
+			String INS_SQL5 = INTER;
+			domains.parallelStream().forEach(c ->{
+				CareHoliday careLeave = (CareHoliday) c;
+				String sql = INS_SQL5;
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + careLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + careLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", careLeave.getRemarks()== null? "null" : "'" + careLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", careLeave.getSoInsPayCategory() == null? "null": "" +  careLeave.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("SAME_FAMILY_VAL", careLeave.getSameFamily() == null? "null": careLeave.getSameFamily().booleanValue() == true? "1":"0");
+				sql = sql.replace("SAME_FAMILY_DAYS_VAL", careLeave.getSameFamilyDays() == null? "null": ""+ careLeave.getSameFamilyDays().intValue()+ "");
+				sql = sql.replace("FAMILY_MEMBER_ID_VAL", careLeave.getFamilyMemberId() == null? "null": "'" + careLeave.getFamilyMemberId() + "'");
+				sb.append(sql);
+			});
+			break;
+		case 6:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
+			String INS_SQL6 = INTER;
+			domains.parallelStream().forEach(c ->{
+				SickLeave sickLeave = (SickLeave) c;
+				String sql = INS_SQL6;
+
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", sickLeave.getRemarks()== null? "null" : "'" + sickLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave.getSoInsPayCategory() == null? "null": "" +  sickLeave.getSoInsPayCategory().intValue() + "");
+	
+				sb.append(sql);
+			});
+			break;
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
+			String INS_SQL = INTER;
+			domains.parallelStream().forEach(c ->{
+				SickLeave sickLeave = (SickLeave) c;
+				String sql = INS_SQL;
+				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+				
+				sql = sql.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
+				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
+				sql = sql.replace("REMARKS_VAL", sickLeave.getRemarks()== null? "null" : "'" + sickLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave.getSoInsPayCategory() == null? "null": "" +  sickLeave.getSoInsPayCategory().intValue() + "");
+	
+				sb.append(sql);
+			});
+			break;
+		default:
+			break;
+		}
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 }

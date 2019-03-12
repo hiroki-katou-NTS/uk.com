@@ -19,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
@@ -248,10 +249,10 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
 				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(standardDate.toLocalDate()));
 				stmt.setDate(3, Date.valueOf(standardDate.toLocalDate()));
-				stmt.setDate(4, Date.valueOf(standardDate.toLocalDate()));
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(i + 1, subList.get(i));
+					stmt.setString(4 + i, subList.get(i));
 				}
 
 				List<Map<String, Object>> map = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
@@ -280,5 +281,120 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			}
 		});
 		return tempAbsHistoryEntities;
+	}
+
+	@Override
+	@SneakyThrows
+	public List<TempAbsenceHistory> getBySidsAndCid(String cid, List<String> employeeIds) {
+		List<TempAbsenceHistory> tempAbsenceHistory = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+					+" ORDER BY START_DATE";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+
+				List<Map<String, Object>> map = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					Map<String, Object> m = new HashMap<>();
+					m.put("HIST_ID", rec.getString("HIST_ID"));
+					m.put("SID", rec.getString("SID"));
+					m.put("CID", rec.getString("CID"));
+					m.put("START_DATE", rec.getGeneralDate("START_DATE"));
+					m.put("END_DATE", rec.getGeneralDate("END_DATE"));
+					return m;
+				});
+				map.stream().collect(Collectors.groupingBy(c -> c.get("SID"),
+						Collectors.collectingAndThen(Collectors.toList(), list -> {
+							TempAbsenceHistory his = new TempAbsenceHistory(list.get(0).get("CID").toString(),
+									list.get(0).get("SID").toString(), list.stream().map(c -> {
+										return new DateHistoryItem(c.get("HIST_ID").toString(), new DatePeriod(
+												(GeneralDate) c.get("START_DATE"), (GeneralDate) c.get("END_DATE")));
+									}).collect(Collectors.toList()));
+							tempAbsenceHistory.add(his);
+							return his;
+						})));
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return tempAbsenceHistory;
+	}
+
+	@Override
+	public void addAll(Map<String, DateHistoryItem> dateHistItemsMap) {
+		String cid = AppContexts.user().companyId();
+		String INS_SQL = "INSERT INTO BSYMT_TEMP_ABS_HISTORY (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, CID, SID,"
+				+ " START_DATE, END_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		dateHistItemsMap.entrySet().parallelStream().forEach(c ->{
+			String sql = INS_SQL;
+			DateHistoryItem dateHistItem = c.getValue();
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");
+			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<DateHistoryItem> items) {
+		String UP_SQL = "UPDATE BSYMT_TEMP_ABS_HISTORY SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		items.parallelStream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("START_DATE_VAL", "'" + c.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  c.end() + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.identifier() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
 	}
 }
