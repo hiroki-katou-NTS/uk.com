@@ -21,4 +21,6 @@ public class AnnualWorkScheduleExportQuery {
 	private int breakPage;
 	/** A10_2 36協定対象外者選択肢 */
 	private int excludeEmp;
+	//A11
+	private Integer curentMonth;
 }

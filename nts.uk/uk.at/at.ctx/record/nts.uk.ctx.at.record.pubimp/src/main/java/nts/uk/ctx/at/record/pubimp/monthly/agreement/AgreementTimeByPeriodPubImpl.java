@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByEmpExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeMonthOut;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriod;
@@ -21,6 +22,11 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 指定期間36協定時間の取得
@@ -54,6 +60,13 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 				domain.getExceptionLimitErrorTime(),
 				domain.getExceptionLimitAlarmTime(),
 				domain.getStatus());
+	}
+
+	@Override
+	public List<AgreementTimeByEmpExport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
+													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs) {
+		return this.getAgreTimeByPeriod.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs)
+				.stream().map(AgreementTimeByEmpExport::fromDomain).collect(Collectors.toList());
 	}
 	
 	/** 指定月36協定上限月間時間の取得 */

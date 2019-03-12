@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
+        //申請理由が必須
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
@@ -332,6 +333,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
@@ -598,7 +600,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this;
             _.each(self.overtimeHours(), function(item) {
                 $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo())
-                    .ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [self.getValueOfNameId(item.nameID())] });
+                    .ntsError('set', { messageId: 'MsgB_1', messageParams: [self.getValueOfNameId(item.nameID())] });
             })
         }
 

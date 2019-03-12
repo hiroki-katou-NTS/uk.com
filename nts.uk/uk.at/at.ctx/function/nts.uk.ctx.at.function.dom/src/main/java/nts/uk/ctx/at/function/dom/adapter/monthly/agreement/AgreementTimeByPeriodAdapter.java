@@ -46,5 +46,8 @@ public interface AgreementTimeByPeriodAdapter {
 	// RequestList547
 	Optional<AgreMaxAverageTimeMulti> maxAverageTimeMulti(String companyId, String employeeId, GeneralDate criteria,
 			YearMonth yearMonth);
-	
+
+
+	List<AgreementTimeByEmpImport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
+													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs);
 }

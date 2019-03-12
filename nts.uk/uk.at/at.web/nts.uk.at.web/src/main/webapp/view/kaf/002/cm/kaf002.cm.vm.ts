@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf002.cm {
             editable: KnockoutObservable<boolean> = ko.observable(true);
             employeeID: string;
             appDate: any;
+            requiredReason: KnockoutObservable<boolean> = ko.observable(false);
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -46,6 +47,7 @@ module nts.uk.at.view.kaf002.cm {
                 self.appDate = appDate;
                 self.employeeID = employeeID;
                 self.editable(editable);
+                self.requiredReason(commonSet.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                 self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);

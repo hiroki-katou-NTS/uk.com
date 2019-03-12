@@ -39,7 +39,6 @@ public class WhetherToCheck {
 		//false：チェック非対象　を返す
 		if(!checkNarrowUntilNext)
 			return false;
-		
 		return true;
 	}
 }
