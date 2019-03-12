@@ -96,7 +96,7 @@ public class JpaSalGenParaYMHistRepository extends JpaRepository implements SalG
     public void addSalGenParaValue(String paraNo,SalGenParaValue domainSalGenParaValue) {
         Optional<SalGenParaYearMonthHistory> monthHistoryOptional =  getSalGenParaYMHistById(paraNo,AppContexts.user().companyId(),domainSalGenParaValue.getHistoryId());
 
-        this.commandProxy().insert(QqsmtSalGenParaYmHis.toEntity(monthHistoryOptional.get().getHistory().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),AppContexts.user().companyId(),paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
+        this.commandProxy().update(QqsmtSalGenParaYmHis.toEntity(monthHistoryOptional.get().getHistory().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),AppContexts.user().companyId(),paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
 
     }
 
