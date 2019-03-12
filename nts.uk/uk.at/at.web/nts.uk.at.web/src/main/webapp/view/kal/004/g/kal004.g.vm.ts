@@ -31,9 +31,11 @@ module nts.uk.at.view.kal004.g.viewmodel {
         daily36: share.ExtractionPeriodDailyCommand;
         listMonthly36: Array<share.ExtractionPeriodMonthlyCommand>;
         yearly36: share.ExtractionRangeYearCommand;
+        averMonth36: share.ExtractionAverageMonthCommand;
         monthly2: share.ExtractionPeriodMonthlyCommand;
         monthly3: share.ExtractionPeriodMonthlyCommand;
         monthly4: share.ExtractionPeriodMonthlyCommand;
+        monthly6: share.ExtractionPeriodMonthlyCommand;
 
         categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
@@ -68,6 +70,10 @@ module nts.uk.at.view.kal004.g.viewmodel {
         //tab5
         strSelected5: KnockoutObservable<number>;
         strYear5: KnockoutObservable<number>;
+        
+        //tab 6
+        strMonth6: KnockoutObservable<number>;
+        strComboMonth6: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             self.textlabel = ko.observable(nts.uk.ui.windows.getShared("categoryName"));
@@ -77,11 +83,13 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 { id: 'tab-3', title: getText('KAL004_71'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: getText('KAL004_72'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-5', title: getText('KAL004_73'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-6', title: getText('KAL004_120'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
 
             ]);
             self.selectedTab = ko.observable(nts.uk.ui.windows.getShared("selectedTab"));
-
-
+            // Get share data from screen A
+            self.averMonth36 = nts.uk.ui.windows.getShared("averMonth36");
+            
             self.yearly36 = nts.uk.ui.windows.getShared("yearly36");
             self.listMonthly36 = nts.uk.ui.windows.getShared("listMonthly36");
             self.daily36 = nts.uk.ui.windows.getShared("daily36");
@@ -90,6 +98,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.monthly2 = _.find(self.listMonthly36, ['unit', 0]);
             self.monthly3 = _.find(self.listMonthly36, ['unit', 1]);
             self.monthly4 = _.find(self.listMonthly36, ['unit', 2]);
+            
 
             //start date
             self.strSelected = ko.observable(Number(self.daily36.strSpecify));
@@ -160,6 +169,10 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 self.checkForcus(value);
                 nts.uk.ui.errors.clearAll();
             });
+            
+            //tab6
+            self.strMonth6 = ko.observable(self.averMonth36.strMonth);
+            self.strComboMonth6 = ko.observableArray(__viewContext.enums.StandardMonth);
         }
 
         startPage(): JQueryPromise<any> {
@@ -293,15 +306,25 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             let yearly36Share = {
                 extractionId: "",
-                extractionRange: 1,
+                extractionRange: 0,
                 year: self.strSelected5() == 0 ? Number(self.strYear5()) : 0,
                 thisYear: self.strSelected5()
+            }
+            
+            // Set data for averMonth36
+            let multiMonthShare = {
+               extractionId: "",
+               extractionRange: 4,
+               strMonth : self.strMonth6()
+                
             }
 
             nts.uk.ui.windows.setShared("selectedTab", self.selectedTab());
             nts.uk.ui.windows.setShared("daily36Share", daily36Share);
             nts.uk.ui.windows.setShared("listMonth36Share", listMonth36Share);
             nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);
+            // Share data to Screen A
+            nts.uk.ui.windows.setShared("averMonth36Share", multiMonthShare);
             nts.uk.ui.windows.close();
         }
         checkForcus(value): any {
@@ -345,6 +368,11 @@ module nts.uk.at.view.kal004.g.viewmodel {
                     if (self.strSelected4() == 0) {
                         $("#start-tab-5").focus();
                     }
+                }, 50);
+            // Focus of tab 複数月平均
+            }else if (value == "tab-6") {
+                setTimeout(function() {
+                        $("#start-tab-6").focus();
                 }, 50);
 
             }

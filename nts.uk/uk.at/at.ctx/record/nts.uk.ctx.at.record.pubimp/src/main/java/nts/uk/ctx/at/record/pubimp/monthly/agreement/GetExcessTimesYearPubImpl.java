@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.pub.monthly.agreement.GetExcessTimesYearPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
@@ -23,5 +28,18 @@ public class GetExcessTimesYearPubImpl implements GetExcessTimesYearPub {
 	@Override
 	public AgreementExcessInfo algorithm(String employeeId, Year year) {
 		return this.getExcessTimesYear.algorithm(employeeId, year);
+	}
+	
+	/** 年間超過回数の取得 */
+	@Override
+	public Map<String,AgreementExcessInfo> algorithm(List<String> employeeIds, Year year) {
+		return this.getExcessTimesYear.algorithm(employeeIds, year);
+	}
+	
+	/** 年間超過回数と残数の取得 */
+	@Override
+	public AgreementExcessInfo andRemainTimes(String employeeId, Year year,
+			Optional<AgreementOperationSetting> agreementOperationSetting) {
+		return this.getExcessTimesYear.andRemainTimes(employeeId, year, agreementOperationSetting);
 	}
 }

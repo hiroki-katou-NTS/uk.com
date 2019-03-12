@@ -162,7 +162,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 			String key = setReportData.getDay() + "日";
 			String value = setReportData.getWorkSetName().get();
 			
-			Optional<GeneralDate> d = setReportData.getDate();
+			/*Optional<GeneralDate> d = setReportData.getDate();
 			if (d.isPresent()){
 				List<GeneralDate> lst = new ArrayList<>();
 				lst.add(d.get());
@@ -174,6 +174,9 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 						value += "「" + e.getEventName() + "」"; 
 					}
 				}
+			}*/
+			if (setReportData.getEventName() != null){
+				value += "「" + setReportData.getEventName() + "」"; 
 			}
 			data.put(key, value);
 		}

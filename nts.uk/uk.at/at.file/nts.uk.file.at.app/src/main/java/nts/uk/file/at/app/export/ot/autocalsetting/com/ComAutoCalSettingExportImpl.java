@@ -11,6 +11,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -166,6 +167,11 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
         return datas;
     }
 
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
+
     private String getSheetName(AutoCalRegis autoCalRegis){
         switch (autoCalRegis) {
             case WORKPLACE: return TextResource.localize("KMK006_76");
@@ -274,17 +280,17 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
         List<SheetData> sheetData = new ArrayList<>();
         if(((Map<String, Boolean>) query.getData()).get("useWkpSet")) {
             SheetData wkp = new SheetData(this.getData(query, AutoCalRegis.WORKPLACE),
-                    getHeaderColumns(query, AutoCalRegis.WORKPLACE), null, null, getSheetName(AutoCalRegis.WORKPLACE));
+                    getHeaderColumns(query, AutoCalRegis.WORKPLACE), null, null, getSheetName(AutoCalRegis.WORKPLACE), MasterListMode.NONE);
             sheetData.add(wkp);
         }
         if(((Map<String, Boolean>) query.getData()).get("useJobSet")) {
             SheetData job = new SheetData(this.getData(query, AutoCalRegis.JOB),
-                    getHeaderColumns(query, AutoCalRegis.JOB), null, null, getSheetName(AutoCalRegis.JOB));
+                    getHeaderColumns(query, AutoCalRegis.JOB), null, null, getSheetName(AutoCalRegis.JOB), MasterListMode.NONE);
             sheetData.add(job);
         }
         if(((Map<String, Boolean>) query.getData()).get("useJobwkpSet")) {
             SheetData jobWkp = new SheetData(this.getData(query, AutoCalRegis.WORKJOB),
-                    getHeaderColumns(query, AutoCalRegis.WORKJOB), null, null, getSheetName(AutoCalRegis.WORKJOB));
+                    getHeaderColumns(query, AutoCalRegis.WORKJOB), null, null, getSheetName(AutoCalRegis.WORKJOB), MasterListMode.NONE);
             sheetData.add(jobWkp);
         }
         return sheetData;

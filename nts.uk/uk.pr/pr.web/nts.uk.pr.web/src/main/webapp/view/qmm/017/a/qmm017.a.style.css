@@ -97,14 +97,14 @@
 
 .tab-panel-col-3 {
     width: 240px;
-    height: 310px;
+    height: 250px;
     vertical-align: top;
     display: inline-block;
     margin-left: 28px;
 }
 
 #D1_4 div[class^='tab-content'] {
-    height: 350px;
+    height: 290px;
 }
 
 .cal-container {

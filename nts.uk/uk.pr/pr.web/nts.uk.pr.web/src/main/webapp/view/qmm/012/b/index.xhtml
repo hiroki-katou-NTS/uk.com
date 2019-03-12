@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-<ui:composition template="../../../../master/base.xhtml">
+<ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
             nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode
@@ -17,6 +17,13 @@
             nts.uk.shr.com.primitive.Memo
             nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.LimitAmount
         </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1250,
+                height: 670
+            };
+            var autoResize = false;
+        </script>
         <com:stylefile path="qmm012.b.style.css"/>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
@@ -51,6 +58,9 @@
             <!-- 印字名称の登録 -->
             <button id="B1_7" tabindex="7" class="registerPrintingBtn"
                     data-bind="click: registerPrintingName, enable: true">#{i18n.getText('QMM012_10')}</button>
+            <!-- 閉じる -->
+            <button id="B1_8" tabindex="7"
+                    data-bind="click: closeDialog, visible: isDialog">#{i18n.getText('QMM012_115')}</button>
         </div>
         <div id="contents-area">
             <div class="table">

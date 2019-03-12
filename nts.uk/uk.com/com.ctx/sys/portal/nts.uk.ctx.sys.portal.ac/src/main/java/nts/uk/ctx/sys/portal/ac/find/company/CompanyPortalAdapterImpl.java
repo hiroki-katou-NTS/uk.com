@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.pub.company.CompanyExport;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
-import nts.uk.ctx.sys.auth.pub.service.ListCompanyService;
+import nts.uk.ctx.sys.gateway.pub.authmana.ListCompanySwitchablePub;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyDto;
 
@@ -16,14 +16,14 @@ import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyDto;
 public class CompanyPortalAdapterImpl implements CompanyAdapter {
 
 	@Inject
-	private ListCompanyService companyService;
-	
-	@Inject
 	private ICompanyPub companyPub;
 	
+	@Inject
+	private ListCompanySwitchablePub lstComSwitchablePub;
+	
 	@Override
-	public List<String> getCompanyIdList(String userId, String personId) {
-		return companyService.getListCompanyId(userId, personId);
+	public List<String> getCompanyIdList(String userId, String contractCd) {
+		return lstComSwitchablePub.getCompanyList(userId, contractCd);
 	}
 	
 	@Override

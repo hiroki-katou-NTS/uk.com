@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 
@@ -27,6 +28,16 @@ public class RoleAdapterImpl implements RoleAdapter {
 		return listExport.stream().map(c -> {
 			return new RoleImport(c.getRoleId(), c.getCompanyId());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isEmpWhetherLoginerCharge() {
+		RoleWhetherLoginPubExport result = roleExportRepo.getWhetherLoginerCharge();
+		return result.isEmployeeCharge() ||
+				result.isHumanResOfficer() ||
+				result.isOfficeHelperPersonne() ||
+				result.isPersonalInformation() ||
+				result.isSalaryProfessional();
 	}
 
 }

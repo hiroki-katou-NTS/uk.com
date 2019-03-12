@@ -376,6 +376,9 @@ public class DetailFormulaCalculationService {
         String[] postFix = convertToPostfix(formulaContent);
         for (String aPostFix : postFix) {
             currentChar = aPostFix;
+            if (currentChar.equalsIgnoreCase(COMMA_CHAR) || currentChar.equalsIgnoreCase(HALF_SIZE_COMMA_CHAR)) {
+                throw new BusinessException("MsgQ_254");
+            }
             if (!isComputingOperator(currentChar) && !isConditionOperator(currentChar)) {
                 operands.push(currentChar);
                 continue;

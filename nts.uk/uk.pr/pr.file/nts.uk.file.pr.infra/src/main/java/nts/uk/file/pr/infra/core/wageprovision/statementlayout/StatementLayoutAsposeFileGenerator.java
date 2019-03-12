@@ -66,9 +66,10 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 				offset += newLine;
 				totalLineInPage += newLine;
 				if (totalLineInPage > MAX_ROW_PER_PAGE){
-					offset += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+					int newLineHeader = sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+					offset += newLineHeader;
 					pageBreaks.add(offsetBefore);
-					totalLineInPage = 0;
+					totalLineInPage = newLine + newLineHeader;
 				}
 
                 offsetBefore = offset;
@@ -137,9 +138,10 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
                 } else {
                     sttPrint.printHeadItem(ctg, LinePosition.FIRST, offsetBefore);
                 }
-                totalLine += sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+				int newLineHeader = sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offsetBefore, false);
+				totalLine += newLineHeader;
                 pageBreaks.add(offsetBefore);
-                totalLineInPage = 0;
+                totalLineInPage = newLine + newLineHeader;
             }
 		}
 

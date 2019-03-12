@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -66,6 +67,17 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
 				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
+	}
+
+	@Override
+	public List<AnnualLeaveRemainingHistory> getInfoBySidAndYM(String sid, YearMonth ym) {
+		String sql = "SELECT c FROM KrcdtAnnLeaRemainHist c "
+				+ " WHERE c.sid = :sid"
+				+ " AND c.yearMonth = :yearMonth";
+		return this.queryProxy().query(sql, KrcdtAnnLeaRemainHist.class)
+				.setParameter("sid", sid)
+				.setParameter("yearMonth", ym)
+				.getList(item -> item.toDomain());
 	}
 
 }

@@ -32,7 +32,7 @@ public class ProcessInformationPubImpl implements ProcessInformationPub {
 	
 	private ProcessInformationExport fromDomain(ProcessInformation domain) {
 		return new ProcessInformationExport(domain.getCid(), domain.getProcessCateNo(), domain.getDeprecatCate().value,
-				domain.getProcessCls().v());
+				domain.getProcessName().v());
 	}
 
 }

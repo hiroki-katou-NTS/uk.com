@@ -9,6 +9,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,4 +62,9 @@ public class RoleEmploymentExportImpl implements MasterListData {
         String companyId = AppContexts.user().companyId();
         return mRoleEmpExportRepository.findAllRoleEmployment(ROLE_TYPE_CAS005,companyId);
     }
+    
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 }

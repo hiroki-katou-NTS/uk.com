@@ -19,14 +19,14 @@ module nts.uk.com.view.cps017.a.service {
         let domainType = "CPS017";
         if (program.length > 1){
             program.shift();
-            domainType = domainType + program.join(" ");
         }
-            let _params = { domainId: "PersonSelectionItem", 
+        domainType = program.length > 1 ? domainType + program.join(" ") : domainType  + __viewContext.program.programName;
+        let _params = { domainId: "PersonSelectionItem",
                         domainType:domainType,
                         languageId: languageId, 
                         reportType: 0, mode: 1, baseDate : date };
-            return exportFile('/masterlist/report/print', _params);
-        }
+        return exportFile('/masterlist/report/print', _params);
+    }
 
     export function getAllSelectionItems() {
         return ajax(paths.getAllSelectionItems);
