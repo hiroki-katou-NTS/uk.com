@@ -276,6 +276,9 @@ module nts.uk.at.view.kal001.a.model {
         isMultiMonthAverage : KnockoutObservable<boolean>;
         multiMonthAverage :  KnockoutObservable<number> = ko.observable(190001);;
         isHoliday : KnockoutObservable<boolean>;
+        nameRequired : string;
+        nameStartRequired : string;
+        nameEndRequired : string;
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
@@ -287,12 +290,18 @@ module nts.uk.at.view.kal001.a.model {
                 this.typeInput = "fullDate"; 
                 this.isMultiMonthAverage = ko.observable(false);
                 this.isHoliday = ko.observable(false);
+                this.nameRequired = getText("KAL004_7");
+                this.nameStartRequired = getText("KAL004_74");
+                this.nameEndRequired = getText("KAL004_76");
                     
             }else if(dto.category ==7 || dto.category == 9 ){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 this.isMultiMonthAverage = ko.observable(false);
                 this.isHoliday = ko.observable(false);
+                this.nameRequired = getText("KAL004_7");
+                this.nameStartRequired = getText("KAL004_90");
+                this.nameEndRequired = getText("KAL004_91");
                 
             } else if(dto.category ==12){
                 if(dto.categoryName=='36協定　年間'){
@@ -300,20 +309,27 @@ module nts.uk.at.view.kal001.a.model {
                     this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth)); 
                     this.typeInput ="yearmonth"; 
                     this.isMultiMonthAverage = ko.observable(false);
-                                      
+                    this.nameRequired = getText("KAL004_7");
+                    this.nameStartRequired = getText("KAL004_90");
+                    this.nameEndRequired = getText("KAL004_91");                  
                 }else if(dto.categoryName=='36協定　1・2・4週間'){
                     this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                     this.typeInput = "fullDate";     
+                    this.nameRequired = getText("KAL004_7");
+                    this.nameStartRequired = getText("KAL004_74");
+                    this.nameEndRequired = getText("KAL004_76");
                     this.isMultiMonthAverage = ko.observable(false);              
                     
                 }else if(dto.categoryName=='36協定　複数月平均'){
                     this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                     this.typeInput = "yearmonth";   
                     this.isMultiMonthAverage = ko.observable(true); 
-                    this.multiMonthAverage(parseInt(dto.startMonth));                 
-                    
+                    this.multiMonthAverage(parseInt(dto.startMonth));
                 } else{
                     this.dateValue = ko.observable(new DateValue(dto.startMonth, dto.endMonth));
+                    this.nameRequired = getText("KAL004_7");
+                    this.nameStartRequired = getText("KAL004_90");
+                    this.nameEndRequired = getText("KAL004_91"); 
                     this.typeInput = "yearmonth";
                     this.isMultiMonthAverage = ko.observable(false);
                 }
