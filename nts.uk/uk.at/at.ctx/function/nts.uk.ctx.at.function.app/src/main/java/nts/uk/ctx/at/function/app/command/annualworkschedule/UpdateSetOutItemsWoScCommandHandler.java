@@ -8,16 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
-import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode;
-import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
 import nts.uk.shr.com.context.AppContexts;
 
