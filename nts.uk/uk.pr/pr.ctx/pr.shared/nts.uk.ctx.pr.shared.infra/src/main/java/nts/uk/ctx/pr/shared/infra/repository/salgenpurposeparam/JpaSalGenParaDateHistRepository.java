@@ -7,12 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistRepository;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistory;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValue;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValueRepository;
+import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.*;
+import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenParaYmHis;
 import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHis;
 import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHisPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -89,12 +88,19 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     }
 
     @Override
-    public void addSalGenParaValue(SalGenParaValue domain) {
+    public void addSalGenParaValue(String paraNo,SalGenParaValue domainSalGenParaValue) {
+        Optional<SalGenParaDateHistory> monthHistoryOptional =  getSalGenParaDateHistById(paraNo,AppContexts.user().companyId(),domainSalGenParaValue.getHistoryId());
+
+        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(monthHistoryOptional.get().getDateHistoryItem().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),AppContexts.user().companyId(),paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
+
 
     }
 
     @Override
-    public void updateSalGenParaValue(SalGenParaValue domain) {
+    public void updateSalGenParaValue(String paraNo,SalGenParaValue domainSalGenParaValue) {
+        Optional<SalGenParaDateHistory> monthHistoryOptional =  getSalGenParaDateHistById(paraNo,AppContexts.user().companyId(),domainSalGenParaValue.getHistoryId());
+
+        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(monthHistoryOptional.get().getDateHistoryItem().stream().filter(h -> h.identifier().equals(domainSalGenParaValue.getHistoryId())).findFirst().get(),AppContexts.user().companyId(),paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
 
     }
 

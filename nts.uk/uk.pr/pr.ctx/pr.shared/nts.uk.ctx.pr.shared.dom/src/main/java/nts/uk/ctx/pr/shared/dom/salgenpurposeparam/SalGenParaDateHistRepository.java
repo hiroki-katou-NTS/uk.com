@@ -26,9 +26,9 @@ public interface SalGenParaDateHistRepository
 
     Optional<SalGenParaValue> getSalGenParaValueById(String hisId);
 
-    void addSalGenParaValue(SalGenParaValue domain);
+    void addSalGenParaValue(String paraNo,SalGenParaValue domain);
 
-    void updateSalGenParaValue(SalGenParaValue domain);
+    void updateSalGenParaValue(String paraNo,SalGenParaValue domain);
 
     void removeSalGenParaValue(String hisId);
 
