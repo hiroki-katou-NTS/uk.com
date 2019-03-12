@@ -137,9 +137,11 @@ module nts.uk.at.view.kaf010.b {
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable(true);
             enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
+            appCur: any = null;
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
+                self.appCur = currentApp;
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
                     $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
@@ -196,6 +198,7 @@ module nts.uk.at.view.kaf010.b {
             
             initData(data: any) {
                 var self = this;
+                self.requiredReason(data.requireAppReasonFlg);
                 self.version = data.application.version;
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
@@ -451,7 +454,7 @@ module nts.uk.at.view.kaf010.b {
             }
 
             setErrorB6_8() {
-                $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+                $('.breakTimesCheck').ntsError('set', { messageId: 'MsgB_1', messageParams: [nts.uk.resource.getText("KAF010_56")] });
             }
 
             clearErrorB6_8() {
@@ -616,20 +619,21 @@ module nts.uk.at.view.kaf010.b {
             }
             
             updateOvertime(command: any){
+                let self = this;
                 service.updateOvertime(command)
                 .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
                             appcommon.CommonProcess.displayMailResult(data); 
                         } else {
-                            location.reload();
+                            self.reBinding(self.listAppMeta, self.appCur, false);
                         }
                     });    
                 })
                 .fail(function(res) { 
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            location.reload();
+                            self.reBinding(self.listAppMeta, self.appCur, false);
                         });    
                     } else {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 

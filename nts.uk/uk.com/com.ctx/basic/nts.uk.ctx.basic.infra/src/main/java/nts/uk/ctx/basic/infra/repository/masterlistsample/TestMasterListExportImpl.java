@@ -14,6 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "test") 
@@ -52,4 +53,8 @@ public class TestMasterListExportImpl implements MasterListData{
 		return columns;
 	}
 
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 }

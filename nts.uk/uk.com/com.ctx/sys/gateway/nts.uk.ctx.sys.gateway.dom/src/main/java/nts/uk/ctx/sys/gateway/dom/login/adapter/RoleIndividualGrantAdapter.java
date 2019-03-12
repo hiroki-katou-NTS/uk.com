@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
@@ -34,4 +35,8 @@ public interface RoleIndividualGrantAdapter {
 	 * @return the by user ID date role type
 	 */
 	List<RoleIndividualGrantImport> getByUserIDDateRoleType(String userId, GeneralDate date, int roleType);
+	
+	List<RoleIndividualGrantImport> getListDifRoleType(String userId, String companyId, int roleType, GeneralDate date);
+	
+	Optional<RoleIndividualGrantImport> getByRoleType(String userId, String companyId, int roleType, GeneralDate date);
 }

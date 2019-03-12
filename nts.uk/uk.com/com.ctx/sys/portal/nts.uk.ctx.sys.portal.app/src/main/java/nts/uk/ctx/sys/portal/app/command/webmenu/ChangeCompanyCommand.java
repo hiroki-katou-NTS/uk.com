@@ -12,6 +12,8 @@ public class ChangeCompanyCommand {
 	private String companyName;
 	
 	private String personName;
+
+	private String screenID;
 	
 	public ChangeCompanyCommand(String companyId) {
 		this.companyId = companyId;

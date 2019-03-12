@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementTimeByEmp;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -32,6 +33,10 @@ public interface AgreementTimeByPeriodPub {
 	List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
 			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr);
 
+	// RequestList453
+	List<AgreementTimeByEmpExport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
+									   Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs);
+
 	/**
 	 * 指定月36協定上限月間時間の取得
 	 * @param companyId 会社ID
@@ -40,7 +45,7 @@ public interface AgreementTimeByPeriodPub {
 	 * @return 月別実績の36協定上限時間リスト
 	 */
 	// RequestList548
-	List<AgreMaxTimeOfMonthly> maxTime(String companyId, String employeeId, YearMonthPeriod period);
+	List<AgreMaxTimeMonthOut> maxTime(String companyId, String employeeId, YearMonthPeriod period);
 
 	/**
 	 * 指定期間36協定上限複数月平均時間の取得

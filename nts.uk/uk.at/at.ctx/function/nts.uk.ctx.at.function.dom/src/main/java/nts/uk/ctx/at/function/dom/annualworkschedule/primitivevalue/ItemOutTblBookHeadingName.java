@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(12)
+@StringMaxLength(20)
 public class ItemOutTblBookHeadingName extends StringPrimitiveValue<ItemOutTblBookHeadingName> {
 
 	/**

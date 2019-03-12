@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaTimeRemainHist;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaTimeRemainHistPK;
 
 /**
  * 
@@ -23,13 +24,12 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 
 	@Override
 	public void addOrUpdate(AnnualLeaveTimeRemainingHistory domain) {
-		Optional<KrcdtAnnLeaTimeRemainHist> entityOpt = this.queryProxy().find(domain.getAnnLeavID(),
+		KrcdtAnnLeaTimeRemainHistPK annLeaTimeRemainHistPK = new KrcdtAnnLeaTimeRemainHistPK(domain.getEmployeeId(), domain.getGrantProcessDate(), domain.getGrantDate());
+		Optional<KrcdtAnnLeaTimeRemainHist> entityOpt = this.queryProxy().find(annLeaTimeRemainHistPK,
 				KrcdtAnnLeaTimeRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtAnnLeaTimeRemainHist entity = entityOpt.get();
 			entity.cid = domain.getCid();
-			entity.sid = domain.getEmployeeId();
-			entity.grantDate = domain.getGrantDate();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -54,7 +54,6 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 				entity.deductedDays = null;
 				entity.workingDays = null;
 			}
-			entity.grantProcessDate = domain.getGrantProcessDate();
 			this.commandProxy().update(entity);
 		} else {
 			this.commandProxy().insert(KrcdtAnnLeaTimeRemainHist.fromDomain(domain));
@@ -64,7 +63,7 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 	@Override
 	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(String employeeId,
 			GeneralDate calculationStartDate, GeneralDate closureStartDate) {
-		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a WHERE a.grantProcessDate >= :calculationStartDate AND a.grantProcessDate <= :closureStartDate AND a.sid = :employeeId";
+		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a WHERE a.krcdtAnnLeaTimeRemainHistPK.grantProcessDate >= :calculationStartDate AND a.krcdtAnnLeaTimeRemainHistPK.grantProcessDate <= :closureStartDate AND a.sid = :employeeId";
 		return this.queryProxy().query(sql, KrcdtAnnLeaTimeRemainHist.class)
 				.setParameter("calculationStartDate", calculationStartDate)
 				.setParameter("closureStartDate", closureStartDate).setParameter("employeeId", employeeId)
@@ -73,16 +72,19 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 
 	@Override
 	public void deleteAfterDate(String employeeId, GeneralDate date) {
-		String sql = "DELETE FROM KrcdtAnnLeaTimeRemainHist a WHERE a.sid = :employeeId and a.grantProcessDate > :startDate";
+		String sql = "DELETE FROM KrcdtAnnLeaTimeRemainHist a WHERE a.krcdtAnnLeaTimeRemainHistPK.sid = :employeeId and a.krcdtAnnLeaTimeRemainHistPK.grantProcessDate > :startDate";
 		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("startDate", date);
 	}
 
 	@Override
-	public List<AnnualLeaveTimeRemainingHistory> findBySid(String sid) {
+	public List<AnnualLeaveTimeRemainingHistory> findBySid(String sid, GeneralDate ymd) {
 		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a"
-				+ " WHERE a.sid = :employeeId ORDER BY a.grantDate DESC";
+				+ " WHERE a.krcdtAnnLeaTimeRemainHistPK.sid = :employeeId"
+				+ " AND a.krcdtAnnLeaTimeRemainHistPK.grantDate <= :ymd"
+				+ " ORDER BY a.krcdtAnnLeaTimeRemainHistPK.grantDate DESC";
 		return this.queryProxy().query(sql, KrcdtAnnLeaTimeRemainHist.class)
 				.setParameter("employeeId", sid)
+				.setParameter("ymd", ymd)
 				.getList(item -> item.toDomain());
 	}
 

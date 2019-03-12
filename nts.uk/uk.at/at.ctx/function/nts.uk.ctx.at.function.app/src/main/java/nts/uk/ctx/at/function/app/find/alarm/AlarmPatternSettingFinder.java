@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionAverMonthDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
@@ -83,6 +85,7 @@ public class AlarmPatternSettingFinder {
 		ExtractionPeriodUnitDto extractionUnit = null;
 		List<ExtractionPeriodMonthlyDto> listExtractionMonthly = new ArrayList<ExtractionPeriodMonthlyDto>();
 		ExtractionRangeYearDto extractionYear =null;
+		ExtractionAverMonthDto extractionAverMonth = null;
 		
 		if (domain.isDaily() || domain.isManHourCheck()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
@@ -112,15 +115,17 @@ public class AlarmPatternSettingFinder {
 					ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 					listExtractionMonthly.add(ExtractionPeriodMonthlyDto.fromDomain(extractionPeriodMonth));
 					
-				}else {
+				}else if (extractBase instanceof AYear){
 					extractionYear  = ExtractionRangeYearDto.fromDomain((AYear) extractBase);
+				} else {
+					extractionAverMonth = ExtractionAverMonthDto.fromDomain((AverageMonth) extractBase);
 				}
 			}
 			
 		}			
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
-				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear);
+				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear, extractionAverMonth);
 
 	}
 

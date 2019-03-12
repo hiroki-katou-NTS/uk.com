@@ -17,15 +17,14 @@
 			<div id="empt-list-setting"></div>
 
 		</div>
-		<div class="tabpanel-1-contents-area-right">
+		<div class="tabpanel-1-contents-area-right"  data-bind="with: timeOfEmployment">
 			<div class = "lbl-title-employeer-name">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Employment'])}</div>
-				<span class="label" data-bind="text: currentEmpName"></span>
+				<span class="label" data-bind="text: $parent.currentEmpName"></span>
 			</div>
 			<div class="label">#{i18n.getText('KMK008_6')}</div>
 			<HR />
-			<table class="table-basic-setting-list"
-				data-bind="with: timeOfCompany">
+			<table class="table-basic-setting-list">
 				<tr style="background-color: #E0F59E">
 					<th style="width: 25%">#{i18n.getText('KMK008_18')}</th>
 					<th style="width: 25%">#{i18n.getText('KMK008_19')}</th>
@@ -268,7 +267,40 @@
 						required: false }" /></td>
 				</tr>
 			</table>
+			<div class="label mt10">#{i18n.getText('KMK008_115')}</div>
+			<HR />
+			<div class="upperMonth">
+				<div
+					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_116')}</div>
+				<input class="time-editor-custom-width" tabindex="27"
+					data-bind="ntsTimeEditor: {
+						name: $parent.nameUpperMonth,  
+						constraint: 'AgreementOneMonthTime', 
+						value: upperMonth, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: true }" />
+				<span class="label">#{i18n.getText('KMK008_117')}</span>
+			</div>
+			<div class="upperMonth">
+				<div
+					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_119')}</div>
+				<input class="time-editor-custom-width" tabindex="27"
+					data-bind="ntsTimeEditor: {
+						name: $parent.nameUpperMonthAverage,  
+						constraint: 'AgreementOneMonthTime', 
+						value: upperMonthAverage, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: true }" />
+				<span class="label">#{i18n.getText('KMK008_124')}</span>
+			</div>
 		</div>
+		
 	</div>
 </body>
 </html>

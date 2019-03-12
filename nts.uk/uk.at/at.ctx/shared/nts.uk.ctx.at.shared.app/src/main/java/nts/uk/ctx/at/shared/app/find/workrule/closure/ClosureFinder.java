@@ -16,12 +16,14 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 //import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
+import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 //import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -53,6 +55,9 @@ public class ClosureFinder {
 
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
+	
+	@Inject
+	private ClosureEmploymentService service;
 
 	/**
 	 * Gets the closure id name.
@@ -335,5 +340,19 @@ public class ClosureFinder {
 			return closureEmp.get().getClosureId();
 		}
 		return null;
+	}
+	
+	//find by employeeID
+	public ClosureDto findClosureByEmployeeId() {
+		String employeeId = AppContexts.user().employeeId();
+
+		Optional<Closure> closureOpt = service.findClosureByEmployee(employeeId, GeneralDate.today());
+
+		if (closureOpt.isPresent()) {
+			return ClosureDto.fromDomain(closureOpt.get());
+		}
+
+		return null;
+
 	}
 }

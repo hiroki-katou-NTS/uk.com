@@ -1,4 +1,4 @@
-<div>
+<div data-bind="let: { $vm: $data }">
 	<div class="left-content-kaf006">
  			<!-- TH: 1 Employee -->
  			<div  data-bind ="if : !employeeFlag()">
@@ -340,7 +340,7 @@
 				data-bind="if: typicalReasonDisplayFlg">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
-					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
+					data-bind="ntsFormLabel:{ required: requiredReason }">#{i18n.getText('KAF006_24')}</div>
 				<!--A7_2 申請定型理由-->
 				<div class="combo-box-kaf006"
 					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
@@ -357,7 +357,7 @@
 				data-bind="if: displayAppReasonContentFlg">
 				<!--A7_3 申請理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
-					data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
+					data-bind="ntsFormLabel: { required: requiredReason }">#{i18n.getText('KAF006_26')}</div>
 				<!--A7_4 申請理由-->
 				<div id="multiline" >
 					<textarea  id="appReason" class="textarea-kaf006"

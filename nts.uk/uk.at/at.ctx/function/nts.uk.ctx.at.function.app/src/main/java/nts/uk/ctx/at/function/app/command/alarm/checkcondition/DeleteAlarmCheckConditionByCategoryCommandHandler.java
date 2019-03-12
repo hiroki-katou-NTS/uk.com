@@ -18,6 +18,8 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,6 +55,12 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 
 	@Inject
 	private IAgreeCondOtRepository otRep;
+	
+	@Inject
+	private IAlarmCheckSubConAgrRepository alarmCheckSubConAgrRepository;
+	
+	@Inject
+	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
 	
 	
 	@Override
@@ -114,6 +122,10 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			event.toBePublished();
 		}
 		
+		if (command.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.value) {
+			alarmCheckSubConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
+			alarmCheckConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
+		}
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 

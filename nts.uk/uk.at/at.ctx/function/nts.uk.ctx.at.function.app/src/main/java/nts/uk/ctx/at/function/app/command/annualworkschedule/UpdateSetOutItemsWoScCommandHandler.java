@@ -32,6 +32,11 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 	 */
 	private static final String CD_36_AGREEMENT_TIME = "01";
 
+	/**
+	 * 36協定上限時間
+	 */
+	private static final String CD_36_AVERAGE = "02";
+	
 	@Override
 	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -42,7 +47,7 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 			.filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true) && !m.isItem36AgreementTime())
 			.max((m1, m2) -> Integer.compare(Integer.valueOf(m1.getCd()), Integer.valueOf(m2.getCd())));
 
-		int[] itemOutCd = {1};
+		int[] itemOutCd = {2};
 		if (lastItemOutTblBookCommand.isPresent()) {
 			itemOutCd[0] = Integer.valueOf(lastItemOutTblBookCommand.get().getCd());
 		}
@@ -51,8 +56,12 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 				.map(m -> {
 						StringBuilder itemOutCdStr = new StringBuilder();
 						if (StringUtil.isNullOrEmpty(m.getCd(), true)) {
-							if (m.isItem36AgreementTime()) {
-								itemOutCdStr.append(CD_36_AGREEMENT_TIME);
+							if (m.isItem36AgreementTime()&&m.getSortBy()==1) {
+								if(m.getSortBy() == 1) {
+									itemOutCdStr.append(CD_36_AGREEMENT_TIME);
+								}else if(m.getSortBy() == 2){
+									itemOutCdStr.append(CD_36_AVERAGE);
+								}
 							} else {
 								itemOutCdStr.append(StringUtil.padLeft(String.valueOf(++itemOutCd[0]), 2, '0'));
 							}
@@ -74,11 +83,9 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 								os.getOperation())).collect(Collectors.toList()));
 				}).collect(Collectors.toList());
 
-		repository.update(new SetOutItemsWoSc(companyId, new OutItemsWoScCode(updateCommand.getCd()),
-						new OutItemsWoScName(updateCommand.getName()),
-						updateCommand.isOutNumExceedTime36Agr(),
-						EnumAdaptor.valueOf(updateCommand.getDisplayFormat(), OutputAgreementTime.class),
-						updateCommand.getPrintForm(),
-						listItemOutTblBook));
+		repository.update(SetOutItemsWoSc.createFromJavaType(companyId, updateCommand.getCd(), updateCommand.getName(),
+				updateCommand.isOutNumExceedTime36Agr(), updateCommand.getPrintForm(), listItemOutTblBook,
+				updateCommand.isMultiMonthDisplay(), updateCommand.getMonthsInTotalDisplay(),
+				updateCommand.getTotalAverageDisplay()));
 	}
 }

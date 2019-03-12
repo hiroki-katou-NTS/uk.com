@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * ドメインサービス：36協定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface AgreementDomainService {
 

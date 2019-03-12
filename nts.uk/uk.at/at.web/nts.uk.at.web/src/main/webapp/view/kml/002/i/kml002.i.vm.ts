@@ -12,8 +12,8 @@ module kml002.i.viewmodel {
         constructor() {
             var self = this;
             self.useCls = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("KML002_99") },
-                { code: '1', name: nts.uk.resource.getText("KML002_100") }
+                { code: '1', name: nts.uk.resource.getText("KML002_99") },
+                { code: '0', name: nts.uk.resource.getText("KML002_100") }
             ]);
 
 

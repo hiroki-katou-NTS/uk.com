@@ -151,9 +151,11 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		if (aggregateAtr == MonthlyAggregateAtr.MONTHLY) isAggregateHolidayWork = true;
 		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			
+			// 2019.3.8 UPD shuichi_ishida 36上限計算で法内休出計上が必要なため、下の判定は一旦廃止　（法改正：統合テスト結果より）
 			// 休出を集計するか確認する
-			isAggregateHolidayWork = this.confirmAggregateHolidayWork(
-					companyId, workInfo, excessOutsideTimeSet, companySets, repositories);
+			//isAggregateHolidayWork = this.confirmAggregateHolidayWork(
+			//		companyId, workInfo, excessOutsideTimeSet, companySets, repositories);
+			isAggregateHolidayWork = true;
 		}
 		if (isAggregateHolidayWork){
 			

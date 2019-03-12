@@ -23,6 +23,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 /**
  * 
  * @author Hoidd
@@ -190,6 +191,11 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("CAS003_37");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 	
 	private void putDataEmpty(Map<String, Object> data){

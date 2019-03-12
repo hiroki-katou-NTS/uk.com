@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthP
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
@@ -94,6 +96,9 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 日別実績の運用開始設定 */
 	@Inject
 	private OperationStartSetDailyPerformRepository operationStartSetRepo;
+	/** 年休付与残数履歴データ */
+	@Inject
+	private AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo;
 	
 	/** 期間中の年休残数を取得 */
 	@Override
@@ -103,26 +108,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			Optional<Boolean> isOverWriteOpt, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt, Optional<Boolean> noCheckStartDate) {
 
-		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-				this.empEmployee,
-				this.annLeaEmpBasicInfoRepo,
-				this.yearHolidayRepo,
-				this.lengthServiceRepo,
-				this.annualPaidLeaveSet,
-				this.annLeaGrantRemDataRepo,
-				this.annLeaMaxDataRepo,
-				this.getClosureStartForEmployee,
-				this.calcNextAnnualLeaveGrantDate,
-				this.interimRemOffMonth,
-				this.createInterimAnnual,
-				this.interimRemainRepo,
-				this.tmpAnnualLeaveMng,
-				this.attendanceTimeOfMonthlyRepo,
-				this.getAnnLeaRemNumWithinPeriod,
-				this.closureSttMngRepo,
-				this.calcAnnLeaAttendanceRate,
-				this.grantYearHolidayRepo,
-				this.operationStartSetRepo);
+		GetAnnLeaRemNumWithinPeriodProc proc = this.createProc();
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, noCheckStartDate);
@@ -140,32 +126,50 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 
-		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-				this.empEmployee,
-				this.annLeaEmpBasicInfoRepo,
-				this.yearHolidayRepo,
-				this.lengthServiceRepo,
-				this.annualPaidLeaveSet,
-				this.annLeaGrantRemDataRepo,
-				this.annLeaMaxDataRepo,
-				this.getClosureStartForEmployee,
-				this.calcNextAnnualLeaveGrantDate,
-				this.interimRemOffMonth,
-				this.createInterimAnnual,
-				this.interimRemainRepo,
-				this.tmpAnnualLeaveMng,
-				this.attendanceTimeOfMonthlyRepo,
-				this.getAnnLeaRemNumWithinPeriod,
-				this.closureSttMngRepo,
-				this.calcAnnLeaAttendanceRate,
-				this.grantYearHolidayRepo,
-				this.operationStartSetRepo);
+		GetAnnLeaRemNumWithinPeriodProc proc = this.createProc();
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
 				noCheckStartDate, companySets, employeeSets, monthlyCalcDailys);
 	}
 
+	/** 期間中の年休残数を取得 */
+	@Override
+	public Optional<AggrResultOfAnnualLeave> algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt, Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			Optional<Boolean> noCheckStartDate,
+			Optional<Boolean> isOutShortRemain,
+			Optional<Boolean> aggrPastMonthMode, Optional<YearMonth> yearMonth) {
+
+		GetAnnLeaRemNumWithinPeriodProc proc = this.createProc();
+		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
+				isGetNextMonthData, isCalcAttendanceRate,
+				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, noCheckStartDate,
+				isOutShortRemain, aggrPastMonthMode, yearMonth);
+	}
+	
+	/** 期間中の年休残数を取得　（月別集計用） */
+	@Override
+	public Optional<AggrResultOfAnnualLeave> algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt, Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			boolean noCheckStartDate,
+			Optional<Boolean> isOutShortRemain,
+			Optional<Boolean> aggrPastMonthMode, Optional<YearMonth> yearMonth,
+			Optional<MonAggrCompanySettings> companySets, Optional<MonAggrEmployeeSettings> employeeSets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
+
+		GetAnnLeaRemNumWithinPeriodProc proc = this.createProc();
+		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
+				isGetNextMonthData, isCalcAttendanceRate,
+				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
+				noCheckStartDate, isOutShortRemain, aggrPastMonthMode, yearMonth,
+				companySets, employeeSets, monthlyCalcDailys);
+	}
+	
 	@Override
 	public GetAnnLeaRemNumWithinPeriodProc createProc() {
 		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
@@ -187,7 +191,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.closureSttMngRepo,
 				this.calcAnnLeaAttendanceRate,
 				this.grantYearHolidayRepo,
-				this.operationStartSetRepo);
+				this.operationStartSetRepo,
+				this.annualLeaveRemainHistRepo);
 		return proc;
 	}
 }

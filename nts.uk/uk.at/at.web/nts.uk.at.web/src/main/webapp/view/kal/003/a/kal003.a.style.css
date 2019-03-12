@@ -3,7 +3,7 @@
 }
 
 .ntsControl .nts-input {
-	padding: 2px 10px !important;
+	/* padding: 2px 10px !important; */
 }
 
 #div-fixed-table .nts-fixed-table .nts-fixed-body-container {
@@ -129,4 +129,10 @@ div .tab-content-5 .nts-fixed-table .nts-fixed-body-container{
 }
 #category7 .nts-fixed-table.cf .scroll-header.nts-fixed-header{
 	    display: none;
+}
+.check-box-sub{
+	margin-top: 20px;
+}
+.check-box-sub{
+	width: 200px;
 }

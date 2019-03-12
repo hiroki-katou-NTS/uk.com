@@ -1,4 +1,4 @@
-<div id="container">
+<div id="container" data-bind="let: { $vm: $data }">
 	<div id="content_left">
 		<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
@@ -302,7 +302,7 @@
 		<div data-bind="if:appTypeSet().displayFixedReason() !=0">
 			<div class="div_line">
 				<div class="div_line_col_1">
-					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+					<div data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF011_16')}</div>
 				</div>
 				<div class="div_line_col_2">
 					<div id="reasonCombo" class="kaf-011-combo-box"
@@ -326,7 +326,7 @@
 			<div class="div_line">
 				<!-- constraint: -->
 				<div class="div_line_col_1">
-					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+					<div data-bind="ntsFormLabel: { constraint: 'AppReason', required: requiredReason}">#{i18n.getText('KAF011_17')}</div>
 				</div>
 				<div class="div_line_col_2">
 					<textarea style="height: 100px ;position: relative;" id="appReason"
