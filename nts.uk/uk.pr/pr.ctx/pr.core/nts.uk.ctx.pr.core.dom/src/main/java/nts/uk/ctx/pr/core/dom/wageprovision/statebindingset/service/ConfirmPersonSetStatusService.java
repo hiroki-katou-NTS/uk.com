@@ -187,25 +187,26 @@ public class ConfirmPersonSetStatusService {
         String masterCode = null;
         String masterName = null;
         StateLinkSetMaster master = null;
+        String tempMasterCode = null;
         switch (type.get()) {
             case DEPARMENT:
                 // TODO 部門紐付け明細書取得
                 DepartmentImport depImport = empInfo.getDepartment();
                 if (depImport == null) break;
-                masterCode = depImport.getDepartmentCode();
-                masterName = depImport.getDepartmentName();
-                if (masterDepMap.containsKey(masterCode)) {
-                    master = masterDepMap.get(masterCode);
+                tempMasterCode = depImport.getDepartmentCode();
+                if (masterDepMap.containsKey(tempMasterCode)) {
+                    master = masterDepMap.get(tempMasterCode);
+                    masterCode = depImport.getDepartmentCode();
+                    masterName = depImport.getDepartmentName();
                 }
                 personSet.setSettingCtg(SettingCls.DEPARMENT.value);
                 break;
             case EMPLOYEE:
-                String tempMasterCode = null;
                 EmploymentImport empImport = empInfo.getEmployment();
                 if (empImport == null) break;
                 tempMasterCode = empImport.getEmploymentCode();
                 if (masterEmpMap.containsKey(tempMasterCode)) {
-                    master = masterEmpMap.get(masterCode);
+                    master = masterEmpMap.get(tempMasterCode);
                     masterCode = empImport.getEmploymentCode();
                     masterName = empImport.getEmploymentName();
                 }
@@ -214,20 +215,22 @@ public class ConfirmPersonSetStatusService {
             case CLASSIFICATION:
                 ClassificationImport clsImport = empInfo.getClassification();
                 if (clsImport == null) break;
-                masterCode = clsImport.getClassificationCode();
-                masterName = clsImport.getClassificationName();
-                if (masterClsMap.containsKey(masterCode)) {
-                    master = masterClsMap.get(masterCode);
+                tempMasterCode = clsImport.getClassificationCode();
+                if (masterClsMap.containsKey(tempMasterCode)) {
+                    master = masterClsMap.get(tempMasterCode);
+                    masterCode = clsImport.getClassificationCode();
+                    masterName = clsImport.getClassificationName();
                 }
                 personSet.setSettingCtg(SettingCls.CLASSIFICATION.value);
                 break;
             case POSITION:
                 PositionImport posImport = empInfo.getPosition();
                 if (posImport == null) break;
-                masterCode = posImport.getPositionCode();
-                masterName = posImport.getPositionName();
-                if (masterPosMap.containsKey(masterCode)) {
-                    master = masterPosMap.get(masterCode);
+                tempMasterCode = posImport.getPositionCode();
+                if (masterPosMap.containsKey(tempMasterCode)) {
+                    master = masterPosMap.get(tempMasterCode);
+                    masterCode = posImport.getPositionCode();
+                    masterName = posImport.getPositionName();
                 }
                 personSet.setSettingCtg(SettingCls.POSITION.value);
                 break;
