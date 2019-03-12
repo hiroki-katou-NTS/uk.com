@@ -63,10 +63,15 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             $("[data-toggle='userguide-not-register']").ntsUserGuide();
 
             self.codeSelected.subscribe(value => {
+                if (isNullOrUndefined(value)) return;
                 block.invisible();
                 let itemName: StatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
                 });
+                if (isNullOrUndefined(itemName)) {
+                    block.clear();
+                    return;
+                };
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
                 self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
@@ -183,11 +188,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                                                   formula: any,
                                                   wageTable: any) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
-                if (!isNullOrUndefined(pay)) {
-                    self.paymentItemSet().setData(pay);
-                    self.loadControlD2_9();
-                    self.assignItemRangeSet();
-                }
+
+                self.paymentItemSet().setData(pay);
+                self.loadControlD2_9();
+                self.assignItemRangeSet();
+
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
@@ -456,13 +461,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
          */
         condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            if (self.params.printSet == shareModel.StatementPrintAtr.DO_NOT_PRINT) {
-                if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
-                    self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE.toString());
-                } else if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
-                    self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString());
-                }
-            }
             if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(null));
             } else {
@@ -492,6 +490,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 };
                 service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                     self.itemNames(StatementItem.fromApp(data));
+                    self.codeSelected.valueHasMutated();
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
@@ -835,6 +834,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.clearError("#D3_13");
                 self.checkError("#D3_13");
             });
+            self.itemRangeSet.errorUpRangeValAmount.subscribe(() => {
+                self.clearError("#D3_13");
+                self.checkError("#D3_13");
+            });
 
             self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
                 self.itemRangeSet.alarmUpRangeValAmount(null);
@@ -845,6 +848,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.clearError("#D3_20");
             });
             self.itemRangeSet.alarmLowerLimitSetAtr.subscribe(() => {
+                self.clearError("#D3_20");
+                self.checkError("#D3_20");
+            });
+            self.itemRangeSet.alarmUpRangeValAmount.subscribe(() => {
                 self.clearError("#D3_20");
                 self.checkError("#D3_20");
             });
@@ -1031,8 +1038,13 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         }
 
         setData(data: IErrorAlarmRangeSetting) {
-            this.upperLimitSetting.setData(data.upperLimitSetting);
-            this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            if (isNullOrUndefined(data)) {
+                this.upperLimitSetting.setData(null);
+                this.lowerLimitSetting.setData(null);
+            } else {
+                this.upperLimitSetting.setData(data.upperLimitSetting);
+                this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            }
         }
     }
 
@@ -1057,8 +1069,13 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         }
 
         setData(data: IErrorAlarmValueSetting) {
-            this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
-            this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            if (isNullOrUndefined(data)) {
+                this.valueSettingAtr(false);
+                this.rangeValue(null);
+            } else {
+                this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
+                this.rangeValue(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
+            }
         }
     }
 
@@ -1115,20 +1132,37 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         }
 
         setData(data: IPaymentItemSet) {
-            this.taxAtr(data.taxAtr);
-            this.taxAtrText(shareModel.getTaxAtrText(data.taxAtr));
-            this.limitAmount(data.limitAmount);
-            this.socialInsuranceCategory(data.socialInsuranceCategory);
-            this.socialInsuranceCategoryText(shareModel.getSocialInsuranceCategoryText(data.socialInsuranceCategory));
-            this.laborInsuranceCategory(data.laborInsuranceCategory);
-            this.laborInsuranceCategoryText(shareModel.getLaborInsuranceCategoryText(data.laborInsuranceCategory));
-            this.everyoneEqualSet(data.everyoneEqualSet);
-            this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.everyoneEqualSet));
-            this.averageWageAtr(data.averageWageAtr);
-            this.averageWageAtrText(shareModel.getAverageWageAtrText(data.averageWageAtr));
-            this.breakdownItemUseAtr(data.breakdownItemUseAtr);
-            this.errorRangeSetting.setData(data.errorRangeSetting);
-            this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            if (isNullOrUndefined(data)) {
+                this.taxAtr(null);
+                this.taxAtrText(null);
+                this.limitAmount(null);
+                this.socialInsuranceCategory(null);
+                this.socialInsuranceCategoryText(null);
+                this.laborInsuranceCategory(null);
+                this.laborInsuranceCategoryText(null);
+                this.everyoneEqualSet(null);
+                this.everyoneEqualSetText(null);
+                this.averageWageAtr(null);
+                this.averageWageAtrText(null);
+                this.breakdownItemUseAtr(null);
+                this.errorRangeSetting.setData(null);
+                this.alarmRangeSetting.setData(null);
+            } else {
+                this.taxAtr(data.taxAtr);
+                this.taxAtrText(shareModel.getTaxAtrText(data.taxAtr));
+                this.limitAmount(data.limitAmount);
+                this.socialInsuranceCategory(data.socialInsuranceCategory);
+                this.socialInsuranceCategoryText(shareModel.getSocialInsuranceCategoryText(data.socialInsuranceCategory));
+                this.laborInsuranceCategory(data.laborInsuranceCategory);
+                this.laborInsuranceCategoryText(shareModel.getLaborInsuranceCategoryText(data.laborInsuranceCategory));
+                this.everyoneEqualSet(data.everyoneEqualSet);
+                this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.everyoneEqualSet));
+                this.averageWageAtr(data.averageWageAtr);
+                this.averageWageAtrText(shareModel.getAverageWageAtrText(data.averageWageAtr));
+                this.breakdownItemUseAtr(data.breakdownItemUseAtr);
+                this.errorRangeSetting.setData(data.errorRangeSetting);
+                this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            }
         }
     }
 

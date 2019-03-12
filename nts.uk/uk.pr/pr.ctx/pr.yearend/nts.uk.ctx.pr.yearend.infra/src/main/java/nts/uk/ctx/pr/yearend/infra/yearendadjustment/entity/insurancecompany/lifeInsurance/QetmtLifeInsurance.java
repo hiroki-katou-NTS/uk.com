@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QETMT_LIFE_INSURANCE")
+@Table(name = "QETMT_INSURANCE_LIFE")
 public class QetmtLifeInsurance extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class QetmtLifeInsurance extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "LIFE_INSURANCE_NAME")
+    @Column(name = "INSURANCE_LIFE_NAME")
     public String lifeInsuranceName;
     
     @Override

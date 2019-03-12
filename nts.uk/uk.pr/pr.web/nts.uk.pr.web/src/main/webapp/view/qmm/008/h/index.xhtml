@@ -47,7 +47,7 @@
 							value: startMonth, 
 							dateFormat: 'yearmonth', 
 							valueFormat: 'YYYYMM', 
-							required: true, 
+							required: modifyMethod() == 1,
 							enable: modifyMethod() == 1}"
 							tabindex="2" />
 						<div style= "width: 80px; display: inline-block" data-bind="text: displayEndMonth"></div>

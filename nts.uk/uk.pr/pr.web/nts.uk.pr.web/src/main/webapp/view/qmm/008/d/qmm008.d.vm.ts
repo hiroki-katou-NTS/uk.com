@@ -153,11 +153,11 @@ module nts.uk.pr.view.qmm008.d {
 
                                 self.currentCode(response.code);
                                 self.isEnableCode(false);
+                                _.defer(function() {
+                                    $("#D4_3").focus();
+                                });
+                            });
 
-                            });
-                            _.defer(function() {
-                                $("#D4_3").focus();
-                            });
                         }
                         block.clear();
                     });

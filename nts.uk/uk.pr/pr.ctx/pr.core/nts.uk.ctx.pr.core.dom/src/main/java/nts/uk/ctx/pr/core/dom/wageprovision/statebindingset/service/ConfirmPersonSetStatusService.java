@@ -80,7 +80,9 @@ public class ConfirmPersonSetStatusService {
         // ドメインモデル「明細書紐付け履歴（雇用）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
         Map<String, StateLinkSetMaster> stateLinkSetMasterEmpMap = stateCorreHisEmRepo.getStateLinkSetMaster(cid, yearMonth)
-                .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
+                .stream().filter(x->x.getBonusCode().isPresent() || x.getSalaryCode().isPresent())
+                .collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
+
 
         // ドメインモデル「明細書紐付け履歴（分類）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
@@ -198,12 +200,14 @@ public class ConfirmPersonSetStatusService {
                 personSet.setSettingCtg(SettingCls.DEPARMENT.value);
                 break;
             case EMPLOYEE:
+                String tempMasterCode = null;
                 EmploymentImport empImport = empInfo.getEmployment();
                 if (empImport == null) break;
-                masterCode = empImport.getEmploymentCode();
-                masterName = empImport.getEmploymentName();
-                if (masterEmpMap.containsKey(masterCode)) {
+                tempMasterCode = empImport.getEmploymentCode();
+                if (masterEmpMap.containsKey(tempMasterCode)) {
                     master = masterEmpMap.get(masterCode);
+                    masterCode = empImport.getEmploymentCode();
+                    masterName = empImport.getEmploymentName();
                 }
                 personSet.setSettingCtg(SettingCls.EMPLOYEE.value);
                 break;

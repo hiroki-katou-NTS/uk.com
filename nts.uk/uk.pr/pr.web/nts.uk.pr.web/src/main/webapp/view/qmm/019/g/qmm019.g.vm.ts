@@ -41,9 +41,11 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             $("[data-toggle='userguide-not-register']").ntsUserGuide();
 
             self.codeSelected.subscribe(value => {
+                if (isNullOrUndefined(value)) return;
                 let itemName = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
-                })
+                });
+                if (isNullOrUndefined(itemName)) return;
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
                 self.dataScreen().shortName(itemName.shortName);
                 // 選択モードへ移行する
@@ -156,6 +158,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
                 };
                 service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                     self.itemNames(StatementItem.fromApp(data));
+                    self.codeSelected.valueHasMutated();
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
