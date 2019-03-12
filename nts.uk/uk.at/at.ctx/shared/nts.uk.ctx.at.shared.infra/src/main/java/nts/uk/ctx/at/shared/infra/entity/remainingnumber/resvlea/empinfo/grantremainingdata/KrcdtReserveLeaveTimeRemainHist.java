@@ -6,7 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -22,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_RVSLEA_TIME_RM_HIST_121")
+@Table(name = "KRCDT_RVSLEA_TIME_RM_HIST")
 public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
