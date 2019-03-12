@@ -17,6 +17,8 @@ public class SalGenYearMonthHistoryCommand {
     private Integer end;
     
     private int mode;
+
+    private SalGenParaValueCommand salGenParaValueCommand;
     
 
 }

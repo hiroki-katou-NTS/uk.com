@@ -15,8 +15,6 @@ public class SalGenParaYearMonthHistoryService {
 
     @Inject
     private SalGenParaYMHistRepository salGenParaYMHistRepository;
-    @Inject
-    private SalGenParaValueRepository salGenParaValueRepository;
 
     public void updateYearMonthHistory(String cId, String paraNo,String hisId, YearMonth start, YearMonth end){
         Optional<SalGenParaYearMonthHistory> yearMonthHistory = salGenParaYMHistRepository.getAllSalGenParaYMHist(cId , paraNo);
@@ -26,6 +24,7 @@ public class SalGenParaYearMonthHistoryService {
             return;
         }
         yearMonthHistory.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+
         salGenParaYMHistRepository.update(itemToBeUpdate.get(), cId, paraNo);
         this.updateItemBefore(yearMonthHistory.get(), itemToBeUpdate.get(), cId, paraNo);
     }
@@ -46,7 +45,6 @@ public class SalGenParaYearMonthHistoryService {
             return;
         }
         yearMonthHistory.get().remove(itemToBeDelete.get());
-        salGenParaValueRepository.remove(hisId);
         salGenParaYMHistRepository.remove(yearMonthHistory.get().getParaNo(), cId, hisId);
         if (yearMonthHistory.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = yearMonthHistory.get().getHistory().get(0);

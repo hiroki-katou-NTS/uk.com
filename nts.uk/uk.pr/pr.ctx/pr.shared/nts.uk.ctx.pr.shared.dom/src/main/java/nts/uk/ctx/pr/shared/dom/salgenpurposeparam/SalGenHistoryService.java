@@ -18,8 +18,7 @@ public class SalGenHistoryService {
     @Inject
     private SalGenParaYMHistRepository mSalGenParaYMHistRepository;
 
-    @Inject
-    private SalGenParaValueRepository mSalGenParaValueRepository;
+
 
     @Inject
     private SalGenParaDateHistRepository mSalGenParaDateHistRepository;
@@ -36,7 +35,7 @@ public class SalGenHistoryService {
                 itemtoBeAdded = salGenParaYearMonthHistory.get();
             }
             itemtoBeAdded.add(yearMonthItem);
-            this.addHistory(yearMonthItem, cId,paraNo);
+            this.addHistory(yearMonthItem,salGenParaValue, cId,paraNo);
             this.updateItemBefore(salGenParaYearMonthHistory.get(), yearMonthItem, cId,paraNo);
             this.addSalGenParaValue(salGenParaValue);
         }
@@ -55,21 +54,21 @@ public class SalGenHistoryService {
     }
 
 
-    private void addHistory(YearMonthHistoryItem itemtoBeAdded, String cId, String paraNo){
+    private void addHistory(YearMonthHistoryItem itemtoBeAdded,SalGenParaValue domainSalGenParaValue, String cId, String paraNo){
         if(itemtoBeAdded == null){
             return;
         }
-        mSalGenParaYMHistRepository.add(itemtoBeAdded, cId,paraNo);
+        mSalGenParaYMHistRepository.add(itemtoBeAdded,domainSalGenParaValue, cId,paraNo);
     }
     private void updateItemBefore(SalGenParaYearMonthHistory salGenParaYearMonthHistory, YearMonthHistoryItem item, String cId, String paraNo){
         Optional<YearMonthHistoryItem> itemToBeUpdated = salGenParaYearMonthHistory.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
             return;
         }
-        mSalGenParaYMHistRepository.update(itemToBeUpdated.get(), cId,paraNo);
+        mSalGenParaYMHistRepository.update(itemToBeUpdated.get(),cId,paraNo);
     }
     private void addSalGenParaValue(SalGenParaValue salGenParaValue){
-        mSalGenParaValueRepository.add(salGenParaValue);
+        mSalGenParaYMHistRepository.addSalGenParaValue(salGenParaValue);
     }
 
     //add DateTime History
@@ -78,7 +77,7 @@ public class SalGenHistoryService {
         if(itemtoBeAdded == null){
             return;
         }
-        mSalGenParaDateHistRepository.add(itemtoBeAdded,paraNo,cId);
+        mSalGenParaDateHistRepository.add(itemtoBeAdded,null,paraNo,cId);
     }
     private void updateItemDateBefore(SalGenParaDateHistory salGenParaDateHistory, DateHistoryItem item, String cId, String paraNo){
         Optional<DateHistoryItem> itemToBeUpdated = salGenParaDateHistory.immediatelyBefore(item);

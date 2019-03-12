@@ -16,10 +16,21 @@ public interface SalGenParaDateHistRepository
 
     Optional<SalGenParaDateHistory> getSalGenParaDateHistById(String paraNo, String cid, String hisId);
 
-    void add(DateHistoryItem domain, String paraNo, String cId);
+    void add(DateHistoryItem domain,SalGenParaValue domainSalGenParaValue, String paraNo, String cId);
 
     void update(DateHistoryItem domain,String paraNo,String cId);
 
     void remove(String paraNo, String cid, String hisId);
+
+    List<SalGenParaValue> getAllSalGenParaValue();
+
+    Optional<SalGenParaValue> getSalGenParaValueById(String hisId);
+
+    void addSalGenParaValue(SalGenParaValue domain);
+
+    void updateSalGenParaValue(SalGenParaValue domain);
+
+    void removeSalGenParaValue(String hisId);
+
 
 }

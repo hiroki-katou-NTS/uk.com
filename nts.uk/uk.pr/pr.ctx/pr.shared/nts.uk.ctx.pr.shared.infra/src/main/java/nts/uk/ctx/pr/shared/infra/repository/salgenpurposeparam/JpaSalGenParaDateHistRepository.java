@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistRepository;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistory;
+import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValue;
+import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValueRepository;
 import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHis;
 import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHisPk;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -21,6 +23,7 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSalGenPrDateHis f";
     private static final String SELECT_BY_KEY_PARANO = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrDateHisPk.paraNo =:paraNo AND  f.salGenPrDateHisPk.cid =:cid ORDER BY f.startDate DESC  ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrDateHisPk.paraNo =:paraNo AND  f.salGenPrDateHisPk.cid =:cid AND  f.salGenPrDateHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_KEY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrDateHisPk.hisId =:hisId ";
 
     @Override
     public Optional<SalGenParaDateHistory> getAllSalGenParaDateHist(String cid,String paraNo){
@@ -42,15 +45,16 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     }
 
     @Override
-    public void add(DateHistoryItem domain,String paraNo,String cId){
-        this.commandProxy().insert(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
+    public void add(DateHistoryItem domain,SalGenParaValue domainSalGenParaValue,String paraNo,String cId){
+        this.commandProxy().insert(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
     }
 
 
 
     @Override
     public void update(DateHistoryItem domain,String paraNo,String cId){
-        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
+        Optional<SalGenParaValue> domainSalGenParaValue = getSalGenParaValueById(domain.identifier());
+        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId,domainSalGenParaValue.get().getSelection(),domainSalGenParaValue.get().getAvailableAtr(),domainSalGenParaValue.get().getNumValue(),domainSalGenParaValue.get().getCharValue(),domainSalGenParaValue.get().getTimeValue(),domainSalGenParaValue.get().getTargetAtr()));
     }
 
     @Override
@@ -72,4 +76,30 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
         return yearMonthHistoryItemList;
     }
 
+    @Override
+    public List<SalGenParaValue> getAllSalGenParaValue() {
+        return null;
+    }
+
+    @Override
+    public Optional<SalGenParaValue> getSalGenParaValueById(String hisId) {
+        return this.queryProxy().query(SELECT_BY_KEY_HIS_ID, QqsmtSalGenPrDateHis.class)
+                .setParameter("hisId", hisId)
+                .getSingle(c->null);
+    }
+
+    @Override
+    public void addSalGenParaValue(SalGenParaValue domain) {
+
+    }
+
+    @Override
+    public void updateSalGenParaValue(SalGenParaValue domain) {
+
+    }
+
+    @Override
+    public void removeSalGenParaValue(String hisId) {
+
+    }
 }

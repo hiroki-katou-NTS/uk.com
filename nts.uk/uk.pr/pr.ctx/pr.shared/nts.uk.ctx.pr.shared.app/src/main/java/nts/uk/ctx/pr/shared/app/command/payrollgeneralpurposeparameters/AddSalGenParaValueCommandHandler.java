@@ -6,6 +6,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenHistoryService;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValue;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValueRepository;
+import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaYMHistRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
 {
     
     @Inject
-    private SalGenParaValueRepository repository;
+    private SalGenParaYMHistRepository repository;
 
     private final static int MODE_SCREEN_ADD = 1;
 
@@ -43,7 +44,7 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
 
         }
         else{
-            repository.update(new SalGenParaValue(command.getMSalGenParaValueCommand().getHistoryId(),
+            repository.updateSalGenParaValue(command.getParaNo(),new SalGenParaValue(command.getMSalGenParaValueCommand().getHistoryId(),
                     command.getMSalGenParaValueCommand().getSelection(),
                     command.getMSalGenParaValueCommand().getAvailableAtr(),
                     command.getMSalGenParaValueCommand().getNumValue(),
