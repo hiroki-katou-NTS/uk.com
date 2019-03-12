@@ -3,10 +3,7 @@ package nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenHistoryService;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValue;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaValueRepository;
-import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaYMHistRepository;
+import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,9 +16,11 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
     
     @Inject
     private SalGenParaYMHistRepository repository;
+    @Inject
+    private SalGenParaDateHistRepository mSalGenParaDateHistRepository;
 
     private final static int MODE_SCREEN_ADD = 1;
-
+    private final static int MODE_HISTORY_YEARMONTH = 1;
     @Inject
     private SalGenHistoryService salGenHistoryService;
 
@@ -44,13 +43,25 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
 
         }
         else{
-            repository.updateSalGenParaValue(command.getParaNo(),new SalGenParaValue(command.getMSalGenParaValueCommand().getHistoryId(),
-                    command.getMSalGenParaValueCommand().getSelection(),
-                    command.getMSalGenParaValueCommand().getAvailableAtr(),
-                    command.getMSalGenParaValueCommand().getNumValue(),
-                    command.getMSalGenParaValueCommand().getCharValue(),
-                    command.getMSalGenParaValueCommand().getTimeValue(),
-                    command.getMSalGenParaValueCommand().getTargetAtr()));
+            if(command.getModeHistory() == MODE_HISTORY_YEARMONTH){
+                repository.updateSalGenParaValue(command.getParaNo(),new SalGenParaValue(command.getMSalGenParaValueCommand().getHistoryId(),
+                        command.getMSalGenParaValueCommand().getSelection(),
+                        command.getMSalGenParaValueCommand().getAvailableAtr(),
+                        command.getMSalGenParaValueCommand().getNumValue(),
+                        command.getMSalGenParaValueCommand().getCharValue(),
+                        command.getMSalGenParaValueCommand().getTimeValue(),
+                        command.getMSalGenParaValueCommand().getTargetAtr()));
+            }
+            else{
+                mSalGenParaDateHistRepository.updateSalGenParaValue(command.getParaNo(),new SalGenParaValue(command.getMSalGenParaValueCommand().getHistoryId(),
+                        command.getMSalGenParaValueCommand().getSelection(),
+                        command.getMSalGenParaValueCommand().getAvailableAtr(),
+                        command.getMSalGenParaValueCommand().getNumValue(),
+                        command.getMSalGenParaValueCommand().getCharValue(),
+                        command.getMSalGenParaValueCommand().getTimeValue(),
+                        command.getMSalGenParaValueCommand().getTargetAtr()));
+            }
+
         }
 
     }

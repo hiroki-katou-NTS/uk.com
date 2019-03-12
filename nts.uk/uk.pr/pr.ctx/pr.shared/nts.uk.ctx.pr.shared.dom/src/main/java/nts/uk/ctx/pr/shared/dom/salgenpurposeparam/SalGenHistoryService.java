@@ -17,9 +17,6 @@ import java.util.Optional;
 public class SalGenHistoryService {
     @Inject
     private SalGenParaYMHistRepository mSalGenParaYMHistRepository;
-
-
-
     @Inject
     private SalGenParaDateHistRepository mSalGenParaDateHistRepository;
 
@@ -49,7 +46,7 @@ public class SalGenHistoryService {
             salGenParaDateHistory.add(dateHistoryItem);
             this.addDateHistory(dateHistoryItem, salGenParaValue,cId,paraNo);
             this.updateItemDateBefore(objectHis.get(), dateHistoryItem, cId,paraNo);
-            this.addSalGenParaValue(paraNo,salGenParaValue);
+            this.addSalGenParaDateValue(paraNo,salGenParaValue);
         }
     }
 
@@ -72,6 +69,9 @@ public class SalGenHistoryService {
     }
 
     //add DateTime History
+    private void addSalGenParaDateValue(String paraNo,SalGenParaValue salGenParaValue){
+        mSalGenParaDateHistRepository.addSalGenParaValue(paraNo,salGenParaValue);
+    }
 
     private void addDateHistory(DateHistoryItem itemtoBeAdded,SalGenParaValue domainSalGenParaValue, String cId, String paraNo){
         if(itemtoBeAdded == null){
