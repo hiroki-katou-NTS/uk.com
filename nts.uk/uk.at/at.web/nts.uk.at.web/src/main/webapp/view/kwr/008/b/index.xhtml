@@ -143,7 +143,7 @@
                        </div>
                     </div>    
                     
-                    <div data-bind="visible: currentSetOutputSettingCode().printForm, with: currentSetOutputSettingCode" class="multiMonthSet">
+                    <div data-bind="visible: selectedPrintForm(), with: currentSetOutputSettingCode" class="multiMonthSet">
 	                    <div style="margin-top: 3px;">
 	                        <!-- B5_1 -->
 	                        <div tabindex="10" class="" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
