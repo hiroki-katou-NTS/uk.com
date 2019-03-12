@@ -389,9 +389,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 modeScreen: self.modeScreen()
             };
             dataHisValue = {
-                paraNo: "",
-                startTime: "",
-                endTime: "",
+                paraNo: self.listHistory()[0].paraNo,
+                startTime: self.listHistory()[0].startYearMonth,
+                endTime: self.listHistory()[0].endYearMonth,
                 modeHistory :self.modeHistory(),
                 mSalGenParaValueCommand: dataValue
             };
