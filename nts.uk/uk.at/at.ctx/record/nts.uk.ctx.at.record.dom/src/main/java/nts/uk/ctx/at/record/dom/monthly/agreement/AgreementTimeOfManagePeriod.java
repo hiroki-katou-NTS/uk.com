@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
@@ -189,14 +188,10 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 					}
 				}
 
-				// 合計時間を月数で除算
-				Double averageMinutes = Math.ceil(totalMinutes.doubleValue() / monNum.doubleValue());
-					
 				// 36協定上限各月平均時間を作成
 				AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
 						period,
 						new AttendanceTimeYear(totalMinutes),
-						new AttendanceTimeMonth(averageMinutes.intValue()),
 						AgreMaxTimeStatusOfMonthly.NORMAL);
 				
 				// 36協定複数月平均時間の状態チェック
