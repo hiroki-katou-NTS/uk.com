@@ -19,9 +19,14 @@ import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistor
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.UpdateAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
+import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 
 @Stateless
@@ -35,9 +40,13 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00004	分類１
 			new TypeLiteral<PeregAddListCommandHandler<AddAffClassificationCommand>>(){},
 			//CS00014	雇用
-			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>(){},
+			new TypeLiteral<PeregAddListCommandHandler<AddEmploymentHistoryCommand>>(){},
 			//CS00016	職位本務
-			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddAffJobTitleMainCommand>>(){},
+			//CS00017	職場
+			new TypeLiteral<PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
+			//CS00018	休職休業
+			new TypeLiteral<PeregAddListCommandHandler<AddTemporaryAbsenceCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -52,7 +61,11 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00014	雇用
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>>(){},
 			//CS00016	職位本務
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>>(){},
+			//CS00017	職場
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
+			//CS00018	休職休業
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>>(){}
 			);
 	
 	@Override

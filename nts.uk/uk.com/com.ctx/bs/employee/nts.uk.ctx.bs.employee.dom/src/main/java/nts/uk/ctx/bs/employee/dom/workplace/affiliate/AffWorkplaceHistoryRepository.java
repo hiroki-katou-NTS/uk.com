@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -73,4 +74,28 @@ public interface AffWorkplaceHistoryRepository {
 	List<String> getByLstWplIdAndPeriod(List<String> lstWkpId,GeneralDate startDate, GeneralDate endDate);
 
 	List<AffWorkplaceHistory> getByListSid(List<String> employeeIds);
+	/**
+	 * getBySidsAndCid
+	 * @author lanlt
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	List<AffWorkplaceHistory> getBySidsAndCid(String cid, List<String> sids);
+	
+	/**
+	 * @author lanlt
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param item
+	 * @param sid
+	 * @param cid
+	 */
+	void addAll(Map<String, DateHistoryItem> dateHistItems);
+	
+	/**
+	 * @author lanlt
+	 * ドメインモデル「所属職場」を取得する
+	 * @param item
+	 */
+	void updateAll(List<DateHistoryItem> items);
 }
