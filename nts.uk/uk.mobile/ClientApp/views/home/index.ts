@@ -21,7 +21,12 @@ import { LanguageBar } from '@app/plugins';
     validations: {
         title: {
             required: true,
-            minLength: 10
+            minLength: 10,
+            constraint: 'EmployeeCode',
+            employeeCode: {
+                test: /\d+/,
+                message: ''
+            }
         },
         resource: {
             required: true,
@@ -36,6 +41,12 @@ import { LanguageBar } from '@app/plugins';
                 self_validator: {
                     test: /^\d{3,5}$/,
                     message: 'xxxx'
+                },
+                dev_def: {
+                    test: function (value) {
+                        return false;
+                    },
+                    message: 'msg_90'
                 }
             },
             address: {
@@ -43,7 +54,8 @@ import { LanguageBar } from '@app/plugins';
                     required: true
                 },
                 district: {
-                    required: true
+                    required: true,
+
                 }
             },
             office: {
@@ -52,7 +64,13 @@ import { LanguageBar } from '@app/plugins';
                 }
             }
         }
-    }
+    },
+    constraints: [
+        'nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode',
+        'nts.uk.ctx.sys.gateway.dom.login.UserName',
+        'nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber',
+        'nts.uk.ctx.sys.gateway.dom.login.LoginId'
+    ]
 })
 export class HomeComponent extends Vue {
     title: string = 'home';
@@ -70,27 +88,32 @@ export class HomeComponent extends Vue {
     constructor() {
         super();
         let self = this;
-
-        window['v'] = Vue;
-        window['h'] = self;
     }
+
+
 
     alertNow() {
         //console.log(this.validations);
         //alert(this.$i18n(this.title));
         //this.$router.push({ path: '/about/me' });
-        
-        this.disabled = true;
+
+        //this.disabled = true;
         /*
         this.$http
             .get('/about/me')
             .then((value: any) => {
                 debugger;
-            });
+            });*/
 
-        this.$modal('vuong')
+        this.$updateValidator({
+            title: {
+                minLength: 100
+            }
+        });
+
+        this.$modal('vuong', { id: 100, name: 'Nguyen Van A' })
             .onClose((data: any) => {
                 console.log(data);
-            });*/
+            });
     }
 }

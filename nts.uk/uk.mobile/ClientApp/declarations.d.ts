@@ -1,5 +1,4 @@
 import Vue, { ComponentOptions } from "vue";
-import { resources } from "@app";
 
 declare interface Window {
     Reflect: any;
@@ -13,7 +12,7 @@ interface IFetchOption {
     headers?: any;
 }
 
-export declare interface IRule {
+declare interface IRule {
     url?: boolean;
     email?: boolean;
     alpha?: boolean;
@@ -28,15 +27,10 @@ export declare interface IRule {
     maxValue?: Date | number;
     between?: Array<Date | number>;
     not?: Array<Date | number | string>;
-    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | {
+    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string |{
         test: RegExp | Function;
         message: string;
     };
-}
-
-
-interface ObjectConstructor {
-    assign: (to, from) => any;
 }
 
 declare module "vue/types/options" {
@@ -58,6 +52,7 @@ declare module "vue/types/options" {
         markdown?: string | {
             [lang: string]: string;
         };
+        constraints?: Array<string>;
     }
 }
 

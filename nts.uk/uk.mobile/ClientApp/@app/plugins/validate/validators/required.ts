@@ -1,4 +1,4 @@
-const required = function (value) {
+const required = function (value: any, checkOr: boolean) {
     let msg = false;
 
     if (Array.isArray(value)) {
