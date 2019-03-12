@@ -20,9 +20,6 @@ public class SalGenParaValueFinder
     private SalGenParaYMHistRepository finder;
 
     public SalGenParaValueDto getAllSalGenParaValue(String hisId){
-
-
-
         return SalGenParaValueDto.fromDomain(finder.getSalGenParaValueById(hisId).get());
     }
 

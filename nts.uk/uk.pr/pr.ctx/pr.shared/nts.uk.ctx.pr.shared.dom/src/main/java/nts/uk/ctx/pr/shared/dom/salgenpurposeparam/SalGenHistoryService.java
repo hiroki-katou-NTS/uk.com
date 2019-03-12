@@ -34,7 +34,7 @@ public class SalGenHistoryService {
             itemtoBeAdded.add(yearMonthItem);
             this.addHistory(yearMonthItem,salGenParaValue, cId,paraNo);
             this.updateItemBefore(salGenParaYearMonthHistory.get(), yearMonthItem, cId,paraNo);
-            this.addSalGenParaValue(paraNo,salGenParaValue);
+
         }
         else{
             DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistID, new DatePeriod(GeneralDate.fromString(start,"yyyy/MM/dd"),GeneralDate.fromString(end,"yyyy/MM/dd")));
@@ -46,7 +46,7 @@ public class SalGenHistoryService {
             salGenParaDateHistory.add(dateHistoryItem);
             this.addDateHistory(dateHistoryItem, salGenParaValue,cId,paraNo);
             this.updateItemDateBefore(objectHis.get(), dateHistoryItem, cId,paraNo);
-            this.addSalGenParaDateValue(paraNo,salGenParaValue);
+
         }
     }
 
@@ -64,14 +64,7 @@ public class SalGenHistoryService {
         }
         mSalGenParaYMHistRepository.update(itemToBeUpdated.get(),cId,paraNo);
     }
-    private void addSalGenParaValue(String paraNo,SalGenParaValue salGenParaValue){
-        mSalGenParaYMHistRepository.addSalGenParaValue(paraNo,salGenParaValue);
-    }
 
-    //add DateTime History
-    private void addSalGenParaDateValue(String paraNo,SalGenParaValue salGenParaValue){
-        mSalGenParaDateHistRepository.addSalGenParaValue(paraNo,salGenParaValue);
-    }
 
     private void addDateHistory(DateHistoryItem itemtoBeAdded,SalGenParaValue domainSalGenParaValue, String cId, String paraNo){
         if(itemtoBeAdded == null){

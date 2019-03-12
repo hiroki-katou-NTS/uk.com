@@ -44,8 +44,9 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
     }
 
     @Override
-    public void add(DateHistoryItem domain,SalGenParaValue domainSalGenParaValue,String paraNo,String cId){
-        this.commandProxy().insert(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
+    public void add(DateHistoryItem domain,SalGenParaValue domainSalGenParaValue, String cId,String paraNo){
+          this.commandProxy().insert(QqsmtSalGenPrDateHis.toEntity(domain,cId,paraNo,domainSalGenParaValue.getSelection(),domainSalGenParaValue.getAvailableAtr(),domainSalGenParaValue.getNumValue(),domainSalGenParaValue.getCharValue(),domainSalGenParaValue.getTimeValue(),domainSalGenParaValue.getTargetAtr()));
+
     }
 
 
