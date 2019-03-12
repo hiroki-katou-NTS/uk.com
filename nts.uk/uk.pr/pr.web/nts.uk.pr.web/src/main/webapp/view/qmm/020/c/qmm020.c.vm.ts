@@ -234,7 +234,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let self = this;
             block.invisible();
             $("#grid2").ntsGrid({
-                height: '340px',
+                height: '343px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
