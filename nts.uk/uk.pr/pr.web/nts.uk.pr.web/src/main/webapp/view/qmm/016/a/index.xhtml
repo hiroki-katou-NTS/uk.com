@@ -135,7 +135,7 @@
                             <!--A7_1 次元設定-->
                             <div id="A7_1" class="column-1" style="vertical-align: top"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
-                            <div style="width: 200px; display: inline-block; vertical-align: top">
+                            <div style="width: 200px; display: inline-block; vertical-align: top; padding-top: 10px;">
                                 <!--A7_2 汎用テーブル-->
                                 <div id="A7_2">#{i18n.getText('QMM016_18')}</div>
                                 <!--A7_3 罫線-->
@@ -231,7 +231,7 @@
 	                                        <!--A8_10  要素番号3-->
 	                                        <th style="text-align: center;" data-bind="if: elementSetting() == 2 || elementSetting() == 4"
 	                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
-	                                        <td data-bind="if: elementSetting() == 2">
+	                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
 	                                            <!--A8_11 参照ボタン3-->
 	                                            <button tabindex="18" class="small" id="A8_11"
 	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
