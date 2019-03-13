@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessHolidayManaDataRepository;
@@ -24,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -140,33 +139,12 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
 		Map<String, List<ExcessLeaveInfo>> listExcessLeaveMap = excessLeaveInfoRepository.getAll(listEmp, CID)
 				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-
-		// Item IS00366 --------------
-		// 取得した「休出管理データ」の未使用日数を合計
 		Map<String, Double> leaveMaDataMap = leaveManaDataRepository.getAllBySidWithsubHDAtr(CID, listEmp,
 				DigestionAtr.UNUSED.value);
-		// Item IS00366 --------------
-		// 取得した「休出管理データ」の未使用日数を合計
 		Map<String, Double> comDayManaData = comDayOffManaDataRepository.getAllBySidWithReDay(CID, listEmp);
-		Map<String, Double> mapSumRemainNumber = new HashMap<>();
-		leaveMaDataMap.entrySet().parallelStream().forEach(c -> {
-			Double a = leaveMaDataMap.get(c).doubleValue();
-			Double b = comDayManaData.get(c.getValue());
-			mapSumRemainNumber.put(c.getKey(), a - b);
-		});
-		// Item IS00368 ---------------
-		// 取得した「振出管理データ」の未使用日数を合計
 		Map<String, Double> payoutMangement = payoutManagementDataRepository.getAllSidWithCod(CID, listEmp,
 				DigestionAtr.UNUSED.value);
 		Map<String, Double> subOfHDManagementData = substitutionOfHDManaDataRepository.getAllBysiDRemCod(CID, listEmp);
-		Map<String, Double> mapRemainsLeft = new HashMap<>();
-		payoutMangement.entrySet().parallelStream().forEach(c -> {
-			Double a = payoutMangement.get(c).doubleValue();
-			Double b = subOfHDManagementData.get(c.getValue());
-			mapSumRemainNumber.put(c.getKey(), a - b);
-		});
-		// Item IS00374 ---------------
-		// 月初の超過有休残数を取得
 		Map<String, Double> exHolidayManagement = excessHolidayManaDataRepository.getAllBySidWithExpCond(CID, listEmp,
 				LeaveExpirationStatus.AVAILABLE.value);
 		query.getEmpInfos().parallelStream().forEach(c -> {
@@ -185,12 +163,15 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 					Optional.ofNullable(excessLeaveInfo));
 			// Item IS00366 --------------
 			// 取得した「休出管理データ」の未使用日数を合計
-			if (!mapSumRemainNumber.isEmpty()) {
-				dto.setRemainNumber(new BigDecimal(mapSumRemainNumber.get(c.getEmployeeId())));
-			}
-			if (!mapRemainsLeft.isEmpty()) {
-				dto.setRemainsLeft(new BigDecimal(mapSumRemainNumber.get(c.getEmployeeId())));
-			}
+			Double sumUnUsedDay = leaveMaDataMap.get(c.getEmployeeId());
+			Double sumRemain = comDayManaData.get(c.getEmployeeId());
+			dto.setRemainNumber(new BigDecimal(sumUnUsedDay - sumRemain));
+			// Item IS00366 --------------
+			// 取得した「休出管理データ」の未使用日数を合計
+			Double a = payoutMangement.get(c.getEmployeeId());
+			Double b = subOfHDManagementData.get(c.getEmployeeId());
+			dto.setRemainsLeft(new BigDecimal(a - b));
+			
 			if (!exHolidayManagement.isEmpty()) {
 				dto.setExtraHours(
 						OtherHolidayInfoDto.convertTime(exHolidayManagement.get(c.getEmployeeId()).intValue()));
