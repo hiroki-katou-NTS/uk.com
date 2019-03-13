@@ -1,5 +1,6 @@
 import { component, Prop } from '@app/core/component';
 import { Vue } from '@app/provider';
+import { $uuid } from '@app/utils/uuid'
 
 @component({})
 export class SwitchButtonRenderless extends Vue {
@@ -16,19 +17,11 @@ export class SwitchButtonRenderless extends Vue {
     @Prop()
     value: any;
 
-    id = this.randomId();
+    id = $uuid.randomId();
 
     textKey = this.isNullOrEmpty(this.dataText) ? "text" : this.dataText;
 
     valueKey = this.isNullOrEmpty(this.dataValue) ? "value" : this.dataValue;
-
-
-    randomId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0;
-            return ((c == 'x') ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
 
     get checked() {
         return this.value;

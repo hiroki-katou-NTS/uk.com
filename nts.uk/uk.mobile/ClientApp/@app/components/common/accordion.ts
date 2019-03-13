@@ -10,7 +10,7 @@ import { Vue } from '@app/provider';
                 <i class="fa fa-angle-double-down accordion-arrow"></i>
             </label>
 
-            <input :id="id" :type="isNullOrEmpty(group) ? 'checkbox' : 'radio'" 
+            <input ref="input" :type="isNullOrEmpty(group) ? 'checkbox' : 'radio'" 
                     :name="isNullOrEmpty(group) ? '' : group" class="accordion-action none-display" 
                     :checked="openoninit">
             </input>
@@ -29,18 +29,9 @@ export class Accordion extends Vue {
 
     @Prop()
     openoninit: any;
-    
-    id = this.randomId();
-
-    randomId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0;
-            return ((c == 'x') ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
 
     processing(){
-        let input = document.getElementById(this.id);
+        let input = (<HTMLInputElement>this.$refs.input);
         input.checked = !input.checked;
     }
 

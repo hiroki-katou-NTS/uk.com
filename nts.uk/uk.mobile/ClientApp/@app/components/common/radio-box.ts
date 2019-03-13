@@ -1,5 +1,6 @@
 import { component, Prop } from '@app/core/component';
 import { Vue } from '@app/provider';
+import { $uuid } from '@app/utils/uuid'
 
 @component({
     template: `
@@ -31,14 +32,7 @@ export class RadioBox extends Vue {
     @Prop()
     value: any;
 
-    id = this.randomId();
-
-    randomId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0;
-            return ((c == 'x') ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
+    id = $uuid.randomId();
 
     get selected() {
         return this.value;
