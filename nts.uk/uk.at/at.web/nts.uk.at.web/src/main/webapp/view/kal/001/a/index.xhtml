@@ -73,7 +73,7 @@
 									<td>
 									</td>
 									<td tabindex="3">
-										<table id="fixed-table">
+										<table id="fixed-table" >
 											<colgroup>
 												<col width="50px"/>
 												<col width="150px"/>
@@ -94,10 +94,25 @@
 														<td tabindex="-1" data-bind ="text: categoryName "></td>
 														
 														<td  tabindex="-1" class ='periodTime'>
-															<div tabindex="-1" class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
-																			 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}, 
-																			 visible: !visible()"/>
-																			 
+															<com:ko-if bind="!isMultiMonthAverage() &amp;&amp; !isHoliday()  ">
+																<div tabindex="-1" class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
+																				 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput,
+																				 	startName : nameStartRequired,
+																				 	endName : nameEndRequired,
+																				 	name : nameRequired  
+																				 }, 
+																				 visible: !visible()"/>
+															 </com:ko-if>
+															 <com:ko-if bind="isMultiMonthAverage()">
+															 	<div class ='inputDate nts-custom' >
+																	<div tabindex="-1" data-bind="ntsDatePicker:
+																				 { required: required,name: '#[KAL001_159]', enable:true, showNextPrevious: false, value: multiMonthAverage , dateFormat: 'yearmonth'}, 
+																				 visible: !visible()"/><div id = "textHoliday" >#{i18n.getText('KAL001_160')}</div>
+																 </div>
+															 </com:ko-if>
+															 <!-- <com:ko-if bind="isMultiMonthAverage()">
+															 	<div tabindex="-1" class ='inputDate nts-custom'></div>
+															 </com:ko-if> -->
 															<div  class ='nts-custom ntsControl nts-datepicker-wrapper' data-bind="visible: visible">
 															 	<div tabindex="-1" data-bind="ntsDatePicker: {
 															 									dateFormat: 'YYYY', 
