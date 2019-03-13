@@ -115,7 +115,7 @@ public class ConfirmPersonSetStatusService {
                 .stream().collect(Collectors.toMap(x -> x.getStatementCode().v(), x -> x));
 
         for (String sid : empIds) {
-            boolean existData;
+            boolean existSalaryBonus;
             ConfirmPersonSetStatus personSet = new ConfirmPersonSetStatus();
             personSet.setSid(sid);
 
@@ -126,9 +126,9 @@ public class ConfirmPersonSetStatusService {
                     String histId = stateCorreHisIndiviMap.get(sid).get(0).identifier();
                     // ドメインモデル「明細書紐付け設定（個人）」を取得する
                     StateLinkSetIndivi stateLinkSetIndivi = stateLinkSetIndiviMap.get(histId);
-                    existData = this.setSalaryBonus(personSet, stateLinkSetIndivi.getSalaryCode(),
+                    existSalaryBonus = this.setSalaryBonus(personSet, stateLinkSetIndivi.getSalaryCode(),
                             stateLinkSetIndivi.getBonusCode(), statementLayoutMap);
-                    if (existData) {
+                    if (existSalaryBonus) {
                         personSet.setSettingCtg(SettingCls.PERSON.value);
                         result.add(personSet);
                         continue;
@@ -137,11 +137,13 @@ public class ConfirmPersonSetStatusService {
             }
             if (SettingUseCls.USE.equals(stateUseUnitSet.getMasterUse())) {
                 // マスタ紐付け明細書取得
-                this.setLinkMaster(personSet, stateUseUnitSet.getUsageMaster(), empInfoMap.get(sid),
+                existSalaryBonus = this.setLinkMaster(personSet, stateUseUnitSet.getUsageMaster(), empInfoMap.get(sid),
                         stateLinkSetMasterDepMap, stateLinkSetMasterEmpMap, stateLinkSetMasterClsMap,
                         stateLinkSetMasterPosMap, stateLinkSetMasterSalMap, statementLayoutMap);
-                result.add(personSet);
-                continue;
+                if (existSalaryBonus) {
+                    result.add(personSet);
+                    continue;
+                }
             }
 
             if (stateLinkSetCom.isPresent()) {
@@ -179,11 +181,11 @@ public class ConfirmPersonSetStatusService {
     /**
      * マスタ紐付け明細書取得
      */
-    private void setLinkMaster(ConfirmPersonSetStatus personSet, Optional<UsageMaster> type, EmployeeInformationImport empInfo,
+    private boolean setLinkMaster(ConfirmPersonSetStatus personSet, Optional<UsageMaster> type, EmployeeInformationImport empInfo,
                                Map<String, StateLinkSetMaster> masterDepMap, Map<String, StateLinkSetMaster> masterEmpMap,
                                Map<String, StateLinkSetMaster> masterClsMap, Map<String, StateLinkSetMaster> masterPosMap,
                                Map<String, StateLinkSetMaster> masterSalMap, Map<String, StatementLayout> statementLayoutMap) {
-        if (!type.isPresent()) return;
+        if (!type.isPresent()) return false;
         String masterCode = null;
         String masterName = null;
         StateLinkSetMaster master = null;
@@ -242,10 +244,9 @@ public class ConfirmPersonSetStatusService {
                 personSet.setSettingCtg(SettingCls.SALARY.value);
                 break;
         }
-        if (master != null) {
-            this.setSalaryBonus(personSet, master.getSalaryCode(), master.getBonusCode(), statementLayoutMap);
-        }
         personSet.setMasterCode(masterCode);
         personSet.setMasterName(masterName);
+
+        return master != null && this.setSalaryBonus(personSet, master.getSalaryCode(), master.getBonusCode(), statementLayoutMap);
     }
 }
