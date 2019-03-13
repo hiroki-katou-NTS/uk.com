@@ -1,7 +1,7 @@
 import { routes } from '@app/core/routes';
 import { Vue, ComponentOptions } from '@app/provider';
 
-import { $ } from '@app/utils';
+import { $, dom } from '@app/utils';
 import { resources, language } from '@app/plugins';
 import { cssbeautify } from '@app/utils/css';
 import classDecorator from 'vue-class-component';
@@ -90,7 +90,8 @@ export function component(options: ComponentOptions<Vue>): any {
         // initial route for component
         if (options.route) {
             if (typeof options.route === 'string') {
-                let rt = $.find(routes, r => r.name === options.name);
+                let rt = $.find(routes, r => r.name === options.name),
+                    mask = dom.create('div', { 'class': 'modal-backdrop show' });
 
                 if (!rt) {
                     routes.push({
@@ -98,12 +99,26 @@ export function component(options: ComponentOptions<Vue>): any {
                         path: options.route,
                         component: options
                     });
+
+                    (options.mixins || (options.mixins = [])).push({
+                        beforeMount() {
+                            document.body.appendChild(mask);
+                        },
+                        mounted() {
+                            if (document.body.contains(mask)) {
+                                setTimeout(() => {
+                                    document.body.removeChild(mask);
+                                }, 50);
+                            }
+                        }
+                    });
                 } else {
                     console.error('Dupplicate view name: ' + options.name);
                 }
             } else {
                 if (options.route.parent) {
-                    let rt = routes.find(r => r.path === (<any>options.route).parent);
+                    let rt = routes.find(r => r.path === (<any>options.route).parent),
+                        mask = dom.create('div', { 'class': 'modal-backdrop show' });
 
                     if (rt) {
                         (rt.children || (rt.children = [])).push({
@@ -118,6 +133,19 @@ export function component(options: ComponentOptions<Vue>): any {
                             component: options
                         });
                     }
+
+                    (options.mixins || (options.mixins = [])).push({
+                        beforeMount() {
+                            document.body.appendChild(mask);
+                        },
+                        mounted() {
+                            if (document.body.contains(mask)) {
+                                setTimeout(() => {
+                                    document.body.removeChild(mask);
+                                }, 50);
+                            }
+                        }
+                    });
                 }
             }
 
