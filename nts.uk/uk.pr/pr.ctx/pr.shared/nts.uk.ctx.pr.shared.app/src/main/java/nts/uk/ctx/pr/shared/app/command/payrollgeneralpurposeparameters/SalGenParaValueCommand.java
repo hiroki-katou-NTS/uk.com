@@ -46,6 +46,8 @@ public class SalGenParaValueCommand
     private Integer targetAtr;
 
     private Integer modeScreen;
+
+
     
 
 }

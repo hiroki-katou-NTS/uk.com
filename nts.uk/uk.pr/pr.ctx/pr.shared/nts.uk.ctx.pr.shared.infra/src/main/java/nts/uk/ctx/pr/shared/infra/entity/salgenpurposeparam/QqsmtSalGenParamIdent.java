@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_SAL_GEN_PARAM_IDENT")
+@Table(name = "QQSMT_SAL_GEN_PR_IDENT")
 public class QqsmtSalGenParamIdent extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -29,14 +29,14 @@ public class QqsmtSalGenParamIdent extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "NAME")
+    @Column(name = "PARA_NAME")
     public String name;
     
     /**
     * 属性区分
     */
     @Basic(optional = false)
-    @Column(name = "ATTRIBUTE_TYPE")
+    @Column(name = "DATATYPE_ATR")
     public int attributeType;
     
     /**
@@ -50,7 +50,7 @@ public class QqsmtSalGenParamIdent extends UkJpaEntity implements Serializable
     * 補足説明
     */
     @Basic(optional = true)
-    @Column(name = "EXPLANATION")
+    @Column(name = "NOTE")
     public String explanation;
     
     @Override

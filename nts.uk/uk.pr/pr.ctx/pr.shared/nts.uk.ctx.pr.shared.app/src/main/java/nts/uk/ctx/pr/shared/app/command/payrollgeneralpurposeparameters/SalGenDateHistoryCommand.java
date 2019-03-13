@@ -17,6 +17,8 @@ public class SalGenDateHistoryCommand {
     private int mode;
 
     private String hisId;
+
+    private SalGenParaValueCommand salGenParaValueCommand;
     
 
 }

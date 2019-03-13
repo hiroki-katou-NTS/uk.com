@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm001.a.service {
         getSalGenParamOptions: "shared/salgenpurposeparam/getSalGenParamOptions/{0}",
         getSalGenParaDateHistory: "shared/salgenpurposeparam/getSalGenParaDateHistory/{0}",
         getSalGenParaYearMonthHistory: "shared/salgenpurposeparam/getSalGenParaYearMonthHistory/{0}",
-        getSalGenParaValue: "shared/salgenpurposeparam/getSalGenParaValue/{0}",
+        getSalGenParaValue: "shared/salgenpurposeparam/getSalGenParaValue/{0}/{1}",
         addSelectionProcess: "shared/salgenpurposeparam/addSelectionProcess",
         getListHistory: "shared/salgenpurposeparam/getListHistory"
     };
@@ -26,8 +26,8 @@ module nts.uk.pr.view.qmm001.a.service {
         let _path = format(paths.getSalGenParaYearMonthHistory, param);
         return ajax("pr", _path);
     }
-    export function getSalGenParaValue(param :any): JQueryPromise<any> {
-        let _path = format(paths.getSalGenParaValue, param);
+    export function getSalGenParaValue(hisId: string, modeHistory: number): JQueryPromise<any> {
+        let _path = format(paths.getSalGenParaValue, hisId,modeHistory);
         return ajax("pr", _path);
     }
     export function addSelectionProcess(data :any): JQueryPromise<any> {
