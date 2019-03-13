@@ -13,6 +13,8 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 public class ItemOutTblBookDto
 {
 	private final static String CD_36_AGREEMENT_TIME = "01";
+	
+	private final static String CD_36_AGREEMENT_AVERAGE_TIME = "02";
 	/**
 	* 年間勤務表(36チェックリスト)の出力条件.コード
 	*/
@@ -52,7 +54,7 @@ public class ItemOutTblBookDto
 
 	public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
 	{
-		boolean isItem36AgreementTime = CD_36_AGREEMENT_TIME.equals(domain.getCd().v());
+		boolean isItem36AgreementTime = (CD_36_AGREEMENT_TIME.equals(domain.getCd().v()))||(CD_36_AGREEMENT_AVERAGE_TIME.equals(domain.getCd().v()));
 		return new ItemOutTblBookDto(domain.getSetOutCd(), domain.getCd().v(), domain.getSortBy(),
 				domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value,
 				isItem36AgreementTime, domain.getListOperationSetting());

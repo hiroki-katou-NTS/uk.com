@@ -190,15 +190,15 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			} 
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
-			DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
 			for (TmpAnnualHolidayMng x : lstTmpAnnual) {
 				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getAnnualId());
 				if(interimInfor.isPresent()) {
+					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
 					remainMng.setRecAbsData(Arrays.asList(interimInfor.get()));
 					remainMng.setAnnualHolidayData(Optional.of(x));
 					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
 					lstOutputData.add(outData);
-				}	
+				}
 			}
 		}
 		
@@ -269,8 +269,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				datePeriod);
 		if(mapRemainData != null) {
 			for (DailyInterimRemainMngData y : mapRemainData.values()) {
-				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
-				lstOutputData.add(outData);
+				if(y.getAnnualHolidayData().isPresent()) {
+					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
+					lstOutputData.add(outData);	
+				}				
 			}
 		}
 		return lstOutputData;

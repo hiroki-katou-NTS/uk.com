@@ -430,15 +430,17 @@ public class AnnualWorkScheduleData {
 			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
 			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
 			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
-			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header) {
+			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header, boolean check36MaximumAgreement) {
 		
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
-		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
-		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		if (check36MaximumAgreement) {
+			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
+			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		}
 		annualWorkScheduleData.setAgreementTime(true);
 		listAgreementTimeBymonth.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().v());

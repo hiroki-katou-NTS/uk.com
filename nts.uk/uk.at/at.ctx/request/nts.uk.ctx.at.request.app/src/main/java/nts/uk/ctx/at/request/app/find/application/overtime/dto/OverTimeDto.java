@@ -248,6 +248,8 @@ public class OverTimeDto {
 	private List<DeductionTimeDto> timezones ;
 	
 	private boolean enableOvertimeInput;
+	/** 申請理由が必須 */
+	private boolean requireAppReasonFlg;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
@@ -308,6 +310,7 @@ public class OverTimeDto {
 				null,
 				null,
 				Collections.emptyList(),
+				false,
 				false);
 	}
 	
