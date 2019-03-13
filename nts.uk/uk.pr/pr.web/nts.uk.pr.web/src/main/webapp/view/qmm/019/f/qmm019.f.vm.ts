@@ -326,13 +326,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         condition47(type: shareModel.TimeCountAtr) {
             let self = this;
             if (type == shareModel.TimeCountAtr.TIMES) {
-                self.screenControl().visibleF3_19(true);
+                self.screenControl().visibleF3_17(true);
                 self.screenControl().visibleF3_24(true);
                 self.screenControl().visibleF3_25(true);
                 self.screenControl().visibleF3_26(true);
                 self.screenControl().visibleF3_27(true);
             } else {
-                self.screenControl().visibleF3_19(false);
+                self.screenControl().visibleF3_17(false);
                 self.screenControl().visibleF3_24(false);
                 self.screenControl().visibleF3_25(false);
                 self.screenControl().visibleF3_26(false);
