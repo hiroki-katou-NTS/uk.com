@@ -294,7 +294,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(i + 1, subList.get(i));
+					stmt.setString(2 + i, subList.get(i));
 				}
 
 				List<Map<String, Object>> map = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
