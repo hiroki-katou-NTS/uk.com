@@ -42,4 +42,5 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
 
+	List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate);
 }
