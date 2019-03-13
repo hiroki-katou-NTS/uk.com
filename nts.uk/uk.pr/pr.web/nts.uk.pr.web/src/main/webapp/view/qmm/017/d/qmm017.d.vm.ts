@@ -698,13 +698,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, operand, operands,
                 separators: string = self.separators.join('|'),
                 formula = self.replaceTextInsideDoubleQuote(formula),
-                formulaRegex = new RegExp(/(?<=}|$)/g);
-            operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
-                return (item && item.length);
-            });
+                /*Only Chrome support lookbehind assertion regex.
+                formulaRegex = new RegExp(/(?<=}|$)/g);*/
+                operands = formula.split(new RegExp(separators, 'g')).filter(item => item).map(item => item.trim());
             for (operand of operands) {
-                let operandArray = operand.split(formulaRegex).map(item => item.trim());
-                if(operandArray.length > 1) {
+                let operandArray = operand.replace(new RegExp('}', 'g'), "} ").split(' ').filter(item => item).map(item => item.trim());
+                if (operandArray.length > 1) {
                     self.setErrorToFormula('MsgQ_256', []);
                     operandArray.forEach(operandItem => self.checkOperand(operandItem));
                 } else {
