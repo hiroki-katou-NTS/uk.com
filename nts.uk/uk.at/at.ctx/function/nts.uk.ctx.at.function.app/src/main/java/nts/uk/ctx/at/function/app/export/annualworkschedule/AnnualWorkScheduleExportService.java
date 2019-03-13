@@ -417,7 +417,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		// アルゴリズム「月平均の算出」を実行する
 		data.put(outputAgreementTime36.getCd().v(),
 				AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36, listAgreementTimeByMonth,
-						listAgreementTimeByYear, listExcesMonths, startYm, monthsExceeded, monthLimit, periodAtr, header, true)
+						listAgreementTimeByYear, listExcesMonths, startYm, monthsExceeded, monthLimit, periodAtr, header, false)
 						.calc(false));
 		return data;
 	}
@@ -473,7 +473,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 		// アルゴリズム「月平均の算出」を実行する
 		data.put(outputAgreementTime36.getCd().v(), 
-				AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36, listAgreementTimeByMonth, listAgreementTimeByYear, listAgreMaxAverageTime, startYm, monthsExceeded, monthLimit, periodAtr, header, false)
+				AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36, listAgreementTimeByMonth, listAgreementTimeByYear, listAgreMaxAverageTime, startYm, monthsExceeded, monthLimit, periodAtr, header, true)
 						.calc(false));
 		return data;
 	}
