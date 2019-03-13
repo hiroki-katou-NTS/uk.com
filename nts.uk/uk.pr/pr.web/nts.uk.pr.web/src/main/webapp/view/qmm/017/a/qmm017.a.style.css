@@ -79,7 +79,6 @@
 }
 
 .tab-panel-row {
-    height: 310px;
 }
 
 .tab-panel-col-1 {
@@ -140,7 +139,6 @@
 
 .display-notes {
     word-break: break-all;
-    height: 263px;
     overflow: auto;
 }
 
