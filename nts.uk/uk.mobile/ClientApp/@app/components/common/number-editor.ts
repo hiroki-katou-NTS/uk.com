@@ -48,9 +48,9 @@ export class NumberEditor extends Vue {
     @Prop()
     max: any;
 
-    unitInfo: this.getUnit();
+    unitInfo = this.getUnit();
 
-    internalValue: this.value;
+    internalValue = this.value;
 
     get formatted() {
         return this.formatValue(this.internalValue);
@@ -186,4 +186,4 @@ export class NumberEditor extends Vue {
 
 }
 
-Vue.component('nts-number-editor', NumberEditor);
+//Vue.component('nts-number-editor', NumberEditor);

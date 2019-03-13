@@ -1,6 +1,6 @@
 import { component, Prop } from '@app/core/component';
 import { Vue } from '@app/provider';
-import { $uuid } from '@app/utils/uuid'
+import { $uuid, $  } from '@app/utils'
 
 @component({})
 export class SwitchButtonRenderless extends Vue {
@@ -19,9 +19,9 @@ export class SwitchButtonRenderless extends Vue {
 
     id = $uuid.randomId();
 
-    textKey = this.isNullOrEmpty(this.dataText) ? "text" : this.dataText;
+    textKey = $.isNullOrEmpty(this.dataText) ? "text" : this.dataText;
 
-    valueKey = this.isNullOrEmpty(this.dataValue) ? "value" : this.dataValue;
+    valueKey = $.isNullOrEmpty(this.dataValue) ? "value" : this.dataValue;
 
     get checked() {
         return this.value;

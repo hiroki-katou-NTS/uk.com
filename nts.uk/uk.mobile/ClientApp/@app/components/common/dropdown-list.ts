@@ -51,9 +51,8 @@ export class DropDownList extends Vue {
     };
 
     mounted() {
-        if (this.value !== this.$refs.select.value) {
-            this.$emit("input", this.$refs.select.value);
-        }
+        let select = <HTMLInputElement>this.$refs.select;
+        this.$emit("input", select.value);
     }
 
 }
