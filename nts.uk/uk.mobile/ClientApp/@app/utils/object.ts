@@ -276,4 +276,4 @@ const $ = {
     }
 };
 
-export { $ };
+export { $, $ as obj };
