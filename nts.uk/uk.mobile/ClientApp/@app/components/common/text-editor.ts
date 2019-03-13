@@ -24,14 +24,14 @@ export class TextEditor extends Vue {
   @Prop()
   value : String;
 
-  @Prop({ type: Boolean, default: true})
-  enable;
+  @Prop({ default: true})
+  enable: Boolean;
 
-  @Prop({ type: Boolean, default: false })
-  readonly;
+  @Prop({ default: false })
+  readonly: Boolean;
 
-  @Prop({type: Boolean, default: false })
-  immediate;
+  @Prop({ default: false })
+  immediate: Boolean;
 
   @Prop()
   option : Object;

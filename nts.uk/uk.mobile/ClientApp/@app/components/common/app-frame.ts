@@ -15,7 +15,7 @@ import { Vue } from '@app/provider'
 export class AppFrame extends Vue {
     
     @Prop()
-    props;
+    props: any;
 
 }
 
