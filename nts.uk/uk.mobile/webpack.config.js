@@ -149,6 +149,7 @@ module.exports = (env) => {
             contentBase: path.join(__dirname, 'wwwroot'),
             compress: true,
             port: 3000,
+            host: '0.0.0.0',
             watchOptions: {
                 poll: true
             },
