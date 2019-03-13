@@ -1,3 +1,27 @@
 <div id="login">
-    login
+    <fieldset class="login-form">
+        <legend>{{ 'login_title' | i18n }}</legend>
+            <v-input-string
+            v-model="model.username"
+            v-bind:name="'username'"
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.username"
+            v-bind:errors-always="$errors.model.username"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+            <v-input-string
+                v-model="model.password"
+                v-bind:name="'password'"
+                v-bind:disabled="disabled"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.password"
+                v-bind:errors-always="$errors.model.password"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+            <div class="text-right">
+                <hr />
+                <button class="btn btn-primary"><i class="fa fa-key"></i> {{'login' | i18n}}</button>                
+            </div>
+    </fieldset>
 </div>

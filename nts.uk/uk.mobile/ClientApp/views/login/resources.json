@@ -1,8 +1,10 @@
 {
     "en": {
-        "home": "Home"
+        "home": "Home",
+        "login_title": "Đăng nhập hệ thống"
     },
     "vi": {
-        "home": "Trang chủ"
+        "home": "Trang chủ",
+        "login_title": "Đăng nhập hệ thống"
     }
 }
