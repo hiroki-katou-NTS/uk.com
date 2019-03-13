@@ -18,9 +18,15 @@ PackageWarFile.prototype.apply = function (compiler) {
 
             // add a custom file
             zip.addFile(path.join(__dirname, 'ClientApp', 'index.html'));
-            //zip.addFile(path.join(__dirname, 'ClientApp', 'web.xml'), '/WEB-INF/web.xml');
+            zip.addFile(path.join(__dirname, 'ClientApp', 'web.xml'), '/WEB-INF/web.xml');
 
-            zip.build().then(() => console.log('War file has been created'));
+            zip.build().then(() => {
+                console.log('\n');
+                console.log('   +--------------------------------------------------------------+');
+                console.log('   | War file [nts.uk.mobile.web.war] has been created at wwwroot |');
+                console.log('   +--------------------------------------------------------------+');
+                console.log('\n');
+            });
         }
     });
 };
