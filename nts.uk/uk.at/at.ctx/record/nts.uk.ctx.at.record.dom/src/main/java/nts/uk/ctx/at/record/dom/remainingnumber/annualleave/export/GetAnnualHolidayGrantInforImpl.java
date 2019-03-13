@@ -293,7 +293,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				double useDay = y.getDetails().getUsedNumber().getDays().v() - maxDateAnnRemainHis.getDetails().getUsedNumber().getDays().v();
 				y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
 				//付与数から計算した使用数を減算
-				double grantDays = y.getDetails().getRemainingNumber().getDays().v() - useDay;					
+				double grantDays = y.getDetails().getGrantNumber().getDays().v() - maxDateAnnRemainHis.getDetails().getUsedNumber().getDays().v();					
 				y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
 			}
 		});
