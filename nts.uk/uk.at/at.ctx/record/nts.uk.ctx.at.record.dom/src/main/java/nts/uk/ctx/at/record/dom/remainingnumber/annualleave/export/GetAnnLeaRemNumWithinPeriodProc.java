@@ -549,13 +549,16 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				List<AnnualLeaveRemainingHistory> remainHistList = this.annualLeaveRemainHistRepo.getInfoBySidAndYM(
 						this.employeeId, yearMonthOpt.get());
 				if (remainHistList.size() > 0) {
-					remainHistList.sort((a, b) -> a.getClosureDate().getClosureDay().v()
-							.compareTo(b.getClosureDate().getClosureDay().v()));
-					
-					// 取得したドメインを年休付与残数データに変換
-					AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
-							AnnualLeaveGrantRemainingData.createFromHistory(remainHistList.get(0)));
-					remainingDatas.add(remainData);
+					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
+					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+					for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
+						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+						
+						// 取得したドメインを年休付与残数データに変換
+						AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
+								AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
+						remainingDatas.add(remainData);
+					}
 				}
 				
 				// 年休上限データを取得
