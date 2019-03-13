@@ -273,6 +273,9 @@ const $ = {
     },
     find: (source: any, callback: (value: any, index: number) => any) => {
         return [].slice.call(source).filter(callback)[0];
+    },
+    isNullOrEmpty(target: any) {
+        return (target === undefined || target === null || target.length == 0);
     }
 };
 
