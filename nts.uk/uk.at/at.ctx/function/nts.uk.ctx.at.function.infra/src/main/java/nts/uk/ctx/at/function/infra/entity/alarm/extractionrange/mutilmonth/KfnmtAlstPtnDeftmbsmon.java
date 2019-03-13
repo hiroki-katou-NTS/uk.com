@@ -50,6 +50,10 @@ public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
 		return new AverageMonth(this.pk.extractionId, this.pk.extractionRange, this.strMonth);
 	}
 	
+	public AverageMonth toDomainAdd() {
+		return new AverageMonth(this.pk.extractionId, this.pk.extractionRange, this.strMonth);
+	}
+	
 	public KfnmtAlstPtnDeftmbsmon(AverageMonth domain) {
 		this.pk = new KfnmtAlstPtnDeftmbsmonPK(domain.getExtractionId(), domain.getExtractionRange().value);
 		this.strMonth = domain.getStrMonth().value;
