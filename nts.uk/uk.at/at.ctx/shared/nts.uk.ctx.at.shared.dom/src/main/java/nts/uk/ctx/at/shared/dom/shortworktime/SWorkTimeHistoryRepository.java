@@ -42,7 +42,16 @@ public interface SWorkTimeHistoryRepository {
 	
 	void add(String cid, String sid, DateHistoryItem histItem);
 	
+	/**
+	 * @author lanlt
+	 * addAll BshmtWorktimeHist
+	 * @param histItem
+	 */
+	void addAll(Map<String, DateHistoryItem> histItem);
+	
 	void update(String sid, DateHistoryItem histItem);
+	
+	void updateAll(Map<String, DateHistoryItem> histItem);
 	
 	void delete(String sid, String histId);
 	
@@ -73,5 +82,13 @@ public interface SWorkTimeHistoryRepository {
 	 * @author lanlt
 	 */
 	List<DateHistoryItem> finsLstBySidsAndCidAndDate(String cid, List<String> sids, GeneralDate baseDate);
-	
+
+	/**
+	 * @author lanlt
+	 * get All ShortWorkTimeHis 
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	List <ShortWorkTimeHistory> getBySidsAndCid(String cid, List<String> sids);
 }

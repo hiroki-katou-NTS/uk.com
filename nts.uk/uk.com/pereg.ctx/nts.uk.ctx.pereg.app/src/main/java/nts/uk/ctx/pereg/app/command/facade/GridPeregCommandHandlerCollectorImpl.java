@@ -10,6 +10,8 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
 import command.person.info.UpdatePersonCommand;
+import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
+import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.AddAffCompanyHistoryCommand;
@@ -46,7 +48,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00017	職場
 			new TypeLiteral<PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
 			//CS00018	休職休業
-			new TypeLiteral<PeregAddListCommandHandler<AddTemporaryAbsenceCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddTemporaryAbsenceCommand>>(){},
+			//CS00019	短時間勤務
+			new TypeLiteral<PeregAddListCommandHandler<AddShortWorkTimeCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -65,7 +69,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00017	職場
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			//CS00018	休職休業
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
+			//CS00019	短時間勤務
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>>(){}
 			);
 	
 	@Override

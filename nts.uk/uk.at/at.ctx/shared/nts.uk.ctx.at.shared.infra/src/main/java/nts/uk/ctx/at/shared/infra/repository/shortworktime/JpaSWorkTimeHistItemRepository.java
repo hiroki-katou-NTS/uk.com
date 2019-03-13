@@ -150,4 +150,16 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public void addAll(List<ShortWorkTimeHistoryItem> domains) {
+		List<BshmtWorktimeHistItem> entities = domains.parallelStream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
+	}
+
+	@Override
+	public void updateAll(List<ShortWorkTimeHistoryItem> domains) {
+		List<BshmtWorktimeHistItem> entities = domains.parallelStream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
+		this.commandProxy().updateAll(entities);
+	}
+
 }
