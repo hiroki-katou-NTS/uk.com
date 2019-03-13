@@ -40,3 +40,22 @@
 .limited-label-view {
 	max-width: 1000px;
 }
+
+.multiMonthSet{
+	margin-left: 5px;
+}
+
+.check_box_block{
+	display: block;
+	margin: 5px 0 0;
+}
+.label.check_box_block{
+	margin: 5px 0 0 5px;
+}
+#combo-box_1{
+	left: 5px;
+	top: 10px;
+}
+.label36{
+    margin-left: 20px;
+}

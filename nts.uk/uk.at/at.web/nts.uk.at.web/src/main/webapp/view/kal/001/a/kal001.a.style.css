@@ -1,31 +1,42 @@
-
-
-#component-employee-list{
-    margin-left: 90px;
-    margin-top: 15px;
+#component-employee-list {
+	margin-left: 90px;
+	margin-top: 15px;
 }
 
 .pattern-group td {
 	padding-top: 20px;
 	padding-left: 15px;
 }
-.pattern-group{
+
+.pattern-group {
 	margin-top: 50px;
 }
-.check_column{
+
+.check_column {
 	text-align: center !important;
 }
-.periodTime{
+
+.periodTime {
 	padding-left: 20px !important;
 }
 
-#fixed-table{
-    overflow-y: scroll;
+#fixed-table {
+	overflow-y: scroll;
 }
-.inputDate .periodTime{
+
+.inputDate .periodTime {
 	align: "center";
 }
 
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
-    width: 86px !important;
+	width: 86px !important;
+}
+
+#textHoliday {
+	float: right;
+	padding-top: 7px;
+	padding-right: 110px;
+}
+#fixed-table::before {
+	height: 350px !important;
 }

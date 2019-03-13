@@ -1,22 +1,17 @@
 @import url("common.css");
 
 .ccg001searchkcp005 {
+	min-width: 710px;
+	display: inline-block;
 	float: left;
 }
 
 .holidayAction {
 	margin-left: 50px;
 	margin-top: 40px;
-	z-index: 100;
-}
-
-.holidayAction table tr {
-	display: flex;
-	margin-bottom: 10px;
-}
-
-.holidayAction table tr td {
-	display: inline-flex;
+	float: left;
+	display: inline-block;
+	min-width: 450px;
 }
 
 .selectionHoliday {
@@ -39,12 +34,11 @@
 }
 
 #date_type_group {
-	width: 500px;
 	margin-left: 35px;
 }
 
-#date_type_group .ntsRadioBox {
-	width: 50%;
+#date_type_group .ntsRadioBox:nth-child(2) {
+	margin-left: 145px;
 }
 
 #ref_type_group {

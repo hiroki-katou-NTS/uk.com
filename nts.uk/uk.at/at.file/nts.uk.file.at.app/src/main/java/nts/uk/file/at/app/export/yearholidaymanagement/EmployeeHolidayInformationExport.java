@@ -14,7 +14,6 @@ import nts.uk.query.pub.department.DepartmentExport;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employement.EmploymentExport;
 import nts.uk.query.pub.position.PositionExport;
-import nts.uk.query.pub.workplace.WorkplaceExport;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +30,7 @@ public class EmployeeHolidayInformationExport {
 	String businessName; // ビジネスネーム
 
 	/** The workplace. */
-	WorkplaceExport workplace; // 所属職場
+	WorkplaceHolidayExport workplace; // 所属職場
 
 	/** The classification. */
 	ClassificationExport classification; // 所属分類
@@ -60,9 +59,10 @@ public class EmployeeHolidayInformationExport {
 
 	public static EmployeeHolidayInformationExport fromEmpInfo(EmployeeInformationExport empInfo) {
 		return new EmployeeHolidayInformationExport(empInfo.getEmployeeId(), empInfo.getEmployeeCode(),
-				empInfo.getBusinessName(), empInfo.getWorkplace(), empInfo.getClassification(), empInfo.getDepartment(),
-				empInfo.getPosition(), empInfo.getEmployment(), empInfo.getEmploymentCls(), Optional.empty(),
-				Collections.emptyList());
+				empInfo.getBusinessName(),
+				empInfo.getWorkplace() != null ? new WorkplaceHolidayExport(empInfo.getWorkplace()) : null,
+				empInfo.getClassification(), empInfo.getDepartment(), empInfo.getPosition(), empInfo.getEmployment(),
+				empInfo.getEmploymentCls(), Optional.empty(), Collections.emptyList());
 	}
 
 }

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
@@ -56,6 +57,9 @@ public class ExtractAlarmForEmployeeService {
 	
 	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
+	
+	@Inject
+	private TotalProcessAnnualHoliday totalProcessAnnualHoliday;
 	
 	public List<ValueExtractAlarm> process(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees){
 		
@@ -115,6 +119,7 @@ public class ExtractAlarmForEmployeeService {
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {
+					//36協定の集計処理
 					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), periodAlarms, employees, agreementSetObj);
 					result.addAll(agreementAlarmList);
 				}
@@ -133,6 +138,13 @@ public class ExtractAlarmForEmployeeService {
 					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 						// 複数月の集計処理
 						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
+						result.addAll(mutilpleMonthlAlarmList);
+					}
+				}
+				//年休の集計処理(holiday)
+				else if (checkCondition.isAttHoliday()) {
+					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
+						List<ValueExtractAlarm> mutilpleMonthlAlarmList = totalProcessAnnualHoliday.totalProcessAnnualHoliday(comId,checkConditionCode, employees);
 						result.addAll(mutilpleMonthlAlarmList);
 					}
 				}

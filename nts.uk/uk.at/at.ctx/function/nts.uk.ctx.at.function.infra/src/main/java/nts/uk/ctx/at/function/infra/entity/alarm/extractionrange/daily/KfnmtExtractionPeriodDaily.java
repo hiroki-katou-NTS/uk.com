@@ -157,6 +157,5 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		this.endPreviousMonth = newEntity.endPreviousMonth;
 		this.endCurrentMonth = newEntity.endCurrentMonth;		
 		this.endMonth = newEntity.endMonth;	
-		this.kfnmtExtractionPeriodDailyPK.extractionRange = newEntity.kfnmtExtractionPeriodDailyPK.extractionRange;
 	}
 }
