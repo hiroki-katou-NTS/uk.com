@@ -702,7 +702,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 formulaRegex = new RegExp(/(?<=}|$)/g);*/
                 operands = formula.split(new RegExp(separators, 'g')).filter(item => item).map(item => item.trim());
             for (operand of operands) {
-                let operandArray = operand.replace(new RegExp('}', 'g'), "} ").split(' ').filter(item => item).map(item => item.trim());
+                let operandArray = operand.replace(new RegExp('}', 'g'), "}+").split('+').filter(item => item).map(item => item.trim());
                 if (operandArray.length > 1) {
                     self.setErrorToFormula('MsgQ_256', []);
                     operandArray.forEach(operandItem => self.checkOperand(operandItem));
