@@ -429,13 +429,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @param outNumExceedTime36Agr 超過月数出力するか
 	 *            
 	 */
-	private Map<String, AnnualWorkScheduleData> create36MaximumAgreementTimeForOneMonth(String cid, YearMonthPeriod yearMonthPeriod,
+	private Map<String, AnnualWorkScheduleData> create36MaximumAgreementTimeForOneMonth(String cid, YearMonthPeriod yearMonthPeriodRQL554,
 			String employeeId, ItemOutTblBook outputAgreementTime36, Year fiscalYear, YearMonth startYm, boolean average,
 			PeriodAtrOfAgreement periodAtr, Integer monthLimit, List<String> header, GeneralDate endDate, Integer baseMonth) {
 		
 		List<AgreementTimeByPeriodImport> listAgreementTimeByMonth = new ArrayList<>();
 		//requestList 548 
-		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = getAgreTimeByPeriod.maxTime(cid, employeeId, yearMonthPeriod);
+		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = getAgreTimeByPeriod.maxTime(cid, employeeId, yearMonthPeriodRQL554);
 		int sum = 0;
 		for (AgreMaxTimeMonthOut agreMax : agreMaxTimeMonthOut) {
 			AgreementTimeByPeriodImport oneMonth = new AgreementTimeByPeriodImport(agreMax.getYearMonth(), null, 
@@ -460,7 +460,10 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		
 		List<AgreementTimeByPeriodImport> listAgreMaxAverageTime = new ArrayList<>();
 		if(average) {
-			List<AgreMaxAverageTime> listAgreMaxAverageTimeImport =  this.createMonthlyAverage(cid, employeeId, endDate, nts.arc.time.YearMonth.of(fiscalYear.v(), baseMonth));
+			//暦上の年月変換処理
+			nts.arc.time.YearMonth specifiedYearMonth = this.converYearMonth(yearMonthPeriodRQL554, baseMonth);
+			//36協定上限時間の複数月平均を取得する
+			List<AgreMaxAverageTime> listAgreMaxAverageTimeImport =  this.createMonthlyAverage(cid, employeeId, endDate, specifiedYearMonth);
 			for (AgreMaxAverageTime agreMaxAverage: listAgreMaxAverageTimeImport) {
 				AgreementTimeByPeriodImport item = new AgreementTimeByPeriodImport(agreMaxAverage.getPeriod().start(), null, new AttendanceTimeYear(agreMaxAverage.getAverageTime().v()), null, null, null, null, 
 						agreMaxAverage.getStatus()==AgreMaxTimeStatusOfMonthly.NORMAL?AgreementTimeStatusOfMonthly.NORMAL:AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
@@ -710,5 +713,16 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		listEmpSorted.addAll(listEmp);
 		listEmpSorted.removeAll(exportData.getEmployeeIdsError());
 		exportData.setEmployeeIds(listEmpSorted);
+	}
+	
+	/**
+	 * アルゴリズム「暦上の年月変換処理」を実行
+	 * */
+	private nts.arc.time.YearMonth converYearMonth(YearMonthPeriod yearMonthPeriodRQL554, int baseMonth){
+		if(baseMonth > yearMonthPeriodRQL554.end().month()) {
+			return nts.arc.time.YearMonth.of(yearMonthPeriodRQL554.start().year(), baseMonth);
+		}else {
+			return nts.arc.time.YearMonth.of(yearMonthPeriodRQL554.end().year(), baseMonth);
+		}
 	}
 }
