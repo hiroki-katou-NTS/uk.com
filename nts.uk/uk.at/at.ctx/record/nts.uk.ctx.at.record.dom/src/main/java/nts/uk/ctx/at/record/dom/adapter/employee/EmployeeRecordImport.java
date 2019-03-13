@@ -11,7 +11,7 @@ public class EmployeeRecordImport {
 	private String pid;
 
 	private String pname;
-
+	/**入社年月日*/
 	private GeneralDate entryDate;
 
 	private int gender;

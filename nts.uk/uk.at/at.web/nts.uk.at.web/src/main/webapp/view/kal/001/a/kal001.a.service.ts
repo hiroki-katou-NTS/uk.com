@@ -119,6 +119,11 @@ module nts.uk.at.view.kal001.a.service {
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
+                        } else if(p.categoryName=="36協定　複数月平均"){
+                            let sDate =p.dateValue().startDate + '/01';
+                            
+                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(sDate).momentObject.toISOString() ; 
                         } else{
                             let sDate =p.dateValue().startDate + '/01';
                             let eDate = p.dateValue().endDate;

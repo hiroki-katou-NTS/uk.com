@@ -245,15 +245,12 @@ module nts.uk.at.view.kwr008.a {
                     //reload A4_2
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
                     self.getOutItemSettingCode().done(() => {
-                        if (!resultData) {
-                            self.selectedOutputItem(null);
-                            block.clear();
-                            return;
-                        } else {
+                        if (resultData.selectedCd) {
                             self.selectedOutputItem(resultData.selectedCd);
                             self.selectedOutputItem.valueHasMutated();
-                            block.clear();
                         }
+                        block.clear();
+                        return;
                     }).fail(err => {
                         alertError({ messageId: err.messageId }).then(function() { block.clear(); });
                         block.clear();
