@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 
 public interface AlarmPatternSettingRepository {
 	
@@ -29,6 +30,8 @@ public interface AlarmPatternSettingRepository {
 	 */
 	public Optional<AlarmPatternSetting> findByAlarmPatternCode(String companyId, String alarmPatternCode);
 	
+	public Optional<AverageMonth> findAverageMonth(String extractionId);
+	
 	public void create(AlarmPatternSetting domain);
 	
 	public void update(AlarmPatternSetting domain);
@@ -36,5 +39,8 @@ public interface AlarmPatternSettingRepository {
 	public void delete(String companyId, String alarmPatternCode);
 	
 	public List<CheckCondition> getCheckCondition(String companyId, String alarmPatternCode);
+
+
+	void createAver(AverageMonth domain);
 		
 }

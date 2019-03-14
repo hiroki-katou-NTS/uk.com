@@ -92,6 +92,7 @@ public class AggregationProcessService {
 		map.put(TextResource.localize("KAL010_100"), AlarmCategory.MONTHLY);
 		map.put(TextResource.localize("KAL010_208"), AlarmCategory.AGREEMENT);
 		map.put(TextResource.localize("KAL010_250"), AlarmCategory.MULTIPLE_MONTH);
+		map.put(AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.nameId, AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY);
 		return map;
 	} 
 	

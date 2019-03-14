@@ -26,6 +26,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	private static final String CHECK_UNIQUE_SID_GRANTDATE_FOR_ADD = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate = :grantDate";
 	
+	private static final String CHECK_UNIQUE_SID_GRANTDATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate <= :grantDate";
+	
 	private static final String CHECK_UNIQUE_SID_GRANTDATE_FOR_UPDATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.annLeavID !=:annLeavID and a.grantDate = :grantDate";
 	
 	private static final String QUERY_WITH_EMPID_CHECKSTATE = "SELECT a FROM KRcmtAnnLeaRemain a"
@@ -230,7 +232,13 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
-
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate) {
+		return this.queryProxy().query(CHECK_UNIQUE_SID_GRANTDATE, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));
+	}
+	
 	@Override
 	public Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {

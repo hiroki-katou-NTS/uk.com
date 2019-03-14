@@ -596,11 +596,10 @@ module nts.uk.at.view.ksm011 {
                 self.conditionData([]);
 
                 $.when(self.getData(), self.getShiftConditionCat(), self.getShiftCondition()).done(function() {
-                    if (self.conditionData().length > 0 && self.dataA != null) {
+                    if (self.dataA != null) {
                         var conds = "";
                         self.scheFuncCondList([]);
-
-                        self.selectedAlarm(self.dataA.alarmCheckUseCls);
+                           self.selectedAlarm(self.dataA.alarmCheckUseCls);
                         self.selectedConfirmed(self.dataA.confirmedCls);
                         self.selectedPublic(self.dataA.publicCls);
                         self.selectedOutput(self.dataA.outputCls);
@@ -630,29 +629,28 @@ module nts.uk.at.view.ksm011 {
                         self.selectedUnhooking(self.dataA.handleRepairAtr);
                         self.selectedConfirm(self.dataA.confirm);
                         self.selectedSearchMethod(self.dataA.searchMethod);
-                        self.selectedRetrieval(self.dataA.searchMethodDispCls);
-
-                        var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
-                        _.forEach(sortedScheFuncCond, function(item) {
-                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
-                            if (result !== undefined) {
-                                self.scheFuncCondList.push(result);
+                        self.selectedRetrieval(self.dataA.searchMethodDispCls); 
+                            var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
+                            _.forEach(sortedScheFuncCond, function(item) {
+                                var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
+                                if (result !== undefined) {
+                                    self.scheFuncCondList.push(result);
+                                }
+                                else {
+                                    self.scheFuncCondList.push(new ConditionModel({
+                                        conditionNo: item.conditionNo,
+                                        conditionName: nts.uk.resource.getText("KSM011_75"),
+                                        isParent: false,
+                                    }));
+                                }
+                                conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
+                            });
+                            if (conds == "") {
+                                self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                            } else {
+                                self.conditionList(conds.trim().slice(0, -1));
                             }
-                            else {
-                                self.scheFuncCondList.push(new ConditionModel({
-                                    conditionNo: item.conditionNo,
-                                    conditionName: nts.uk.resource.getText("KSM011_75"),
-                                    isParent: false,
-                                }));
-                            }
-                            conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
-                        });
-                        if (conds == "") {
-                            self.conditionList(nts.uk.resource.getText("KSM011_75"));
-                        } else {
-                            self.conditionList(conds.trim().slice(0, -1));
-                        }
-                        self.oldScheFuncCondList = self.scheFuncCondList();
+                            self.oldScheFuncCondList = self.scheFuncCondList();
                     } else {
                         self.selectedAlarm(0);
                         self.selectedConfirmed(0);

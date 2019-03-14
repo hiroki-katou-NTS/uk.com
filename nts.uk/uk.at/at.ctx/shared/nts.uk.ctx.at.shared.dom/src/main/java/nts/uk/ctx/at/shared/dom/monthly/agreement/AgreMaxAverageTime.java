@@ -39,21 +39,21 @@ public class AgreMaxAverageTime implements Cloneable {
 	 * ファクトリー
 	 * @param period 期間
 	 * @param totalTime 合計時間
-	 * @param averageTime 平均時間
 	 * @param status 状態
 	 * @return 36協定上限各月平均時間
 	 */
 	public static AgreMaxAverageTime of(
 			YearMonthPeriod period,
 			AttendanceTimeYear totalTime,
-			AttendanceTimeMonth averageTime,
 			AgreMaxTimeStatusOfMonthly status) {
 		
 		AgreMaxAverageTime domain = new AgreMaxAverageTime();
 		domain.period = period;
 		domain.totalTime = totalTime;
-		domain.averageTime = averageTime;
 		domain.status = status;
+		
+		// 平均時間を計算
+		domain.calcAverageTime();
 		return domain;
 	}
 	
@@ -70,6 +70,33 @@ public class AgreMaxAverageTime implements Cloneable {
 			throw new RuntimeException("AgreMaxAverageTime clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 平均時間を計算
+	 */
+	private void calcAverageTime(){
+		
+		if (this.period == null) {
+			this.averageTime = new AttendanceTimeMonth(0);
+			return;
+		}
+		if (this.totalTime == null) {
+			this.averageTime = new AttendanceTimeMonth(0);
+			return;
+		}
+		Integer monthNum = this.period.yearMonthsBetween().size();	// 期間の月数
+		Double averageMinutes = 0.0;								// 平均時間（分）
+		if (monthNum > 0) {
+			Double totalMinutes = this.totalTime.v().doubleValue();	// 合計時間
+			if (totalMinutes >= 0.0) {
+				averageMinutes = Math.ceil(totalMinutes / monthNum.doubleValue());
+			}
+			else {
+				averageMinutes = -Math.ceil(-totalMinutes / monthNum.doubleValue());
+			}
+		}
+		this.averageTime = new AttendanceTimeMonth(averageMinutes.intValue());
 	}
 	
 	/**
