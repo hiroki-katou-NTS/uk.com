@@ -33,9 +33,8 @@ class RadioBoxComponent extends SelectBoxComponent {
         return this.selected === this.value;
     }
 
-    onClick() {
-        this.$emit('input', this.value);
-    }
+    @Emit('input')
+    onClick() { return this.value; }
 }
 
 @select()
