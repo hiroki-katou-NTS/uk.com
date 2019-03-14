@@ -1,4 +1,6 @@
-import '@app/components/common/label';
-import '@app/components/common/input';
+import './label';
+import './input';
+import './form-check';
+
 import '@app/components/common/text-editor';
 import '@app/components/common/text-area';
