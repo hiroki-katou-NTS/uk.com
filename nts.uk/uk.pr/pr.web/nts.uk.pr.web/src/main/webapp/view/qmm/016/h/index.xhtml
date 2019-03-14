@@ -109,7 +109,9 @@
                             draggable: true,
                             multipleDrag: { left: true, right: false },
                             innerDrag: { left: false, right: true },
-                            outerDrag: { left: true, right: true }
+                            outerDrag: { left: true, right: true },
+                            afterMoveRight: function() {sortQualificationInfoSelected()},
+                            afterMoveLeft: function() {sortQualificationInfoList()}
                         }"></div>
 
                     </div>
