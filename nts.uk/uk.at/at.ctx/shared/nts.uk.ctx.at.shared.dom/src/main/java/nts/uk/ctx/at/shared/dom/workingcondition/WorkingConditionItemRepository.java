@@ -159,6 +159,13 @@ public interface WorkingConditionItemRepository {
 	 * @param item the item
 	 */
 	void updateWorkCond2(WorkingConditionItem item);
+	
+	/**
+	 * Update WorkingCondition
+	 * trong trường hợp chia đôi category WorkingCondition
+	 * @param item the item
+	 */
+	void updateAllWorkCond2(List<WorkingConditionItem> items);
 
 	/**
 	 * Gets the list with period by sid and date period 

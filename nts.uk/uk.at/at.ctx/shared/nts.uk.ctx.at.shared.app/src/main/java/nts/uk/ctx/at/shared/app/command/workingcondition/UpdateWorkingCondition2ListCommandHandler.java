@@ -20,32 +20,31 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateWorkingConditionListCommandHandler extends CommandHandler<List<UpdateWorkingConditionCommand>>
-implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
+public class UpdateWorkingCondition2ListCommandHandler extends CommandHandler<List<UpdateWorkingCondition2Command>>
+implements PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>{
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-	
+
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
-	
+
 	@Inject
 	private UpdateWorkingConditionCommandAssembler updateWorkingConditionCommandAssembler;
-	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00020";
+		return "CS00070";
 	}
 
 	@Override
 	public Class<?> commandClass() {
-		return UpdateWorkingConditionCommand.class;
+		return UpdateWorkingCondition2Command.class;
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateWorkingConditionCommand>> context) {
-		List<UpdateWorkingConditionCommand> cmd = context.getCommand();
+	protected void handle(CommandHandlerContext<List<UpdateWorkingCondition2Command>> context) {
+		List<UpdateWorkingCondition2Command> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		UpdateWorkingConditionCommand updateFirst = cmd.get(0);
+		UpdateWorkingCondition2Command updateFirst = cmd.get(0);
 		// sidsPidsMap
 		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<String> errorLst = new ArrayList<>();
@@ -71,16 +70,16 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 				workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(), endDate));
 				workingCondInserts.add(workingCond);
 			}
-			WorkingConditionItem  workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(c);
+			WorkingConditionItem  workingCondItem = updateWorkingConditionCommandAssembler.fromDTO2(c);
 			workingCondItems.add(workingCondItem);
-		});	
+		});
 		
 		if(!workingCondInserts.isEmpty()) {
 			workingConditionRepository.saveAll(workingCondInserts);
 		}
 		
 		if(!workingCondItems.isEmpty()) {
-			workingConditionItemRepository.updateAll(workingCondItems);
+			workingConditionItemRepository.updateAllWorkCond2(workingCondItems);
 		}
 		
 	}

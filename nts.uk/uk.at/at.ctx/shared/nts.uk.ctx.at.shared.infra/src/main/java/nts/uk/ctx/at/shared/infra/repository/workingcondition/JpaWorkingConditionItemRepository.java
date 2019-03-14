@@ -982,6 +982,25 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
 			items.parallelStream().forEach(c ->{
 				KshmtWorkingCondItem entity = entities.parallelStream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
+				c.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
+				updateLst.add(entity);
+				
+			});
+			
+			if(!updateLst.isEmpty()) {
+				this.commandProxy().updateAll(updateLst);
+			}
+		}
+	}
+
+	@Override
+	public void updateAllWorkCond2(List<WorkingConditionItem> items) {
+		List<String> histIds = items.parallelStream().map(c -> c.getHistoryId()).collect(Collectors.toList());
+		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
+		if(!histIds.isEmpty()) {
+			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
+			items.parallelStream().forEach(c ->{
+				KshmtWorkingCondItem entity = entities.parallelStream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
 				c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 				updateLst.add(entity);
 				
@@ -991,6 +1010,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				this.commandProxy().updateAll(updateLst);
 			}
 		}
+		
 	}
 
 }
