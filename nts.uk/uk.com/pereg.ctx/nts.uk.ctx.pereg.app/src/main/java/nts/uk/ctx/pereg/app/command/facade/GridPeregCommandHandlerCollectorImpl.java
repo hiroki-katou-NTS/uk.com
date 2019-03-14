@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2
 import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.contact.AddEmployeeInfoContactCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.contact.UpdateEmployeeInfoContactCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.AddAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.UpdateAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
@@ -61,7 +63,10 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00021	勤務種別
 			new TypeLiteral<PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){},
 			//CS00022	個人連絡先
-			new TypeLiteral<PeregAddListCommandHandler<UpdatePerContactCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<UpdatePerContactCommand>>(){},
+			//CS00023	社員連絡先
+			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeInfoContactCommand>>(){}
+			
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -89,6 +94,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
 			//CS00022	個人連絡先
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdatePerContactCommand>>(){},
+			//CS00023	社員連絡先
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>>(){},
 			//CS00070  労働条件2
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
 			);
