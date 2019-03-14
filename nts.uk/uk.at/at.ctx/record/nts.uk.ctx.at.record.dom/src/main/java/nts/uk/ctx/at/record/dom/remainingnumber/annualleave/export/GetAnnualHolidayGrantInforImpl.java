@@ -286,16 +286,20 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		if(annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}
-		AnnualLeaveTimeRemainingHistory maxDateAnnRemainHis = annTimeData.get(0);
+		List<AnnualLeaveTimeRemainingHistory> maxDateAnnRemainHis = annTimeData
+				.stream().filter(x -> x.getGrantProcessDate().equals(annTimeData.get(0).getGrantProcessDate())).collect(Collectors.toList());
 		lstAnnRemainHis.stream().forEach(y -> {
-			if(y.getGrantDate().equals(maxDateAnnRemainHis.getGrantDate())) {
-				//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
-				double useDay = y.getDetails().getUsedNumber().getDays().v() - maxDateAnnRemainHis.getDetails().getUsedNumber().getDays().v();
-				y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
-				//付与数から計算した使用数を減算
-				double grantDays = y.getDetails().getGrantNumber().getDays().v() - maxDateAnnRemainHis.getDetails().getUsedNumber().getDays().v();					
-				y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
-			}
+			maxDateAnnRemainHis.stream().forEach(z -> {
+				if(y.getGrantDate().equals(z.getGrantDate())) {
+					//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
+					double useDay = y.getDetails().getUsedNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
+					y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
+					//付与数から計算した使用数を減算
+					double grantDays = y.getDetails().getGrantNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();					
+					y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
+				}	
+			});
+			
 		});
 		return lstAnnRemainHis;
 	}

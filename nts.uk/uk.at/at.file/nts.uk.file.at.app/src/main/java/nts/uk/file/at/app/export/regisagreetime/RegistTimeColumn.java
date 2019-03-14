@@ -53,6 +53,14 @@ public final class RegistTimeColumn {
 	public static final String KMK008_98 = "3カ月";
 	// A9_11
 	public static final String KMK008_99 = "1年間";
+	// A30_1
+	public static final String KMK008_125 = "時間外労働の上限規制";
+	// A30_2
+	public static final String KMK008_126 = "時間";
+	// A31_1
+	public static final String KMK008_127 = "月間時間（未満）";
+	// A32_2
+	public static final String KMK008_128 = "複数月平均時間（以下）";
 	
 	/**
 	 *  sheet3
