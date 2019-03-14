@@ -1,7 +1,7 @@
 {
-  "name": "nippo.web",
+  "name": "uk.mobile",
   "version": "1.0.0",
-  "description": "UK vue: Vue bootstrap",
+  "description": "UK mobile: Vue bootstrap",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
     "animate.css": "^3.7.0",
@@ -69,6 +69,6 @@
     "mvvm",
     "typescript"
   ],
-  "author": "Vuong NT",
+  "author": "Vuong NV",
   "license": "ISC"
 }
