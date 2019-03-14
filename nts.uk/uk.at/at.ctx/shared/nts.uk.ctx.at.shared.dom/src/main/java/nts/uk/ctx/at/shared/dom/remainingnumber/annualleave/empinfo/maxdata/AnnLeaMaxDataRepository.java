@@ -9,7 +9,11 @@ public interface AnnLeaMaxDataRepository {
 	
 	void add(AnnualLeaveMaxData maxData);
 	
+	void addAll(List<AnnualLeaveMaxData> domains);
+	
 	void update(AnnualLeaveMaxData maxData);
+	
+	void updateAll(List<AnnualLeaveMaxData> domains);
 	
 	void delete(String employeeId);
 	

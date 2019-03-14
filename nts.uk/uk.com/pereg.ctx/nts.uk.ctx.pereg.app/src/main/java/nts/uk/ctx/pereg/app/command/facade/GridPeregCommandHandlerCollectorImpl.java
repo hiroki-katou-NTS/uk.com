@@ -13,6 +13,8 @@ import command.person.contact.UpdatePerContactCommand;
 import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
@@ -33,6 +35,7 @@ import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCo
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
+import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -65,7 +68,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00022	個人連絡先
 			new TypeLiteral<PeregAddListCommandHandler<UpdatePerContactCommand>>(){},
 			//CS00023	社員連絡先
-			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeInfoContactCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeInfoContactCommand>>(){},
+			//CS00024	年休情報
+			new TypeLiteral<PeregAddListCommandHandler<AddAnnuaLeaveCommand>>(){}
 			
 			);
 	/** Update handlers */
@@ -96,6 +101,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdatePerContactCommand>>(){},
 			//CS00023	社員連絡先
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>>(){},
+			//CS00024	年休情報
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>>(){},
 			//CS00070  労働条件2
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
 			);
