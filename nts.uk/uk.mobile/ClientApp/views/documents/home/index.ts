@@ -14,6 +14,7 @@ import { NavbarComponent } from './nav';
         </div>
         <router-view :class="'col-md-10'" />
     </div>`,
+    style: `@media (max-width: 768px) { #component .markdown-content {margin-top: 15px;} }`,
     components: {
         'lang-bar': LanguageBar,
         'navi-bar': NavbarComponent
