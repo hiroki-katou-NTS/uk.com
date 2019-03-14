@@ -82,6 +82,13 @@ public interface WorkingConditionItemRepository {
 	 * @param item the item
 	 */
 	void add(WorkingConditionItem item);
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param item the item
+	 */
+	void addAll(List<WorkingConditionItem> items);
 
 	/**
 	 * Update.
@@ -90,6 +97,12 @@ public interface WorkingConditionItemRepository {
 	 */
 	void update(WorkingConditionItem item);
 
+	/**
+	 * Update.
+	 *
+	 * @param item the item
+	 */
+	void updateAll(List<WorkingConditionItem> item);
 	/**
 	 * Delete.
 	 *

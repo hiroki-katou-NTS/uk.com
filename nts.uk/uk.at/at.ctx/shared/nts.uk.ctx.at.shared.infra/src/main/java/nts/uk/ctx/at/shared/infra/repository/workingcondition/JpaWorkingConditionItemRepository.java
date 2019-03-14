@@ -912,6 +912,16 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 */
 	@Override
 	public List<WorkingConditionItem> getByListHistoryID(List<String> listHistoryID) {
+		List<KshmtWorkingCondItem> result = this.getByHistIds(listHistoryID);
+		// exclude select
+		return result.stream().map(entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
+				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#getByListHistoryID(java.util.List)
+	 */
+	private List<KshmtWorkingCondItem> getByHistIds(List<String> histIds) {
 		// get entity manager
 				EntityManager em = this.getEntityManager();
 				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -927,7 +937,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 				List<KshmtWorkingCondItem> result = new ArrayList<>();
 
-				CollectionUtil.split(listHistoryID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 					// add where
 					List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -948,9 +958,39 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				}
 
 				// exclude select
-				return result.stream().map(
-						entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
-						.collect(Collectors.toList());
+				return result;
+	}
+	@Override
+	public void addAll(List<WorkingConditionItem> items) {
+		List<KshmtWorkingCondItem> entities = new ArrayList<>();
+		items.parallelStream().forEach(c ->{
+			KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
+			c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+			entities.add(entity);
+		});
+		
+		if(!entities.isEmpty()) {
+			this.commandProxy().insertAll(entities);
+		}
+	}
+
+	@Override
+	public void updateAll(List<WorkingConditionItem> items) {
+		List<String> histIds = items.parallelStream().map(c -> c.getHistoryId()).collect(Collectors.toList());
+		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
+		if(!histIds.isEmpty()) {
+			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
+			items.parallelStream().forEach(c ->{
+				KshmtWorkingCondItem entity = entities.parallelStream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
+				c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+				updateLst.add(entity);
+				
+			});
+			
+			if(!updateLst.isEmpty()) {
+				this.commandProxy().updateAll(updateLst);
+			}
+		}
 	}
 
 }
