@@ -215,6 +215,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 self.tabCheckCondition.listMulMonCheckSet([]);
             }
 
+            if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+                 self.tabAnnualHolidayCon.loadData();
+                 self.tabAnnualHolidaySubCon.loadData();
+            }
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -360,7 +364,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
             }
 
-             if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+            if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
                  data.annualHolidayAlCon().alarmCheckSubConAgr(self.tabAnnualHolidaySubCon == null ? null : self.tabAnnualHolidaySubCon);
                  data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
             }

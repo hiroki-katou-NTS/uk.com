@@ -317,8 +317,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 										annualHoliday.getAlarmCheckSubConAgr().getNumberDayAward(),
 										annualHoliday.getAlarmCheckSubConAgr().getPeriodUntilNext());
 				if(alarmCheckConAgr != null) {
-					val optionalSubCon = alarmCheckConAgrRepository.findByKey(companyId, category.value, command.getCode());
-					if(optionalSubCon.isPresent()) {
+					val optionalCon = alarmCheckConAgrRepository.findByKey(companyId, category.value, command.getCode());
+					if(optionalCon.isPresent()) {
 						alarmCheckConAgrRepository.update(companyId, category.value, command.getCode(), alarmCheckConAgr);
 					}else {
 						alarmCheckConAgrRepository.insert(companyId, category.value, command.getCode(), alarmCheckConAgr);
@@ -326,10 +326,28 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				
 				if(alarmCheckSubConAgr != null) {
-					val optionalCon = alarmCheckConAgrRepository.findByKey(companyId, category.value, command.getCode());
-					if(optionalCon.isPresent()) {
+					val optionalSubCon = alarmCheckSubConAgrRepository.findByKey(companyId, category.value, command.getCode());
+					Integer numberDayAward = null, periodUntilNext = null;
+					if(optionalSubCon.isPresent()) {
+						if(alarmCheckSubConAgr.isNarrowLastDay()) {
+							numberDayAward = alarmCheckSubConAgr.getNumberDayAward().get().v();
+						}else {
+							numberDayAward = optionalSubCon.get().getNumberDayAward().isPresent() ? optionalSubCon.get().getNumberDayAward().get().v() : null;
+						}
+						
+						if(alarmCheckSubConAgr.isNarrowUntilNext()) {
+							periodUntilNext = alarmCheckSubConAgr.getPeriodUntilNext().get().v();
+						}else {
+							periodUntilNext = optionalSubCon.get().getPeriodUntilNext().isPresent() ? optionalSubCon.get().getPeriodUntilNext().get().v() : null;
+						}
+						
+						alarmCheckSubConAgr = new AlarmCheckSubConAgr(alarmCheckSubConAgr.isNarrowUntilNext(), alarmCheckSubConAgr.isNarrowLastDay(), numberDayAward, periodUntilNext);
+						
 						alarmCheckSubConAgrRepository.update(companyId, category.value, command.getCode(), alarmCheckSubConAgr);
 					}else {
+						if(alarmCheckSubConAgr.isNarrowLastDay()) numberDayAward = alarmCheckSubConAgr.getNumberDayAward().get().v();
+						if(alarmCheckSubConAgr.isNarrowUntilNext()) periodUntilNext = alarmCheckSubConAgr.getPeriodUntilNext().get().v();
+						alarmCheckSubConAgr = new AlarmCheckSubConAgr(alarmCheckSubConAgr.isNarrowUntilNext(), alarmCheckSubConAgr.isNarrowLastDay(), numberDayAward, periodUntilNext);
 						alarmCheckSubConAgrRepository.insert(companyId, category.value, command.getCode(), alarmCheckSubConAgr);
 					}
 				}
@@ -479,6 +497,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 										annualHoliday.getAlarmCheckSubConAgr().isNarrowLastDay(),
 										annualHoliday.getAlarmCheckSubConAgr().getNumberDayAward(),
 										annualHoliday.getAlarmCheckSubConAgr().getPeriodUntilNext());
+				Integer numberDayAward = null, periodUntilNext = null;
+				if(alarmCheckSubConAgr.isNarrowLastDay()) numberDayAward = alarmCheckSubConAgr.getNumberDayAward().get().v();
+				if(alarmCheckSubConAgr.isNarrowUntilNext()) periodUntilNext = alarmCheckSubConAgr.getPeriodUntilNext().get().v();
+				alarmCheckSubConAgr = new AlarmCheckSubConAgr(alarmCheckSubConAgr.isNarrowUntilNext(), alarmCheckSubConAgr.isNarrowLastDay(), numberDayAward, periodUntilNext);
 				extractionCondition = new AnnualHolidayAlarmCondition(alarmCheckConAgr, alarmCheckSubConAgr);
 				break;
 			default:
