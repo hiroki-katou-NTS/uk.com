@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import command.person.contact.UpdatePerContactCommand;
 import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
@@ -58,7 +59,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00020	労働条件
 			new TypeLiteral<PeregAddListCommandHandler<AddWorkingConditionCommand>>(){},
 			//CS00021	勤務種別
-			new TypeLiteral<PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){},
+			//CS00022	個人連絡先
+			new TypeLiteral<PeregAddListCommandHandler<UpdatePerContactCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -84,6 +87,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>>(){},
 			//CS00021	勤務種別
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
+			//CS00022	個人連絡先
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdatePerContactCommand>>(){},
 			//CS00070  労働条件2
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
 			);
