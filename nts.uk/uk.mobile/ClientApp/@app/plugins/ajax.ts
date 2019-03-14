@@ -7,11 +7,17 @@ interface IFetchOption {
     method: 'get' | 'post' | 'push' | 'patch' | 'delete';
     data?: any;
     headers?: any;
+    pg?: 'at' | 'pr' | 'com';
+    responseType?: 'blob' | 'arraybuffer' | 'document' | 'json' | 'text' | null;
 }
 
-const ajax = {
+const WEB_APP_NAME = {
+    at: 'nts.uk.at.web',
+    pr: 'nts.uk.pr.web',
+    com: 'nts.uk.com.web'
+}, ajax = {
     install(vue: VueConstructor<Vue>, prefixUrl: string) {
-        const fetch = function (opt: IFetchOption, data?: any) {
+        const fetch = function (opt: IFetchOption) {
             return new Promise(function (resolve, reject) {
                 if (!$.isObject(opt)) {
                     reject('No required parameters - "url" and "method".')
@@ -23,7 +29,7 @@ const ajax = {
                     return;
                 } else {
                     $.extend(opt, {
-                        url: (prefixUrl + opt.url).replace(/([^:]\/)\/+/g, "$1")
+                        url: (`/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
                     });
                 }
 
@@ -100,7 +106,15 @@ const ajax = {
                     setHeaders(opt.headers);
                 }
 
+                // authentication 
+                xhr.setRequestHeader('PG-Path', 'nts.uk.mobile.web');
+                xhr.setRequestHeader('X-CSRF-TOKEN', localStorage.getItem('csrf') || '');
+
                 xhr.open(opt.method, opt.url, true);
+
+                if (opt.responseType) {
+                    xhr.responseType = opt.responseType;
+                }
 
                 xhr.onerror = function () {
                     reject(xhr);
@@ -109,10 +123,10 @@ const ajax = {
                 xhr.onload = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         try {
-                            resolve({ response: JSON.parse(xhr.response), headers: parseHeaders(xhr), data: data });
+                            resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
                         }
                         catch (e) {
-                            resolve({ response: xhr.response, headers: parseHeaders(xhr), data: data });
+                            resolve({ data: xhr.response, headers: parseHeaders(xhr) });
                         }
 
                     } else {
@@ -130,6 +144,52 @@ const ajax = {
             },
             post: (url: string, data: any) => {
                 return fetch({ url, data, method: 'post' });
+            },
+            async: {
+                info: (taskdId: string) => {
+                    return fetch({
+                        method: 'post',
+                        url: '/ntscommons/arc/task/async/info/' + taskdId
+                    });
+                },
+                cancel: (taskdId: string) => {
+                    return fetch({
+                        method: 'post',
+                        url: '/ntscommons/arc/task/async/requesttocancel/' + taskdId
+                    });
+                }
+            },
+            file: {
+                live: (fileId: string) => {
+
+                },
+                delete: (fileId: string) => {
+                    return fetch({
+                        method: 'post',
+                        url: `/shr/infra/file/storage/delete/${fileId}`
+                    });
+                },
+                upload: (form: FormData) => {
+                    ///nts.uk.com.web/webapi/ntscommons/arc/filegate/upload
+                },
+                download: (fileId: string) => {
+                    return fetch({
+                        method: 'get',
+                        responseType: 'blob',
+                        url: `/shr/infra/file/storage/get/${fileId}`
+                    }).then((resp: { data: any, headers: any }) => {
+                        const blob = resp.data,
+                            fileName = resp.headers.fileName,
+                            link = document.createElement('a');
+
+                        link.href = URL.createObjectURL(blob);
+                        link.download = fileName;
+
+                        link.click();
+                    }).catch((reason: any) => {
+                        console.log(reason);
+                    });
+                }
             },
             headers: {
                 Authorization: ''

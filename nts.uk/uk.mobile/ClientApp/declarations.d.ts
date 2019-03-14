@@ -27,7 +27,7 @@ declare interface IRule {
     maxValue?: Date | number;
     between?: Array<Date | number>;
     not?: Array<Date | number | string>;
-    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string |{
+    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;
     };
@@ -63,6 +63,15 @@ declare module "vue/types/vue" {
             post: (url: string, data?: any) => Promise<{}>;
             headers: {
                 [header: string]: string;
+            },
+            file: {
+                live: (fileId: string) => string;
+                upload: (form: FormData) => Promise<{}>;
+                download: (fileId: string) => Promise<{}>;
+            },
+            async: {
+                info: (taskId: string) => Promise<{}>;
+                cancel: (taskId: string) => Promise<{}>;
             }
         };
         $i18n: (resr: string, param?: { [key: string]: string }) => string;
