@@ -455,7 +455,6 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 							.stream().map(x -> AgreMaxAverageTime.of(
 									x.getPeriod(), 
 									x.getTotalTime(), 
-									x.getAverageTime(), 
 									AgreMaxTimeStatusOfMonthly.NORMAL))
 							.collect(Collectors.toList())), 
 				Optional.ofNullable(new AttendanceTime(applicationTime.v())), 
