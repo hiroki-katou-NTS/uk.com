@@ -172,18 +172,22 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		} else if (this.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value) {
 			listExtractPerMonth.forEach(e -> {
 				if (e.pk.unit == 3)
+					
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
+			if(extractionPerUnit != null)
 			extractPeriodList.add(extractionPerUnit.toDomain());
 			
 		} else if(this.pk.alarmCategory == AlarmCategory.AGREEMENT.value) {
+			if(extractionPeriodDaily != null)
 			extractPeriodList.add(extractionPeriodDaily.toDomain());
 			
 			listExtractPerMonth.forEach(e -> {				
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 			
+			if(extractRangeYear != null)
 			extractPeriodList.add(extractRangeYear.toDomain());
 			if(alstPtnDeftmbsmon != null)
 			// Add アラームリストのパターン設定 既定期間(基準月) to extractPeriodList
