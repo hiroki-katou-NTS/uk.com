@@ -385,9 +385,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				agreeMonth.getExceptionLimitErrorTime());
 		
 		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
-				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)
-				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.equals(checkAgreement)
-				|| AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.equals(checkAgreement)) {
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
 			// エラー情報一覧に「月間エラー」を追加
 			time36ErrorLst.add("月間");
 			if(!(agreeMonth.getYear36OverMonth().stream().filter(x -> x.equals(yearMonth)).count() > 0)){
@@ -397,6 +395,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				oldLst.add(yearMonth);
 				agreeMonth.setYear36OverMonth(oldLst);
 			}
+		} else if(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.equals(checkAgreement)){
+			// 「時間外時間の詳細」．36年間超過回数 += 1、「時間外時間の詳細」．36年間超過月.Add(「時間外時間の詳細」．年月)
+			agreeMonth.setNumOfYear36Over(agreeMonth.getNumOfYear36Over().v()+1);
+			List<YearMonth> oldLst = agreeMonth.getYear36OverMonth();
+			oldLst.add(yearMonth);
+			agreeMonth.setYear36OverMonth(oldLst);
 		}
 		return time36ErrorLst;
 	}
