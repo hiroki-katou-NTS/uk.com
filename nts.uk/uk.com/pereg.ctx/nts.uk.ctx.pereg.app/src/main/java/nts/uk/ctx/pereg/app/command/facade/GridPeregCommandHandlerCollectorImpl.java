@@ -10,9 +10,12 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
 import command.person.info.UpdatePersonCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
+import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2Command;
 import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
@@ -29,6 +32,7 @@ import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHis
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 
 @Stateless
@@ -52,7 +56,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00019	短時間勤務
 			new TypeLiteral<PeregAddListCommandHandler<AddShortWorkTimeCommand>>(){},
 			//CS00020	労働条件
-			new TypeLiteral<PeregAddListCommandHandler<AddWorkingConditionCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddWorkingConditionCommand>>(){},
+			//CS00021	勤務種別
+			new TypeLiteral<PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -75,7 +81,11 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00019	短時間勤務
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>>(){},
 			//CS00020	労働条件
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>>(){},
+			//CS00021	勤務種別
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
+			//CS00070  労働条件2
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
 			);
 	
 	@Override

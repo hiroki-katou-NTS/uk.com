@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
 
 import java.util.List;
+import java.util.Map;
 //import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,13 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 *            BusinessTypeOfEmployeeHistory
 	 */
 	void add(String companyId,String employeeId,String historyId, GeneralDate startDate,GeneralDate endDate);
+	
+	/**
+	 * @author lanlt
+	 * add all BusinessTypeOfEmployeeHistory
+	 * @param dateHistItems
+	 */
+	void addAll(Map<String, DateHistoryItem> dateHistItems);
 
 	/**
 	 * update BusinessTypeOfEmployeeHistory
@@ -26,6 +34,15 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 *            BusinessTypeOfEmployeeHistory
 	 */
 	void update(String companyId,String employeeId,String historyId, GeneralDate startDate,GeneralDate endDate);
+	
+	/**
+	 * @author lanlt
+	 * update all BusinessTypeOfEmployeeHistory
+	 * 
+	 * @param domain:
+	 *            BusinessTypeOfEmployeeHistory
+	 */
+	void updateAll(Map<String, DateHistoryItem> dateHistItems);
 
 	/**
 	 * delete BusinessTypeOfEmployeeHistory
@@ -54,6 +71,14 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 * @return BusinessTypeOfEmployeeHistory
 	 */
 	Optional<BusinessTypeOfEmployeeHistory> findByEmployeeDesc(String cid, String sId);
+	/**
+	 * @author lanlt
+	 * find all sids and cid
+	 * @param cid
+	 * @param sId
+	 * @return
+	 */
+	List<BusinessTypeOfEmployeeHistory> findByEmployeeDesc(String cid, List<String> sids);
 	
 	/**
 	 * find by historyId
