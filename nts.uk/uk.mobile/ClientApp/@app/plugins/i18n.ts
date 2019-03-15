@@ -5,24 +5,17 @@ const resources: {
         [key: string]: string;
     }
 } = {
-    en: {
-        'en': 'English',
-        'jp': 'Japan',
+    jp: {
+        'jp': '日本',
         'vi': 'Tiếng Việt'
     },
     vi: {
-        'en': 'English',
-        'jp': 'Japan',
-        'vi': 'Tiếng Việt'
-    },
-    jp: {
-        'en': 'English',
-        'jp': 'Japan',
+        'jp': '日本',
         'vi': 'Tiếng Việt'
     }
 }, language = new Vue({
     data: {
-        current: 'vi'
+        current: 'jp'
     },
     methods: {
         change: function (lang: string) {
@@ -32,14 +25,30 @@ const resources: {
         }
     }
 }), LanguageBar = {
-    template: `<div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-            {{$i18n(current)}} <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)"><a>{{$i18n(lg)}}</a></li>
-        </ul>
-    </div>`,
+    template: `<template v-if="button">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                    {{current | i18n}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)"><a>{{lg | i18n}}</a></li>
+                </ul>
+            </div>
+        </template>
+        <template v-else>
+            <li class="nav-item dropdown">
+                <a class="nav-item nav-link dropdown-toggle mr-md-2">{{current | i18n}}</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)">{{lg | i18n}}</a>
+                </div>
+            </li>
+        </template>`,
+    prop: ['button'],
+    data: function () {
+        return {
+            button: false
+        }
+    },
     methods: {
         change: language.change
     },
@@ -49,7 +58,7 @@ const resources: {
     }
 }, i18n = {
     install(vue: VueConstructor<Vue>, lang: string) {
-        language.current = lang || localStorage.getItem('lang') || 'en';
+        language.current = lang || localStorage.getItem('lang') || 'jp';
 
         vue.filter('i18n', getText);
         vue.prototype.$i18n = getText;

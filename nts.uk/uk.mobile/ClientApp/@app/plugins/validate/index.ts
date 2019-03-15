@@ -6,9 +6,6 @@ import { $, dom } from '@app/utils';
 import * as validators from '@app/plugins/validate/validators';
 
 $.merge(resources, {
-    en: {
-        required: '#{field} is required!'
-    },
     vi: {
         required: '#{field} là trường bắt buộc!'
     }

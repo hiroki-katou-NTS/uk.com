@@ -29,7 +29,7 @@ const WEB_APP_NAME = {
                     return;
                 } else {
                     $.extend(opt, {
-                        url: (`/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
+                        //url: (`/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
                     });
                 }
 
@@ -102,15 +102,18 @@ const WEB_APP_NAME = {
                     opt.data = parseData();
                 }
 
+                xhr.open(opt.method, opt.url, true);
+
                 if (opt.headers) {
                     setHeaders(opt.headers);
                 }
 
                 // authentication 
-                xhr.setRequestHeader('PG-Path', 'nts.uk.mobile.web');
-                xhr.setRequestHeader('X-CSRF-TOKEN', localStorage.getItem('csrf') || '');
-
-                xhr.open(opt.method, opt.url, true);
+                setHeaders({
+                    //'PG-Path': 'nts.uk.mobile.web',
+                    //'X-CSRF-TOKEN': localStorage.getItem('csrf') || '',
+                    'Access-Control-Allow-Origin': '*'
+                });
 
                 if (opt.responseType) {
                     xhr.responseType = opt.responseType;
@@ -121,6 +124,7 @@ const WEB_APP_NAME = {
                 };
 
                 xhr.onload = function () {
+                    debugger;
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         try {
                             resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
@@ -137,6 +141,15 @@ const WEB_APP_NAME = {
                 xhr.send(opt.data);
             });
         };
+
+        // authentication
+        vue.mixin({
+            beforeMount() {
+                if (!localStorage.getItem('csrf')) {
+                    this.$router.push({ path: '/access/login' });
+                }
+            }
+        });
 
         vue.prototype.$http = {
             get: (url: string) => {
