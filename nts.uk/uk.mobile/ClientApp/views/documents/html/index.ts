@@ -7,7 +7,15 @@ import { component } from '@app/core/component';
         url: '/html',
         parent: '/documents'
     },
-    template:  require('./index.html')
+    template: require('./index.html'),
+    resource: {
+        vi: {
+            'HTMLDocumentsComponent': 'Html'
+        },
+        jp: {
+            'HTMLDocumentsComponent': 'Html'
+        }
+    }
 })
 export class HTMLDocumentsComponent extends Vue {
 }

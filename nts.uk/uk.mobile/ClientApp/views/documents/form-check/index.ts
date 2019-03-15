@@ -10,6 +10,14 @@ import { component } from '@app/core/component';
     markdown: {
         jp: require('./content/jp.md'),
         vi: require('./content/vi.md')
+    },
+    resource: {
+        'vi': {
+            'FormCheckComponent': 'Checkbox & Radio'
+        },
+        'jp': {
+            'FormCheckComponent': 'Checkbox & Radio'            
+        }
     }
 })
 export class FormCheckComponent extends Vue {
