@@ -98,5 +98,38 @@ document.addEventListener("click", function (e) {
         }
     })(e);
 
+    // navbar-toggler
+    let toggler = () => {
+        let target = e.target as HTMLElement;
+
+        if (dom.hasClass(target, 'navbar-toggler-icon') || dom.hasClass(target, 'navbar-toggler') || dom.getAttr(target, 'data-toggle') === 'collapse') {
+            return target;
+        }
+
+        return null;
+    };
+
+    ((evt: MouseEvent) => {
+        let target = toggler();
+        if (target) {
+            let parent = target.closest('.navbar') as HTMLElement;
+
+            if (parent) {
+                let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
+
+                if (collapse) {
+                    dom.toggleClass(collapse, 'show');
+                }
+            }
+        }
+    })(e);
+
+    let target = toggler(),
+        collapse = document.querySelector('.navbar .collapse.navbar-collapse.show') as HTMLElement;
+
+    if (!target && collapse) {
+        dom.removeClass(collapse, 'show');
+    }
+
     // other event
 });
