@@ -1,5 +1,5 @@
 module nts.uk.pr.view.qmm006.a.viewmodel {
-    
+
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        
+
         listSourceBank: KnockoutObservableArray<any>;
         selectedSourceBankCode: KnockoutObservable<string>;
         selectedSourceBank: KnockoutObservable<SourceBank>;
@@ -46,7 +46,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                 }
             });
         }
-        
+
         startPage(code?: string): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
@@ -84,10 +84,18 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                     updateMode: self.updateMode()
                 });
                 service.register(command).done(() => {
-                    self.startPage().done(() => {
+                    service.getAllSourceBank().done((data: Array<any>) => {
+                        let listSB = _.map(data, sb => {
+                            return {code: sb.code, name: sb.name, accountType: self.accountTypes()[sb.accountType].name, accountNumber: sb.accountNumber};
+                        });
+                        self.listSourceBank(listSB);
                         info({ messageId: "Msg_15" }).then(() => {
                             self.setSelectedCode(command.code);
                         });
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
                     });
                 }).fail(error => {
                     alertError(error);
@@ -112,10 +120,18 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                         }
                     }
                     service.remove(self.selectedSourceBankCode()).done(() => {
-                        self.startPage().done(() => {
+                        service.getAllSourceBank().done((data: Array<any>) => {
+                            let listSB = _.map(data, sb => {
+                                return {code: sb.code, name: sb.name, accountType: self.accountTypes()[sb.accountType].name, accountNumber: sb.accountNumber};
+                            });
+                            self.listSourceBank(listSB);
                             info({ messageId: "Msg_16" }).then(() => {
                                 self.setSelectedCode(nextSelectCode);
                             });
+                        }).fail(error => {
+                            alertError(error);
+                        }).always(() => {
+                            block.clear();
                         });
                     }).fail(error => {
                         alertError(error);
@@ -130,14 +146,14 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                 block.clear();
             });
         }
-        
+
         openDialogQmm006c() {
             let self = this;
             modal("/view/qmm/006/c/index.xhtml").onClosed(() => {
                 self.selectedSourceBankCode.valueHasMutated();
             });
         }
-        
+
         setData(data: any) {
             let self = this;
             self.selectedSourceBank().code(data == null ? null : data.code);
@@ -162,7 +178,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             self.selectedSourceBank().entrustorInforCode5(data != null ? data.entrustorInforCode5 : null);
             self.selectedSourceBank().entrustorInforUse5(data != null ? data.entrustorInforUse5 : null);
         }
-        
+
         setSelectedCode(val: string) {
             let self = this;
             if (self.selectedSourceBankCode() == val)
@@ -195,7 +211,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
         entrustorInforUse4: KnockoutObservable<string> = ko.observable(null);
         entrustorInforCode5: KnockoutObservable<string> = ko.observable(null);
         entrustorInforUse5: KnockoutObservable<string> = ko.observable(null);
-        
+
         entrustorInforCode1Required: KnockoutObservable<boolean> = ko.computed(() => {
             let required = !_.isEmpty(this.entrustorInforUse1());
             if (!required) {
@@ -266,19 +282,19 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             }
             return required;
         });
-        
+
         constructor(data: {
-                code: string, 
-                name: string, 
+                code: string,
+                name: string,
                 branchId: string,
                 branchCode: string,
                 branchName: string,
                 bankCode: string,
-                bankName: string, 
-                accountType: number, 
-                accountNumber: string, 
-                transferRequesterName: string, 
-                memo: string, 
+                bankName: string,
+                accountType: number,
+                accountNumber: string,
+                transferRequesterName: string,
+                memo: string,
                 entrustorInforCode1: string,
                 entrustorInforUse1: string,
                 entrustorInforCode2: string,
@@ -316,7 +332,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                     $('#A3_5').ntsError('clear');
             });
         }
-        
+
         openDialogQmm006b() {
             let self = this;
             setShared("QMM006BParam", self.branchId());
@@ -331,8 +347,8 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                 }
             });
         }
-        
+
     }
-    
+
 }
 

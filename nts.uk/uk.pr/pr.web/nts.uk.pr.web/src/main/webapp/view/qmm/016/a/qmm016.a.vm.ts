@@ -158,7 +158,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let wageTableTreeData: Array<Node> = wageTableData.map(item => {
                 return new Node(item);
-            })
+            });
             self.wageTableTreeList(wageTableTreeData);
         }
 
@@ -797,7 +797,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.wageTableContent2dData(data.list2dElements.map(item => new model.TwoDmsElementItem(item)));
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
-                    $(".input-amount")[0].focus();
+                    setTimeout(() => {
+                        $(".input-amount")[0].focus();
+                    }, 100);
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
