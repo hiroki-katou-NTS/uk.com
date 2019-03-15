@@ -10,6 +10,8 @@ public interface LeaveForCareInfoRepository {
 	 * @return
 	 */
 	Optional<LeaveForCareInfo> getCareByEmpId(String empId);
+	
+	Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId);
 
 	/**
 	 * add LeaveForCareInfo object
