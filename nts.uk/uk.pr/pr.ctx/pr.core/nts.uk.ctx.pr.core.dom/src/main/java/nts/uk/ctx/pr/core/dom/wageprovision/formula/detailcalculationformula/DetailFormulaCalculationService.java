@@ -303,7 +303,7 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(SYSTEM_Y_DATE)) return "\"" + GeneralDate.today().toString("YYYY") + "\"";
         if (functionName.equals(SYSTEM_YM_DATE)) return "\"" + GeneralDate.today().toString("YYYY/MM") + "\"";
         if (functionName.equals(PROCESSING_YEAR))
-            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth").substring(0, 4) + "\"";
         if (functionName.equals(PROCESSING_YEAR_MONTH))
             return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
         if (functionName.equals(WORKDAY))
