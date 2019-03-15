@@ -5,7 +5,6 @@ import { component } from '@app/core/component';
 @component({
     template: `<div id="navbar">
         <ul class="list-group">
-            <li class="list-group-item"><router-link to="/documents">{{'documents' | i18n}}</router-link></li>
             <li class="list-group-item" v-for="(route, k) in routes"><router-link :to="route.path">{{route.name | i18n}}</router-link></li>
         </ul>
     </div>`

@@ -8,6 +8,7 @@ import { component } from '@app/core/component';
     },
     template: require('./index.html'),
     markdown: {
+        jp: require('./content/jp.md'),
         vi: require('./content/vi.md')
     }
 })

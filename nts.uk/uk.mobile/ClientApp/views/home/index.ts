@@ -4,8 +4,6 @@ import { component } from '@app/core/component';
 import { focus } from '@app/directives';
 import { SampleComponent } from '@app/components';
 
-import { LanguageBar } from '@app/plugins';
-
 @component({
     route: '/',
     style: require('./style.scss'),
@@ -16,7 +14,6 @@ import { LanguageBar } from '@app/plugins';
     },
     components: {
         'vuong': SampleComponent,
-        'language-bar': LanguageBar
     },
     validations: {
         title: {

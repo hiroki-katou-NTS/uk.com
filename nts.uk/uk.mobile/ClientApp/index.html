@@ -12,8 +12,22 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <router-view />
+    <div id="app_uk_mobile">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <router-link :to="'/'" :class="'navbar-brand'">{{'app_name'|i18n}}</router-link>
+            <button class="navbar-toggler" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <router-link :to="'/documents'" :class="'nav-link'">{{'documents' | i18n}}</router-link>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <router-view :class="'container-fluid'" />
     </div>
     <script src="/nts.uk.mobile.web/dist/vendor.js" type="text/javascript"></script>
     <script src="/nts.uk.mobile.web/dist/bundles.js" type="text/javascript"></script>

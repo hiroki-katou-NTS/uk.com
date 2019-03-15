@@ -7,23 +7,17 @@ import { NavbarComponent } from './nav';
 @component({
     route: '/documents',
     template: `<div id="document_index" class="row">
-        <div class="col-md-2">
-            <lang-bar />
-            <hr />
+        <div class="col-md-3">
             <navi-bar />
         </div>
-        <router-view :class="'col-md-10'" />
+        <router-view :class="'col-md-9'" />
     </div>`,
-    style: `@media (max-width: 768px) { #component .markdown-content {margin-top: 15px;} }`,
+    style: `#document_index { margin-bottom: 15px; } @media (max-width: 768px) { #component .markdown-content {margin-top: 15px;} }`,
     components: {
         'lang-bar': LanguageBar,
         'navi-bar': NavbarComponent
     },
     resource: {
-        en: {
-            documents: 'Documents',
-            MarkdownComponent: 'Markdown language'
-        },
         vi: {
             documents: 'Tài liệu',
             MarkdownComponent: 'Ngôn ngữ hạ đánh dấu'            

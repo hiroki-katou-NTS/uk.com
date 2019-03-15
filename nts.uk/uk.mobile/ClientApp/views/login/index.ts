@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Watch } from '@app/core/component';
 
 @component({
     route: '/access/login',
@@ -28,14 +28,12 @@ export class LoginComponent extends Vue {
     }
 
     login(a: number, b: number, c: number) {
-        //localStorage.setItem('csrf', this.model.username);
+        localStorage.setItem('csrf', 'uk.mobile'); //this.model.username);
 
         /*this.$http.post("http://localhost:8080/nts.uk.com.web/webapi/ctx/sys/gateway/login/getcompany", {}).then(v => {
             debugger;
         });*/
 
-        console.log(this, a, b, c);
-
-        //this.$router.push({ name: 'HomeComponent' });
+        this.$router.push({ name: 'HTMLDocumentsComponent' });
     }
 }

@@ -12,7 +12,7 @@
                 <option value="">--- Choose options ---</option>
                 <option v-for="(i,k) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :value="i">{{i}}</option>
             </nts-dropdown>
-            {{model.comp}}
+            
             <v-input-string
                 v-model="model.username"
                 v-bind:name="'login_name'"

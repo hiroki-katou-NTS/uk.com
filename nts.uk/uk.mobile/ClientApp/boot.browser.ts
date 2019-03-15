@@ -4,9 +4,10 @@ import '@views/index';
 import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
+import { Vue, Vuex, VueRouter } from '@app/provider';
 import { ajax, i18n, modal, click, validate } from '@app/plugins';
 
-import { Vue, Vuex, VueRouter } from '@app/provider';
+import { LanguageBar } from '@app/plugins';
 
 Vue.use(i18n);
 Vue.use(modal);
@@ -25,5 +26,8 @@ Vue.config.productionTip = false;
 
 new Vue({
     router,
+    components: {
+        'language-bar': LanguageBar
+    },
     el: document.querySelector('body>div')
 });
