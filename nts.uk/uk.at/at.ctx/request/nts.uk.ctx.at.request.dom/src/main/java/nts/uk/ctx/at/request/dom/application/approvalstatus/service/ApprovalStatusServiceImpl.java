@@ -50,10 +50,12 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPersonAndResult;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
@@ -170,6 +172,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private RequestSettingRepository requestSetRepo;
+	
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
 	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
@@ -419,9 +424,24 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
+	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput,
 			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+		//メール送信内容(リスト)
 		List<String> listError = new ArrayList<>();
+		//社員の名称（ビジネスネーム）、社員コードを取得する RQ228
+		List<String> employeeIDs = listMailInput.stream().map(x-> x.getSId()).collect(Collectors.toList());
+		List<EmployeeInfoImport> lstEmpInfor = this.atEmployeeAdapter.getByListSID(employeeIDs);
+		//取得した「社員コード」を「メール送信内容リスト」に付与して、「社員コード順」に並べる
+		lstEmpInfor = lstEmpInfor.stream().sorted(Comparator.comparing(EmployeeInfoImport::getScd))
+				.collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
+		//map lại list sau khi sắp xếp
+		lstEmpInfor.forEach(x -> {
+			listMailInput.stream().filter(mail -> mail.getSId().equals(x.getSid())).findFirst().ifPresent(email -> {
+				listMailContent.add(email);
+			});
+		});
+		
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
 			if(mailTransmission.getMailAddr() == null){
 				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
