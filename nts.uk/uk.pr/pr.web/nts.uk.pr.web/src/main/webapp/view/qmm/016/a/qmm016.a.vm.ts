@@ -62,7 +62,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 } else {
                     self.wageTableContent2dData([]);
                     self.listSecondDimension([]);
-                    self.listThirdDimension([])
+                    self.listThirdDimension([]);
                     self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));

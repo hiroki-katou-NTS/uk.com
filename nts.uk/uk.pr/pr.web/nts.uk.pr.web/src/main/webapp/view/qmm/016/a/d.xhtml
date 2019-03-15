@@ -246,7 +246,7 @@
 					                <tr>
 	                                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
 				                    		<th class="ui-widget-header" style="height: 32px;">
-				                    			<div style="width: 150px;" data-bind="text: name"></div>
+				                    			<div class="limited-label" style="width: 150px;" data-bind="text: name"></div>
 			                    			</th>
 				                    	</com:ko>
 			                    	</tr>
@@ -269,9 +269,7 @@
 							                		<span data-bind="text: masterName"></span>
 							                	</div>
 							                	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 1">
-								                    <span data-bind="text: frameLowerLimit"></span>
-								                    <span>#{i18n.getText('QMM016_31')}</span>
-								                    <span data-bind="text: frameUpperLimit"></span>
+								                    <span class="limited-label" data-bind="text: displayText"></span>
 							                    </div>
 						                    </div>
 					                    </th>

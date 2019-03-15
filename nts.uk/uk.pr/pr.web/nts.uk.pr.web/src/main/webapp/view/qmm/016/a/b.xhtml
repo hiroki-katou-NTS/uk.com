@@ -109,10 +109,10 @@
         <button tabindex="16" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
-    <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length >0">
+    <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length > 0">
         <table id="fixed-table-1d">
             <colgroup>
-                <col width="300px"/>
+                <col width="150px"/>
                 <col width="150px"/>
             </colgroup>
             <thead>
@@ -128,7 +128,7 @@
             <tbody data-bind="foreach: $vm.wageTableContent().payment">
 	            <tr>
 	                <th class="ui-widget-header">
-	                	<span data-bind="text: displayText"></span>
+	                	<span class="limited-label" data-bind="text: displayText"></span>
 	                </th>
 	                <td>
 	                    <input class="input-amount" data-bind="ntsNumberEditor: {
