@@ -9,7 +9,7 @@ import { NavbarComponent } from './nav';
         <navi-bar :class="'col-md-2'" />
         <router-view :class="'col-md-10'" />
     </div>`,
-    style: `#document_index { margin-bottom: 15px; }`,
+    style: `#document_index { margin-bottom: 15px; } #document_index #navbar { margin-bottom: 15px; }`,
     components: {
         'navi-bar': NavbarComponent
     },

@@ -14,7 +14,10 @@ import { component } from '@app/core/component';
     },
     resource: {
         vi: {
-            MVVMComponent: 'Thành phần (view)'
+            MVVMComponent: 'Component/View'
+        },
+        jp: {
+            MVVMComponent: 'Component/View'
         }
     }
 })
