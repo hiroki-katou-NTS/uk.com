@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveDataInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
@@ -55,26 +56,16 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-
-		// child-care
-		Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt = childCareInfoRepo
-				.getChildCareByEmpId(query.getEmployeeId());
-		Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt = childCareDataRepo
-				.getChildCareByEmpId(query.getEmployeeId());
-
-		// care
-		Optional<LeaveForCareInfo> careInfoDomainOpt = careInfoRepo.getCareByEmpId(query.getEmployeeId());
-		Optional<LeaveForCareData> careDataDomainOpt = careDataRepo.getCareByEmpId(query.getEmployeeId());
 		
-
-		if (!careInfoDomainOpt.isPresent() && !childCareInfoDomainOpt.isPresent() && !careDataDomainOpt.isPresent()
-				&& !childCareDataDomainOpt.isPresent()) {
-			return null;
-		}
-
-		return CareLeaveInfoDto.createFromDomain(query.getEmployeeId(), childCareInfoDomainOpt, childCareDataDomainOpt,
-				careInfoDomainOpt, careDataDomainOpt);
-
+		Optional<CareLeaveDataInfo> data = careInfoRepo.getCareInfoDataBysId(query.getEmployeeId());
+		
+		return data.map(m -> CareLeaveInfoDto.createFromDomain(
+				query.getEmployeeId(),
+				Optional.ofNullable(m.getChildCareLeaveRemainingInfo()),
+				Optional.ofNullable(m.getChildCareLeaveRemainingData()),
+				Optional.ofNullable(m.getCareInfo()),
+				Optional.ofNullable(m.getCareData())))
+			.orElse(null);
 	}
 
 	@Override
@@ -92,6 +83,6 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
-		return null;
+		return null; // chuyen cau truy van singleData ve JDBC
 	}
 }
