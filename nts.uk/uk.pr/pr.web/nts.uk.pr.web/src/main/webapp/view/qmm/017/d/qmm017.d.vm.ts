@@ -603,7 +603,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.checkBracket(formula);
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
-            self.checkConditionOperator(formula);
+            self.checkFunctionOperator(formula);
         }
 
         checkOperatorAndDivideZero(formula) {
@@ -615,13 +615,16 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if ((formulaElements[formulaElements.length - 1] && self.operators.indexOf(formulaElements[formulaElements.length - 1]) > 1) || self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('MsgQ_235', []);
             for (index = 0; index < formulaElements.length; index++) {
                 currentChar = formulaElements[index];
+                nextChar = formulaElements[index + 1];
                 if (operators.indexOf(currentChar) > -1) {
-                    nextChar = formulaElements[index + 1];
                     if (operators.indexOf(nextChar) > -1 && (nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET)
                         && !((currentChar == self.HALF_SIZE_COMMA_CHAR || currentChar == self.COMMA_CHAR) && (nextChar == self.SUBTRACT || nextChar == self.HALF_SIZE_SUBTRACT))) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
                     if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
+                }
+                if (nextChar == self.OPEN_BRACKET && !currentChar.contains(self.FUNCTION) && currentChar.slice(-1) == '}') {
+                    self.setErrorToFormula('MsgQ_255', []);
                 }
             }
         }
@@ -672,51 +675,63 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             return formula;
         }
 
-        checkConditionOperator(formula) {
-            let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
-            let functionCondition = self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
-                functionAnd = self.combineElementTypeAndName(self.FUNCTION, self.AND),
-                functionOr = self.combineElementTypeAndName(self.FUNCTION, self.OR);
+        checkFunctionOperator(formula) {
+            let self = this, startFunctionIndex, endFunctionIndex;
             let conditionRegex = new RegExp(self.conditionSeparators.join('|'));
 
-            while (formula.indexOf(functionCondition) > -1 || formula.indexOf(functionAnd) > -1 || formula.indexOf(functionOr) > -1) {
-                startFunctionIndex = formula.lastIndexOf(functionCondition);
+            while (formula.indexOf(self.FUNCTION) > -1) {
+                startFunctionIndex = formula.indexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 if (endFunctionIndex == -1) break;
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1), 0);
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1), "");
             }
             if (formula.split(conditionRegex).length > 1) {
                 self.setErrorToFormula('MsgQ_235', []);
             }
+            if (formula.contains(self.COMMA_CHAR) || formula.contains(self.HALF_SIZE_COMMA_CHAR)) {
+                self.setErrorToFormula('MsgQ_254', []);
+            }
+
         }
 
         checkInputContent(formula) {
-            let self = this, operand, prevOperand, operands, dotIndex,
+            let self = this, operand, operands,
                 separators: string = self.separators.join('|'),
-                formula = this.replaceTextInsideDoubleQuote(formula);
-            operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
-                return (item && item.length);
-            });
+                formula = self.replaceTextInsideDoubleQuote(formula),
+                /*Only Chrome support lookbehind assertion regex.
+                formulaRegex = new RegExp(/(?<=}|$)/g);*/
+                operands = formula.split(new RegExp(separators, 'g')).filter(item => item).map(item => item.trim());
             for (operand of operands) {
-                if (isNaN(operand)) {
-                    if (!operand.contains(self.OPEN_CURLY_BRACKET)) {
-                        self.setErrorToFormula('MsgQ_233', [operand]);
-                        continue;
-                    }
-                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
-                    if (!operand.contains(self.CLOSE_CURLY_BRACKET)) {
-                        self.setErrorToFormula('MsgQ_233', [operand]);
-                        continue;
-                    }
-                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [elementType]);
-                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
-                    if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
+                let operandArray = operand.replace(new RegExp('}', 'g'), "}+").split('+').filter(item => item).map(item => item.trim());
+                if (operandArray.length > 1) {
+                    self.setErrorToFormula('MsgQ_256', []);
+                    operandArray.forEach(operandItem => self.checkOperand(operandItem));
                 } else {
-                    dotIndex = operand.indexOf('.');
-                    if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
+                    self.checkOperand(operand);
                 }
-                prevOperand = operand;
+            }
+        }
+
+        checkOperand(operand) {
+            let self = this;
+            if (isNaN(operand)) {
+                if (!operand.contains(self.OPEN_CURLY_BRACKET) || !operand.contains(self.CLOSE_CURLY_BRACKET)) {
+                    self.setErrorToFormula('MsgQ_233', [operand]);
+                } else {
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET));
+                    let elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.indexOf(self.CLOSE_CURLY_BRACKET));
+
+                    if (self.acceptPrefix.indexOf(elementType) < 0) {
+                        self.setErrorToFormula('MsgQ_233', [elementType]);
+                    }
+                    if (!self.checkElementName(elementType, elementName)) {
+                        self.setErrorToFormula('MsgQ_248', [elementType, elementName]);
+                    }
+                    if (elementType == self.FORMULA && self.checkNestedFormula(elementName)) self.setErrorToFormula('MsgQ_245', [elementName]);
+                }
+            } else {
+                let dotIndex = operand.indexOf('.');
+                if (dotIndex > -1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
             }
         }
 
@@ -767,7 +782,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 if (endFunctionIndex == -1) {
-                    self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
+                    self.setErrorToFormula('MsgQ_231', []);
                     break;
                 }
                 replaceValue = self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
@@ -991,11 +1006,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         combineElementTypeAndName(elementType, elementName) {
             let self = this;
             return elementType + self.OPEN_CURLY_BRACKET + _.unescape(elementName) + self.CLOSE_CURLY_BRACKET;
-        }
-
-        isOperator(operator) {
-            let self = this;
-            return operator == self.PLUS
         }
 
         showHintBox() {

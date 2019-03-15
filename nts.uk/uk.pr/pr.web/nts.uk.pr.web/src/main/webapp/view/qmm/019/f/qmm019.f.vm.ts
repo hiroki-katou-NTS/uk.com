@@ -48,10 +48,15 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             $("[data-toggle='userguide-not-register']").ntsUserGuide();
 
             self.codeSelected.subscribe(value => {
+                if (isNullOrUndefined(value)) return;
                 block.invisible();
                 let itemName: StatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
                 });
+                if (isNullOrUndefined(itemName)) {
+                    block.clear();
+                    return;
+                };
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
                 self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
@@ -69,9 +74,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
-                params.hasItemRangeSet = false;
-            } else {
-                params.hasItemRangeSet = true;
             }
             self.params = params;
             let dto = {
@@ -143,10 +145,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let sv1 = service.getAttendanceItemStById(self.categoryAtr, self.dataScreen().itemNameCode());
             $.when(sv1).done((att: IAttendanceItemSet) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
-                if (!isNullOrUndefined(att)) {
-                    self.attendanceItemSet().setData(att);
-                    self.assignItemRangeSet();
-                }
+
+                self.attendanceItemSet().setData(att);
+                self.assignItemRangeSet();
+
                 dfd.resolve();
             });
 
@@ -155,7 +157,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
         assignItemRangeSet() {
             let self = this;
-            if (self.params.hasItemRangeSet) return;
+            if (self.params.itemNameCode == self.codeSelected()) {
+                self.dataScreen().itemRangeSet.setData(self.params.itemRangeSet);
+                return;
+            }
             self.dataScreen().itemRangeSet.errorUpperLimitSetAtr(self.attendanceItemSet().errorRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
             self.dataScreen().itemRangeSet.errorLowerLimitSetAtr(self.attendanceItemSet().errorRangeSetting.lowerLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
             self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr(self.attendanceItemSet().alarmRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
@@ -321,13 +326,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         condition47(type: shareModel.TimeCountAtr) {
             let self = this;
             if (type == shareModel.TimeCountAtr.TIMES) {
-                self.screenControl().visibleF3_19(true);
+                self.screenControl().visibleF3_17(true);
                 self.screenControl().visibleF3_24(true);
                 self.screenControl().visibleF3_25(true);
                 self.screenControl().visibleF3_26(true);
                 self.screenControl().visibleF3_27(true);
             } else {
-                self.screenControl().visibleF3_19(false);
+                self.screenControl().visibleF3_17(false);
                 self.screenControl().visibleF3_24(false);
                 self.screenControl().visibleF3_25(false);
                 self.screenControl().visibleF3_26(false);
@@ -346,6 +351,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 };
                 service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                     self.itemNames(StatementItem.fromApp(data));
+                    self.codeSelected.valueHasMutated();
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
@@ -530,7 +536,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         itemNameCode: string;
         listItemSetting: Array<string>;
         itemRangeSet: shareModel.IItemRangeSet;
-        hasItemRangeSet: boolean;
     }
 
     class Params {
@@ -568,6 +573,14 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.itemRangeSet.errorLoRangeValNum(null);
                 self.clearError("#F3_25");
             });
+            self.itemRangeSet.errorUpRangeValTime.subscribe(() => {
+                self.clearError("#F3_21");
+                self.checkError("#F3_21");
+            });
+            self.itemRangeSet.errorUpRangeValNum.subscribe(() => {
+                self.clearError("#F3_25");
+                self.checkError("#F3_25");
+            });
             self.itemRangeSet.errorLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_21");
                 self.checkError("#F3_21");
@@ -588,6 +601,14 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.clearError("#F3_23");
                 self.itemRangeSet.alarmLoRangeValNum(null);
                 self.clearError("#F3_27");
+            });
+            self.itemRangeSet.alarmUpRangeValTime.subscribe(() => {
+                self.clearError("#F3_23");
+                self.checkError("#F3_23");
+            });
+            self.itemRangeSet.alarmUpRangeValNum.subscribe(() => {
+                self.clearError("#F3_27");
+                self.checkError("#F3_27");
             });
             self.itemRangeSet.alarmLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_23");
@@ -806,10 +827,17 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
 
         setData(data: IAttendanceItemSet) {
-            this.timeCountAtr(data.timeCountAtr);
-            this.timeCountAtrText(shareModel.getTimeCountAtrText(data.timeCountAtr));
-            this.errorRangeSetting.setData(data.errorRangeSetting);
-            this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            if (isNullOrUndefined(data)) {
+                this.timeCountAtr(null);
+                this.timeCountAtrText(null);
+                this.errorRangeSetting.setData(null);
+                this.alarmRangeSetting.setData(null);
+            } else {
+                this.timeCountAtr(data.timeCountAtr);
+                this.timeCountAtrText(shareModel.getTimeCountAtrText(data.timeCountAtr));
+                this.errorRangeSetting.setData(data.errorRangeSetting);
+                this.alarmRangeSetting.setData(data.alarmRangeSetting);
+            }
         }
     }
 
@@ -834,8 +862,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
 
         setData(data: IDetailTimeErrorAlarmRangeSetting) {
-            this.upperLimitSetting.setData(data.upperLimitSetting);
-            this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            if (isNullOrUndefined(data)) {
+                this.upperLimitSetting.setData(null);
+                this.lowerLimitSetting.setData(null);
+            } else {
+                this.upperLimitSetting.setData(data.upperLimitSetting);
+                this.lowerLimitSetting.setData(data.lowerLimitSetting);
+            }
         }
     }
 
@@ -866,16 +899,26 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
 
         setData(data: IDetailTimeErrorAlarmValueSetting) {
-            this.valueSettingAtr(data.valueSettingAtr);
-            if (isNullOrUndefined(data.timesValue)) {
+            let valueSettingAtr, timesValue, timeValue;
+            if (isNullOrUndefined(data)) {
+                valueSettingAtr = null;
+                timesValue = null;
+                timeValue = null;
+            } else {
+                valueSettingAtr = data.valueSettingAtr;
+                timesValue = data.timesValue;
+                timeValue = data.timeValue;
+            }
+            this.valueSettingAtr(valueSettingAtr);
+            if (isNullOrUndefined(timesValue)) {
                 this.timesValue(null);
             } else {
-                this.timesValue(data.timesValue.toFixed(2));
+                this.timesValue(timesValue.toFixed(2));
             }
-            if (isNullOrUndefined(data.timeValue)) {
+            if (isNullOrUndefined(timeValue)) {
                 this.timeValue(null);
             } else {
-                this.timeValue(data.timeValue);
+                this.timeValue(timeValue);
             }
         }
     }

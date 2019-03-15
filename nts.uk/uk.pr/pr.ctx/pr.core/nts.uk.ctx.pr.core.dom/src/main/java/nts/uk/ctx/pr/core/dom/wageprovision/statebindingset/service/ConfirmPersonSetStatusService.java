@@ -80,7 +80,9 @@ public class ConfirmPersonSetStatusService {
         // ドメインモデル「明細書紐付け履歴（雇用）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
         Map<String, StateLinkSetMaster> stateLinkSetMasterEmpMap = stateCorreHisEmRepo.getStateLinkSetMaster(cid, yearMonth)
-                .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
+                .stream().filter(x->x.getBonusCode().isPresent() || x.getSalaryCode().isPresent())
+                .collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
+
 
         // ドメインモデル「明細書紐付け履歴（分類）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
@@ -113,7 +115,7 @@ public class ConfirmPersonSetStatusService {
                 .stream().collect(Collectors.toMap(x -> x.getStatementCode().v(), x -> x));
 
         for (String sid : empIds) {
-            boolean existData;
+            boolean existSalaryBonus;
             ConfirmPersonSetStatus personSet = new ConfirmPersonSetStatus();
             personSet.setSid(sid);
 
@@ -124,9 +126,9 @@ public class ConfirmPersonSetStatusService {
                     String histId = stateCorreHisIndiviMap.get(sid).get(0).identifier();
                     // ドメインモデル「明細書紐付け設定（個人）」を取得する
                     StateLinkSetIndivi stateLinkSetIndivi = stateLinkSetIndiviMap.get(histId);
-                    existData = this.setSalaryBonus(personSet, stateLinkSetIndivi.getSalaryCode(),
+                    existSalaryBonus = this.setSalaryBonus(personSet, stateLinkSetIndivi.getSalaryCode(),
                             stateLinkSetIndivi.getBonusCode(), statementLayoutMap);
-                    if (existData) {
+                    if (existSalaryBonus) {
                         personSet.setSettingCtg(SettingCls.PERSON.value);
                         result.add(personSet);
                         continue;
@@ -135,11 +137,13 @@ public class ConfirmPersonSetStatusService {
             }
             if (SettingUseCls.USE.equals(stateUseUnitSet.getMasterUse())) {
                 // マスタ紐付け明細書取得
-                this.setLinkMaster(personSet, stateUseUnitSet.getUsageMaster(), empInfoMap.get(sid),
+                existSalaryBonus = this.setLinkMaster(personSet, stateUseUnitSet.getUsageMaster(), empInfoMap.get(sid),
                         stateLinkSetMasterDepMap, stateLinkSetMasterEmpMap, stateLinkSetMasterClsMap,
                         stateLinkSetMasterPosMap, stateLinkSetMasterSalMap, statementLayoutMap);
-                result.add(personSet);
-                continue;
+                if (existSalaryBonus) {
+                    result.add(personSet);
+                    continue;
+                }
             }
 
             if (stateLinkSetCom.isPresent()) {
@@ -177,53 +181,58 @@ public class ConfirmPersonSetStatusService {
     /**
      * マスタ紐付け明細書取得
      */
-    private void setLinkMaster(ConfirmPersonSetStatus personSet, Optional<UsageMaster> type, EmployeeInformationImport empInfo,
+    private boolean setLinkMaster(ConfirmPersonSetStatus personSet, Optional<UsageMaster> type, EmployeeInformationImport empInfo,
                                Map<String, StateLinkSetMaster> masterDepMap, Map<String, StateLinkSetMaster> masterEmpMap,
                                Map<String, StateLinkSetMaster> masterClsMap, Map<String, StateLinkSetMaster> masterPosMap,
                                Map<String, StateLinkSetMaster> masterSalMap, Map<String, StatementLayout> statementLayoutMap) {
-        if (!type.isPresent()) return;
+        if (!type.isPresent()) return false;
         String masterCode = null;
         String masterName = null;
         StateLinkSetMaster master = null;
+        String tempMasterCode = null;
         switch (type.get()) {
             case DEPARMENT:
                 // TODO 部門紐付け明細書取得
                 DepartmentImport depImport = empInfo.getDepartment();
                 if (depImport == null) break;
-                masterCode = depImport.getDepartmentCode();
-                masterName = depImport.getDepartmentName();
-                if (masterDepMap.containsKey(masterCode)) {
-                    master = masterDepMap.get(masterCode);
+                tempMasterCode = depImport.getDepartmentCode();
+                if (masterDepMap.containsKey(tempMasterCode)) {
+                    master = masterDepMap.get(tempMasterCode);
+                    masterCode = depImport.getDepartmentCode();
+                    masterName = depImport.getDepartmentName();
                 }
                 personSet.setSettingCtg(SettingCls.DEPARMENT.value);
                 break;
             case EMPLOYEE:
                 EmploymentImport empImport = empInfo.getEmployment();
                 if (empImport == null) break;
-                masterCode = empImport.getEmploymentCode();
-                masterName = empImport.getEmploymentName();
-                if (masterEmpMap.containsKey(masterCode)) {
-                    master = masterEmpMap.get(masterCode);
+                tempMasterCode = empImport.getEmploymentCode();
+                if (masterEmpMap.containsKey(tempMasterCode)) {
+                    master = masterEmpMap.get(tempMasterCode);
+                    masterCode = empImport.getEmploymentCode();
+                    masterName = empImport.getEmploymentName();
                 }
                 personSet.setSettingCtg(SettingCls.EMPLOYEE.value);
                 break;
             case CLASSIFICATION:
                 ClassificationImport clsImport = empInfo.getClassification();
                 if (clsImport == null) break;
-                masterCode = clsImport.getClassificationCode();
-                masterName = clsImport.getClassificationName();
-                if (masterClsMap.containsKey(masterCode)) {
-                    master = masterClsMap.get(masterCode);
+                tempMasterCode = clsImport.getClassificationCode();
+                if (masterClsMap.containsKey(tempMasterCode)) {
+                    master = masterClsMap.get(tempMasterCode);
+                    masterCode = clsImport.getClassificationCode();
+                    masterName = clsImport.getClassificationName();
                 }
                 personSet.setSettingCtg(SettingCls.CLASSIFICATION.value);
                 break;
             case POSITION:
                 PositionImport posImport = empInfo.getPosition();
                 if (posImport == null) break;
-                masterCode = posImport.getPositionCode();
-                masterName = posImport.getPositionName();
-                if (masterPosMap.containsKey(masterCode)) {
-                    master = masterPosMap.get(masterCode);
+                tempMasterCode = posImport.getPositionCode();
+                if (masterPosMap.containsKey(tempMasterCode)) {
+                    master = masterPosMap.get(tempMasterCode);
+                    masterCode = posImport.getPositionCode();
+                    masterName = posImport.getPositionName();
                 }
                 personSet.setSettingCtg(SettingCls.POSITION.value);
                 break;
@@ -235,10 +244,9 @@ public class ConfirmPersonSetStatusService {
                 personSet.setSettingCtg(SettingCls.SALARY.value);
                 break;
         }
-        if (master != null) {
-            this.setSalaryBonus(personSet, master.getSalaryCode(), master.getBonusCode(), statementLayoutMap);
-        }
         personSet.setMasterCode(masterCode);
         personSet.setMasterName(masterName);
+
+        return master != null && this.setSalaryBonus(personSet, master.getSalaryCode(), master.getBonusCode(), statementLayoutMap);
     }
 }

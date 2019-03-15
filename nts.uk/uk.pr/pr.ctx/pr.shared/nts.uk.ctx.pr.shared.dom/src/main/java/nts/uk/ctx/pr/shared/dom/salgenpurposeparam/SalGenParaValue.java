@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 */
 @Getter
 public class SalGenParaValue extends AggregateRoot {
-    
+
     /**
     * 履歴ID
     */
@@ -56,5 +56,5 @@ public class SalGenParaValue extends AggregateRoot {
         this.timeValue = timeValue == null ? Optional.empty() : Optional.of(new ParamTime(timeValue));
         this.selection = Optional.ofNullable(selection);
     }
-    
+
 }

@@ -15,8 +15,6 @@ public class SalGenParaDateHistoryService {
 
     @Inject
     private SalGenParaDateHistRepository salGenParaDateHistRepository;
-    @Inject
-    private SalGenParaValueRepository salGenParaValueRepository;
 
     public void updateDateHistory(String cId, String paraNo, String hisId, GeneralDate start, GeneralDate end){
         Optional<SalGenParaDateHistory> dateHistory = salGenParaDateHistRepository.getAllSalGenParaDateHist(cId , paraNo);
@@ -47,7 +45,6 @@ public class SalGenParaDateHistoryService {
             return;
         }
         dateHistory.get().remove(itemToBeDelete.get());
-        salGenParaValueRepository.remove(hisId);
         salGenParaDateHistRepository.remove(dateHistory.get().getParaNo(), cId, hisId);
         if (dateHistory.get().getDateHistoryItem().size() > 0 ){
             DateHistoryItem lastestItem = dateHistory.get().getDateHistoryItem().get(0);

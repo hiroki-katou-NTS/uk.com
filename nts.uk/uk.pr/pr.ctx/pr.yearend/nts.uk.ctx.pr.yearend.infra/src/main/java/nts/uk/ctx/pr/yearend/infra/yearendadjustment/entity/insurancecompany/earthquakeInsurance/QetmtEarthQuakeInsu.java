@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QETMT_EARTH_QUAKE_INSU")
+@Table(name = "QETMT_INSURANCE_EARTHQ")
 public class QetmtEarthQuakeInsu extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class QetmtEarthQuakeInsu extends UkJpaEntity implements Serializable
     * 名称
     */
     @Basic(optional = false)
-    @Column(name = "EARTHQUAKE_INSU_NAME")
+    @Column(name = "INSURANCE_EARTHQ_NAME")
     public String earthquakeName;
     
     @Override

@@ -303,7 +303,7 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(SYSTEM_Y_DATE)) return "\"" + GeneralDate.today().toString("YYYY") + "\"";
         if (functionName.equals(SYSTEM_YM_DATE)) return "\"" + GeneralDate.today().toString("YYYY/MM") + "\"";
         if (functionName.equals(PROCESSING_YEAR))
-            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+            return "\"" + processYearMonthAndReferenceTime.get("processYearMonth").substring(0, 4) + "\"";
         if (functionName.equals(PROCESSING_YEAR_MONTH))
             return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
         if (functionName.equals(WORKDAY))
@@ -376,6 +376,9 @@ public class DetailFormulaCalculationService {
         String[] postFix = convertToPostfix(formulaContent);
         for (String aPostFix : postFix) {
             currentChar = aPostFix;
+            if (currentChar.equalsIgnoreCase(COMMA_CHAR) || currentChar.equalsIgnoreCase(HALF_SIZE_COMMA_CHAR)) {
+                throw new BusinessException("MsgQ_254");
+            }
             if (!isComputingOperator(currentChar) && !isConditionOperator(currentChar)) {
                 operands.push(currentChar);
                 continue;
