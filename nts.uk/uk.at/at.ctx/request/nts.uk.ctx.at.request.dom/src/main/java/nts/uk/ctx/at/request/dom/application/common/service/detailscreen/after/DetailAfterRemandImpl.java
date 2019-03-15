@@ -189,8 +189,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 							employee);
 				}
 			}
+			String urlFull = "";
 			if (!Strings.isBlank(urlInfo)) {
-				appContent += "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;
+				urlFull = "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;
 			}
 			String mailContentToSend = I18NText.getText("Msg_1060",
 					//｛0｝氏名 - ログイン者
@@ -206,7 +207,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛5｝申請日付 - 申請
 					application.getAppDate().toLocalDate().toString(),
 					//｛6｝申請内容 - 申請
-					appContent,
+					appContent + urlFull,
 					//｛7｝氏名 - ログイン者
 					nameLogin,
 					//｛8｝メールアドレス - ログイン者

@@ -194,7 +194,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.checkRequiredBreakTimes();
-                $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
