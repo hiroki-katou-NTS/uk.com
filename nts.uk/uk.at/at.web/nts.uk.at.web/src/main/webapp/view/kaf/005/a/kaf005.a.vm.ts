@@ -201,7 +201,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.checkRequiredOvertimeHours();
-                $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
@@ -751,8 +750,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }                    
                 }
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }
             });
         }
         //登録処理を実行

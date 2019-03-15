@@ -153,7 +153,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }

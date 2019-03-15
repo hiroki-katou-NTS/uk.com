@@ -299,14 +299,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
-		if(appOvertimeDetail.getLimitErrorTime().v() <= 0){
+		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
 			return null;
 		}
 		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
-				new AttendanceTimeMonth(appOvertimeDetail.getApplicationTime().v()+appOvertimeDetail.getActualTime().v()), 
-				appOvertimeDetail.getLimitAlarmTime(), 
-				appOvertimeDetail.getLimitErrorTime(), 
-				appOvertimeDetail.getExceptionLimitAlarmTime(), 
-				appOvertimeDetail.getExceptionLimitErrorTime()).value;
+				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
+				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
+				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
+				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
+				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime()).value;
 	}
 }

@@ -217,7 +217,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: null,
                 employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
-                $("#inputdate").focus();
                 //No.65
                 if(data.setingNo65 != null){
                     self.settingNo65(new common.SettingNo65(data.setingNo65.hdType,data.setingNo65.screenMode, data.setingNo65.pridigCheck,

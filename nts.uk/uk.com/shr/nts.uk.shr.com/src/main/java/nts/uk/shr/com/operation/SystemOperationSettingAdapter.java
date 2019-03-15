@@ -3,7 +3,10 @@ package nts.uk.shr.com.operation;
 import java.util.Optional;
 
 public interface SystemOperationSettingAdapter {
-
+	/**
+	 * CCG020_メニュー.システム利用停止の警告確認
+	 * @return
+	 */
 	public SystemOperationSetting getSetting();
 	
 	/**
