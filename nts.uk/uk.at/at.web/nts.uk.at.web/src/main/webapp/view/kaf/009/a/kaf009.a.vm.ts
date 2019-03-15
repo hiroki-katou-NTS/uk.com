@@ -149,8 +149,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                             }
                         }
                     });
-                    //フォーカス制御=>申請日付
-                    $("#inputdate").focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 });

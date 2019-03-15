@@ -145,8 +145,6 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
                 //Focus process
                 self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
-                //フォーカス制御
-                self.changeFocus('#singleDate');
                 //phải để subscribe ở đây khi change multiDate focus mới ăn
                 self.registerEvent();
                
