@@ -147,7 +147,7 @@
     </div>
     <div class="tab-row" style="margin-top: 40px;">
         <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-        <button tabindex="19" style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+        <button tabindex="19" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
     <div id="C5" class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length >0">
