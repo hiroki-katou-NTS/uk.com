@@ -188,7 +188,7 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	public void updateAll(List<EmployeeInfoContact> domains) {
 		String UP_SQL = "UPDATE BSYMT_EMP_INFO_CONTACT SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " CELL_PHONE_NO = CELL_PHONE_NO_VAL , MAIL_ADDRESS = MAIL_ADDRESS_VAL, PHONE_MAIL_ADDRESS = PHONE_MAIL_ADDRESS_VAL, "
-				+ " SEAT_DIAL_IN = SEAT_DIAL_IN_VAL, SEAT_EXTENSION_NO = SEAT_EXTENSION_NO_VAL)"
+				+ " SEAT_DIAL_IN = SEAT_DIAL_IN_VAL, SEAT_EXTENSION_NO = SEAT_EXTENSION_NO_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();

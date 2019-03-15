@@ -190,7 +190,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 	public void updateAll(List<AnnualLeaveMaxData> domains) {
 		String UP_SQL = "UPDATE KRCMT_ANNLEA_MAX SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " MAX_TIMES = MAX_TIMES_VAL , USED_TIMES = USED_TIMES_VAL, REMAINING_TIMES = REMAINING_TIMES_VAL, "
-				+ " MAX_MINUTES = MAX_MINUTES_VAL, USED_MINUTES = USED_MINUTES_VAL, REMAINING_MINUTES = REMAINING_MINUTES_VAL)"
+				+ " MAX_MINUTES = MAX_MINUTES_VAL, USED_MINUTES = USED_MINUTES_VAL, REMAINING_MINUTES = REMAINING_MINUTES_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();

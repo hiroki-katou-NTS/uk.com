@@ -12,7 +12,11 @@ public interface SpecialLeaveBasicInfoRepository {
 	
 	void add(SpecialLeaveBasicInfo domain);
 	
+	void addAll(List<SpecialLeaveBasicInfo> domains);
+	
 	void update(SpecialLeaveBasicInfo domain);
+	
+	void updateAll(List<SpecialLeaveBasicInfo> domains);
 	
 	void delete(String sID, int spLeavCD);
 	/**

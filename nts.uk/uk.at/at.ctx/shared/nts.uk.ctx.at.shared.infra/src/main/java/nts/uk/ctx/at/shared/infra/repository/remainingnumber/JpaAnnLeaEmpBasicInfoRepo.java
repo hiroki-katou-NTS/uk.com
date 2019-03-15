@@ -161,7 +161,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 	public void updateAll(List<AnnualLeaveEmpBasicInfo> domains) {
 		String UP_SQL = "UPDATE KRCMT_ANNLEA_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " WORK_DAYS_PER_YEAR = WORK_DAYS_PER_YEAR_VAL , WORK_DAYS_BEFORE_INTRO = WORK_DAYS_BEFORE_INTRO_VAL, GRANT_TABLE_CODE = GRANT_TABLE_CODE_VAL, "
-				+ " GRANT_STANDARD_DATE = GRANT_STANDARD_DATE_VAL)"
+				+ " GRANT_STANDARD_DATE = GRANT_STANDARD_DATE_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -190,6 +190,5 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
 	}
 }
