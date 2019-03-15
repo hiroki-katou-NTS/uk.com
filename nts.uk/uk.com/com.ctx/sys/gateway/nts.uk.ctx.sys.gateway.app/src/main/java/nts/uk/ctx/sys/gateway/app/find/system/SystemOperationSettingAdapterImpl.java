@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.gateway.app.find.system;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
