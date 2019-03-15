@@ -16,7 +16,9 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,7 +52,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		// find domain
 		AlarmPatternSetting domain = repo.findByAlarmPatternCode(companyId, c.getAlarmPatternCD()).get();
 		List<CheckCondition> listWorkTypeCode2 = domain.getCheckConList().stream().filter(x-> x.getAlarmCategory().equals(AlarmCategory.AGREEMENT)).collect(Collectors.toList());
-		List<ExtractionRangeBase> baseTemp2 = listWorkTypeCode2.stream().flatMap(x -> x.getExtractPeriodList().stream()).filter(x -> (x instanceof AYear)).collect(Collectors.toList());
+		List<ExtractionRangeBase> baseTemp2 = listWorkTypeCode2.stream().flatMap(x -> x.getExtractPeriodList().stream()).filter(x -> (x instanceof ExtractionPeriodMonth)).collect(Collectors.toList());
 		if(!baseTemp2.isEmpty()){
 		ExtractionRangeBase month21 = baseTemp2.get(0);
 		
@@ -106,16 +108,17 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 				extractionList.add(e.toDomain());
 			});
 			AYear extractYear = command.getExtractionYear().toDomain();
+			extractYear.setExtractionRange(ExtractionRange.YEAR);
 			extractionList.add(extractYear);
 			
 			// Add averageMonth to extractionList
 			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
+			averageMonth.setExtractionRange(ExtractionRange.DES_STANDARD_MONTH);
 			extractionList.add(averageMonth);
 
 			// Set ExtractionId & ExtractionRange
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
-				e.setExtractionRange(extractYear.getExtractionRange());
 			});
 		}
 		
