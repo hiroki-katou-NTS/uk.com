@@ -38,7 +38,6 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
@@ -102,8 +101,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private GetAnnualHolidayGrantInfor getGrantInfo;
 	@Inject
 	private AnnualHolidayGrantDetailInfor getGrantDetailInfo;
-	@Inject
-	private RegulationInfoEmployeeAdapter empAdaptor;
 	@Inject
 	private EmployeeInformationPub empInfo;
 	@Inject
@@ -407,20 +404,29 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// print AnnualHolidayGrant
 					cells.get(currentRow, NEXT_GRANTDATE_COL).setValue(String.valueOf(holidayInfo.getYmd()));
 					int holidayInfoRow = currentRow;
-					for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
-						AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
-						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(String.valueOf(grantInfo.getYmd()));
+					if (holidayInfo.getLstGrantInfor().size() > 0) {
+						for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
+							AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
+							String grantDate = String.valueOf(grantInfo.getYmd());
+							cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(grantDate);
+							String grantDay = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getGrantDays()).toString();
+							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue(grantDay);
+							String useDay = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getUseDays()).toString();
+							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue(useDay);
+							String remainDays = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getRemainDays())
+									.toString();
+							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue(remainDays);
 
-						cells.get(holidayInfoRow, GRANT_DAYS_COL)
-								.setValue(formatter.format(grantInfo.getGrantDays()).toString());
-
-						cells.get(holidayInfoRow, GRANT_USEDAY_COL)
-								.setValue(formatter.format(grantInfo.getUseDays()).toString());
-
-						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL)
-								.setValue(formatter.format(grantInfo.getRemainDays()).toString());
-
-						holidayInfoRow++;
+							holidayInfoRow++;
+						}
+					} else {
+						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
+						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0");
+						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0");
+						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0");
 					}
 				}
 				// Print HolidayDetails
