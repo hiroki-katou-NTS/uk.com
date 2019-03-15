@@ -150,7 +150,7 @@
         <button tabindex="19" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
-    <div id="C5" class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length >0">
+    <div id="C5" class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length > 0">
     	<table id="wage-table-content-layout">
 			<thead>
 				<tr>
@@ -206,7 +206,7 @@
 							</table>
 						</div>
 					</td>
-					<td style="padding: 0 0px">
+					<td style="padding: 0 0">
 						<div id="content-wrapper" style="width: 590px; height: 348px; overflow: scroll;">
 							<table id="content-table">
 								<tbody data-bind="foreach: $vm.wageTableContent().payment">
