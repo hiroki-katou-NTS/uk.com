@@ -596,8 +596,13 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });
+                    if(nts.uk.util.isNullOrEmpty(res.errors)){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });       
+                    } else {
+                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });      
+                    }
                 });
             }
             
