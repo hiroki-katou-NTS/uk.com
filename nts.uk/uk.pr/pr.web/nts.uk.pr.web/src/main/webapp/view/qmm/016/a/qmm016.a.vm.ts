@@ -250,6 +250,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             qualificationGroupSettings: result
                         };
                         self.wageTableContent(new WageTableContent(wageTableContent));
+                        $("#A3_1").focus();
                     }).always(() => {
                         block.clear();
                     });
@@ -309,6 +310,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 							$("#content-wrapper").unbind();
                             self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
 						}
+                        $("#A3_1").focus();
 					}).fail(error => {
 						dialog.alertError(error);
 					}).always(() => {
