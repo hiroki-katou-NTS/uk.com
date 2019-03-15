@@ -13,8 +13,12 @@ import { component } from '@app/core/component';
             'AccordionDocumentComponent': 'Accordions'
         },
         'jp': {
-            'AccordionDocumentComponent': 'Accordions'            
+            'AccordionDocumentComponent': 'Accordions'
         }
+    },
+    markdown: {
+        vi: require('./content/vi.md'),
+        jp: require('./content/vi.md')
     }
 })
 export class AccordionDocumentComponent extends Vue {
