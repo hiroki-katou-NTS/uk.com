@@ -14,18 +14,18 @@
 <body>
     <div id="app_uk_mobile">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-            <router-link :to="'/'" :class="'navbar-brand'">{{'app_name'|i18n}}</router-link>
+            <router-link to="/" class="navbar-brand">{{'app_name'|i18n}}</router-link>
             <!--<button class="navbar-toggler" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>-->
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <router-link :to="'/documents'" :class="'nav-link'">{{'documents' | i18n}}</router-link>
+                        <router-link to="/documents/html" class="nav-link">{{'documents' | i18n}}</router-link>
                     </li>
                 </ul>
                 <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-                    <language-bar :button="true" />
+                    <language-bar />
                 </ul>
             </div>
         </nav>

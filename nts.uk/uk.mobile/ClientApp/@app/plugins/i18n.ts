@@ -7,11 +7,13 @@ const resources: {
 } = {
     jp: {
         'jp': '日本',
-        'vi': 'Tiếng Việt'
+        'vi': 'Tiếng Việt',
+        'app_name': '勤次郎'
     },
     vi: {
         'jp': '日本',
-        'vi': 'Tiếng Việt'
+        'vi': 'Tiếng Việt',
+        'app_name': 'UK Mobile'
     }
 }, language = new Vue({
     data: {
