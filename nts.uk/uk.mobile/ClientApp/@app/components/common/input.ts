@@ -12,35 +12,56 @@ const input = () => component({
         <template v-else />
         <div v-bind:class="columns.input">
             <div class="input-group input-group-transparent">
-                <template v-if="icons.before">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" v-bind:class="iconsClass.before">{{  !iconsClass.before ? icons.before : '' }}</span>
-                    </div>
+                <template v-if="type !== 'select'">
+                    <template v-if="icons.before">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" v-bind:class="iconsClass.before">{{  !iconsClass.before ? icons.before : '' }}</span>
+                        </div>
+                    </template>
+                    <template v-else />
+                    <template v-if="icons.after">
+                        <div class="input-group-append">
+                            <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
+                        </div>
+                    </template>
+                    <template v-else />
+                    <input class="form-control"
+                        ref="input"
+                        v-bind:type="type"
+                        v-validate="{
+                            always: !!errorsAlways,
+                            errors: (errors || errorsAlways || {})
+                        }"
+                        v-bind:disabled="disabled"
+                        v-bind:value="rawValue"
+                        v-on:input="input()"
+                    />
                 </template>
-                <template v-else />
-                <template v-if="icons.after">
-                    <div class="input-group-append">
-                        <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
-                    </div>
+                <template v-else>
+                    <template v-if="icons.after">
+                        <div class="input-group-append">
+                            <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
+                        </div>
+                    </template>
+                    <select class="form-control"
+                        ref="input"
+                        v-validate="{
+                            always: !!errorsAlways,
+                            errors: (errors || errorsAlways || {})
+                        }"
+                        v-bind:disabled="disabled"
+                        v-bind:value="rawValue"
+                        v-on:change="input()">
+                        <slot />
+                    </select>
                 </template>
-                <template v-else />
-                <input type="text" class="form-control" 
-                    v-validate="{
-                        always: !!errorsAlways,
-                        errors: (errors || errorsAlways || {})
-                    }"
-                    v-bind:disabled="disabled"
-                    ref="input"
-                    v-bind:value="rawValue"
-                    v-on:input="input()"
-                />
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
     </div>`
 });
 
-class InputComponent extends Vue {
+export class InputComponent extends Vue {
     @Prop({ default: () => '' })
     readonly name: string;
 
@@ -68,7 +89,6 @@ class InputComponent extends Vue {
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     readonly columns!: { title: string; input: string };
 
-
     get iconsClass() {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
@@ -85,6 +105,22 @@ class InputComponent extends Vue {
 
 @input()
 class StringComponent extends InputComponent {
+    type: string = 'text';
+
+    get rawValue() {
+        return (this.value || '');
+    }
+
+    @Emit()
+    input() {
+        return (<HTMLInputElement>this.$refs.input).value;
+    }
+}
+
+@input()
+class PasswordComponent extends InputComponent {
+    type: string = 'password';
+
     get rawValue() {
         return (this.value || '');
     }
@@ -97,6 +133,8 @@ class StringComponent extends InputComponent {
 
 @input()
 class NumberComponent extends InputComponent {
+    type: string = 'number';
+
     get rawValue() {
         return (this.value || '').toString();
     }
@@ -121,6 +159,8 @@ class NumberComponent extends InputComponent {
 
 @input()
 class DateComponent extends InputComponent {
+    type: string = 'date';
+
     get rawValue() {
         return (this.value || '').toString();
     }
@@ -143,8 +183,29 @@ class DateComponent extends InputComponent {
     }
 }
 
+@input()
+class DropdownComponent extends InputComponent {
+    type: string = 'select';
+
+    get rawValue() {
+        return this.value;
+    }
+
+    mounted() {
+        this.icons.after = 'fa fa-caret-down';
+    }
+
+    @Emit()
+    input() {
+        return (<HTMLSelectElement>this.$refs.input).value;
+    }
+}
+
 Vue.component('v-input', StringComponent);
 Vue.component('v-input-string', StringComponent);
+Vue.component('v-input-password', PasswordComponent);
 
 Vue.component('v-input-date', DateComponent);
 Vue.component('v-input-number', NumberComponent);
+
+Vue.component('nts-dropdown', DropdownComponent);

@@ -6,6 +6,9 @@ div#login {
         border-radius: 15px;
         legend {
             width: auto;
+            padding: 0px 15px;
+            border-radius: 999px;
+            border: 1px solid #ccc;
         }
         .btn {
             min-width: 120px;

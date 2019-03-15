@@ -1,10 +1,14 @@
 {
-    "en": {
-        "home": "Home",
-        "login_title": "Đăng nhập hệ thống"
+    "jp": {
+        "login_title": "勤次郎",
+        "login_name": "社員コード",
+        "login_password": "パスワード",
+        "login_btn": "ログイン"
     },
     "vi": {
-        "home": "Trang chủ",
-        "login_title": "Đăng nhập hệ thống"
+        "login_title": "UK Mobile",
+        "login_name": "Tài khoản",
+        "login_password": "Khoá bí mật",
+        "login_btn": "Đăng nhập"
     }
 }

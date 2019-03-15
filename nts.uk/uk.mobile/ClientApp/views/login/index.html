@@ -1,18 +1,30 @@
 <div id="login">
     <fieldset class="login-form">
         <legend>{{ 'login_title' | i18n }}</legend>
+            <nts-dropdown
+                v-model="model.comp"
+                v-bind:name="'model.comp'"
+                v-bind:disabled="false"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.comp"
+                v-bind:errors-always="$errors.model.comp"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
+                <option value="">--- Choose options ---</option>
+                <option v-for="(i,k) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :value="i">{{i}}</option>
+            </nts-dropdown>
+            {{model.comp}}
             <v-input-string
-            v-model="model.username"
-            v-bind:name="'username'"
-            v-bind:disabled="disabled"
-            v-bind:show-title="true"
-            v-bind:constraint="validations.model.username"
-            v-bind:errors-always="$errors.model.username"
-            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+                v-model="model.username"
+                v-bind:name="'login_name'"
+                v-bind:disabled="disabled"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.username"
+                v-bind:errors-always="$errors.model.username"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
-            <v-input-string
+            <v-input-password
                 v-model="model.password"
-                v-bind:name="'password'"
+                v-bind:name="'login_password'"
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.password"
@@ -21,7 +33,7 @@
 
             <div class="text-right">
                 <hr />
-                <button class="btn btn-primary"><i class="fa fa-key"></i> {{'login' | i18n}}</button>                
+                <button class="btn btn-primary" v-on="$click(login.bind(this, 1, 2, 3))"><i class="fa fa-key"></i> {{'login_btn' | i18n}}</button>
             </div>
     </fieldset>
 </div>
