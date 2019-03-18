@@ -99,36 +99,82 @@ document.addEventListener("click", function (e) {
     })(e);
 
     // navbar-toggler
-    let toggler = () => {
-        let target = e.target as HTMLElement;
+    if (dom.parents(e.target as HTMLElement, '.navbar')) {
+        let toggler = () => {
+            let target = e.target as HTMLElement;
 
-        if (dom.hasClass(target, 'navbar-toggler-icon') || dom.hasClass(target, 'navbar-toggler') || dom.getAttr(target, 'data-toggle') === 'collapse') {
-            return target;
-        }
+            if (dom.hasClass(target, 'fa-caret-down') || dom.hasClass(target, 'navbar-toggler') || dom.getAttr(target, 'data-toggle') === 'collapse') {
+                return target;
+            }
 
-        return null;
-    };
+            return null;
+        };
 
-    ((evt: MouseEvent) => {
-        let target = toggler();
-        if (target) {
-            let parent = target.closest('.navbar') as HTMLElement;
+        ((evt: MouseEvent) => {
+            let target = toggler();
+            if (target) {
+                let parent = target.closest('.navbar') as HTMLElement;
 
-            if (parent) {
-                let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
+                if (parent) {
+                    let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
 
-                if (collapse) {
-                    dom.toggleClass(collapse, 'show');
+                    if (collapse) {
+                        dom.toggleClass(collapse, 'show');
+                    }
                 }
             }
+        })(e);
+
+        let target = toggler(),
+            collapse = document.querySelector('.navbar .collapse.navbar-collapse.show') as HTMLElement;
+
+        if (!target && collapse) {
+            let _targ = e.target as HTMLElement;
+
+            if (dom.hasClass(_targ, 'dropdown')) {
+                let dropdown = _targ.querySelector('dropdown-menu') as HTMLElement;
+
+                if (dropdown) {
+                    dom.toggleClass(dropdown, 'show');
+                }
+            } else if (dom.hasClass(_targ, 'dropdown-toggle')) {
+                let dropdown = dom.next(_targ) as HTMLElement;
+
+                if (dropdown) {
+                    dom.toggleClass(dropdown, 'show');
+                }
+            } else {
+                dom.removeClass(collapse, 'show');
+            }
         }
-    })(e);
 
-    let target = toggler(),
-        collapse = document.querySelector('.navbar .collapse.navbar-collapse.show') as HTMLElement;
+        //side menu
+        ((evt: MouseEvent) => {
+            let target = evt.target as HTMLElement,
+                btn = dom.parent(target) as HTMLElement;
 
-    if (!target && collapse) {
-        dom.removeClass(collapse, 'show');
+            if ((target.tagName === 'SPAN' && dom.hasClass(btn, 'navbar-btn')) || dom.hasClass(target, 'navbar-btn')) {
+                let sidebar = document.querySelector('#sidebar') as HTMLDivElement;
+
+                if (sidebar) {
+                    if (!dom.hasClass(sidebar, 'active')) {
+                        if (!dom.hasClass(target, 'navbar-btn')) {
+                            dom.addClass(btn, 'active');
+                        } else {
+                            dom.addClass(target, 'active');
+                        }
+                        dom.addClass(sidebar, 'active');
+                    } else {
+                        if (!dom.hasClass(target, 'navbar-btn')) {
+                            dom.removeClass(btn, 'active');
+                        } else {
+                            dom.removeClass(target, 'active');
+                        }
+                        dom.removeClass(sidebar, 'active');
+                    }
+                }
+            }
+        })(e);
     }
 
     // other event
