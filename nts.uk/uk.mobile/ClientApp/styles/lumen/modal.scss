@@ -1,5 +1,86 @@
 .modal {
+    &-open {
+        overflow: hidden;
+    } //-webkit-overflow-scrolling: touch;
     &.show {
         display: block;
+        .modal-dialog {
+            &.modal-popup {
+                .modal-content {
+                    width: 300px;
+                    margin: auto;
+                    .modal-header,
+                    .modal-footer {
+                        padding: 0.5rem 1rem;
+                    }
+                    .modal-header {
+                        .close {
+                            display: none;
+                        }
+                    }
+                    .modal-footer {
+                        display: block;
+                    }
+                }
+            }
+            .modal-footer {
+                &.top {
+                    border-bottom: 1px solid #ccc;
+                    border-radius: 0;
+                    padding: 0.5rem;
+                    &.text-left {
+                        justify-content: flex-start;
+                    }
+                }
+            }
+        }
     }
 }
+
+/* Small devices (landscape phones, 576px and up) */
+
+@media (max-width: 575px) {
+    .modal {
+        &.show {
+            .modal-dialog {
+                &.modal-popup {
+                    .modal-content {
+                        max-width: 95vw;
+                    }
+                }
+                &:not(.modal-popup) {
+                    margin: 0;
+                    min-width: 100vw;
+                    .modal-content {
+                        border: 0;
+                        border-radius: 0;
+                        min-width: 100vw;
+                        min-height: 100vh;
+                        min-height: calc(var(--vh, 1vh) * 100);
+                        .modal-header {
+                            padding: 0.6rem 1rem;
+                            .modal-title {
+                                line-height: 1rem;
+                            }
+                        }
+                        .modal-footer {
+                            padding: 0.6rem 1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+
+@media (min-width: 768px) {}
+
+/* Large devices (desktops, 992px and up) */
+
+@media (min-width: 992px) {}
+
+/* Extra large devices (large desktops, 1200px and up) */
+
+@media (min-width: 1200px) {}
