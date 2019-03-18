@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -17,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessHolidayManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessHolidayManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.excessleave.KrcmtExcessHDManaData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 
 @Stateless
 public class JpaExcessHDManaDataRepo extends JpaRepository implements ExcessHolidayManaDataRepository{
@@ -59,7 +56,7 @@ public class JpaExcessHDManaDataRepo extends JpaRepository implements ExcessHoli
 					KrcmtExcessHDManaData entity = new KrcmtExcessHDManaData();
 					entity.cID = rec.getString("CID");
 					entity.sID = rec.getString("SID");
-					entity.expiredState = rec.getInt("EXPIRED_STATE");
+					entity.remainNumer = rec.getInt("REMAIN_NUMBER");
 					return entity;
 			
 				});
