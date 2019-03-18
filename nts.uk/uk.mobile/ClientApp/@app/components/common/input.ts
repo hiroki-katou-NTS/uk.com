@@ -2,6 +2,9 @@ import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
 
+import { $ } from '@app/utils';
+import { TimePickerComponent, DatePickerComponent } from '@app/components';
+
 const input = () => component({
     template: `<div class="form-group row">
         <template v-if="showTitle">
@@ -33,7 +36,10 @@ const input = () => component({
                             errors: (errors || errorsAlways || {})
                         }"
                         v-bind:disabled="disabled"
+                        v-bind:readonly="!editable"
                         v-bind:value="rawValue"
+                        v-on:click="click()"
+                        v-on:keydown.13="click()"
                         v-on:input="input()"
                     />
                 </template>
@@ -58,7 +64,11 @@ const input = () => component({
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
-    </div>`
+    </div>`,
+    components: {
+        'timepicker': TimePickerComponent,
+        'datepicker': DatePickerComponent
+    }
 });
 
 export class InputComponent extends Vue {
@@ -89,6 +99,8 @@ export class InputComponent extends Vue {
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     readonly columns!: { title: string; input: string };
 
+    editable: boolean = true;
+
     get iconsClass() {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
@@ -100,6 +112,10 @@ export class InputComponent extends Vue {
             before: isClass(self.icons.before) ? self.icons.before : '',
             after: isClass(self.icons.after) ? self.icons.after : ''
         };
+    }
+
+    click() {
+
     }
 }
 
@@ -158,8 +174,65 @@ class NumberComponent extends InputComponent {
 }
 
 @input()
+class TimeComponent extends InputComponent {
+    type: string = 'string';
+
+    editable: boolean = false;
+
+    get rawValue() {
+        return (this.value || '').toString();
+    }
+
+    mounted() {
+        this.icons.after = 'far fa-clock';
+    }
+
+    @Emit()
+    input() {
+        let value = (<HTMLInputElement>this.$refs.input).value;
+
+        if (value) {
+            let numb = Number(value);
+
+            if (!isNaN(numb)) {
+                return numb;
+            } else {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    click() {
+        this
+            .$modal('timepicker', {
+                value: this.value
+            }, {
+                    type: "popup",
+                    title: this.name,
+                    animate: {
+                        show: 'zoomIn',
+                        hide: 'zoomOut'
+                    }
+                })
+            .onClose(v => {
+                if (v !== undefined) {
+                    this.$emit('input', v);
+                }
+            });
+    }
+}
+
+@input()
 class DateComponent extends InputComponent {
-    type: string = 'date';
+    type: string = 'string';
+
+    editable: boolean = false;
+
+    mounted() {
+        this.icons.after = 'far fa-calendar-alt';
+    }
 
     get rawValue() {
         return (this.value || '').toString();
@@ -180,6 +253,23 @@ class DateComponent extends InputComponent {
         }
 
         return null;
+    }
+
+    click() {
+        this.$modal('datepicker', {
+            value: this.value
+        }, {
+                type: "popup",
+                title: this.name,
+                animate: {
+                    show: 'zoomIn',
+                    hide: 'zoomOut'
+                }
+            }).onClose(v => {
+                if (v !== undefined) {
+                    this.$emit('input', v);
+                }
+            });
     }
 }
 
@@ -205,6 +295,7 @@ Vue.component('v-input', StringComponent);
 Vue.component('v-input-string', StringComponent);
 Vue.component('v-input-password', PasswordComponent);
 
+Vue.component('v-input-time', TimeComponent);
 Vue.component('v-input-date', DateComponent);
 Vue.component('v-input-number', NumberComponent);
 
