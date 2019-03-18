@@ -51,20 +51,9 @@ const modal = {
                             (component.mixins || (component.mixins = [])).push({
                                 methods: {
                                     $close: function (data?: any) {
-                                        let el: HTMLElement = this.$el,
-                                            modal = el.closest('.modal.show');
-
-                                        if (modal) {
-                                            let close = modal.querySelector('.modal-header>button.close');
-
-                                            if (close) {
-                                                close.dispatchEvent(new Event('click'));
-                                            }
-                                        }
-
                                         this.$emit('callback', data);
 
-                                        this.$destroy();
+                                        this.$destroy(true);
                                     }
                                 },
                                 mounted() {
@@ -131,14 +120,7 @@ const modal = {
                                                 callback(data);
                                             }
 
-                                            if (focused) {
-                                                focused.focus();
-                                            }
-
                                             this.$close();
-
-                                            // destroy modal app
-                                            this.$destroy(true);
                                         },
                                         $close() {
                                             let dialog: HTMLElement = this.$refs.dialog;
@@ -161,6 +143,9 @@ const modal = {
                                                     dom.addClass(dialog, options.animate.hide);
                                                 }
                                             }
+
+                                            // destroy modal app
+                                            this.$destroy(true);
                                         }
                                     },
                                     mounted() {
@@ -195,6 +180,10 @@ const modal = {
                                                 element.setAttribute('tabindex', tabindex);
                                             }
                                         });
+
+                                        if (focused) {
+                                            focused.focus();
+                                        }
 
                                         setTimeout(() => {
                                             document.body.removeChild(this.$el);
