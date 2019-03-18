@@ -44627,7 +44627,7 @@ var nts;
                         else {
                             var getOffset = function ($node) {
                                 var offset = $node[0].offsetTop, parent = $node[0].offsetParent;
-                                while (parent.tagName.toLowerCase() != "ul") {
+                                while (!_.isNil(parent) && parent.tagName.toLowerCase() != "ul") {
                                     offset += parent.offsetTop;
                                     parent = parent.offsetParent;
                                 }
