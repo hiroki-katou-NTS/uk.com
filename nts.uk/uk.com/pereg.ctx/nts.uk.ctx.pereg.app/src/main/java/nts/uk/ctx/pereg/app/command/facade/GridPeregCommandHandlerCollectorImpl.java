@@ -56,6 +56,8 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update
 import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave7informationCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave8informationCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave9informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
@@ -76,8 +78,10 @@ import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCo
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
+import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 
 @Stateless
@@ -130,7 +134,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave9informationCommand>>(){},
 			//CS00034	特別休暇１０情報
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave10informationCommand>>(){},
-			
+			//CS00035	その他休暇情報
+			new TypeLiteral<PeregAddListCommandHandler<AddOtherHolidayInfoCommand>>(){},
 			
 			//CS00049	特別休暇１１情報
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave11informationCommand>>(){},
@@ -204,7 +209,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateSpecialleave9informationCommand>>(){},
 			//CS00034	特別休暇１０情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateSpecialleave10informationCommand>>(){},
-			
+			//CS00035	その他休暇情報
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>>(){},
 			
 			
 			//CS00049	特別休暇１１情報
