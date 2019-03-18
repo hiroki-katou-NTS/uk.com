@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;

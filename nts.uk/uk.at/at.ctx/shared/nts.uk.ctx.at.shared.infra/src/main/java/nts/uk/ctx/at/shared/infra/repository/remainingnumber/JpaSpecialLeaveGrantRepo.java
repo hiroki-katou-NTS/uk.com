@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -9,9 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
-
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -33,7 +30,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private static final String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 	private static final String GET_ALL_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :sid AND a.grantDate =:grantDate AND a.specialLeaID !=:specialLeaID AND a.specialLeaCode =:specialLeaCode";
-	private static final String GET_ALL_BY_SIDS_SPECIALCODE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId  IN :employeeId AND a.specialLeaCode = :specialLeaCode order by a.grantDate DESC";
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
