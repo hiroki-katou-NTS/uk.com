@@ -33,6 +33,16 @@ declare interface IRule {
     };
 }
 
+declare interface IModalOptions {
+    type?: 'modal' | 'popup';
+    size?: 'lg' | 'md' | 'sm' | 'xs';
+    title?: string;
+    animate?: {
+        show?: string;
+        hide?: string;
+    };
+}
+
 declare module "vue/types/options" {
     interface ComponentOptions<V extends Vue> {
         route?: string | {
@@ -76,7 +86,7 @@ declare module "vue/types/vue" {
         };
         $i18n: (resr: string, param?: { [key: string]: string }) => string;
         $close: (data?: any) => void;
-        $modal: (name: string, params?: any) => {
+        $modal: (name: string, params?: any, options?: IModalOptions) => {
             onClose: (callback: (data?: any) => void) => void;
         };
         $valid: boolean;
