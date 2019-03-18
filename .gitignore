@@ -27,6 +27,7 @@
 
 #ignore all js, map file
 **/*.js*
+!**/*.json
 
 # except all js, map in base.web
 !**/base.web/**/*.js*
