@@ -1,5 +1,4 @@
 import { Vue } from '@app/provider';
-import { routes } from '@app/core/routes';
 import { component } from '@app/core/component';
 
 @component({
@@ -10,10 +9,14 @@ import { component } from '@app/core/component';
     template: require('./index.html'),
     resource: {
         'vi': {
-            'AccordionDocumentComponent': 'Accordions'
+            'AccordionDocumentComponent': 'Accordions/Step Wizard',
+            'next': 'Tiếp',
+            'preview': 'Lùi lại'
         },
         'jp': {
-            'AccordionDocumentComponent': 'Accordions'
+            'AccordionDocumentComponent': 'Accordions/Step Wizard',
+            'next': 'Next',
+            'preview': 'Preview'
         }
     },
     markdown: {
