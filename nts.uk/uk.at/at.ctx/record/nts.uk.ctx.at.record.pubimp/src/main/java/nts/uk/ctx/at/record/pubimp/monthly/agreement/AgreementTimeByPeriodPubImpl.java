@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -42,6 +44,7 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 	
 	/** 指定期間36協定時間の取得 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
 			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr) {
 
@@ -105,6 +108,7 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 	}
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
 			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr, Object basicSetGetter) {
 		
@@ -113,6 +117,7 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Object getCommonSetting(String companyId, List<String> employeeIds, DatePeriod criteria) {
 		
 		return this.settingService.getCommonService(companyId, employeeIds, criteria);

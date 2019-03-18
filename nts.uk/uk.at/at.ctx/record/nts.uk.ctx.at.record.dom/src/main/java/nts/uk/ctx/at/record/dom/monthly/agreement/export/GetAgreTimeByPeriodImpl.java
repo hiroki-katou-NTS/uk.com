@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -75,6 +77,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
 			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr, AgeementTimeCommonSetting settingGetter) {
 		
@@ -120,7 +123,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			Optional<YearMonth> checkYmOpt = Optional.empty();
 			if (periodAtr == PeriodAtrOfAgreement.ONE_YEAR) checkYearOpt = Optional.of(year);
 			if (periodAtr == PeriodAtrOfAgreement.ONE_MONTH) checkYmOpt = Optional.of(periodYmList.get(0));
-			
+
 			// 状態チェック
 			{
 				// 「労働条件項目」を取得
@@ -128,7 +131,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 				if (!workingConditionItemOpt.isPresent()){
 					return results;
 				}
-				
+
 				// 労働制を確認する
 				val workingSystem = workingConditionItemOpt.get().getLaborSystem();
 				
@@ -142,7 +145,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 					// 36協定年度設定を取得する
 					yearSetOpt = this.agreementYearSetRepo.findByKey(employeeId, checkYearOpt.get().v());
 				}
-				
+
 				// 「年月」を確認
 				Optional<AgreementMonthSetting> monthSetOpt = Optional.empty();
 				if (checkYmOpt.isPresent()){

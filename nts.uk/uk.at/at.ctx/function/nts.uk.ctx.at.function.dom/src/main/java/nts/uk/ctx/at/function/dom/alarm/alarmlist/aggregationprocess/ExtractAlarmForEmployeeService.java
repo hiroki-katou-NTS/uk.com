@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -169,31 +171,36 @@ public class ExtractAlarmForEmployeeService {
 			return false;
 		}).collect(Collectors.toList());
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> processV2(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, 
 			List<EmployeeSearchDto> employees, List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		List<ValueExtractAlarm> result = (new ArrayList<>());
 
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		List<WorkplaceImport> optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
-		
+
 //		List<Runnable> checks = new ArrayList<>();
 //		checks.add(() -> {
 			result.addAll(runDailyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+
 //		checks.add(() -> {
 			result.addAll(runW4d4CheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+
 //		checks.add(() -> {
 			result.addAll(runAgreementCheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+
 //		checks.add(() -> {
 			result.addAll(runMonthlyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+
 //		checks.add(() -> {
 			result.addAll(runMultiMonthCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));

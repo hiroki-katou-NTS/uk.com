@@ -133,6 +133,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<CheckedOvertimeImport> checkNumberOvertime(List<String> employeeIds, List<DatePeriod> periods,
 			List<AgreeCondOt> listCondOt) {
 
