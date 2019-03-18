@@ -27,7 +27,7 @@ const $ = {
         return obj != null && Object.prototype.hasOwnProperty.call(obj, prop);
     },
     isNil: (obj: any) => {
-        return $.isNull(obj) && $.isUndefined(obj);
+        return $.isNull(obj) || $.isUndefined(obj);
     },
     isNull: (obj: any) => {
         return obj === null || ($.isObject(obj) && $.size(obj) === 0);

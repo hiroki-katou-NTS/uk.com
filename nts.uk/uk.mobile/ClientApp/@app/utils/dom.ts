@@ -75,7 +75,7 @@ const dom = {
             }
 
             [].slice.call(classCss)
-                .forEach((c: string) => element.classList.add(c.trim()));
+                .forEach((c: string) => element &&  element.classList && element.classList.add(c.trim()));
         }
     },
     removeClass: (element: HTMLElement, classCss: Array<string> | string) => {
@@ -158,7 +158,19 @@ const dom = {
     },
     parents: (element: HTMLElement, helper: string) => {
         return element.closest(helper) as HTMLElement;
-    }
+    },
+    removeEventHandler: (element: any, eventType: string | any, handler: (evt: any) => any) => {
+        element.removeEventListener(eventType, handler, false);
+    },
+    registerEventHandler: (element: HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
+        element.addEventListener(eventType, handler, false);
+    },
+    registerOnceEventHandler: (element: HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
+        dom.registerEventHandler(element, eventType, function handlerWrapper(evt: any) {
+            handler(evt);
+            dom.removeEventHandler(element, eventType, handlerWrapper);
+        });
+    },
 };
 
 export { dom };
