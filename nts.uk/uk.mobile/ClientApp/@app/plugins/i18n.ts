@@ -17,14 +17,24 @@ const resources: {
     }
 }, language = new Vue({
     data: {
-        current: 'jp'
+        current: 'jp',
+        watchers: []
     },
     methods: {
         change: function (lang: string) {
             this.current = lang;
 
             localStorage.setItem('lang', lang);
+        },
+        getText: function (callback: Function) {
+            let self = this;
+            self.watchers.push(self.$watch('current', (v: string) => {
+                callback(v);
+            }));
         }
+    },
+    destroyed() {
+        [].slice.call(this.watchers).forEach((w: Function) => w());
     }
 }), LanguageBar = {
     template: `<template v-if="button">
