@@ -238,4 +238,33 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 		return map;
 	}
 
+	@Override
+	public List<DiffTimeWorkSetting> findByCidAndWorkCodes(String cid, List<String> workTimeCodes) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KshmtDiffTimeWorkSet> query = builder.createQuery(KshmtDiffTimeWorkSet.class);
+		Root<KshmtDiffTimeWorkSet> root = query.from(KshmtDiffTimeWorkSet.class);
+		List<KshmtDiffTimeWorkSet> resultList = new ArrayList<>();
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
+
+			predicateList.add(builder.equal(root.get(KshmtDiffTimeWorkSet_.kshmtDiffTimeWorkSetPK)
+					.get(KshmtDiffTimeWorkSetPK_.cid), cid));
+			
+			predicateList.add(root.get(KshmtDiffTimeWorkSet_.kshmtDiffTimeWorkSetPK)
+					.get(KshmtDiffTimeWorkSetPK_.worktimeCd).in(workTimeCodes));
+
+			query.where(predicateList.toArray(new Predicate[] {}));
+
+			List<KshmtDiffTimeWorkSet> result = em.createQuery(query).getResultList();
+			resultList.addAll(result);
+		});
+
+
+		return resultList.stream().map(
+				entity -> new DiffTimeWorkSetting(new JpaDiffTimeWorkSettingGetMemento(entity)))
+				.collect(Collectors.toList());
+	}
+
 }

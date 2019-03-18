@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,6 +27,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 public class JpaFlexWorkSettingRepository extends JpaRepository
 		implements FlexWorkSettingRepository {
 
+	private static final String SEL_1 = "SELECT * FROM KshmtFlexWorkSet a WHERE a.kshmtFlexWorkSetPK.cid =:cid AND a.kshmtFlexWorkSetPK.worktimeCd IN :worktimeCd";
+	
+	private static final String SEL_2 = "SELECT * FROM KshmtWorktimeCommonSet a WHERE a.kshmtWorktimeCommonSetPK.cid =:cid AND a.kshmtWorktimeCommonSetPK.workFormAtr =:workFormAtr AND  a.kshmtWorktimeCommonSetPK.worktimeSetMethod =:worktimeSetMethod AND a.kshmtWorktimeCommonSetPK.worktimeCd IN :worktimeCd";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -115,6 +120,22 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	private Optional<KshmtWorktimeCommonSet> findCommonSetting(String companyId, String worktimeCode ) {
 		return this.queryProxy().find(new KshmtWorktimeCommonSetPK(companyId, worktimeCode,
 				WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value), KshmtWorktimeCommonSet.class);
+	}
+
+	@Override
+	public List<FlexWorkSetting> getAllByCidAndWorkCodes(String cid, List<String> workTimeCodes) {
+		List<FlexWorkSetting> result = new ArrayList<>();
+		List<KshmtFlexWorkSet> kshmtFlexWorkSet = this.queryProxy().query(SEL_1, KshmtFlexWorkSet.class)
+				.setParameter("cid", cid).setParameter("worktimeCd", workTimeCodes).getList();
+		List<KshmtWorktimeCommonSet> kshmtWorktimeCommonSet = this.queryProxy().query(SEL_2, KshmtWorktimeCommonSet.class)
+				.setParameter("cid", cid).setParameter("worktimeCd", workTimeCodes)
+				.setParameter("workFormAtr", WorkTimeDailyAtr.FLEX_WORK.value).setParameter("worktimeSetMethod",  WorkTimeMethodSet.FIXED_WORK.value)
+				.getList();
+		kshmtFlexWorkSet.parallelStream().forEach(c ->{
+			Optional<KshmtWorktimeCommonSet> kshmtWorktimeCommonSetOpt = kshmtWorktimeCommonSet.parallelStream().filter(item -> item.getKshmtWorktimeCommonSetPK().getWorktimeCd().equals(c.getKshmtFlexWorkSetPK().getWorktimeCd())).findFirst();
+			result.add(this.toDomain(c, kshmtWorktimeCommonSetOpt.get()));
+		});
+		return result;
 	}
 
 }

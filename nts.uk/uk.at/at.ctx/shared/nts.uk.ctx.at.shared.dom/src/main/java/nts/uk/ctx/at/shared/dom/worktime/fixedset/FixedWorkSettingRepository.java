@@ -46,6 +46,14 @@ public interface FixedWorkSettingRepository {
 	 * @return the optional
 	 */
 	Optional<FixedWorkSetting> findByKey(String companyId, String workTimeCode);
+	
+	/**
+	 * @author lanlt
+	 * @param companyId
+	 * @param workTimeCodes
+	 * @return
+	 */
+	List<FixedWorkSetting> findByCidAndWorkTimeCodes(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Find by C id.

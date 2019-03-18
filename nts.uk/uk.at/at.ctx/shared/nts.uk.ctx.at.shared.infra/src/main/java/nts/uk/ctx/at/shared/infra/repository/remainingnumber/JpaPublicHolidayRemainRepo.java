@@ -11,11 +11,13 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.RemainNumber;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.publicholiday.KrcmtPubHolidayRemain;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicHolidayRemainRepository{
@@ -87,5 +89,72 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 		return entities.stream()
 				.map(x -> PublicHolidayRemain.creatFromJavaType(x.cid, x.employeeId, new RemainNumber(x.remainNumber)))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void addAll(List<PublicHolidayRemain> domains) {
+		String INS_SQL = "INSERT INTO KRCMT_PUB_HOLIDAY_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " CID, SID, REMAIN_NUMBER)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " CID_VAL, SID_VAL, REMAIN_NUMBER_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("CID_VAL", "'" + c.getSID() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
+			sql = sql.replace("REMAIN_NUMBER_VAL", c.getRemainNumber() == null? "null": ""+c.getRemainNumber().v()+"");
+			sb.append(sql);
+		});
+
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<PublicHolidayRemain> domains) {
+		String UP_SQL = "UPDATE KRCMT_PUB_HOLIDAY_REMAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " REMAIN_NUMBER = REMAIN_NUMBER_VAL"
+				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = UP_SQL;
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("SID_VAL", "'" + c.getSID() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCID()+ "'");
+			sql = sql.replace("REMAIN_NUMBER",  c.getRemainNumber() == null? "null": "" + c.getRemainNumber().v() + "");
+			sb.append(sql);
+		});
+
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 }

@@ -27,6 +27,8 @@ public interface ComDayOffManaDataRepository {
 	List<CompensatoryDayOffManaData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
 
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
+	
+	List<CompensatoryDayOffManaData> getBySidsAndCid(String cid, List<String> sid);
 
 	/**
 	 * 
@@ -44,6 +46,8 @@ public interface ComDayOffManaDataRepository {
 			GeneralDate dateSubHoliday);
 
 	void create(CompensatoryDayOffManaData domain);
+	
+	void addAll(List<CompensatoryDayOffManaData> domains);
 
 	/**
 	 * Update domain 代休管理データ

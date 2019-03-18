@@ -10,7 +10,11 @@ public interface ExcessLeaveInfoRepository {
 	
 	void add(ExcessLeaveInfo domain);
 	
+	void addAll(List<ExcessLeaveInfo> domains);
+	
 	void update(ExcessLeaveInfo domain);
+	
+	void updateAll(List<ExcessLeaveInfo> domains);
 
 	void delete(String sid);
 }

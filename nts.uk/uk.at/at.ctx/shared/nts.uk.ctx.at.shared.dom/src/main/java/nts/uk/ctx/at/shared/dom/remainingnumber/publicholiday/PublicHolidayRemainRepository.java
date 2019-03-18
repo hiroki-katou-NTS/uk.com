@@ -14,7 +14,11 @@ public interface PublicHolidayRemainRepository{
 	
 	void add(PublicHolidayRemain domain);
 	
+	void addAll(List<PublicHolidayRemain> domains);
+	
 	void update(PublicHolidayRemain domain);
+	
+	void updateAll(List<PublicHolidayRemain> domains);
 	
 	void delete(String sid);
 	List<PublicHolidayRemain> getAll(List<String> sids);

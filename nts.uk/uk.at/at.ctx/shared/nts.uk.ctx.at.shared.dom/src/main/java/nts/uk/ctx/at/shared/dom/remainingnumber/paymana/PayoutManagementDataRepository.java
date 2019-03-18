@@ -27,8 +27,13 @@ public interface PayoutManagementDataRepository {
 	// ドメインモデル「振出管理データ」を作成する
 	void create(PayoutManagementData domain);
 	
+	// ドメインモデル「振出管理データ」を作成する
+	void addAll(List<PayoutManagementData> domains);
+	
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
+	
+	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
 	void deletePayoutSubOfHDMana(String payoutId);
 	
