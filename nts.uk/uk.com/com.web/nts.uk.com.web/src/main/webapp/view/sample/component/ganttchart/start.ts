@@ -187,7 +187,7 @@ __viewContext.ready(function() {
                 followParent: true,
                 color: "orange",
                 lineWidth: 30,
-                limitEnd: 96,
+                limitEnd: 30,
                 canSlide: true
             });
             
@@ -200,7 +200,8 @@ __viewContext.ready(function() {
                     lineNo: i,
                     limitEnd: 96,
                     lineWidth: 30,
-                    canSlide: true
+                    canSlide: true,
+                    fixed: i == 6 ? "Start" : "None"
                 });
                 
                 $(gc).on("gcResize", (e) => {
@@ -212,9 +213,12 @@ __viewContext.ready(function() {
                     parent: `rgc${i}`,
                     lineNo: i,
                     start: start + 3,
-                    end: start + 6
+                    end: start + 6,
+                    followParent: i == 9
                 });
             }
+            
+            ruler.setLock([0, 1, 2, 3], true);
         }
     }
     

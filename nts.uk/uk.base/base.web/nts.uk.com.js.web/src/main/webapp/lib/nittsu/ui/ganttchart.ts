@@ -217,6 +217,11 @@ module nts.uk.ui.chart {
             
             return self.addChart(options);
         }
+        
+        setLock(lines: Array<any>, lock: any) {
+            let self = this;
+            _.forEach(lines, line => self.lineLock[line] = lock); 
+        }
     }
     
     class DefinedType {
