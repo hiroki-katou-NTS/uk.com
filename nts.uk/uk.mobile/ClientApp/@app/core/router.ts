@@ -16,5 +16,3 @@ const router = new VueRouter({
 });
 
 export { router };
-
-console.log(routes);

@@ -39,24 +39,13 @@ const defReact = Vue.util.defineReactive,
             [].slice.call(this.watchers).forEach((w: Function) => w());
         }
     }), LanguageBar = {
-        template: `<template v-if="button">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                    {{current | i18n}} <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)"><a>{{lg | i18n}}</a></li>
-                </ul>
+        template: `
+        <li class="nav-item dropdown">
+            <a class="nav-item nav-link dropdown-toggle mr-md-2">{{current | i18n}}</a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)">{{lg | i18n}}</a>
             </div>
-        </template>
-        <template v-else>
-            <li class="nav-item dropdown">
-                <a class="nav-item nav-link dropdown-toggle mr-md-2">{{current | i18n}}</a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)">{{lg | i18n}}</a>
-                </div>
-            </li>
-        </template>`,
+        </li>`,
         prop: ['button'],
         data: function () {
             return {
