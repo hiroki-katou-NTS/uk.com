@@ -1,6 +1,6 @@
 <div id="kdl002">
     <ul class="list-group list-group-selection mb-5">
-        <li class="list-group-item" v-for="(item, i) of listItems" v-on:click="chooseWorkType(i)">
+        <li class="list-group-item" v-for="(item, i) of listItems" v-on:click="chooseWorkType(item)">
             <div class="row">
                 <div class="col-2">{{item.code}}</div>
                 <div class="col-10">{{item.name}}</div>

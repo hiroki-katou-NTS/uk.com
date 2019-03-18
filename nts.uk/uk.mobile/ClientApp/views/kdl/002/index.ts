@@ -20,14 +20,15 @@ export class KDL002Component extends Vue {
 
     listItems: Array<IWorkType> = worktypes().filter((w: any, i: number) => i <= 11);
 
-    chooseWorkType(i: number) {
-        let item = this.listItems[i],
-            callback = (v) => {
-                console.log(i, item, obj.toJS(v));
-            };
-
-        this.$modal('worktype', item)
-            .onClose(callback);
+    chooseWorkType(item: IWorkType) {
+        if (item) {
+            this.$modal('worktype', item)
+                .onClose(v => {
+                    item.code = v.code;
+                    item.name = v.name;
+                    item.remark = v.remark;
+                });
+        }
     }
 }
 
