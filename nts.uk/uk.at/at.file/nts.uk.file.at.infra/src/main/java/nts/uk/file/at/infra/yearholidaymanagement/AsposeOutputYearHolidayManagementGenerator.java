@@ -279,9 +279,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			if (!isSelectCurrent) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する
-				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, printDate, baseDate);
+				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 				// アルゴリズム「年休明細情報を取得」を実行する
-				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, printDate, baseDate);
+				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 
 			}
 			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
