@@ -272,8 +272,9 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
+				stmt.setInt(2, state);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(2 + i, subList.get(i));
+					stmt.setString(3 + i, subList.get(i));
 				}
 				List<KrcmtPayoutManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
