@@ -3,9 +3,10 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div>{{abx}}
-        <hr />
-        <button class="btn btn-primary" v-on:click="close()">Accept</button>
-        <button class="btn btn-secondary" v-on:click="close()">Cancel</button>
+        <div class="modal-footer">    
+            <button class="btn btn-primary" v-on:click="close()">Accept</button>
+            <button class="btn btn-secondary" v-on:click="close()">Cancel</button>
+        </div>
     </div>`
 })
 export class SampleComponent extends Vue {

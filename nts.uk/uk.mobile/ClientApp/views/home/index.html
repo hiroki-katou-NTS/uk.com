@@ -3,7 +3,7 @@
     <button class="btn btn-primary" v-bind:disabled="!$valid" v-on:click="alertNow()">{{'home' | i18n}}</button>
     <hr />
 
-    <v-input-string
+    <v-input-time
         v-model="title"
         v-bind:name="'title'"
         v-bind:disabled="disabled"
@@ -12,7 +12,7 @@
         v-bind:errors-always="$errors.title"
         v-bind:columns="{title: 'col-md-2', input: 'col-md-4'}" />
 
-    <v-input-number
+    <v-input-time
         v-model="resource"
         v-bind:name="'resource'"
         v-bind:disabled="disabled"

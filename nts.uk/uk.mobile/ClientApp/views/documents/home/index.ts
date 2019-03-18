@@ -24,4 +24,9 @@ import { NavbarComponent } from './nav';
         }
     }
 })
-export class DocumentIndex extends Vue { }
+export class DocumentIndex extends Vue {
+
+    mounted() {
+        this.pgName = 'documents';
+    }
+}

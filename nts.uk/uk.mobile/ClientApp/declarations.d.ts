@@ -68,6 +68,7 @@ declare module "vue/types/options" {
 
 declare module "vue/types/vue" {
     interface Vue {
+        pgName: string;
         $http: {
             get: (url: string) => Promise<{}>;
             post: (url: string, data?: any) => Promise<{}>;

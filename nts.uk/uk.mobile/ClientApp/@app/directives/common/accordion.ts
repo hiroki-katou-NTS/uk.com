@@ -43,7 +43,7 @@ const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; previ
         // Bắt sự kiện click vào element đặt directive
         container.addEventListener('click', (evt: MouseEvent) => {
             let title = evt.target as HTMLElement;
-            debugger;
+            
             // Tìm title của các group, nếu thấy và đúng định dạng
             if (title) {
                 if (dom.hasClass(title, 'btn-link')) {

@@ -5,7 +5,7 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { ajax, i18n, modal, click, validate } from '@app/plugins';
+import { ajax, i18n, modal, click, validate, language } from '@app/plugins';
 
 import { LanguageBar } from '@app/plugins';
 
@@ -29,5 +29,12 @@ new Vue({
     components: {
         'language-bar': LanguageBar
     },
-    el: document.querySelector('body>div')
+    el: document.querySelector('body>div'),
+    computed: {
+        pgName: {
+            get() {
+                return language.pgName || 'app_name';
+            }
+        }
+    }
 });
