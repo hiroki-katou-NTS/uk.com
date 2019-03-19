@@ -38823,6 +38823,9 @@ var nts;
                                         opts.grouplength = this.options.groupLength | 3;
                                         opts.decimallength = this.options.decimalLength | 2;
                                         opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                                        opts.required = this.options.required;
+                                        opts.min = this.options.min;
+                                        opts.max = this.options.max;
                                         return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                             .validate(value);
                                     case "Time":
