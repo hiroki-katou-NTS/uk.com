@@ -10,7 +10,7 @@
                 v-bind:errors-always="$errors.model.comp"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
                 <option value="">--- Choose options ---</option>
-                <option v-for="(i,k) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :value="i">{{i}}</option>
+                <option v-for="(comp,k) in companies" :value="comp.companyId">{{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}</option>
             </nts-dropdown>
             
             <v-input-string

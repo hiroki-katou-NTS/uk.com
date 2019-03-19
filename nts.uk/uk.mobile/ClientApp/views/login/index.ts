@@ -21,19 +21,28 @@ import { component, Watch } from '@app/core/component';
     }
 })
 export class LoginComponent extends Vue {
+    companies: Array<ICompany> = [];
     model = {
         comp: 5,
         username: '',
         password: ''
     }
 
+    created() {
+        this.$http.post("/ctx/sys/gateway/login/getcompany", { id: 1000 }).then((response: { data: Array<ICompany>; }) => {
+            this.companies = response.data;
+        });
+    }
+
     login(a: number, b: number, c: number) {
         localStorage.setItem('csrf', 'uk.mobile'); //this.model.username);
 
-        /*this.$http.post("http://localhost:8080/nts.uk.com.web/webapi/ctx/sys/gateway/login/getcompany", {}).then(v => {
-            debugger;
-        });*/
-
-        this.$router.push({ name: 'HTMLDocumentsComponent' });
+        //this.$router.push({ name: 'HTMLDocumentsComponent' });
     }
+}
+
+interface ICompany {
+    companyCode: string;
+    companyId: string;
+    companyName: string;
 }
