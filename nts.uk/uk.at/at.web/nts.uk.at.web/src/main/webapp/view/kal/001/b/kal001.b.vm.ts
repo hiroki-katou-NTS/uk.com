@@ -14,6 +14,7 @@ module nts.uk.at.view.kal001.b {
             columns: Array<any>;
             currentSelectedRow: KnockoutObservable<any>;
             eralRecord: KnockoutObservable<number>;
+            eralRecordText: KnockoutObservable<string>;
             dataSource : Array<model.ValueExtractAlarmDto>=[];
             flgActive : KnockoutObservable<boolean>;
             processId: string;
@@ -21,6 +22,7 @@ module nts.uk.at.view.kal001.b {
                 let self = this;
                 self.processId = param.processId;
                 self.eralRecord = ko.observable(param.totalErAlRecord);
+                self.eralRecordText = ko.observable(self.getEralRecordText(param));
                 self.currentSelectedRow = ko.observable(null);
                 self.flgActive = ko.observable(true);
                 self.columns = [
@@ -35,6 +37,13 @@ module nts.uk.at.view.kal001.b {
                     { headerText: getText('KAL001_19'), key: 'comment', width: 200 }
                 ];
 
+            }
+            
+            getEralRecordText(param: any): string {
+                if(_.isNil(param.listAlarmExtraValueWkReDto) || param.totalErAlRecord <= 1000) {
+                    return "";
+                }
+                return nts.uk.resource.getMessage("Msg_1524", [1000]);
             }
 
             startPage(): JQueryPromise<any> {
