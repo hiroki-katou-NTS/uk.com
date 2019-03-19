@@ -159,7 +159,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	public void updateAll(List<ExcessLeaveInfo> domains) {
 		String UP_SQL = "UPDATE KRCMT_EXCESS_LEAVE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USE_ATR = USE_ATR_VAL , OCCURRENCE_UNIT = OCCURRENCE_UNIT_VAL, PAYMENT_METHOD = PAYMENT_METHOD_VAL"
-				+ " WHERE SID = SID_VAL AND AND CID = CID_VAL;";
+				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();

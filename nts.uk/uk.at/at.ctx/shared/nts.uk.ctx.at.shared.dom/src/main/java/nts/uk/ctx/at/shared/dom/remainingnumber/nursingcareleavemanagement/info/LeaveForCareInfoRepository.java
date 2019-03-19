@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LeaveForCareInfoRepository {
@@ -11,6 +12,14 @@ public interface LeaveForCareInfoRepository {
 	 */
 	Optional<LeaveForCareInfo> getCareByEmpId(String empId);
 	
+	/**
+	 * @author lanlt
+	 * @param cid
+	 * @param empIds
+	 * @return
+	 */
+	List<LeaveForCareInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds);
+	
 	Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId);
 
 	/**
@@ -19,6 +28,13 @@ public interface LeaveForCareInfoRepository {
 	 * @param obj
 	 */
 	void add(LeaveForCareInfo obj, String cId);
+	
+	/**
+	 * @author lanlt
+	 * @param cid
+	 * @param domains
+	 */
+	void addAll(String cid, List<LeaveForCareInfo> domains);
 
 	/**
 	 * update LeaveForCareInfo object
@@ -26,5 +42,12 @@ public interface LeaveForCareInfoRepository {
 	 * @param obj
 	 */
 	void update(LeaveForCareInfo obj, String cId);
+	
+	/**
+	 * @author lanlt
+	 * @param cid
+	 * @param domains
+	 */
+	void updateAll(String cid, List<LeaveForCareInfo> domains);
 
 }
