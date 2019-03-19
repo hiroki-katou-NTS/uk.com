@@ -149,10 +149,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
-			new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-					timeDetail.getLimitErrorTime().v(),
-					timeDetail.getNumOfYear36Over().v(),
-					timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
+			new TimeNo417(timeDetail.getTime36Agree().getAgreeMonth().getActualTime().v() + timeDetail.getTime36Agree().getApplicationTime().v(),
+					timeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v(),
+					timeDetail.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v(),
+					timeDetail.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(c -> c.v()).collect(Collectors.toList()));
 		return new AppOverTimeInfoFull(appId,
 				this.convertTime(appOt.getWorkClockFrom1()),
 				this.convertTime(appOt.getWorkClockTo1()),
@@ -246,10 +246,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
-				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getLimitErrorTime().v(),
-						timeDetail.getNumOfYear36Over().v(),
-						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
+				new TimeNo417(timeDetail.getTime36Agree().getAgreeMonth().getActualTime().v() + timeDetail.getTime36Agree().getApplicationTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(c -> c.v()).collect(Collectors.toList()));
 		return new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 				hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 				hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
@@ -448,10 +448,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 			AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
 			TimeNo417 timeNo417 = timeDetail == null ? null : 
-				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getLimitErrorTime().v(),
-						timeDetail.getNumOfYear36Over().v(),
-						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
+				new TimeNo417(timeDetail.getTime36Agree().getAgreeMonth().getActualTime().v() + timeDetail.getTime36Agree().getApplicationTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(c -> c.v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppOverTimeInfoFull(appId,
 					this.convertTime(appOt.getWorkClockFrom1()),
 					this.convertTime(appOt.getWorkClockTo1()),
@@ -538,10 +538,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 			AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 			TimeNo417 timeNo417 = timeDetail == null ? null : 
-				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getLimitErrorTime().v(),
-						timeDetail.getNumOfYear36Over().v(),
-						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
+				new TimeNo417(timeDetail.getTime36Agree().getAgreeMonth().getActualTime().v() + timeDetail.getTime36Agree().getApplicationTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v(),
+						timeDetail.getTime36Agree().getAgreeMonth().getYear36OverMonth().stream().map(c -> c.v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 					hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 					hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
