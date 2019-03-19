@@ -70,8 +70,8 @@ declare module "vue/types/vue" {
     interface Vue {
         pgName: string;
         $http: {
-            get: (url: string) => Promise<{}>;
-            post: (url: string, data?: any) => Promise<{}>;
+            get: (pgOrUrl: 'at' | 'pr' | 'com' | string, url?: string) => Promise<{}>;
+            post: (pgOrUrl: 'at' | 'pr' | 'com' | string, urlOrData?: string | any, data?: any) => Promise<{}>;
             headers: {
                 [header: string]: string;
             },

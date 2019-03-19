@@ -32,6 +32,9 @@ export function component(options: ComponentOptions<Vue>): any {
                         }
                     }
                 }
+            },
+            mounted() {
+                this.pgName = options.name;
             }
         });
 

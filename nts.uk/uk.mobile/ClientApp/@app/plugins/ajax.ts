@@ -29,7 +29,7 @@ const WEB_APP_NAME = {
                     return;
                 } else {
                     $.extend(opt, {
-                        //url: (`/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
+                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
                     });
                 }
 
@@ -110,9 +110,8 @@ const WEB_APP_NAME = {
 
                 // authentication 
                 setHeaders({
-                    //'PG-Path': 'nts.uk.mobile.web',
-                    //'X-CSRF-TOKEN': localStorage.getItem('csrf') || '',
-                    'Access-Control-Allow-Origin': '*'
+                    'PG-Path': 'nts.uk.com.web',
+                    //'X-CSRF-TOKEN': localStorage.getItem('csrf') || ''
                 });
 
                 if (opt.responseType) {
@@ -124,7 +123,6 @@ const WEB_APP_NAME = {
                 };
 
                 xhr.onload = function () {
-                    debugger;
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         try {
                             resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
@@ -146,17 +144,25 @@ const WEB_APP_NAME = {
         vue.mixin({
             beforeMount() {
                 if (!localStorage.getItem('csrf')) {
-                    this.$router.push({ path: '/access/login' });
+                    //this.$router.push({ path: '/access/login' });
                 }
             }
         });
 
         vue.prototype.$http = {
-            get: (url: string) => {
-                return fetch({ url, method: 'get' });
+            get: (pg: 'at' | 'com' | "pr" | string, url: string) => {
+                if (pg === 'at' || pg === 'com' || pg === 'pr') {
+                    return fetch({ pg, url, method: 'get' });
+                } else {
+                    return fetch({ pg: 'com', url: pg, method: 'get' });
+                }
             },
-            post: (url: string, data: any) => {
-                return fetch({ url, data, method: 'post' });
+            post: (pg: 'at' | 'com' | "pr" | string, url?: string | any, data?: any) => {
+                if (pg === 'at' || pg === 'com' || pg === 'pr') {
+                    return fetch({ pg, url, data, method: 'post' });
+                } else {
+                    return fetch({ pg: 'com', url: pg, data: url, method: 'post' });
+                }
             },
             async: {
                 info: (taskdId: string) => {
