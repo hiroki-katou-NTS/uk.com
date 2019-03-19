@@ -14,6 +14,7 @@ import command.person.contact.UpdatePerContactCommand;
 import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave10informationCommand;
@@ -138,6 +139,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregAddListCommandHandler<AddOtherHolidayInfoCommand>>(){},
 			//CS00036	子の看護・介護休暇情報
 			new TypeLiteral<PeregAddListCommandHandler<AddCareLeaveCommand>>(){},
+			//CS00037	年休付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
 			//CS00049	特別休暇１１情報
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave11informationCommand>>(){},
 			//CS00050	特別休暇１２情報

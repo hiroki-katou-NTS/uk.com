@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -35,6 +36,14 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForAdd(String employeeId, GeneralDate grantDate);
 	
+	/**
+	 * @author lanlt
+	 * dùng check điều kiện cho nhiều nhân viên
+	 * @param emp
+	 * @return
+	 */
+	Map<String, List<AnnualLeaveGrantRemainingData>> checkConditionUniqueForAdd(String cid, Map<String, GeneralDate> emp);
+	
 	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForUpdate(String employeeId, String annLeavID, GeneralDate grantDate);
 	// get list annual leave grant remaining data by startDate <= grantDate <= endDate
 	List<AnnualLeaveGrantRemainingData> findInDate(String employeeId, GeneralDate startDate, GeneralDate endDate);
@@ -46,5 +55,11 @@ public interface AnnLeaGrantRemDataRepository {
 	 * @return
 	 */
 	List<AnnualLeaveGrantRemainingData> findByCidAndSids(String cid, List<String> sids);
+	
+	/**
+	 * @author lanlt
+	 * @param domains
+	 */
+	void addAll(List<AnnualLeaveGrantRemainingData> domains);
 
 }
