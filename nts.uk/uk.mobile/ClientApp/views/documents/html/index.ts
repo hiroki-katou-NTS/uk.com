@@ -15,6 +15,10 @@ import { component } from '@app/core/component';
         jp: {
             'HTMLDocumentsComponent': 'Html'
         }
+    },
+    markdown: {
+        vi: require('./content/vi.md'),
+        jp: require('./content/jp.md')
     }
 })
 export class HTMLDocumentsComponent extends Vue {
