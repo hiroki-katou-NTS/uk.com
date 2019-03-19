@@ -1280,15 +1280,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		/*ログ差し込み*/
 		
-		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;
-		
 		// 任意項目の計算
-//		integrationOfDaily.setAnyItemValue(Optional.of(AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId,
-//				targetDate, optionalItems, formulaList, empCondition, Optional.of(converter), bsEmploymentHistOpt)));
-		AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId,
-					targetDate, optionalItems, formulaList, empCondition, Optional.of(converter), bsEmploymentHistOpt);
-		
-		integrationOfDaily.setAnyItemValue(converter.anyItems());
+		integrationOfDaily.setAnyItemValue(Optional.of(AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId,
+				targetDate, optionalItems, formulaList, empCondition, Optional.of(converter), bsEmploymentHistOpt)));
+
+		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;
 
 		if (!itemValueList.isEmpty()) {
 			converter.setData(integrationOfDaily);
@@ -1296,8 +1292,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			// converter.withAnyItems(result);
 			converter.merge(itemValueList);
 			// 手修正された項目の値を計算前に戻す
+			calcResultIntegrationOfDaily.setAnyItemValue(converter.anyItems());
 		}
-		calcResultIntegrationOfDaily.setAnyItemValue(converter.anyItems());
+
 		return calcResultIntegrationOfDaily;
 	}
 
