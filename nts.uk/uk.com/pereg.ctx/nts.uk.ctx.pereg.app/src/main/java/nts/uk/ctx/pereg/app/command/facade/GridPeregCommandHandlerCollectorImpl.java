@@ -14,6 +14,8 @@ import command.person.contact.UpdatePerContactCommand;
 import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
@@ -62,6 +64,26 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave.UpdateC
 import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant10Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant11Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant12Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant13Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant14Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant15Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant16Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant17Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant18Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant19Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant1Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant20Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant2Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant3Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant4Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant5Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant6Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant7Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant8Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant9Command;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
@@ -140,10 +162,30 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregAddListCommandHandler<AddOtherHolidayInfoCommand>>(){},
 			//CS00036	子の看護・介護休暇情報
 			new TypeLiteral<PeregAddListCommandHandler<AddCareLeaveCommand>>(){},
-			//CS00038	積立年休付与残数
-			new TypeLiteral<PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>>(){},
 			//CS00037	年休付与残数
 			new TypeLiteral<PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
+			//CS00038	積立年休付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>>(){},
+			//CS00039	特別休暇１付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant1Command>>(){},
+			//CS00040	特別休暇２付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant2Command>>(){},
+			//CS00041	特別休暇３付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant3Command>>(){},
+			//CS00042	特別休暇４付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant4Command>>(){},
+			//CS00043	特別休暇５付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant5Command>>(){},
+			//CS00044	特別休暇６付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant6Command>>(){},
+			//CS00045	特別休暇７付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant7Command>>(){},
+			//CS00046	特別休暇８付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant8Command>>(){},
+			//CS00047	特別休暇９付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant9Command>>(){},
+			//CS00048	特別休暇１０付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant10Command>>(){},
 			//CS00049	特別休暇１１情報
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave11informationCommand>>(){},
 			//CS00050	特別休暇１２情報
@@ -163,8 +205,29 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00057	特別休暇１９情報
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave19informationCommand>>(){},
 			//CS00058	特別休暇２０情報
-			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave20informationCommand>>(){}
-			
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialleave20informationCommand>>(){},
+			//CS00059	特別休暇１１付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant11Command>>(){},
+			//CS00060	特別休暇１２付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant12Command>>(){},
+			//CS00061	特別休暇１３付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant13Command>>(){},
+			//CS00062	特別休暇１４付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant14Command>>(){},
+			//CS00063	特別休暇１５付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant15Command>>(){},
+			//CS00064	特別休暇１６付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant16Command>>(){},
+			//CS00065	特別休暇１７付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant17Command>>(){},
+			//CS00066	特別休暇１８付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant18Command>>(){},
+			//CS00067	特別休暇１９付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant19Command>>(){},
+			//CS00068	特別休暇２０付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant20Command>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregAddListCommandHandler<AddStampCardCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -220,7 +283,6 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>>(){},
 			//CS00036	子の看護・介護休暇情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateCareLeaveCommand>>(){},
-			
 			//CS00049	特別休暇１１情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateSpecialleave11informationCommand>>(){},
 			//CS00050	特別休暇１２情報
@@ -241,6 +303,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateSpecialleave19informationCommand>>(){},
 			//CS00058	特別休暇２０情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateSpecialleave20informationCommand>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateStampCardCommand>>(){},
 			//CS00070  労働条件2
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>>(){}
 			);

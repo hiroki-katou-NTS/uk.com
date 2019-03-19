@@ -13,6 +13,12 @@ public interface SpecialLeaveGrantRepository {
 	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, int expirationStatus);
 	
 	void add(SpecialLeaveGrantRemainingData data);
+	
+	/**
+	 * @author lanlt
+	 * @param domains
+	 */
+	void addAll(List<SpecialLeaveGrantRemainingData> domains);
 
 	void update(SpecialLeaveGrantRemainingData data);
 

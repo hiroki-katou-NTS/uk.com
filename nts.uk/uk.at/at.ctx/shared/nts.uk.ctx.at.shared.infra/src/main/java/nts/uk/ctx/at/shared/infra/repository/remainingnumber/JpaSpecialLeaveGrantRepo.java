@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -16,11 +18,13 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLeaveGrantRepository {
@@ -365,6 +369,88 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain, x.timeRemain))
 				.collect(Collectors.toList());
 
+	}
+
+	@Override
+	public void addAll(List<SpecialLeaveGrantRemainingData> domains) {
+		String INS_SQL = "INSERT INTO KRCMT_SPEC_LEAVE_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " SPECIAL_LEAVE_ID, CID, SID, SPECIAL_LEAVE_CD, GRANT_DATE, DEADLINE_DATE,"
+				+ " EXPIRED_STATE, REGISTRATION_TYPE, NUMBER_DAYS_GRANT, TIME_GRANT, NUMBER_DAYS_REMAIN,"
+				+ " TIME_REMAIN, NUMBER_DAYS_USE, TIME_USE, USED_SAVING_DAYS, NUMBER_OVER_DAYS, TIME_OVER)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " SPECIAL_LEAVE_ID_VAL, CID_VAL, SID_VAL, SPECIAL_LEAVE_CD_VAL, GRANT_DATE_VAL, DEADLINE_DATE_VAL,"
+				+ " EXPIRED_STATE_VAL, REGISTRATION_TYPE_VAL, NUMBER_DAYS_GRANT_VAL, TIME_GRANT_VAL, NUMBER_DAYS_REMAIN_VAL,"
+				+ " TIME_REMAIN_VAL, NUMBER_DAYS_USE_VAL, TIME_USE_VAL, USED_SAVING_DAYS_VAL, NUMBER_OVER_DAYS_VAL, TIME_OVER_VAL);";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("SPECIAL_LEAVE_ID_VAL", "'" +  c.getSpecialId() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("SPECIAL_LEAVE_CD_VAL", ""+ c.getSpecialLeaveCode().v()+ "");
+			
+			sql = sql.replace("EXPIRED_STATE_VAL", ""+ c.getExpirationStatus().value +"");
+			sql = sql.replace("REGISTRATION_TYPE_VAL", "" + c.getRegisterType().value + "");
+			
+			sql = sql.replace("GRANT_DATE_VAL",  "'" + c.getGrantDate() + "'");
+			sql = sql.replace("DEADLINE_DATE_VAL", "'" + c.getDeadlineDate() + "'");
+			
+			// grant data
+			sql = sql.replace("NUMBER_DAYS_GRANT", ""+ c.getDetails().getGrantNumber().getDayNumberOfGrant().v() +"");
+			sql = sql.replace("TIME_GRANT", c.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
+					? ""+  c.getDetails().getGrantNumber().getTimeOfGrant().get().v() + "" : "0");
+			
+			// remain data
+			sql = sql.replace("NUMBER_DAYS_REMAIN",  "" + c.getDetails().getRemainingNumber().getDayNumberOfRemain().v() + "");
+			sql = sql.replace("TIME_REMAIN",  c.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
+					? "" + c.getDetails().getRemainingNumber().getTimeOfRemain().get().v() + "" : "0");
+			
+			// use data
+			sql = sql.replace("NUMBER_DAYS_USE",  "" + c.getDetails().getUsedNumber().getDayNumberOfUse().v() + "");
+			sql = sql.replace("TIME_USE",  c.getDetails().getUsedNumber().getTimeOfUse().isPresent()
+					? ""+ c.getDetails().getUsedNumber().getTimeOfUse().get().v() +"" : "0");
+			
+			// use Saving data(tai lieu đang bảo truyền null vào)
+			// entity.useSavingDays =
+			// data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+			// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
+			// : 0;
+			sql = sql.replace("USED_SAVING_DAYS",  "0d");
+			// Over
+			
+			if (c.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
+				sql = sql.replace("NUMBER_OVER_DAYS",  "" + c.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
+						.getNumberOverDays().v() + "");
+				sql = sql.replace("TIME_OVER",  c.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
+						.isPresent()
+						? ""+ c.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
+								.get().v() + "" : "0");
+			}
+			sb.append(sql);
+		});
+
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 }
