@@ -61,6 +61,7 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave.AddCare
 import nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave.UpdateCareLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
@@ -139,6 +140,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregAddListCommandHandler<AddOtherHolidayInfoCommand>>(){},
 			//CS00036	子の看護・介護休暇情報
 			new TypeLiteral<PeregAddListCommandHandler<AddCareLeaveCommand>>(){},
+			//CS00038	積立年休付与残数
+			new TypeLiteral<PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>>(){},
 			//CS00037	年休付与残数
 			new TypeLiteral<PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
 			//CS00049	特別休暇１１情報
