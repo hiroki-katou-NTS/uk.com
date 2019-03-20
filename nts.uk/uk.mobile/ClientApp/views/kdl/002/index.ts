@@ -24,9 +24,11 @@ export class KDL002Component extends Vue {
         if (item) {
             this.$modal('worktype', item)
                 .onClose(v => {
-                    item.code = v.code;
-                    item.name = v.name;
-                    item.remark = v.remark;
+                    if (v) {
+                        item.code = v.code;
+                        item.name = v.name;
+                        item.remark = v.remark;
+                    }
                 });
         }
     }
