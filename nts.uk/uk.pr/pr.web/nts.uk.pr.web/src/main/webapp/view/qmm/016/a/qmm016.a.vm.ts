@@ -62,7 +62,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 } else {
                     self.wageTableContent2dData([]);
                     self.listSecondDimension([]);
-                    self.listThirdDimension([])
+                    self.listThirdDimension([]);
                     self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
@@ -176,7 +176,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let wageTableTreeData: Array<Node> = wageTableData.map(item => {
                 return new Node(item);
-            })
+            });
             self.wageTableTreeList(wageTableTreeData);
         }
 
@@ -263,6 +263,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             qualificationGroupSettings: result
                         };
                         self.wageTableContent(new WageTableContent(wageTableContent));
+                        $("#A3_1").focus();
                     }).always(() => {
                         block.clear();
                     });

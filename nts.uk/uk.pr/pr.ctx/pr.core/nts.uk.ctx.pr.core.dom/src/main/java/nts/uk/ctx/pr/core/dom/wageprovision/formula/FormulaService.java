@@ -106,7 +106,10 @@ public class FormulaService {
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
             List<YearMonthHistoryItem> yearMonthHistoryItems = formulaHistory.getHistory();
             int currentIndex = yearMonthHistoryItems.indexOf(yearMonthDelete);
-            formulaRepository.removeFormulaHistory(yearMonthDelete.identifier());
+            int removed = formulaRepository.removeFormulaHistory(yearMonthDelete.identifier());
+            if (removed < 1) {
+                throw new BusinessException("Delete failed!");
+            }
             try {
                 YearMonthHistoryItem beforeYearMonth = yearMonthHistoryItems.get(currentIndex + 1);
                 beforeYearMonth.changeSpan(new YearMonthPeriod(beforeYearMonth.start(), new YearMonth(LAST_YM_VALUE)));

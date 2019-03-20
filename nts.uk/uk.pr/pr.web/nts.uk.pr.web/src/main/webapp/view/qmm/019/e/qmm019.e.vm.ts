@@ -91,9 +91,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             }
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
-                params.hasItemRangeSet = false;
-            } else {
-                params.hasItemRangeSet = true;
             }
             self.params = params;
             self.yearMonth = params.yearMonth;
@@ -206,7 +203,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         assignItemRangeSet() {
             let self = this;
-            if (self.params.hasItemRangeSet) return;
+            if (self.params.itemNameCode == self.codeSelected()) {
+                self.dataScreen().itemRangeSet.setData(self.params.itemRangeSet);
+                return;
+            }
             self.dataScreen().itemRangeSet.errorUpperLimitSetAtr(self.deductionItemSet().errorRangeSetting.upperLimitSetting.valueSettingAtr());
             self.dataScreen().itemRangeSet.errorUpRangeValAmount(self.deductionItemSet().errorRangeSetting.upperLimitSetting.rangeValue());
             self.dataScreen().itemRangeSet.errorLowerLimitSetAtr(self.deductionItemSet().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
@@ -699,7 +699,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         listItemSetting: Array<string>;
         detail: shareModel.IDeductionItemDetail;
         itemRangeSet: shareModel.IItemRangeSet;
-        hasItemRangeSet: boolean;
     }
 
     class Params {

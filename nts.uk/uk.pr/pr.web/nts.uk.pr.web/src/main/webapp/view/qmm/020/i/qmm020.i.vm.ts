@@ -31,7 +31,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             //_____CCG001________
             let self = this;
             self.ccgcomponent = {
-                showEmployeeSelection: false, // 検索タイプ
+                showEmployeeSelection: true, // 検索タイプ
                 systemType: 1,
                 showQuickSearchTab: false,
                 showAdvancedSearchTab: true, // 詳細検索

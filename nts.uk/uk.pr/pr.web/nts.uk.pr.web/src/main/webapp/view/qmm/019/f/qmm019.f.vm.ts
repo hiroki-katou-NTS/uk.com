@@ -74,9 +74,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
-                params.hasItemRangeSet = false;
-            } else {
-                params.hasItemRangeSet = true;
             }
             self.params = params;
             let dto = {
@@ -160,7 +157,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
         assignItemRangeSet() {
             let self = this;
-            if (self.params.hasItemRangeSet) return;
+            if (self.params.itemNameCode == self.codeSelected()) {
+                self.dataScreen().itemRangeSet.setData(self.params.itemRangeSet);
+                return;
+            }
             self.dataScreen().itemRangeSet.errorUpperLimitSetAtr(self.attendanceItemSet().errorRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
             self.dataScreen().itemRangeSet.errorLowerLimitSetAtr(self.attendanceItemSet().errorRangeSetting.lowerLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
             self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr(self.attendanceItemSet().alarmRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
@@ -326,13 +326,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         condition47(type: shareModel.TimeCountAtr) {
             let self = this;
             if (type == shareModel.TimeCountAtr.TIMES) {
-                self.screenControl().visibleF3_19(true);
+                self.screenControl().visibleF3_17(true);
                 self.screenControl().visibleF3_24(true);
                 self.screenControl().visibleF3_25(true);
                 self.screenControl().visibleF3_26(true);
                 self.screenControl().visibleF3_27(true);
             } else {
-                self.screenControl().visibleF3_19(false);
+                self.screenControl().visibleF3_17(false);
                 self.screenControl().visibleF3_24(false);
                 self.screenControl().visibleF3_25(false);
                 self.screenControl().visibleF3_26(false);
@@ -536,7 +536,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         itemNameCode: string;
         listItemSetting: Array<string>;
         itemRangeSet: shareModel.IItemRangeSet;
-        hasItemRangeSet: boolean;
     }
 
     class Params {

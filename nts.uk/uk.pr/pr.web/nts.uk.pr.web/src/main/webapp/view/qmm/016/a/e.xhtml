@@ -2,7 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:com="http://xmlns.jcp.org/jsf/component">
-    <div>
+    <div style="width: 800px">
         <div class="flex valign-center tab-row">
             <div style="width: 110px;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
@@ -29,7 +29,7 @@
                        data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
                     <colgroup>
                         <col width="30px"/>
-                        <col width="220px"/>
+                        <col width="163px"/>
                     </colgroup>
                     <thead>
                     <tr>
@@ -54,11 +54,11 @@
         </div>
         <div class="tab-row" style="margin-top: 40px;">
             <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-            <button tabindex="13" style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
+            <button tabindex="13" style="margin-left: 30px;" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
         </div>
         <hr></hr>
         <div class="tab-row E5_1" style="margin-top: 20px;"
-             data-bind="if: $vm.wageTableContent().qualificationGroupSetting().length >0">
+             data-bind="if: $vm.wageTableContent().qualificationGroupSetting().length > 0">
             <table id="E5_1">
                 <colgroup>
                     <col width="130px"/>
@@ -95,7 +95,7 @@
                                                     },
                                                     required: true}"/>
                         </td>
-                        <td style="vertical-align: top"  data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualificationCode().length}, text: $parent.displayPaymentMethod">
+                        <td style="vertical-align: top"  data-bind="visible: $index() == 0, attr: {rowspan: $parent.eligibleQualificationCode().length}, text: $parent.displayPaymentMethod">
                         </td>
                     </tr>
                 </com:ko>
