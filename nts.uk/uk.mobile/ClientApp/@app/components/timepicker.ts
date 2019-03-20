@@ -5,21 +5,32 @@ import { component, Prop } from '@app/core/component';
     template: `
         <div class="time-picker">
 
-            <div>
-                <button @click="cancel()">Cancel</button>
-                <button @click="ok()">Ok</button>
+            
+
+            <div class="row">
+                <div class="col-6">
+                    <select class="form-control" :value="hourValue" ref="hour1" @input="whenHourChange">
+                        <option v-for="hour in hourList">{{hour}}</option>
+                    </select>
+                </div>
+                    
+                <div class="col-6">
+                    <select class="form-control" :value="minuteValue" ref="minute1" @input="whenMinuteChange">
+                        <option v-for="minute in minuteList">{{minute}}</option>
+                    </select>
+                </div>
             </div>
 
-            <div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="text-left col-6">
+                        <button class="btn btn-link" @click="cancel()">Cancel</button>
+                    </div>
 
-                <select :value="hourValue" ref="hour1" @input="whenHourChange">
-                    <option v-for="hour in hourList">{{hour}}</option>
-                </select>
-                :
-                <select :value="minuteValue" ref="minute1" @input="whenMinuteChange">
-                    <option v-for="minute in minuteList">{{minute}}</option>
-                 </select>
-
+                    <div class="text-right col-6">
+                        <button class="btn btn-link" @click="ok()">Ok</button>
+                    </div>
+                </div>
             </div>
         </div>    
     `
