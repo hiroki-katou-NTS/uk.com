@@ -1,3 +1,5 @@
+import { obj } from "@app/utils";
+
 const dom = {
     setHtml: (element: HTMLElement, html: string | number) => {
         element.innerHTML = html.toString();
@@ -75,7 +77,7 @@ const dom = {
             }
 
             [].slice.call(classCss)
-                .forEach((c: string) => element &&  element.classList && element.classList.add(c.trim()));
+                .forEach((c: string) => element && element.classList && element.classList.add(c.trim()));
         }
     },
     removeClass: (element: HTMLElement, classCss: Array<string> | string) => {
@@ -118,10 +120,7 @@ const dom = {
     },
     animate: (element: HTMLElement, classAnimated: string, removeAfterEnd: boolean = false) => {
         let rmClass = dom.removeClass,
-            addClass = dom.addClass,
-            rgOneEvent = (element: HTMLElement, name: string, trigger: Function) => {
-
-            }; ///ko.utils.registerOnceEventHandler;
+            addClass = dom.addClass;
 
         if (element) {
             if (classAnimated.indexOf('animated') == -1) {
@@ -134,7 +133,7 @@ const dom = {
                 addClass(element, classAnimated);
 
                 if (removeAfterEnd) {
-                    rgOneEvent(element, 'animationend', function () {
+                    dom.registerOnceEventHandler(element, 'animationend', function () {
                         rmClass(element, classAnimated);
                     });
                 }
@@ -159,18 +158,101 @@ const dom = {
     parents: (element: HTMLElement, helper: string) => {
         return element.closest(helper) as HTMLElement;
     },
-    removeEventHandler: (element: any, eventType: string | any, handler: (evt: any) => any) => {
+    removeEventHandler: (element: Window | Document | HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
         element.removeEventListener(eventType, handler, false);
     },
-    registerEventHandler: (element: HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
+    registerEventHandler: (element: Window | Document | HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
         element.addEventListener(eventType, handler, false);
     },
-    registerOnceEventHandler: (element: HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
+    registerOnceEventHandler: (element: Window | Document | HTMLElement, eventType: string | any, handler: (evt: any) => any) => {
         dom.registerEventHandler(element, eventType, function handlerWrapper(evt: any) {
             handler(evt);
             dom.removeEventHandler(element, eventType, handlerWrapper);
         });
     },
+    registerOnceClickOutEventHandler(element: HTMLElement, handler: () => any) {
+        dom.registerOnceEventHandler(document, 'click', (evt: MouseEvent) => {
+            let clo = undefined,
+                target = event.target as HTMLElement;
+
+            while (target) {
+                if (target === element) {
+                    clo = target;
+                }
+
+                target = target.parentNode as HTMLElement;
+            }
+
+            if (!clo) {
+                handler.call(element);
+            }
+        });
+    },
+    registerGlobalEventHandler(element: Document | HTMLElement, eventName: string, matcher: string, handler: (evt: any) => any) {
+        dom.registerEventHandler(element, eventName, (event: any) => {
+            [].slice.call(element.querySelectorAll(matcher))
+                .forEach(match => {
+                    let target = event.target as HTMLElement;
+
+                    while (target && target !== element) {
+                        if (target === match) {
+                            Object.defineProperty(event,
+                                'target', {
+                                    value: match,
+                                    writable: false
+                                });
+
+                            return handler.call(match, event);
+                        }
+
+                        target = target.parentNode as HTMLElement;
+                    }
+                });
+        });
+    },
+    dispatchEvent(element: HTMLElement, event: Event, handler: (evt: Event) => any) {
+        Object.defineProperty(event,
+            'target', {
+                value: element,
+                writable: false
+            });
+
+        handler.call(element, event);
+    },
+    data: (function () {
+        var dataStoreKeyExpandoPropertyName = "__nts__" + (new Date).getTime(),
+            getDataForNode = function (node, createIfNotFound) {
+                var dataForNode = node[dataStoreKeyExpandoPropertyName];
+                if (!dataForNode && createIfNotFound) {
+                    dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
+                }
+                return dataForNode;
+            },
+            clear = function (node) {
+                if (node[dataStoreKeyExpandoPropertyName]) {
+                    delete node[dataStoreKeyExpandoPropertyName];
+                    return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
+                }
+                return false;
+            };
+
+        return {
+            get: function (node: HTMLElement, key: string) {
+                var dataForNode = getDataForNode(node, false);
+                return dataForNode && dataForNode[key];
+            },
+            set: function (node: HTMLElement, key: string, value: any) {
+                // Make sure we don't actually create a new domData key if we are actually deleting a value
+                var dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
+                dataForNode && (dataForNode[key] = value);
+            },
+            getOrSet: function (node: HTMLElement, key: string, value: any) {
+                var dataForNode = getDataForNode(node, true /* createIfNotFound */);
+                return dataForNode[key] || (dataForNode[key] = value);
+            },
+            clear: clear
+        };
+    })()
 };
 
 export { dom };

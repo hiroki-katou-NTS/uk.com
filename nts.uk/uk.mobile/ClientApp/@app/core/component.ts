@@ -32,9 +32,6 @@ export function component(options: ComponentOptions<Vue>): any {
                         }
                     }
                 }
-            },
-            mounted() {
-                this.pgName = options.name;
             }
         });
 
@@ -103,18 +100,19 @@ export function component(options: ComponentOptions<Vue>): any {
                         component: options
                     });
 
-                    /*(options.mixins || (options.mixins = [])).push({
+                    (options.mixins || (options.mixins = [])).push({
                         beforeMount() {
-                            document.body.appendChild(mask);
+                            //document.body.appendChild(mask);
                         },
                         mounted() {
-                            if (document.body.contains(mask)) {
+                            this.pgName = options.name;
+                            /*if (document.body.contains(mask)) {
                                 setTimeout(() => {
                                     document.body.removeChild(mask);
                                 }, 50);
-                            }
+                            }*/
                         }
-                    });*/
+                    });
                 } else {
                     console.error('Dupplicate view name: ' + options.name);
                 }
@@ -137,18 +135,19 @@ export function component(options: ComponentOptions<Vue>): any {
                         });
                     }
 
-                    /*(options.mixins || (options.mixins = [])).push({
+                    (options.mixins || (options.mixins = [])).push({
                         beforeMount() {
-                            document.body.appendChild(mask);
+                            //document.body.appendChild(mask);
                         },
                         mounted() {
-                            if (document.body.contains(mask)) {
+                            this.pgName = options.name;
+                            /*if (document.body.contains(mask)) {
                                 setTimeout(() => {
                                     document.body.removeChild(mask);
                                 }, 50);
-                            }
+                            }*/
                         }
-                    });*/
+                    });
                 }
             }
 

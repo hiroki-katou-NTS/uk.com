@@ -1,5 +1,13 @@
 import { dom } from '@app/utils';
 
+const matches = ((doc: any) =>
+    doc.matchesSelector ||
+    doc.webkitMatchesSelector ||
+    doc.mozMatchesSelector ||
+    doc.oMatchesSelector ||
+    doc.msMatchesSelector
+)(document.documentElement);
+
 document.addEventListener("click", function (e) {
     let clicked: HTMLElement | null = null;
 
@@ -98,84 +106,103 @@ document.addEventListener("click", function (e) {
         }
     })(e);
 
-    // navbar-toggler
-    if (dom.parents(e.target as HTMLElement, '.navbar')) {
-        let toggler = () => {
-            let target = e.target as HTMLElement;
+    // other event
+}, false);
 
-            if (dom.hasClass(target, 'fa-caret-down') || dom.hasClass(target, 'navbar-toggler') || dom.getAttr(target, 'data-toggle') === 'collapse') {
-                return target;
-            }
 
-            return null;
-        };
+dom.registerGlobalEventHandler(document, 'click', '.navbar>.navbar-btn', function showOrHide(evt: MouseEvent) {
+    let btn = evt.target as HTMLElement,
+        sidebar = document.querySelector('.wrapper>.sidebar') as HTMLDivElement;
 
-        ((evt: MouseEvent) => {
-            let target = toggler();
-            if (target) {
-                let parent = target.closest('.navbar') as HTMLElement;
+    if (sidebar) {
+        if (!dom.hasClass(sidebar, 'active')) {
+            dom.addClass(btn, 'active');
+            dom.addClass(sidebar, 'active');
 
-                if (parent) {
-                    let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
+            // if click out side collapse, close it
+            dom.registerOnceClickOutEventHandler(sidebar, () => {
+                dom.dispatchEvent(btn, evt, showOrHide);
+            });
+        } else {
+            setTimeout(() => {
+                dom.removeClass(btn, 'active');
+                dom.removeClass(sidebar, 'active');
+            }, 100);
+        }
+    }
+});
 
-                    if (collapse) {
-                        dom.toggleClass(collapse, 'show');
+dom.registerGlobalEventHandler(document, 'click', '.navbar>.navbar-toggler', function showOrHide(evt: MouseEvent) {
+    let btn = (<HTMLElement>evt.target) as HTMLElement,
+        parent = btn.closest('.navbar') as HTMLElement,
+        icon = btn.querySelector('i.fas') as HTMLElement;
+
+    if (parent) {
+        let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
+
+        if (collapse) {
+            if (!dom.hasClass(collapse, 'show')) {
+                // if click out side collapse, close it
+                dom.registerOnceClickOutEventHandler(collapse, () => {
+                    dom.dispatchEvent(btn, evt, showOrHide);
+                });
+
+                dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                    dom.removeAttr(collapse, 'style');
+                    dom.removeClass(collapse, 'collapsing');
+
+                    if (icon) {
+                        dom.setAttr(icon, 'class', 'fas fa-caret-up');
                     }
-                }
-            }
-        })(e);
+                });
 
-        let target = toggler(),
-            collapse = document.querySelector('.navbar .collapse.navbar-collapse.show') as HTMLElement;
+                dom.addClass(collapse, 'collapsing show');
 
-        if (!target && collapse) {
-            let _targ = e.target as HTMLElement;
-
-            if (dom.hasClass(_targ, 'dropdown')) {
-                let dropdown = _targ.querySelector('dropdown-menu') as HTMLElement;
-
-                if (dropdown) {
-                    dom.toggleClass(dropdown, 'show');
-                }
-            } else if (dom.hasClass(_targ, 'dropdown-toggle')) {
-                let dropdown = dom.next(_targ) as HTMLElement;
-
-                if (dropdown) {
-                    dom.toggleClass(dropdown, 'show');
-                }
+                setTimeout(() => {
+                    dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+                }, 100);
             } else {
-                dom.removeClass(collapse, 'show');
+                dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                    dom.removeClass(collapse, 'collapsing show');
+
+                    if (icon) {
+                        dom.setAttr(icon, 'class', 'fas fa-caret-down');
+                    }
+                });
+
+                dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+                dom.addClass(collapse, 'collapsing');
+
+                setTimeout(() => {
+                    dom.removeAttr(collapse, 'style');
+                }, 200);
             }
         }
-
-        //side menu
-        ((evt: MouseEvent) => {
-            let target = evt.target as HTMLElement,
-                btn = dom.parent(target) as HTMLElement;
-
-            if ((target.tagName === 'SPAN' && dom.hasClass(btn, 'navbar-btn')) || dom.hasClass(target, 'navbar-btn')) {
-                let sidebar = document.querySelector('#sidebar') as HTMLDivElement;
-
-                if (sidebar) {
-                    if (!dom.hasClass(sidebar, 'active')) {
-                        if (!dom.hasClass(target, 'navbar-btn')) {
-                            dom.addClass(btn, 'active');
-                        } else {
-                            dom.addClass(target, 'active');
-                        }
-                        dom.addClass(sidebar, 'active');
-                    } else {
-                        if (!dom.hasClass(target, 'navbar-btn')) {
-                            dom.removeClass(btn, 'active');
-                        } else {
-                            dom.removeClass(target, 'active');
-                        }
-                        dom.removeClass(sidebar, 'active');
-                    }
-                }
-            }
-        })(e);
     }
+});
 
-    // other event
+dom.registerGlobalEventHandler(document, 'click', '.navbar-collapse.show a:not(.dropdown-toggle)', evt => {
+    let collapse = (<HTMLElement>evt.target).closest('.navbar-collapse.show') as HTMLElement;
+
+    if (collapse) {
+        let btn = collapse.previousElementSibling as HTMLElement;
+
+        if (btn) {
+            let icon = btn.querySelector('i.fas') as HTMLElement;
+            dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                dom.removeClass(collapse, 'collapsing show');
+
+                if (icon) {
+                    dom.setAttr(icon, 'class', 'fas fa-caret-down');
+                }
+            });
+
+            dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+            dom.addClass(collapse, 'collapsing');
+
+            setTimeout(() => {
+                dom.removeAttr(collapse, 'style');
+            }, 200);
+        }
+    }
 });
