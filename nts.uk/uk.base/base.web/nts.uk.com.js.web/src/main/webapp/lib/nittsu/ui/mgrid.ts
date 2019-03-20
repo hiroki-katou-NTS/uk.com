@@ -6267,7 +6267,7 @@ module nts.uk.ui.mgrid {
                     let control = dkn.controlType[coord.columnKey];
                     let cEditor = _mEditor;
                     
-                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt)) {
+                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt) && !$tCell.classList.contains(color.Hide)) {
                         let check = $tCell.querySelector("input[type='checkbox']");
                         if (!check) return;
                         let checked;
@@ -10041,6 +10041,7 @@ module nts.uk.ui.mgrid {
         export const Calculation = "mgrid-calc";
         export const Disable = "mgrid-disable";
         export const Lock = "mgrid-lock";
+        export const Hide = "mgrid-hide";
         export const HOVER = "ui-state-hover";
         export const ALL = [ Error, Alarm, ManualEditTarget, ManualEditOther, Reflect, Calculation, Disable ];
         
