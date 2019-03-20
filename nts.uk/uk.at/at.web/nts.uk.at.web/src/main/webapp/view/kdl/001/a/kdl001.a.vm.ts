@@ -51,7 +51,6 @@ module nts.uk.at.view.kdl001.a {
                 nts.uk.ui.block.invisible();
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
-                        data = _.sortBy(data, (item: any) => { return item.code; });
                             self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
@@ -97,7 +96,6 @@ module nts.uk.at.view.kdl001.a {
                 }
                 kdl001.a.service.findByTime(command)
                     .done(function(data) {
-                        data = _.sortBy(data, (item: any) => { return item.code; });
                         self.selectAbleItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
@@ -122,7 +120,6 @@ module nts.uk.at.view.kdl001.a {
                 self.endTime('');
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
-                        data = _.sortBy(data, (item: any) => { return item.code; });
                         self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
@@ -154,7 +151,7 @@ module nts.uk.at.view.kdl001.a {
                     nts.uk.ui.windows.setShared('kml001selectedCodeList', self.selectedCodeList());
                     nts.uk.ui.windows.setShared('kml001selectedTimes', self.getSelectedTimeItems(self.selectedCodeList()));
                     nts.uk.ui.block.clear();
-                    nts.uk.ui.windows.setShared('KDL001_IsCancel', true);
+                    nts.uk.ui.windows.setShared('KDL001_IsCancel', false);
                     nts.uk.ui.windows.close();
                 }
             }
@@ -167,6 +164,7 @@ module nts.uk.at.view.kdl001.a {
             }
 
             closeDialog() {
+                nts.uk.ui.windows.setShared('KDL001_IsCancel', true);
                 nts.uk.ui.windows.close();
             }
         }
