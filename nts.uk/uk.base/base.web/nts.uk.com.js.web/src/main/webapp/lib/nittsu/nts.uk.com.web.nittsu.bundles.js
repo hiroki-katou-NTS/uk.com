@@ -28687,7 +28687,7 @@ var nts;
                                 var coord = ti.getCellCoord($tCell);
                                 var control = dkn.controlType[coord.columnKey];
                                 var cEditor = _mEditor;
-                                if (control === dkn.CHECKBOX && ti.isSpaceKey(evt)) {
+                                if (control === dkn.CHECKBOX && ti.isSpaceKey(evt) && !$tCell.classList.contains(color.Hide)) {
                                     var check = $tCell.querySelector("input[type='checkbox']");
                                     if (!check)
                                         return;
@@ -32408,6 +32408,7 @@ var nts;
                     color.Calculation = "mgrid-calc";
                     color.Disable = "mgrid-disable";
                     color.Lock = "mgrid-lock";
+                    color.Hide = "mgrid-hide";
                     color.HOVER = "ui-state-hover";
                     color.ALL = [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther, color.Reflect, color.Calculation, color.Disable];
                     /**
