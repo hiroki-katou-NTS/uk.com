@@ -12,6 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaUsedDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.SpecDateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
@@ -78,7 +79,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		if (this.checkNeedForProportion(distributeAtr, obligedAnnualLeaveUse) == false) {
 			
 			// 社員の前回付与日から次回付与日までの年休使用日数を取得
-			result = this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, true);
+			result = this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, true, SpecDateAtr.CURRENT_CLOSURE_END);
 		}
 		else {
 			
