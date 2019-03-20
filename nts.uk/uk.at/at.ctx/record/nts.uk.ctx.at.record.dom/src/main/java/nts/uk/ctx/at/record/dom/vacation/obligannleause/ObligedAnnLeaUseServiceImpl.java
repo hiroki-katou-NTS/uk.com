@@ -79,7 +79,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		if (this.checkNeedForProportion(distributeAtr, obligedAnnualLeaveUse) == false) {
 			
 			// 社員の前回付与日から次回付与日までの年休使用日数を取得
-			result = this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, true, SpecDateAtr.CURRENT_CLOSURE_END);
+			result = this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, true, SpecDateAtr.CRITERIA);
 		}
 		else {
 			
