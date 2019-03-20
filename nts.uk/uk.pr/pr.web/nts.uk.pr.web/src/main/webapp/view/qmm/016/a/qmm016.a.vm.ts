@@ -1074,9 +1074,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let column = {
                     headerText: columnName, key: columnKey, dataType: 'string', width: '165px', columnCssClass: 'currency-symbol halign-right', headerCssClass: "custom-ntsgrid-header",
                     constraint: { 
-//                        primitiveValue: 'WageTablePaymentAmount',
-                        min: -9999999999,
-                        max: 9999999999,
+                        primitiveValue: 'WageTablePaymentAmount',
+//                        min: -9999999999,
+//                        max: 9999999999,
                         required: true, 
                         cDisplayType: "Currency"
                     }
