@@ -16,6 +16,10 @@ import { SampleComponent } from '@app/components';
         'vuong': SampleComponent,
     },
     validations: {
+        time: {
+            minValue: -220,
+            maxValue: 1515
+        },
         title: {
             required: true,
             minLength: 10,
@@ -70,6 +74,9 @@ import { SampleComponent } from '@app/components';
     ]
 })
 export class HomeComponent extends Vue {
+
+    time: number = 750;
+
     title: string = 'home';
 
     resource: string = '';
