@@ -847,6 +847,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     qualificationGroupSettings: result
                 };
                 self.wageTableContent(new WageTableContent(wageTableContent));
+                self.wageTableContent().brandNew = true;
                 if (!_.isEmpty(result))
                     $(".input-amount")[0].focus();
             });
