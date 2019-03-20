@@ -2,186 +2,150 @@ import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 
 @component({
-    template: `<div class="time-picker">
-        <div class="time-title text-center">
-            {{preview}}
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <button tabindex="-1" :disabled="value >= 4320" class="btn btn-link btn-block" v-on:click="upday()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
+    template: `
+        <div class="time-picker">
+
+            <div>
+                <button @click="cancel()">Cancel</button>
+                <button @click="ok()">Ok</button>
             </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="uphour()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
+
+            <div>
+
+                <select :value="hourValue" ref="hour1" @input="whenHourChange">
+                    <option v-for="hour in hourList">{{hour}}</option>
+                </select>
+                :
+                <select :value="minuteValue" ref="minute1" @input="whenMinuteChange">
+                    <option v-for="minute in minuteList">{{minute}}</option>
+                 </select>
+
             </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="upminute()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <input type="text" readonly class="form-control text-center"
-                    v-focus
-                    ref="day"
-                    v-on:keydown.up="upday()"
-                    v-on:keydown.down="downday()"  />
-            </div>
-            <div class="col-3">
-                <input type="text" ref="hour" class="form-control text-center" readonly v-bind:value="hour" />
-            </div>
-            <div class="col-3">
-                <input type="text" ref="minute" class="form-control text-center" readonly v-bind:value="minute" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <button tabindex="-1" :disabled="value < 720" class="btn btn-link btn-block" v-on:click="downday()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="downhour()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="downminute()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="row">
-                <div class="col-6 text-left">
-                    <button class="btn btn-link" v-on:click="$close(null)">{{ 'delete' | i18n }}</button>
-                </div>
-                <div class="col-6 text-right">
-                    <button class="btn btn-link" v-on:click="close()">{{ 'accept' | i18n }}</button>
-                    <button class="btn btn-link" v-on:click="$close()">{{ 'cancel' | i18n }}</button>
-                </div>
-            </div>
-        </div>
-    </div>`,
-    style: `.time-picker .time-title{ font-size: 1.3rem; }
-    .time-picker .fas { font-size: 1.2rem; }
-    .time-picker input[readonly] { background-color: #fff; }
-    .time-picker .btn { padding-top: 15px; padding-bottom: 15px;}`
+        </div>    
+    `
 })
 export class TimePickerComponent extends Vue {
+
     @Prop({
         default: {
             value: 0,
-            required: true
+            minValue: 0,
+            maxValue: 1349
         }
     })
     readonly params: {
-        value: number | undefined;
-        required?: boolean;
+        minValue: number;
+        maxValue: number;
+        value: number;
     };
 
-    get delete() {
-        return !this.params.required;
+    minHour = this.computeHour(this.params.minValue);
+    maxHour = this.computeHour(this.params.maxValue);
+    
+    minMinute = this.computeMinute(this.params.minValue);
+    maxMinute = this.computeMinute(this.params.maxValue);
+
+    get hourList(): Array<number> {
+        return this.generateArray(this.minHour, this.maxHour);
     }
 
-    get value() {
-        if (!isNaN(Number(this.params.value))) {
-            return this.params.value;
-        }
-        else {
-            return 0;
-        }
-    }
+    get minuteList(): Array<number> {
+        var minMinute = 0;
+        var maxMinute = 59;
 
-    set value(value: number) {
-        this.params.value = value;
-    }
+        if(this.hourValue == this.minHour) {
+            
+            if(this.minHour >= 0 ) {
+                minMinute = this.minMinute;
+            } else {
+                maxMinute = this.minMinute;
+            }
+            
 
-    get valid() {
-        return this.value != undefined;
-    }
-
-    get preview() {
-        return this.value;
-    }
-
-    get day() {
-        return this.value;
-    }
-
-    get hour() {
-        return this.value;
-    }
-
-    get minute() {
-        return this.value;
-    }
-
-    upday() {
-        if (!this.valid) {
-            this.value = 0;
+            if(this.minuteValue < minMinute) {
+                this.minuteValue = minMinute;
+            }
         }
 
-        this.value += 24 * 60;
+        if(this.hourValue == this.maxHour) {
+            maxMinute = this.maxMinute;
 
-        (<HTMLInputElement>this.$refs.day).focus();
-    }
-
-    downday() {
-        if (!this.valid) {
-            this.value = 0;
+            if (this.minuteValue > maxMinute) {
+                this.minuteValue = maxMinute;
+            }
         }
-
-        this.value -= 24 * 60;
-
-        (<HTMLInputElement>this.$refs.day).focus();
+        return this.generateArray(minMinute, maxMinute);       
     }
 
-    uphour() {
-        if (!this.valid) {
-            this.value = 0;
+    computeHour(value: number): number {
+        if (value >= 0) {
+            return Math.floor(value / 60)
+        } else {
+            return 0 - Math.floor(Math.abs(value) / 60);
         }
-
-        this.value += 60;
-
-        (<HTMLInputElement>this.$refs.hour).focus();
     }
 
-    downhour() {
-        if (!this.valid) {
-            this.value = 0;
+    computeMinute(value: number): number {
+        if (value >= 0) {
+            var hour = Math.floor(value / 60)
+            return value - hour * 60;
+        } else {
+            var hour = 0 - Math.floor(Math.abs(value) / 60);
+            return Math.abs(value) + hour * 60;
         }
-
-        this.value -= 60;
-
-        (<HTMLInputElement>this.$refs.hour).focus();
     }
 
-    upminute() {
-        if (!this.valid) {
-            this.value = 0;
+    generateArray(min: number, max: number): Array<number> {
+        var minuteList = new Array<number>();
+        for (var m = min; m<= max; m++) {
+            minuteList.push(m);
         }
-
-        this.value += 1;
-
-        (<HTMLInputElement>this.$refs.minute).focus();
+        return minuteList;
     }
 
-    downminute() {
-        if (!this.valid) {
-            this.value = 0;
+    minutes: number= this.params.value;
+
+    
+
+    ok() {
+        this.$close(this.minutes);
+    }
+
+    cancel() {
+        this.$close();
+    }
+
+    get hourValue(): number {
+        return this.computeHour(this.minutes);
+    }
+
+    set hourValue(newHour: number) {
+        this.updateValue(newHour, this.minuteValue);
+    }
+
+    get minuteValue() : number {
+        return this.computeMinute(this.minutes);
+    }
+
+    set minuteValue(newMinute: number) {
+        this.updateValue(this.hourValue, newMinute);
+    } 
+
+    whenHourChange() {
+        let newHour = (<HTMLInputElement>this.$refs.hour1).value;
+        this.hourValue = Number(newHour);
+    }
+
+    whenMinuteChange() {
+        let newMinute = (<HTMLInputElement>this.$refs.minute1).value;
+        this.minuteValue = Number(newMinute);
+    }
+
+    updateValue(newHour: number, newMinute: number) {
+        if (newHour >= 0 ) {
+            this.minutes = newHour * 60 + newMinute;
+        } else {
+            this.minutes = newHour * 60 - newMinute;
         }
-
-        this.value -= 1;
-
-        (<HTMLInputElement>this.$refs.minute).focus();
-    }
-
-    close() {
-        this.$close(this.value);
     }
 }

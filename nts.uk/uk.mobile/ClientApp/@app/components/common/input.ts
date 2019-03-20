@@ -76,7 +76,7 @@ export class InputComponent extends Vue {
     readonly name: string;
 
     @Prop({ default: () => '' })
-    readonly value: string;
+    readonly value: any;
 
     @Prop({ default: () => false })
     readonly disabled?: boolean;
@@ -174,13 +174,28 @@ class NumberComponent extends InputComponent {
 }
 
 @input()
-class TimeComponent extends InputComponent {
+export class TimeComponent extends InputComponent {
     type: string = 'string';
 
     editable: boolean = false;
 
     get rawValue() {
-        return (this.value || '').toString();
+        //return (this.value || '').toString();
+        if (typeof this.value == undefined) {
+            return '';
+        }
+
+        var hour: number, minute: number;
+        if (this.value >= 0) {
+            hour = Math.floor(this.value / 60)
+            minute = this.value - hour * 60;
+        } else {
+            hour = 0 - Math.floor(Math.abs(this.value) / 60);
+            minute = Math.abs(this.value) + hour * 60;
+        }
+
+        return hour + ' : ' + minute;
+
     }
 
     mounted() {
@@ -207,7 +222,9 @@ class TimeComponent extends InputComponent {
     click() {
         this
             .$modal('timepicker', {
-                value: this.value
+                value: this.value,
+                minValue: this.constraint.minValue,
+                maxValue: this.constraint.maxValue
             }, {
                     type: "popup",
                     title: this.name,
