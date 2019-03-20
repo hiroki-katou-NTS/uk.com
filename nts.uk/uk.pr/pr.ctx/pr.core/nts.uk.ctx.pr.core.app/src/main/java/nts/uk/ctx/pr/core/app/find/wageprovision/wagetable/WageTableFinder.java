@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSe
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSettingRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementType;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementsCombinationPaymentAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContent;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContentRepository;
@@ -156,8 +157,14 @@ public class WageTableFinder {
 		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId, cid, wageTableCode);
 		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
 		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId, cid, wageTableCode);
-		
 		return new WageTableContentDto(optContent, domainOtp, optSetting, wageContentCreater);
+	}
+	
+	public WageTableContentDto getWageTableContentByThirdDimension(WageTable3DParams params) {
+		String companyId = AppContexts.user().companyId();
+		List<ElementsCombinationPaymentAmount> payments = wageTableContentRepo.getWageTableContentByThirdDimension(params.getHistoryId(), companyId, params.getWageTableCode(), params.getThirdMasterCode(), params.getThirdFrameNumber());
+		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(companyId, params.getWageTableCode());
+		return new WageTableContentDto(payments, domainOtp, wageContentCreater);
 	}
 
 	public List<ElementItemNameDto> getElements() {

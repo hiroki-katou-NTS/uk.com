@@ -96,36 +96,6 @@
     </div>
     <hr></hr>
     <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length >0">
-        <table id="fixed-table-1d">
-            <colgroup>
-                <col width="300px"/>
-                <col width="150px"/>
-            </colgroup>
-            <thead>
-            <tr>
-                <th class="ui-widget-header">
-                    <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                        <div style="display: inline-block" data-bind="text: elementName"></div>
-                    </div>
-                </th>
-                <th class="ui-widget-header">#{i18n.getText('QMM016_38')}</th>
-            </tr>
-            </thead>
-            <tbody data-bind="foreach: $vm.wageTableContent().payment">
-	            <tr>
-	                <th class="ui-widget-header">
-	                	<span data-bind="text: displayText"></span>
-	                </th>
-	                <td>
-	                    <input class="input-amount" data-bind="ntsNumberEditor: {
-							option: { grouplength: 3, width: '120px' },
-							name: '#[QMM016_39]',
-							value: paymentAmount,
-							constraint: 'WageTablePaymentAmount',
-							required: true}" />
-	                </td>
-	            </tr>
-            </tbody>
-        </table>
+        <table id="grid2"></table>
     </div>
 </div>

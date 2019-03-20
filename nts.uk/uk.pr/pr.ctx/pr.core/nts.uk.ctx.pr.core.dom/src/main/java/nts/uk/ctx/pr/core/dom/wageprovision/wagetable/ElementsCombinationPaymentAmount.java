@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -13,6 +14,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class ElementsCombinationPaymentAmount extends DomainObject {
 
+	@Setter
 	private String id;
 	
 	/**

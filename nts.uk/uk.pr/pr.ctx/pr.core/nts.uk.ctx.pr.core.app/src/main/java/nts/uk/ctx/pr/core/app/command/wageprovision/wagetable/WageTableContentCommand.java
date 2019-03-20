@@ -32,6 +32,8 @@ public class WageTableContentCommand {
 	private List<ThreeDmsElementItemCommand> threeDimensionPayment;
 	
 	private List<ThreeDmsElementItemCommand> workLevelPayment;
+	
+	private boolean brandNew;
 
 	/**
 	 * 資格グループ設定

@@ -222,9 +222,11 @@ module nts.uk.pr.view.qmm016.share.model {
         qualificationGroupSetting: KnockoutObservableArray<QualificationGroupSettingContent> = ko.observableArray([]);
         // control item
         paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
+        brandNew = true;
         constructor(params: any) {
             if (params) {
                 this.historyID(params.historyID);
+                this.brandNew = params.brandNew;
                 if (!_.isEmpty(params.list1dElements)) {
                     this.payment(params.list1dElements.map(item => new ElementItem(item)));
                 }

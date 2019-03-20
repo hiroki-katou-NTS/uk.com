@@ -29,24 +29,22 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 	}
 
 	@Override
-	public Optional<WageTableContent> getWageTableContentById(String historyId, String companyId, String wageTableCode) {
+	public Optional<WageTableContent> getWageTableContentById(String historyId, String companyId,
+			String wageTableCode) {
 		String queryWagePayment = "SELECT p FROM QpbmtWageTableComboPayment p WHERE p.pk.historyId = :historyId AND p.pk.companyId = :companyId AND p.pk.wageTableCode = :wageTableCode";
-//		String queryWageQualificationGroup = "SELECT g FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId";
+		String queryWageQualificationGroup = "SELECT g FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId AND g.pk.companyId = :companyId AND g.pk.wageTableCode = :wageTableCode";
 		List<ElementsCombinationPaymentAmount> listPayment = this.queryProxy()
 				.query(queryWagePayment, QpbmtWageTableComboPayment.class).setParameter("historyId", historyId)
 				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode)
 				.getList(i -> i.toDomain());
-//		List<QpbmtWageTableQualifyGroupSet> listGroupCodeEntity = this.queryProxy()
-//				.query(queryWageQualificationGroup, QpbmtWageTableQualifyGroupSet.class)
-//				.setParameter("historyId", historyId).getList();
-//		if (listPayment.isEmpty() && listGroupCodeEntity.isEmpty())
-//			return Optional.empty();
-//		Map<String, List<QpbmtWageTableQualifyGroupSet>> mapGroupCodeEntity = listGroupCodeEntity.stream()
-//				.collect(Collectors.groupingBy(i -> i.pk.qualificationGroupCode));
-		List<QualificationGroupSettingContent> listGroupCode = new ArrayList<>();
-//		mapGroupCodeEntity.entrySet().forEach(i -> {
-//			listGroupCode.add(QpbmtWageTableQualifyGroupSet.toDomain(i.getValue()));
-//		});
+		List<QpbmtWageTableQualifyGroupSet> listGroupCodeEntity = this.queryProxy()
+				.query(queryWageQualificationGroup, QpbmtWageTableQualifyGroupSet.class)
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode)
+				.setParameter("historyId", historyId).getList();
+		if (listPayment.isEmpty() && listGroupCodeEntity.isEmpty())
+			return Optional.empty();
+		List<QualificationGroupSettingContent> listGroupCode = listGroupCodeEntity.stream()
+				.map(i -> QpbmtWageTableQualifyGroupSet.toDomain(i)).collect(Collectors.toList());
 		return Optional.of(new WageTableContent(historyId, listPayment,
 				listGroupCode.isEmpty() ? Optional.empty() : Optional.of(listGroupCode)));
 	}
@@ -181,6 +179,68 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 			));
 		});
 		return wageTableQualification;
+	}
+
+	@Override
+	public List<ElementsCombinationPaymentAmount> getWageTableContentByThirdDimension(String historyId,
+			String companyId, String wageTableCode, String thirdMasterCode, Integer thirdFrameNumber) {
+		String queryWagePayment = "SELECT p FROM QpbmtWageTableComboPayment p WHERE p.pk.historyId = :historyId AND p.pk.companyId = :companyId AND p.pk.wageTableCode = :wageTableCode"
+				+ " AND (p.masterCode3 = :masterCode3 OR p.frameNumber3 = :frameNumber3)";
+		List<ElementsCombinationPaymentAmount> listPayment = this.queryProxy()
+				.query(queryWagePayment, QpbmtWageTableComboPayment.class).setParameter("historyId", historyId)
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode)
+				.setParameter("masterCode3", thirdMasterCode).setParameter("frameNumber3", thirdFrameNumber)
+				.getList(i -> i.toDomain());
+		return listPayment;
+	}
+
+	@Override
+	public void updateListPayment(String historyId, String companyId, String wageTableCode,
+			List<ElementsCombinationPaymentAmount> payments) {
+		String queryWagePayment = "SELECT p FROM QpbmtWageTableComboPayment p WHERE p.pk.historyId = :historyId AND p.pk.companyId = :companyId AND p.pk.wageTableCode = :wageTableCode";
+		List<ElementsCombinationPaymentAmount> listPayment = this.queryProxy()
+				.query(queryWagePayment, QpbmtWageTableComboPayment.class).setParameter("historyId", historyId)
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode)
+				.getList(i -> i.toDomain());
+		for (ElementsCombinationPaymentAmount newPayment : payments) {
+			for (ElementsCombinationPaymentAmount oldPayment : listPayment) {
+				if (isElementItemsEqual(newPayment.getElementAttribute().getFirstElementItem(), oldPayment.getElementAttribute().getFirstElementItem())) {
+					if (newPayment.getElementAttribute().getSecondElementItem().isPresent() && oldPayment.getElementAttribute().getSecondElementItem().isPresent()) {
+						if (isElementItemsEqual(newPayment.getElementAttribute().getSecondElementItem().get(), oldPayment.getElementAttribute().getSecondElementItem().get())) {
+							if (newPayment.getElementAttribute().getThirdElementItem().isPresent() && oldPayment.getElementAttribute().getThirdElementItem().isPresent()) {
+								if (isElementItemsEqual(newPayment.getElementAttribute().getThirdElementItem().get(), oldPayment.getElementAttribute().getThirdElementItem().get())) {
+									newPayment.setId(oldPayment.getId());
+								}
+							} else {
+								newPayment.setId(oldPayment.getId());
+							}
+						}
+					} else {
+						newPayment.setId(oldPayment.getId());
+					}
+				}
+			}			
+		}
+		List<QpbmtWageTableComboPayment> listPaymentEntity = payments.stream()
+				.map(i -> new QpbmtWageTableComboPayment(i, historyId, companyId, wageTableCode))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(listPaymentEntity);
+	}
+	
+	private boolean isElementItemsEqual (ElementItem item1, ElementItem item2) {
+		if (item1.getMasterElementItem().isPresent() && item2.getMasterElementItem().isPresent()) {
+			return item1.getMasterElementItem().get().getMasterCode().equals(item2.getMasterElementItem().get().getMasterCode());
+		}
+		if (item1.getNumericElementItem().isPresent() && item2.getNumericElementItem().isPresent()) {
+			if (item1.getNumericElementItem().get().getFrameLowerLimit().compareTo(item2.getNumericElementItem().get().getFrameLowerLimit()) == 0 
+					&& item1.getNumericElementItem().get().getFrameUpperLimit().compareTo(item2.getNumericElementItem().get().getFrameUpperLimit()) == 0
+					&& item1.getNumericElementItem().get().getFrameNumber().compareTo(item2.getNumericElementItem().get().getFrameNumber()) == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

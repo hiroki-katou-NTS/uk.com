@@ -65,6 +65,7 @@ public class WageTableContentCreater {
 
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = new WageTableContentDto();
+		dto.setBrandNew(true);
 		dto.setHistoryID(params.getHistoryID());
 		List<ElementItemDto> payments = new ArrayList<>();
 		if (params.getFirstElementRange() == null) {
@@ -85,6 +86,7 @@ public class WageTableContentCreater {
 
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = this.createOneDimensionWageTable(params);
+		dto.setBrandNew(true);
 		List<TwoDmsElementItemDto> payments = dto.getList1dElements().stream().map(i -> new TwoDmsElementItemDto(i))
 				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
@@ -102,6 +104,7 @@ public class WageTableContentCreater {
 
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
 		WageTableContentDto dto = this.createTwoDimensionWageTable(params);
+		dto.setBrandNew(true);
 		List<ThreeDmsElementItemDto> payments = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		Optional<WageTable> optWageTable = wageTableRepo.getWageTableById(companyId, params.getWageTableCode());

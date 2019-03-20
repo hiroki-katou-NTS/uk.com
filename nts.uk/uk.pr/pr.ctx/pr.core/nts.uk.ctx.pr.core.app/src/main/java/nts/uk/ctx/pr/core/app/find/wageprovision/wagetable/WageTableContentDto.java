@@ -36,6 +36,8 @@ public class WageTableContentDto {
 	private List<ThreeDmsElementItemDto> listWorkElements;
 
 	private ElementRangeSettingDto elemRangeSet;
+	
+	private boolean brandNew = false;
 
 	public WageTableContentDto(Optional<WageTableContent> optContent, Optional<WageTable> optWage,
 			Optional<ElementRangeSetting> optSetting, WageTableContentCreater wageContentCreater) {
@@ -113,24 +115,56 @@ public class WageTableContentDto {
 							.getTwoDimensionalElement().get().getFixedElement().get().value,
 							AppContexts.user().companyId());
 				}
+				ThreeDmsElementItemDto thDms = this.list3dElements.get(0);
 				for (ElementItem key : mapPaymentsBy3.keySet()) {
-					List<ElementsCombinationPaymentAmount> value = mapPaymentsBy3.get(key);
-					Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy1 = value.stream()
-							.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
-					List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
-							mapMaster2, comparator1);
-					Collections.sort(listTwoDms, comparator2);
-					for (ThreeDmsElementItemDto thDms : this.list3dElements) {
-						if ((key.getMasterElementItem().isPresent()
-								&& key.getMasterElementItem().get().getMasterCode().equals(thDms.getMasterCode()))
-								|| (key.getNumericElementItem().isPresent() && key.getNumericElementItem().get()
-										.getFrameNumber() == thDms.getFrameNumber())) {
-							thDms.setListFirstDms(listTwoDms);
-							break;
-						}
+					if ((key.getMasterElementItem().isPresent()
+							&& key.getMasterElementItem().get().getMasterCode().equals(thDms.getMasterCode()))
+							|| (key.getNumericElementItem().isPresent()
+									&& key.getNumericElementItem().get().getFrameNumber() == thDms.getFrameNumber())) {
+						List<ElementsCombinationPaymentAmount> value = mapPaymentsBy3.get(key);
+						Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy1 = value.stream()
+								.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
+						List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
+								mapMaster2, comparator1);
+						Collections.sort(listTwoDms, comparator2);
+						thDms.setListFirstDms(listTwoDms);
+						break;
 					}
 				}
 			}
+		}
+	}
+
+	public WageTableContentDto(List<ElementsCombinationPaymentAmount> payments, Optional<WageTable> optWage,
+			WageTableContentCreater wageContentCreater) {
+		if (!payments.isEmpty()) {
+			Comparator<ElementItemDto> comparator1 = Comparator
+					.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(ElementItemDto::getFrameNumber, Comparator.nullsLast(Comparator.naturalOrder()));
+
+			Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = payments.stream()
+					.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
+			Map<String, String> mapMaster1 = new HashMap<>();
+			if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
+					.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				mapMaster1 = wageContentCreater.getMasterItems(
+						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value,
+						AppContexts.user().companyId());
+			}
+			Map<String, String> mapMaster2 = new HashMap<>();
+			if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
+					.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
+						.getTwoDimensionalElement().get().getFixedElement().get().value,
+						AppContexts.user().companyId());
+			}
+			this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1);
+			Comparator<TwoDmsElementItemDto> comparator2 = Comparator
+					.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(TwoDmsElementItemDto::getFrameNumber,
+							Comparator.nullsLast(Comparator.naturalOrder()));
+			Collections.sort(this.list2dElements, comparator2);
+
 		}
 	}
 
@@ -143,16 +177,16 @@ public class WageTableContentDto {
 					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
 							.getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName,
-							null, null, null, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(masterCode, masterName, null, null, null,
+							payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
 					long frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
 							.getFrameNumber();
-					BigDecimal lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-							.getFrameLowerLimit();
-					BigDecimal upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-							.getFrameUpperLimit();
+					BigDecimal lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem()
+							.get().getFrameLowerLimit();
+					BigDecimal upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem()
+							.get().getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -162,17 +196,17 @@ public class WageTableContentDto {
 					String masterCode = payment.getElementAttribute().getSecondElementItem().get()
 							.getMasterElementItem().get().getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName,
-							null, null, null, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(masterCode, masterName, null, null, null,
+							payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 						.isPresent()) {
-					long frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-							.get().getFrameNumber();
-					BigDecimal lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-							.get().getFrameLowerLimit();
-					BigDecimal upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-							.get().getFrameUpperLimit();
+					long frameNumber = payment.getElementAttribute().getSecondElementItem().get()
+							.getNumericElementItem().get().getFrameNumber();
+					BigDecimal lowerLimit = payment.getElementAttribute().getSecondElementItem().get()
+							.getNumericElementItem().get().getFrameLowerLimit();
+					BigDecimal upperLimit = payment.getElementAttribute().getSecondElementItem().get()
+							.getNumericElementItem().get().getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -193,8 +227,7 @@ public class WageTableContentDto {
 			if (key.getMasterElementItem().isPresent()) {
 				String masterCode = key.getMasterElementItem().get().getMasterCode();
 				String masterName = mapMaster1.get(masterCode);
-				result.add(new TwoDmsElementItemDto(masterCode, masterName, null,
-						null, null, list2ndDmsElements));
+				result.add(new TwoDmsElementItemDto(masterCode, masterName, null, null, null, list2ndDmsElements));
 			} else if (key.getNumericElementItem().isPresent()) {
 				long frameNumber = key.getNumericElementItem().get().getFrameNumber();
 				BigDecimal frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
