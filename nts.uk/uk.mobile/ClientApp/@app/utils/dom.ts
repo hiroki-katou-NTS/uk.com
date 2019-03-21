@@ -184,7 +184,7 @@ const dom = {
             }
 
             if (!clo) {
-                handler.call(element);
+                return dom.dispatchEvent(element, evt, handler);
             }
         });
     },
@@ -210,14 +210,42 @@ const dom = {
                 });
         });
     },
+    registerGlobalClickOutEventHandler(element: Document | HTMLElement, matcher: string, handler: (evt: any) => any) {
+        dom.registerEventHandler(element, 'click', (event: any) => {
+            [].slice.call(element.querySelectorAll(matcher))
+                .forEach(match => {
+                    let clo = undefined,
+                        target = event.target as HTMLElement;
+
+                    while (target) {
+                        if (target === match) {
+                            clo = target;
+                        }
+
+                        target = target.parentNode as HTMLElement;
+                    }
+                    
+                    if (!clo) {
+                        if (event.target != match) {
+                            return dom.dispatchEvent(match, event, handler);
+                        } else {
+                            return null;
+                        }
+                    }
+                });
+        });
+    },
     dispatchEvent(element: HTMLElement, event: Event, handler: (evt: Event) => any) {
+        //try {
         Object.defineProperty(event,
             'target', {
                 value: element,
                 writable: false
             });
+        //} catch {
+        //}
 
-        handler.call(element, event);
+        return handler.call(element, event);
     },
     data: (function () {
         var dataStoreKeyExpandoPropertyName = "__nts__" + (new Date).getTime(),

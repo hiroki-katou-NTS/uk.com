@@ -1,4 +1,50 @@
-.container,
-.container-fluid {
-    margin-top: 50px;
+body {
+    &.show {
+        &-menu-top {
+            position: relative;
+            overflow: hidden;
+            .modal-backdrop {
+                overflow: hidden;
+            }
+            .sidebar {
+                margin-left: -370px;
+            }
+            .navbar-brand {
+                padding-left: 15px;
+            }
+        }
+        &-side-bar {
+            overflow: hidden;
+            .navbar-toggler {
+                transition-delay: 0.1s;
+                margin-right: - 50px;
+            }
+            .container,
+            .container-fluid {
+                overflow: hidden;
+                position: relative;
+            }
+            .modal-backdrop {
+                overflow: hidden;
+                position: fixed;
+            }
+        }
+    }
+    .container,
+    .container-fluid {
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body {
+        &.modal-open {
+            .sidebar {
+                margin-left: -370px;
+            }
+            .navbar-brand {
+                padding-left: 15px;
+            }
+        }
+    }
 }

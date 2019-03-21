@@ -109,92 +109,107 @@ document.addEventListener("click", function (e) {
     // other event
 }, false);
 
-
-dom.registerGlobalEventHandler(document, 'click', '.navbar>.navbar-btn', function showOrHide(evt: MouseEvent) {
+// show side bar on click
+dom.registerGlobalEventHandler(document, 'click', '.sidebar .navbar-btn', evt => {
     let btn = evt.target as HTMLElement,
-        sidebar = document.querySelector('.wrapper>.sidebar') as HTMLDivElement;
+        sidebar = document.querySelector('.wrapper>.sidebar') as HTMLDivElement,
+        hide = (sidebar: HTMLElement, mask: HTMLElement) => {
+            dom.removeClass(btn, 'show');
+            dom.removeClass(sidebar, 'show');
+
+            if (mask) {
+                if (document.body.contains(mask)) {
+                    document.body.removeChild(mask);
+                }
+            }
+            dom.removeClass(document.body, 'show-side-bar');
+        };
 
     if (sidebar) {
-        if (!dom.hasClass(sidebar, 'active')) {
-            dom.addClass(btn, 'active');
-            dom.addClass(sidebar, 'active');
+        if (!dom.hasClass(sidebar, 'show')) {
+            let mask = dom.create('div', { 'class': 'modal-backdrop show' });
+            dom.data.set(sidebar, 'mask', mask);
 
-            // if click out side collapse, close it
-            dom.registerOnceClickOutEventHandler(sidebar, () => {
-                dom.dispatchEvent(btn, evt, showOrHide);
+            document.body.appendChild(mask);
+
+            dom.registerOnceEventHandler(mask, 'click', evt => {
+                hide(sidebar, evt.target);
             });
-        } else {
+
+            dom.registerOnceEventHandler(mask, 'touch', evt => {
+                hide(sidebar, evt.target);
+            });
+
             setTimeout(() => {
-                dom.removeClass(btn, 'active');
-                dom.removeClass(sidebar, 'active');
+                dom.addClass(btn, 'show');
+                dom.addClass(sidebar, 'show');
             }, 100);
+            dom.addClass(document.body, 'show-side-bar');
+        } else {
+            let mask = dom.data.get(sidebar, 'mask') as HTMLElement;
+            hide(sidebar, mask)
         }
     }
 });
 
+dom.registerGlobalEventHandler(document, 'click', '.sidebar a', evt => {
+    let toggle = evt.target as HTMLElement,
+        container = toggle.closest('.sidebar');
+
+    if (toggle) {
+        if (dom.hasClass(toggle, 'dropdown-toggle')) {
+            let collapse = (<HTMLElement>toggle.parentNode).querySelector('.collapse.list-unstyled') as HTMLElement;
+
+            if (collapse) {
+                if (!dom.hasClass(collapse, 'show')) {
+                    dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                        dom.removeAttr(collapse, 'style');
+                        dom.removeClass(collapse, 'collapsing');
+
+                        dom.addClass(toggle, 'show');
+                    });
+
+                    dom.addClass(collapse, 'collapsing show');
+
+                    setTimeout(() => {
+                        dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+                    }, 100);
+                } else {
+                    dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                        dom.removeClass(collapse, 'collapsing show');
+
+                        dom.removeClass(toggle, 'show');
+                    });
+        
+                    dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+                    dom.addClass(collapse, 'collapsing');
+        
+                    setTimeout(() => {
+                        dom.removeAttr(collapse, 'style');
+                    }, 200);
+                }
+            }
+        } else {
+
+        }
+    }
+});
+
+// show navbar-collapse if click to self button toggler
 dom.registerGlobalEventHandler(document, 'click', '.navbar>.navbar-toggler', function showOrHide(evt: MouseEvent) {
     let btn = (<HTMLElement>evt.target) as HTMLElement,
         parent = btn.closest('.navbar') as HTMLElement,
-        icon = btn.querySelector('i.fas') as HTMLElement;
-
-    if (parent) {
-        let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
-
-        if (collapse) {
-            if (!dom.hasClass(collapse, 'show')) {
-                // if click out side collapse, close it
-                dom.registerOnceClickOutEventHandler(collapse, () => {
-                    dom.dispatchEvent(btn, evt, showOrHide);
-                });
-
-                dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
-                    dom.removeAttr(collapse, 'style');
-                    dom.removeClass(collapse, 'collapsing');
-
-                    if (icon) {
-                        dom.setAttr(icon, 'class', 'fas fa-caret-up');
-                    }
-                });
-
-                dom.addClass(collapse, 'collapsing show');
-
-                setTimeout(() => {
-                    dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
-                }, 100);
-            } else {
-                dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
-                    dom.removeClass(collapse, 'collapsing show');
-
-                    if (icon) {
-                        dom.setAttr(icon, 'class', 'fas fa-caret-down');
-                    }
-                });
-
-                dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
-                dom.addClass(collapse, 'collapsing');
-
-                setTimeout(() => {
-                    dom.removeAttr(collapse, 'style');
-                }, 200);
-            }
-        }
-    }
-});
-
-dom.registerGlobalEventHandler(document, 'click', '.navbar-collapse.show a:not(.dropdown-toggle)', evt => {
-    let collapse = (<HTMLElement>evt.target).closest('.navbar-collapse.show') as HTMLElement;
-
-    if (collapse) {
-        let btn = collapse.previousElementSibling as HTMLElement;
-
-        if (btn) {
-            let icon = btn.querySelector('i.fas') as HTMLElement;
+        hide = (collapse: HTMLElement, mask?: HTMLElement) => {
             dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
                 dom.removeClass(collapse, 'collapsing show');
+                dom.removeClass(btn, 'show');
 
-                if (icon) {
-                    dom.setAttr(icon, 'class', 'fas fa-caret-down');
+                if (mask) {
+                    if (document.body.contains(mask)) {
+                        document.body.removeChild(mask);
+                    }
                 }
+                dom.removeClass(document.body, 'show-menu-top');
             });
 
             dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
@@ -203,6 +218,50 @@ dom.registerGlobalEventHandler(document, 'click', '.navbar-collapse.show a:not(.
             setTimeout(() => {
                 dom.removeAttr(collapse, 'style');
             }, 200);
+        };
+
+    if (parent) {
+        let collapse = parent.querySelector('.collapse.navbar-collapse') as HTMLElement;
+
+        if (collapse) {
+            if (!dom.hasClass(collapse, 'show')) {
+                let mask = dom.create('div', { 'class': 'modal-backdrop show' });
+                dom.data.set(collapse, 'mask', mask);
+                dom.addClass(document.body, 'show-menu-top');
+
+                dom.registerOnceEventHandler(collapse, 'transitionend', evt => {
+                    dom.removeAttr(collapse, 'style');
+                    dom.removeClass(collapse, 'collapsing');
+
+                    dom.addClass(btn, 'show');
+                });
+
+                dom.addClass(collapse, 'collapsing show');
+
+                document.body.appendChild(mask);
+
+                dom.registerOnceEventHandler(mask, 'click', evt => {
+                    hide(collapse, evt.target);
+                });
+
+                setTimeout(() => {
+                    dom.setAttr(collapse, 'style', 'height: ' + collapse.scrollHeight + 'px');
+                }, 100);
+            } else {
+                let mask = dom.data.get(collapse, 'mask') as HTMLElement;
+
+                hide(collapse, mask);
+            }
         }
+    }
+});
+
+dom.registerGlobalEventHandler(document, 'click', '.navbar-collapse.show a', evt => {
+    let target = evt.target as HTMLElement;
+
+    if (dom.hasClass(target, 'dropdown-toggle')) {
+        debugger;
+    } else {
+
     }
 });

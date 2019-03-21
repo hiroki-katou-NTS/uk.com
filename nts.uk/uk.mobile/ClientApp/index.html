@@ -20,9 +20,7 @@
                 <span></span>
             </button>
             <a href="javascript: void(0)" class="navbar-brand">{{pgName |i18n}}</a>
-            <button class="navbar-toggler" type="button">
-                <i class="fas fa-caret-down"></i>
-            </button>
+            <button class="navbar-toggler dropdown-toggle" type="button"></button>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
@@ -35,10 +33,47 @@
             </div>
         </nav>
         <div class="wrapper">
-            <nav id="sidebar">
+            <nav class="sidebar">
                 <div class="sidebar-header">
-                    <h3>Bootstrap Sidebar</h3>
+                    <h3>{{'app_name' | i18n}}</h3>
                 </div>
+                <ul class="list-unstyled components">
+                    <li class="active">
+                        <a class="dropdown-toggle collapse">Home</a>
+                        <ul class="collapse list-unstyled show">
+                            <li>
+                                <a href="#">Home 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 3</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">About</a>
+                        <a  class="dropdown-toggle collapse">Pages</a>
+                        <ul class="collapse list-unstyled">
+                            <li>
+                                <a href="#">Page 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Page 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Page 3</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Portfolio</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>
             </nav>
             <div class="container-fluid">
                 <router-view />

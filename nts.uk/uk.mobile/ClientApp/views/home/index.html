@@ -1,56 +1,24 @@
 <div id="home">
-    <hr />
-    <button class="btn btn-primary" v-bind:disabled="!$valid" v-on:click="alertNow()">{{'home' | i18n}}</button>
-    <hr />
-
-    <v-input-time
-        v-model="time"
-        :name="'time'"
-        :disabled="disabled"
-        :show-title="true"
-        v-bind:constraint="validations.time"
-        :errors-always="$errors.title"
-        :columns="{title: 'col-md-2', input: 'col-md-4'}" />
-
-    <v-input-string
-        v-model="title"
-        v-bind:name="'title'"
-        v-bind:disabled="disabled"
-        v-bind:show-title="true"
-        v-bind:constraint="validations.title"
-        v-bind:errors-always="$errors.title"
-        v-bind:columns="{title: 'col-md-2', input: 'col-md-4'}" />
-
-    <v-input-time
-        v-model="resource"
-        v-bind:name="'resource'"
-        v-bind:disabled="disabled"
-        v-bind:show-title="true"
-        v-bind:constraint="validations.resource"
-        v-bind:errors-always="$errors.resource"
-        v-bind:columns="{title: 'col-md-2', input: 'col-md-4'}" />
-
-    <v-input-string
-        v-model="model.name"
-        v-bind:name="'model.name'"
-        v-bind:disabled="disabled"
-        v-bind:show-title="true"
-        v-bind:constraint="validations.model.name"
-        v-bind:errors-always="$errors.model.name"
-        v-bind:icons="{before: '@', after: '$'}"
-        v-bind:columns="{title: 'col-md-2', input: 'col-md-4'}" />
-
-    <div class="form-group">
-        <v-label v-bind:constraint="validations.model.name">{{$i18n('model.name')}}</v-label>
-        <input type="text" v-validate="$errors.model.name" class="form-control" v-model="model.name" />
-        <v-errors v-for="error in $errors.model.name" v-bind:data="error" v-bind:name="'model.name'" />
+    <div class="btn-toolbar">
+        <div class="btn-group mr-4 mb-3">
+            <button type="button" class="btn btn-secondary">New</button>
+            <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-danger">Delete</button>
+        </div>
     </div>
 
-    <div class="form-group">
-        <v-label v-bind:constraint="validations.model.addrs">{{$i18n('model.addrs')}}</v-label>
-        <input type="text" v-validate="$errors.model.addrs" class="form-control" v-model="model.addrs" />
-        <v-errors v-for="error in $errors.model.addrs" v-bind:data="error" v-bind:name="'model.addrs'" />
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group">
+                <li class="list-group-item" v-bind:class="{ 'active': i == 0 }" v-for="(k,i ) in [1,2,3,4,5,6,7,8,9,0]">
+                    <div class="row">
+                        <div class="col-2">{{i}}</div>
+                        <div class="col-10">Option {{i}}</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+        </div>
     </div>
-
-    <button class="btn btn-primary" v-on:click="$validate()">{{$i18n('validate')}}</button>
 </div>
