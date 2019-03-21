@@ -43,7 +43,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 	@Override
 	protected void handle(CommandHandlerContext<PeregUserDefUpdateCommand> context) {
 		val command = context.getCommand();
-		if (command.getItems() == null || command.getItems().isEmpty() || command.getCategoryCd().indexOf("CS") > -1){
+		if (command.getItems() == null || command.getItems().isEmpty()){
 			return;
 		}
 		// Get company id

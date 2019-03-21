@@ -51,7 +51,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 	protected void handle(CommandHandlerContext<PeregUserDefAddCommand> context) {
 		val command = context.getCommand();
 		
-		if (command.getItems() == null || command.getItems().isEmpty() || command.getCategoryCd().indexOf("CS") > -1){
+		if (command.getItems() == null || command.getItems().isEmpty()){
 			return;
 		}
 		// Get company id
@@ -70,10 +70,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 		}
 		// In case of person
 		if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			
-			// Insert category data
-			perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(recordId,perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
-			
+			if(!perInfoCategory.get().isFixed()) {
+				// Insert category data
+				perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(recordId,perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
+			}
 			// Insert item data
 			PersonInfoItemData itemData = null;
 			DataState state = null;
@@ -88,9 +88,11 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-			// Add emp category data
-			emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(recordId, perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
-			
+			if(!perInfoCategory.get().isFixed()) {
+				// Add emp category data
+				emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(recordId, perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
+			}
+
 			// Add item data
 			EmpInfoItemData itemData = null;
 			DataState state = null;
