@@ -335,7 +335,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	public Map <String ,Double> getAllBySidWithsubHDAtr(String cid, List<String> sids, int state) {
 		Map <String ,Double> result = new HashMap<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_LEAVE_MANA_DATA WHERE  CID = ? AND SUB_HD_ATR = ?   AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_LEAVE_MANA_DATA WHERE  CID = ? AND SUB_HD_ATR = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
