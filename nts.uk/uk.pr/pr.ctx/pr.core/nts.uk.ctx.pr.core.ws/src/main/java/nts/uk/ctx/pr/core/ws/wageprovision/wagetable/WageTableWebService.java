@@ -155,7 +155,7 @@ public class WageTableWebService {
 			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
 				throw new BusinessException("MsgQ_252");
 		}
-		if (params.getThirdElementRange() != null) {
+		if (params.getThirdElementRange() != null && params.getThirdElementRange().getStepIncrement() != null) {
 			BigDecimal numberOfFrames = (params.getThirdElementRange().getRangeUpperLimit()
 					.subtract(params.getThirdElementRange().getRangeLowerLimit()))
 							.divide(params.getThirdElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
