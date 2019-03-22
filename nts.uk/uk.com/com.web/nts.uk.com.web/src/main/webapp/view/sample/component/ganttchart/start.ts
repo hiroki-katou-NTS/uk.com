@@ -167,7 +167,7 @@ __viewContext.ready(function() {
                 primaryKey: "empId"
             };
             
-            new nts.uk.ui.exTable.ExTable($("#extable"), {
+            let extable = new nts.uk.ui.exTable.ExTable($("#extable"), {
                 headerHeight: "33px",
                 bodyRowHeight: "30px",
                 bodyHeight: "400px",
@@ -179,9 +179,10 @@ __viewContext.ready(function() {
                 windowYOccupation: 200   
             }).LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
               .MiddleHeader(middleHeader).MiddleContent(middleContent)
-              .DetailHeader(detailHeader).DetailContent(detailContent).create();
+              .DetailHeader(detailHeader).DetailContent(detailContent);
             
-            let ruler = new nts.uk.ui.chart.Ruler($(".ex-body-detail")[0]);
+            extable.create();
+            let ruler = extable.getChartRuler();
             ruler.addType({
                 name: "Child",
                 followParent: true,

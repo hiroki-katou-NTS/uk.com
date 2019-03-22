@@ -140,7 +140,7 @@ module nts.uk.ui.chart {
                 
                 let e = document.createEvent('CustomEvent');
                 if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
-                    e.initCustomEvent("gcDrop", true, true, [ chart.start, chart.end ]);
+                    e.initCustomEvent("gcDrag", true, true, [ chart.start, chart.end ]);
                 } else {
                     e.initCustomEvent("gcResize", true, true, [ chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START ]);
                 }
