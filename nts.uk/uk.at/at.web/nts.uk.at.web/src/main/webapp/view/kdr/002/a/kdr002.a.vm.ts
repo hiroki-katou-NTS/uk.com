@@ -340,7 +340,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             let self = this,
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             self.programName = (program[1] != null ? program[1] : "");
-            self.exportTime = moment();
+            self.exportTime = moment().format();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
             self.printDate = screen.printDate();
