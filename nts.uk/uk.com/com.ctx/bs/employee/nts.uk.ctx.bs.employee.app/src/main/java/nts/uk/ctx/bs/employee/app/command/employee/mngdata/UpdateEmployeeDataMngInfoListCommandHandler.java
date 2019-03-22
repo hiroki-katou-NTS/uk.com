@@ -14,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
 public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandler<List<UpdateEmployeeDataMngInfoCommand>>
@@ -67,7 +66,9 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandler<
 		this.employeeDataMngInfoRepository.updateAll(domains);
 		
 		if (sidErrorLst.size() > 0) {
-			throw new MyCustomizeException("Msg_345", sidErrorLst);
+			sidErrorLst.parallelStream().forEach(c ->{
+				System.out.println(c);
+			});
 		}
 
 	}
