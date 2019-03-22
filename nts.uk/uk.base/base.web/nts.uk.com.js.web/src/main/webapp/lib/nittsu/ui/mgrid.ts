@@ -2421,6 +2421,25 @@ module nts.uk.ui.mgrid {
                 
                 if (td.classList.contains(color.Lock)) {
                     td.style.cssText += tdStyle;
+                    if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                        dkn.getControl(controlDef.controlType)({
+                            rowIdx: rowIdx,
+                            rowId: id,
+                            columnKey: key,
+                            controlDef: controlDef,
+                            update: (v, i, r, p) => {
+                                su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                if (_.isFunction(controlDef.onChange)) {
+                                    controlDef.onChange(id, key, v, rData);
+                                }
+                            },
+                            deleteRow: su.deleteRow,
+                            initValue: data,
+                            rowObj: rData,
+                            enable: !td.classList.contains(color.Disable)
+                        });
+                    }
+                    
                     return td;
                 }
                 
@@ -2739,6 +2758,25 @@ module nts.uk.ui.mgrid {
                 
                 if (td.classList.contains(color.Lock)) {
                     td.style.cssText += tdStyle;
+                    if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                        dkn.getControl(controlDef.controlType)({
+                            rowIdx: rowIdx,
+                            rowId: id,
+                            columnKey: key,
+                            controlDef: controlDef,
+                            update: (v, i, r, p) => {
+                                su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                if (_.isFunction(controlDef.onChange)) {
+                                    controlDef.onChange(id, key, v, rData);
+                                }
+                            },
+                            deleteRow: su.deleteRow,
+                            initValue: data,
+                            rowObj: rData,
+                            enable: !td.classList.contains(color.Disable)
+                        });
+                    }
+                    
                     return td;
                 }
                 
@@ -5447,12 +5485,12 @@ module nts.uk.ui.mgrid {
                 let control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
                 if (!control || !controlMap || !(controlDef = controlMap[key])) return null;
                 if (control === dkn.REFER_BUTTON) {
-                    return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                    return (controlDef.pattern || {})[(controlDef.list || {})[id]] || null;
                 } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
                     if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
-                        return control.optionsList[listType];
+                        return control.optionsList[listType] || null;
                     } else {
-                        return control.options;
+                        return control.options || null;
                     }
                 } 
                 
@@ -5658,14 +5696,15 @@ module nts.uk.ui.mgrid {
             removeInsertions: function() {
                 v.eliminRows(_.cloneDeep(v._encarRows).sort((a, b) => b - a));
             },
-            validate: function() {
+            validate: function(lock) {
                 let errors = [];
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef) return;
                     _.forEach(_mafollicle[k].dataSource, (data, i) => {
                         _.forEach(_cstifle(), c => {
                             let validator = _validators[c.key];
-                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)) return;
+                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)
+                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock))) return; 
                             let res = validator.probe(data[c.key], data[_pk]);
                             if (res && !res.isValid) {
                                 let err = { id: data[_pk], index: i, columnKey: c.key, message: res.errorMessage };
@@ -5678,6 +5717,19 @@ module nts.uk.ui.mgrid {
                 if (errors.length > 0) {
                     this.setErrors(errors);
                 }
+            },
+            columnOrder: function() {
+                let order = [];
+                if (_vessel().desc) {
+                    let fixedLength = 0;
+                    [ "fixedColIdxes", "colIdxes" ].forEach((col, ord) => {
+                        let idx = _vessel().desc[col];
+                        _.forEach(_.keys(idx), i => order[idx[i] + fixedLength] = i);
+                        if (!ord) fixedLength = _.keys(idx).length;
+                    });
+                }
+                
+                return order;
             },
             getCellValue: function(id, key) {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
@@ -9418,7 +9470,7 @@ module nts.uk.ui.mgrid {
                                 options = control.options;
                             }
                         
-                            if (!_.find(options, opt => opt[control.optionsValue] === value)) {
+                            if (constraint.required && !_.find(options, opt => opt[control.optionsValue] === value)) {
                                 result.fail(nts.uk.resource.getMessage("FND_E_REQ_SELECT", [ this.name ]), "FND_E_REQ_SELECT");
                             } else result.success();
                         }
