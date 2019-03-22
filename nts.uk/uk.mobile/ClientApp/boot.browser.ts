@@ -5,11 +5,13 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { ajax, i18n, modal, click, validate, language } from '@app/plugins';
+import { ajax, i18n, mask, modal, click, validate, language } from '@app/plugins';
 
 import { LanguageBar } from '@app/plugins';
+import { SideMenuBar, NavMenuBar } from '@app/components';
 
 Vue.use(i18n);
+Vue.use(mask);
 Vue.use(modal);
 Vue.use(click);
 Vue.use(validate);
@@ -21,15 +23,17 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 
 //Vue.config.silent = true;
-//Vue.config.devtools = false;
+Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 new Vue({
     router,
     components: {
+        'nav-bar': NavMenuBar,
+        'side-bar': SideMenuBar,
         'language-bar': LanguageBar
     },
-    el: document.querySelector('body>div'),
+    el: document.querySelector('body>#app_uk_mobile'),
     computed: {
         pgName: {
             get() {
