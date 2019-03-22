@@ -41,4 +41,8 @@ export class browser {
     public static get ml() {
         return this.mobile && this.landscapse;
     }
+
+    public static get ios() {
+        return /iPhone|iPod/.test(navigator.userAgent) && !(<any>window).MSStream;
+    }
 }

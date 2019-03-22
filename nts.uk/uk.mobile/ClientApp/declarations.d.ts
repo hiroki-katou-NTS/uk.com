@@ -87,6 +87,9 @@ declare module "vue/types/vue" {
         };
         $i18n: (resr: string, param?: { [key: string]: string }) => string;
         $close: (data?: any) => void;
+        $mask: (act: 'hide' | 'show' | 'showonce') => {
+            on: (click: () => void, hide?: () => void) => void;
+        };
         $modal: (name: string, params?: any, options?: IModalOptions) => {
             onClose: (callback: (data?: any) => void) => void;
         };
