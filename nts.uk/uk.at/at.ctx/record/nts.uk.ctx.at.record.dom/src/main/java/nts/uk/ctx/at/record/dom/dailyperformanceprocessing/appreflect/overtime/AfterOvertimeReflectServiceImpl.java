@@ -29,7 +29,8 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Override
 	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
-			WorkInfoOfDailyPerformance dailyInfor = workRepository.find(overtimePara.getEmployeeId(), overtimePara.getDateInfo()).get();
+			// TODO
+			/*WorkInfoOfDailyPerformance dailyInfor = workRepository.find(overtimePara.getEmployeeId(), overtimePara.getDateInfo()).get();
 			//予定勤種・就時の反映
 			dailyInfor = afterOverTimeReflect.checkScheReflect(overtimePara, dailyInfor);
 			//勤種・就時の反映
@@ -68,7 +69,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			commonService.calculateOfAppReflect(null, overtimePara.getEmployeeId(), overtimePara.getDateInfo());
+			commonService.calculateOfAppReflect(null, overtimePara.getEmployeeId(), overtimePara.getDateInfo());*/
 			return true;
 			
 		} catch (Exception e) {

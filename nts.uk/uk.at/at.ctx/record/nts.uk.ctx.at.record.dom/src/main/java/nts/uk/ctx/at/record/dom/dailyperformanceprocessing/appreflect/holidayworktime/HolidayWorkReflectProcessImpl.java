@@ -19,25 +19,25 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
+	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
 			String workTimeCode, boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if(workTimeCode.isEmpty()
 				|| workTypeCode.isEmpty()) {
-			return dailyData;
+			return;
 		}
 		//予定勤種・就時を反映できるかチェックする
 		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, isPre, scheAndRecordSameChangeFlg)) {
-			return dailyData;
+			return;
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(employeeId, 
 				baseDate, 
 				workTimeCode, 
 				workTypeCode, false); 
-		return workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
+		workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		//INPUT．就業時間帯コードに値があるかチェックする
 		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO
-				|| workTimeCode.isEmpty()) {
+				|| workTimeCode == null || workTimeCode.isEmpty()) {
 			return false;
 		}
 		//流動勤務かどうかの判断処理
@@ -60,7 +60,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	}
 
 	@Override
-	public IntegrationOfDaily reflectWorkTimeFrame(String employeeId, 
+	public void reflectWorkTimeFrame(String employeeId, 
 			GeneralDate baseDate, 
 			Map<Integer, Integer> mapWorkTimeFrame, 
 			IntegrationOfDaily dailyData) {
@@ -73,7 +73,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			}
 		}
 		//事前休出時間の反映
-		return workUpdate.updateWorkTimeFrame(employeeId, baseDate, tmp, true, dailyData, false);
+		workUpdate.updateWorkTimeFrame(employeeId, baseDate, tmp, true, dailyData, false);
 		
 	}
 

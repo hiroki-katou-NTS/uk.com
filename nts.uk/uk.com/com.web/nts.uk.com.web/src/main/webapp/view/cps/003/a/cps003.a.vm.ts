@@ -81,7 +81,9 @@ module cps003.a.vm {
         headDatas: any;
         gridOptions: any = { columns: [], ntsControls: [], dataSource: [] };
         dataTypes: any = {};
+        initDs: Array<Record>;
         batchSettingItems: any = [];
+        lockColumns: Array<any> = [];
 
         baseDate: KnockoutObservable<Date> = ko.observable();
         baseDateEnable: KnockoutObservable<boolean> = ko.observable(true);
@@ -109,6 +111,7 @@ module cps003.a.vm {
 
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
+        hasError: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -320,7 +323,10 @@ module cps003.a.vm {
                 $grid.mGrid("validate");
                 let itemErrors = $grid.mGrid("errors");
                 if (itemErrors && itemErrors.length > 0) {
-                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+                    self.hasError(true);
+                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
+                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
                     modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                     
                     });
@@ -363,11 +369,14 @@ module cps003.a.vm {
                     let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
                     if (col) {
                         let val = item.value;
-                        if (item.value instanceof Date) {
-                            val = moment(item.value).format("YYYY/MM/DD");
+                        let text, defValue, defText, initData = _.find(self.initDs, initRec => initRec.id === item.rowId);
+                        if (initData) {
+                            text = self.getText(col.perInfoTypeState, val, item.rowId, col.key, $grid);
+                            defValue = initData[col.key];
+                            defText = self.getText(col.perInfoTypeState, defValue, item.rowId, col.key, $grid);
                         }
                         
-                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
                     }
                 });
                 
@@ -431,6 +440,36 @@ module cps003.a.vm {
             }
         }
         
+        getText(perInfoTypeState: any, value: any, id: any, itemCode: any, $grid: any) {
+            if (!perInfoTypeState) return value;
+            switch (perInfoTypeState.dataTypeValue) {
+                case ITEM_SINGLE_TYPE.STRING:
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    return value;
+                case ITEM_SINGLE_TYPE.TIME:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).value(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                case ITEM_SINGLE_TYPE.DATE:
+                    let date = moment(value).format("YYYY/MM/DD");
+                    return { value: date, text: date };
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    let optionItem = _.find($grid.mGrid("optionsList", id, itemCode), item => item.optionValue === value); 
+                    if (optionItem) {
+                        return optionItem.optionText;
+                    }
+                case ITEM_SINGLE_TYPE.READONLY:
+                case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    return value;
+                default:
+                    return value;
+            }
+        }
+        
         checkError() {
             let self = this, $grid = $("#grid");
             $grid.mGrid("validate");
@@ -440,7 +479,10 @@ module cps003.a.vm {
                 return;
             }
             
-            setShared("CPS003G_ERROR_LIST", _.map(errors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+            setShared("CPS003G_ERROR_LIST", _.map(errors, err => { 
+                return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                         isDisplayRegister: false, errorType: 0, itemName: err.columnName, message: err.message }; }));
+            self.hasError(true);
             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                 
             });
@@ -475,6 +517,7 @@ module cps003.a.vm {
         }
         
         exportFile() {
+            block();
             let self = this, $grid = $("#grid"), 
                 matrixData = { categoryId: self.category.catId(), categoryCode: self.category.catCode(), categoryName: self.category.cate().categoryName,
                     fixedHeader: { isShowDepartment: (self.settings.matrixDisplay() || {}).departmentATR === IUSE_SETTING.USE,
@@ -492,8 +535,14 @@ module cps003.a.vm {
                             items[info.itemCD] = itemWidth;
                         });
                         
+                        _.forEach(["rowNumber", "employeeCode", "employeeName", "deptName", "workplaceName", "positionName", "employmentName", "className"], column => {
+                            let itemWidth = w && w.reparer && w.reparer[column];
+                            if (!_.isNil(itemWidth)) items[column] = itemWidth;
+                        });
+                        
                         return items;
                     }).orElse(null),
+                    order: $grid.mGrid("columnOrder"),
                     detailData: []
                 };
             
@@ -504,7 +553,9 @@ module cps003.a.vm {
             nts.uk.request.exportFile("com", "/person/matrix/report/printMatrix", matrixData).done(data => {
                 
             }).fail(mes => {
-            
+                console.log(mes);
+            }).always(() => {
+                unblock();
             });
             
         }
@@ -545,6 +596,7 @@ module cps003.a.vm {
         loadGrid() {
             let self = this;
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
+            self.hasError(false);
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "1000px",
                 height: "800px",
@@ -558,7 +610,7 @@ module cps003.a.vm {
                 virtualizationMode: "continuous",
                 enter: "right",
                 autoFitWindow: true,
-                errorColumns: [ "employeeCode", "employeeName", "rowNumber" ],
+                errorColumns: [ "employeeId", "employeeCode", "employeeName", "rowNumber" ],
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 columns: self.gridOptions.columns,
                 features: self.gridOptions.features,
@@ -582,6 +634,7 @@ module cps003.a.vm {
             nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
                 self.convertData(data, settingData).done(() => {
                     self.loadGrid();
+                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
                     self.settings.matrixDisplay.valueHasMutated();
                     self.disableCS00035();
                     unblock();
@@ -771,6 +824,16 @@ module cps003.a.vm {
                     _.forEach(d.items, (item: IColumnData, i: number) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
                         if (!dt) return;
+                        if (_.isNil(item.recordId)) {
+                            states.push(new State(record.id, "employeeCode", ["red-color"]));
+                            states.push(new State(record.id, "employeeName", ["red-color"]));
+                            states.push(new State(record.id, "deptName", ["red-color"]));
+                            states.push(new State(record.id, "workplaceName", ["red-color"]));
+                            states.push(new State(record.id, "positionName", ["red-color"]));
+                            states.push(new State(record.id, "employmentName", ["red-color"]));
+                            states.push(new State(record.id, "className", ["red-color"]));
+                        }
+                        
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
@@ -1437,7 +1500,7 @@ module cps003.a.vm {
                         // Get 年休社員基本情報
                         let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
                         if (empIdList.length > 0) {
-                            service.fetch.basicHolidayEmpInfo(empIdList).done((infos: Array<AnnualLeaveEmpBasicInfo>) => {
+                            service.fetch.basicHolidayEmpInfo({ listEmpID: empIdList }).done((infos: Array<AnnualLeaveEmpBasicInfo>) => {
                                 let groupByEmpId = _.groupBy(infos, "employeeId");
                                 $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                     if (replaceValue.replaceAll) return true;
@@ -1452,40 +1515,120 @@ module cps003.a.vm {
                         }
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.HIRE_DATE) {
                         // TODO: From standardDate and employeeId list, get historyItem and replace
-                        
+                        let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
+                        if (empIdList.length > 0) {
+                            service.fetch.affiliatedCompanyHist({ listEmpID: empIdList, baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString() }).done((histItems: Array<AffCompanyEmpHistItem>) => {
+                                // Group histItems by employeeId
+                                let groupByEmpId = _.groupBy(histItems, "employeeID");
+                                
+                                $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                    if (replaceValue.replaceAll) return true;
+                                    return replaceValue.matchValue === value;
+                                }, (value, rec) => {
+                                    let histItem = groupByEmpId[rec.employeeId];
+                                    if (!_.isNil(histItem)) {
+                                        return histItem[0].startDate;
+                                    }
+                                });
+                            });
+                        }
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.DESI_YEAR_OE) {
                         // TODO: From standardDate and employeeId list, get historyItem and replace
-                        
-                        if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.SAME) {
-                            // TODO: Replace by historyItem
-                        } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
-                            // TODO: historyItem.year - 1
-                            // replaceValue[1] is 月日
-                        } else {
-                            // TODO: historyItem.year + 1
+                        let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
+                        if (empIdList.length > 0) {
+                            service.fetch.affiliatedCompanyHist({ listEmpID: empIdList, baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString() }).done((histItems: Array<AffCompanyEmpHistItem>) => {
+                                let groupByEmpId = _.groupBy(histItems, "employeeID");
+                                
+                                if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.SAME) {
+                                    // TODO: Replace by historyItem
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                        if (replaceValue.replaceAll) return true;
+                                        return replaceValue.matchValue === value;
+                                    }, (value, rec) => {
+                                        let histItem = groupByEmpId[rec.employeeId];
+                                        if (!_.isNil(histItem)) {
+                                            return histItem[0].startDate;
+                                        }
+                                    });
+                                } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                        if (replaceValue.replaceAll) return true;
+                                        return replaceValue.matchValue === value;
+                                    }, (value, rec) => {
+                                        let histItem = groupByEmpId[rec.employeeId];
+                                        if (!_.isNil(histItem)) {
+                                            let month = Math.floor(replaceValue.replaceValue[1] / 100),
+                                                day = replaceValue.replaceValue[1] % 100;
+                                                year = moment(histItem[0].startDate).year() - 1,
+                                                date = moment([ year, month - 1, day ]);
+                                            
+                                            if (!date.isValid()) {
+                                                return moment([ year, month - 1, day - 1 ]).format("YYYY/MM/DD"); 
+                                            }
+                                            
+                                            return date.format("YYYY/MM/DD");
+                                        }
+                                    });
+                                } else {
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                        if (replaceValue.replaceAll) return true;
+                                        return replaceValue.matchValue === value;
+                                    }, (value, rec) => {
+                                        let histItem = groupByEmpId[rec.employeeId];
+                                        if (!_.isNil(histItem)) {
+                                            let month = Math.floor(replaceValue.replaceValue[1] / 100),
+                                                day = replaceValue.replaceValue[1] % 100,
+                                                year = moment(histItem[0].startDate).year() + 1,
+                                                date = moment([ year, month - 1, day ]);
+                                            
+                                            if (!date.isValid()) {
+                                                return moment([ year, month - 1, day - 1 ]).format("YYYY/MM/DD");
+                                            }
+                                            
+                                            return date.format("YYYY/MM/DD");
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }
-                } else if (_.find(self.specialItems.workTime, it => it === replaceValue.targetItem)) {
+                } else if (_.isArray(replaceValue.targetItem) && _.find(self.specialItems.workTime, it => it === replaceValue.targetItem[0])) {
                     _.forEach(replaceValue.targetItem, (item, i) => {
-                        $grid.mGrid("replace", item, (value) => { 
+                        let replaced = replaceValue.replaceValue[i], dt = self.dataTypes[item];
+                        if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced)) {
+                            replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
+                        } else if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced)) {
+                            replaced = nts.uk.time.parseTime(replaced, true).format();
+                        }
+                        
+                        $grid.mGrid("replace", item, (value, rec) => { 
                             if (replaceValue.replaceAll) return true;
-                            return replaceValue.matchValue === value; 
-                        }, () => replaceValue.replaceValue[i]);
+                            return replaceValue.matchValue === rec[replaceValue.targetItem[0]]; 
+                        }, () => replaced);
                     });
                 } else if (self.specialItems.holidayLimit[0] === replaceValue.targetItem) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
+                        let replaced = nts.uk.time.parseTime(replaceValue.replaceValue, true).format();
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
-                        }, () => replaceValue.replaceValue);
+                        }, () => replaced);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.CONTRACT_TIME) { // 契約時間
-                        let contractTime = 0;
                         // TODO: Get contract time
-                        
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
-                            if (replaceValue.replaceAll) return true;
-                            return replaceValue.matchValue === value;
-                        }, () => replaceValue.replaceValue * contractTime);
+                        let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
+                        service.fetch.contractTime({ baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), listEmpID: empIdList }).done(contractTimes => {
+                            let groupByEmpId = _.groupBy(contractTimes, "employeeID");
+                            $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                if (replaceValue.replaceAll) return true;
+                                return replaceValue.matchValue === value;
+                            }, (value, rec) => {
+                                let contractTime = groupByEmpId[rec.employeeId];
+                                if (!_.isNil(contractTime)) {
+                                    let replaced = nts.uk.time.parseTime(replaceValue.replaceValue * contractTime[0].contractTime * 60, true).format();
+                                    return replaced;
+                                } else return "";
+                            });
+                        });
                     }
                 } else if (replaceValue.mode === APPLY_MODE.AMOUNT) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.ADD_OR_SUB) { // 加減算
@@ -1494,20 +1637,31 @@ module cps003.a.vm {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, (value) => replaceValue.replaceValue + value); 
-                    } else if (_.isNil(replaceValue.replaceFormat)) { // 値指定
+                    } else if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, () => replaceValue.replaceValue);
                     }
                 } else if (_.find(self.specialItems.workplace, it => it === replaceValue.targetItem)) {
+                    let wpName = {};
+                    _.forEach($grid.mGrid("dataSource"), ds => {
+                        let dateStr = moment.utc(ds["IS00082"]).toISOString();
+                        if (!_.isNil(wpName[dateStr])) return;
+                        service.fetch.workplaceInfo({ baseDate: dateStr, listWorkplaceID: [ replaceValue.replaceValue ]}).done(wp => {
+                            if (wp && wp.length > 0) {
+                                wpName[dateStr] = wp[0].workplaceName;
+                            }
+                        });    
+                    });
+                    
                     $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                         if (replaceValue.replaceAll) return true;
                         return replaceValue.matchValue === value;
-                    }, () => {
-                        // TODO: Get workplace name from workplaceId replaceValue.replaceValue
-                        let workplaceName = replaceValue.replaceValue;
-                        return workplaceName;
+                    }, (value, rec) => {
+                        // TODO: Get workplace name
+                        let dateStr = moment.utc(ds["IS00082"]).toISOString();
+                        return wpName[dateStr];
                     });
                 } else if (_.find(self.specialItems.department, it => it === replaceValue.targetItem)) {
                 } else if (replaceValue.mode === APPLY_MODE.SELECTION) {
@@ -1516,10 +1670,17 @@ module cps003.a.vm {
                         return replaceValue.matchValue === value;
                     }, () => replaceValue.replaceValue);
                 } else {
+                    let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
+                    if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced)) {
+                        replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
+                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced)) {
+                        replaced = nts.uk.time.parseTime(replaced, true).format();
+                    }
+                    
                     $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                         if (replaceValue.replaceAll) return true;
                         return replaceValue.matchValue === value;
-                    }, () => replaceValue.replaceValue);
+                    }, () => replaced);
                 }
             });
         }
@@ -1775,10 +1936,14 @@ module cps003.a.vm {
             this.positionName = record.positionName;
             this.employmentName = record.employmentName;
             this.classificationName = record.className;
-            _.forEach(_.keys(record), f => {
-                if (_.find(heads, (h: IDataHead) => h.itemCode === f)) {
-                    this.items.push(new GridEmpBodyDataSource(f, record, $grid));
-                }
+//            _.forEach(_.keys(record), f => {
+//                if (_.find(heads, (h: IDataHead) => h.itemCode === f)) {
+//                    this.items.push(new GridEmpBodyDataSource(f, record, $grid));
+//                }
+//            });
+            
+            _.forEach(heads, (h: IDataHead) => {
+                this.items.push(new GridEmpBodyDataSource(h.itemCode, record, $grid));
             });
         }
     }
@@ -1854,6 +2019,19 @@ module cps003.a.vm {
     
     class AnnualLeaveGrantRule {
         grantStandardDate: string;
+    }
+    
+    class AffCompanyEmpHistItem {
+        employeeID: string;
+        destinationData: boolean;
+        endDate: string;
+        historyId: string;
+        startDate: string;
+    }
+    
+    class DatePeriod {
+        start: string;
+        end: string;
     }
 
     enum IUSE_SETTING {

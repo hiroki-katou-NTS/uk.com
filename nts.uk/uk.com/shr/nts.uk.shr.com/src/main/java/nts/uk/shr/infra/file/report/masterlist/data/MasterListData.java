@@ -30,7 +30,15 @@ public interface MasterListData {
 		return null;
 	}
 	
+	default public String mainSheetName(MasterListExportQuery query){
+		return null;
+	}
+	
 	default public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
+	
+	default public MasterListMode mainSheetMode(MasterListExportQuery query){
 		return MasterListMode.NONE;
 	}
 	

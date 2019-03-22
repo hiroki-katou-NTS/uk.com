@@ -264,7 +264,7 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 													String[] stringSplit = comboxObj.getOptionText().split(JP_SPACE);
 													String selCode = dataSource.getCategoryCode().equals("CS00016") || dataSource.getCategoryCode().equals("CS00017")?  (stringSplit.length > 0? stringSplit[0]: ""): comboxObj.getOptionValue();
 													selCodeCell.setValue(selCode);
-													selNameCell.setValue(stringSplit[1]);
+													selNameCell.setValue(stringSplit.length > 1? stringSplit[1]: stringSplit[0]);
 												}else {
 													
 													selCodeCell.setValue(comboxObj.getOptionValue());
@@ -438,8 +438,10 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		}
 		
 		dynamicCol.stream().forEach(c ->{
-			Integer w = width.get(c.getItemCode());
-			widthLst.add(w);
+			if(c.getItemTypeState().getItemType() == 2) {
+				Integer w = width.get(c.getItemCode());
+				widthLst.add(w);
+			}
 		});
 		// chia cho 7 là vì so với tỉ lệ trên grid với excel lệch nhau 7 lần
 		for(int i = 0; i < widthLst.size(); i++) {

@@ -61,15 +61,21 @@ public class AlarmCheckCondQuery {
 			.append("(CASE WHEN (c.FILTER_BY_JOB = 1)")
 			.append(" THEN")
 			.append(" STUFF(")
-			.append(" (SELECT DISTINCT (',' + f1.JOB_CD + ")
+			.append(" (SELECT DISTINCT (',' + ")
+			.append("	(CASE WHEN (f1.JOB_CD IS NOT NULL)")
+			.append("	THEN")
+			.append("		f1.JOB_CD")
+			.append("	ELSE")
+			.append("		'' ")
+			.append("	END) + ")
 			.append(" (CASE WHEN (f1.JOB_NAME IS NOT NULL)")
 			.append(" THEN ")
 			.append(" f1.JOB_NAME")
 			.append(" ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')")
 			.append(" END))")
 			.append(" FROM KFNMT_ALCHKTARGET_JOB f ")
-			.append(" INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID AND f2.JOB_ID = f.JOB_ID AND f2.END_DATE >= '9999-12-31'")
-			.append(" INNER JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID AND f1.JOB_ID = f.JOB_ID AND f1.HIST_ID = f2.HIST_ID")
+			.append(" LEFT JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID AND f2.JOB_ID = f.JOB_ID AND f2.END_DATE >= '9999-12-31'")
+			.append(" LEFT JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID AND f1.JOB_ID = f.JOB_ID AND f1.HIST_ID = f2.HIST_ID")
 			.append(" WHERE f.AL_CHK_TARGET_ID = c.ID ")
 			.append(" FOR XML PATH(''))")
 			.append(" , 1, 1, '')")
@@ -99,7 +105,8 @@ public class AlarmCheckCondQuery {
 			.append(" FOR XML PATH(''))")
 			.append(" , 1, 1, '')")
 			.append(" ELSE NULL")
-			.append(" END) AS BUSINESSTYPE_CDS")
+			.append(" END) AS BUSINESSTYPE_CDS, ")
+			.append(" b.W4D4_CHECK_COND AS W4D4_CHECK_COND")
 			.append(" FROM KFNMT_AL_CHECK_COND_CATE a")
 			.append(" LEFT JOIN KFNMT_ALARMCHECK4W4D b ON b.CID = a.CID AND b.CATEGORY = a.CATEGORY AND b.AL_CHECK_COND_CATE_CD = a.CD")
 			.append(" LEFT JOIN KFNMT_AL_CHK_TARGET_COND c ON a.EXTRACT_TARGET_COND_ID = c.ID")
@@ -144,15 +151,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ "  THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"
@@ -959,7 +972,7 @@ public class AlarmCheckCondQuery {
 			+ " LEFT JOIN KRCMT_WK_RECORD_EXTRA_CON i1 ON i1.ERROR_ALARM_CHECK_ID = i.ERROR_ALARM_CHECK_ID"
 			+ " LEFT JOIN KRCMT_ERAL_CONDITION i2 ON i2.ERAL_CHECK_ID = i.ERROR_ALARM_CHECK_ID AND i2.CID = a.CID"
 			+ " WHERE a.CID = ? AND a.CATEGORY = 5 "
-			+ " ORDER BY a.CD ASC";
+			+ " ORDER BY a.CD, i1.SORT_ORDER_BY ASC ";
 	
 	public static String SELECT_MULTIPLE_MONTH = "SELECT a.CD as CD_1, a.NAME as NAME_2,"
 			+ "  c.FILTER_BY_EMP AS FILTER_BY_EMP_4,"
@@ -999,15 +1012,21 @@ public class AlarmCheckCondQuery {
 			+ "  (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ "  THEN"
 			+ "  	STUFF("
-			+ "  			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ "  				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ "  					THEN "
 			+ "  						f1.JOB_NAME"
 			+ "  					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ "  					END))"
 			+ "  				from KFNMT_ALCHKTARGET_JOB f "
-			+ "  				INNER join BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ "  				INNER join BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ "  				LEFT join BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ "  				LEFT join BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ "  				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ "  				FOR XML PATH(''))"
 			+ "  			, 1, 1, '')"
@@ -1384,15 +1403,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ " THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + "
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 ON f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 ON f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"
@@ -1418,7 +1443,7 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (h.MON_ALARM_CHECK_CON_ID IS NOT NULL)"
 			+ " THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + CONVERT(varchar(1),i1.FIX_EXTRA_ITEM_MON_NO) + i2.FIX_EXTRA_ITEM_MON_NAME + ':' + i1.MESSAGE)"
+			+ " 			(SELECT (',' + CONVERT(varchar(1),i1.FIX_EXTRA_ITEM_MON_NO) + i2.FIX_EXTRA_ITEM_MON_NAME + ':' + RTRIM(i1.MESSAGE))"
 			+ " 				FROM KRCMT_FIXED_COND_MONTHLY i1"
 			+ " 				LEFT JOIN KRCMT_FIXED_ITEM_MONTHLY i2 ON i2.FIX_EXTRA_ITEM_MON_NO = i1.FIX_EXTRA_ITEM_MON_NO"
 			+ " 				WHERE i1.MON_ALARM_CHECK_ID = h.MON_ALARM_CHECK_CON_ID  AND i1.USE_ATR = 1 ORDER BY i1.FIX_EXTRA_ITEM_MON_NO ASC"
@@ -2154,7 +2179,7 @@ public class AlarmCheckCondQuery {
 			+ " 	NULL"
 			+ " END) AS ATTENDANCE_ITEM_GROUP_2_30_7,"
 			+ " k.OPERATOR_BETWEEN_GROUPS AS OPERATOR_BETWEEN_GROUPS_31,"
-			+ " k.MESSAGE_DISPLAY AS MESSAGE_DISPLAY_32,"
+			+ " RTRIM(k.MESSAGE_DISPLAY) AS MESSAGE_DISPLAY_32,"
 			+ " l.COMPARE_OPERATOR AS HOLIDAY_COMPARE_OPERATOR_19,"
 			+ " l.NUMBER_DAY_DIFF_HOLIDAY_1 AS NUMBER_DAY_DIFF_HOLIDAY_1_20,"
 			+ " l.NUMBER_DAY_DIFF_HOLIDAY_2 AS NUMBER_DAY_DIFF_HOLIDAY_2_21,"
@@ -2275,15 +2300,21 @@ public class AlarmCheckCondQuery {
 			+ " (CASE WHEN (c.FILTER_BY_JOB = 1)"
 			+ " THEN"
 			+ " 	STUFF("
-			+ " 			(SELECT (',' + f1.JOB_CD + " 
+			+ " 			(SELECT (',' + "
+			+ "					(CASE WHEN (f1.JOB_CD IS NOT NULL)"
+			+ "						THEN"
+			+ "							f1.JOB_CD"
+			+ "						ELSE"
+			+ "							'' "
+			+ "						END) + "
 			+ " 				(CASE WHEN (f1.JOB_NAME IS NOT NULL)"
 			+ " 					THEN "
 			+ " 						f1.JOB_NAME"
 			+ " 					ELSE (SELECT tm.CONTENT FROM CISCT_I18N_RESOURCE tm WHERE tm.CLASS_ID = 'KAL003' AND tm.RESOURCE_ID = '239')"
 			+ " 					END))"
 			+ " 				FROM KFNMT_ALCHKTARGET_JOB f "
-			+ " 				INNER JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
-			+ " 				INNER JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
+			+ " 				LEFT JOIN BSYMT_JOB_HIST f2 on f2.CID = a.CID and f2.JOB_ID = f.JOB_ID and f2.END_DATE >= '9999-12-31'"
+			+ " 				LEFT JOIN BSYMT_JOB_INFO f1 on f1.CID = a.CID and f1.JOB_ID = f.JOB_ID and f1.HIST_ID = f2.HIST_ID"
 			+ " 				WHERE f.AL_CHK_TARGET_ID = c.ID ORDER BY f1.JOB_CD ASC"
 			+ " 				FOR XML PATH(''))"
 			+ " 			, 1, 1, '')"

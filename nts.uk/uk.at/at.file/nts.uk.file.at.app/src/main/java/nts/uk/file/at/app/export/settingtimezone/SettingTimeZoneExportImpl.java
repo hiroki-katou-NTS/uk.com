@@ -8,6 +8,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,17 +36,20 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                 .mainData(this.getMasterDatasOfAutoCalSetting())
                 .mainDataColumns(this.getHeaderColumnsOfAutoCalSetting())
                 .sheetName(TextResource.localize("KMK005_128"))
+                .mode(MasterListMode.NONE)
                 .build();
         SheetData sheetData3 = SheetData.builder()
                 .mainData(this.getMasterDatasOfSettingTimeZone())
                 .mainDataColumns(this.getHeaderColumnsOfSettingTimeZone())
                 .sheetName(TextResource.localize("KMK005_129"))
+                .mode(MasterListMode.NONE)
                 .build();
 
         SheetData sheetData4 = SheetData.builder()
                 .mainData(this.getMasterDatasSetUpUseCompany())
                 .mainDataColumns(this.getHeaderColumnsSetUpUseCompany())
                 .sheetName(TextResource.localize("KMK005_130"))
+                .mode(MasterListMode.NONE)
                 .build();
 
         sheetDatas.add(sheetData2);
@@ -56,6 +60,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                     .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
                     .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
                     .sheetName(TextResource.localize("KMK005_131"))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData5);
 
@@ -63,6 +68,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                     .mainData(this.getMasterDatasOfSetEmployees())
                     .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
                     .sheetName(TextResource.localize("KMK005_132"))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData6);
 
@@ -70,6 +76,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                     .mainData(this.getMasterDatasOfSetUsedWorkingHours())
                     .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
                     .sheetName(TextResource.localize("KMK005_133"))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData7);
         }else{
@@ -78,6 +85,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                         .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
                         .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
                         .sheetName(TextResource.localize("KMK005_131"))
+                        .mode(MasterListMode.NONE)
                         .build();
                 sheetDatas.add(sheetData5);
             }
@@ -87,6 +95,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                         .mainData(this.getMasterDatasOfSetEmployees())
                         .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
                         .sheetName(TextResource.localize("KMK005_132"))
+                        .mode(MasterListMode.NONE)
                         .build();
                 sheetDatas.add(sheetData6);
             }
@@ -96,6 +105,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                         .mainData(this.getMasterDatasOfSetUsedWorkingHours())
                         .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
                         .sheetName(TextResource.localize("KMK005_133"))
+                        .mode(MasterListMode.NONE)
                         .build();
                 sheetDatas.add(sheetData7);
             }
@@ -131,6 +141,11 @@ public class SettingTimeZoneExportImpl implements MasterListData {
     public String mainSheetName() {
         return TextResource.localize("KMK005_127");
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
     private List<MasterHeaderColumn> getHeaderColumnsOfAutoCalSetting() {
         List <MasterHeaderColumn> columns = new ArrayList<>();

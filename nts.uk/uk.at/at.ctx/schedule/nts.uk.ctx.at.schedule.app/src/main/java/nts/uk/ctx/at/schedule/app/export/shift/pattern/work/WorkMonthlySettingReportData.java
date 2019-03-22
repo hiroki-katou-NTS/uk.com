@@ -15,14 +15,16 @@ public class WorkMonthlySettingReportData {
 	private String patternName;
 	private Optional<GeneralDate> date;
 	private Optional<String> workSetName;
+	private String eventName;
 	
 	public static WorkMonthlySettingReportData createFromJavaType(String pattenCode,
-			String patternName, Optional<GeneralDate> date, Optional<String> workSetName) {
+			String patternName, Optional<GeneralDate> date, Optional<String> workSetName,String eventName) {
 		return new WorkMonthlySettingReportData(
 				pattenCode, 
 				patternName,
 				date,
-				workSetName);
+				workSetName,
+				eventName);
 	}
 	
 	public String getYearMonth() {
