@@ -55,17 +55,13 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
 	
 	private static final String IS_SELF_AUTH = String.join(" ",
-			" SELECT au  FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co, PpemtPerInfoItem i, PpemtPerInfoItemCm ic, PpemtPersonItemAuth au",
-			" WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd", 
-			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId  AND co.ppemtPerInfoCtgCmPK.categoryCd  = ic.ppemtPerInfoItemCmPK.categoryCd ",
-			" AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
-			" AND co.ppemtPerInfoCtgCmPK.contractCd = ic.ppemtPerInfoItemCmPK.contractCd ",
-			" AND i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId ",
-			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId ",
-			" AND i.itemCd =:itemCd",
-			" AND ca.categoryCd =:categoryCd",	
-			" AND ca.cid =:cid  AND  co.ppemtPerInfoCtgCmPK.contractCd =:contractCd",
-			" AND au.ppemtPersonItemAuthPk.roleId =:roleId");
+			"SELECT au  FROM  PpemtPerInfoCtg ca INNER JOIN  PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd AND co.ppemtPerInfoCtgCmPK.categoryCd =:categoryCd AND ca.cid =:cid  AND co.ppemtPerInfoCtgCmPK.categoryCd =:contractCd",
+			"INNER JOIN PpemtPerInfoItem i ON  ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ",
+			"ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND co.ppemtPerInfoCtgCmPK.contractCd = ic.ppemtPerInfoItemCmPK.contractCd",
+			"AND co.ppemtPerInfoCtgCmPK.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd AND ic.ppemtPerInfoItemCmPK.itemCd =:itemCd",
+			"INNER JOIN PpemtPersonItemAuth au ON i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId",
+			"AND ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId AND au.ppemtPersonItemAuthPk.roleId =:roleId");
 
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
