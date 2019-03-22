@@ -65,14 +65,15 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository#getAll(java.util.List)
 	 */
 	@Override
-	public List<PublicHolidayRemain> getAll(List<String> sids) {
+	public List<PublicHolidayRemain> getAll(String cid, List<String> sids) {
 		List<KrcmtPubHolidayRemain> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_PUB_HOLIDAY_REMAIN WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(i, subList.get(i));
+					stmt.setString(2 + i, subList.get(i));
 				}
 				List<KrcmtPubHolidayRemain> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					KrcmtPubHolidayRemain entity = new KrcmtPubHolidayRemain();

@@ -283,7 +283,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 					
 					entity.cID = rec.getString("CID");
 					entity.sID = rec.getString("SID");
-					entity.stateAtr = rec.getInt("STATE_ATR");
+					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
 					return entity;
 			
 				});

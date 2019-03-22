@@ -352,7 +352,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 					return entity;
 			
 				});
-				//.mapToDouble(i -> i.getUnUsedDays().v()).sum();
 				Map<String, List<KrcmtLeaveManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
 				dataMap.entrySet().parallelStream().forEach(c ->{
 					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.unUsedDays).sum());

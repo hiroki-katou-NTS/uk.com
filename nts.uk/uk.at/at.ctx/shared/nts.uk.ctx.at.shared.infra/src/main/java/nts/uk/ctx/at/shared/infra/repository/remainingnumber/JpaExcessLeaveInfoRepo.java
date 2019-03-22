@@ -79,11 +79,10 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	public List<ExcessLeaveInfo> getAll(List<String> sids, String cid) {
 		List<KrcmtExcessLeaveInfo> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_EXCESS_LEAVE_INFO WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
-
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}

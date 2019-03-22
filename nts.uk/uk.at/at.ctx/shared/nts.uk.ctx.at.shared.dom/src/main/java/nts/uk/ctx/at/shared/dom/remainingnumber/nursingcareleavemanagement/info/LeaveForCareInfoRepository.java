@@ -21,6 +21,12 @@ public interface LeaveForCareInfoRepository {
 	List<LeaveForCareInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds);
 	
 	Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId);
+	/**
+	 * @author lanlt
+	 * @param sids
+	 * @return
+	 */
+	List<CareLeaveDataInfo> getAllCareInfoDataBysId(String cid, List<String> sids);
 
 	/**
 	 * add LeaveForCareInfo object

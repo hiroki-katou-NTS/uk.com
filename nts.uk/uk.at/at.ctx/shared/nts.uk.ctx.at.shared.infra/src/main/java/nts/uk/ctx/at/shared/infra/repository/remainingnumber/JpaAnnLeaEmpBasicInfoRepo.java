@@ -44,7 +44,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString( i + 1, subList.get(i));
+					stmt.setString( 2 + i, subList.get(i));
 				}
 				
 				List<AnnualLeaveEmpBasicInfo> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {

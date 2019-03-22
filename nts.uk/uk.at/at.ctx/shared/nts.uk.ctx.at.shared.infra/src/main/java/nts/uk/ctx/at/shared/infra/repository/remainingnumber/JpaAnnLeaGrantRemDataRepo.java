@@ -307,7 +307,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString( i + 1, subList.get(i));
+					stmt.setString( i + 2, subList.get(i));
 				}
 				
 				List<AnnualLeaveGrantRemainingData> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {

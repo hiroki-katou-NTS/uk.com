@@ -21,5 +21,5 @@ public interface PublicHolidayRemainRepository{
 	void updateAll(List<PublicHolidayRemain> domains);
 	
 	void delete(String sid);
-	List<PublicHolidayRemain> getAll(List<String> sids);
+	List<PublicHolidayRemain> getAll(String cid, List<String> sids);
 }
