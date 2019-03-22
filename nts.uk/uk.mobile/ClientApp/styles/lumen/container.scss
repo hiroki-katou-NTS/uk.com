@@ -3,11 +3,16 @@ body {
         &-menu-top {
             position: relative;
             overflow: hidden;
+            height: 100%;
             .modal-backdrop {
                 overflow: hidden;
+                touch-action: none;
             }
             .sidebar {
                 margin-left: -370px;
+                &.iphone {
+                    margin-left: calc(-100vw - 50px);
+                }
             }
             .navbar-brand {
                 padding-left: 15px;
@@ -15,6 +20,7 @@ body {
         }
         &-side-bar {
             overflow: hidden;
+            height: 100%;
             .navbar-toggler {
                 transition-delay: 0.1s;
                 margin-right: - 50px;
@@ -23,10 +29,12 @@ body {
             .container-fluid {
                 overflow: hidden;
                 position: relative;
+                touch-action: none;
             }
             .modal-backdrop {
                 overflow: hidden;
                 position: fixed;
+                touch-action: none;
             }
         }
     }
