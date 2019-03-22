@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -246,7 +247,8 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 				aggregateTotalWorkingTime,
 				new AttendanceTimeMonth(this.totalWorkingTime),
 				aggregateTotalTimeSpent,
-				agreementTime);
+				agreementTime,
+				new AgreMaxTimeOfMonthly());
 		
 		// 月別実績の時間外超過
 		ExcessOutsideWorkOfMonthly excessOutsideWork = new ExcessOutsideWorkOfMonthly();

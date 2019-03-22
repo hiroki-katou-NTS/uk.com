@@ -4026,26 +4026,23 @@ var nts;
                             _start.call(__viewContext);
                         }
                     });
-                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if (!onSamplePage) {
-                        if ($(document).find("#header").length > 0) {
-                            ui.menu.request();
-                        }
-                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                            var header = "<div id='header'><div id='menu-header'>"
-                                + "<div id='logo-area' class='cf'>"
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"
-                                + "</div></div>"
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                            $("#master-wrapper").prepend(header);
-                            ui.menu.request();
-                        }
+                    if ($(document).find("#header").length > 0) {
+                        ui.menu.request();
+                    }
+                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                        var header = "<div id='header'><div id='menu-header'>"
+                            + "<div id='logo-area' class='cf'>"
+                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='user-info' class='cf'>"
+                            + "<div id='company' class='cf' />"
+                            + "<div id='user' class='cf' />"
+                            + "</div></div>"
+                            + "<div id='nav-area' class='cf' />"
+                            + "<div id='pg-area' class='cf' />"
+                            + "</div></div>";
+                        $("#master-wrapper").prepend(header);
+                        ui.menu.request();
                     }
                 };
                 var noSessionWebScreens = [
@@ -4280,27 +4277,34 @@ var nts;
                         $companySelect.appendTo($company);
                         $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
                         var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        _.forEach(companies, function (comp, i) {
-                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                            $compItem.on(constants.CLICK, function () {
-                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (data) {
-                                    $companyName.text(comp.companyName);
-                                    $userName.text(data.personName);
-                                    $companyList.css("right", $user.outerWidth() + 30);
-                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
-                                            location.reload(true);
+                        var listCompany = function (comps) {
+                            _.forEach(comps, function (comp, i) {
+                                var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                                $compItem.on(constants.CLICK, function () {
+                                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                                        .done(function (data) {
+                                        $companyName.text(comp.companyName);
+                                        $userName.text(data.personName);
+                                        $companyList.css("right", $user.outerWidth() + 30);
+                                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                                uk.request.jumpToTopPage();
+                                            });
+                                        }
+                                        else {
+                                            uk.request.jumpToTopPage();
+                                        }
+                                    }).fail(function (msg) {
+                                        nts.uk.ui.dialog.alertError(msg.messageId);
+                                        $companyList.empty();
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (compList) {
+                                            listCompany(compList);
                                         });
-                                    }
-                                    else {
-                                        location.reload(true);
-                                    }
-                                }).fail(function (msg) {
-                                    nts.uk.ui.dialog.alertError(msg.messageId);
+                                    });
                                 });
                             });
-                        });
+                        };
+                        listCompany(companies);
                         $companySelect.on(constants.CLICK, function () {
                             if ($companyList.css("display") === "none") {
                                 $companyList.fadeIn(100);
@@ -15404,7 +15408,7 @@ var nts;
                             || !!window.navigator.userAgent.match(/trident/i)
                             || window.navigator.userAgent.indexOf("Edge") > -1)) {
                         var $div = $("<div/>").appendTo($(document.body));
-                        var style = $label[0].currentStyle || $label[0].style;
+                        var style = $label[0].currentStyle || window.getComputedStyle($label[0]); //$label[0].style;
                         if (style) {
                             for (var p in style) {
                                 $div[0].style[p] = style[p];
@@ -17882,7 +17886,8 @@ var nts;
                             var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
                             // filter specs key
                             if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
-                                if (!evt.key.match(/[\-\.0-9]/g)) {
+                                // fix bug cannot press [.] on numpad
+                                if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
                                     evt.preventDefault();
                                 }
                                 else {
@@ -17901,6 +17906,8 @@ var nts;
                                     else {
                                         val = val.replace(val.substring(ss, se), evt.key);
                                     }
+                                    // fix bug cannot press [.] on numpad
+                                    val = val.replace(/Decimal/, '.');
                                     // accept negative key only first press
                                     if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
                                         evt.preventDefault();
@@ -17915,12 +17922,92 @@ var nts;
                                     if (constraint) {
                                         var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                         if (primitive) {
-                                            var nval = parseFloat(val), min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength;
+                                            var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min)), mival = val, maval = val, dlen = primitive.mantissaMaxLength;
                                             // accept negative key if min < 0
                                             if (evt.key == '-' && min >= 0) {
                                                 evt.preventDefault();
                                                 return;
                                             }
+                                            if (min < 1) {
+                                                // accept once 0 char
+                                                if (val.match(/(^0{2,})|(^-?0{2,})/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
+                                            }
+                                            else {
+                                                // not accept char 0 offset = 0
+                                                if (val.match(/^0/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
+                                            }
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
                                             // clear decimal in constraint (sync) if option not has decimallength
                                             if (rd.option && rd.option.decimallength < 1) {
                                                 primitive.valueType = 'Integer';
@@ -17938,7 +18025,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17949,7 +18036,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17960,7 +18047,7 @@ var nts;
                                                         evt.preventDefault();
                                                         return;
                                                     }
-                                                    if (nval > max || nval < min) {
+                                                    if (nmax < min || nmin > max) {
                                                         evt.preventDefault();
                                                         return;
                                                     }
@@ -17981,26 +18068,214 @@ var nts;
                                 var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                 // if value after delete out of range, preventDefault
                                 if (primitive) {
-                                    var min = primitive.min, max = primitive.max;
+                                    var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min));
                                     if (ss == se) {
                                         if (evt.keyCode == 8) {
-                                            var _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                         else {
-                                            var _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
-                                            if (_num < min || _num > max) {
+                                            var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
                                                 evt.preventDefault();
                                                 return;
                                             }
                                         }
                                     }
                                     else {
-                                        var _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
-                                        if (_num < min || _num > max) {
+                                        var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
+                                        // calculate min & max value
+                                        if (max < 0) {
+                                            for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                }
+                                                else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                            for (var i = maval.length - 1; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '0';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                        else if (min < 0) {
+                                            if (val.indexOf('-') > -1) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i].match(/\d/)) {
+                                                        mival += '9';
+                                                    }
+                                                    else {
+                                                        mival += stmi[i];
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i].match(/\d/)) {
+                                                        maval += '9';
+                                                    }
+                                                    else {
+                                                        maval += stma[i];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                        // fix halfint max value
+                                        if (primitive.valueType == 'HalfInt') {
+                                            maval = maval.replace(/\.\d$/, '.5');
+                                        }
+                                        var nmin = Number(mival), nmax = Number(maval);
+                                        if (nmax < min || nmin > max) {
                                             evt.preventDefault();
                                             return;
                                         }
@@ -18872,6 +19147,7 @@ var nts;
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
                         }
+                        _.defer(function () { $grid.ntsGridList("scrollToSelected"); });
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
@@ -27570,6 +27846,9 @@ var nts;
                                 var disFormat = su.formatSave(col[0], val);
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                                 $.data($cell, v.DATA, disFormat);
+                                if (_zeroHidden && ti.isZero(disFormat, key)) {
+                                    $cell.innerHTML = "";
+                                }
                             }
                             else if (dkn.controlType[key] === dkn.CHECKBOX) {
                                 var check = $cell.querySelector("input[type='checkbox']");
@@ -27727,25 +28006,44 @@ var nts;
                                         }
                                         else
                                             options = cbx_1.options;
-                                        var sel = _.find(options, function (o) { return o.code === val; });
-                                        if (sel) {
-                                            su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
-                                            $.data($cell, lo.CBX_SELECTED_TD, val);
-                                            $cell.textContent = sel ? sel.name : "";
-                                        }
+                                        var sel = _.find(options, function (o) { return o[cbx_1.optionsValue] === val; });
+                                        if (_.isNil(val))
+                                            val = null;
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel[cbx_1.optionsText] : "";
                                     }
                                 }
                                 else if (cbx_1.type === dkn.DATE_PICKER) {
                                     var txt = void 0, mDate = moment.utc(val, cbx_1.format, true);
                                     if (cbx_1.formatType !== "ymd")
                                         txt = mDate.format(cbx_1.format[0]);
-                                    var date = _.isNil(txt) ? mDate.toDate() : txt;
+                                    var date = _.isNil(txt) ? (mDate.isValid() ? mDate.toDate() : mDate._i) : txt;
+                                    if (_.isNil(date))
+                                        date = null;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                                     $.data($cell, v.DATA, date);
-                                    $cell.innerHTML = _.isNil(txt) ? mDate.format(cbx_1.format[0]) : txt;
+                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
                                 }
                             }
                             return idx;
+                        },
+                        optionsList: function (id, key) {
+                            var control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
+                            if (!control || !controlMap || !(controlDef = controlMap[key]))
+                                return null;
+                            if (control === dkn.REFER_BUTTON) {
+                                return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                            }
+                            else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                                if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
+                                    return control.optionsList[listType];
+                                }
+                                else {
+                                    return control.options;
+                                }
+                            }
+                            return null;
                         },
                         checkAll: function (key, fixed) {
                             var idxes, rows;
@@ -27891,17 +28189,17 @@ var nts;
                                 });
                             });
                         },
-                        replace: function (key, condition, value) {
+                        replace: function (key, condition, value, dr) {
                             if (_.isNil(key) || !_.isFunction(condition) || !_.isFunction(value))
                                 return;
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef || (_.isNumber(_currentPage) && Number(k) !== _currentPage))
                                     return;
                                 _.forEach(_mafollicle[k].dataSource, function (d, i) {
-                                    if (!condition(d[key]))
+                                    if (!condition(d[key], d))
                                         return;
-                                    var setVal = value(d[key]);
-                                    _$grid.mGrid("updateCell", d[_pk], key, setVal);
+                                    var setVal = value(d[key], d);
+                                    _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                                 });
                             });
                         },
@@ -28925,6 +29223,7 @@ var nts;
                                 if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                     delete dirties[id][coord.columnKey];
                                 }
+                                return { c: calcCell };
                             }
                             else {
                                 if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === ""))
@@ -28934,6 +29233,7 @@ var nts;
                                         if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                             delete dirties[id][coord.columnKey];
                                         }
+                                        rData[coord.columnKey] = cellValue;
                                         return { c: calcCell };
                                     }
                                     $cell.classList.remove(color.ManualEditTarget);
@@ -29023,7 +29323,6 @@ var nts;
                                     }
                                     else {
                                         formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                                        t.c.textContent = formatted;
                                         if (ng) {
                                             t.c.classList.add(khl.ERROR_CLS);
                                             errDetail = _.find(_errors, function (err) { return err.index === coord.rowIdx && err.columnKey === coord.columnKey; });
@@ -29040,6 +29339,12 @@ var nts;
                                         }
                                         disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
                                         $.data(t.c, v.DATA, disFormat);
+                                        if (maf.zeroHidden && ti.isZero(disFormat, coord.columnKey)) {
+                                            t.c.textContent = "";
+                                        }
+                                        else {
+                                            t.c.textContent = formatted;
+                                        }
                                     }
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
@@ -29269,7 +29574,9 @@ var nts;
                                     }
                                 }
                                 else if (valueType === "Time") {
-                                    value = uk.time.minutesBased.duration.parseString(String(value)).format();
+                                    var parsed = uk.time.minutesBased.duration.parseString(String(value));
+                                    if (parsed.success)
+                                        value = parsed.format();
                                 }
                                 else if (valueType === "Currency") {
                                     var currencyOpts = new ui.option.CurrencyEditorOption();
@@ -30218,8 +30525,11 @@ var nts;
                                 kt._adjuster.nostal(table.cols, bodyGroupArr_1, sumGroupArr);
                                 kt._adjuster.handle();
                             }
+                            var tmp_2 = _vessel().zeroHidden;
+                            _vessel().zeroHidden = _zeroHidden;
+                            _zeroHidden = tmp_2;
                             if (lo.changeZero(_vessel().zeroHidden))
-                                _vessel().zeroHidden = _zeroHidden;
+                                _zeroHidden = _vessel().zeroHidden;
                             return;
                         }
                         _maxFreeWidth = _mafollicle[SheetDef][_currentSheet].maxWidth;
@@ -30253,8 +30563,11 @@ var nts;
                             kt._adjuster.nostal(_mafollicle[SheetDef][_currentSheet].hColArr, _mafollicle[SheetDef][_currentSheet].bColArr, _mafollicle[SheetDef][_currentSheet].sumColArr);
                             kt._adjuster.handle();
                         }
+                        var tmp = _vessel().zeroHidden;
+                        _vessel().zeroHidden = _zeroHidden;
+                        _zeroHidden = tmp;
                         if (lo.changeZero(_vessel().zeroHidden))
-                            _vessel().zeroHidden = _zeroHidden;
+                            _zeroHidden = _vessel().zeroHidden;
                     }
                     gp.hopto = hopto;
                 })(gp = mgrid.gp || (mgrid.gp = {}));
@@ -34127,6 +34440,26 @@ var nts;
                                 return setupDeleteButton($grid, param);
                             case 'setupScrollWhenBinding':
                                 return setupScrollWhenBinding($grid);
+                            case 'scrollToSelected':
+                                return scrollToSelect($grid);
+                        }
+                    }
+                    function scrollToSelect($grid) {
+                        var row = null;
+                        var selectedRows = $grid.igGrid("selectedRows");
+                        if (selectedRows) {
+                            row = selectedRows[0];
+                        }
+                        else {
+                            row = $grid.igGrid("selectedRow");
+                        }
+                        if (row) {
+                            if ($grid.igGrid("option", "virtualization") === true) {
+                                ui.ig.grid.virtual.expose(row, $grid);
+                            }
+                            else {
+                                ui.ig.grid.expose(row, $grid);
+                            }
                         }
                     }
                     function setupScrollWhenBinding($grid) {

@@ -13,6 +13,8 @@ module cps003.a.service {
         category: (uid: string) => ajax(`ctx/pereg/employee/category/getall/${uid}`),
         permission: (roleId: string, catId: string) => ajax(`ctx/pereg/roles/auth/category/find/${roleId}/${catId}`),
         basicHolidayEmpInfo: (empIdList) => ajax("at", `at/record/remainnumber/yearholidaymanagement/get-data`, empIdList),
-        affiliatedCompanyHist: () => ajax(`bs/employee/affiliatedcompanyhistory/getdata`)
+        affiliatedCompanyHist: (param) => ajax(`bs/employee/affiliatedcompanyhistory/getdata`, param),
+        contractTime: (param) => ajax(`ctx/pereg/grid-layout/get-data/contracttime`, param),
+        workplaceInfo: (param) => ajax(`bs/employee/workplace/info/display`, param)
     }
 }

@@ -462,6 +462,9 @@ module nts.uk.ui.koExtentions {
                     _.defer(() => {$grid.trigger("selectChange");});
                 }
             }
+            
+            _.defer(() => {$grid.ntsGridList("scrollToSelected");});
+            
             $grid.data("ui-changed", false);
             $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }

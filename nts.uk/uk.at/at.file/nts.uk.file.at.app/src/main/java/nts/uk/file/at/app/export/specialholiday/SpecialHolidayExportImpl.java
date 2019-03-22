@@ -15,6 +15,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @DomainID(value = "specialholiday")
 @Stateless
@@ -144,6 +145,11 @@ public class SpecialHolidayExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
     	return columns;
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
     
     private List<MasterData> getSPHDEventMasterData(){
     	String cid = AppContexts.user().companyId();
@@ -159,6 +165,7 @@ public class SpecialHolidayExportImpl implements MasterListData{
 						    			.mainData(getSPHDEventMasterData())
 						    			.mainDataColumns(getHeaderColumnSPHDEvent())
 						    			.sheetName(TextResource.localize("KMF004_154"))
+						    			.mode(MasterListMode.NONE)
 						    			.build();
     	sheets.add(sheetData);
 		return sheets;

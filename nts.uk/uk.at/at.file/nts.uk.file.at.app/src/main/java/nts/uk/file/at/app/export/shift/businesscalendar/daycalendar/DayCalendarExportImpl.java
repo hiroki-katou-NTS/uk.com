@@ -31,6 +31,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -52,19 +53,18 @@ public class DayCalendarExportImpl implements MasterListData {
 	@Inject
 	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
-//	private Period period;
-	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 //		 String companyId = AppContexts.user().companyId();
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"));
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), 
+				 getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"));
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"));
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"), MasterListMode.FISCAL_YEAR_RANGE);
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -75,6 +75,11 @@ public class DayCalendarExportImpl implements MasterListData {
 	public String mainSheetName() {
 		 
 		return TextResource.localize("KSM004_56");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.FISCAL_YEAR_RANGE;
 	}
 
 	@Override
@@ -231,6 +236,11 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		if (setReportData.getEventName() != null){
+			value += "「" + setReportData.getEventName() + "」"; 
+		}
+		
 		data.put(key, value);
 	}
 	
@@ -300,11 +310,6 @@ public class DayCalendarExportImpl implements MasterListData {
 							y.setHierarchyCode(Optional.of(hierarchyCode));
 							y.setWorkplaceCode(Optional.of(code));
 							y.setWorkplaceName(Optional.of(name));
-							System.out.println(
-									"wpId: " + wpId +
-									"Workplace code: " + code + 
-									", workplace name: " + name
-									+ ", hierarchy code: " + hierarchyCode);
 						});
 					}
 				});
@@ -331,8 +336,8 @@ public class DayCalendarExportImpl implements MasterListData {
 				List<WorkplaceCalendarReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					WorkplaceCalendarReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//						|| (!firstObject.getHierarchyCode().isPresent() && !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode
 								.stream()
 								.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
@@ -433,6 +438,11 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		if (setReportData.getEventName() != null){
+			value += "「" + setReportData.getEventName() + "」"; 
+		}
+		
 		data.put(key, value);
 	}
 	
@@ -556,6 +566,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
 		data.put(key, value);
 	}
 }

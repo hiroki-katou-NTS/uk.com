@@ -142,7 +142,6 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 		} else {
 			colFix = 3;
 		}
-		/*
 		for (int i = 0; i < errorEmployeeInfoLst.size(); i++) {
 			ErrorWarningEmployeeInfoDataSource employee = errorEmployeeInfoLst.get(i);
 			// in ra những cột cố định
@@ -180,11 +179,11 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 					}
 					switch (col) {
 					case 3:
-						cell.setValue(errorItem.getErrorType() == 1?"エラー": "確認");
+						cell.setValue(errorItem.getErrorType() == 0?"エラー": "確認");
 						break;
 					case 4:
 						if (dataSource.isDisplayE1_006()) {
-							cell.setValue(errorItem.getErrorType() == 1?"エラー": "確認");
+							cell.setValue(errorItem.getErrorType() == 0?"エラー": "確認");
 						} else {
 							cell.setValue(errorItem.getItemName());
 						}
@@ -213,7 +212,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 				Cell cell = cells.get((row - 1), j);
 				setBodyStyle(cell);
 			}
-		}*/
+		}
 
 	}
 

@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 580,
-					height : 540
+					width : 1200,
+					height :800
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,15 +22,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="" tabindex="1" >#{i18n.getText('CPS003_98')}</button>
-				<button id="" tabindex="2" >#{i18n.getText('CPS003_99')}</button>
+				<button id="" tabindex="1" data-bind = "click : exportFile" >#{i18n.getText('CPS003_98')}</button>
+				<button id="" tabindex="2" data-bind = "click : close" >#{i18n.getText('CPS003_99')} </button>
 			</div>
 			<div id="contents-area" data-bind="">
 			<div id= "contents-grid" data-bind="">
 			<table id="grid2"></table>
-			</div>
-				<div class="showNumberOfpage">
-					<span>1 - 20/230 bug</span>
 				</div>
 			</div>
 		</ui:define>

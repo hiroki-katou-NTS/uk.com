@@ -170,12 +170,12 @@ module nts.uk.at.view.kwr008.a {
                     if (msgId == "") return;
                     let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
                     let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
-                    alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
+                    //alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
                     block.clear();
-                })
+                });
             }
 
             private getMsgEmpError(data: Array<any>, totalErr: number) {
@@ -397,7 +397,7 @@ module nts.uk.at.view.kwr008.a {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-                self.employeeList([]);
+                //self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
@@ -409,12 +409,13 @@ module nts.uk.at.view.kwr008.a {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.selectedEmployeeCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
@@ -422,10 +423,13 @@ module nts.uk.at.view.kwr008.a {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15
-                };
-                var empCodeList = dataList.map((employee) => employee.employeeCode );
-                self.selectedEmployeeCode(empCodeList);
+                    maxRows: 15,
+                    isSelectAllAfterReload: true
+                };/*
+                _.defer(() => {
+                    var empCodeList = dataList.map((employee) => employee.employeeCode );
+                    self.selectedEmployeeCode(empCodeList);
+                });*/
             }
 
             /**

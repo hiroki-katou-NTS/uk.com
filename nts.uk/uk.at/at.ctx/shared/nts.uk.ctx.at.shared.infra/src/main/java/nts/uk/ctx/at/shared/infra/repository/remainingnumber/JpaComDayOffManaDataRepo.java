@@ -41,7 +41,6 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtComDayoffMaData c"
 			+ " WHERE c.sID = :employeeId" + " AND c.unknownDate = :unknownDate" + " AND c.dayOff >= :startDate";
-
 	private static final String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID,
 			" AND a.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
@@ -280,7 +279,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	public Map<String, Double> getAllBySidWithReDay(String cid, List<String> sid) {
 		Map <String ,Double> result = new HashMap<>();
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_COM_DAYOFF_MA_DATA WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_COM_DAYOFF_MA_DATA WHERE  CID = ? AND SUB_HD_ATR = ?   AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);

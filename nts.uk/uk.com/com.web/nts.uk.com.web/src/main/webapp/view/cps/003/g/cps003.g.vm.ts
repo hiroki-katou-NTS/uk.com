@@ -1,114 +1,90 @@
 module cps003.g.vm {
-    import text = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
-    import close = nts.uk.ui.windows.close;
-    import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
-    let __viewContext: any = window['__viewContext'] || {};
+    import setShared = nts.uk.ui.windows.setShared;
+    
 
-    export class ScreenModel {
-        items = (function() {
-            var list = [];
-            for (var i = 0; i < 500; i++) {
-                list.push(new GridItem(i));
-            }
-            return list;
-        })();
+
+
+    export class ViewModel {
+        data: KnockoutObservableArray<any>;
         constructor() {
-            let self = this;
-
+            var self = this;
+            self.data = ko.observable([]);
         }
-
         start() {
             let self = this;
-
+            var dfd = $.Deferred();
             let paramA = getShared("CPS003G_ERROR_LIST"), paramC: GridDtoError = getShared("CPS003G_ERROR_LIST");
-
+            self.data(paramA);
+            $("#grid2").igGrid({
+                autoGenerateColumns: true,
+                dataSource: self.data(),
+                columns: [
+                    { headerText: nts.uk.resource.getText("CPS003_100"), key: "empCd", dataType: "string" ,width: "100px"},
+                    { headerText: nts.uk.resource.getText("CPS003_101"), key: "empName", dataType: "string",width: "100px" },
+                    { headerText: nts.uk.resource.getText("CPS003_102"), key: "no", dataType: "string",width: "50px" },
+                    { headerText: nts.uk.resource.getText("CPS003_103"), key: "isDisplayRegister", dataType: "boolean",width: "50px" , formatter: function(v) { return v ? '〇' : 'X' }  },
+                    { headerText: nts.uk.resource.getText("CPS003_104"), key: "errorType", dataType: "number",width: "50px" },
+                    { headerText: nts.uk.resource.getText("CPS003_105"), key: "itemName", dataType: "string",width: "250px" },
+                    { headerText: nts.uk.resource.getText("CPS003_106"), key: "message", dataType: "string",width: "500px" },
+                     { headerText: nts.uk.resource.getText("CPS003_106"), key: "employeeId", dataType: "string",  hidden: true }
+                ],
+                features: [{
+                    name: "Paging",
+                    type: "local",
+                    pageSize: 5
+                }],
+            });
+            dfd.resolve();
+            return dfd.promise();
         }
-        pushData() {
-            let self = this;
-
-            setShared('CPS003G_VALUE', {});
-            self.close();
-        }
-
         close() {
-            close();
+            nts.uk.ui.windows.close();
         }
-    }
-    class GridItem {
-        id: number;
-        flag: boolean;
-        ruleCode: string;
-        combo: string;
-        constructor(index: number) {
-            this.id = index;
-            this.flag = index % 2 == 0;
-            this.ruleCode = String(index % 3 + 1);
-            this.combo = String(index % 3 + 1);
-        }
-    }
-    var model = new ScreenModel();
-    class ItemModel {
-        code: string;
-        name: string;
+        exportFile() {
+            let self = this,
+                dataGroup =  _.groupBy(self.data(), "employeeId"),
+                result = [],
+                isDisplayE1_006 = self.data().length > 0 ? self.data()[0].isDisplayRegister: false;
+            _.each(dataGroup, c => {
+                let em = { employeeId: c[0].employeeId, employeeCd: c[0].empCd, employeeName: c[0].empName, order: c[0].no, errorLst: [] };
+                _.each(c, i => {
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-    var comboItems = [new ItemModel('1', '基本給'),
-        new ItemModel('2', '役職手当'),
-        new ItemModel('3', '基本給2')];
-    var comboColumns = [{ prop: 'code', length: 4 },
-        { prop: 'name', length: 8 }];
-    $("#grid2").ntsGrid({
-        width: '970px',
-        height: '400px',
-        dataSource: model.items,
-        primaryKey: 'id',
-        virtualization: true,
-        virtualizationMode: 'continuous',
-        columns: [
-            { headerText: 'ID', key: 'id', dataType: 'number', width: '50px' },
-            { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
-            { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '290px', ntsControl: 'SwitchButtons' },
-            { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
-            { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
-            { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
-        ],
-        features: [{ name: 'Sorting', type: 'local' }],
-        ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-            {
-                name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }],
-                optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-            },
-            { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-            { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-            { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-    });
-    $("#grid2").setupSearchScroll("igGrid", true);
-    $("#run").on("click", function() {
-        var source = $("#grid2").igGrid("option", "dataSource");
-        alert(source[1].flag);
-    });
-    $("#update-row").on("click", function() {
-        $("#grid2").ntsGrid("updateRow", 0, { flag: false, ruleCode: '2', combo: '3' });
-    });
-    $("#enable-ctrl").on("click", function() {
-        $("#grid2").ntsGrid("enableNtsControlAt", 1, "combo", "ComboBox");
-    });
-    $("#disable-ctrl").on("click", function() {
-        $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
-    });
-    $("#disable-all").on("click", function() {
-        $("#grid2").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
-    });
-    $("#enable-all").on("click", function() {
-        $("#grid2").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
-    });
+                    
+                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType }:
+                        em.errorLst.push(item);
+                });
+                result.push(em);
+            })
+            let itemErrorLst = {isDisplayE1_006: isDisplayE1_006, errorEmployeeInfoLst: result};
 
-    interface IModelDto {
+            nts.uk.request.exportFile('com', '/person/matrix/report/print/error', itemErrorLst).done(data => { console.log(data); }).fail((mes) => {
+            });
+        }
+
+         export interface PersonMatrixErrorDataSource {
+             isDisplayE1_006: boolean;
+             errorEmployeeInfoLst: Array<ErrorWarningEmployeeInfoDataSource>;
+         }
+           
+         export interface ErrorWarningEmployeeInfoDataSource {
+            employeeId: string;
+            employeeCd: string;
+            employeeName: string;
+            order: number;
+            errorLst: Array<ErrorWarningInfoOfRowOrderDataSource>;
+        }
+        
+         export interface ErrorWarningInfoOfRowOrderDataSource {
+             itemName: string;
+             errorType: number;
+             message: string;
+         }
+    
+
+    
+    
     }
+
 }

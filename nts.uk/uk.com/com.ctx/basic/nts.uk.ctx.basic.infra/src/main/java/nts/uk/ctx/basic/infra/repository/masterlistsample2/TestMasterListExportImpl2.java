@@ -17,6 +17,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "test2") 
@@ -53,6 +54,11 @@ public class TestMasterListExportImpl2 implements MasterListData{
 		}
 		
 		return columns;
+	}
+	
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 	@Override
@@ -95,7 +101,7 @@ public class TestMasterListExportImpl2 implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		return IntStream.range(0, 5).mapToObj(idx -> "Extra" + idx).map(x -> {
-			return new SheetData(getMasterDatas(query), getHeaderColumns(query), getExtraMasterData(query), getExtraHeaderColumn(query), null);
+			return new SheetData(getMasterDatas(query), getHeaderColumns(query), getExtraMasterData(query), getExtraHeaderColumn(query), null, MasterListMode.NONE);
 		}).collect(Collectors.toList());
 	}
 
