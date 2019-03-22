@@ -55,7 +55,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		List<PeregUserDefAddCommand> errorLst = new ArrayList<>();
 		List<PeregUserDefAddCommand> addLst = new ArrayList<>();
 		command.parallelStream().forEach(c -> {
-			if (c.getItems() == null || c.getItems().isEmpty() || c.getCategoryCd().indexOf("CS") > -1) {
+			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
 				addLst.add(c);
@@ -98,7 +98,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 			return new PerInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
 		}).collect(Collectors.toList());
 		
-		if(ctgData.size() > 0) {
+		if(!ctg.isFixed() && ctgData.size() > 0) {
 			perInfoCtgDataRepository.addAll(ctgData);				
 		}
 		
@@ -141,7 +141,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		}).collect(Collectors.toList());
 		
 		// Add emp category data
-		if(ctgData.size() > 0) {
+		if(!ctg.isFixed() && ctgData.size() > 0) {
 			emInfoCtgDataRepository.addAll(ctgData);
 		}
 		

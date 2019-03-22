@@ -38,6 +38,15 @@ public interface EmpInfoItemDataRepository {
 	List<EmpInfoItemData> getAllInfoItemByRecordId(List<String>  recordIds);
 	
 	/**
+	 * @author lanlt
+	 * getAllInfoItemByRecordIds and CategoryId
+	 * @param cgtId
+	 * @param recordIds
+	 * @return
+	 */
+	List<EmpInfoItemData> getAllInfoItemByRecordId(List<String> itemIds, List<String>  recordIds);
+	
+	/**
 	 * addAll EmpInfoItemData
 	 * @author lanlt
 	 * @param domains

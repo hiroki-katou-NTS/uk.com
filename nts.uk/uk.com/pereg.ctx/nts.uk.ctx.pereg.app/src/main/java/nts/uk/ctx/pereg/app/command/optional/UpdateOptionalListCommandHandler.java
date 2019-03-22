@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.command.optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,12 +39,16 @@ implements PeregUserDefListUpdateCommandHandler{
 		
 		List<PeregUserDefUpdateCommand> errorLst = new ArrayList<>();
 		List<PeregUserDefUpdateCommand> addLst = new ArrayList<>();
+		List<String> itemIds = command.get(0).getItems().parallelStream().map(item  -> item.definitionId()).collect(Collectors.toList());
+		List<String> recordIds = new ArrayList<>();
+		// do itemId của các employee trong cung một công ty giống nhau  - ta sẽ lấy nhân viên đầu tiên để lấy ra được itemId
 		
 		command.parallelStream().forEach(c -> {
-			if (c.getItems() == null || c.getItems().isEmpty() || c.getCategoryCd().indexOf("CS") > -1) {
+			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
 				addLst.add(c);
+				recordIds.add(c.getRecordId());
 			}
 		});
 		
@@ -56,56 +61,79 @@ implements PeregUserDefListUpdateCommandHandler{
 		if (!ctg.isPresent()){
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
-		
 		// In case of person
 		if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			updatePerson(ctg.get(), addLst);
+			List<PersonInfoItemData> itemUpdate = perInfoItemDataRepository.getAllInfoItemByRecordIdsAndItemIds(itemIds, recordIds);
+			updatePerson(ctg.get(), addLst, itemUpdate);
 		} else if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-			updateEmployee(ctg.get(), addLst);
+			List<EmpInfoItemData> itemUpdate = empInfoItemDataRepository.getAllInfoItemByRecordId(itemIds, recordIds);
+			updateEmployee(ctg.get(), addLst, itemUpdate);
 		}
 		
 	}
 	
-	private void updatePerson(PersonInfoCategory ctg, List<PeregUserDefUpdateCommand> addLst) {
-		List<PersonInfoItemData> items = new ArrayList<>();
+	private void updatePerson(PersonInfoCategory ctg, List<PeregUserDefUpdateCommand> addLst, List<PersonInfoItemData> itemUpdates) {
+		List<PersonInfoItemData> insertLst = new ArrayList<>();
+		List<PersonInfoItemData> updateLst = new ArrayList<>();
 		
 		addLst.parallelStream().forEach(c -> {
 			c.getItems().parallelStream().forEach(item -> {
+				Optional<PersonInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(insert -> insert.getPerInfoItemDefId().equals(item.definitionId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
 				if (state != null) {
 					PersonInfoItemData itemData = new PersonInfoItemData(item.definitionId(), c.getRecordId(), state);
-					items.add(itemData);
+					if(itemUpdateOpt.isPresent()) {
+						updateLst.add(itemData);
+					}else {
+						insertLst.add(itemData);
+					}
 				}
 
 			});
 		});
 		
-		if(items.size() > 0) {
-			perInfoItemDataRepository.updateAll(items);
+		if(updateLst.size() > 0) {
+			perInfoItemDataRepository.updateAll(updateLst);
+		}
+		
+		if(insertLst.size() > 0) {
+			perInfoItemDataRepository.addAll(insertLst);
 		}
 	
 	}
 	
-	private void updateEmployee(PersonInfoCategory ctg, List<PeregUserDefUpdateCommand> addLst) {
+	private void updateEmployee(PersonInfoCategory ctg, List<PeregUserDefUpdateCommand> addLst, List<EmpInfoItemData> itemUpdates) {
 		// Add item data
-		List<EmpInfoItemData> items = new ArrayList<>();
+		List<EmpInfoItemData> itemUpdateLst = new ArrayList<>();
+		List<EmpInfoItemData> itemInsertLst = new ArrayList<>();
 		
 		addLst.parallelStream().forEach(c -> {
 			c.getItems().parallelStream().forEach(item -> {
+				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(update -> update.getPerInfoDefId().equals(item.definitionId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
 				if (state != null) {
 					EmpInfoItemData itemData = new EmpInfoItemData(item.definitionId(), c.getRecordId(), state);
-					items.add(itemData);
+					if(itemUpdateOpt.isPresent()) {
+						itemUpdateLst.add(itemData);
+					}else {
+						itemInsertLst.add(itemData);
+					}
 				}
+				
+
 			});
 		});
 		
-		if(items.size() > 0) {
-			empInfoItemDataRepository.addAll(items);
+		if(itemUpdateLst.size() > 0) {
+			empInfoItemDataRepository.updateAll(itemUpdateLst);
+		}
+		
+		if(itemInsertLst.size() > 0) {
+			empInfoItemDataRepository.addAll(itemInsertLst);
 		}
 		
 	}

@@ -50,6 +50,8 @@ public interface PerInfoItemDataRepository {
 	 */
 	List<PersonInfoItemData> getAllInfoItemByRecordId(List<String> recordId);
 	
+	List<PersonInfoItemData> getAllInfoItemByRecordIdsAndItemIds(List<String> itemIds, List<String> recordId);
+	
 	/**
 	 * @author lanlt
 	 * Add items data

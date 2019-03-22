@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.infra.repository.person.additemdata.item;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +13,14 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataStateType;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemDataPk;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
@@ -276,8 +281,38 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	@Override
+	public List<EmpInfoItemData> getAllInfoItemByRecordId(List<String> itemIds, List<String> recordIds) {
+		List<EmpInfoItemData> result = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT RECORD_ID, PER_INFO_DEF_ID FROM PPEMT_EMP_INFO_ITEM_DATA WHERE PER_INFO_DEF_ID IN ("
+					+ NtsStatement.In.createParamsString(itemIds) + ")" + " AND RECORD_ID IN ( "
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0 ; i < itemIds.size(); i++) {
+					stmt.setString( 1 + i, itemIds.get(i));
+				}
+				for (int i = 0 ; i < subList.size(); i++) {
+					stmt.setString( subList.size() + 1 + i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					EmpInfoItemData empItemData = new EmpInfoItemData();
+					empItemData.setRecordId(rec.getString("RECORD_ID"));
+					empItemData.setPerInfoDefId(rec.getString("PER_INFO_DEF_ID"));
+					result.add(empItemData);
+				});
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+		});
+		return result;
+	}
+	
+	@Override
 	public void addAll(List<EmpInfoItemData> domains) {
-		String INS_SQL = "INSERT PPEMT_EMP_INFO_ITEM_DATA PPEMT_PER_INFO_ITEM_DATA ( INS_DATE , INS_CCD , INS_SCD , INS_PG , "
+		String INS_SQL = "INSERT PPEMT_EMP_INFO_ITEM_DATA ( INS_DATE , INS_CCD , INS_SCD , INS_PG , "
 				+ "  UPD_DATE ,  UPD_CCD,  UPD_SCD , UPD_PG ,"
 				+ "  RECORD_ID, PER_INFO_DEF_ID, SAVE_DATA_ATR, STRING_VAL , INT_VAL , DATE_VAL) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL, PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR_VAL, STRING_VAL_VAL, INT_VAL_VAL, DATE_VAL_VAL)";
@@ -305,9 +340,17 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			sql = sql.replace("PER_INFO_DEF_ID_VAL", "'" + c.getPerInfoDefId() +"'");
 			
 			sql = sql.replace("SAVE_DATA_ATR_VAL", ""+c.getDataState().getDataStateType().value +"");
-			sql = sql.replace("STRING_VAL_VAL", "'" + c.getDataState().getStringValue() +"'");
-			sql = sql.replace("INT_VAL_VAL", "'" + c.getDataState().getNumberValue() +"'");
-			sql = sql.replace("DATE_VAL_VAL", "'" + c.getDataState().getDateValue() +"'");
+		
+			if(c.getDataState().getDataStateType() == DataStateType.Numeric) {
+				sql = sql.replace("INT_VAL_VAL",  c.getDataState().getNumberValue() == null? "null": "" + c.getDataState().getNumberValue() +"");
+			}else {
+				sql = sql.replace("INT_VAL_VAL",  "null");
+			}
+			if(c.getDataState().getDataStateType() == DataStateType.Date) {
+				sql = sql.replace("DATE_VAL_VAL", c.getDataState().getDateValue() == null? "null": "'" + c.getDataState().getDateValue() +"'");
+			}else {
+				sql = sql.replace("DATE_VAL_VAL", "null");
+			}
 			
 			sb.append(sql);
 		});
@@ -318,7 +361,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	@Override
 	public void updateAll(List<EmpInfoItemData> domains) {
 		String UP_SQL = "UPDATE PPEMT_EMP_INFO_ITEM_DATA SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ "  RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL, STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL) ;"
+				+ "  RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL, STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL"
 				+ "  WHERE  RECORD_ID = RECORD_ID_VAL AND  PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL; ";
     	GeneralDateTime insertTime = GeneralDateTime.now();
 		String updCcd = AppContexts.user().companyCode();
@@ -336,11 +379,22 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			sql = sql.replace("RECORD_ID_VAL", "'" + c.getRecordId() +"'");
 			sql = sql.replace("PER_INFO_DEF_ID_VAL", "'" + c.getPerInfoDefId()+"'");
 			sql = sql.replace("SAVE_DATA_ATR_VAL", "" + c.getDataState().getDataStateType().value +"");
+			if(c.getDataState().getDataStateType() == DataStateType.String) {
+				sql = sql.replace("STRING_VAL_VAL", c.getDataState().getStringValue() == null ? "null": "'" + c.getDataState().getStringValue() +"'");
+			}else {
+				sql = sql.replace("STRING_VAL_VAL", "null");
+			}
 			
-			sql = sql.replace("STRING_VAL_VAL", "'" + c.getDataState().getStringValue() +"'");
-			sql = sql.replace("INT_VAL_VAL", "'" + c.getDataState().getNumberValue() +"'");
-			sql = sql.replace("DATE_VAL_VAL", "'" + c.getDataState().getDateValue() +"'");
-			
+			if(c.getDataState().getDataStateType() == DataStateType.Numeric) {
+				sql = sql.replace("INT_VAL_VAL",  c.getDataState().getNumberValue() == null? "null": "" + c.getDataState().getNumberValue() +"");
+			}else {
+				sql = sql.replace("INT_VAL_VAL",  "null");
+			}
+			if(c.getDataState().getDataStateType() == DataStateType.Date) {
+				sql = sql.replace("DATE_VAL_VAL", c.getDataState().getDateValue() == null? "null": "'" + c.getDataState().getDateValue() +"'");
+			}else {
+				sql = sql.replace("DATE_VAL_VAL", "null");
+			}
 			sb.append(sql);
 		});
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
