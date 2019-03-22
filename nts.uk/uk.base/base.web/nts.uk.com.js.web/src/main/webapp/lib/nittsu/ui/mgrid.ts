@@ -272,6 +272,8 @@ module nts.uk.ui.mgrid {
                 let resizing = tn.find(self.features, tn.RESIZING);
                 if (resizing) _redimension = true;
                 if (tn.isEnable(self.features, tn.COPY)) _copie = true;
+                _$grid.mGrid("option", "errOccurred", self.errorOccurred);
+                _$grid.mGrid("option", "errResolved", self.errorResolved);
             }
         }
         
@@ -9734,6 +9736,10 @@ module nts.uk.ui.mgrid {
             })) return;
             
             errors.push(error);
+            let occurred = _$grid.mGrid("option", "errOccurred");
+            if (_.isFunction(occurred)) {
+                occurred();
+            }
         }
     
         /**
@@ -9741,9 +9747,16 @@ module nts.uk.ui.mgrid {
          */
         export function removeCellError(rowId: any, key: any, genre: any) {
             let errors = genre ? genre.errors : _errors;
-            _.remove(errors, function(e) {
+            let removed = _.remove(errors, function(e) {
                 return rowId === e.rowId && key === e.columnKey;
             });
+            
+            if (removed.length > 0 && errors.length === 0) {
+                let resolved = _$grid.mGrid("option", "errResolved");
+                if (_.isFunction(resolved)) {
+                    resolved();
+                }
+            }
         }
         
         /**
