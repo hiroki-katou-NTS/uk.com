@@ -27,7 +27,6 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -114,7 +113,6 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
@@ -1944,6 +1942,21 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_TIME_1_5")
 	public int excessTime_1_5;
 
+	@Column(name = "EXCESS_TIME_1_6")
+	public int excessTime_1_6;
+
+	@Column(name = "EXCESS_TIME_1_7")
+	public int excessTime_1_7;
+
+	@Column(name = "EXCESS_TIME_1_8")
+	public int excessTime_1_8;
+
+	@Column(name = "EXCESS_TIME_1_9")
+	public int excessTime_1_9;
+
+	@Column(name = "EXCESS_TIME_1_10")
+	public int excessTime_1_10;
+
 	@Column(name = "EXCESS_TIME_2_1")
 	public int excessTime_2_1;
 
@@ -1958,6 +1971,21 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	@Column(name = "EXCESS_TIME_2_5")
 	public int excessTime_2_5;
+
+	@Column(name = "EXCESS_TIME_2_6")
+	public int excessTime_2_6;
+
+	@Column(name = "EXCESS_TIME_2_7")
+	public int excessTime_2_7;
+
+	@Column(name = "EXCESS_TIME_2_8")
+	public int excessTime_2_8;
+
+	@Column(name = "EXCESS_TIME_2_9")
+	public int excessTime_2_9;
+
+	@Column(name = "EXCESS_TIME_2_10")
+	public int excessTime_2_10;
 
 	@Column(name = "EXCESS_TIME_3_1")
 	public int excessTime_3_1;
@@ -1974,6 +2002,21 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_TIME_3_5")
 	public int excessTime_3_5;
 
+	@Column(name = "EXCESS_TIME_3_6")
+	public int excessTime_3_6;
+
+	@Column(name = "EXCESS_TIME_3_7")
+	public int excessTime_3_7;
+	
+	@Column(name = "EXCESS_TIME_3_8")
+	public int excessTime_3_8;
+
+	@Column(name = "EXCESS_TIME_3_9")
+	public int excessTime_3_9;
+
+	@Column(name = "EXCESS_TIME_3_10")
+	public int excessTime_3_10;
+
 	@Column(name = "EXCESS_TIME_4_1")
 	public int excessTime_4_1;
 
@@ -1988,6 +2031,21 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	@Column(name = "EXCESS_TIME_4_5")
 	public int excessTime_4_5;
+
+	@Column(name = "EXCESS_TIME_4_6")
+	public int excessTime_4_6;
+
+	@Column(name = "EXCESS_TIME_4_7")
+	public int excessTime_4_7;
+
+	@Column(name = "EXCESS_TIME_4_8")
+	public int excessTime_4_8;
+
+	@Column(name = "EXCESS_TIME_4_9")
+	public int excessTime_4_9;
+
+	@Column(name = "EXCESS_TIME_4_10")
+	public int excessTime_4_10;
 
 	@Column(name = "EXCESS_TIME_5_1")
 	public int excessTime_5_1;
@@ -2004,80 +2062,20 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_TIME_5_5")
 	public int excessTime_5_5;
 
-	@Column(name = "EXCESS_TIME_6_1")
-	public int excessTime_6_1;
+	@Column(name = "EXCESS_TIME_5_6")
+	public int excessTime_5_6;
 
-	@Column(name = "EXCESS_TIME_6_2")
-	public int excessTime_6_2;
+	@Column(name = "EXCESS_TIME_5_7")
+	public int excessTime_5_7;
 
-	@Column(name = "EXCESS_TIME_6_3")
-	public int excessTime_6_3;
+	@Column(name = "EXCESS_TIME_5_8")
+	public int excessTime_5_8;
 
-	@Column(name = "EXCESS_TIME_6_4")
-	public int excessTime_6_4;
+	@Column(name = "EXCESS_TIME_5_9")
+	public int excessTime_5_9;
 
-	@Column(name = "EXCESS_TIME_6_5")
-	public int excessTime_6_5;
-
-	@Column(name = "EXCESS_TIME_7_1")
-	public int excessTime_7_1;
-
-	@Column(name = "EXCESS_TIME_7_2")
-	public int excessTime_7_2;
-
-	@Column(name = "EXCESS_TIME_7_3")
-	public int excessTime_7_3;
-
-	@Column(name = "EXCESS_TIME_7_4")
-	public int excessTime_7_4;
-
-	@Column(name = "EXCESS_TIME_7_5")
-	public int excessTime_7_5;
-
-	@Column(name = "EXCESS_TIME_8_1")
-	public int excessTime_8_1;
-
-	@Column(name = "EXCESS_TIME_8_2")
-	public int excessTime_8_2;
-
-	@Column(name = "EXCESS_TIME_8_3")
-	public int excessTime_8_3;
-
-	@Column(name = "EXCESS_TIME_8_4")
-	public int excessTime_8_4;
-
-	@Column(name = "EXCESS_TIME_8_5")
-	public int excessTime_8_5;
-
-	@Column(name = "EXCESS_TIME_9_1")
-	public int excessTime_9_1;
-
-	@Column(name = "EXCESS_TIME_9_2")
-	public int excessTime_9_2;
-
-	@Column(name = "EXCESS_TIME_9_3")
-	public int excessTime_9_3;
-
-	@Column(name = "EXCESS_TIME_9_4")
-	public int excessTime_9_4;
-
-	@Column(name = "EXCESS_TIME_9_5")
-	public int excessTime_9_5;
-
-	@Column(name = "EXCESS_TIME_10_1")
-	public int excessTime_10_1;
-
-	@Column(name = "EXCESS_TIME_10_2")
-	public int excessTime_10_2;
-
-	@Column(name = "EXCESS_TIME_10_3")
-	public int excessTime_10_3;
-
-	@Column(name = "EXCESS_TIME_10_4")
-	public int excessTime_10_4;
-
-	@Column(name = "EXCESS_TIME_10_5")
-	public int excessTime_10_5;
+	@Column(name = "EXCESS_TIME_5_10")
+	public int excessTime_5_10;
 
 
 	/* KRCDT_MON_AGREEMENT_TIME */
@@ -2395,11 +2393,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	@Column(name = "TOTAL_COUNT_DAYS30")
 	public double totalCountDays30;
-	
-	//月別実績の勤怠時間．月の計算．36協定上限時間
-	/** 36協定上限時間 */
-	@Column(name = "AGREEMENT_REG_TIME")
-	public int agreementRegTime;
 	
 	@Override
 	protected Object getKey() {
@@ -3583,9 +3576,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 36協定時間 */
 		toEntityAgreementTimeOfMonthly(null);
 		
-		/** 36協定上限時間 */
-		toEntityAgreMaxTimeOfMonthly(null);
-		
 		/** 時間外超過 */
 		toEntityExcessOutsideWorkMerge(null);
 		
@@ -3780,10 +3770,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 36協定時間 */
 		val agreementTime = monthlyCalculation.getAgreementTime();
 		toEntityAgreementTimeOfMonthly(agreementTime);
-		
-		/** 36協定上限時間 */
-		val agreMaxTime = monthlyCalculation.getAgreMaxTime();
-		toEntityAgreMaxTimeOfMonthly(agreMaxTime);
 	}
 
 	/* KRCDT_MON_FLEX_TIME */
@@ -4717,11 +4703,11 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
-		this.excessTime_1_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork3(ExcessOutsideWork domain) {
-		this.excessTime_1_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork4(ExcessOutsideWork domain) {
@@ -4733,7 +4719,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private void toEntityExcessOutsideWork6(ExcessOutsideWork domain) {
-		this.excessTime_2_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork7(ExcessOutsideWork domain) {
@@ -4753,7 +4739,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private void toEntityExcessOutsideWork11(ExcessOutsideWork domain) {
-		this.excessTime_3_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork12(ExcessOutsideWork domain) {
@@ -4812,103 +4798,103 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private void toEntityExcessOutsideWork26(ExcessOutsideWork domain) {
-		this.excessTime_6_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_6 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork27(ExcessOutsideWork domain) {
-		this.excessTime_6_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_6 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork28(ExcessOutsideWork domain) {
-		this.excessTime_6_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_6 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork29(ExcessOutsideWork domain) {
-		this.excessTime_6_4 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_4_6 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork30(ExcessOutsideWork domain) {
-		this.excessTime_6_5 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_5_6 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork31(ExcessOutsideWork domain) {
-		this.excessTime_7_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_7 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork32(ExcessOutsideWork domain) {
-		this.excessTime_7_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_7 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork33(ExcessOutsideWork domain) {
-		this.excessTime_7_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_7 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork34(ExcessOutsideWork domain) {
-		this.excessTime_7_4 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_4_7 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork35(ExcessOutsideWork domain) {
-		this.excessTime_7_5 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_5_7 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork36(ExcessOutsideWork domain) {
-		this.excessTime_8_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_8 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork37(ExcessOutsideWork domain) {
-		this.excessTime_8_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_8 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork38(ExcessOutsideWork domain) {
-		this.excessTime_8_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_8 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork39(ExcessOutsideWork domain) {
-		this.excessTime_8_4 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_4_8 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork40(ExcessOutsideWork domain) {
-		this.excessTime_8_5 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_5_8 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork41(ExcessOutsideWork domain) {
-		this.excessTime_9_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_9 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork42(ExcessOutsideWork domain) {
-		this.excessTime_9_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_9 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork43(ExcessOutsideWork domain) {
-		this.excessTime_9_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_9 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork44(ExcessOutsideWork domain) {
-		this.excessTime_9_4 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_4_9 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork45(ExcessOutsideWork domain) {
-		this.excessTime_9_5 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_5_9 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork46(ExcessOutsideWork domain) {
-		this.excessTime_10_1 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_10 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork47(ExcessOutsideWork domain) {
-		this.excessTime_10_2 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_2_10 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork48(ExcessOutsideWork domain) {
-		this.excessTime_10_3 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_3_10 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork49(ExcessOutsideWork domain) {
-		this.excessTime_10_4 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_4_10 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork50(ExcessOutsideWork domain) {
-		this.excessTime_10_5 = domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_5_10 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	/* KRCDT_MON_AGREEMENT_TIME */
@@ -4923,10 +4909,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				? domain.getExceptionLimitAlarmTime().get().v()
 				: null);
 		this.status = domain == null ? 0 : domain.getStatus().value;
-	}
-	
-	private void toEntityAgreMaxTimeOfMonthly(AgreMaxTimeOfMonthly domain) {
-		this.agreementRegTime = domain == null ? 0 : domain.getAgreementTime().v();
 	}
 
 	/* KRCDT_MON_AFFILIATION */
@@ -5658,9 +5640,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 月別実績の36協定時間
 		AgreementTimeOfMonthly agreementTime =  toDomainAgreementTimeOfMonthly();
 		
-		// 月別実績の36協定上限時間
-		AgreMaxTimeOfMonthly agreMaxTime = toDomainAgreMaxTimeOfMonthly();
-		
 		// 月別実績の月の計算
 		return  MonthlyCalculation.of(
 				regAndIrgTime, 
@@ -5669,8 +5648,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				aggregateTotalWorkingTime,
 				new AttendanceTimeMonth(this.totalWorkingTime), 
 				aggregateTotalTimeSpent, 
-				agreementTime,
-				agreMaxTime);
+				agreementTime);
 	}
 	
 	private List<TotalCount> getTotalCounts(){
@@ -6156,51 +6134,51 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 3, this.excessTime_1_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 4, this.excessTime_1_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 5, this.excessTime_1_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 6, this.excessTime_1_6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 7, this.excessTime_1_7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 8, this.excessTime_1_8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 9, this.excessTime_1_9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 10, this.excessTime_1_10));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 1, this.excessTime_2_1));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime_2_2));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 3, this.excessTime_2_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 4, this.excessTime_2_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 5, this.excessTime_2_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 6, this.excessTime_2_6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 7, this.excessTime_2_7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 8, this.excessTime_2_8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 9, this.excessTime_2_9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 10, this.excessTime_2_10));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 1, this.excessTime_3_1));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 2, this.excessTime_3_2));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime_3_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 4, this.excessTime_3_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 5, this.excessTime_3_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 6, this.excessTime_3_6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 7, this.excessTime_3_7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 8, this.excessTime_3_8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 9, this.excessTime_3_9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 10, this.excessTime_3_10));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 1, this.excessTime_4_1));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 2, this.excessTime_4_2));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 3, this.excessTime_4_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime_4_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 5, this.excessTime_4_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 6, this.excessTime_4_6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 7, this.excessTime_4_7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 8, this.excessTime_4_8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 9, this.excessTime_4_9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 10, this.excessTime_4_10));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 1, this.excessTime_5_1));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 2, this.excessTime_5_2));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 3, this.excessTime_5_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 4, this.excessTime_5_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime_5_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 1, this.excessTime_6_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 2, this.excessTime_6_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 3, this.excessTime_6_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 4, this.excessTime_6_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 5, this.excessTime_6_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 1, this.excessTime_7_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 2, this.excessTime_7_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 3, this.excessTime_7_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 4, this.excessTime_7_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 5, this.excessTime_7_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 1, this.excessTime_8_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 2, this.excessTime_8_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 3, this.excessTime_8_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 4, this.excessTime_8_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 5, this.excessTime_8_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 1, this.excessTime_9_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 2, this.excessTime_9_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 3, this.excessTime_9_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 4, this.excessTime_9_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 5, this.excessTime_9_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 1, this.excessTime_10_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 2, this.excessTime_10_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 3, this.excessTime_10_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 4, this.excessTime_10_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 5, this.excessTime_10_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 6, this.excessTime_5_6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 7, this.excessTime_5_7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 8, this.excessTime_5_8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 9, this.excessTime_5_9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 10, this.excessTime_5_10));
 		
 		return excessOutsideWork;
 	}
@@ -6219,7 +6197,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 時間外超過
 	 */
-	private ExcessOutsideWork toDomainExcessOutsideWorkXX(int breakdownNo, int excessNo, int excessTime) {
+	private ExcessOutsideWork toDomainExcessOutsideWorkXX(int excessNo, int breakdownNo, int excessTime) {
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
 	
@@ -6239,18 +6217,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		(this.exceptionLimitAlarmTime == null ?
 						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
-	}
-	
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定上限時間
-	 */
-	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
-		
-		return AgreMaxTimeOfMonthly.of(
-				new AttendanceTimeMonth(this.agreementRegTime),
-				new LimitOneMonth(0),
-				AgreMaxTimeStatusOfMonthly.NORMAL);
 	}
 	
 	/** KRCDT_MON_AFFILIATION **/
