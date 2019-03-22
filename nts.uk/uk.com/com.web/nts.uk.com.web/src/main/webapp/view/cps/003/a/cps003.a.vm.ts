@@ -611,6 +611,8 @@ module cps003.a.vm {
                 enter: "right",
                 autoFitWindow: true,
                 errorColumns: [ "employeeId", "employeeCode", "employeeName", "rowNumber" ],
+                errorOccurred: () => self.hasError(true),
+                errorResolved: () => self.hasError(false),
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 columns: self.gridOptions.columns,
                 features: self.gridOptions.features,
@@ -1288,8 +1290,13 @@ module cps003.a.vm {
             } else {
                 item.constraint = { primitiveValue: item.itemId.replace(/[-_]/g, "") };
             }
+            
             switch (controlType.dataTypeValue) {
                 case ITEM_SINGLE_TYPE.STRING:
+                    if (controlType.stringItemType === ITEM_STRING_TYPE.EMPLOYEE_CODE) {
+                        item.constraint = { primitiveValue: "EmployeeCode" };
+                    }
+                    
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     self.batchSettingItems.push(item.itemId);

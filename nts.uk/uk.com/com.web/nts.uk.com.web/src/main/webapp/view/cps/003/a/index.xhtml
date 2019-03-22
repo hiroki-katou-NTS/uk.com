@@ -74,9 +74,9 @@
 									enable: updateModeEnable }"></div>
 							</div>
 							<div class="form-group configs-bar">
-								<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>
+								<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp, enable: employees().length > 0"></button>
 								<button data-bind="ntsHelpButton: {textId: 'CPS003_22', position: 'right center'}">?</button>
-								<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}', click: $vm.settingBatchs.bind($vm)"></button>
+								<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}', click: $vm.settingBatchs.bind($vm), enable: employees().length > 0"></button>
 								<button id="settings" data-bind="cps003Setting: $vm.settings.matrixDisplay"></button>
 								<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}', click: $vm.saveWidth"></button>
 							</div>
