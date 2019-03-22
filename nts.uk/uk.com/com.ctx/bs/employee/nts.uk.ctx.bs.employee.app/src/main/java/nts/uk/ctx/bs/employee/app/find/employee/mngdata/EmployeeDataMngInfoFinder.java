@@ -71,8 +71,6 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 		});
 
 		List<EmployeeDataMngInfo> domains = edMngRepo.findByListEmployeeId(cid, sids);
-
-		domains.stream().map(c -> {return new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), EmployeeDataMngInfoDto.fromDomain(c));}).collect(Collectors.toList());
 		
 		result.stream().forEach(c ->{
 			Optional<EmployeeDataMngInfo> empOpt = domains.stream().filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
