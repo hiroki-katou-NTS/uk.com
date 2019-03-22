@@ -64,22 +64,32 @@ export class TimePickerComponent extends Vue {
             
             if(this.minTimePoint.hour >= 0 ) {
                 minMinute = this.minTimePoint.minute;
+                if (this.minuteValue < minMinute) {
+                    this.minuteValue = minMinute;
+                }
             } else {
                 maxMinute = this.minTimePoint.minute;
+                if (this.minuteValue > maxMinute) {
+                    this.minuteValue = minMinute;
+                }
             }
             
-
-            if(this.minuteValue < minMinute) {
-                this.minuteValue = minMinute;
-            }
         }
 
         if(this.hourValue == this.maxTimePoint.hour) {
-            maxMinute = this.maxTimePoint.minute;
 
-            if (this.minuteValue > maxMinute) {
-                this.minuteValue = maxMinute;
+            if (this.maxTimePoint.hour >= 0) {
+                maxMinute = this.maxTimePoint.minute;
+                if (this.minuteValue > maxMinute) {
+                    this.minuteValue = maxMinute;
+                }
+            } else {
+                minMinute = this.maxTimePoint.minute;
+                if(this.minuteValue < minMinute) {
+                    this.minuteValue = minMinute;
+                }
             }
+            
         }
         return this.generateArray(minMinute, maxMinute);       
     }
