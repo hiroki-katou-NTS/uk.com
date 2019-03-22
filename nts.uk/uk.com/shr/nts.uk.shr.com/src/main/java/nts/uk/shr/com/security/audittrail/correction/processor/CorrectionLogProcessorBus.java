@@ -10,9 +10,10 @@ import javax.enterprise.inject.spi.CDI;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.uk.shr.com.security.audittrail.AuditTrailTransaction;
-import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.correction.processor.matrix.MatrixCorrectionLogProcessor;
+import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
 @ApplicationScoped
@@ -34,6 +35,9 @@ public class CorrectionLogProcessorBus implements AuditTrailTransaction, Initial
 			this.addProcessorToMap(processorProxy);
 		});
 		
+		CDI.current().select(MatrixCorrectionLogProcessor.class).forEach(processorProxy -> {
+			this.addProcessorToMap(processorProxy);
+		});
 		log.info("[INIT END] " + this.getClass().getName());
 	}
 

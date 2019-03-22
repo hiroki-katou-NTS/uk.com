@@ -31,6 +31,8 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemBasicInfo;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
+import nts.uk.ctx.sys.log.app.command.matrix.MatrixPersonCorrectionLogParams;
+import nts.uk.ctx.sys.log.app.command.matrix.PersonCorrectionLogInter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
@@ -167,15 +169,15 @@ public class PeregCommonCommandFacade {
 	}
 	
 	public Object registerHandler(List<PeregInputContainerCps003> inputContainerLst, int modeUpdate, GeneralDate baseDate) {
-		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -99, () -> {
+		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, -33, () -> {
 			
-			Map<String, PersonCorrectionLogParameter> target  = new HashMap<>();
+			List<PersonCorrectionLogParameter> target  = new ArrayList<>();
 			Map<String, String> mapSidPid = inputContainerLst.parallelStream().collect(Collectors.toMap(PeregInputContainerCps003::getEmployeeId, PeregInputContainerCps003::getPersonId));
 			Map<String, List<UserAuthDto>> userMaps = this.userFinder.getByListEmp(new ArrayList<>(mapSidPid.keySet())).stream().collect(Collectors.groupingBy(c -> c.getEmpID()));
 			userMaps.entrySet().parallelStream().forEach(c ->{
 				List<UserAuthDto> userLst = c.getValue();
-				if(userLst != null || !userLst.isEmpty()) {
-					target.put(c.getKey(), new PersonCorrectionLogParameter(userLst.get(0).getUserID(), c.getKey(),
+				if(userLst != null) {
+					target.add(new PersonCorrectionLogParameter(userLst.get(0).getUserID(), c.getKey(),
 							userLst.get(0).getEmpName(), PersonInfoProcessAttr.UPDATE, null));
 				}
 			});
@@ -188,7 +190,7 @@ public class PeregCommonCommandFacade {
 			return null;
 		});
 		
-		return null;
+		return recId;
 	}
 	/**
 	 * hàm này viết cho cps001 Handles add commands.
@@ -197,16 +199,16 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public List<String> add(List<PeregInputContainerCps003> containerLst, Map<String, PersonCorrectionLogParameter> target, GeneralDate baseDate) {
+	public List<String> add(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate) {
 		return addNonTransaction(containerLst, target, baseDate);	
 	}
 
-	private List<String> addNonTransaction(List<PeregInputContainerCps003> containerLst, Map<String, PersonCorrectionLogParameter> target, GeneralDate baseDate) {
+	private List<String> addNonTransaction(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate) {
 		List<String> recordIds = new ArrayList<String>();
 		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
 		containerLst.stream().forEach(c ->{
 			ItemsByCategory itemByCtg = c.getInputs();
-			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > 0) {
+			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > -1) {
 				containerAdds.add(c);
 			}
 			
@@ -216,7 +218,7 @@ public class PeregCommonCommandFacade {
 		}
 		
 		
-		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 			updateInputForAdd(containerAdds);
 			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
 			
@@ -297,7 +299,7 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public void update(List<PeregInputContainerCps003> container, GeneralDate baseDate, Map<String, PersonCorrectionLogParameter> target) {
+	public void update(List<PeregInputContainerCps003> container, GeneralDate baseDate, List<PersonCorrectionLogParameter> target) {
 		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
 		container.stream().forEach(c ->{
 			ItemsByCategory itemByCtg = c.getInputs();
@@ -309,7 +311,7 @@ public class PeregCommonCommandFacade {
 		if(containerAdds.size() > 0) {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			// đoạn này viết log
-			DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER,() -> {
 				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
 			});
 
@@ -354,8 +356,10 @@ public class PeregCommonCommandFacade {
 	 * @param inputs
 	 * @param target
 	 */
-	private void setParamsForCPS001(List<PeregInputContainerCps003> containerLst,  PersonInfoProcessAttr isAdd, Map<String, PersonCorrectionLogParameter> targets, GeneralDate standardDate) {
+	private void setParamsForCPS001(List<PeregInputContainerCps003> containerLst,  PersonInfoProcessAttr isAdd, List<PersonCorrectionLogParameter> targets, GeneralDate standardDate) {
 		if (targets.size() > 0 && !containerLst.isEmpty()) {
+			List<PersonCorrectionLogInter> matrixLogs = new ArrayList<>();
+			
 			// Do tất cả nhân viên đều có categoryCode giống nhau nên 
 			// mình sẽ lấy ra nhân viên đầu tiên để xử lý một số phần chung
 			PeregInputContainerCps003 firstEmp = containerLst.get(0);
@@ -516,14 +520,17 @@ public class PeregCommonCommandFacade {
 				}
 				
 				if (ctgTarget != null && lstItemInfo.size() > 0) {
-					PersonCorrectionLogParameter target = targets.get(c.getEmployeeId());
-					DataCorrectionContext.setParameter(target.getHashID(), target);
-					DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+					PersonCorrectionLogParameter perLog = targets.parallelStream().filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst().get();
+					PersonCorrectionLogInter inter = new PersonCorrectionLogInter(perLog, ctgTarget);
+					matrixLogs.add(inter);
 				}
 				stringKey = null;
 				reviseInfo = null;
 			
 			});
+			if(!matrixLogs.isEmpty()) {
+				DataCorrectionContext.setParameter(new MatrixPersonCorrectionLogParams(matrixLogs));
+			}
 		}
 	}
 	
