@@ -113,7 +113,7 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 
-		List<AffCompanyHist> affComHistDomainLst = this.achFinder.getAffCompanyHistoryOfEmployeeListAndBaseDate(sids,
+		List<AffCompanyHist> affComHistDomainLst = this.achFinder.getAffComHistOfEmployeeListAndBaseDateV2(sids,
 				query.getStandardDate());
 		List<String> histIds = new ArrayList<>();
 		
@@ -134,7 +134,7 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 					.filter(aff -> aff.getPId().equals(c.getPersonId())).findFirst();
 			Optional<AffCompanyInfo> affComOpt = affCompany.stream()
 					.filter(aff -> aff.getSid().equals(c.getEmployeeId())).findFirst();
-			if (affComHistOpt.isPresent() && affComHistOpt.isPresent()) {
+			if (affComOpt.isPresent() && affComHistOpt.isPresent()) {
 				c.setPeregDomainDto(AffCompanyHistInfoDto.fromDomain(affComHistOpt.get(), affComOpt.get()));
 			}
 		});

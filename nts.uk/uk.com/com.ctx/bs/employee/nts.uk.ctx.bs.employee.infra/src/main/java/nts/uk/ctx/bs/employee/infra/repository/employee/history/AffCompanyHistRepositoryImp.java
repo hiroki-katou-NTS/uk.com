@@ -477,6 +477,47 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	@Override
+	public List<AffCompanyHist> getAffComHistOfEmployeeListAndBaseDateV2(List<String> employeeIds,
+			GeneralDate baseDate) {
+		List<AffCompanyHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select h.PID, h.SID, h.HIST_ID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE "
+						+ " from BSYMT_AFF_COM_HIST h"
+						+ " where h.START_DATE < ?"
+						+ " and h.END_DATE > ?"
+						+ " and h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				GeneralDate addBaseDate = baseDate.addDays(1);
+				stmt.setDate(1, Date.valueOf(addBaseDate.toLocalDate()));
+				stmt.setDate(2, Date.valueOf(addBaseDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+				
+				Set<AffCompanyHist> lstObj = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					List<AffCompanyHistByEmployee> list = new ArrayList<>();
+					List<AffCompanyHistItem> histItem = new ArrayList<>();
+					histItem.add(new AffCompanyHistItem(
+							r.getString("HIST_ID"),
+							r.getBoolean("DESTINATION_DATA"),
+							new DatePeriod(
+								r.getGeneralDate("START_DATE"),
+								r.getGeneralDate("END_DATE"))));
+					list.add(new AffCompanyHistByEmployee(
+							r.getString("SID"),
+							 histItem));
+					return new AffCompanyHist(r.getString("PID"), list);
+				}).stream().collect(Collectors.toSet());
+				resultList.addAll(lstObj);
+			}
+			catch(SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return resultList;
+	}
+	
+	@Override
 	public void addAll(List<AffCompanyHistCustom> domains) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
 				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG," + "  PID, SID, HIST_ID, CID, "

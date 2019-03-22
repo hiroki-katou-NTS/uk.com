@@ -308,12 +308,13 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			GeneralDate standardDate) {
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID =? and START_DATE <= ? AND END_DATE >= ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID =? and START_DATE < ? AND END_DATE > ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
 					;
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				GeneralDate baseDate = standardDate.addDays(1);
 				stmt.setString(1, cid);
-				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
-				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+				stmt.setDate(3, Date.valueOf(baseDate.localDate()));
 				for (int i = 0 ; i < subList.size(); i++) {
 					stmt.setString( 4 + i, subList.get(i));
 				}
