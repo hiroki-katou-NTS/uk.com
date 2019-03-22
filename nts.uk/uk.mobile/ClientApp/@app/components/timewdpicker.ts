@@ -1,171 +1,203 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import {time, DAYS, TimePoint} from '@app/utils/time'
+import * as _ from 'lodash';
 
 @component({
-    template: `<div class="time-picker">
-        <div class="time-title text-center">
-            {{preview}}
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <button tabindex="-1" :disabled="value >= 4320" class="btn btn-link btn-block" v-on:click="upday()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="uphour()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="upminute()">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <input type="text" ref="day" class="form-control text-center" v-focus readonly/>
-            </div>
-            <div class="col-3">
-                <input type="text" ref="hour" class="form-control text-center" readonly v-bind:value="hour" />
-            </div>
-            <div class="col-3">
-                <input type="text" ref="minute" class="form-control text-center" readonly v-bind:value="minute" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <button tabindex="-1" :disabled="value < 720" class="btn btn-link btn-block" v-on:click="downday()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="downhour()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="col-3">
-                <button tabindex="-1" class="btn btn-link btn-block" v-on:click="downminute()">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-        </div>
-        <div class="modal-footer">
+    template: `
+        <div class="time-picker">
             <div class="row">
-                <div class="col-6 text-left">
-                    <button class="btn btn-link" v-on:click="$close(null)">{{ 'delete' | i18n }}</button>
+
+                <div class="col-4">
+                    <select class="form-control" :value="dayValue" ref="day" @input="whenDayChange">
+                        <option v-for="day in dayList">{{day}}</option>
+                    </select>
                 </div>
-                <div class="col-6 text-right">
-                    <button class="btn btn-link" v-on:click="close()">{{ 'accept' | i18n }}</button>
-                    <button class="btn btn-link" v-on:click="$close()">{{ 'cancel' | i18n }}</button>
+
+                <div class="col-4">
+                    <select class="form-control" :value="hourValue" ref="hour" @input="whenHourChange">
+                        <option v-for="hour in hourList">{{hour}}</option>
+                    </select>
+                </div>
+                    
+                <div class="col-4">
+                    <select class="form-control" :value="minuteValue" ref="minute" @input="whenMinuteChange">
+                        <option v-for="minute in minuteList">{{minute}}</option>
+                    </select>
                 </div>
             </div>
-        </div>
-    </div>`,
-    style: `.time-picker .time-title{ font-size: 1.3rem; }
-    .time-picker .fas { font-size: 1.2rem; }
-    .time-picker input[readonly] { background-color: #fff; }
-    .time-picker .btn { padding-top: 15px; padding-bottom: 15px;}`
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="text-left col-6">
+                        <button class="btn btn-link" @click="cancel()">Cancel</button>
+                    </div>
+
+                    <div class="text-right col-6">
+                        <button class="btn btn-link" @click="ok()">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    `
 })
 export class TimeWDPickerComponent extends Vue {
-    @Prop({ default: 0 })
-    params?: number;
-
-    get value() {
-        if (!isNaN(Number(this.params))) {
-            return this.params;
+   
+    @Prop({
+        default: {
+            value: 0,
+            minValue: 0,
+            maxValue: 1349
         }
-        else {
-            return 0;
-        }
+    })
+    readonly params: {
+        minValue: number;
+        maxValue: number;
+        value: number;
+    };
+
+    private maxPoint: TimePoint = time.timewd.computeTimePoint(this.params.maxValue);
+    private minPoint: TimePoint = time.timewd.computeTimePoint(this.params.minValue);
+
+    minutes: number = this.params.value;
+    dayValue: string = time.timewd.computeDay(this.params.value);
+    hourValue: number = time.timewd.computeHour(this.params.value);
+    minuteValue: number = time.timewd.computeMinute(this.params.value);
+
+    ok() {
+        this.$close(this.minutes);
     }
 
-    set value(value: number) {
-        this.params = value;
+    cancel() {
+        this.$close();
     }
 
-    get valid() {
-        return this.value != undefined;
+    whenDayChange() {
+        debugger;
+        console.log("whenDayChange");
+        let newDay = (<HTMLInputElement>this.$refs.day).value;
+        this.dayValue = newDay;
+        _.defer(()=> {
+            let tmp = this.hourValue;
+            this.hourValue = undefined;
+            this.hourValue = tmp;
+            this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
+        })
     }
 
-    get preview() {
-        return this.value;
+    whenHourChange() {
+        let newHour = (<HTMLInputElement>this.$refs.hour).value;
+        this.hourValue = Number(newHour);
+        _.defer(()=> {
+            let tmp = this.minuteValue;
+            this.minuteValue = undefined;
+            this.minuteValue = tmp;
+            this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
+        })
     }
 
-    get day() {
-        return this.value;
+    whenMinuteChange() {
+        let newMinute = (<HTMLInputElement>this.$refs.minute).value;
+        this.minuteValue = Number(newMinute);
+        this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
     }
 
-    get hour() {
-        return this.value;
-    }
-
-    get minute() {
-        return this.value;
-    }
-
-    upday() {
-        if (!this.valid) {
-            this.value = 0;
-        }
-
-        this.value += 24 * 60;
-
-        (<HTMLInputElement>this.$refs.day).focus();
-    }
-
-    downday() {
-        if (!this.valid) {
-            this.value = 0;
-        }
-
-        this.value -= 24 * 60;
-
-        (<HTMLInputElement>this.$refs.day).focus();
-    }
-
-    uphour() {
-        if (!this.valid) {
-            this.value = 0;
-        }
-
-        this.value += 60;
-
-        (<HTMLInputElement>this.$refs.hour).focus();
-    }
-
-    downhour() {
-        if (!this.valid) {
-            this.value = 0;
-        }
-
-        this.value -= 60;
-
-        (<HTMLInputElement>this.$refs.hour).focus();
-    }
-
-    upminute() {
-        if (!this.valid) {
-            this.value = 0;
+    get dayList(): Array<String> {
+        var dayList = new Array(DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater);
+        switch (this.minPoint.day) {
+            case DAYS.TheDayBefore:
+                // do nothing
+                break;
+            case DAYS.Today:
+                this.removeElement(dayList, [DAYS.TheDayBefore]);
+                break;
+            case DAYS.NextDay:
+                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today]);
+                break;
+            case DAYS.TwoDaysLater:
+                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay])
+                break;
         }
 
-        this.value += 1;
-
-        (<HTMLInputElement>this.$refs.minute).focus();
+        switch (this.maxPoint.day) {
+            case DAYS.TheDayBefore:
+                this.removeElement(dayList, [DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater])
+                break;
+            case DAYS.Today:
+                this.removeElement(dayList, [DAYS.NextDay, DAYS.TwoDaysLater])
+                break;
+            case DAYS.NextDay:
+                this.removeElement(dayList, [DAYS.TwoDaysLater])
+                break;
+            case DAYS.TwoDaysLater:
+                // do nothing
+                break;
+        }
+        return dayList;
     }
 
-    downminute() {
-        if (!this.valid) {
-            this.value = 0;
+    private removeElement(bigArray: Array<string>, smallArray: Array<string>) {
+        var newArray = new Array<string>();
+        for (var outElement in bigArray) {
+            for (var inElement in smallArray) {
+                if (outElement == inElement) {
+                    var i = bigArray.indexOf(outElement);
+                    bigArray.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    get hourList(): Array<number> {
+        console.log("hourList");
+        var minHour = 0;
+        var maxHour = 23;
+        if (this.dayValue == this.minPoint.day) {
+            minHour = this.minPoint.hour;
+            if (this.hourValue < minHour) {
+                this.hourValue = minHour;
+            }
         }
 
-        this.value -= 1;
+        if (this.dayValue == this.maxPoint.day) {
+            maxHour = this.maxPoint.hour;
+            if (this.hourValue > maxHour) {
+                this.hourValue = maxHour;
+            }
+        }
 
-        (<HTMLInputElement>this.$refs.minute).focus();
+       
+        return this.generateArray(minHour, maxHour);
     }
 
-    close() {
-        this.$close(this.value);
+    get minuteList(): Array<number> {
+        var minMinute = 0;
+        var maxMinute = 59;
+
+        if (this.dayValue == this.minPoint.day && this.hourValue == this.minPoint.hour) {
+            minMinute = this.minPoint.minute;
+            if (this.minuteValue < minMinute) {
+                this.minuteValue = minMinute;
+            }
+        }
+
+        if (this.dayValue == this.maxPoint.day && this.hourValue == this.maxPoint.hour) {
+            maxMinute = this.maxPoint.minute;
+            if (this.minuteValue > maxMinute) {
+                this.minuteValue = maxMinute;
+            }
+        }
+
+        return this.generateArray(minMinute, maxMinute);
     }
+
+    private generateArray(min: number, max: number): Array<number> {
+        var minuteList = new Array<number>();
+        for (var m = min; m <= max; m++) {
+            minuteList.push(m);
+        }
+        return minuteList;
+    }
+
 }
+

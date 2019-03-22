@@ -2,8 +2,8 @@ import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
 
-import { $ } from '@app/utils';
-import { TimePickerComponent, DatePickerComponent } from '@app/components';
+import { $, TimeInputType, time } from '@app/utils';
+import { TimePickerComponent, DatePickerComponent, TimeWDPickerComponent } from '@app/components';
 
 const input = () => component({
     template: `<div class="form-group row">
@@ -67,7 +67,8 @@ const input = () => component({
     </div>`,
     components: {
         'timepicker': TimePickerComponent,
-        'datepicker': DatePickerComponent
+        'datepicker': DatePickerComponent,
+        'timewdpicker': TimeWDPickerComponent
     }
 });
 
@@ -179,22 +180,24 @@ export class TimeComponent extends InputComponent {
 
     editable: boolean = false;
 
+    @Prop({
+        default: TimeInputType.TimeDuration
+    })
+    timeInputType: TimeInputType;
+
     get rawValue() {
         //return (this.value || '').toString();
         if (typeof this.value == undefined) {
             return '';
         }
 
-        var hour: number, minute: number;
-        if (this.value >= 0) {
-            hour = Math.floor(this.value / 60)
-            minute = this.value - hour * 60;
+        if (this.timeInputType === TimeInputType.TimeWithDay) {
+            var timePoint = time.timewd.computeTimePoint(this.value);
+            return timePoint.day + '　' + timePoint.hour + ' ： ' + timePoint.minute;
         } else {
-            hour = 0 - Math.floor(Math.abs(this.value) / 60);
-            minute = Math.abs(this.value) + hour * 60;
-        }
-
-        return hour + ' : ' + minute;
+            var timePoint1 = time.timedr.computeTimePoint(this.value);
+            return timePoint1.hour + ' : ' + timePoint1.minute;
+        }      
 
     }
 
@@ -220,8 +223,9 @@ export class TimeComponent extends InputComponent {
     }
 
     click() {
+        var picker = this.timeInputType == TimeInputType.TimeWithDay ? 'timewdpicker' : 'timepicker';
         this
-            .$modal('timepicker', {
+            .$modal(picker, {
                 value: this.value,
                 minValue: this.constraint.minValue,
                 maxValue: this.constraint.maxValue
@@ -243,6 +247,7 @@ export class TimeComponent extends InputComponent {
 
 @input()
 class DateComponent extends InputComponent {
+
     type: string = 'string';
 
     editable: boolean = false;
