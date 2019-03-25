@@ -43,6 +43,16 @@ public class CorsPreflightFilter implements Filter {
 			if (httpRequest.getMethod().equals(HttpMethod.OPTIONS)) {
 				return;
 			}
+		} else if (httpRequest.getHeader("origin") != null && httpRequest.getHeader("origin").contains("localhost:3000")) {
+			/** TODO: this code just for DEV mode, when deploy mobile in same wildfly with other web pack, need to remove this */
+			val httpResponse =(HttpServletResponse) response;
+			httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+			httpResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, MOBILE, PG-Path, X-CSRF-TOKEN");
+			httpResponse.addHeader("Access-Control-Allow-Credentials", "true");
+			httpResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+			if (httpRequest.getMethod().equals(HttpMethod.OPTIONS)) {
+				return;
+			}
 		}
 		
 		chain.doFilter(httpRequest, response);
