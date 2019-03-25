@@ -9,12 +9,20 @@ import { TimeInputType} from '@app/utils/time'
         time: {
             minValue: -720,
             maxValue: 4319
+        },
+        date: {
+            minValue: -720,
+            maxValue: 4319
         }
     },
 })
 export class TimeComponentTest extends Vue {
 
     time: number = 750;
+
+    date1: string = "2017-08-04";
+
+    date: Date = new Date("2017-08-04");
 
     constructor() {
         super();
