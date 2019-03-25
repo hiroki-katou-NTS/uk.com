@@ -111,7 +111,7 @@ public class UrlWebService {
 							"", 
 							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
 							null), 
-					"");
+					urlExecInfoExport.getCid());
 			throw new BusinessException("Msg_1095");
 		}
 		
@@ -135,9 +135,9 @@ public class UrlWebService {
 						0, 
 						2, 
 						"", 
-						"Msg_1474", 
+						TextResource.localize("Msg_1474"), 
 						null), 
-				"");
+				urlExecInfoExport.getCid());
 		
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
@@ -192,9 +192,12 @@ public class UrlWebService {
 		String companyCD = AppContexts.user().companyCode();
 		// 社員コードの存在チェック
 		if(Strings.isBlank(employeeCD)){
+			//アルゴリズム「セッション生成」を実行する　※ログイン形式１
 			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport());
 		} else {
+			//ドメインモデル「会社情報」を取得する
 			companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
+			//アルゴリズム「埋込URLセッション生成」を実行する
 			submitLoginFormTwoCommandHandler.setLoggedInfo(
 					urlAccApprovalOutput.getUserImport(), 
 					new EmployeeImport(
@@ -264,7 +267,7 @@ public class UrlWebService {
 							"", 
 							"Msg_1474", 
 							null), 
-					"");
+					urlExecInfoExport.getCid());
 			
 			throw new BusinessException("Msg_1096");
 		}
@@ -283,7 +286,7 @@ public class UrlWebService {
 							"", 
 							"Msg_1474", 
 							null), 
-					"");
+					urlExecInfoExport.getCid());
 			
 			throw new BusinessException("Msg_1096");
 		}
@@ -313,7 +316,7 @@ public class UrlWebService {
 							"", 
 							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
 							null), 
-					"");
+					urlExecInfoExport.getCid());
 				
 				throw new BusinessException("Msg_316");
 			}
@@ -335,7 +338,7 @@ public class UrlWebService {
 					"", 
 					"#Msg_1474 "+TextResource.localize("Msg_1474"), 
 					null), 
-			"");
+			urlExecInfoExport.getCid());
 		
 		// アルゴリズム「ロックアウト」を実行する　※２次対応
 		// submitLoginFormOneCommandHandler.lockOutExecuted(user);
