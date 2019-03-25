@@ -1,13 +1,12 @@
-package nts.uk.ctx.at.record.pub.workrecord.closurestatus;
+package nts.uk.ctx.at.record.dom.workrecord.export;
 
-import java.time.Period;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-public interface GetAffiliationPeriodPub {
+public interface WorkRecordExport {
 
 	/**
 	 * RequestList589
@@ -16,6 +15,5 @@ public interface GetAffiliationPeriodPub {
 	 * @param period
 	 * @param baseDate
 	 */
-	EmpAffInfoExport getAffiliationPeriod(List<String> listSid , YearMonthPeriod YMPeriod, GeneralDate baseDate);
-	
+	EmpAffInfoExport getAffiliationPeriod(List<String> listSid , YearMonthPeriod period , GeneralDate baseDate);
 }
