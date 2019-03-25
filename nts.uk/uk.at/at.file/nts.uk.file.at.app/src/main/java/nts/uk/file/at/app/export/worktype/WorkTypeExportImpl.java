@@ -316,6 +316,8 @@ public class WorkTypeExportImpl implements MasterListData {
 			data.put("午後の代休を発生させる", hyphen);
 			data.put("午前の欠勤の集計枠", "");
 			data.put("午前の特別休暇の集計枠", "");
+			data.put("午後の欠勤の集計枠", "");
+			data.put("午後の特別休暇の集計枠", "");
 		} else {
 			data.put("1日", hyphen);
 			data.put("午前の日勤・夜勤時間を求める", checkButtonCheck(datareport.getMorningDayNightTimeAsk()));
