@@ -72,6 +72,9 @@ body {
             display: block;
             padding-top: 2px;
             padding-left: 45px;
+            &.fixed-top {
+                padding-right: 15px;
+            }
             .btn-link {
                 color: #fff;
                 text-decoration: none;
@@ -97,6 +100,12 @@ body {
             z-index: 1029;
         }
     }
+}
+
+@media (max-width: 557px) {
+}
+
+@media (max-width: 767px) {
 }
 
 @media (max-width: 991px) {
