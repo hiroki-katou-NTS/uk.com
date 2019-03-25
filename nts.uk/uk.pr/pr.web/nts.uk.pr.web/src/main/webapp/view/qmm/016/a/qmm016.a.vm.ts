@@ -165,10 +165,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             if (/Chrome/.test(navigator.userAgent)) {
                 $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
                 $('.fixed-table-body').ntsFixedTable({ width: 600, height: 207 });
-                $('#E5_1').ntsFixedTable({ width: 800, height: 344 });
+                $('#E5_1').ntsFixedTable({ width: 820, height: 344 });
             } else {
                 $('.fixed-table-body').ntsFixedTable({ width: 600, height: 204 });
-                $('#E5_1').ntsFixedTable({ width: 800, height: 341 });
+                $('#E5_1').ntsFixedTable({ width: 820, height: 341 });
             }
         }
 
@@ -1081,8 +1081,16 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         
         getGridColumns(data: Array<any>): Array<any> {
             let self = this, columns: Array<any> = [
-                { headerText: 'ID', key: 'firstFrameNo', dataType: 'string', width: '60px', ntsControl: 'Label', hidden: false },
-                { headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(), key: 'firstFrameName', dataType: 'string', width: '150px', ntsControl: 'Label', columnCssClass: 'custom-ntsgrid-header', headerCssClass: 'custom-ntsgrid-header' }
+                {
+                    headerText: 'ID', key: 'firstFrameNo', dataType: 'string',
+                    width: '60px', ntsControl: 'Label', hidden: false
+                },
+                {
+                    headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(),
+                    key: 'firstFrameName', dataType: 'string', width: '150px',
+                    ntsControl: 'Label', columnCssClass: 'custom-ntsgrid-header limited-label',
+                    headerCssClass: 'custom-ntsgrid-header'
+                }
             ];
             data.forEach(i => {
                 let columnKey = "secondFrameNo" + i.masterCode, columnName = i.masterName;
@@ -1111,10 +1119,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createOneDimensionTable() {
             let self = this;
             let columns: Array<any> = [
-                { headerText: 'ID', key: 'firstFrameNo', dataType: 'string', width: '60px', ntsControl: 'Label', hidden: false },
-                { headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(), key: 'firstFrameName', dataType: 'string', width: '150px', ntsControl: 'Label', columnCssClass: 'custom-ntsgrid-header', headerCssClass: 'custom-ntsgrid-header' },
                 {
-                    headerText: getText("QMM016_38"), key: 'secondFrameNo1', dataType: 'string', width: '165px', columnCssClass: 'currency-symbol halign-right', headerCssClass: "custom-ntsgrid-header",
+                    headerText: 'ID', key: 'firstFrameNo', dataType: 'string',
+                    width: '60px', ntsControl: 'Label', hidden: false
+                },
+                {
+                    headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(),
+                    key: 'firstFrameName', dataType: 'string', width: '150px', ntsControl: 'Label',
+                    columnCssClass: 'custom-ntsgrid-header limited-label', headerCssClass: 'custom-ntsgrid-header'
+                },
+                {
+                    headerText: getText("QMM016_38"), key: 'secondFrameNoX', dataType: 'string', width: '165px', columnCssClass: 'currency-symbol halign-right', headerCssClass: "custom-ntsgrid-header",
                     constraint: {
                         min: -9999999999,
                         max: 9999999999,
@@ -1127,7 +1142,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 return {
                     firstFrameNo: i.masterCode() ? i.masterCode() : i.frameNumber() + "",
                     firstFrameName: i.displayText(),
-                    secondFrameNo1: i.paymentAmount()
+                    secondFrameNoX: i.paymentAmount()
                 };
             });
             self.displayGrid(items, columns);
