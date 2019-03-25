@@ -6436,6 +6436,10 @@ module nts.uk.ui.mgrid {
                 if ($bCell) {
                     let spl = {}, column = _columnsMap[editor.columnKey];
                     if (!column) return;
+                    if (inputVal === "") {
+                        ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                    }
+                    
                     let failed = khl.any({ element: $bCell }), 
                         formatted = failed ? inputVal : (_zeroHidden && ti.isZero(inputVal, editor.columnKey) ? "" : format(column[0], inputVal, spl));
                     $bCell.textContent = formatted;
@@ -6522,6 +6526,10 @@ module nts.uk.ui.mgrid {
                     $editor = dkn.controlType[dkn.TEXTBOX].my,
                     $input = $editor.querySelector("input.medit"),
                     mDate = moment.utc($input.value, editor.format, true);
+                if ($input.value === "") {
+                    ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                }
+                
                 if (mDate.isValid()) {
                     date = editor.formatType === "ymd" ? mDate.toDate() : mDate.format(editor.format[0]);
                     wedgeCell($grid, editor, date);
@@ -7397,6 +7405,7 @@ module nts.uk.ui.mgrid {
         export let KEY_UP = "keyup";
         export let RENDERED = "mgridrowsrendered";
         export let MS = "mgridms";
+        export let MS_BEFORE_COMPL = "mgridmsbeforecompletion";
         
         window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
         window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
@@ -8094,6 +8103,10 @@ module nts.uk.ui.mgrid {
             };
             
             $editor.addXEventListener(ssk.KEY_UP, evt => {
+                ms();
+            });
+            
+            $editor.addXEventListener(ssk.MS_BEFORE_COMPL, () => {
                 ms();
             });
             
