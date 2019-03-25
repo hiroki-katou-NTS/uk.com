@@ -186,7 +186,9 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 					integrationOfDaily);
 			//就業時間帯
 			if(param.getExcludeHolidayAtr() != 0) {
-				workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), true, integrationOfDaily);
+				if(isRecordWorkType) {
+					workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), true, integrationOfDaily);	
+				}				
 				workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), false, integrationOfDaily);
 			}
 			//開始終了時刻の反映
