@@ -110,6 +110,7 @@ const WEB_APP_NAME = {
 
                 // authentication 
                 setHeaders({
+                    'MOBILE': 'true',
                     'PG-Path': 'nts.uk.com.web',
                     'X-CSRF-TOKEN': localStorage.getItem('csrf') || ''
                 });
