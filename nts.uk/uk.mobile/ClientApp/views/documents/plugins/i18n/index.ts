@@ -4,14 +4,16 @@ import { component } from '@app/core/component';
 
 @component({
     route: {
-        url: '/markdown',
+        url: '/plugin/i18n',
         parent: '/documents'
     },
-    template: '<div id="markdown"><markdown /></div>',
+    template: require('./index.html'),
     markdown: {
         vi: require('./content/vi.md'),
-        en: require('./content/en.md')
+        jp: require('./content/jp.md')
+    },
+    resource: {
     }
 })
-export class MarkdownComponent extends Vue {
+export class I18nDocument extends Vue {
 }

@@ -1,7 +1,9 @@
 import './home';
+
 import './html';
-import './markdown';
+import './plugins';
+import './filters';
+import './controls';
+import './directives';
+
 import './component';
-import './modal';
-import './accordion';
-import './form-check';
