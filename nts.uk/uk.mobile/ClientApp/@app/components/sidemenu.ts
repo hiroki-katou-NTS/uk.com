@@ -31,7 +31,7 @@ const _SideMenu = new Vue({
                     <span v-on:click="show = false">{{'app_name' | i18n}}</span>
                 </router-link>
             </h3>
-            <button type="button" class="navbar-btn d-md-none" v-on:click="show = !show">
+            <button type="button" class="navbar-btn" v-on:click="show = !show">
                 <span></span>
                 <span></span>
                 <span></span>
