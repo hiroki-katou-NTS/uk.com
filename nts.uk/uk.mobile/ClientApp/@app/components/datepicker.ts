@@ -54,7 +54,7 @@ import { component, Prop } from '@app/core/component';
         <div class="modal-footer">
             <div class="row">
                 <div class="col-6 text-left">
-                    <button class="btn btn-link" v-if="delete" v-on:click="$close(null)">{{ 'delete' | i18n }}</button>
+                    <button class="btn btn-link" v-if="delete1" v-on:click="$close(null)">{{ 'delete1' | i18n }}</button>
                 </div>
                 <div class="col-6 text-right">
                     <button class="btn btn-link" v-on:click="close()">{{ 'accept' | i18n }}</button>
@@ -80,7 +80,7 @@ export class DatePickerComponent extends Vue {
         required?: boolean;
     };
 
-    get delete() {
+    get delete1() {
         return !this.params.required;
     }
 
