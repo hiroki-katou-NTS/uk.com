@@ -437,6 +437,29 @@ module nts.uk.ui.koExtentions {
      */
     class MultilineEditorProcessor extends EditorProcessor {
 
+        init($input: JQuery, data: any) {
+            super.init($input, data);
+            let self = this, immediateValidate = !_.isNil(data.immediateValidate) ? ko.unwrap(data.immediateValidate) : false;
+            if (immediateValidate) {
+                $input.on("keyup", () => {
+                    let formatter = self.getFormatter(data);
+                    let text = $input.val();
+                    let validator = self.getValidator(data);
+                    let result = validator.validate(text);
+                    if (result.isValid) {
+                        $input.ntsError('clearKibanError');
+                        $input.val(formatter.format(result.parsedValue));
+                    } else {
+                        let error = $input.ntsError('getError');
+                        if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
+                            $input.ntsError('clearKibanError');
+                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        }
+                    }
+                });
+            }
+        }
+        
         update($input: JQuery, data: any) {
             super.update($input, data);
             var resizeable: string = this.editorOption.resizeable;
