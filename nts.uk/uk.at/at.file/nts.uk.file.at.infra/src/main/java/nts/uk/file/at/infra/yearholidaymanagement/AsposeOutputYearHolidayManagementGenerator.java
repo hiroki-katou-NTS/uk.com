@@ -36,10 +36,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
@@ -53,7 +51,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.file.at.app.export.yearholidaymanagement.BreakPageType;
 import nts.uk.file.at.app.export.yearholidaymanagement.ClosurePrintDto;
 import nts.uk.file.at.app.export.yearholidaymanagement.EmployeeHolidayInformationExport;
@@ -92,7 +89,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int MIN_GRANT_DETAIL_COL = 6;
 	private static final int MAX_GRANT_DETAIL_COL = 20;
 	private static final int MAX_COL = 22;
-	private static final int MAX_ROW = 38;
+	private static final int MAX_ROW = 28;
 	private static final int NORMAL_FONT_SIZE = 9;
 	@Inject
 	private CompanyAdapter company;
@@ -104,8 +101,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private GetAnnualHolidayGrantInfor getGrantInfo;
 	@Inject
 	private AnnualHolidayGrantDetailInfor getGrantDetailInfo;
-	@Inject
-	private RegulationInfoEmployeeAdapter empAdaptor;
 	@Inject
 	private EmployeeInformationPub empInfo;
 	@Inject
@@ -284,9 +279,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			if (!isSelectCurrent) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する
-				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, printDate, baseDate);
+				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 				// アルゴリズム「年休明細情報を取得」を実行する
-				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, printDate, baseDate);
+				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 
 			}
 			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
@@ -409,20 +404,29 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// print AnnualHolidayGrant
 					cells.get(currentRow, NEXT_GRANTDATE_COL).setValue(String.valueOf(holidayInfo.getYmd()));
 					int holidayInfoRow = currentRow;
-					for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
-						AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
-						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(String.valueOf(grantInfo.getYmd()));
+					if (holidayInfo.getLstGrantInfor().size() > 0) {
+						for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
+							AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
+							String grantDate = String.valueOf(grantInfo.getYmd());
+							cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(grantDate);
+							String grantDay = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getGrantDays()).toString();
+							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue(grantDay);
+							String useDay = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getUseDays()).toString();
+							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue(useDay);
+							String remainDays = formatter
+									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getRemainDays())
+									.toString();
+							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue(remainDays);
 
-						cells.get(holidayInfoRow, GRANT_DAYS_COL)
-								.setValue(formatter.format(grantInfo.getGrantDays()).toString());
-
-						cells.get(holidayInfoRow, GRANT_USEDAY_COL)
-								.setValue(formatter.format(grantInfo.getUseDays()).toString());
-
-						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL)
-								.setValue(formatter.format(grantInfo.getRemainDays()).toString());
-
-						holidayInfoRow++;
+							holidayInfoRow++;
+						}
+					} else {
+						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
+						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0");
+						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0");
+						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0");
 					}
 				}
 				// Print HolidayDetails

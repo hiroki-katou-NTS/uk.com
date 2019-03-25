@@ -19,18 +19,18 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
+	public boolean updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
 			String workTimeCode, boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if(workTimeCode.isEmpty()
 				|| workTypeCode.isEmpty()) {
-			return;
+			return false;
 		}
 		//予定勤種・就時を反映できるかチェックする
 		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, isPre, scheAndRecordSameChangeFlg)) {
-			return;
+			return false;
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(employeeId, 
@@ -38,6 +38,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 				workTimeCode, 
 				workTypeCode, false); 
 		workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
+		return true;		
 	}
 
 	@Override
