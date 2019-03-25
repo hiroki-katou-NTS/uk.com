@@ -2,9 +2,10 @@ import { routes } from '@app/core/routes';
 import { Vue, ComponentOptions } from '@app/provider';
 
 import { $, dom } from '@app/utils';
-import { resources, language } from '@app/plugins';
+import { resources, Language } from '@app/plugins';
 import { cssbeautify } from '@app/utils/css';
 import classDecorator from 'vue-class-component';
+import { NavMenu } from '@app/services';
 import { Prop, Watch, Model, Provide, Emit, Mixins, Inject } from 'vue-property-decorator';
 
 declare type VueClass<V> = {
@@ -28,7 +29,7 @@ export function component(options: ComponentOptions<Vue>): any {
                     template: `<div class="markdown-content" v-html="markdown"></div>`,
                     computed: {
                         markdown() {
-                            return ($.isString(options.markdown) ? options.markdown : options.markdown[language.current]) || '';
+                            return ($.isString(options.markdown) ? options.markdown : options.markdown[Language.current]) || '';
                         }
                     }
                 }
@@ -90,8 +91,7 @@ export function component(options: ComponentOptions<Vue>): any {
         // initial route for component
         if (options.route) {
             if (typeof options.route === 'string') {
-                let rt = $.find(routes, r => r.name === options.name),
-                    mask = dom.create('div', { 'class': 'modal-backdrop show' });
+                let rt = $.find(routes, r => r.name === options.name);
 
                 if (!rt) {
                     routes.push({
@@ -101,16 +101,8 @@ export function component(options: ComponentOptions<Vue>): any {
                     });
 
                     (options.mixins || (options.mixins = [])).push({
-                        beforeMount() {
-                            //document.body.appendChild(mask);
-                        },
                         mounted() {
                             this.pgName = options.name;
-                            /*if (document.body.contains(mask)) {
-                                setTimeout(() => {
-                                    document.body.removeChild(mask);
-                                }, 50);
-                            }*/
                         }
                     });
                 } else {
@@ -118,8 +110,7 @@ export function component(options: ComponentOptions<Vue>): any {
                 }
             } else {
                 if (options.route.parent) {
-                    let rt = routes.find(r => r.path === (<any>options.route).parent),
-                        mask = dom.create('div', { 'class': 'modal-backdrop show' });
+                    let rt = routes.find(r => r.path === (<any>options.route).parent);
 
                     if (rt) {
                         (rt.children || (rt.children = [])).push({
@@ -136,16 +127,8 @@ export function component(options: ComponentOptions<Vue>): any {
                     }
 
                     (options.mixins || (options.mixins = [])).push({
-                        beforeMount() {
-                            //document.body.appendChild(mask);
-                        },
                         mounted() {
                             this.pgName = options.name;
-                            /*if (document.body.contains(mask)) {
-                                setTimeout(() => {
-                                    document.body.removeChild(mask);
-                                }, 50);
-                            }*/
                         }
                     });
                 }

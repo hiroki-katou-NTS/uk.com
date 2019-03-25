@@ -1,6 +1,6 @@
 import { obj, dom, browser } from '@app/utils';
 import { Vue, DirectiveBinding } from '@app/provider';
-import { language } from '@app/plugins';
+import { Language } from '@app/plugins';
 
 const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; preview?: boolean }) => {
     let show = container.querySelector('.card.show'),
@@ -43,7 +43,7 @@ const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; previ
         // Bắt sự kiện click vào element đặt directive
         container.addEventListener('click', (evt: MouseEvent) => {
             let title = evt.target as HTMLElement;
-            
+
             // Tìm title của các group, nếu thấy và đúng định dạng
             if (title) {
                 if (dom.hasClass(title, 'btn-link')) {
@@ -113,17 +113,17 @@ const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; previ
         if (dom.hasClass(container, 'accordion-steps')) {
             let prev = dom.create('button', {
                 class: 'btn btn-primary accordion-prev',
-                html: `<i class="fa fa-arrow-left mr-1 accordion-prev"></i>${language.$i18n(value.text.preview)}`
+                html: `<i class="fa fa-arrow-left mr-1 accordion-prev"></i>${Language.i18n(value.text.preview)}`
             }), next = dom.create('button', {
                 class: 'btn btn-primary accordion-next ml-3',
-                html: `${language.$i18n(value.text.next)}<i class="fa fa-arrow-right ml-1 accordion-next"></i>`
+                html: `${Language.i18n(value.text.next)}<i class="fa fa-arrow-right ml-1 accordion-next"></i>`
             }), btngroup = dom.create('div', {
                 class: 'text-right mt-1'
             });
 
-            language.getText((lng: string) => {
-                prev.innerHTML = `<i class="fa fa-arrow-left mr-1 accordion-prev"></i>${language.$i18n(value.text.preview)}`;
-                next.innerHTML = `${language.$i18n(value.text.next)}<i class="fa fa-arrow-right ml-1 accordion-next"></i>`;
+            Language.watch((lng: string) => {
+                prev.innerHTML = `<i class="fa fa-arrow-left mr-1 accordion-prev"></i>${Language.i18n(value.text.preview)}`;
+                next.innerHTML = `${Language.i18n(value.text.next)}<i class="fa fa-arrow-right ml-1 accordion-next"></i>`;
             });
 
             btngroup.appendChild(prev);
