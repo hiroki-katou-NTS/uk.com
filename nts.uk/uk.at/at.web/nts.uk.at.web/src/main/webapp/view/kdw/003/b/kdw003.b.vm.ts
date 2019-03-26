@@ -37,7 +37,7 @@ module nts.uk.at.view.kdw003.b {
                     let windowSize = nts.uk.ui.windows.getSelf();
                     windowSize.$dialog.dialog('option', {
                         width : 900,
-                        height : 530
+                        height : 570
                     });
                     let data = [];
                      let i: number = 0;
@@ -107,7 +107,7 @@ module nts.uk.at.view.kdw003.b {
                             });
                         } else {
                             if (self.lstError().length == 0) self.isDisableExportCSV(true);
-                            self.loadGrid();
+                            self.loadGridNormal();
                             dfd.resolve();
                         }
     

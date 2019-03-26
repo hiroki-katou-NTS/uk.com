@@ -17,13 +17,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 @Getter
 public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
 
-	private String annLeavID;
 
 	private String cid;
 	/**
 	 * 社員ID
 	 */
 	private String employeeId;
+	
+	// 付与処理日
+	private GeneralDate grantProcessDate;
 
 	/**
 	 * 付与日
@@ -55,17 +57,14 @@ public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
 	 */
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
-	// 付与処理日
-	private GeneralDate grantProcessDate;
-
-	public AnnualLeaveTimeRemainingHistory(String annLeavID, String cID, String employeeId, GeneralDate grantDate,
+	public AnnualLeaveTimeRemainingHistory(String cID, String employeeId,
+			GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
-			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays,
-			GeneralDate grantProcessDate) {
+			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		this.cid = cID;
-		this.annLeavID = annLeavID;
 		this.employeeId = employeeId;
+		this.grantProcessDate = grantProcessDate;
 		this.grantDate = grantDate;
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
@@ -80,20 +79,19 @@ public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
 		} else {
 			this.annualLeaveConditionInfo = Optional.empty();
 		}
-		this.grantProcessDate = grantProcessDate;
 	}
 
 	public AnnualLeaveTimeRemainingHistory(AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
 		this.cid = data.getCid();
-		this.annLeavID = data.getAnnLeavID();
 		this.employeeId = data.getEmployeeId();
+		this.grantProcessDate = grantProcessDate;
 		this.grantDate = data.getGrantDate();
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
 		this.details = data.getDetails();
 		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
-		this.grantProcessDate = grantProcessDate;
+		
 	}
 
 }

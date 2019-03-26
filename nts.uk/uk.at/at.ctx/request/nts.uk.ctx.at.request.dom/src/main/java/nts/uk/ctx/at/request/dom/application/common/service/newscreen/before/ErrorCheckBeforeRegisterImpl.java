@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
@@ -34,6 +36,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 //import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 
 @Stateless
 public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
@@ -55,6 +60,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	
 	@Inject 
 	private AppOvertimeDetailRepository appOvertimeDetailRepository;
+	
+	@Inject
+	private EmployeeRequestAdapter employeeAdapter;
+	
+	@Inject
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 
 	// @Inject
 	// private PersonalLaborConditionRepository
@@ -95,7 +106,8 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 */
 	@Override
 	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
-			PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) {
+			PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs, String employeeID) {
+		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setFrameNo(-1);
 		// 社員ID
@@ -107,12 +119,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
-		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate, inputDate,
 				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_1508",employeeName);
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -120,8 +131,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_1508",employeeName);
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -152,9 +162,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			// 事前申請の申請時間＞事後申請の申請時間
 			if (beforeTime.getApplicationTime() != null && afterTime.getApplicationTime() != null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
-				result.setErrorCode(1);
-				result.setFrameNo(frameNo);
-				return result;
+				Optional<OvertimeWorkFrame> overtimeWorkFrame = this.overtimeFrameRepository.findOvertimeWorkFrame(new CompanyId(companyId), frameNo);
+				throw new BusinessException("Msg_424",employeeName, overtimeWorkFrame.isPresent() ? overtimeWorkFrame.get().getOvertimeWorkFrName().toString() : "",
+						"", String.valueOf(frameNo), String.valueOf(1));
 			}
 		}
 		result.setErrorCode(0);
@@ -190,20 +200,10 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	}
 
 	/**
-	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 	 */
 	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
-		// 時間外表示区分が表示する OR 時間外超過区分がチェックする（登録不可）
-		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr())
-				|| UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
-	}
-
-	/**
-	 * 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-	 */
-	private boolean isErrorCheck36TimeLimit(Time36UpperLimitCheckResult result,
-			OvertimeRestAppCommonSetting overtimeSeting) {
-		return result.getErrorFlg() && UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
+		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr());
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -229,9 +229,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
 				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+		if (result.getErrorFlg().size() > 0) {
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(String error : result.getErrorFlg()){
+				bundledBusinessExceptions.addMessage("Msg_329", error);
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -246,7 +249,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -257,11 +260,14 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
-				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+				employeeId, appDate, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+		if (result.getErrorFlg().size() > 0) {
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(String error : result.getErrorFlg()){
+				bundledBusinessExceptions.addMessage("Msg_329", error);
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -276,22 +282,25 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
-		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().filter(x -> x != null && x.getApptime()!=null).collect(Collectors.toList()).stream().map(x -> {
+			return new AppTimeItem(x.getApptime(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
 				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+		if (result.getErrorFlg().size() > 0) {
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(String error : result.getErrorFlg()){
+				bundledBusinessExceptions.addMessage("Msg_329", error);
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -306,7 +315,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return Optional.empty();
 		}
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
 		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
 			return Optional.empty();
 		}
@@ -314,14 +323,17 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
 		List<AppTimeItem> appTimeItems = CollectionUtil.isEmpty(holidayWorkInputs) ? Collections.emptyList() : holidayWorkInputs.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+			return new AppTimeItem(x.getApptime(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
-				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+				appDate, ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
-			// エラーメッセージを表示する（Msg_329）
-			throw new BusinessException("Msg_329");
+		if (result.getErrorFlg().size() > 0) {
+			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+			for(String error : result.getErrorFlg()){
+				bundledBusinessExceptions.addMessage("Msg_329", error);
+			}
+			throw bundledBusinessExceptions;
 		}
 		return result.getAppOvertimeDetail();
 	}
@@ -336,12 +348,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 03-05_事前否認チェック
 	 */
 	@Override
-	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
+	public OvertimeCheckResult preliminaryDenialCheck(String companyId, String employeeID, GeneralDate appDate, GeneralDateTime inputDate,
 			PrePostAtr prePostAtr,int appType) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
-		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate, inputDate,
 				appType, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return result;

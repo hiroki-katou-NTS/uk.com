@@ -32,7 +32,8 @@ module nts.uk.at.view.cdl024.viewmodel {
                 items(data);
                 let parameter: InputParam = nts.uk.ui.windows.getShared("CDL024");
                 if (parameter != null && parameter.codeList != null) {
-                    self.currentCodeList(parameter.codeList);
+                   let itemSelects =  _.filter(parameter.codeList, (v) => _.includes(_.map(data, (temp) => {return temp.code;}), v));
+                   if (!_.isEmpty(itemSelects)) self.currentCodeList(itemSelects);
                 }
                 dfd.resolve();
             });

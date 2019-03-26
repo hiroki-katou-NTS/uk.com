@@ -3175,7 +3175,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
 
 			if (!optWorkType.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			WorkType workType = optWorkType.get();
@@ -3191,7 +3191,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
 			
 			if (!optWorkTime.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			WorkTimeSetting workTime = optWorkTime.get();
@@ -3207,7 +3207,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
 			
 			if (!optWorkLocation.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 			
 			CodeName workLocation = optWorkLocation.get();
@@ -3218,7 +3218,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream()
 					.filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
 			if (!optWorkplace.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName workplace = optWorkplace.get();
@@ -3230,7 +3230,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> optReason = lstReason.stream().filter(reason -> reason.getCode().equalsIgnoreCase(code))
 					.filter(item -> item.getId().equalsIgnoreCase(itemId)).collect(Collectors.toList());
 			if (optReason.isEmpty()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 			return optReason.get(0).getName();
 		}
@@ -3241,7 +3241,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.findFirst();
 
 			if (!optClassification.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName classification = optClassification.get();
@@ -3253,7 +3253,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
 
 			if (!optPosition.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName position = optPosition.get();
@@ -3264,7 +3264,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Optional<CodeName> optEmployment = lstEmployment.stream()
 					.filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
 			if (!optEmployment.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName employment = optEmployment.get();

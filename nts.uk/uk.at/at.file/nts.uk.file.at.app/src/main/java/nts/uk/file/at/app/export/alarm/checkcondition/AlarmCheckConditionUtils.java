@@ -109,7 +109,21 @@ public class AlarmCheckConditionUtils {
 	public static final String KAL003_288 = "36協定時間年間超過回数チェック 回数";
 	public static final String KAL003_289 = "36協定時間年間超過回数チェック 表示するメッセージ";
 	
+	// annual holiday
+	public static final String KAL003_317 = "年休のチェック対象者　次回年休付与日までの期間";
+	public static final String KAL003_318 = "年休のチェック対象者　期間";
+	public static final String KAL003_319 = "年休のチェック対象者　前回年休付与日数";
+	public static final String KAL003_320 = "年休のチェック対象者　日数";
 	
+	public static final String KAL003_321 = "年間使用義務チェック条件　使用義務日数";
+	public static final String KAL003_322 = "年間使用義務チェック条件　表示するメッセージ";
+	public static final String KAL003_323 = "年間使用義務チェック条件　前回付与からの経過期間が１年未満の場合、期間按分する";
+	
+	public static final String TEXT_KAL003_324 = TextResource.localize("KAL003_324");
+	
+	public static final String TEXT_KAL003_325 = TextResource.localize("KAL003_325");
+	
+	public static final String TEXT_KAL003_326 = TextResource.localize("KAL003_326");
 	
 	
 	public static String getCheckItemStr(Optional<Integer> checkItem) {

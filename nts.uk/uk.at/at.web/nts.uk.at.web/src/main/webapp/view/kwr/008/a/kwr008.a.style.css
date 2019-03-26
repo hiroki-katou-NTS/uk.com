@@ -18,3 +18,4 @@ body .fixed-flex-layout-right {
 .form-label {
 	width: 220px;
 }
+.standardMonth{display: inline-block; position: relative; top: 2px; left: 5px;}

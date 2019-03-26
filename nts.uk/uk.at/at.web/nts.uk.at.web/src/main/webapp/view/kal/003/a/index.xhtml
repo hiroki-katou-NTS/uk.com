@@ -19,6 +19,8 @@
 			<com:scriptfile path="monthly/alarmchecktab.js" />
 			<com:scriptfile path="agreement/agreementerror/agreementerror.js" />
 			<com:scriptfile path="agreement/agreementhour/agreementhour.js" />
+			<com:scriptfile path="annualholiday/checksubconagreement/checksubconagr.js" />
+			<com:scriptfile path="annualholiday/checkconagreement/checkconagr.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -149,6 +151,12 @@
 							</div>
 							<div class="tab-content-8" data-bind="with: tabAgreementHour">
 								<ui:include src="agreement/agreementhour/agreementhour.xhtml" />
+							</div> 
+							<div class="tab-content-9" data-bind="with: tabAnnualHolidaySubCon">
+								<ui:include src="annualholiday/checksubconagreement/checksubconagr.xhtml" />
+							</div>
+							<div class="tab-content-10" data-bind="with: tabAnnualHolidayCon">
+								<ui:include src="annualholiday/checkconagreement/checkconagr.xhtml" />
 							</div>
 						</div>
 					</div>

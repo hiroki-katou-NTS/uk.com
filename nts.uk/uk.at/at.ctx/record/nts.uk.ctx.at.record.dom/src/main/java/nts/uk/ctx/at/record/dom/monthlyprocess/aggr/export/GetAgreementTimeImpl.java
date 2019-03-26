@@ -139,7 +139,7 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			// 「36協定基本設定」を取得する
 			val basicAgreementSet = this.repositories.getAgreementDomainService().getBasicSet(
 					companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
-			limitMinutes = basicAgreementSet.getLimitOneYear().v();
+			limitMinutes = basicAgreementSet.getErrorOneYear().v();
 		}
 		
 		// 36協定年間時間を作成
@@ -205,10 +205,10 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 		if (workingCondItemOpt.isPresent()) {
 			val workingSystem = workingCondItemOpt.get().getLaborSystem();
 			
-			// 「36協定上限規制」を取得する　※　仮記述。正式ではない。
-			val basicAgreementSet = this.repositories.getAgreementDomainService().getBasicSet(
-					companyId, employeeId, criteria, workingSystem).getBasicAgreementSetting();
-			maxMinutes = basicAgreementSet.getLimitOneMonth().v();
+			// 「36協定上限規制」を取得する
+			val upperAgreementSet = this.repositories.getAgreementDomainService().getBasicSet(
+					companyId, employeeId, criteria, workingSystem).getUpperAgreementSetting();
+			maxMinutes = upperAgreementSet.getUpperMonthAverage().v();
 		}
 		
 		// 管理期間の36協定時間を取得　（過去6ヶ月分）

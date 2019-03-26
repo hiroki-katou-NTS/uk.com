@@ -39,4 +39,8 @@ public class PeriodFinder {
 		YearMonth endYm = startYm.addMonths(11);
 		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
 	}
+	
+	public YearMonth getCurentMonth() {
+		return closureEmploymentService.getCurentMonth();
+	}
 }

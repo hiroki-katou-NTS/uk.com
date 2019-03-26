@@ -6267,7 +6267,7 @@ module nts.uk.ui.mgrid {
                     let control = dkn.controlType[coord.columnKey];
                     let cEditor = _mEditor;
                     
-                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt)) {
+                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt) && !$tCell.classList.contains(color.Hide)) {
                         let check = $tCell.querySelector("input[type='checkbox']");
                         if (!check) return;
                         let checked;
@@ -9454,7 +9454,7 @@ module nts.uk.ui.mgrid {
                 let result = new ui.validation.ValidationResult();
                 if ((util.isNullOrUndefined(text) || text.length === 0)) {
                     if (self.options && self.options.required) {
-                        result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ self.name ]), 'FND_E_REQ_INPUT');
+                        result.fail(nts.uk.resource.getMessage('MsgB_1', [ self.name ]), 'MsgB_1');
                         return result;
                     }
                     if (!self.options || (self.options && !self.options.required)) {
@@ -9586,7 +9586,7 @@ module nts.uk.ui.mgrid {
                 
                 if (util.isNullOrEmpty(inputText)) {
                     if (this.required) {
-                        result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                        result.fail(nts.uk.resource.getMessage('MsgB_1', [ this.name ]), 'MsgB_1');
                     } else result.success("");
                     return result;
                 }
@@ -9609,7 +9609,7 @@ module nts.uk.ui.mgrid {
                 let parsed = time.minutesBased.duration.parseString(inputText);
                 if (!parsed.success || (parsedValue = parsed.toValue()) !== Math.round(parsedValue) 
                     || parsedValue < minValue || parsedValue > maxValue) {
-                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [ self.name, minParsed.format(), maxParsed.format() ]), "FND_E_CLOCK");
+                    result.fail(nts.uk.resource.getMessage("MsgB_16", [ self.name, minParsed.format(), maxParsed.format() ]), "MsgB_16");
                 } else {
                     result.success(parsedValue);
                 }
@@ -10041,6 +10041,7 @@ module nts.uk.ui.mgrid {
         export const Calculation = "mgrid-calc";
         export const Disable = "mgrid-disable";
         export const Lock = "mgrid-lock";
+        export const Hide = "mgrid-hide";
         export const HOVER = "ui-state-hover";
         export const ALL = [ Error, Alarm, ManualEditTarget, ManualEditOther, Reflect, Calculation, Disable ];
         

@@ -521,7 +521,7 @@
 		<div class="valign-center control-group overlay-reason"
 			data-bind="if: typicalReasonDisplayFlg">
 			<!--A9_1 定型理由ラベル--> 			
-			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_86')}</div>
+			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{required: requiredReason}">#{i18n.getText('KAF005_86')}</div>
 			<!--A9_2 定型理由選択--> 			
 			<div tabindex="18" class="combo-box"
 				data-bind="ntsComboBox: {name: '#[KAF005_87]', 
@@ -539,7 +539,7 @@
 			data-bind="if: isShowReason()">
 			<!--A9_3 申請理由ラベル--> 			
 			<div class="lblTitle cm-column"
-				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_88')}</div>
+				data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF005_88')}</div>
 			<!--A9_4 申請理由入力--> 
 			<div id="multiline">
 				<textarea tabindex="19" id ="appReason" class ="textarea-kaf005"
@@ -547,14 +547,13 @@
 								value: multilContent,
 								option: {
 									resizeable: false,
-			                    	width: '500',
-			                    	required: requiredReason()
+			                    	width: '500'
 			                   	},
 			                   	enable:displayAppReasonContentFlg() &amp;&amp; $vm.editable()
 							}" />
 			</div>
 		</div>
-		<!--定型理由 -->
+		<!-- 乖離定型理由 -->
 		<div class="valign-center control-group overlay-reason"
 			data-bind="if: displayDivergenceReasonForm">
 			<!--A9_5 乖離定型理由ラベル--> 
@@ -571,7 +570,7 @@
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
-		<!-- 申請理由（ラベル) -->
+		<!--  乖離理由（ラベル) -->
 		<div class="cf valign-top control-group"
 			data-bind="if: displayDivergenceReasonInput">
 			<!--A9_7 乖離理由ラベル--> 

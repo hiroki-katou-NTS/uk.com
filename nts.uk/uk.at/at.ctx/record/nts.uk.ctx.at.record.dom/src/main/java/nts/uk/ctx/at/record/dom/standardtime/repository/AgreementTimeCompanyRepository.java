@@ -11,4 +11,6 @@ public interface AgreementTimeCompanyRepository {
 	
 	Optional<AgreementTimeOfCompany> find(String companyId, LaborSystemtAtr laborSystemAtr);
 	
+	void update(AgreementTimeOfCompany agreementTimeOfCompany);
+	
 }

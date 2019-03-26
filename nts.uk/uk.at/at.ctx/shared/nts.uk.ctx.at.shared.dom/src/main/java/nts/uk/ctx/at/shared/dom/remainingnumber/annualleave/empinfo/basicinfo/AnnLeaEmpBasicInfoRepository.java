@@ -7,6 +7,8 @@ public interface AnnLeaEmpBasicInfoRepository {
 	
 	Optional<AnnualLeaveEmpBasicInfo> get(String employeeId);
 	
+	List<AnnualLeaveEmpBasicInfo> getList(List<String> employeeIds);
+	
 	void add(AnnualLeaveEmpBasicInfo baicInfo);
 	
 	void update(AnnualLeaveEmpBasicInfo basicInfo);

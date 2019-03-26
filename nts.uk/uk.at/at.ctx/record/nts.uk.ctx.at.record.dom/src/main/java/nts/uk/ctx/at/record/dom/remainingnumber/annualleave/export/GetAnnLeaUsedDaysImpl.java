@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.SpecDateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -38,10 +39,11 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> ofGrantPeriod(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr) {
+			ReferenceAtr referenceAtr, boolean fixedOneYear, SpecDateAtr specDateAtr) {
 		
 		// 社員の前回付与日から次回付与日までの年休使用日数を取得
-		val tmpAnnLeaMngExportList = this.ofGrantPeriodProc(employeeId, criteria, referenceAtr);
+		val tmpAnnLeaMngExportList = this.ofGrantPeriodProc(
+				employeeId, criteria, referenceAtr, fixedOneYear, specDateAtr);
 		
 		// 年休使用数を合計
 		double annualLeaveUseDays = 0.0;
@@ -82,21 +84,52 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 		return Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveUseDays));
 	}
 	
-	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
+	/**
+	 *  社員の前回付与日から次回付与日までの年休使用日数を取得
+	 *  @param employeeId 社員ID
+	 *  @param criteria 基準日
+	 *  @param referenceAtr 参照先区分
+	 *  @param fixedOneYear 1年固定区分
+	 *  @param specDateAtr 指定日区分
+	 *  @return 暫定年休管理データリスト
+	 */
 	private List<TmpAnnualLeaveMngExport> ofGrantPeriodProc(String employeeId, GeneralDate criteria,
-			ReferenceAtr referenceAtr) {
+			ReferenceAtr referenceAtr, boolean fixedOneYear, SpecDateAtr specDateAtr) {
 		
 		List<TmpAnnualLeaveMngExport> results = new ArrayList<>();
 		
-		// 社員に対応する締め期間を取得する
-		DatePeriod closurePeriod = this.closureService.findClosurePeriod(employeeId, criteria);
-		if (closurePeriod == null) return results;
+		// 指定日　←　基準日
+		GeneralDate specDate = criteria;
 		
-		// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-		val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
-				AppContexts.user().companyId(), employeeId, closurePeriod.end());
-		if (!usedPeriodOpt.isPresent()) return results;
-		val usedPeriod = usedPeriodOpt.get();
+		// 指定日区分から指定日を判断
+		if (specDateAtr == SpecDateAtr.CURRENT_CLOSURE_END) {	// 当月の締め終了日時点
+			
+			// 社員に対応する締め期間を取得する
+			DatePeriod closurePeriod = this.closureService.findClosurePeriod(employeeId, criteria);
+			if (closurePeriod == null) return results;
+			
+			// 指定日　←　取得した締め期間．終了日
+			specDate = closurePeriod.end();
+		}
+		
+		DatePeriod usedPeriod = null;
+		if (fixedOneYear) {
+			
+			// 指定した年月日を基準に、前回付与日から1年後までの期間を取得
+			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodAfterOneYear(
+					AppContexts.user().companyId(), employeeId, specDate);
+			if (!usedPeriodOpt.isPresent()) return results;
+			usedPeriod = usedPeriodOpt.get();
+		}
+		else {
+			
+			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
+			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
+					AppContexts.user().companyId(), employeeId, specDate);
+			if (!usedPeriodOpt.isPresent()) return results;
+			usedPeriod = usedPeriodOpt.get();
+		}
+		if (usedPeriod == null) return results;
 		
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,

@@ -197,12 +197,12 @@ module nts.uk.at.view.kmk005.f {
                                 });
                             }
                             else {
-                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 self.getBonusPaySetting(self.currentBonusPaySetting().code());
                             }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                         });
                     } else {
                         fService.insertBonusPaySetting(
@@ -219,12 +219,12 @@ module nts.uk.at.view.kmk005.f {
                                 });
                             }
                             else {
-                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 self.getBonusPaySetting(self.currentBonusPaySetting().code());
                             }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                         });
                     }
                 } else {
@@ -236,7 +236,7 @@ module nts.uk.at.view.kmk005.f {
                 nts.uk.ui.block.invisible();
                 var self = this;
 
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                nts.uk.ui.dialog.confirm({messageId: "Msg_18"})
                     .ifYes(() => {
                         let i = _.findIndex(self.bonusPaySettingList(), x => { return x.code == self.currentBPSetCode() });
                         fService.deleteBonusPaySetting(
@@ -249,11 +249,11 @@ module nts.uk.at.view.kmk005.f {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                         });
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                    });;
+                    });
 
             }
 

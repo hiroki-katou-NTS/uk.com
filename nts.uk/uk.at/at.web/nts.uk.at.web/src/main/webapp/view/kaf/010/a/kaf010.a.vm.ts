@@ -56,6 +56,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
+        //申請理由が必須
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
@@ -193,7 +194,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.checkRequiredBreakTimes();
-                $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
@@ -274,6 +274,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
@@ -408,7 +409,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
 
         setErrorA6_8() {
-            $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+            $('.breakTimesCheck').ntsError('set', { messageId: 'MsgB_1', messageParams: [nts.uk.resource.getText("KAF010_56")] });
         }
 
         clearErrorA6_8() {
@@ -557,8 +558,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }                    
                 }
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }           
             });
         }
         //登録処理を実行
@@ -738,10 +744,18 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
-                self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
-                dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
-                    nts.uk.ui.block.clear(); 
-                });
+                if(res.messageId=="Msg_424"){
+                    self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
+                    dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });    
+                } else if(res.messageId=="Msg_1508"){ 
+                    dialog.alertError({messageId:"Msg_1508", messageParams: [res.parameterIds[0]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });   
+                } else {
+                    nts.uk.ui.block.clear();    
+                }
                 dfd.reject(res);
             });
             return dfd.promise();

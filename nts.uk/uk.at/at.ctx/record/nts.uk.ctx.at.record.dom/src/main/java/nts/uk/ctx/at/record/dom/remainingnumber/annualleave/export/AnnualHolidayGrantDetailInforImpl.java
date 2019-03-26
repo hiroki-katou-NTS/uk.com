@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,7 +37,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
 			x.getData().getRecAbsData().stream().forEach(y -> {
-				if(y.getRemainManaID() == annData.getAnnualId()) {
+				if(y.getRemainManaID().equals(annData.getAnnualId())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
 							y.getYmd(),
 							annData.getUseDays().v(),
@@ -46,7 +47,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				}
 			});
 		});
-		return lstOutputData;
+		return lstOutputData.stream().sorted((a,b) -> a.getYmd().compareTo(b.getYmd()))
+				.collect(Collectors.toList());
 	}
 
 
