@@ -8,5 +8,5 @@
 
 ##### 2. Code
 ```html
-<input type="text" class="form-control" v-focus />
+<input v-focus type="text" class="form-control" />
 ```

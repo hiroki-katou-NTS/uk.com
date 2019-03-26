@@ -1,4 +1,4 @@
-import { Vue, VueConstructor } from '@app/provider';
+import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
 
@@ -11,7 +11,7 @@ const modal = {
             }
         });
 
-        vue.prototype.$modal = function (name: string, params: any, options?: IModalOptions) {
+        vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params: any, options?: IModalOptions) {
             let self = this,
                 $options = self.$options,
                 components = $options.components,
@@ -19,7 +19,7 @@ const modal = {
 
             params = obj.toJS(params);
 
-            options = options || {
+            options = options || <IModalOptions>{
                 title: name,
                 size: 'md',
                 type: 'modal'
@@ -27,8 +27,8 @@ const modal = {
 
             return {
                 onClose(callback: Function) {
-                    if (components) {
-                        let component = components[name];
+                    if (typeof name === 'string' ? components : true) {
+                        let component = typeof name === 'string' ? components[name] : name;
 
                         if (component) {
                             // remove old mixin methods
@@ -83,12 +83,14 @@ const modal = {
 
                             let dlg = dom.create('div'),
                                 vm = Vue.extend({
-                                    components,
-                                    data: () => ({ name, params, show: false }),
+                                    components: {
+                                        'nts-dialog': component
+                                    },
+                                    data: () => ({ name: 'nts-dialog', params, show: false }),
                                     computed: {
                                         title: {
                                             get() {
-                                                return options.title || name;
+                                                return options.title || (typeof name === 'string' ? name : 'nts-dialog');
                                             }
                                         },
                                         $class: {

@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { time } from '@app/utils';
+import { time, TimeInputType } from '@app/utils';
 import * as _ from 'lodash';
 
 @component({
@@ -34,7 +34,7 @@ import * as _ from 'lodash';
         </div>    
     `
 })
-export class TimePickerComponent extends Vue {
+export class TimeDurationPickerComponent extends Vue {
 
     @Prop({
         default: {
@@ -48,12 +48,16 @@ export class TimePickerComponent extends Vue {
         maxValue: number;
         value: number;
     };
+    
+    readonly timeUtil = time.timedr;
 
-    readonly minTimePoint = time.timedr.computeTimePoint(this.params.minValue);
-    readonly maxTimePoint = time.timedr.computeTimePoint(this.params.maxValue);
+    readonly minTimePoint = this.timeUtil.computeTimePoint(this.params.minValue);
+    readonly maxTimePoint = this.timeUtil.computeTimePoint(this.params.maxValue);
 
     get hourList(): Array<number> {
-        return this.generateArray(this.minTimePoint.hour, this.maxTimePoint.hour);
+        var minHour = this.minTimePoint.hour;
+        var maxHour = this.maxTimePoint.hour;
+        return this.generateArray(minHour, maxHour);
     }
 
     get minuteList(): Array<number> {
@@ -91,6 +95,12 @@ export class TimePickerComponent extends Vue {
             }
             
         }
+
+        if (this.hourValue == 0) {
+            minMinute = -59;
+            maxMinute = 59;
+        }
+
         return this.generateArray(minMinute, maxMinute);       
     }
 
@@ -103,8 +113,8 @@ export class TimePickerComponent extends Vue {
     }
 
     minutes: number = this.params.value;
-    hourValue: number = time.timedr.computeHour(this.params.value);
-    minuteValue: number = time.timedr.computeMinute(this.params.value);
+    hourValue: number = this.timeUtil.computeHour(this.params.value);
+    minuteValue: number = this.timeUtil.computeMinute(this.params.value);
 
     ok() {
         this.$close(this.minutes);
@@ -121,7 +131,7 @@ export class TimePickerComponent extends Vue {
             var tmp = this.minuteValue;
             this.minuteValue = undefined;
             this.minuteValue = tmp;
-            this.minutes = time.timedr.computeValue(this.hourValue, this.minuteValue);
+            this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
         });
         
     }
@@ -129,7 +139,7 @@ export class TimePickerComponent extends Vue {
     whenMinuteChange() {
         let newMinute = (<HTMLInputElement>this.$refs.minute1).value;
         this.minuteValue = Number(newMinute);
-        this.minutes = time.timedr.computeValue(this.hourValue, this.minuteValue);
+        this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
     }
     
 }

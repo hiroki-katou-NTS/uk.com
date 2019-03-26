@@ -91,7 +91,7 @@ declare module "vue/types/vue" {
         $mask: (act: 'hide' | 'show' | 'showonce') => {
             on: (click: () => void, hide?: () => void) => void;
         };
-        $modal: (name: string, params?: any, options?: IModalOptions) => {
+        $modal: (name: (string | ComponentOptions<Vue>), params?: any, options?: IModalOptions) => {
             onClose: (callback: (data?: any) => void) => void;
         };
         $valid: boolean;
@@ -105,6 +105,9 @@ declare module "vue/types/vue" {
         validations: {
             [name: string]: IRule;
         };
+        $alert: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $error: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $confirm: (msgOrResourceId: string, options?: any) => Promise<{}>;
     }
 
     export interface VueConstructor<V extends Vue = Vue> {

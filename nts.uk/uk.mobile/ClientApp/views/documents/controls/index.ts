@@ -1,3 +1,3 @@
 import './form-check';
-import './time-editor'
-import './time-component'
+import './time-editor';
+import './date-input'

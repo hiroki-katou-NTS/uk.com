@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import {time, DAYS, TimePoint} from '@app/utils/time'
+import {time, DAYS, TimeWithDayPoint } from '@app/utils/time'
 import * as _ from 'lodash';
 
 @component({
@@ -56,8 +56,8 @@ export class TimeWDPickerComponent extends Vue {
         value: number;
     };
 
-    private maxPoint: TimePoint = time.timewd.computeTimePoint(this.params.maxValue);
-    private minPoint: TimePoint = time.timewd.computeTimePoint(this.params.minValue);
+    private maxPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.maxValue);
+    private minPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.minValue);
 
     minutes: number = this.params.value;
     dayValue: string = time.timewd.computeDay(this.params.value);
@@ -73,8 +73,6 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     whenDayChange() {
-        debugger;
-        console.log("whenDayChange");
         let newDay = (<HTMLInputElement>this.$refs.day).value;
         this.dayValue = newDay;
         _.defer(()=> {
@@ -149,7 +147,7 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     get hourList(): Array<number> {
-        console.log("hourList");
+
         var minHour = 0;
         var maxHour = 23;
         if (this.dayValue == this.minPoint.day) {

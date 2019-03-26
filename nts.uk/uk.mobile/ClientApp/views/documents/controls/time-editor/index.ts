@@ -3,13 +3,23 @@ import { component } from '@app/core/component';
 
 @component({
     route: {
-        url: '/controls/time-input',
+        url: '/controls/time-editor',
         parent: '/documents'
     },
-    template: require('./index.html')
+    template: require('./index.html'),
+    validations: {
+        time: {
+            minValue: -720,
+            maxValue: 4319
+        }
+    },
 })
-export class TestTimeEditor extends Vue {
+export class TimeEditorControl extends Vue {
 
-    minutes: string| number = 600;
-    
+    time: number = 750;
+
+    constructor() {
+        super();
+        let self = this;
+    }
 }
