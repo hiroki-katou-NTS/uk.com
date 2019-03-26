@@ -525,7 +525,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 leaveAppID: self.leaverAppID(),
                 uiType: self.uiType(),
                 calculateFlag: self.calculateFlag(),
-                appReasonID: comboBoxReason
+                appReasonID: comboBoxReason,
+                checkOver1Year: true;
             };
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);
@@ -1097,27 +1098,47 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         
         beforeRegisterColorConfirm(overtime: any){
             let self = this;
-            service.beforeRegisterColorConfirm(overtime).done((data2) => { 
-                if(data2.confirm){
-                    if(data2.msgID=="Msg_424"){
-                        self.changeColor(2, data2[2], 1);        
-                    }
-                    dialog.confirm({ messageId: data2.msgID, messageParams: data2.params }).ifYes(() => {
-                        //登録処理を実行
-                        self.beforeRegisterProcess(overtime);
+            service.beforeRegisterColorConfirm(overtime).done((data2) => {
+                overtime.checkOver1Year = false;
+                self.contentBefRegColorConfirmDone(overtime, data2);
+            }).fail((res) => {
+                if (res.messageId == "Msg_1518") {//confirm
+                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                        overtime.checkOver1Year = false;
+                        service.beforeRegisterColorConfirm(overtime).done((data3) => {
+                            self.contentBefRegColorConfirmDone(overtime, data3);
+                        }).fail((res) => {
+                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                .then(function() { nts.uk.ui.block.clear(); });
+                        });
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                        return;
-                    });    
+                    });
+
                 } else {
-                    self.beforeRegisterProcess(overtime);       
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 }
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
-            });         
+            });
         }
         
+        contentBefRegColorConfirmDone(overtime, data2) {
+            let self = this;
+            if (data2.confirm) {
+                if (data2.msgID == "Msg_424") {
+                    self.changeColor(2, data2[2], 1);
+                }
+                dialog.confirm({ messageId: data2.msgID, messageParams: data2.params }).ifYes(() => {
+                    //登録処理を実行
+                    self.beforeRegisterProcess(overtime);
+                }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                    return;
+                });
+            } else {
+                self.beforeRegisterProcess(overtime);
+            }
+        }
         beforeRegisterProcess(overtime: any){
             let self = this;
             service.checkBeforeRegister(overtime).done((data) => {    

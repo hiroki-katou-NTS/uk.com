@@ -400,15 +400,34 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
             let self = this;
-            let dfd = $.Deferred();
-            service.checkInsertGoBackDirect(self.getCommand()).done(function() {
+            let command = self.getCommand();
+            command.checkOver1Year = true;
+            service.checkInsertGoBackDirect(command).done(function() {
+                command.checkOver1Year = false;
                 self.registry();
-                dfd.resolve(true);
             }).fail(function(res: any) {
-                if (res.messageId == "Msg_297") {
+                if (res.messageId == "Msg_1518") {//confirm
+                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                        command.checkOver1Year = false;
+                        service.checkInsertGoBackDirect(command).done(function() {
+                            self.registry();
+                        }).fail(function(res: any) {
+                            self.checkRegFail(res);
+                        })
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }else{
+                    self.checkRegFail(res);
+                }
+            });
+        }
+
+    checkRegFail(res){
+        let self = this;
+        if (res.messageId == "Msg_297") {
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
                         self.registry();
-                        dfd.resolve(true);
                     }).ifNo(function() {
                         let showMsg: boolean = true;
                         nts.uk.ui.block.clear();
@@ -434,10 +453,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         if (showMsg) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                         }
-                        dfd.resolve(false);
                     });
                 } else if (res.messageId == "Msg_298") {
-                    dfd.reject();
                     nts.uk.ui.block.clear();
                     let showMsg: boolean = true;
                     if (self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())) {
@@ -472,10 +489,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     let rsTime2 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[1]));
                     nts.uk.ui.dialog.error({ messageId: res.parameterIds[0].split("=")[1], messageParams: [rsTime2] });    
                 }
-            })
-            return dfd.promise();
         }
-
         /**
          * アルゴリズム「直行直帰するチェック」を実行する
          */
@@ -564,7 +578,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let commandTotal = {
                 goBackCommand: goBackCommand,
                 appCommand: appCommand,
-                appApprovalPhaseCmds: self.approvalSource
+                appApprovalPhaseCmds: self.approvalSource,
+                checkOver1Year: false
             }
             return commandTotal;
 

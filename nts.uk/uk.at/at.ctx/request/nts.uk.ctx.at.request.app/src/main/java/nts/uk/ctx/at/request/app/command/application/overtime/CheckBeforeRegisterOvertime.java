@@ -79,7 +79,7 @@ public class CheckBeforeRegisterOvertime {
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value);
+		newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,

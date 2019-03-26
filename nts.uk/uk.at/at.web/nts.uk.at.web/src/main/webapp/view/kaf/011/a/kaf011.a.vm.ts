@@ -299,6 +299,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let checkBoxValue = self.checkBoxValue();
             // if (isCheckReasonError) { return; }
             block.invisible();
+            saveCmd.checkOver1Year = true;
             service.save(saveCmd).done((data) => {
                 self.saveDone(data, checkBoxValue);
             }).fail((res) => {
