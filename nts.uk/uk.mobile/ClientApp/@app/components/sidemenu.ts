@@ -15,6 +15,9 @@ const _SideMenu = new Vue({
     set show(value: boolean) {
         _SideMenu.show = value;
     },
+    get items() {
+        return _SideMenu.items;
+    },
     set items(items: Array<any>) {
         _SideMenu.items = items;
     },
@@ -113,8 +116,6 @@ export class SideMenuBar extends Vue {
         }
     }
 }
-
-window['side'] = SideMenu;
 
 export { SideMenu };
 

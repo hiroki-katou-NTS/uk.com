@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     route: {
-        url: '/form-check',
+        url: '/controls/form-check',
         parent: '/documents'
     },
     template: require('./index.html'),

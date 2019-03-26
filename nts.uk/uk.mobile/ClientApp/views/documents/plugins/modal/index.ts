@@ -4,7 +4,7 @@ import { component } from '@app/core/component';
 
 @component({
     route: {
-        url: '/modal',
+        url: '/plugin/modal',
         parent: '/documents'
     },
     template: require('./index.html'),

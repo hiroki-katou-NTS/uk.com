@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     route: {
-        url: '/accordion',
+        url: '/directive/focus',
         parent: '/documents'
     },
     template: require('./index.html'),
@@ -24,5 +24,5 @@ import { component } from '@app/core/component';
         jp: require('./content/vi.md')
     }
 })
-export class AccordionDocumentComponent extends Vue {
+export class FocusDirectiveDocument extends Vue {
 }

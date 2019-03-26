@@ -84,16 +84,7 @@ export class NavMenuBar extends Vue {
 
 export { NavMenu };
 
-window['nav'] = NavMenu;
-
-
-
-_NavMenu.items.push({
+NavMenu.items = [{
     url: '/',
     title: 'home'
-});
-
-_NavMenu.items.push({
-    url: '/access/login',
-    title: 'login'
-});
+}];
