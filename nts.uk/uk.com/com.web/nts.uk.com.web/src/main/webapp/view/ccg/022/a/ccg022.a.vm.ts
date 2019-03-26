@@ -47,7 +47,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 $("#stop_message_txt").ntsError("clear");
                 $("#in_progress_message_txt").ntsError("clear");
                 
-                ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage() , 
+                ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage , 
                                                                 name: '#[CCG022_20]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},
@@ -55,7 +55,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                                                                 required:value==1
                                                                 }});
                 
-                ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage() , 
+                ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage , 
                                                                 name: '#[CCG022_25]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},

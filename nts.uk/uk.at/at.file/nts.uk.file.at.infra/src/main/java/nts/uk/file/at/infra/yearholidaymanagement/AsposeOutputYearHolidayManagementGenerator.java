@@ -136,7 +136,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					programName + "_" + query.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+					programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN)) + REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
