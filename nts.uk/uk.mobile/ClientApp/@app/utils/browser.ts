@@ -45,4 +45,12 @@ export class browser {
     public static get ios() {
         return /iPhone|iPod/.test(navigator.userAgent) && !(<any>window).MSStream;
     }
+
+    public static get width() {
+        return window.innerWidth;
+    }
+
+    public static get height() {
+        return window.innerHeight;
+    }
 }

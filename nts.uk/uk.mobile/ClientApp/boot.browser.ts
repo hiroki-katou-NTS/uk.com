@@ -5,7 +5,7 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { ajax, i18n, mask, modal, click, validate, Language } from '@app/plugins';
+import { ajax, i18n, mask, modal, toast, click, validate, Language } from '@app/plugins';
 
 import { LanguageBar } from '@app/plugins';
 import { SideMenuBar, NavMenuBar } from '@app/components';
@@ -13,6 +13,7 @@ import { SideMenuBar, NavMenuBar } from '@app/components';
 Vue.use(i18n);
 Vue.use(mask);
 Vue.use(modal);
+Vue.use(toast);
 Vue.use(click);
 Vue.use(validate);
 

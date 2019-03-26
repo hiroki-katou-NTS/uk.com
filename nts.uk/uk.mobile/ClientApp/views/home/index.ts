@@ -1,7 +1,5 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
-
-import { focus } from '@app/directives';
 import { SampleComponent } from '@app/components';
 
 @component({
@@ -13,7 +11,7 @@ import { SampleComponent } from '@app/components';
         'focus': focus
     },
     components: {
-        'vuong': SampleComponent,
+        SampleComponent
     },
     validations: {
         time: {
@@ -109,15 +107,20 @@ export class HomeComponent extends Vue {
                 debugger;
             });*/
 
-        this.$updateValidator({
+        /*this.$updateValidator({
             title: {
                 minLength: 100
             }
-        });
+        });*/
 
-        this.$modal('vuong', { id: 100, name: 'Nguyen Van A' })
+        this.$modal('SampleComponent', { id: 100, name: 'Nguyen Van A' })
             .onClose((data: any) => {
                 console.log(data);
             });
+
+        /*this.$alert('documents')
+            .then(v => {
+                alert(v);
+            });*/
     }
 }

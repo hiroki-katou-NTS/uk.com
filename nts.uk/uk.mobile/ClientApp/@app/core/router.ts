@@ -15,4 +15,19 @@ const router = new VueRouter({
     routes: routes
 });
 
+router.beforeEach((to, from, next) => {
+    let token = "";
+
+    // if login or documents page
+    if (to.path === '/access/login' || to.path.indexOf('/documents/') === 0) {
+        next();
+    } else {
+        if (token) {
+            next();
+        } else {
+            next('/access/login');
+        }
+    }
+});
+
 export { router };

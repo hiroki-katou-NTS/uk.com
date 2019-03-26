@@ -102,11 +102,9 @@ body {
     }
 }
 
-@media (max-width: 557px) {
-}
+@media (max-width: 557px) {}
 
-@media (max-width: 767px) {
-}
+@media (max-width: 767px) {}
 
 @media (max-width: 991px) {
     body {
@@ -126,4 +124,13 @@ body {
     }
 }
 
-@media (min-width: 992px) {}
+@media (min-width: 992px) {
+    body {
+        &.show-side-bar {
+            .navbar {
+                z-index: 1050;
+                padding-left: 250px;
+            }
+        }
+    }
+}
