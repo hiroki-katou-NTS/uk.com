@@ -105,9 +105,7 @@ public class ComPubImp implements SyCompanyPub {
 		if(listAffComHisByEmp.isEmpty())
 			return Collections.emptyList();
 		
-		List<StatusOfEmployee> result = listAffComHisByEmp.stream().map(i ->{
-			return new StatusOfEmployee();
-		}).collect(Collectors.toList());
+		List<StatusOfEmployee> result = new ArrayList<>();
 		
 		for (int i = 0; i < listAffComHisByEmp.size(); i++) {
 			List<DatePeriod> lstPeriod = listAffComHisByEmp.get(i).items()
