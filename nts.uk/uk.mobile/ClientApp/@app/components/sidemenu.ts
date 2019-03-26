@@ -92,6 +92,15 @@ const _SideMenu = new Vue({
 export class SideMenuBar extends Vue {
     active: any = {};
 
+    constructor() {
+        super();
+
+        if (browser.width >= 992) {
+            let shoow = localStorage.getItem('__sidebar__');
+            SideMenu.show = shoow === undefined ? true : shoow === 'show';
+        }
+    }
+
     hideSideBar() {
         if (browser.width < 992) {
             SideMenu.show = false;
@@ -122,6 +131,8 @@ export class SideMenuBar extends Vue {
 
             dom.addClass(document.body, 'show-side-bar');
         }
+        
+        localStorage.setItem('__sidebar__', show ? 'show' : '');
     }
 }
 
