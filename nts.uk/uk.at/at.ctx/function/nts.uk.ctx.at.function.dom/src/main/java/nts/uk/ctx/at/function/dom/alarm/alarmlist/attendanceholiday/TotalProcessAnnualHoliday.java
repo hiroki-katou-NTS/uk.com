@@ -86,6 +86,7 @@ public class TotalProcessAnnualHoliday {
 			Optional<AnnualLeaveUsedDayNumber> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
 					companyId, 
 					annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
+					GeneralDate.today(),
 					obligedAnnualLeaveUse); 
 			if(!ligedUseDays.isPresent())
 				continue;

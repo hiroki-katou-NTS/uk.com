@@ -16,11 +16,12 @@ public interface ObligedAnnLeaUseService {
 	 * 使用義務日数の取得
 	 * @param companyId 会社ID
 	 * @param distributeAtr 期間按分使用区分
+	 * @param criteria 基準日
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休使用義務日数
 	 */
 	Optional<AnnualLeaveUsedDayNumber> getObligedUseDays(String companyId, boolean distributeAtr,
-			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+			GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
 	 * 義務日数計算期間内の年休使用数を取得
@@ -39,18 +40,21 @@ public interface ObligedAnnLeaUseService {
 	/**
 	 * 按分が必要かどうか判断
 	 * @param distributeAtr 期間按分使用区分
+	 * @param criteria 基準日
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return　true:必要、false:不要
 	 */
-	boolean checkNeedForProportion(boolean distributeAtr, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+	boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
-	 * 現在の付与期間と重複する付与期間を持つ残数履歴データを取得
+	 * 付与期間と重複する付与期間を持つ残数履歴データを取得
 	 * @param distributeAtr 期間按分使用区分
+	 * @param criteria 基準日
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休付与情報Output
 	 */
-	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(boolean distributeAtr,
+	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(boolean distributeAtr, GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
