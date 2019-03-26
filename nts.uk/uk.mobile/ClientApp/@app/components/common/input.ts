@@ -1,11 +1,9 @@
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
-
-import { $, TimeInputType, time } from '@app/utils';
 import { TimePickerComponent, DatePickerComponent, TimeWDPickerComponent } from '@app/components';
 
-const input = () => component({
+export const input = () => component({
     template: `<div class="form-group row">
         <template v-if="showTitle">
             <div v-bind:class="columns.title">
@@ -174,140 +172,7 @@ class NumberComponent extends InputComponent {
     }
 }
 
-@input()
-export class TimeComponent extends InputComponent {
-    type: string = 'string';
 
-    editable: boolean = false;
-
-    @Prop({
-        default: TimeInputType.TimeDuration
-    })
-    timeInputType: TimeInputType;
-
-    get rawValue() {
-        //return (this.value || '').toString();
-        if (typeof this.value == undefined) {
-            return '';
-        }
-
-        if (this.timeInputType === TimeInputType.TimeWithDay) {
-            var timePoint = time.timewd.computeTimePoint(this.value);
-            return timePoint.day + '　' + timePoint.hour + ' ： ' + timePoint.minute;
-        } else {
-            var timePoint1 = time.timedr.computeTimePoint(this.value);
-            return timePoint1.hour + ' : ' + timePoint1.minute;
-        }      
-
-    }
-
-    mounted() {
-        this.icons.after = 'far fa-clock';
-    }
-
-    @Emit()
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
-
-        if (value) {
-            let numb = Number(value);
-
-            if (!isNaN(numb)) {
-                return numb;
-            } else {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    click() {
-        var picker = this.timeInputType == TimeInputType.TimeWithDay ? 'timewdpicker' : 'timepicker';
-        this
-            .$modal(picker, {
-                value: this.value,
-                minValue: this.constraint.minValue,
-                maxValue: this.constraint.maxValue
-            }, {
-                    type: "popup",
-                    title: this.name,
-                    animate: {
-                        show: 'zoomIn',
-                        hide: 'zoomOut'
-                    }
-                })
-            .onClose(v => {
-                if (v !== undefined) {
-                    this.$emit('input', v);
-                }
-            });
-    }
-}
-
-@input()
-class DateComponent extends InputComponent {
-
-    type: string = 'date';
-
-    editable: boolean = true;
-
-    mounted() {
-        this.icons.after = 'far fa-calendar-alt';
-    }
-
-    get rawValue() {
-       if ($.isNil(this.value)) {
-           return '';
-       }
-       return this.computeRawValue(this.value);
-    }
-
-    private computeRawValue(value: Date): string {
-        var year: number = value.getFullYear();
-        var month: number = value.getMonth() + 1;
-        var date: number = value.getDate();
-        var monthText = month < 10 ? '0' + month : month;
-        var dateText = date < 10 ? '0' + date : date;
-        return year + '-' + monthText + '-' + dateText;
-    }
-
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
-
-        if (value) {
-            let numb = new Date(value);
-
-            if(numb.getFullYear() < 1000) {
-                return;
-            }
-
-            if(isNaN(numb.getTime())){
-                return;
-            }
-
-            this.$emit('input', numb);
-        }
-
-    }
-
-    // click() {
-    //     this.$modal('datepicker', {
-    //         value: this.value
-    //     }, {
-    //             type: "popup",
-    //             title: this.name,
-    //             animate: {
-    //                 show: 'zoomIn',
-    //                 hide: 'zoomOut'
-    //             }
-    //         }).onClose(v => {
-    //             if (v !== undefined) {
-    //                 this.$emit('input', v);
-    //             }
-    //         });
-    // }
-}
 
 @input()
 class DropdownComponent extends InputComponent {
@@ -331,8 +196,6 @@ Vue.component('v-input', StringComponent);
 Vue.component('v-input-string', StringComponent);
 Vue.component('v-input-password', PasswordComponent);
 
-Vue.component('v-input-time', TimeComponent);
-Vue.component('v-input-date', DateComponent);
 Vue.component('v-input-number', NumberComponent);
 
 Vue.component('nts-dropdown', DropdownComponent);

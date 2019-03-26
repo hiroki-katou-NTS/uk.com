@@ -1,62 +1,77 @@
-import { component, Prop, Watch } from '@app/core/component';
+import { input, InputComponent } from "@app/components/common/input";
+import {TimeInputType, time} from "@app/utils"
+import { Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';
 
-@component({
-    template: `
-        <div>
-            <span>
-                <input ref="hour" class="time-editor hour" type="number" :value="hour" @input="whenHourChange"> 
-                :    
-                <input ref="minute" class="time-editor minute" type="number" :value="minute" @input="whenMinuteChange"/>
-            </span>
-        <div>
-	`
-})
-export class TimeEditor extends Vue {
+@input()
+export class TimeComponent extends InputComponent {
+    type: string = 'string';
 
-    @Prop()
-    value: number;
+    editable: boolean = false;
 
-    // to do not change property 'value'
-    minutes: number = this.value;
+    @Prop({
+        default: TimeInputType.TimeDuration
+    })
+    timeInputType: TimeInputType;
 
-    get hour(): number {
-        return  Math.floor(this.minutes / 60);
-    }
-
-    set hour(newHour: number) {
-        this.updateValue(newHour * 60 + this.minute);
-    }
-
-    get minute() : number {
-        let hour = Math.floor(this.minutes / 60);
-        return this.minutes - hour * 60;
-    }
-
-    set minute(newMinute: number) {
-        this.updateValue(this.hour * 60 + newMinute);
-    } 
-
-    maxLengthHour: number = 2;
-
-    whenHourChange() {
-        let newHour = (<HTMLInputElement>this.$refs.hour).value;
-        this.hour = Number(newHour);
-        if(newHour.length >= this.maxLengthHour) {
-            (<HTMLElement>this.$refs.minute).focus();
+    get rawValue() {
+        //return (this.value || '').toString();
+        if (typeof this.value == undefined) {
+            return '';
         }
+
+        if (this.timeInputType === TimeInputType.TimeWithDay) {
+            var timePoint = time.timewd.computeTimePoint(this.value);
+            return timePoint.day + '　' + timePoint.hour + ' ： ' + timePoint.minute;
+        } else {
+            var timePoint1 = time.timedr.computeTimePoint(this.value);
+            return timePoint1.hour + ' : ' + timePoint1.minute;
+        }      
+
     }
 
-    whenMinuteChange() {
-        let newMinute = (<HTMLInputElement>this.$refs.minute).value;
-        this.minute = Number(newMinute);
+    mounted() {
+        this.icons.after = 'far fa-clock';
     }
 
-    updateValue(newValue: number) {
-        this.minutes = newValue;
-        this.$emit('input', this.minutes);
+    @Emit()
+    input() {
+        let value = (<HTMLInputElement>this.$refs.input).value;
+
+        if (value) {
+            let numb = Number(value);
+
+            if (!isNaN(numb)) {
+                return numb;
+            } else {
+                return null;
+            }
+        }
+
+        return null;
     }
 
+    click() {
+        var picker = this.timeInputType == TimeInputType.TimeWithDay ? 'timewdpicker' : 'timepicker';
+        this
+            .$modal(picker, {
+                value: this.value,
+                minValue: this.constraint.minValue,
+                maxValue: this.constraint.maxValue
+            }, {
+                    type: "popup",
+                    title: this.name,
+                    animate: {
+                        show: 'zoomIn',
+                        hide: 'zoomOut'
+                    }
+                })
+            .onClose(v => {
+                if (v !== undefined) {
+                    this.$emit('input', v);
+                }
+            });
+    }
 }
 
-Vue.component('nts-time-editor', TimeEditor);
+Vue.component('nts-time-editor', TimeComponent);
