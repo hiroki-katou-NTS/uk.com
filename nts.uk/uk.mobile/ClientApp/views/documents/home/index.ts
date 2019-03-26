@@ -13,7 +13,12 @@ import { component } from '@app/core/component';
     resource: {
         vi: {
             documents: 'Tài liệu',
-            MarkdownComponent: 'Markdown'
+            MarkdownComponent: 'Markdown',
+            'html': 'Mã HTML',
+            'plugin': 'Trình cắm (Plugin)',
+            'filters': 'Bộ lọc (Filter)',
+            'controls': 'Các điều khiển (Control)',
+            'directive': 'Các chỉ định (Directive)'
         },
         jp: {
             documents: 'Documents',
