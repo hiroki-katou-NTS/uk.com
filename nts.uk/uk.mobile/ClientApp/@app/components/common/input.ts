@@ -305,6 +305,7 @@ class DropdownComponent extends InputComponent {
 
     mounted() {
         this.icons.after = 'fa fa-caret-down';
+        (<HTMLSelectElement>this.$refs.input).parentElement.classList.add("nts-dropdown-list");
     }
 
     @Emit()
