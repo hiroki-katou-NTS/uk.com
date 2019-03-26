@@ -10,10 +10,19 @@ body {
             }
         }
     }
-    &.show-side-bar {
-        .container,
-        .container-fluid {
-            padding-left: 270px;
+}
+
+@media (min-width: 992px) {
+    body {
+        &.show-side-bar {
+            .wrapper {
+                .sidebar {
+                    &+.container,
+                    &+.container-fluid {
+                        padding-left: 270px;
+                    }
+                }
+            }
         }
     }
 }
