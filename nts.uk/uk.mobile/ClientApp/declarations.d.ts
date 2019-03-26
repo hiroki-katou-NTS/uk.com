@@ -1,4 +1,5 @@
 import Vue, { ComponentOptions } from "vue";
+import { WebAppId } from '@app/utils/request';
 
 declare interface Window {
     Reflect: any;
@@ -70,8 +71,8 @@ declare module "vue/types/vue" {
     interface Vue {
         pgName: string;
         $http: {
-            get: (pgOrUrl: 'at' | 'pr' | 'com' | string, url?: string) => Promise<{}>;
-            post: (pgOrUrl: 'at' | 'pr' | 'com' | string, urlOrData?: string | any, data?: any) => Promise<{}>;
+            get: (pgOrUrl: WebAppId, url?: string) => Promise<{}>;
+            post: (pgOrUrl: WebAppId, urlOrData?: string | any, data?: any) => Promise<{}>;
             headers: {
                 [header: string]: string;
             },
