@@ -1,22 +1,24 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
 
-import { NavbarComponent } from './nav';
+import { obj } from '@app/utils';
+import { menu } from '@app/utils/menu';
+import { routes } from '@app/core/routes';
+import { SideMenu } from '@app/services';
+import { component } from '@app/core/component';
 
 @component({
     route: '/documents',
-    template: `<div id="document_index" class="row">
-        <navi-bar :class="'col-md-2'" />
-        <router-view :class="'col-md-10'" />
-    </div>`,
-    style: `#document_index { margin-bottom: 15px; } #document_index #navbar { margin-bottom: 15px; }`,
-    components: {
-        'navi-bar': NavbarComponent
-    },
+    template: `<router-view />`,
+    style: `#document_index { margin-bottom: 15px; }`,
     resource: {
         vi: {
             documents: 'Tài liệu',
-            MarkdownComponent: 'Markdown'
+            MarkdownComponent: 'Markdown',
+            'html': 'Mã HTML',
+            'plugin': 'Trình cắm (Plugin)',
+            'filters': 'Bộ lọc (Filter)',
+            'controls': 'Các điều khiển (Control)',
+            'directive': 'Các chỉ định (Directive)'
         },
         jp: {
             documents: 'Documents',
@@ -25,8 +27,15 @@ import { NavbarComponent } from './nav';
     }
 })
 export class DocumentIndex extends Vue {
+    items: Array<any> = [];
 
     mounted() {
-        this.pgName = 'documents';
+        this.items = SideMenu.items;
+
+        SideMenu.items = menu.sample;
+    }
+
+    destroyed() {
+        SideMenu.items = this.items;
     }
 }

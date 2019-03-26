@@ -15,6 +15,9 @@ const _SideMenu = new Vue({
     set show(value: boolean) {
         _SideMenu.show = value;
     },
+    get items() {
+        return _SideMenu.items;
+    },
     set items(items: Array<any>) {
         _SideMenu.items = items;
     },
@@ -31,7 +34,7 @@ const _SideMenu = new Vue({
                     <span v-on:click="show = false">{{'app_name' | i18n}}</span>
                 </router-link>
             </h3>
-            <button type="button" class="navbar-btn d-md-none" v-on:click="show = !show">
+            <button type="button" class="navbar-btn" v-on:click="show = !show">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -46,14 +49,14 @@ const _SideMenu = new Vue({
                     <ul class="collapse list-unstyled" v-bind:class="{ 'show': active == m }">
                         <li v-for="(t, j) in m.childs">
                             <router-link :to="t.url">
-                                <span v-on:click="show = false">{{t.title | i18n }}</span>
+                                <span v-on:click="hideSideBar">{{t.title | i18n }}</span>
                             </router-link>
                         </li>
                     </ul>
                 </template>
                 <template v-else>
                     <router-link :to="m.url">
-                        <span v-on:click="show = false">{{m.title | i18n }}</span>
+                        <span v-on:click="hideSideBar">{{m.title | i18n }}</span>
                     </router-link>
                 </template>
             </li>
@@ -89,6 +92,21 @@ const _SideMenu = new Vue({
 export class SideMenuBar extends Vue {
     active: any = {};
 
+    constructor() {
+        super();
+
+        if (browser.width >= 992) {
+            let shoow = localStorage.getItem('__sidebar__');
+            SideMenu.show = shoow === undefined ? true : shoow === 'show';
+        }
+    }
+
+    hideSideBar() {
+        if (browser.width < 992) {
+            SideMenu.show = false;
+        }
+    }
+
     toggleDropdown(item: any) {
         if (this.active === item) {
             this.active = {};
@@ -106,15 +124,17 @@ export class SideMenuBar extends Vue {
 
             dom.removeClass(document.body, 'show-side-bar');
         } else {
-            self.$mask('show')
-                .on(() => SideMenu.show = false);
+            if (browser.width < 992) {
+                self.$mask('show')
+                    .on(() => SideMenu.show = false);
+            }
 
             dom.addClass(document.body, 'show-side-bar');
         }
+        
+        localStorage.setItem('__sidebar__', show ? 'show' : '');
     }
 }
-
-window['side'] = SideMenu;
 
 export { SideMenu };
 

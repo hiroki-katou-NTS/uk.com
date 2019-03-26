@@ -1,58 +1,19 @@
 body {
-    &.show {
-        &-menu-top {
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-            .modal-backdrop {
-                overflow: hidden;
-                touch-action: none;
-            }
-            .sidebar {
-                margin-left: -370px;
-                &.iphone {
-                    margin-left: calc(-100vw - 50px);
-                }
-            }
-            .navbar-brand {
-                padding-left: 15px;
-            }
-        }
-        &-side-bar {
-            overflow: hidden;
-            height: 100%;
-            .navbar-toggler {
-                transition-delay: 0.1s;
-                margin-right: - 50px;
-            }
-            .container,
-            .container-fluid {
-                overflow: hidden;
-                position: relative;
-                touch-action: none;
-            }
-            .modal-backdrop {
-                overflow: hidden;
-                position: fixed;
-                touch-action: none;
+    .wrapper {
+        display: flex;
+        .sidebar {
+            &+.container,
+            &+.container-fluid {
+                padding-top: 55px;
+                min-height: 100vh;
+                transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
             }
         }
     }
-    .container,
-    .container-fluid {
-        cursor: pointer;
-    }
-}
-
-@media (max-width: 767.98px) {
-    body {
-        &.modal-open {
-            .sidebar {
-                margin-left: -370px;
-            }
-            .navbar-brand {
-                padding-left: 15px;
-            }
+    &.show-side-bar {
+        .container,
+        .container-fluid {
+            padding-left: 270px;
         }
     }
 }

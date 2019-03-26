@@ -5,7 +5,7 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { ajax, i18n, mask, modal, click, validate, language } from '@app/plugins';
+import { ajax, i18n, mask, modal, click, validate, Language } from '@app/plugins';
 
 import { LanguageBar } from '@app/plugins';
 import { SideMenuBar, NavMenuBar } from '@app/components';
@@ -37,7 +37,7 @@ new Vue({
     computed: {
         pgName: {
             get() {
-                return language.pgName || 'app_name';
+                return Language.pgName || 'app_name';
             }
         }
     }

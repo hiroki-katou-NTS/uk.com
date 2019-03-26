@@ -1,7 +1,13 @@
 .modal {
+    //-webkit-overflow-scrolling: touch;
+    &-backdrop {
+        &.show {
+            opacity: 0.2;
+        }
+    }
     &-open {
         overflow: hidden;
-    } //-webkit-overflow-scrolling: touch;
+    }
     &.show {
         display: block;
         .modal-dialog {

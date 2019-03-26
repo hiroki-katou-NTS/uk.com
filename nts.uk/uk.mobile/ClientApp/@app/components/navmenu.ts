@@ -25,7 +25,7 @@ const _NavMenu = new Vue({
 
 @component({
     template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible && items && items.length">
-        <a v-on:click="void(0)" class="navbar-brand">{{pgName |i18n}}</a>
+        <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         <div class="collapse navbar-collapse" v-bind:class="{show}">
             <ul class="navbar-nav mr-auto">
@@ -40,7 +40,7 @@ const _NavMenu = new Vue({
             </ul>
         </div>
     </nav>
-    <nav v-else></nav>`,
+    <nav v-else data-comment="Navigation bar"></nav>`,
     computed: {
         show: {
             get() {
@@ -84,16 +84,7 @@ export class NavMenuBar extends Vue {
 
 export { NavMenu };
 
-window['nav'] = NavMenu;
-
-
-
-_NavMenu.items.push({
+NavMenu.items = [{
     url: '/',
     title: 'home'
-});
-
-_NavMenu.items.push({
-    url: '/access/login',
-    title: 'login'
-});
+}];

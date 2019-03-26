@@ -31,24 +31,24 @@ const modal = {
                         let component = components[name];
 
                         if (component) {
-                            if (component.mixins) {
-                                [].slice.call(component.mixins).forEach(mixin => {
-                                    if (obj.has(mixin, 'methods')) {
-                                        let methods = mixin.methods;
+                            // remove old mixin methods
+                            [].slice.call(component.mixins || (component.mixins = [])).forEach(mixin => {
+                                if (obj.has(mixin, 'methods')) {
+                                    let methods = mixin.methods;
 
-                                        if (methods && obj.has(methods, '$close') && obj.has(mixin, 'mounted')) {
-                                            delete mixin.methods;
-                                            delete mixin.mounted;
-                                        }
+                                    if (methods && obj.has(methods, '$close') && obj.has(mixin, 'mounted')) {
+                                        delete mixin.methods;
+                                        delete mixin.mounted;
                                     }
+                                }
 
-                                    if (obj.isEmpty(mixin)) {
-                                        component.mixins.splice(component.mixins.indexOf(mixin), 1);
-                                    }
-                                });
-                            }
+                                if (obj.isEmpty(mixin)) {
+                                    component.mixins.splice(component.mixins.indexOf(mixin), 1);
+                                }
+                            });
 
-                            (component.mixins || (component.mixins = [])).push({
+                            // add new mixin methods
+                            component.mixins.push({
                                 methods: {
                                     $close: function (data?: any) {
                                         this.$emit('callback', data);
@@ -60,6 +60,7 @@ const modal = {
                                     let el = this.$el as HTMLElement,
                                         footer = el.querySelector('.modal-footer') as HTMLElement;
 
+                                    // move footer element from body to modal content
                                     if (footer) {
                                         let mcontent = el.closest('.modal-content');
 
@@ -83,34 +84,48 @@ const modal = {
                             let dlg = dom.create('div'),
                                 vm = Vue.extend({
                                     components,
-                                    data: () => ({ name, params }),
+                                    data: () => ({ name, params, show: false }),
                                     computed: {
-                                        _title: {
+                                        title: {
                                             get() {
                                                 return options.title || name;
                                             }
                                         },
-                                        _class: {
+                                        $class: {
                                             get() {
                                                 let classNames: Array<string> = [];
 
-                                                if (options.type === 'modal') {
+                                                if (!options.size) {
+                                                    classNames.push(`modal-md`);
+                                                } else {
+                                                    classNames.push(`modal-${options.size}`);
+                                                }
+
+                                                if (options.type === 'modal' || options.type === undefined) {
                                                     classNames.push('modal-dialog-scrollable');
                                                 } else {
                                                     classNames.push('modal-popup modal-dialog-centered');
                                                 }
 
-                                                if (!options.animate) {
-                                                    if (browser.mobile && !browser.landscapse) {
-                                                        classNames.push('slideInRight');
-                                                    } else {
-                                                        classNames.push('slideInDown');
-                                                    }
-                                                } else {
-                                                    classNames.push(options.animate.show);
+                                                return classNames.join(' ');
+                                            }
+                                        },
+                                        $enter: {
+                                            get() {
+                                                if (options.animate && options.animate.show) {
+                                                    return options.animate.show;
                                                 }
 
-                                                return classNames.join(' ');
+                                                return browser.mobile && !browser.landscapse ? 'slideInRight' : 'slideInDown';
+                                            }
+                                        },
+                                        $leave: {
+                                            get() {
+                                                if (options.animate && options.animate.hide) {
+                                                    return options.animate.hide;
+                                                }
+
+                                                return browser.mobile && !browser.landscapse ? 'slideOutRight' : 'slideOutUp';
                                             }
                                         }
                                     },
@@ -120,38 +135,26 @@ const modal = {
                                                 callback(data);
                                             }
 
-                                            this.$close();
+                                            this.show = false;
                                         },
-                                        $close() {
-                                            let dialog: HTMLElement = this.$refs.dialog;
-
-                                            if (dialog) {
-                                                dom.removeClass(dialog, 'slideInDown');
-                                                dom.removeClass(dialog, 'slideInRight');
-
-                                                if (options.animate) {
-                                                    dom.removeClass(dialog, options.animate.show);
-                                                }
-
-                                                if (!options.animate) {
-                                                    if (browser.landscapse) {
-                                                        dom.addClass(dialog, 'slideOutUp');
-                                                    } else {
-                                                        dom.addClass(dialog, 'slideOutRight');
-                                                    }
-                                                } else {
-                                                    dom.addClass(dialog, options.animate.hide);
-                                                }
+                                        leave() {
+                                            // remove modal-open class
+                                            if (document.querySelectorAll('.modal').length == 1) {
+                                                dom.removeClass(document.body, 'modal-open');
                                             }
-
+                                        },
+                                        afterLeave() {
                                             // destroy modal app
                                             this.$destroy(true);
                                         }
                                     },
                                     mounted() {
+                                        this.show = true;
+
                                         dom.addClass(document.body, 'modal-open');
                                     },
                                     beforeMount() {
+                                        // remove all tabindex of item below modal-backdrop
                                         let inputs = document.querySelectorAll('a, input, select, button, textarea');
 
                                         [].slice.call(inputs).forEach((element: HTMLElement) => {
@@ -167,6 +170,10 @@ const modal = {
                                         });
                                     },
                                     destroyed() {
+                                        // remove own element on body
+                                        document.body.removeChild(this.$el);
+
+                                        //restore all tabindex of item below modal-backdrop
                                         let inputs = document.querySelectorAll('a, input, select, button, textarea');
 
                                         [].slice.call(inputs).forEach((element: HTMLElement) => {
@@ -181,32 +188,31 @@ const modal = {
                                             }
                                         });
 
+                                        // focus to preview item (caller of modal)
                                         if (focused) {
                                             focused.focus();
                                         }
-
-                                        setTimeout(() => {
-                                            document.body.removeChild(this.$el);
-
-                                            if (document.querySelector('.modal') == null) {
-                                                dom.removeClass(document.body, 'modal-open');
-                                            }
-                                        }, options.type === 'popup' ? 200 : 1000);
                                     },
                                     template: `<div class="modal fade show">
-                                        <div ref="dialog" class="modal-dialog animated" v-bind:class="_class">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">
-                                                        <span>{{_title | i18n}}</span>
-                                                    </h4>
-                                                    <button type="button" v-on:click="$close()" class="close">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
+                                        <transition apear 
+                                                v-on:leave="leave"
+                                                v-on:after-leave="afterLeave"
+                                                v-bind:enter-active-class="$enter"
+                                                v-bind:leave-active-class="$leave">
+                                            <div class="modal-dialog animated" v-bind:class="$class" v-if="show">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">
+                                                            <span>{{title | i18n}}</span>
+                                                        </h4>
+                                                        <button tabindex="-1" type="button" v-on:click="show = false" class="close">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </transition>
                                     </div>`
                                 });
 
