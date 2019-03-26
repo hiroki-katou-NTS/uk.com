@@ -16,18 +16,18 @@ export class TimeComponent extends InputComponent {
 
     get rawValue() {
         //return (this.value || '').toString();
-        if (typeof this.value == undefined) {
+        if (this.value == null || this.value == undefined) {
             return '';
         }
 
-        if (this.timeInputType === TimeInputType.TimeWithDay) {
-            var timePoint = time.timewd.computeTimePoint(this.value);
-            return timePoint.day + '　' + timePoint.hour + ' ： ' + timePoint.minute;
-        } else {
-            var timePoint1 = time.timedr.computeTimePoint(this.value);
-            return timePoint1.hour + ' : ' + timePoint1.minute;
-        }      
-
+        switch(this.timeInputType) {
+            case TimeInputType.TimeWithDay:
+                return time.timewd.toString(this.value);
+            case TimeInputType.TimePoint:
+                return time.timept.toString(this.value);
+            case TimeInputType.TimeDuration:
+                return time.timedr.toString(this.value);
+        }  
     }
 
     mounted() {
@@ -52,12 +52,24 @@ export class TimeComponent extends InputComponent {
     }
 
     click() {
-        var picker = this.timeInputType == TimeInputType.TimeWithDay ? 'timewdpicker' : 'timepicker';
+        var picker = 'time-with-day-picker';
+        switch (this.timeInputType) {
+            case TimeInputType.TimeWithDay:
+                picker = 'time-with-day-picker';
+                break;
+            case TimeInputType.TimePoint:
+                picker = 'time-point-picker';
+                break;
+            case TimeInputType.TimeDuration:
+                picker = 'time-duration-picker';
+                break;
+        }
+
         this
             .$modal(picker, {
                 value: this.value,
                 minValue: this.constraint.minValue,
-                maxValue: this.constraint.maxValue
+                maxValue: this.constraint.maxValue,
             }, {
                     type: "popup",
                     title: this.name,
