@@ -6,13 +6,16 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHist;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -22,7 +25,6 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements AnnualLeaveRemainHistRepository {
-
 	@Override
 	public void addOrUpdate(AnnualLeaveRemainingHistory domain) {
 		KrcdtAnnLeaRemainHistPK krcdtAnnLeaRemainHistPK = new KrcdtAnnLeaRemainHistPK(domain.getEmployeeId(), domain.getYearMonth().v(),
@@ -74,6 +76,31 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 		return this.queryProxy().query(sql, KrcdtAnnLeaRemainHist.class)
 				.setParameter("sid", sid)
 				.setParameter("yearMonth", ym)
+				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<AnnualLeaveRemainingHistory> getInfoByExpStatus(String sid, YearMonth ym, ClosureId closureID,
+			ClosureDate closureDate, LeaveExpirationStatus expStatus, DatePeriod datePeriod) {
+		String sql = "SELECT c FROM KrcdtAnnLeaRemainHist c "
+				+ " WHERE c.krcdtAnnLeaRemainHistPK.sid = :sid"
+				+ " AND c.krcdtAnnLeaRemainHistPK.yearMonth = :yearMonth"
+				+ " AND c.krcdtAnnLeaRemainHistPK.closureId = :closureID"
+				+ " AND c.krcdtAnnLeaRemainHistPK.closeDay = :closeDay"
+				+ " AND c.krcdtAnnLeaRemainHistPK.isLastDay = :isLastDay"
+				+ " AND c.expStatus = :expStatus"
+				+ " AND c.deadline >= :startDate"
+				+ " AND c.deadline <= :endDate"
+				+ " ORDER BY c.krcdtAnnLeaRemainHistPK.grantDate ASC";
+		return this.queryProxy().query(sql, KrcdtAnnLeaRemainHist.class)
+				.setParameter("sid", sid)
+				.setParameter("yearMonth", ym)
+				.setParameter("closureID", closureID.value)
+				.setParameter("closeDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", Boolean.hashCode(closureDate.getLastDayOfMonth()))
+				.setParameter("expStatus", expStatus.value)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
 				.getList(item -> item.toDomain());
 	}
 
