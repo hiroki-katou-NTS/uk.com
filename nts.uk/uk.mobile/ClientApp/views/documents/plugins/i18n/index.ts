@@ -13,6 +13,10 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     },
     resource: {
+        vi: {
+            'I18nDocument': 'I18n',
+            'read_documents_at': 'Vui lòng đọc tài liệu hướng dẫn tại: '
+        }
     }
 })
 export class I18nDocument extends Vue {
