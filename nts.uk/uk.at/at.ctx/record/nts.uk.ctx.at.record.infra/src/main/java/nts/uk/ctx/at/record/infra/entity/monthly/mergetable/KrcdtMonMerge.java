@@ -2468,170 +2468,69 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 時間外超過：時間
 		Map<Integer, ExcessOutSideWorkEachBreakdown> excessOutsideTimeMap = excessOutsideWork == null ? new HashMap<>() : excessOutsideWork.getTime();
 		
-		for (int i = 0; i < 50; i++){
-			int breakdownNo = i / 5 + 1;
-			int excessNo = i % 5 + 1;
-			
-			ExcessOutsideWork excessOutsideTime = new ExcessOutsideWork(breakdownNo, excessNo);
-			if (excessOutsideTimeMap.containsKey(breakdownNo)){
-				Map<Integer, ExcessOutsideWork> breakdown = excessOutsideTimeMap.get(breakdownNo).getBreakdown();
-				if (breakdown.containsKey(excessNo)){
-					excessOutsideTime = breakdown.get(excessNo);
-				}
+		toEntityExcessOutsideWork1(getExcessTime(excessOutsideTimeMap, 1, 1));
+		toEntityExcessOutsideWork2(getExcessTime(excessOutsideTimeMap, 2, 1));
+		toEntityExcessOutsideWork3(getExcessTime(excessOutsideTimeMap, 3, 1));
+		toEntityExcessOutsideWork4(getExcessTime(excessOutsideTimeMap, 4, 1));
+		toEntityExcessOutsideWork5(getExcessTime(excessOutsideTimeMap, 5, 1));
+		toEntityExcessOutsideWork6(getExcessTime(excessOutsideTimeMap, 6, 1));
+		toEntityExcessOutsideWork7(getExcessTime(excessOutsideTimeMap, 7, 1));
+		toEntityExcessOutsideWork8(getExcessTime(excessOutsideTimeMap, 8, 1));
+		toEntityExcessOutsideWork9(getExcessTime(excessOutsideTimeMap, 9, 1));
+		toEntityExcessOutsideWork10(getExcessTime(excessOutsideTimeMap, 10, 1));
+		toEntityExcessOutsideWork11(getExcessTime(excessOutsideTimeMap, 1, 2));
+		toEntityExcessOutsideWork12(getExcessTime(excessOutsideTimeMap, 2, 2));
+		toEntityExcessOutsideWork13(getExcessTime(excessOutsideTimeMap, 3, 2));
+		toEntityExcessOutsideWork14(getExcessTime(excessOutsideTimeMap, 4, 2));
+		toEntityExcessOutsideWork15(getExcessTime(excessOutsideTimeMap, 5, 2));
+		toEntityExcessOutsideWork16(getExcessTime(excessOutsideTimeMap, 6, 2));
+		toEntityExcessOutsideWork17(getExcessTime(excessOutsideTimeMap, 7, 2));
+		toEntityExcessOutsideWork18(getExcessTime(excessOutsideTimeMap, 8, 2));
+		toEntityExcessOutsideWork19(getExcessTime(excessOutsideTimeMap, 9, 2));
+		toEntityExcessOutsideWork20(getExcessTime(excessOutsideTimeMap, 10, 2));
+		toEntityExcessOutsideWork21(getExcessTime(excessOutsideTimeMap, 1, 3));
+		toEntityExcessOutsideWork22(getExcessTime(excessOutsideTimeMap, 2, 3));
+		toEntityExcessOutsideWork23(getExcessTime(excessOutsideTimeMap, 3, 3));
+		toEntityExcessOutsideWork24(getExcessTime(excessOutsideTimeMap, 4, 3));
+		toEntityExcessOutsideWork25(getExcessTime(excessOutsideTimeMap, 5, 3));
+		toEntityExcessOutsideWork26(getExcessTime(excessOutsideTimeMap, 6, 3));
+		toEntityExcessOutsideWork27(getExcessTime(excessOutsideTimeMap, 7, 3));
+		toEntityExcessOutsideWork28(getExcessTime(excessOutsideTimeMap, 8, 3));
+		toEntityExcessOutsideWork29(getExcessTime(excessOutsideTimeMap, 9, 3));
+		toEntityExcessOutsideWork30(getExcessTime(excessOutsideTimeMap, 10, 3));
+		toEntityExcessOutsideWork31(getExcessTime(excessOutsideTimeMap, 1, 4));
+		toEntityExcessOutsideWork32(getExcessTime(excessOutsideTimeMap, 2, 4));
+		toEntityExcessOutsideWork33(getExcessTime(excessOutsideTimeMap, 3, 4));
+		toEntityExcessOutsideWork34(getExcessTime(excessOutsideTimeMap, 4, 4));
+		toEntityExcessOutsideWork35(getExcessTime(excessOutsideTimeMap, 5, 4));
+		toEntityExcessOutsideWork36(getExcessTime(excessOutsideTimeMap, 6, 4));
+		toEntityExcessOutsideWork37(getExcessTime(excessOutsideTimeMap, 7, 4));
+		toEntityExcessOutsideWork38(getExcessTime(excessOutsideTimeMap, 8, 4));
+		toEntityExcessOutsideWork39(getExcessTime(excessOutsideTimeMap, 9, 4));
+		toEntityExcessOutsideWork40(getExcessTime(excessOutsideTimeMap, 10, 4));
+		toEntityExcessOutsideWork41(getExcessTime(excessOutsideTimeMap, 1, 5));
+		toEntityExcessOutsideWork42(getExcessTime(excessOutsideTimeMap, 2, 5));
+		toEntityExcessOutsideWork43(getExcessTime(excessOutsideTimeMap, 3, 5));
+		toEntityExcessOutsideWork44(getExcessTime(excessOutsideTimeMap, 4, 5));
+		toEntityExcessOutsideWork45(getExcessTime(excessOutsideTimeMap, 5, 5));
+		toEntityExcessOutsideWork46(getExcessTime(excessOutsideTimeMap, 6, 5));
+		toEntityExcessOutsideWork47(getExcessTime(excessOutsideTimeMap, 7, 5));
+		toEntityExcessOutsideWork48(getExcessTime(excessOutsideTimeMap, 8, 5));
+		toEntityExcessOutsideWork49(getExcessTime(excessOutsideTimeMap, 9, 5));
+		toEntityExcessOutsideWork50(getExcessTime(excessOutsideTimeMap, 10, 5));
+		
+	}
+
+	private ExcessOutsideWork getExcessTime(Map<Integer, ExcessOutSideWorkEachBreakdown> excessOutsideTimeMap,
+			int breakdownNo, int excessNo) {
+		ExcessOutsideWork excessOutsideTime = new ExcessOutsideWork(breakdownNo, excessNo);
+		if (excessOutsideTimeMap.containsKey(breakdownNo)){
+			Map<Integer, ExcessOutsideWork> breakdown = excessOutsideTimeMap.get(breakdownNo).getBreakdown();
+			if (breakdown.containsKey(excessNo)){
+				excessOutsideTime = breakdown.get(excessNo);
 			}
-			switch (i + 1){
-			case 1:
-				toEntityExcessOutsideWork1(excessOutsideTime);
-				break;
-			case 2:
-				toEntityExcessOutsideWork2(excessOutsideTime);
-				break;
-			case 3:
-				toEntityExcessOutsideWork3(excessOutsideTime);
-				break;
-			case 4:
-				toEntityExcessOutsideWork4(excessOutsideTime);
-				break;
-			case 5:
-				toEntityExcessOutsideWork5(excessOutsideTime);
-				break;
-			case 6:
-				toEntityExcessOutsideWork6(excessOutsideTime);
-				break;
-			case 7:
-				toEntityExcessOutsideWork7(excessOutsideTime);
-				break;
-			case 8:
-				toEntityExcessOutsideWork8(excessOutsideTime);
-				break;
-			case 9:
-				toEntityExcessOutsideWork9(excessOutsideTime);
-				break;
-			case 10:
-				toEntityExcessOutsideWork10(excessOutsideTime);
-				break;
-			case 11:
-				toEntityExcessOutsideWork11(excessOutsideTime);
-				break;
-			case 12:
-				toEntityExcessOutsideWork12(excessOutsideTime);
-				break;
-			case 13:
-				toEntityExcessOutsideWork13(excessOutsideTime);
-				break;
-			case 14:
-				toEntityExcessOutsideWork14(excessOutsideTime);
-				break;
-			case 15:
-				toEntityExcessOutsideWork15(excessOutsideTime);
-				break;
-			case 16:
-				toEntityExcessOutsideWork16(excessOutsideTime);
-				break;
-			case 17:
-				toEntityExcessOutsideWork17(excessOutsideTime);
-				break;
-			case 18:
-				toEntityExcessOutsideWork18(excessOutsideTime);
-				break;
-			case 19:
-				toEntityExcessOutsideWork19(excessOutsideTime);
-				break;
-			case 20:
-				toEntityExcessOutsideWork20(excessOutsideTime);
-				break;
-			case 21:
-				toEntityExcessOutsideWork21(excessOutsideTime);
-				break;
-			case 22:
-				toEntityExcessOutsideWork22(excessOutsideTime);
-				break;
-			case 23:
-				toEntityExcessOutsideWork23(excessOutsideTime);
-				break;
-			case 24:
-				toEntityExcessOutsideWork24(excessOutsideTime);
-				break;
-			case 25:
-				toEntityExcessOutsideWork25(excessOutsideTime);
-				break;
-			case 26:
-				toEntityExcessOutsideWork26(excessOutsideTime);
-				break;
-			case 27:
-				toEntityExcessOutsideWork27(excessOutsideTime);
-				break;
-			case 28:
-				toEntityExcessOutsideWork28(excessOutsideTime);
-				break;
-			case 29:
-				toEntityExcessOutsideWork29(excessOutsideTime);
-				break;
-			case 30:
-				toEntityExcessOutsideWork30(excessOutsideTime);
-				break;
-			case 31:
-				toEntityExcessOutsideWork31(excessOutsideTime);
-				break;
-			case 32:
-				toEntityExcessOutsideWork32(excessOutsideTime);
-				break;
-			case 33:
-				toEntityExcessOutsideWork33(excessOutsideTime);
-				break;
-			case 34:
-				toEntityExcessOutsideWork34(excessOutsideTime);
-				break;
-			case 35:
-				toEntityExcessOutsideWork35(excessOutsideTime);
-				break;
-			case 36:
-				toEntityExcessOutsideWork36(excessOutsideTime);
-				break;
-			case 37:
-				toEntityExcessOutsideWork37(excessOutsideTime);
-				break;
-			case 38:
-				toEntityExcessOutsideWork38(excessOutsideTime);
-				break;
-			case 39:
-				toEntityExcessOutsideWork39(excessOutsideTime);
-				break;
-			case 40:
-				toEntityExcessOutsideWork40(excessOutsideTime);
-				break;				
-			case 41:
-				toEntityExcessOutsideWork41(excessOutsideTime);
-				break;
-			case 42:
-				toEntityExcessOutsideWork42(excessOutsideTime);
-				break;
-			case 43:
-				toEntityExcessOutsideWork43(excessOutsideTime);
-				break;
-			case 44:
-				toEntityExcessOutsideWork44(excessOutsideTime);
-				break;
-			case 45:
-				toEntityExcessOutsideWork45(excessOutsideTime);
-				break;			
-			case 46:
-				toEntityExcessOutsideWork46(excessOutsideTime);
-				break;
-			case 47:
-				toEntityExcessOutsideWork47(excessOutsideTime);
-				break;
-			case 48:
-				toEntityExcessOutsideWork48(excessOutsideTime);
-				break;
-			case 49:
-				toEntityExcessOutsideWork49(excessOutsideTime);
-				break;
-			case 50:
-				toEntityExcessOutsideWork50(excessOutsideTime);
-				break;				
-			} 
 		}
+		return excessOutsideTime;
 	}
 
 	private void toEntityAbsenceDays1(AggregateAbsenceDays absenceDays) {

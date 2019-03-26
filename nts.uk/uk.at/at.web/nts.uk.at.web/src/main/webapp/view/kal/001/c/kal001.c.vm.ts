@@ -150,18 +150,18 @@ module nts.uk.at.view.kal001.c {
                              // call service send mail
                              service.alarmListSendEmail(params).done(function(data: string) {
                                 if(data.length > 0){
-                                 let returnParam = data.split(";");
-                                 let isSendMailError = returnParam[0];
-                                 let errorStr = returnParam[1];
-                                 if (errorStr.length > 0) {
-                                     let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
-                                     info({ message: strDisplay });
+                                 //let returnParam = data.split(";");
+                                 //let isSendMailError = returnParam[0];
+                                 //let errorStr = returnParam[1];
+                                 //if (errorStr.length > 0) {
+                                     //let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
+                                     info({ message: data });
                                      block.clear();
                                  } else {
                                      info({ messageId: 'Msg_207' });
                                      block.clear();
                                  }
-                                }
+                                //}
                              }).always(() => {
                                  block.clear();
                              }).fail(function(error) {
