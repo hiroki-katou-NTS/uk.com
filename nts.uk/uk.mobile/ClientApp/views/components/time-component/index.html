@@ -1,6 +1,6 @@
 <div id="time-component">
     
-    <v-input-time
+    <nts-time-editor
         v-model="time"
         :name="'time'"
         :disabled="disabled"
@@ -10,7 +10,7 @@
         :errors-always="$errors.title"
         :columns="{title: 'col-md-2', input: 'col-md-4'}" />
 
-    <v-input-time
+    <nts-time-editor
         v-model="time"
         :name="'time'"
         :disabled="disabled"
@@ -20,7 +20,7 @@
         :errors-always="$errors.title"
         :columns="{title: 'col-md-2', input: 'col-md-4'}" />
 
-    <v-input-date
+    <nts-date-input
         v-model="date"
         :name="'date'"
         :disabled="disabled"
