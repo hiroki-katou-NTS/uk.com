@@ -9,6 +9,7 @@ module nts.uk.at.view.ksm005.e {
     import WeeklyWorkSettingDto = service.model.WeeklyWorkSettingDto;
     import KeyMonthlyPatternSettingBatch = service.model.KeyMonthlyPatternSettingBatch;
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
+    import getText = nts.uk.resource.getText;
     
     export module viewmodel {
 
@@ -102,7 +103,7 @@ module nts.uk.at.view.ksm005.e {
              * find by work type code of data 
              */
             public findNameByWorktypeCode(workTypeCode: string, data: WorkTypeDto[]) {
-                var workTypeName: string = '';
+                var workTypeName: string = getText('KSM005_43');
                 for (var worktype of data) {
                     if (workTypeCode == worktype.workTypeCode) {
                         workTypeName = worktype.name;
@@ -118,7 +119,7 @@ module nts.uk.at.view.ksm005.e {
                     return item.code == worktimeCode;
                 });
                 if (!worktype) {
-                    return '';
+                    return getText('KSM005_43');
                 }
                 return worktype.name;
             }

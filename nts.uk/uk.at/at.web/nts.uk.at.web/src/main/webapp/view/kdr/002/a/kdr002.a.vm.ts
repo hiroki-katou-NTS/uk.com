@@ -278,10 +278,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 dfd = $.Deferred();
             service.findClosureById(closureId).done((closureData) => {
 
-                //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 < 指定月→ 出力エラー　(#Msg_1500)
+                //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 <= 指定月→ 出力エラー　(#Msg_1500)
                 if (closureData.closureSelected) {
                     self.closureData([closureData]);
-                    if (closureData.month < self.printDate()) {
+                    if (closureData.month <= self.printDate()) {
                         dfd.resolve(false);
                     } else {
                         dfd.resolve(true);
@@ -289,11 +289,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 }
                 else {
                     //is mean 社員範囲選択の就業締め日 = 全締め
-                    //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 < 指定月→ 出力エラー　(#Msg_1500)
+                    //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 <= 指定月→ 出力エラー　(#Msg_1500)
                     service.findAllClosure().done((closures) => {
                         self.closureData(closures);
                         _.forEach(closures, (closure) => {
-                            if (closure.month < self.printDate()) {
+                            if (closure.month <= self.printDate()) {
                                 dfd.resolve(false);
                             }
                         });
@@ -340,7 +340,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             let self = this,
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             self.programName = (program[1] != null ? program[1] : "");
-            self.exportTime = moment();
+            self.exportTime = moment().format();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
             self.printDate = screen.printDate();

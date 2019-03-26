@@ -93,78 +93,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		
 		return false;
 	}
-
-	@Override
-	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
-		//自動打刻をクリアする
-		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(),
-				overtimePara.isAutoClearStampFlg(), overtimePara.getOvertimePara());
-		//出退勤時刻反映できるかチェックする
-		if(!overtimePara.isActualReflectFlg()
-				&& !overtimePara.isScheTimeOutFlg()) {
-			return;
-		}
-		//開始終了時刻の反映(事後)
-		this.reflectStartEndtime(overtimePara, workTimeType);
-	}
-
-	@Override
-	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
-		//反映する開始終了時刻を求める
-		StartEndTimeRelectCheck startEndTimeCheck = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
-				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
-				para.getOvertimePara().getEndTime2(), 
-				para.getOvertimePara().getWorkTimeCode(), para.getOvertimePara().getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr());
-		ScheStartEndTimeReflectOutput findStartEndTimeReflect = scheStartEndTimeReflect.findStartEndTime(startEndTimeCheck, timeTypeData);
-		//ジャスト遅刻早退により時刻を編集する
-		StartEndTimeOutput startEndTimeData = startEndTimeOffReflect.justLateEarly(timeTypeData.getWorktimeCode(), findStartEndTimeReflect);
-		//申請する開始終了時刻に値があるかチェックする
-		if(para.getOvertimePara().getStartTime1() != null
-				|| para.getOvertimePara().getEndTime1() != null
-				|| para.getOvertimePara().getStartTime2() != null
-				|| para.getOvertimePara().getEndTime2() != null) {
-			//１回勤務反映区分(output)をチェックする
-			if(findStartEndTimeReflect.isCountReflect1Atr()) {
-				//開始時刻の反映
-				//終了時刻の反映
-				TimeReflectPara timePara = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, true, true);
-				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara);
-				
-			}
-			//２回勤務反映区分(output)をチェックする
-			if(findStartEndTimeReflect.isCountReflect2Atr()) {
-				//開始時刻２の反映
-				//終了時刻２の反映
-				TimeReflectPara timePara = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, true, true);
-				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara);
-			}
-		} else {
-			//１回勤務反映区分(output)をチェックする
-			if(findStartEndTimeReflect.isCountReflect1Atr()) {				
-				//開始時刻を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 1, 
-						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
-				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 1,
-						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(),false);
-				TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, isStart, isEnd);
-				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1);
-				
-			}
-			//２回勤務反映区分(output)をチェックする
-			if(findStartEndTimeReflect.isCountReflect2Atr()) {				
-				//開始時刻2を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 2,
-						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
-				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 2, 
-						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
-				TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, isStart, isEnd);
-				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2);
-			}
-		}
-	}
-
+	
 	@Override
 	public AttendanceTimeOfDailyPerformance reflectOvertimeFrame(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		Map<Integer, Integer> tmp = new HashMap<>();
