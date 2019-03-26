@@ -45,12 +45,12 @@ public class WorkRecordExportImp implements WorkRecordExport{
 		Map<String, ClosureId> emplClosureId = new HashMap<>();
 		for (String employeeId : listSid) {
 			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
-			emplClosureId.put(employeeId, closure.getClosureId());
+			emplClosureId.put(employeeId, closure!=null?closure.getClosureId():null);
 		}
-		List<Closure> listClosures = closureRepository.findAll(companyId);
+		List<Closure> listClosures = closureRepository.findAll(companyId).stream().filter(c->c.getClosureId()!=null).collect(Collectors.toList());
 		List<ClosureId> closureIds = new ArrayList<>();
 		for (Map.Entry<String, ClosureId> closureId : emplClosureId.entrySet()) {
-			if(closureId == null) {
+			if(closureId.getValue() == null) {
 				closureIds.add(ClosureId.RegularEmployee);
 			}else {
 				closureIds.add(closureId.getValue());
@@ -73,7 +73,7 @@ public class WorkRecordExportImp implements WorkRecordExport{
 		
 		Map<String, List<DatePeriod>> listAffComHistByListSidAndPeriods = new HashMap<>();
 		for (Map.Entry<ClosureId, DatePeriod> closureIdDatePeriod : closureIdDatePeriods.entrySet()) {
-			List<String> sid = emplClosureId.entrySet().stream().filter(c -> c.getValue().equals(closureIdDatePeriod.getKey())).map(e ->e.getKey()).collect(Collectors.toList());
+			List<String> sid = emplClosureId.entrySet().stream().filter(c -> (c.getValue()==null?ClosureId.RegularEmployee:c.getValue()).equals(closureIdDatePeriod.getKey())).map(e ->e.getKey()).collect(Collectors.toList());
 			listAffComHistByListSidAndPeriods.putAll(applicationTypeAdapter.getListAffComHistByListSidAndPeriod(sid, closureIdDatePeriod.getValue()));
 		}
 		List<AffiliationStatus> affiliationStatus = new ArrayList<>();

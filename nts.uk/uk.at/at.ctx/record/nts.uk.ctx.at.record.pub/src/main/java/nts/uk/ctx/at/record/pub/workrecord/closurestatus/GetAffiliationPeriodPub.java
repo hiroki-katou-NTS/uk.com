@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pub.workrecord.closurestatus;
 
-import java.time.Period;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
