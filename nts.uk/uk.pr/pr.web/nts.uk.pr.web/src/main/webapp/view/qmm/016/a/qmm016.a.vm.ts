@@ -9,6 +9,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
     import WageTableContent = nts.uk.pr.view.qmm016.share.model.WageTableContent;
     import formatNumber = nts.uk.ntsNumber.formatNumber;
     import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     
     const NEW_HIST_ID = "zzzzzz10";
     
@@ -1080,13 +1081,15 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
         
         getGridColumns(data: Array<any>): Array<any> {
-            let self = this, columns: Array<any> = [
+            let self = this;
+            let elementName = self.selectedWageTable().elementInformation().oneDimensionElement().elementName();
+            let columns: Array<any> = [
                 {
                     headerText: 'ID', key: 'firstFrameNo', dataType: 'string',
                     width: '60px', ntsControl: 'Label', hidden: false
                 },
                 {
-                    headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(),
+                    headerText: isNullOrUndefined(elementName) ? "" : elementName,
                     key: 'firstFrameName', dataType: 'string', width: '150px',
                     ntsControl: 'Label', columnCssClass: 'custom-ntsgrid-header limited-label',
                     headerCssClass: 'custom-ntsgrid-header'
