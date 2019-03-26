@@ -241,8 +241,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant filename. */
 	private static final String TEMPLATE_EMPLOYEE = "report/KWR001_Employee.xlsx";
 	
-	/** The Constant DATA_PREFIX. */
-	private static final String DATA_PREFIX = "DATA_";
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
@@ -2008,7 +2006,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
 				}
-				if(condition.isShowPeronal()){
+				if(condition.isPrivatePerson()){
 					Range employeeRangeTemp = templateSheetCollection
 							.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 					Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
@@ -2255,7 +2253,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
-			
 			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2320,6 +2317,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		/**
 		 * A9 - A13
 		 */
+		if(!condition.getSettingDetailTotalOutput().isCumulativeWorkplace()){
 		TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
 		if ((totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace())
 				&& !(workplaceReportData.getLstChildWorkplaceReportData().isEmpty()
@@ -2412,6 +2410,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				} while (levelIterator != null && levelIterator.hasNext());
 			}
 		}
+		}
 		
 		return currentRow;
 	}
@@ -2466,8 +2465,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
 		Iterator<WorkplaceDailyReportData> iteratorWorkplaceData  = lstDailyReportData.iterator();
-		
+		if(condition.isDating()){
 		while(iteratorWorkplaceData.hasNext()) {
+			
 			WorkplaceDailyReportData dailyReportData = iteratorWorkplaceData.next();
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
@@ -2494,6 +2494,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
 			}
 		}
 		
