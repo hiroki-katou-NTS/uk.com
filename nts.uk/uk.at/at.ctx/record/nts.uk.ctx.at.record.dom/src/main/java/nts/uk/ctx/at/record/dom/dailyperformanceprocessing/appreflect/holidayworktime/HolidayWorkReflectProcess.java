@@ -16,7 +16,7 @@ public interface HolidayWorkReflectProcess {
 	 * @param scheReflectFlg
 	 * @param scheAndRecordSameChangeFlg
 	 */
-	public void updateScheWorkTimeType(String employeeId, 
+	public boolean updateScheWorkTimeType(String employeeId, 
 			GeneralDate baseDate, 
 			String workTypeCode, 
 			String workTimeCode, 

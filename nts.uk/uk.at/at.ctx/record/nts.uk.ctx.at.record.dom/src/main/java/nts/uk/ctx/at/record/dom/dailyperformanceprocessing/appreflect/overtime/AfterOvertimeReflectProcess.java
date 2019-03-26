@@ -29,19 +29,7 @@ public interface AfterOvertimeReflectProcess {
 	 * @return
 	 */
 	public boolean checkReflectStartEndForSetting(OvertimeParameter overtimePara, boolean workReflect);
-	/**
-	 * 開始終了時刻の反映(事後申請)
-	 * @param overtimePara
-	 * @param workTimeType
-	 */
-	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType);
-	/**
-	 * 開始終了時刻の反映(事後)
-	 * @param para
-	 * @param timeTypeData
-	 * @return
-	 */
-	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData);
+
 	/**
 	 * 残業時間の反映
 	 * @param para
