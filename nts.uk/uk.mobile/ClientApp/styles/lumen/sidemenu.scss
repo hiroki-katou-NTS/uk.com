@@ -184,6 +184,7 @@ body {
     body {
         .wrapper {
             .sidebar {
+                //position: relative;
                 border-right: 2px solid darken($color: $primary, $amount: 5);
             }
         }
