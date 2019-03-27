@@ -38826,6 +38826,7 @@ var nts;
                                         opts.required = this.options.required;
                                         opts.min = this.options.min;
                                         opts.max = this.options.max;
+                                        opts.integer = this.options.integer;
                                         return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                             .validate(value);
                                     case "Time":
@@ -38887,6 +38888,8 @@ var nts;
                                 }
                                 else if (self.displayType === "Decimal" || self.displayType === "Currency") {
                                     isValid = uk.ntsNumber.isNumber(text, true, self.options, message);
+                                    if (self.options.integer && _.indexOf(text, ".") > -1)
+                                        isValid = false;
                                 }
                                 var min = 0, max = 999999999;
                                 var value = parseFloat(text);
