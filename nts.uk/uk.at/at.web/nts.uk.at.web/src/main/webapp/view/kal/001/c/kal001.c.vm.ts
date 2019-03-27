@@ -98,18 +98,23 @@ module nts.uk.at.view.kal001.c {
                      // call service send mail
                      service.alarmListSendEmail(params).done(function(data: string) {
                         if(data.length > 0){
-                         //let returnParam = data.split(";");
-                         //let isSendMailError = returnParam[0];
-                         //let errorStr = returnParam[1];
-                         //if (errorStr.length > 0) {
-                             //let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
-                             info({ message: data });
-                             block.clear();
-                         } else {
-                             info({ messageId: 'Msg_207' });
-                             block.clear();
-                         }
-                        //}
+                            info({ message: data });
+                            block.clear();
+//                         let returnParam = data.split(";");
+//                         let isSendMailError = returnParam[0];
+//                         let errorStr = returnParam[1];
+//                         if (errorStr.length > 0) {
+////                             let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
+//                             info({ message: strDisplay });
+//                             block.clear();
+//                         } else {
+//                             info({ messageId: 'Msg_207' });
+//                             block.clear();
+//                         }
+                        }else {
+                            info({ messageId: 'Msg_207' });
+                            block.clear();
+                        }
                      }).always(() => {
                          block.clear();
                      }).fail(function(error) {
@@ -159,34 +164,6 @@ module nts.uk.at.view.kal001.c {
             workplaceId: string;
             workplaceName: string;   
         }
-
-        export class ShareEmployee{
-            employeeID: string;
-            workplaceID: string;
-            workplaceName: string;
-        }
-        
-        
-        export interface MailSettingsDto {
-            subject?: string;
-            text?: string;
-            mailAddressCC: Array<string>;
-            mailAddressBCC: Array<string>;
-            mailRely?: string;
-        }
-         export interface MailSettingNormalDto {
-             mailSettings?: MailSettingsDto;
-             mailSettingAdmins?: MailSettingsDto;
-         }
-         export interface MailSettingAutomaticDto {
-             mailSettings?: MailSettingsDto;
-             mailSettingAdmins?: MailSettingsDto;
-             senderAddress?: string;
-         }
-         export interface MailAutoAndNormalDto {
-             mailSettingAutomaticDto: MailSettingAutomaticDto;
-             mailSettingNormalDto: MailSettingNormalDto;
-         }
         
     }//end module model
     
