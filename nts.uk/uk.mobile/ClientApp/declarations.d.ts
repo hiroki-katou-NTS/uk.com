@@ -105,9 +105,13 @@ declare module "vue/types/vue" {
         validations: {
             [name: string]: IRule;
         };
-        $alert: (msgOrResourceId: string, options?: any) => Promise<{}>;
-        $error: (msgOrResourceId: string, options?: any) => Promise<{}>;
-        $confirm: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $toastAlert: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $toastError: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $toastConfirm: (msgOrResourceId: string, options?: any) => Promise<{}>;
+        $dialogError: (msgOrResourceId: string | object, options?: any) => void;
+        $dialogInfo: (msgOrResourceId: string | object, options?: any) => void;
+        $dialogWarn: (msgOrResourceId: string | object, options?: any) => void;
+        $dialogConfirm: (msgOrResourceId: string | object, options?: any) => void;
     }
 
     export interface VueConstructor<V extends Vue = Vue> {

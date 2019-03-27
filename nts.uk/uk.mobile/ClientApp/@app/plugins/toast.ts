@@ -16,7 +16,7 @@ const toast = {
             }
         });
 
-        vue.prototype.$alert = function (msg: string, options?: any) {
+        vue.prototype.$toastAlert = function (msg: string, options?: any) {
             return new Promise((resolve) => {
                 this.$modal(dialog(), { msg }, {
                     type: 'popup',
@@ -32,7 +32,7 @@ const toast = {
             });
         };
 
-        vue.prototype.$error = function (msg: string, options?: any) {
+        vue.prototype.$toastError = function (msg: string, options?: any) {
             return new Promise((resolve) => {
                 this.$modal(dialog(), { msg }, {
                     type: 'popup',
@@ -48,7 +48,7 @@ const toast = {
             });
         };
 
-        vue.prototype.$confirm = function (msg: string, options?: any) {
+        vue.prototype.$toastConfirm = function (msg: string, options?: any) {
             return new Promise((resolve) => {
                 this.$modal(dialog(), { msg }, {
                     type: 'popup',

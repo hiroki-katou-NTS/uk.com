@@ -151,10 +151,24 @@ export type DialogStype = 'normal' | 'process' | 'danger';
 const dialog = {
     install(vue: VueConstructor<Vue>) {
 
-        vue.prototype.$dialog = {
-            error: (message: string | object) => {
-                
-            }
+        vue.prototype.$dialogError = (msg: string | object, option?: any) => {
+            let dialog = new DialogComponent();
+            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'error' }));
+        };
+
+        vue.prototype.$dialogInfo = (msg: string | object, option?: any) => {
+            let dialog = new DialogComponent();
+            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'info' }));
+        };
+
+        vue.prototype.$dialogWarn = (msg: string | object, option?: any) => {
+            let dialog = new DialogComponent();
+            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'warn' }));
+        };
+
+        vue.prototype.$dialogConfirm = (msg: string | object, option?: any) => {
+            let dialog = new DialogComponent();
+            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'confirm' }));
         };
     }
 }
