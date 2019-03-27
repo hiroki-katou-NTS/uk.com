@@ -557,7 +557,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             }
         }
 
-        lstWorkplaceId = workplaceHists.values().stream().map(WkpHistImport::getWorkplaceId).collect(Collectors.toList());
+        lstWorkplaceId = workplaceHists.values().stream().map(WkpHistImport::getWorkplaceId).distinct().collect(Collectors.toList());
         queryData.setLstWorkplaceImport(new ArrayList<>(workplaceHists.values()));
 
         // Also add into print order list
@@ -873,7 +873,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<EmployeeDailyPerError> errorListAllEmployee = errorAlarmRepository.finds(lstEmployeeId, new DatePeriod(query.getStartDate(), endDate));
 		// Get list remark check box from screen C (UI)
 		List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
-		
+
 		Set<String> lstAllErrorCode = errorListAllEmployee.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toSet());
 		List<String> tempErrorCode = new ArrayList<>();
 		tempErrorCode.addAll(lstAllErrorCode);
@@ -1075,9 +1075,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
 
-        List<String> lstEmployeeId = query.getEmployeeId();
-        List<EmployeeDailyPerError> errorListAllEmployee = errorAlarmRepository.finds(lstEmployeeId, new DatePeriod(query.getStartDate(), endDate));
-
 		EmployeeReportData employeeData = new EmployeeReportData();
 		
 		// Employee code and name
@@ -1117,10 +1114,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			employeeData.lstDetailedPerformance.add(detailedDate);
 			
 			// ドメインモデル「社員の日別実績エラー一覧」を取得する
-			//List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, workingDate);
-
-            List<EmployeeDailyPerError> errorList = errorListAllEmployee.stream()
-                    .filter(error -> StringUtils.equalsAnyIgnoreCase(error.getEmployeeID(), employeeId) && error.getDate().compareTo(workingDate) == 0).collect(Collectors.toList());
+			List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, workingDate);
 
 			// Manually set error list into remark data container
 			queryData.getRemarkDataContainter().setErrorList(errorList);
