@@ -58,7 +58,7 @@ export const time = {
         },
         toString(value: number): string {
             var timePoint = time.timewd.computeTimePoint(value);
-            return timePoint.day + '　' + time.leftpad(timePoint.hour) + ' ： ' + time.leftpad(timePoint.minute);
+            return timePoint.day + ' ' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     }, 
     timedr: {
@@ -174,7 +174,6 @@ export enum DAYS {
     NextDay = "翌日",
     TwoDaysLater = "翌々日",
 }
-
 
 export interface TimeWithDayPoint {
     day: string;
