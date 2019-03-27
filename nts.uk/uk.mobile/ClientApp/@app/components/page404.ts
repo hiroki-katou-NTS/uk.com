@@ -159,4 +159,7 @@ import { component } from '@app/core/component';
     }`
 })
 export class Page404Component extends Vue {
+    created() {
+        this.pgName = 'page_not_found';
+    }
 }

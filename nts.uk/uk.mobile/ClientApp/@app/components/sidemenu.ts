@@ -149,21 +149,6 @@ export { SideMenu };
 SideMenu.items = [{
     url: '/',
     title: 'home'
-},
-{
-    url: '',
-    title: 'html',
-    childs: [{
-        url: '/documents/html',
-        title: 'html'
-    }, {
-        url: '/documents/component',
-        title: 'components'
-    }, {
-        url: '/documents/modal',
-        title: 'modal'
-    }
-    ]
 }, {
     url: '/access/login',
     title: 'login'
