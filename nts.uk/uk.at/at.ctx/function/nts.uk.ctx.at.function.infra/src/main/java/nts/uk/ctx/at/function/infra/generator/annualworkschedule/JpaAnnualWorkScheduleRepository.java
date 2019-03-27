@@ -439,8 +439,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		allItemIds = allItemIds.stream().distinct().collect(Collectors.toList());
 		if (allItemIds.isEmpty()) return;
 		// アルゴリズム「対象期間の月次データの取得」を実行する
-		List<MonthlyAttendanceResultImport> allMonthlyAtt = monthlyAttendanceItemAdapter
-				.getMonthlyValueOfParallel(employeeIds, yearMonthPeriod, allItemIds);
+		List<MonthlyAttendanceResultImport> allMonthlyAtt = new ArrayList<>();
 
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する

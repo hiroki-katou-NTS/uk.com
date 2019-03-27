@@ -2,17 +2,22 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlace;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlacePK;
@@ -95,6 +100,27 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		return this.queryProxy().query(FIND_BY_KEY, KmkmtAgeementTimeWorkPlace.class)
 				.setParameter("workPlaceId", workplaceId).setParameter("laborSystemAtr", laborSystemAtr.value)
 				.getSingle(f -> toDomain(f));
+	}
+	
+	@Override
+	@SneakyThrows
+	public List<AgreementTimeOfWorkPlace> findWorkPlaceSetting(List<String> workplaceId) {
+		if(workplaceId.isEmpty()){
+			return new ArrayList<>();
+		}
+		String query = "select WKPCD, BASIC_SETTING_ID, LABOR_SYSTEM_ATR, UPPER_MONTH_AVERAGE, UPPER_MONTH from KMKMT_AGREEMENTTIME_WPL where WKPCD IN (" + workplaceId.stream().map(s -> "?").collect(Collectors.joining(",")) +" )";
+		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
+			for(int i = 0; i < workplaceId.size(); i++){
+				statement.setString(i + 1, workplaceId.get(i));
+			}
+
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return new AgreementTimeOfWorkPlace(rec.getString(1), rec.getString(2), 
+													EnumAdaptor.valueOf(rec.getInt(3), LaborSystemtAtr.class), 
+													new UpperAgreementSetting(new AgreementOneMonthTime(rec.getInt(5)), 
+																				new AgreementOneMonthTime(rec.getInt(4))));
+			});
+		}
 	}
 
 	private KmkmtAgeementTimeWorkPlace toEntity(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {

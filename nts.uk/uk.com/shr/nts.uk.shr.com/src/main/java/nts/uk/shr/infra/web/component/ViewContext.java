@@ -9,6 +9,8 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.shr.com.i18n.TextResource;
@@ -103,7 +105,8 @@ public class ViewContext extends UIComponentBase {
 			return null;
 		}
 		
-		return VALUE_FORMAT.replace("{0}", value);
+		String escapeMsg = StringEscapeUtils.escapeEcmaScript(value);
+		return VALUE_FORMAT.replace("{0}", escapeMsg);
 	}
 	
 	private void writeOperationSetting(StringBuilder builder) {

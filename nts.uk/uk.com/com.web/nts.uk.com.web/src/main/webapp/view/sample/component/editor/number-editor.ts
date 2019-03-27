@@ -34,7 +34,7 @@ __viewContext.ready(function() {
                 option: ko.mapping.fromJS({
                     width: "50",
                     grouplength: 3,
-                    decimallength: 2
+                    decimallength: 1
                 }),
                 required: ko.observable(true),
                 enable: ko.observable(true),
