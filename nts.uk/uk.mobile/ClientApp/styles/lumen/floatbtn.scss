@@ -34,13 +34,15 @@
         }
 
         span {
-            color: #484848;
+            color: $primary;
             position: absolute;
             right: 45px;
             white-space: nowrap;
             display: block;
-            top: 10px;
+            top: 6px;
             text-align: right;
+            font-weight: 500;
+            font-size: 1rem;
         }
 
         &:not(.disabled) {
@@ -76,6 +78,30 @@
             i {
                 font-size: 2.4rem;
                 line-height: 55px
+            }
+        }
+
+        &.btn-info {
+            span {
+                color: $info;
+            }
+        }
+
+        &.btn-success {
+            span {
+                color: $success;
+            }
+        }
+
+        &.btn-danger {
+            span {
+                color: $danger;
+            }
+        }
+
+        &.btn-warning {
+            span {
+                color: $warning;
             }
         }
     }
