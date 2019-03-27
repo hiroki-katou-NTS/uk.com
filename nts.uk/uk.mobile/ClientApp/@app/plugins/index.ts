@@ -5,4 +5,4 @@ export * from '@app/plugins/modal';
 export * from '@app/plugins/toast';
 export * from '@app/plugins/click';
 export * from '@app/plugins/validate';
-export * from '@app/plugins/dialog';
+//export * from '@app/plugins/dialog';

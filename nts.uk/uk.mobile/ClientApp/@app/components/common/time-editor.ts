@@ -78,7 +78,7 @@ export class TimeComponent extends InputComponent {
                         hide: 'zoomOut'
                     }
                 })
-            .onClose(v => {
+            .then(v => {
                 if (v !== undefined) {
                     this.$emit('input', v);
                 }
