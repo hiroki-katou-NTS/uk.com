@@ -24,6 +24,10 @@ const _SideMenu = new Vue({
     set visible(visible: boolean) {
         _SideMenu.visible = visible;
     }
+}, resize = () => {
+    if (window.innerWidth >= 992 && SideMenu.show) {
+        SideMenu.show = false;
+    }
 };
 
 @component({
@@ -133,6 +137,14 @@ export class SideMenuBar extends Vue {
         }
         
         localStorage.setItem('__sidebar__', show ? 'show' : '');
+    }
+
+    created() {
+        dom.registerEventHandler(window, 'resize', resize);
+    }
+
+    destroyed() {
+        dom.removeEventHandler(window, 'resize', resize);
     }
 }
 

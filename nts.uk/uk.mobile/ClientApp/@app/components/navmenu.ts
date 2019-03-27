@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { dom, browser } from '@app/utils';
+import { LanguageBar } from '@app/plugins';
 import { component, Watch } from '@app/core/component';
 
 const _NavMenu = new Vue({
@@ -20,6 +21,10 @@ const _NavMenu = new Vue({
     },
     set visible(visible: boolean) {
         _NavMenu.visible = visible;
+    }
+}, resize = () => {
+    if (window.innerWidth >= 992 && NavMenu.show) {
+        NavMenu.show = false;
     }
 };
 
@@ -60,6 +65,9 @@ const _NavMenu = new Vue({
                 return _NavMenu.visible;
             }
         }
+    },
+    components: {
+        'language-bar': LanguageBar
     }
 })
 export class NavMenuBar extends Vue {
@@ -80,6 +88,14 @@ export class NavMenuBar extends Vue {
             dom.addClass(document.body, 'show-menu-top');
         }
     }
+
+    created() {
+        dom.registerEventHandler(window, 'resize', resize);
+    }
+
+    destroyed() {
+        dom.removeEventHandler(window, 'resize', resize);
+    }
 }
 
 export { NavMenu };
@@ -87,7 +103,7 @@ export { NavMenu };
 NavMenu.items = [{
     url: '/',
     title: 'home'
-},{
+}, {
     url: '/documents',
     title: 'documents'
 }];
