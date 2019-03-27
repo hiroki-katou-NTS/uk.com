@@ -97,7 +97,8 @@ export function component(options: ComponentOptions<Vue>): any {
                     routes.push({
                         name: options.name,
                         path: options.route,
-                        component: options
+                        component: options, 
+                        props: true
                     });
 
                     (options.mixins || (options.mixins = [])).push({
@@ -116,13 +117,15 @@ export function component(options: ComponentOptions<Vue>): any {
                         (rt.children || (rt.children = [])).push({
                             name: options.name,
                             path: options.route.url.replace(/^\/+/, ''),
-                            component: options
+                            component: options, 
+                            props: true
                         });
                     } else {
                         routes.push({
                             name: options.name,
                             path: `${options.route.parent}/${options.route.url}`.replace(/\/+/g, '/'),
-                            component: options
+                            component: options, 
+                            props: true
                         });
                     }
 
