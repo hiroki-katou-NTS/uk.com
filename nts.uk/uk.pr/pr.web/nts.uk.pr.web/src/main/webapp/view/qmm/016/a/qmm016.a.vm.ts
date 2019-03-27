@@ -965,9 +965,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             return elementRange;
         } 
 
-        displayGrid(dataSource: Array<any>, columns: Array<any>) {
+        displayGrid(dataSource: Array<any>, columns: Array<any>, isOneDimension?: boolean) {
+            let columnResizeSettings = isOneDimension ? [
+                { columnKey: 'firstFrameNo', allowResizing: false },
+                { columnKey: 'firstFrameName', allowResizing: false },
+                { columnKey: 'secondFrameNoX', allowResizing: false }
+            ] : [
+                { columnKey: 'firstFrameNo', allowResizing: false },
+                { columnKey: 'firstFrameName', allowResizing: false }
+            ];
             $("#grid2").ntsGrid({
-                width: '800px',
+                width: isOneDimension ? '350px' : '770px',
                 height: '350px',
                 dataSource: dataSource,
                 primaryKey: 'firstFrameNo',
@@ -982,16 +990,14 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 features: [
                     {
                         name: 'Resizing',
-                        columnSettings: [
-                            { columnKey: 'firstFrameNo', allowResizing: false },
-                            { columnKey: 'firstFrameName', allowResizing: false }
-                        ]
+                        columnSettings: columnResizeSettings
                     },
                     {
                         name: 'ColumnFixing', fixingDirection: 'left',
                         showFixButtons: false,
                         columnSettings: [
-                            { columnKey: 'firstFrameNo', isFixed: true }, { columnKey: 'firstFrameName', isFixed: true }
+                            { columnKey: 'firstFrameNo', isFixed: true }, 
+                            { columnKey: 'firstFrameName', isFixed: true }
                         ]
                     }
                 ],
@@ -1013,18 +1019,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         states: []
                     }
                 ],
-                ntsControls: [
-//                    { 
-//                        name: 'AmountEditor', controlType: 'TextEditor', 
-//                        constraint: { 
-//                            min: -9999999999,
-//                            max: 9999999999,
-//                            required: true, 
-//                            format: "Number_Separated", 
-//                            valueType: 'Integer' 
-//                        } 
-//                    }
-                ]
+                ntsControls: []
             });
         }
         
@@ -1090,7 +1085,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 },
                 {
                     headerText: isNullOrUndefined(elementName) ? "" : elementName,
-                    key: 'firstFrameName', dataType: 'string', width: '150px',
+                    key: 'firstFrameName', dataType: 'string', width: '153px',
                     ntsControl: 'Label', columnCssClass: 'custom-ntsgrid-header limited-label',
                     headerCssClass: 'custom-ntsgrid-header'
                 }
@@ -1111,6 +1106,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         min: -9999999999,
                         max: 9999999999,
                         required: true, 
+                        decimalLength: -1,
+                        integer: true,
                         cDisplayType: "Currency"
                     }
                 };
@@ -1128,7 +1125,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 },
                 {
                     headerText: self.selectedWageTable().elementInformation().oneDimensionElement().elementName(),
-                    key: 'firstFrameName', dataType: 'string', width: '150px', ntsControl: 'Label',
+                    key: 'firstFrameName', dataType: 'string', width: '153px', ntsControl: 'Label',
                     columnCssClass: 'custom-ntsgrid-header limited-label', headerCssClass: 'custom-ntsgrid-header'
                 },
                 {
@@ -1137,6 +1134,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         min: -9999999999,
                         max: 9999999999,
                         required: true,
+                        decimalLength: -1,
+                        integer: true,
                         cDisplayType: "Currency"
                     }
                 }
@@ -1148,7 +1147,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     secondFrameNoX: i.paymentAmount()
                 };
             });
-            self.displayGrid(items, columns);
+            self.displayGrid(items, columns, true);
         }
         
     }

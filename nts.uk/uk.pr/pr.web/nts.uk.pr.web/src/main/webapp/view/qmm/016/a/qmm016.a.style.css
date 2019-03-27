@@ -49,3 +49,8 @@
 .nts-grid-sheet-buttons {
 	display: none;
 }
+
+#grid2_container {
+	margin-left: -2px !important;
+	margin-right: -2px !important;
+}
