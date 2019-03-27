@@ -102,7 +102,7 @@ export function component(options: ComponentOptions<Vue>): any {
                     });
 
                     (options.mixins || (options.mixins = [])).push({
-                        mounted() {
+                        created() {
                             this.pgName = options.name;
                         }
                     });
@@ -130,7 +130,7 @@ export function component(options: ComponentOptions<Vue>): any {
                     }
 
                     (options.mixins || (options.mixins = [])).push({
-                        mounted() {
+                        created() {
                             this.pgName = options.name;
                         }
                     });
