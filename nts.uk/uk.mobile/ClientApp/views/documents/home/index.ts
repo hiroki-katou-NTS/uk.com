@@ -8,7 +8,15 @@ import { component } from '@app/core/component';
 
 @component({
     route: '/documents',
-    template: `<router-view />`,
+    template: `<div>
+        <h1>{{'important_document' | i18n}}</h1>
+        <div class="mb-3">
+            <router-link to="/documents/filters/i18n" class="mr-2">{{'i18n' | i18n}}</router-link>|
+            <router-link to="/documents/component/basic" class="ml-2 mr-2">{{'view_viewmodel' | i18n}}</router-link>
+        </div>
+        <hr />
+        <router-view />
+    </div>`,
     style: `#document_index { margin-bottom: 15px; }`,
     resource: {
         vi: {
@@ -18,11 +26,18 @@ import { component } from '@app/core/component';
             'plugin': 'Trình cắm (Plugin)',
             'filters': 'Bộ lọc (Filter)',
             'controls': 'Các điều khiển (Control)',
-            'directive': 'Các chỉ định (Directive)'
+            'directive': 'Các chỉ định (Directive)',
+            'important_document': 'Những mục tài liệu quan trọng'
         },
         jp: {
             documents: 'Documents',
-            MarkdownComponent: 'Markdown'
+            MarkdownComponent: 'Markdown',
+            'html': 'HTML',
+            'plugin': ' (Plugin)',
+            'filters': ' (Filter)',
+            'controls': ' (Control)',
+            'directive': ' (Directive)',
+            'important_document': 'Important documents'
         }
     }
 })

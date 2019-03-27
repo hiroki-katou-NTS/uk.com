@@ -87,4 +87,7 @@ export { NavMenu };
 NavMenu.items = [{
     url: '/',
     title: 'home'
+},{
+    url: '/documents',
+    title: 'documents'
 }];
