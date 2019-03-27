@@ -17,7 +17,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
@@ -253,6 +255,23 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 					.getList(ent -> toDomain(ent)));
 		});
 		return result.stream().collect(Collectors.groupingBy(i -> i.getEmployeeId()));
+	}
+
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findByExpStatus(String sid, LeaveExpirationStatus expStatus,
+			DatePeriod datePeriod) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId"
+				+ " AND a.deadline >= :startDate"
+				+ " AND a.deadline <= :endDate"
+				+ " AND a.expStatus = :expStatus"
+				+ " ORDER BY a.grantDate ASC";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", sid)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.setParameter("expStatus", expStatus.value)
+				.getList(e -> toDomain(e));
 	}
 
 }

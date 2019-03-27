@@ -49,6 +49,8 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
@@ -169,6 +171,9 @@ public class MonthlyPerformanceReload {
 
 	@Inject
 	private ConfirmStatusMonthly confirmStatusMonthly;
+	
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
@@ -452,7 +457,7 @@ public class MonthlyPerformanceReload {
 						if(approvalStatusResult.getEmployeeId().equals(employee.getId())) {
 							approve = approvalStatusResult.isApprovalStatus();
 							// *5 check disable mode approval 
-							if(approve) {
+							if(!approve) {
 								if(approvalStatusResult.getImplementaPropriety() == AvailabilityAtr.CAN_NOT_RELEASE) {
 									lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 								}
@@ -470,8 +475,8 @@ public class MonthlyPerformanceReload {
 				}
 			}else {
 				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-				for (ApprovalStatusResult approvalStatusResult : approvalStatusMonth.get().getApprovalStatusResult()) {
-					if(approvalStatusMonth.isPresent()) {
+				if(approvalStatusMonth.isPresent()) {
+					for (ApprovalStatusResult approvalStatusResult : approvalStatusMonth.get().getApprovalStatusResult()) {
 						//*6 : set value approval mode 0,1
 						if(approvalStatusResult.getEmployeeId().equals(employee.getId())) {
 							if(approvalStatusResult.getNormalStatus() == ApprovalStatusForEmployee.UNAPPROVED) {
@@ -493,7 +498,7 @@ public class MonthlyPerformanceReload {
 					}
 				}
 			}
-			if (param.getInitMenuMode() == 2) {
+			if (param.getInitMenuMode() == 2 || !employee.getId().equals(employeeIdLogin)) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 			} else {
 				if(statusConfirmMonthDto.isPresent()) {
@@ -696,7 +701,12 @@ public class MonthlyPerformanceReload {
 			boolean checkExistRecordErrorListDate = false;
 			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
 				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
-					checkExistRecordErrorListDate = true;
+					//対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+					List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
+							cid, Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
+					if(!errorAlarmWorkRecordLst.isEmpty()) {
+						checkExistRecordErrorListDate = true;	
+					}
 					break;
 				}
 			}

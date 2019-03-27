@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,7 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringLength;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
@@ -97,6 +99,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepos
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
+import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentInfo;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
@@ -234,6 +240,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The optional item repo. */
 	@Inject
 	private OptionalItemRepository optionalItemRepo;
+	
+	@Inject
+	private SyCompanyPub symCompany;
+	
+	@Inject
+	private EmploymentStatusPub empStatusPub;
 	
 	/** The Constant filename. */
 	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
@@ -519,8 +531,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		remarkQueryDataContainer.initData(query.getEmployeeId(), period);
 		queryData.setRemarkDataContainter(remarkQueryDataContainer);		
 		
-		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
-		queryData.setDatePeriod(lstDate);
+//		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
+//		queryData.setDatePeriod(lstDate);
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
@@ -716,11 +728,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				.filter(item -> itemsId.contains(item.getAttendanceDisplay()))
 				.sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
 		queryData.setLstDisplayItem(lstAttendanceItemsDisplay);
-		
+		//帳票種別をチェックする
 		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
 			WorkplaceReportData data = new WorkplaceReportData();
 			data.workplaceCode = "";
 			reportData.setWorkplaceReportData(data);
+			
+			DatePeriod datePeriod = new DatePeriod(query.getStartDate(), query.getEndDate());
+			//社員の指定期間中の所属期間を取得する RequestList 588
+			List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(lstEmployeeWithData, datePeriod);
+			
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
@@ -739,15 +756,31 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //			// Convert print order list back into list employee dto so we can keep the correct printing order as inputed
 //			lstEmloyeeDto = lstEmployeePrintOrderWithData.stream().map(employee -> employee.getEmployeeDto().get()).collect(Collectors.toList());
 			
-			for (EmployeeDto dto: lstEmloyeeDto) {
-				EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
-				
-				// Calculate total count day
-				if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
-					employeeReportData.totalCountDay = totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeReportData.totalCountDay);
-				}
+			for (EmployeeDto dto : lstEmloyeeDto) {
+
+				statusEmps.stream().filter(x -> !StringUtil.isNullOrEmpty(x.getEmployeeId(), false)
+						&& x.getEmployeeId().equals(dto.getEmployeeId())).findFirst()
+						.ifPresent(status -> {
+							// アルゴリズム「個人別の日別勤務表を作成する」を実行する
+							status.getListPeriod().forEach(periodDate -> {
+								DateRange range = new DateRange(periodDate.start(), periodDate.end());
+								queryData.setDatePeriod(range.toListDate());
+								EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(
+										reportData, queryData, dto, dataRowCount);
+
+								// Calculate total count day
+								if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
+									employeeReportData.totalCountDay = totalDayCountWs.calculateAllDayCount(
+											dto.getEmployeeId(),
+											new DateRange(query.getStartDate(), query.getEndDate()),
+											employeeReportData.totalCountDay);
+								}
+							});
+							
+						});
+
 			}
-			
+			//取得件数を確認する
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
 		}
 		else {
@@ -768,7 +801,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			lstReportData.forEach(x -> {
 				analyzeInfoExportByDate(lstWorkplaceTemp, x.getLstWorkplaceData(), lstAddedCode);
 			});
-			
+			//Imported(就業)「社員の在職状態」を取得する
+			this.empStatusPub.findListOfEmployee(lstEmployeeWithData, period).forEach(empStatus->{
+				//RQ433で取得した社員在職データを日付毎のデータに並び替える
+				List<EmploymentInfo> empInfos = empStatus.getEmploymentInfo().stream().sorted(Comparator.comparing(EmploymentInfo::getStandardDate)).collect(Collectors.toList());
+				empStatus.setEmploymentInfo(empInfos);
+			});
 			collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
 			// Calculate workplace total
 			lstReportData.forEach(dailyData -> {
@@ -801,7 +839,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	/**
 	 * Collect employee performance data by date.
-	 *
+	 * 日付別の日別勤務表を作成する
 	 * @param reportData the report data
 	 * @param queryData the query data
 	 * @param dataRowCount the data row count
@@ -1006,7 +1044,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 	/**
 	 * Collect employee performance data by employee.
-	 *
+	 * 個人別の日別勤務表を作成する
 	 * @param reportData the report data
 	 * @param queryData the query data
 	 * @param employeeDto the employee dto
@@ -1207,7 +1245,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	/**
 	 * Calculate total export by employee.
-	 *
+	 * 取得件数を確認する
 	 * @param workplaceData the workplace data
 	 * @param lstAttendanceId the lst attendance id
 	 */
@@ -3176,7 +3214,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
 
 			if (!optWorkType.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			WorkType workType = optWorkType.get();
@@ -3192,7 +3230,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
 			
 			if (!optWorkTime.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			WorkTimeSetting workTime = optWorkTime.get();
@@ -3208,7 +3246,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
 			
 			if (!optWorkLocation.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 			
 			CodeName workLocation = optWorkLocation.get();
@@ -3219,7 +3257,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream()
 					.filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
 			if (!optWorkplace.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName workplace = optWorkplace.get();
@@ -3231,7 +3269,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> optReason = lstReason.stream().filter(reason -> reason.getCode().equalsIgnoreCase(code))
 					.filter(item -> item.getId().equalsIgnoreCase(itemId)).collect(Collectors.toList());
 			if (optReason.isEmpty()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 			return optReason.get(0).getName();
 		}
@@ -3242,7 +3280,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.findFirst();
 
 			if (!optClassification.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName classification = optClassification.get();
@@ -3254,7 +3292,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
 
 			if (!optPosition.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName position = optPosition.get();
@@ -3265,7 +3303,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Optional<CodeName> optEmployment = lstEmployment.stream()
 					.filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
 			if (!optEmployment.isPresent()) {
-				return MASTER_UNREGISTERED;
+				return code + " " + MASTER_UNREGISTERED;
 			}
 
 			CodeName employment = optEmployment.get();

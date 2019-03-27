@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
@@ -33,6 +34,9 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 
 	@Inject
 	private StopByCompanyRepository stopByComRepo;
+	
+	@Inject
+	private RoleAdapter roleAdapter;
 
 	/**
 	 * CCG020_メニュー.システム利用停止の警告確認
@@ -83,7 +87,7 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 			return Optional.empty();
 		}
 
-		BusinessState businessState = isBusinessPerson(role) ? checkBusinessStateForAdmin() : checkBusinessState();
+		BusinessState businessState = roleAdapter.isEmpWhetherLoginerCharge() ? checkBusinessStateForAdmin() : checkBusinessState();
 
 		if (businessState.canDoBusiness) {
 			return Optional.empty();
@@ -91,11 +95,6 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 			return Optional.of(businessState.stopMessage);
 		}
 
-	}
-
-	private boolean isBusinessPerson(LoginUserRoles role) {
-		return role.forAttendance() != null || role.forPayroll() != null || role.forPersonnel() != null
-				|| role.forOfficeHelper() != null;
 	}
 
 	/**

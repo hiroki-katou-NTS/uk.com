@@ -66,6 +66,10 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
+import nts.uk.ctx.at.record.dom.workrecord.export.dto.AffiliationStatus;
+import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
+import nts.uk.ctx.at.record.dom.workrecord.export.dto.PeriodInformation;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
@@ -116,6 +120,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private GetAgreTimeByPeriod getAgreTimeByPeriod;
 	@Inject
 	private GetExcessTimesYear getExcessTimesYear;
+	@Inject
+	private WorkRecordExport workRecordExport;
 
 	public static final String YM_FORMATER = "uuuu/MM";
 	
@@ -504,8 +510,24 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			allItemIds.addAll(itemIds);
 		}
 		allItemIds = allItemIds.stream().distinct().collect(Collectors.toList());
+		
+		EmpAffInfoExport EmpAffInfoExport = workRecordExport.getAffiliationPeriod(employeeIds, yearMonthPeriod, GeneralDate.today());
+		Map<String, YearMonthPeriod> employees = new HashMap<>();
+		for (AffiliationStatus emp : EmpAffInfoExport.getAffiliationStatus()) {
+			nts.arc.time.YearMonth start = emp.getPeriodInformation().get(0).getYearMonthPeriod().start();
+			nts.arc.time.YearMonth end = emp.getPeriodInformation().get(0).getYearMonthPeriod().end();
+			for (PeriodInformation infor : emp.getPeriodInformation()) {
+				if(infor.getYearMonthPeriod().start().lessThan(start)) {
+					start = infor.getYearMonthPeriod().start();
+				}
+				if(infor.getYearMonthPeriod().end().lessThan(end)) {
+					end = infor.getYearMonthPeriod().end();
+				}
+			}
+			employees.put(emp.getEmployeeID(), new YearMonthPeriod(start, end));
+		}
 		// アルゴリズム「対象期間の月次データの取得」を実行する
-		List<MonthlyAttendanceResultImport> allMonthlyAtt = monthlyAttendanceItemAdapter.getMonthlyValueOfParallel(employeeIds, yearMonthPeriod, allItemIds);
+		List<MonthlyAttendanceResultImport> allMonthlyAtt = monthlyAttendanceItemAdapter.getMonthlyValueOfParallel(employees, allItemIds);
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する
 			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(allMonthlyAtt, employeeIds, itemOut, startYm);
