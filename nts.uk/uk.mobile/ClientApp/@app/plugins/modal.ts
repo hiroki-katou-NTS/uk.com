@@ -11,13 +11,13 @@ const modal = {
             }
         });
 
-        vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params: any, options?: IModalOptions) {
+        vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
             let self = this,
                 $options = self.$options,
                 components = $options.components,
                 focused = document.querySelector(':focus') as HTMLElement;
 
-            params = obj.toJS(params);
+            params = obj.toJS(params || {});
 
             options = options || <IModalOptions>{
                 title: name,
