@@ -403,13 +403,15 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 				Cell cell = cells.get(startRow + i, j);
 				// TODO: format date with format
 				MasterCellData cellData = data.cellAt(column.getColumnId());
-				Style style = this.getCellStyle(cell.getStyle(), cellData.getStyle());
-				cell.setValue(cellData.getValue());
-				cell.setStyle(style);
-				if (!StringUtil.isNullOrEmpty(cellData.getStyle().columnFormat(), true)) {
-					cell.setFormula(cellData.getStyle().columnFormat());
+				if(cellData != null) {
+					Style style = this.getCellStyle(cell.getStyle(), cellData.getStyle());
+					cell.setValue(cellData.getValue());
+					cell.setStyle(style);
+					if (!StringUtil.isNullOrEmpty(cellData.getStyle().columnFormat(), true)) {
+						cell.setFormula(cellData.getStyle().columnFormat());
+					}
+					j++;
 				}
-				j++;
 			}
 		}
 	}
