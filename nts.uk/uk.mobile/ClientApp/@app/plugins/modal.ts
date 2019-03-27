@@ -1,6 +1,7 @@
 import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
+import { ErrorHandler } from 'vue-router/types/router';
 
 const modal = {
     install(vue: VueConstructor<Vue>) {
@@ -8,8 +9,33 @@ const modal = {
         vue.mixin({
             methods: {
                 $close() { }
+            },
+            beforeMount() {
+                let self = this;
+
+                obj.extend(self.$router, {
+                    goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
+                        (<any>self.$router).push({
+                            name: location.name,
+                            params: {
+                                params: location.params
+                            }
+                        }, onComplete, onAbort);
+                    }
+                })
             }
         });
+
+        vue.prototype.$goto = function (location: { name: string; params: { [key: string]: any; }; }) {
+            let self = this;
+            
+            self.$router.push({
+                name: location.name,
+                params: {
+                    params: location.params
+                }
+            });
+        };
 
         vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
             let self = this,
@@ -133,7 +159,7 @@ const modal = {
                                 methods: {
                                     callback(data) {
                                         resolve(data);
-                                        
+
                                         this.show = false;
                                     },
                                     leave() {

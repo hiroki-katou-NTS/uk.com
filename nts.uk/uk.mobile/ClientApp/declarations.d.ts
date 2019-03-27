@@ -91,6 +91,7 @@ declare module "vue/types/vue" {
         $mask: (act: 'hide' | 'show' | 'showonce') => {
             on: (click: () => void, hide?: () => void) => void;
         };
+        $goto: (location: { name: string; params?: { [key: string]: any; }; }) => void;
         $modal: (name: (string | ComponentOptions<Vue>), params?: any, options?: IModalOptions) => Promise<{}>;
         $valid: boolean;
         $errors: {
@@ -117,6 +118,12 @@ declare module "vue/types/vue" {
             defineReactive: (obj: any, key: string, val: any) => void;
             extend: (to: any, from: any) => any;
         };
+    }
+}
+
+declare module "vue-router/types/router" {
+    export interface VueRouter {
+        goto: (location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) => void;
     }
 }
 
