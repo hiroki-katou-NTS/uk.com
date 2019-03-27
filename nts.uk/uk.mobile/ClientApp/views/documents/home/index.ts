@@ -9,12 +9,13 @@ import { component } from '@app/core/component';
 @component({
     route: '/documents',
     template: `<div>
-        <h1>{{'important_document' | i18n}}</h1>
-        <div class="mb-3">
+        <h5>{{'important_document' | i18n}}</h5>
+        <div class="mb-2">
             <router-link to="/documents/filters/i18n" class="mr-2">{{'i18n' | i18n}}</router-link>|
             <router-link to="/documents/component/basic" class="ml-2 mr-2">{{'view_viewmodel' | i18n}}</router-link>
+            <hr />
         </div>
-        <hr />
+        <h2 class="mb-2">{{ pgName | i18n }}</h2>
         <router-view />
     </div>`,
     style: `#document_index { margin-bottom: 15px; }`,
