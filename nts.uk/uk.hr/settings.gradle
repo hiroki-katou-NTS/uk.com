@@ -1,0 +1,17 @@
+include 'hr.web:nts.uk.hr.web'
+
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ws'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pubimp'
+
+include 'hr.screen:nts.uk.screen.hr.ws'
+include 'hr.screen:nts.uk.screen.hr.app'
+include 'hr.screen:nts.uk.screen.hr.infra'
+
+include 'hr.file:nts.uk.file.hr.ws'
+include 'hr.file:nts.uk.file.hr.app'
+include 'hr.file:nts.uk.file.hr.infra'
