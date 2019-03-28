@@ -279,39 +279,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					}
 
 					query.append(" <= ?endDate) ");
-<<<<<<< HEAD
-=======
-					
-					// fix bug #103051
-					if ((indexs.size() > 1) && (i == indexs.size() - 1)
-							&& (tableList.getRetentionPeriodCls() == TimeStore.DAILY) && indexs.size() >= 2) {
-						query.append(" OR ");
-						// Start Date
-						if (columns.contains(fieldKeyQuerys[indexs.get(i - 1)])) {
-							query.append(" (t.");
-							query.append(fieldKeyQuerys[indexs.get(i - 1)]);
-						} else {
-							query.append(" (p.");
-							query.append(fieldKeyQuerys[indexs.get(i - 1)]);
-						}
-
-						query.append(" <= ?startDate ");
-						query.append(" AND ");
-
-						// End Date
-						if (columns.contains(fieldKeyQuerys[indexs.get(i - 0)])) {
-							query.append(" t.");
-							query.append(fieldKeyQuerys[indexs.get(i - 0)]);
-						} else {
-							query.append(" p.");
-							query.append(fieldKeyQuerys[indexs.get(i - 0)]);
-						}
-
-						isFirstOrStatement = true;
-
-						query.append(" >= ?endDate) ");
-					}
->>>>>>> d9f32afc13b... redmine #106831
 
 					switch (tableList.getRetentionPeriodCls()) {
 					case DAILY:
@@ -351,13 +318,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
 		String querySql = query.toString();
-<<<<<<< HEAD
 		if (tableList.getTableEnglishName().equals("BPSMT_PERSON")) {
 			query.toString();
 		}
-=======
-
->>>>>>> d9f32afc13b... redmine #106831
 		if (!targetEmployeesSid.isEmpty() && query.toString().contains("?listTargetSid")) {
 
 			if (!targetEmployeesSid.isEmpty()) {
