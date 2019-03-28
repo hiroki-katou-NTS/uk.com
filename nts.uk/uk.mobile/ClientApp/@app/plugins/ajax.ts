@@ -149,7 +149,7 @@ const WEB_APP_NAME = {
         vue.mixin({
             beforeMount() {
                 if (!localStorage.getItem('csrf')) {
-                    //this.$router.push({ path: '/access/login' });
+                    //this.$router.push({ path: '/ccg/007/b' });
                 }
             }
         });
