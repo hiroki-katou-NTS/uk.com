@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.export.annualworkschedule;
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.EmployeeDto;
 
 @Value
@@ -21,6 +22,8 @@ public class AnnualWorkScheduleExportQuery {
 	private int breakPage;
 	/** A10_2 36協定対象外者選択肢 */
 	private int excludeEmp;
-	//A11
+	/** A11 */
 	private Integer curentMonth;
+	/** baseDate */
+	private GeneralDate baseDate;
 }

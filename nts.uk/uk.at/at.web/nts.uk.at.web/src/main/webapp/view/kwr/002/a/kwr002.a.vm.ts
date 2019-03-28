@@ -46,6 +46,8 @@ module nts.uk.com.view.kwr002.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
             comboboxName: string;
+            
+            closureId: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
@@ -146,6 +148,7 @@ module nts.uk.com.view.kwr002.a {
                         //                        self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.listEmployee(data.listEmployee);
+                        self.closureId(data.closureId); 
                     }
                 }
 
@@ -157,6 +160,8 @@ module nts.uk.com.view.kwr002.a {
                 //         self.selectedEmployee.push(employee);
                 //     }
                 // });
+                
+                self.closureId = ko.observable(0);
 
             }
 
@@ -349,7 +354,7 @@ module nts.uk.com.view.kwr002.a {
                     return;
                 }
                 nts.uk.ui.block.grayout();
-                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
+                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1, self.closureId()));
                 service.exportService(self.exportDto()).done((response) => {
                     if (response.taskDatas.length > 0) {
                         nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
@@ -378,7 +383,7 @@ module nts.uk.com.view.kwr002.a {
                     return;
                 }
                 nts.uk.ui.block.grayout();
-                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
+                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2, self.closureId()));
                 service.exportService(self.exportDto()).done((response) => {
                     if (response.taskDatas.length > 0) {
                         nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
@@ -566,13 +571,15 @@ module nts.uk.com.view.kwr002.a {
             endDate: Date;
             layout: string;
             mode: number;
+            closureId: number;
 
-            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number) {
+            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number, closureId: number) {
                 this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.layout = layout;
                 this.mode = mode;
+                this.closureId = closureId;
             }
         }
     }
