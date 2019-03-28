@@ -4,6 +4,7 @@
 
 ##### 2. Các hàm gọi.
 > Bằng hàm mixin kiban thêm vào (khuyến khích dùng).
+> <br />**Chú ý**: Gọi qua các hàm `goto`, giá trị sẽ tự động bind vào Prop `params` được khai báo ở `component` được gọi. Chi tiết về `prop binding` [xem tại đây](/documents/component/viewmodel);
 
 ###### Gọi từ view:
 ```html
