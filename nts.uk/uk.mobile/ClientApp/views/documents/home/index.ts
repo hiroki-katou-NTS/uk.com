@@ -13,6 +13,7 @@ import { component } from '@app/core/component';
         <div class="mb-2">
             <router-link to="/documents/filters/i18n" class="mr-2">{{'i18n' | i18n}}</router-link>|
             <router-link to="/documents/component/basic" class="ml-2 mr-2">{{'view_viewmodel' | i18n}}</router-link>
+            <router-link to="/documents/plugin/router">{{'RouterPluginDocument' | i18n}}</router-link>
             <hr />
         </div>
         <h2 class="mb-2">{{ pgName | i18n }}</h2>
