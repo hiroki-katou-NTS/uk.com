@@ -1,7 +1,7 @@
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
-import { DatePickerComponent, TimeWDPickerComponent,TimePointPickerComponent,TimeDurationPickerComponent } from '@app/components';
+import { DatePickerComponent, TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
 export const input = () => component({
     template: `<div class="form-group row">
@@ -66,7 +66,7 @@ export const input = () => component({
     components: {
         'datepicker': DatePickerComponent,
         'time-point-picker': TimePointPickerComponent,
-        'time-duration-picker' : TimeDurationPickerComponent,
+        'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
     }
 });
@@ -87,7 +87,7 @@ export class InputComponent extends Vue {
     @Prop({ default: () => null })
     readonly errorsAlways!: any;
 
-    @Prop({ default: () => { } })
+    @Prop({ default: () => ({}) })
     readonly constraint!: IRule;
 
     @Prop({ default: () => true })
