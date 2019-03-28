@@ -783,4 +783,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("hdType", hdType)
 				.getList(c -> toDomainWithDispOrder(c));
 	}
+
+	@Override
+	public List<String> findWorkTypeCodeOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay) {
+		return this.queryProxy().query(FIND_WORKTYPE_BY_ATR_AND_ONEDAY, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("oneDayAtr", oneDay)
+				.getList(x -> x.kshmtWorkTypePK.workTypeCode);
+	}
 }
