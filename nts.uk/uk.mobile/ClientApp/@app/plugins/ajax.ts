@@ -102,11 +102,11 @@ const WEB_APP_NAME = {
                         return headers;
                     };
 
+                xhr.open(opt.method, opt.url, true);
+
                 if (opt.data) {
                     opt.data = parseData();
                 }
-
-                xhr.open(opt.method, opt.url, true);
 
                 if (opt.headers) {
                     setHeaders(opt.headers);
