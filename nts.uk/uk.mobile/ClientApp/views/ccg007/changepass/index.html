@@ -1,0 +1,58 @@
+<div id="change-pass">
+    <div class="text-center page-title">{{ 'pass_change_title' | i18n }}</div>
+    <div class="text-left page-info">
+        <div>{{ model.employeeName }}</div>
+        <div>{{ 'CCG007_14' | i18n }}</div>
+    </div>
+    <fieldset class="login-form">
+        <v-input-password
+            class="control-label-inline"
+            v-model="model.currentPassword"
+            name='CCG007_15'
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.currentPassword"
+            v-bind:errors-always="$errors.model.currentPassword"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+        <v-input-password
+            class="control-label-inline"
+            v-model="model.newPassword"
+            name='CCG007_16'
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.newPassword"
+            v-bind:errors-always="$errors.model.newPassword"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+        <v-input-password
+            class="control-label-inline"
+            v-model="model.newPasswordConfirm"
+            name='CCG007_17'
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.newPasswordConfirm"
+            v-bind:errors-always="$errors.model.newPasswordConfirm"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+        <div class="accordion" v-nts-accordion>
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn" type="button">
+                            {{ 'CCG007_59' | i18n }}
+                        </button>
+                    </div>
+                    <div class="collapse">
+                        <div class="card-body">
+                            最低桁数：　{{ policy.lowestDigits }}文字
+                            複数条件：　英字{{ policy.alphabetDigit }}桁、数字{{ policy.numberOfDigits }}桁、記号{{ policy.symbolCharacters}}桁
+                            履歴回数：　1度使ったパスワードは
+                                        過去{{ policy.historyCount }}回まで使用できません
+                            有効期間：　{{ policy.validPeriod}}日
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block" v-on="$click(changePass.bind(this))">変更してログインする</button>
+    </fieldset>
+</div>

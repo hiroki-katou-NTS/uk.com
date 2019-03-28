@@ -29,13 +29,17 @@ const WEB_APP_NAME = {
                     return;
                 } else {
                     $.extend(opt, {
-                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
+                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
                     });
                 }
 
                 if ($.isEmpty(opt.method)) {
                     reject('Parameter "method" is required.')
                     return;
+                }
+
+                if (!opt.type) {
+                    opt.type = 'json';
                 }
 
                 const xhr = new XMLHttpRequest(),
@@ -98,11 +102,11 @@ const WEB_APP_NAME = {
                         return headers;
                     };
 
+                xhr.open(opt.method, opt.url, true);
+
                 if (opt.data) {
                     opt.data = parseData();
                 }
-
-                xhr.open(opt.method, opt.url, true);
 
                 if (opt.headers) {
                     setHeaders(opt.headers);
@@ -145,7 +149,7 @@ const WEB_APP_NAME = {
         vue.mixin({
             beforeMount() {
                 if (!localStorage.getItem('csrf')) {
-                    //this.$router.push({ path: '/access/login' });
+                    //this.$router.push({ path: '/ccg/007/b' });
                 }
             }
         });

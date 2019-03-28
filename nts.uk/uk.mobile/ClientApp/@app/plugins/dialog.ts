@@ -5,12 +5,11 @@ import { _ } from "@app/provider";
 
 @component({
     template: `<div>
-        <div class="dialog-header"> {{ title }}</div>
         <div class="dialog-body">
             <div class="text-left message"> {{ messageText }} </div>
             <div class="text-right message-id"> {{ messageId }} </div>
         </div>
-        <div class="dialog-footer">    
+        <div class="dialog-footer text-center">    
             <button v-if="showClose" ref="close" class="btn btn-primary" v-on:click="closeHandler">toBeResource.close</button>
             <button v-if="showYes" ref="yes" class="btn btn-primary" v-on:click="yesHandler">toBeResource.yes</button>
             <button v-if="showNo" ref="no" class="btn btn-secondary" v-on:click="noHandler">toBeResource.no</button>
@@ -20,33 +19,25 @@ import { _ } from "@app/provider";
 })
 class DialogComponent extends Vue {
 
-    @Prop({
-        required: true
-    })
+    @Prop({ required: true })
     message: string | Object;
 
-    @Prop({
-        default: 'info'
-    })
+    @Prop({ default: 'info' })
     type: DialogType;
     
-    @Prop({
-        default: 'normal'
-    })
+    @Prop({ default: 'normal' })
     style: DialogStype;
 
-    @Prop({})
+    @Prop({ default: () => {} })
     cancel: Function;
 
-    @Prop({})
+    @Prop({ default: () => {} })
     yes: Function;
 
-    @Prop({})
+    @Prop({ default: () => {} })
     no: Function;
 
-    @Prop({
-        default: () => {}
-    })
+    @Prop({ default: () => {} })
     then: Function;
 
     title: string = "";
@@ -56,16 +47,7 @@ class DialogComponent extends Vue {
     showYes: boolean = false;
     showNo: boolean = false;
     showCancel: boolean = false;
-    toBeResource = {
-        yes: "はい",
-        no: "いいえ",
-        cancel: "キャンセル",
-        close: "閉じる",
-        info: "情報",
-        warn: "警告",
-        error: "エラー",
-        confirm: "確認",
-    };
+    
 
     beforeCreate() {
         if(this.type !== 'confirm'){
@@ -74,12 +56,6 @@ class DialogComponent extends Vue {
         if(this.type === 'confirm'){
             this.showYes = true;
             this.showNo = true;
-            if(!_.isFunction(this.yes)) {
-                this.yes = () => {};
-            }
-            if(!_.isFunction(this.no)) {
-                this.no = () => {};
-            }
             if(_.isFunction(this.cancel)){
                 this.showCancel = true;
             }
@@ -106,40 +82,30 @@ class DialogComponent extends Vue {
             }
         }
 
-        if(this.type === "confirm") {
-            this.title = this.toBeResource.confirm;
-        } else if(this.type === "error") {
-            this.title = this.toBeResource.error;
-        } else if(this.type === "warn") {
-            this.title = this.toBeResource.warn;
-        } else {
-            this.title = this.toBeResource.info;
-        }
-
         if(this.style === "danger") {
             (<HTMLButtonElement>this.$refs.yes).classList.add("danger");
         }
     }
 
     closeHandler(){
-        this.$close({ id: 100 });
+        this.$close("close");
         this.then();
     }
 
     yesHandler() {
-        this.$close({ id: 100 });
+        this.$close("yes");
         this.yes();
         this.then();
     }
 
     noHandler() {
-        this.$close({ id: 100 });
+        this.$close("no");
         this.no();
         this.then();
     }
 
     cancelHandler() {
-        this.$close({ id: 100 });
+        this.$close("cancel");
         this.cancel();
         this.then();
     }
@@ -149,28 +115,64 @@ export type DialogType = 'info' | 'error' | 'warn' | 'confirm';
 export type DialogStype = 'normal' | 'process' | 'danger';
 
 const dialog = {
+
     install(vue: VueConstructor<Vue>) {
 
         vue.prototype.$dialogError = (msg: string | object, option?: any) => {
-            let dialog = DialogComponent;
-            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'error' }));
+            return new Promise((resolve) => {
+                let dialog = DialogComponent;
+                this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'error' }), {
+                    title: toBeResource.error
+                }).onClose(f => {
+                    resolve(f);
+                });
+            });
         };
 
         vue.prototype.$dialogInfo = (msg: string | object, option?: any) => {
-            let dialog = DialogComponent;
-            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'info' }));
+            return new Promise((resolve) => {
+                let dialog = DialogComponent;
+                this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'info' }), {
+                    title: toBeResource.info
+                }).onClose(f => {
+                    resolve(f);
+                });
+            });
         };
 
         vue.prototype.$dialogWarn = (msg: string | object, option?: any) => {
-            let dialog = DialogComponent;
-            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'warn' }));
+            return new Promise((resolve) => {
+                let dialog = DialogComponent;
+                this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'warn' }), {
+                    title: toBeResource.warn
+                }).onClose(f => {
+                    resolve(f);
+                });
+            });
         };
 
         vue.prototype.$dialogConfirm = (msg: string | object, option?: any) => {
-            let dialog = DialogComponent;
-            this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'confirm' }));
+            return new Promise((resolve) => {
+                let dialog = DialogComponent;
+                this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'confirm' }), {
+                    title: toBeResource.confirm
+                }).onClose(f => {
+                    resolve(f);
+                });
+            });
         };
     }
+}
+
+const toBeResource = {
+    yes: "はい",
+    no: "いいえ",
+    cancel: "キャンセル",
+    close: "閉じる",
+    info: "情報",
+    warn: "警告",
+    error: "エラー",
+    confirm: "確認",
 }
 
 export { dialog };

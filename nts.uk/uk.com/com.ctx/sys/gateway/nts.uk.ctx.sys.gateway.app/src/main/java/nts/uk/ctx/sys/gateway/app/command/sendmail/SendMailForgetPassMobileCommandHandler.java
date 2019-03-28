@@ -20,12 +20,12 @@ import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
  */
 @Stateless
 @Transactional
-public class SendMailInfoFormGCommandHandler
+public class SendMailForgetPassMobileCommandHandler
 		extends CommandHandlerWithResult<SendMailInfoFormGCommand, List<SendMailReturnDto>> {
-
-	/** The user adapter. */
+	
+	/** The login Service. */
 	@Inject
-	private LoginService sendMailService;
+	private LoginService loginService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,8 +38,10 @@ public class SendMailInfoFormGCommandHandler
 		// get command
 		SendMailInfoFormGCommand command = context.getCommand();
 
-		String companyId = sendMailService.comanyId(command.getContractCode(), command.getCompanyCode());
-
-		return sendMailService.sendMail(companyId, command.getEmployeeCode(), command.getContractCode());
+		String companyId = loginService.comanyId(command.getContractCode(), command.getCompanyCode());
+		
+		String employeeCode = loginService.employeeCodeEdit(command.getEmployeeCode(), companyId);
+		
+		return loginService.sendMail(companyId, employeeCode, command.getContractCode());
 	}
 }

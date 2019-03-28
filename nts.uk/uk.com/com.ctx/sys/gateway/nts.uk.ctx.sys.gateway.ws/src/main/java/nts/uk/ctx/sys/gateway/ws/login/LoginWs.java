@@ -44,7 +44,6 @@ import nts.uk.shr.infra.application.auth.WindowsAccount;
  */
 @Path("ctx/sys/gateway/login")
 @Produces("application/json")
-@Stateless
 public class LoginWs extends WebService {
 
 	/** The local contract form command handler. */
@@ -194,6 +193,14 @@ public class LoginWs extends WebService {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
+		command.setRequest(request);
+		return this.submitForm3.handle(command);
+	}
+	
+	@POST
+	@Path("submit/mobile")
+	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+		command.setSignOn(false);
 		command.setRequest(request);
 		return this.submitForm3.handle(command);
 	}

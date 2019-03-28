@@ -1,0 +1,39 @@
+<div id="change-pass">
+        <div class="text-center page-title">{{ 'forget_pass_title' | i18n }}</div>
+        <div class="text-left page-info">
+            <ul>
+                <li>以下を入力してください。</li>
+                <li>パスワード再設定用ページのURLを記載したメールを送信します。</li>
+                <li>記載されているURLにアクセスし、パスワードの再設定をおこなってください。</li>
+            </ul>
+        </div>
+        <fieldset class="login-form">
+                <nts-dropdown
+                v-model="model.comp"
+                class="control-label-inline"
+                name='CCG007_7'
+                v-bind:disabled="false"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.comp"
+                v-bind:errors-always="$errors.model.comp"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
+                <option value="">--- Choose options ---</option>
+                <option v-for="(comp,k) in companies" :value="comp.companyId">
+                    {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
+                </option>
+            </nts-dropdown>
+            
+            <v-input-string
+                v-model="model.employeeCode"
+                class="control-label-inline"
+                name='CCG007_8'
+                v-bind:disabled="disabled"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.employeeCode"
+                v-bind:errors-always="$errors.model.employeeCode"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+            <button class="btn btn-primary btn-block" v-on="$click(sendMail.bind(this))">送信→</button>
+            <button class="btn btn-primary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
+        </fieldset>
+    </div>
