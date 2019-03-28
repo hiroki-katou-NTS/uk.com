@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Watch, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
 
@@ -21,19 +21,22 @@ import { _ } from "@app/provider";
     name: 'mailSent'
 })
 export class MailSentComponent extends Vue {
-
+    
+    @Prop({ default: () => ({}) })
+    params!: any;
+    
     contractCode: string = '';
     compapyCode: string = '';
     employeeCode: string = '';
+    
     created() {
-        let params = this.$route.params;
-        this.contractCode = params.contractCode;
-        this.compapyCode = params.companyCode;
-        this.employeeCode = params.employeeCode;
+        this.contractCode = this.params.contractCode;
+        this.compapyCode = this.params.companyCode;
+        this.employeeCode = this.params.employeeCode;
     }
 
     toLogin() {
-        this.$router.push({ name: 'login', params: { companyCode: this.compapyCode, 
+        this.$goto({ name: 'login', params: { companyCode: this.compapyCode, 
                                                         employeeCode: this.employeeCode,
                                                         contractCode: this.contractCode
                                                 } });

@@ -1,4 +1,4 @@
-import { $ } from '@app/utils';
+import { $, location, csrf } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
 interface IFetchOption {
@@ -115,8 +115,8 @@ const WEB_APP_NAME = {
                 // authentication 
                 setHeaders({
                     'MOBILE': 'true',
-                    'PG-Path': 'nts.uk.com.web',
-                    'X-CSRF-TOKEN': localStorage.getItem('csrf') || ''
+                    'PG-Path': location.current.serialize(),
+                    'X-CSRF-TOKEN': csrf.getToken()
                 });
 
                 if (opt.responseType) {

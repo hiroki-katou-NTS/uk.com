@@ -20,7 +20,7 @@ import { _ } from "@app/provider";
 class DialogComponent extends Vue {
 
     @Prop({ required: true })
-    message: string | Object;
+    message: string | object;
 
     @Prop({ default: 'info' })
     type: DialogType;
@@ -118,7 +118,7 @@ const dialog = {
 
     install(vue: VueConstructor<Vue>) {
 
-        vue.prototype.$dialogError = (msg: string | object, option?: any) => {
+        vue.prototype.$dialogError = function (msg: string | object, option?: any) {
             return new Promise((resolve) => {
                 let dialog = DialogComponent;
                 this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'error' }), {
@@ -129,7 +129,7 @@ const dialog = {
             });
         };
 
-        vue.prototype.$dialogInfo = (msg: string | object, option?: any) => {
+        vue.prototype.$dialogInfo = function (msg: string | object, option?: any) {
             return new Promise((resolve) => {
                 let dialog = DialogComponent;
                 this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'info' }), {
@@ -140,7 +140,7 @@ const dialog = {
             });
         };
 
-        vue.prototype.$dialogWarn = (msg: string | object, option?: any) => {
+        vue.prototype.$dialogWarn = function (msg: string | object, option?: any)  {
             return new Promise((resolve) => {
                 let dialog = DialogComponent;
                 this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'warn' }), {
@@ -151,7 +151,7 @@ const dialog = {
             });
         };
 
-        vue.prototype.$dialogConfirm = (msg: string | object, option?: any) => {
+        vue.prototype.$dialogConfirm = function (msg: string | object, option?: any) {
             return new Promise((resolve) => {
                 let dialog = DialogComponent;
                 this.$modal(dialog, _.assignIn({ message: msg }, option, { type: 'confirm' }), {

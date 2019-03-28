@@ -65,6 +65,7 @@ export class ChangePassComponent extends Vue {
     }
 
     changePass() {
+        this.$validate();
         if (!this.$valid) {
             return;                   
         }
@@ -78,7 +79,7 @@ export class ChangePassComponent extends Vue {
         
         //submitChangePass
         this.$http.post(servicePath.changePass, command).then(function () {
-            this.$router.push({ name: 'toppage' });
+            this.$goto({ name: 'toppage' });
         }).catch((res) => {
             //Return Dialog Error
             this.$mask("hide");

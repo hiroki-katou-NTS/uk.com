@@ -1,5 +1,5 @@
 import { viewcontext } from '@app/utils/viewcontext';
-import { sessionStorage } from '@app/utils/storage';
+import { sessionStorage, optional, cookie } from '@app/utils';
 import { _ } from '@app/provider';
 
 export type WebAppId = 'comjs' | 'com' | 'pr' | 'at' | 'mobi';
@@ -195,4 +195,17 @@ export module login {
 //            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
 //            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
+}
+
+export module csrf {
+    let STORAGE_KEY_CSRF_TOKEN = "nts.uk.request.csrf.STORAGE_KEY_CSRF_TOKEN";
+    
+    cookie.get("nts.arc.CSRF_TOKEN")
+        .ifPresent(csrfToken => {
+            sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
+        });
+    
+    export function getToken() {
+        return sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("");
+    }
 }

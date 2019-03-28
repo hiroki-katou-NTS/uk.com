@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { _ } from "@app/provider";
 
 @component({
@@ -31,6 +31,9 @@ import { _ } from "@app/provider";
 })
 export class ResetPassComponent extends Vue {
 
+    @Prop({ default: '' })
+    id!: string;
+
     policy = {
         lowestDigits: 0,
         alphabetDigit: 0,
@@ -46,14 +49,12 @@ export class ResetPassComponent extends Vue {
         userName: '',
         contractCode: '',
         loginId: '',
-        userId: '',
-        embeddedId: ''
+        userId: ''
     }
 
     created() {
         let self = this;
-        this.model.embeddedId = this.$route.query.id as string;
-        this.$http.post(servicePath.getUserName + this.model.embeddedId).then((res: { data: LoginInfor}) => {
+        this.$http.post(servicePath.getUserName + this.id).then((res: { data: LoginInfor}) => {
             let user: LoginInfor = res.data;
             self.model.userName = user.userName;
             self.model.contractCode = user.contractCode;
@@ -72,12 +73,13 @@ export class ResetPassComponent extends Vue {
     }
 
     changePass() {
+        this.$validate();
         if (!this.$valid) {
             return;                   
         }
 
         let self = this, 
-            command: ResetPasswordCommand = { embeddedId: this.model.embeddedId,
+            command: ResetPasswordCommand = { embeddedId: this.id,
                                                 newPassword: this.model.newPassword,
                                                 confirmNewPassword: this.model.newPasswordConfirm,
                                                 userId: this.model.userId };
@@ -96,7 +98,7 @@ export class ResetPassComponent extends Vue {
             //login
             this.$http.post(servicePath.submitLogin, loginData).then((messError: any) => {
                 //Remove LoginInfo
-                self.$router.push({ name: 'toppage', params: { screen: 'login' } });
+                self.$goto({ name: 'toppage', params: { screen: 'login' } });
             }).catch((res:any) => {
                 //Return Dialog Error
                 self.$mask("hide");

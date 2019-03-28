@@ -1,4 +1,4 @@
-<div id="change-pass">
+<div id="forget-pass">
         <div class="text-center page-title">{{ 'forget_pass_title' | i18n }}</div>
         <div class="text-left page-info">
             <ul>
@@ -23,7 +23,7 @@
                 </option>
             </nts-dropdown>
             
-            <v-input-string
+            <nts-text-editor
                 v-model="model.employeeCode"
                 class="control-label-inline"
                 name='CCG007_8'

@@ -1,6 +1,6 @@
 import { routes } from '@app/core/routes';
 import { VueRouter } from '@app/provider';
-
+import { csrf } from '@app/utils';
 import { Page404Component } from '@app/components';
 
 routes.push({
@@ -16,10 +16,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let token = "";
+    let token = csrf.getToken();
 
     // if login or documents page
-    if (to.path === '/ccg/007/b' || to.path.indexOf('/documents/') === 0) {
+    if (to.path.indexOf("ccg/007") >= 0 || to.path.indexOf('/documents/') === 0) {
         next();
     } else {
         if (token) {

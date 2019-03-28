@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Watch, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
 
@@ -21,6 +21,9 @@ import { _ } from "@app/provider";
     name: 'forgetPass'
 })
 export class ForgetPassComponent extends Vue {
+    
+    @Prop({ default: () => ({}) })
+    params!: any;
 
     companies: Array<ICompany> = [];
     contractCode: string = '';
@@ -32,28 +35,31 @@ export class ForgetPassComponent extends Vue {
     }
 
     created() {
-        let params = this.$route.params;
-        this.contractCode = params.contractCode;
-        this.contractPass = params.contractPass;
-        this.companies = JSON.parse(params.companies);
-        this.companyCode = params.companyCode;
-        this.model.employeeCode = params.employeeCode;
+        this.contractCode = this.params.contractCode;
+        this.contractPass = this.params.contractPass;
+        this.companies = this.params.companies;
+        this.companyCode = this.params.companyCode;
+        this.model.employeeCode = this.params.employeeCode;
     }
 
     sendMail() {
         let self = this, submitData: any = {};
+        self.$validate()
+        if(!self.$valid){
+            return;
+        }
         submitData.companyCode = _.escape(self.companyCode);
         submitData.employeeCode = _.escape(self.model.employeeCode);
         submitData.contractCode = _.escape(self.contractCode);
         submitData.contractPassword = _.escape(self.contractPass);
-        this.$mask("show");
-        this.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn>}) => {
-            this.$router.push({ name: 'malSent', params: { companyCode: this.companyCode, 
-                                                            employeeCode: this.model.employeeCode,
-                                                            contractCode: this.contractCode} });
+        self.$mask("show");
+        self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn>}) => {
+            self.$goto({ name: 'malSent', params: { companyCode: self.companyCode, 
+                                                            employeeCode: self.model.employeeCode,
+                                                            contractCode: self.contractCode} });
         }).catch((res:any) => {
             //Return Dialog Error
-            this.$mask("hide");
+            self.$mask("hide");
             if (!_.isEqual(res.message, "can not found message id")){
                 self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
@@ -63,7 +69,7 @@ export class ForgetPassComponent extends Vue {
     }
 
     goBack(){
-        this.$router.push({ name: 'login', params: { companyCode: this.companyCode, 
+        this.$goto({ name: 'login', params: { companyCode: this.companyCode, 
                                                         employeeCode: this.model.employeeCode,
                                                         contractCode: this.contractCode} });
     }

@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Watch, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
 import { ajax } from "@app/plugins";
@@ -25,6 +25,9 @@ import { ajax } from "@app/plugins";
     name: 'login'
 })
 export class LoginComponent extends Vue {
+    
+    @Prop({ default: () => ({}) })
+    params!: any;
 
     companies: Array<ICompany> = [];
     contractCode: string = '';
@@ -38,11 +41,11 @@ export class LoginComponent extends Vue {
         autoLogin: [false],
         ver: ''
     }
-
-    beforeCreate() {
+    
+    created() {
         let self = this;
-        if(!_.isNil(this.$route.params.contractCode)){
-            this.contractCode = this.$route.params.contractCode;
+        if(!_.isNil(self.params.contractCode)){
+            self.contractCode = this.params.contractCode;
         } else {
             characteristics.restore("contractInfo").then((value: any) => {
                 if(!_.isNil(value)){
@@ -50,7 +53,7 @@ export class LoginComponent extends Vue {
                     self.$data.contractPass = value.contractPassword;
                 }
     
-                this.checkContract({ contractCode: self.contractCode, contractPassword: self.contractPass }).then((rel) => {
+                self.checkContract({ contractCode: self.contractCode, contractPassword: self.contractPass }).then((rel) => {
                     if(rel.data.onpre) {
                         self.contractCode = self.$data.defaultContractCode;
                         self.contractPass = null;
@@ -64,13 +67,10 @@ export class LoginComponent extends Vue {
                 });
             });
         }
-    }
-
-    created() {
         this.getAllCompany().then((response: { data: Array<ICompany>; }) => {
             this.companies = response.data;
-            if(!_.isNil(this.$route.params.companyCode)){
-                this.model.comp = this.$route.params.companyCode;
+            if(!_.isNil(this.params.companyCode)){
+                this.model.comp = this.params.companyCode;
             } else {
                 characteristics.restore("companyCode").then((compCode: any) => {
                     if(!_.isNil(compCode)){
@@ -81,8 +81,8 @@ export class LoginComponent extends Vue {
                     }
                 });
             }
-            if(!_.isNil(this.$route.params.employeeCode)){
-                this.model.employeeCode = this.$route.params.employeeCode;
+            if(!_.isNil(this.params.employeeCode)){
+                this.model.employeeCode = this.params.employeeCode;
             } else {
                 characteristics.restore("employeeCode").then((empCode: any) => {
                     if(!_.isNil(empCode)){
@@ -98,13 +98,17 @@ export class LoginComponent extends Vue {
 
     login() {
         let self = this, submitData: any = {};
+        self.$validate();
+        if(!self.$valid){
+            return;
+        }
         submitData.companyCode = _.escape(self.model.comp);
         submitData.employeeCode = _.escape(self.model.employeeCode);
         submitData.password = _.escape(self.model.password);
         submitData.contractCode = _.escape(self.contractCode);
         submitData.contractPassword = _.escape(self.contractPass);
-        this.$mask("show");
-        this.submitLogin(submitData).then((messError: CheckChangePass) => {
+        self.$mask("show");
+        self.submitLogin(submitData).then((messError: CheckChangePass) => {
             if (messError.showContract) {
                 // self.openContractAuthDialog();
             }
@@ -112,12 +116,12 @@ export class LoginComponent extends Vue {
                 //check MsgError
                 if (!_.isEmpty(messError.msgErrorId) || messError.showChangePass) {
                     if (messError.showChangePass) {
-                        this.$router.push({ name: 'changepass' });
+                        self.$goto({ name: 'changepass' });
                     } else {
                         self.model.password = "";
                         self.$dialogError({ messageId: messError.msgErrorId });
                     }
-                    this.$mask("hide");
+                    self.$mask("hide");
                 } else {
                     // login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                     characteristics.remove("companyCode").then(function() {
@@ -125,10 +129,10 @@ export class LoginComponent extends Vue {
                             characteristics.remove("employeeCode").then(function() {
                                 if (self.model.autoLogin) {
                                     characteristics.save("employeeCode", _.escape(self.model.employeeCode)).then(function() {
-                                            this.toHomePage();
+                                        self.toHomePage();
                                         });
                                 } else {
-                                    this.toHomePage();
+                                    self.toHomePage();
                                 }
                             });
                         });
@@ -137,7 +141,7 @@ export class LoginComponent extends Vue {
             }
         }).catch((res:any) => {
             //Return Dialog Error
-            this.$mask("hide");
+            self.$mask("hide");
             if (!_.isEqual(res.message, "can not found message id")){
                 self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
@@ -147,16 +151,16 @@ export class LoginComponent extends Vue {
     }
 
     toHomePage(){
-        this.$router.push({ name: 'toppage' });
+        this.$goto({ name: 'toppage' });
     }
 
     forgetPass(){
-        this.$router.push({ name: 'forgetPass', params: {
+        this.$goto({ name: 'forgetPass', params: {
             contractCode: this.contractCode,
             contractPass: this.contractPass,
             companyCode: this.model.comp,
             employeeCode: this.model.employeeCode,
-            companies: JSON.stringify(this.companies)
+            companies: this.companies
         }});
     }
 
