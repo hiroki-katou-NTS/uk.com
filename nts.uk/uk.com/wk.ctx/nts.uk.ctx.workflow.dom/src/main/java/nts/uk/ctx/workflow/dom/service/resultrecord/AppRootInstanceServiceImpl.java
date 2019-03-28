@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -32,6 +33,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
@@ -43,6 +45,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
+import nts.uk.ctx.workflow.dom.service.output.Request133Output;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -70,37 +73,40 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	
 	@Inject
 	private AgentRepository agentRepository;
+	
+	@Inject
+	private AppRootConfirmQueryRepository confirmQueryRepository;
 
-	@Override
-	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
+	public Request133Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
 		// Đối ứng SPR
 		String companyID = "000000000000-0001";
 		String loginCompanyID = AppContexts.user().companyId();
 		if(Strings.isNotBlank(loginCompanyID)){
 			companyID = loginCompanyID;
 		}
-		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<>();
-		// 対象者と期間から承認ルート中間データを取得する
-		List<AppRootInstancePeriod> appRootInstancePeriodLst = this.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType);
-		// INPUT．対象者社員IDの先頭から最後へループ
-		for(String employeeIDLoop : employeeIDLst) {
-			// INPUT．期間の開始日から終了日へループ
-			for(GeneralDate loopDate = period.start(); loopDate.beforeOrEquals(period.end()); loopDate = loopDate.addDays(1)){
-				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, 
-						appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeIDLoop)).findAny().get().getAppRootInstanceLst());
-				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", "承認者");
-				}
-				// 対象日の就業実績確認状態を取得する
-				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, employeeIDLoop, loopDate, rootType);
-				// 中間データから承認ルートインスタンスに変換する
-				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
-				// 承認ルート状況を取得する
-				appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
+		
+		// レスポンス改善版
+		val interms = this.confirmQueryRepository.queryInterm(companyID, employeeIDLst, period, RecordRootType.CONFIRM_WORK_BY_DAY);
+		val confirms = this.confirmQueryRepository.queryConfirm(companyID, employeeIDLst, period, rootType);
+		
+		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<ApprovalRootStateStatus>();
+		List<String> errorEmployeeIds = new ArrayList<String>();
+		for (String employeeId : employeeIDLst) {
+			val result = confirms.aggregate(period, employeeId, interms);
+			
+			if (result.isError()) {
+				errorEmployeeIds.add(employeeId);
+				continue;
 			}
-		}
-		return appRootStatusLst;
+			
+			appRootStatusLst.addAll(result.getResults());
+		};
+		
+		return new Request133Output(
+				appRootStatusLst,
+				!errorEmployeeIds.isEmpty(),
+				!errorEmployeeIds.isEmpty() ? "Msg_1430" : "",
+				errorEmployeeIds);
 	}
 
 	@Override
@@ -192,8 +198,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// ドメインモデル「就業実績確認状態」を取得する
 		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, employeeID, date, rootType);
 		if(!opAppRootConfirm.isPresent()){
-			return new AppRootConfirm(UUID.randomUUID().toString(), companyID, employeeID, date, rootType, new ArrayList<>(),
-					Optional.empty(), Optional.empty(), Optional.empty());
+			return AppRootConfirm.dummy(companyID, employeeID, date, rootType);
 		}
 		return opAppRootConfirm.get();
 	}
