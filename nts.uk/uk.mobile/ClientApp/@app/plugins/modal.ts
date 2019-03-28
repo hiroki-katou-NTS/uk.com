@@ -13,20 +13,22 @@ const modal = {
             beforeMount() {
                 let self = this;
 
-                obj.extend(self.$router, {
-                    goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
-                        (<any>self.$router).push({
-                            name: location.name,
-                            params: {
-                                params: location.params
-                            }
-                        }, onComplete, onAbort);
-                    }
-                })
+                if (self && self.$router) {
+                    obj.extend(self.$router, {
+                        goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
+                            (<any>self.$router).push({
+                                name: location.name,
+                                params: {
+                                    params: location.params
+                                }
+                            }, onComplete, onAbort);
+                        }
+                    });
+                }
             }
         });
 
-        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, params?: { [key: string]: any; }) {
+        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, paramsOronComplete?: { [key: string]: any; } | Function, onCompleteOronAbort?: Function | ErrorHandler, onAbort?: ErrorHandler) {
             let self = this;
 
             if (typeof nameOrLocation !== 'string') {
@@ -35,12 +37,14 @@ const modal = {
                     params: {
                         params: nameOrLocation.params
                     }
-                });
+                }, paramsOronComplete, onCompleteOronAbort);
             } else {
                 self.$router.push({
                     name: nameOrLocation,
-                    params
-                });
+                    params: {
+                        params: paramsOronComplete
+                    }
+                }, onCompleteOronAbort, onAbort);
             }
         };
 

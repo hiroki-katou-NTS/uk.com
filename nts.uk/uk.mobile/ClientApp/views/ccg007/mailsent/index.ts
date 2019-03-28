@@ -2,6 +2,7 @@ import { Vue } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
+import { SideMenu, NavMenu } from '@app/services';
 
 @component({
     route: '/ccg/007/f',
@@ -33,6 +34,16 @@ export class MailSentComponent extends Vue {
         this.contractCode = this.params.contractCode;
         this.compapyCode = this.params.companyCode;
         this.employeeCode = this.params.employeeCode;
+        
+        // Hide top & side menu
+        NavMenu.visible = false;
+        SideMenu.visible = false;
+    }
+
+    destroyed() {
+        // Show menu
+        NavMenu.visible = true;
+        SideMenu.visible = true;
     }
 
     toLogin() {

@@ -4,6 +4,7 @@
 
 ##### 2. Các hàm gọi.
 > Bằng hàm mixin kiban thêm vào (khuyến khích dùng).
+> <br />**Chú ý**: Gọi qua các hàm `goto`, giá trị sẽ tự động bind vào Prop `params` được khai báo ở `component` được gọi. Chi tiết về `prop binding` [xem tại đây](/documents/component/viewmodel);
 
 ###### Gọi từ view:
 ```html
@@ -65,6 +66,54 @@ export class OtherSampleComponent extends Vue {
         self.$router.push('SampleComponent', { id: '100', name: 'Nguyen Van A' });
     }
 }
+```
+
+
+##### 3. Kỹ thuật chống tràn bộ nhớ.
+> Thông thường, khi chuyển qua view mới, `vue-router` sẽ tự động `destroy` component cũ đi để giải phóng bộ nhớ. Tuy nhiên, có những đối tượng mà dev khai báo riêng và được sử dụng không theo thiết kế tiêu chuẩn. Khi chuyển qua view mới, các đối tượng này không được `destroy` dẫn tới tình trạng bộ nhớ cấp phát cho app ngày một tăng lên sau mỗi lần chuyển view. Điều này gây ra tình trạng app chạy chậm, giật, lâu phản hồi, gây hao pin của thiết bị. Đặc biệt là với mô hình SPA đang áp dụng cho dự án này thì càng thể hiện rõ ràng điều đó.
+> <br /> Chính vì vậy, hãy đảm bảo trước khi chuyển qua view mới, tất cả các đối tượng được khởi tạo đặc biệt phải được huỷ đi để giải phóng bộ nhớ. `vue-router` cung cấp cho chúng ta 2 hàm callback đặc biệt để giải quyết vấn đề này theo ý của chúng ta là: `onComplete` và `onAbort`.
+> <br /> Để sử dụng chúng ta chỉ cần thêm vào 2 hàm $goto đã được đề cập ở trên 1 hoặc 2 hàm callback tương ứng. Chi tiết xem qua ví dụ dưới đây.
+
+```typescript
+export class OtherSampleComponent extends Vue {
+
+    gotoSampleComponent() {
+        let self = this;
+
+        self.$goto(
+            // name
+            'SampleComponent', 
+            // params
+            { id: 100, name: 'Nguyen Van A' },
+            // onComplete
+            () => {
+                // xử lý giải phóng bộ nhớ khi đã chuyển trang thành công ở đây
+                // VD:
+                self.$destroy();
+            }
+        );
+        self.$goto(
+            // location
+            { name: 'SampleComponent', params: { id: 100, name: 'Nguyen Van A' } }, 
+            // onComplete
+            () => {
+                // xử lý giải phóng bộ nhớ khi đã chuyển trang thành công ở đây
+                // VD:
+                self.$destroy();
+            });
+        // hoặc
+        self.$router.goto(
+            // location
+            { name: 'SampleComponent', params: { id: 100, name: 'Nguyen Van A' } }, 
+            // onComplete
+            () => {
+                // xử lý giải phóng bộ nhớ khi đã chuyển trang thành công ở đây
+                // VD:
+                self.$destroy();
+            });
+    }
+}
+
 ```
 
 > Tài liệu được viết bởi:&nbsp;&nbsp;&nbsp;`Nguyễn Văn Vương`

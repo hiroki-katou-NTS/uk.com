@@ -1,0 +1,2 @@
+##### 1. Giới thiệu
+> Giống như chuyển một trang, `modal` là một plugin cho phép mở một view chồng lên trên một view khác (tạm thời) và thực hiện các nghiệp vụ rồi trả dữ liệu ngược lại view gọi trước đó.

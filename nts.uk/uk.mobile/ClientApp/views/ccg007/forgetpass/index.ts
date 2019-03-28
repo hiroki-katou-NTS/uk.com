@@ -2,6 +2,7 @@ import { Vue } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
+import { SideMenu, NavMenu } from '@app/services';
 
 @component({
     route: '/ccg/007/d',
@@ -40,6 +41,16 @@ export class ForgetPassComponent extends Vue {
         this.companies = this.params.companies;
         this.companyCode = this.params.companyCode;
         this.model.employeeCode = this.params.employeeCode;
+        
+        // Hide top & side menu
+        NavMenu.visible = false;
+        SideMenu.visible = false;
+    }
+
+    destroyed() {
+        // Show menu
+        NavMenu.visible = true;
+        SideMenu.visible = true;
     }
 
     sendMail() {

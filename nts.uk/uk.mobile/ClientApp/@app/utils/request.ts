@@ -1,5 +1,5 @@
 import { viewcontext } from '@app/utils/viewcontext';
-import { sessionStorage, optional, cookie } from '@app/utils';
+import { sessionStorage, cookie } from '@app/utils';
 import { _ } from '@app/provider';
 
 export type WebAppId = 'comjs' | 'com' | 'pr' | 'at' | 'mobi';

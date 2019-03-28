@@ -1,5 +1,5 @@
-export * from './changepass';
-export * from './forgetpass';
-export * from './login';
-export * from './mailsent';
-export * from './resetpass';
+import './changepass';
+import './forgetpass';
+import './login';
+import './mailsent';
+import './resetpass';

@@ -1,6 +1,7 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { _ } from "@app/provider";
+import { SideMenu, NavMenu } from '@app/services';
 
 @component({
     route: '/ccg/007/c',
@@ -70,6 +71,16 @@ export class ResetPassComponent extends Vue {
                 self.policy.validPeriod = policy.validityPeriod;
             });
         });
+
+        // Hide top & side menu
+        NavMenu.visible = false;
+        SideMenu.visible = false;
+    }
+
+    destroyed() {
+        // Show menu
+        NavMenu.visible = true;
+        SideMenu.visible = true;
     }
 
     changePass() {
