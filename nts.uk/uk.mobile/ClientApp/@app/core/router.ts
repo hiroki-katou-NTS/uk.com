@@ -19,13 +19,13 @@ router.beforeEach((to, from, next) => {
     let token = "";
 
     // if login or documents page
-    if (to.path === '/access/login' || to.path.indexOf('/documents/') === 0) {
+    if (to.path === '/ccg/007/b' || to.path.indexOf('/documents/') === 0) {
         next();
     } else {
         if (token) {
             next();
         } else {
-            next('/access/login');
+            next('/ccg/007/b');
         }
     }
 });

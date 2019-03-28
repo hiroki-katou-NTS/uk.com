@@ -1,0 +1,58 @@
+<div id="login">
+    <fieldset class="login-form">
+        <nts-dropdown
+            v-model="model.comp"
+            class="control-label-inline"
+            name='CCG007_7'
+            v-bind:disabled="false"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.comp"
+            v-bind:errors-always="$errors.model.comp"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
+            <option value="">--- Choose options ---</option>
+            <option v-for="(comp,k) in companies" :value="comp.companyId">
+                {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
+            </option>
+        </nts-dropdown>
+        
+        <nts-text-editor
+            v-model="model.employeeCode"
+            class="control-label-inline"
+            name='CCG007_8'
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.employeeCode"
+            v-bind:errors-always="$errors.model.employeeCode"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
+            @keyup.enter="login" />
+
+        <v-input-password
+            v-model="model.password"
+            class="control-label-inline"
+            name='CCG007_2'
+            v-bind:disabled="disabled"
+            v-bind:show-title="true"
+            v-bind:constraint="validations.model.password"
+            v-bind:errors-always="$errors.model.password"
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" 
+            @keyup.enter="login" />
+
+        <div class="text-center">
+            <nts-checkbox 
+                v-model="model.autoLogin"
+                v-bind:value="true"
+                v-bind:disabled="false">
+                {{ 'CCG007_5' | i18n }}
+            </nts-checkbox>
+        </div>
+
+        <button class="btn btn-primary btn-block" @click="login"> {{'CCG007_3' | i18n}}</button>
+        <br/>
+        <div class="text-center">
+            <button class="btn btn-link" @click="forgetPass"> {{ 'CCG007_6' | i18n }} </button>
+        </div>
+    </fieldset>
+    <div class="text-right">
+        <label> {{ model.ver }} </label>
+    </div>
+</div>

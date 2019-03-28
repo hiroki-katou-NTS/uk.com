@@ -150,6 +150,6 @@ SideMenu.items = [{
     url: '/',
     title: 'home'
 }, {
-    url: '/access/login',
+    url: '/ccg/007/b',
     title: 'login'
 }];
