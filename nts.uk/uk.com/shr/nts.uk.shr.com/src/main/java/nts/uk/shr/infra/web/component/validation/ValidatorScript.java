@@ -1,9 +1,6 @@
 package nts.uk.shr.infra.web.component.validation;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponentBase;
@@ -11,7 +8,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import lombok.val;
-import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
 import nts.uk.shr.infra.web.component.internal.TagContentsUtil;
 
 /**
@@ -73,31 +69,9 @@ public class ValidatorScript extends UIComponentBase {
 	}
 
 	private static void writeConstraints(ResponseWriter rw, Class<?> pvClass) {
-		
-		annotationsStream(pvClass)
-			.map(a -> a.toString())
-			.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME) || r.contains("nts.uk.shr.com.primitive"))
-	        .forEach(representationOfAnnotation -> {
-	        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
-	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
-				writeConstraint(rw, constraintName, parametersString);
-	        });
-	}
-	
-	private static void writeConstraint(ResponseWriter rw, String constraintName, String parametersString) {
-		
-		if (Helper.CONSTRAINTS_SIGNLE_PARAM.containsKey(constraintName)) {
-			String jsName = Helper.CONSTRAINTS_SIGNLE_PARAM.get(constraintName);
-			String jsValue = Helper.parseSingleParameterValue(constraintName, parametersString);
-			
+		Helper.processConstraints(pvClass, (jsName, jsValue) -> {
 			writeConstraintParameter(rw, jsName, jsValue);
-			
-		} else if (Helper.CONSTRAINTS_MAX_MIN_PARAM.contains(constraintName)) {
-			val paramsMap = Helper.parseMultipleParametersString(parametersString);
-
-			writeConstraintParameter(rw, "max", paramsMap.get("max"));
-			writeConstraintParameter(rw, "min", paramsMap.get("min"));
-		}
+		});
 	}
 
 	private static void writeConstraintParameter(ResponseWriter rw, String jsName, String jsValue) {
@@ -121,13 +95,4 @@ public class ValidatorScript extends UIComponentBase {
 		}
 	}
 	
-	/**
-	 * Get annotations stream of pvClass and its super class.
-	 * @param pvClass pvClass
-	 * @return annotations stream
-	 */
-	private static Stream<Annotation> annotationsStream(Class<?> pvClass) {
-		return Stream.concat(Arrays.asList(pvClass.getDeclaredAnnotations()).stream(), 
-							Arrays.asList(pvClass.getSuperclass().getDeclaredAnnotations()).stream());
-	}
 }

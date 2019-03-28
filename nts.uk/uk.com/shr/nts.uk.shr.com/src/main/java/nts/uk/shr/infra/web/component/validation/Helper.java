@@ -1,8 +1,12 @@
 package nts.uk.shr.infra.web.component.validation;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import lombok.val;
 import nts.arc.primitive.DecimalPrimitiveValue;
@@ -26,6 +30,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 import nts.arc.primitive.constraint.LongMaxValue;
 import nts.arc.primitive.constraint.LongMinValue;
 import nts.arc.primitive.constraint.LongRange;
+import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
@@ -97,6 +102,45 @@ class Helper {
 		} else {
 			throw new RuntimeException("not supported: " + inputClass.getName());
 		}
+	}
+
+	
+	static void processConstraints(Class<?> pvClass, BiConsumer<String, String> action){
+		annotationsStream(pvClass)
+		.map(a -> a.toString())
+		.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME) || r.contains("nts.uk.shr.com.primitive"))
+        .forEach(representationOfAnnotation -> {
+
+			String constraintName = Helper.getAnnotationName(representationOfAnnotation);
+        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
+        	processAConstraint(constraintName, parametersString, action);
+        });
+	}
+	
+	private static void processAConstraint(String constraintName, String parametersString, BiConsumer<String, String> action) {
+		
+		if (Helper.CONSTRAINTS_SIGNLE_PARAM.containsKey(constraintName)) {
+			String jsName = Helper.CONSTRAINTS_SIGNLE_PARAM.get(constraintName);
+			String jsValue = Helper.parseSingleParameterValue(constraintName, parametersString);
+			
+			action.accept(jsName, jsValue);
+			
+		} else if (Helper.CONSTRAINTS_MAX_MIN_PARAM.contains(constraintName)) {
+			val paramsMap = Helper.parseMultipleParametersString(parametersString);
+
+			action.accept("max", paramsMap.get("max"));
+			action.accept("min", paramsMap.get("min"));
+		}
+	}
+	
+	/**
+	 * Get annotations stream of pvClass and its super class.
+	 * @param pvClass pvClass
+	 * @return annotations stream
+	 */
+	private static Stream<Annotation> annotationsStream(Class<?> pvClass) {
+		return Stream.concat(Arrays.asList(pvClass.getDeclaredAnnotations()).stream(), 
+							Arrays.asList(pvClass.getSuperclass().getDeclaredAnnotations()).stream());
 	}
 
 	static String getAnnotationName(String representationOfAnnotation) {
