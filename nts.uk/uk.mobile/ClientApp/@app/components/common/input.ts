@@ -179,8 +179,8 @@ class DropdownComponent extends InputComponent {
         return (<HTMLSelectElement>this.$refs.input).value;
     }
 }
-Vue.component('v-input-password', PasswordComponent);
+Vue.component('nts-input-password', PasswordComponent);
 
-Vue.component('v-input-number', NumberComponent);
+Vue.component('nts-input-number', NumberComponent);
 
 Vue.component('nts-dropdown', DropdownComponent);
