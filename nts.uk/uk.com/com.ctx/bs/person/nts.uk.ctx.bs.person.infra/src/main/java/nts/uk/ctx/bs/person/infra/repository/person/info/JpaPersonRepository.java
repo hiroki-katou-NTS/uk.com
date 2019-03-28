@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPersonPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -330,27 +331,44 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			
 			sql = sql.replace("BIRTHDAY_VAL", "'" + c.getBirthDate() +"'");
-			sql = sql.replace("BLOOD_TYPE_VAL", "" + c.getBloodType().value +"");
-			sql = sql.replace("GENDER_VAL", "" + c.getGender().value +"");
+			sql = sql.replace("BLOOD_TYPE_VAL", c.getBloodType() == null? "null": "" + c.getBloodType().value +"");
+			sql = sql.replace("GENDER_VAL",  c.getGender() == null? "": "" + c.getGender().value +"");
 			
-			sql = sql.replace("PERSON_NAME_VAL", "'" + c.getPersonNameGroup().getPersonName().getFullName().v() +"'");
-			sql = sql.replace("PERSON_NAME_KANA_VAL", "'" + c.getPersonNameGroup().getPersonName().getFullNameKana().v() +"'");
-			
-			sql = sql.replace("BUSINESS_NAME_VAL", "'" + c.getPersonNameGroup().getBusinessName().v() +"'");
-			sql = sql.replace("BUSINESS_NAME_KANA_VAL", "'" + c.getPersonNameGroup().getBusinessNameKana().v() +"'");
-			sql = sql.replace("BUSINESS_ENGLISH_NAME_VAL", "'" + c.getPersonNameGroup().getBusinessEnglishName().v() +"'");
-			sql = sql.replace("BUSINESS_OTHER_NAME_VAL", "'" + c.getPersonNameGroup().getBusinessOtherName().v() +"'");
-			
-			sql = sql.replace("P_ROMANJI_FNAME_VAL", "'" + c.getPersonNameGroup().getPersonRomanji().getFullName().v() +"'");
-			sql = sql.replace("P_ROMANJI_FNAME_KANA_VAL", "'" + c.getPersonNameGroup().getPersonRomanji().getFullNameKana().v()+"'");
-			sql = sql.replace("OLDNAME_FNAME_VAL", "'" + c.getPersonNameGroup().getOldName().getFullName().v() +"'");
-			sql = sql.replace("OLDNAME_FNAME_KANA_VAL", "'" + c.getPersonNameGroup().getOldName().getFullNameKana().v() +"'");
-			
-			sql = sql.replace("TODOKEDE_FNAME_VAL", "'" + c.getPersonNameGroup().getPersonRomanji().getFullName().v() +"'");
-			sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", "'" + c.getPersonNameGroup().getPersonRomanji().getFullNameKana().v()+"'");
-			sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", "'" + c.getPersonNameGroup().getOldName().getFullName().v() +"'");
-			sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", "'" + c.getPersonNameGroup().getOldName().getFullNameKana().v() +"'");
-			
+			if(c.getPersonNameGroup() == null) {
+				sql = sql.replace("PERSON_NAME_VAL", "null");
+				sql = sql.replace("PERSON_NAME_KANA_VAL", "null");
+				sql = sql.replace("BUSINESS_NAME_VAL", "null");
+				sql = sql.replace("BUSINESS_NAME_KANA_VAL", "null");
+				sql = sql.replace("BUSINESS_ENGLISH_NAME_VAL", "null");
+				sql = sql.replace("BUSINESS_OTHER_NAME_VAL", "null");
+				sql = sql.replace("P_ROMANJI_FNAME_VAL", "null");
+				sql = sql.replace("P_ROMANJI_FNAME_KANA_VAL",  "null");
+				sql = sql.replace("OLDNAME_FNAME_VAL", "null");
+				sql = sql.replace("OLDNAME_FNAME_KANA_VAL", "null");
+				
+				sql = sql.replace("TODOKEDE_FNAME_VAL", "null");
+				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", "null");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", "null");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", "null");
+			}else {
+				PersonNameGroup personName = c.getPersonNameGroup();
+				sql = sql.replace("PERSON_NAME_VAL",  personName.getPersonName().getFullName() == null? "null": "'" + personName.getPersonName().getFullName().v() +"'");
+				sql = sql.replace("PERSON_NAME_KANA_VAL", personName.getPersonName().getFullNameKana() == null? "null" : "'" + personName.getPersonName().getFullNameKana().v() +"'");
+				sql = sql.replace("BUSINESS_NAME_VAL", personName.getBusinessName() == null? "null": "'" + personName.getBusinessName().v() +"'");
+				sql = sql.replace("BUSINESS_NAME_KANA_VAL", personName.getBusinessNameKana() == null? "null": "'" + personName.getBusinessNameKana().v() +"'");
+				sql = sql.replace("BUSINESS_ENGLISH_NAME_VAL", personName.getBusinessEnglishName() == null? "null": "'" + personName.getBusinessEnglishName().v() +"'");
+				sql = sql.replace("BUSINESS_OTHER_NAME_VAL", personName.getBusinessOtherName() == null? "null": "'" + personName.getBusinessOtherName().v() +"'");
+				sql = sql.replace("P_ROMANJI_FNAME_VAL", personName.getPersonRomanji().getFullName() == null? "null": "'" + personName.getPersonRomanji().getFullName().v() +"'");
+				sql = sql.replace("P_ROMANJI_FNAME_KANA_VAL",  personName.getPersonRomanji().getFullNameKana() == null? "null": "'" + personName.getPersonRomanji().getFullNameKana().v()+"'");
+				sql = sql.replace("OLDNAME_FNAME_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getOldName().getFullName().v() +"'");
+				sql = sql.replace("OLDNAME_FNAME_KANA_VAL", personName.getOldName().getFullNameKana() == null? "null": "'" + personName.getOldName().getFullNameKana().v() +"'");
+				
+				sql = sql.replace("TODOKEDE_FNAME_VAL", personName.getPersonRomanji().getFullName() == null? "null": "'" + personName.getPersonRomanji().getFullName().v() +"'");
+				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", personName.getPersonRomanji().getFullNameKana() == null? "null": "'" + personName.getPersonRomanji().getFullNameKana().v()+"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getOldName().getFullName().v() +"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", personName.getOldName().getFullNameKana() == null? "null": "'" + personName.getOldName().getFullNameKana().v() +"'");
+				
+			}
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");
 			sb.append(sql);
 		});
