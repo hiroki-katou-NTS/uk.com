@@ -437,7 +437,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	public void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application_New application) {
 		// アルゴリズム「新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(application, 0);
+		processBeforeRegister.processBeforeRegister(application, 0, command.isCheckOver1Year());
 
 	}
 
@@ -923,12 +923,12 @@ public class SaveHolidayShipmentCommandHandler
 
 		ApplicationSetting appSet = appSetOp.get();
 
-		boolean isAllReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) || isReasonTextFieldDisplay(appTypeSet);
+		boolean isAnyReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) || isReasonTextFieldDisplay(appTypeSet);
 
 		boolean isReasonBlankWhenRequired = appSet.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isBlank(appReason);
 
-		if (isAllReasonControlDisplay && isReasonBlankWhenRequired) {
+		if (isAnyReasonControlDisplay && isReasonBlankWhenRequired) {
 
 			throw new BusinessException("Msg_115");
 
