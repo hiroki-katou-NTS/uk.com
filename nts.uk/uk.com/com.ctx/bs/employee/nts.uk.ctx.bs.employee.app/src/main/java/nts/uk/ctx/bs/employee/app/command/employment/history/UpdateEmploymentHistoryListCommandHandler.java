@@ -40,7 +40,7 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 
 	@Override
 	public Class<?> commandClass() {
-		return AddEmploymentHistoryCommand.class;
+		return UpdateEmploymentHistoryCommand.class;
 	}
 
 	@Override

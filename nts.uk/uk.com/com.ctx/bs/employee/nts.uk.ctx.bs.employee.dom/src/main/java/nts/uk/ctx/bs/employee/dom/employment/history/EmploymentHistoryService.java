@@ -116,7 +116,9 @@ public class EmploymentHistoryService {
 				itemToBeUpdatedLst.add(itemToBeUpdated.get());
 			}
 		});
-		employmentHistoryRepository.updateAll(itemToBeUpdatedLst);
+		if(!itemToBeUpdatedLst.isEmpty()) {
+			employmentHistoryRepository.updateAll(itemToBeUpdatedLst);
+		}
 	}
 
 }

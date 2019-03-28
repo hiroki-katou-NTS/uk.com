@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.history;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,7 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 		List<UpdateAffCompanyHistoryCommand> command = context.getCommand();
 		List<AffCompanyInfo> affCompanyInfoLst = new ArrayList<>();
 		List<AffCompanyHistItem> affCompanyHistItems = new ArrayList<>();
+		Map<String, List<AffCompanyHist>> histLstMapResult = new HashMap<>();
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getSId()).collect(Collectors.toList());
 		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
@@ -58,24 +60,27 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 			Map<String, List<AffCompanyHist>> histLstMap = this.affCompanyHistRepository
 					.getAffCompanyHistoryOfEmployees(sids).parallelStream()
 					.collect(Collectors.groupingBy(c -> c.getPId()));
-			
+			histLstMapResult.putAll(histLstMap);
+		}
 			command.parallelStream().forEach(c -> {
-				List<AffCompanyHist> listHist = histLstMap.get(c.getPId());
-				AffCompanyHistByEmployee itemToBeAdded = null;
-				if (listHist != null) {
-					if (listHist.size() > 0) {
-						itemToBeAdded = listHist.get(0).getAffCompanyHistByEmployee(c.getSId());
-						Optional<AffCompanyHistItem> itemToBeUpdated = itemToBeAdded.getLstAffCompanyHistoryItem()
-								.stream().filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
-						if (!itemToBeUpdated.isPresent()) {
-							throw new RuntimeException("Invalid AffCompanyHist");
+				if(c.getStartDate() != null) {
+					List<AffCompanyHist> listHist = histLstMapResult.get(c.getPId());
+					AffCompanyHistByEmployee itemToBeAdded = null;
+					if (listHist != null) {
+						if (listHist.size() > 0) {
+							itemToBeAdded = listHist.get(0).getAffCompanyHistByEmployee(c.getSId());
+							Optional<AffCompanyHistItem> itemToBeUpdated = itemToBeAdded.getLstAffCompanyHistoryItem()
+									.stream().filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
+							if (!itemToBeUpdated.isPresent()) {
+								throw new RuntimeException("Invalid AffCompanyHist");
+							}
+							itemToBeAdded.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							affCompanyHistItems.add(itemToBeUpdated.get());
+
 						}
-						itemToBeAdded.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(),
-								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-						affCompanyHistItems.add(itemToBeUpdated.get());
 
 					}
-
 				}
 
 				AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(c.getSId(), c.getHistoryId(),
@@ -83,10 +88,14 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 				affCompanyInfoLst.add(histItem);
 
 			});
+			
+		if(!affCompanyHistItems.isEmpty()) {
+			affCompanyHistService.updateAll(affCompanyHistItems);
 		}
-		affCompanyHistService.updateAll(affCompanyHistItems);
-		affCompanyInfoRepository.updateAll(affCompanyInfoLst);
-
+		
+		if(!affCompanyInfoLst.isEmpty()) {
+			affCompanyInfoRepository.updateAll(affCompanyInfoLst);
+		}
 	}
 
 }
