@@ -62,8 +62,9 @@ public class WageTableContentDto {
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				this.list1dElements = this.getOneDmsElemItemDto(optContent.get().getPayments(), mapMaster, true,
-						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
-								.equals(ElementType.FINE_WORK.value));
+						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent()
+								&& optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+										.get().value.equals(ElementType.FINE_WORK.value));
 				Collections.sort(this.list1dElements, comparator1);
 			}
 			// two dimensions
@@ -90,10 +91,13 @@ public class WageTableContentDto {
 							AppContexts.user().companyId());
 				}
 				this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1,
-						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
-								.equals(ElementType.FINE_WORK.value),
+						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent()
+								&& optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+										.get().value.equals(ElementType.FINE_WORK.value),
 						optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
-								.get().value.equals(ElementType.FINE_WORK.value));
+								.isPresent()
+								&& optWage.get().getElementInformation().getTwoDimensionalElement().get()
+										.getFixedElement().get().value.equals(ElementType.FINE_WORK.value));
 				Comparator<TwoDmsElementItemDto> comparator2 = Comparator
 						.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
 						.thenComparing(TwoDmsElementItemDto::getFrameNumber,
@@ -165,10 +169,14 @@ public class WageTableContentDto {
 								.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 						List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
 								mapMaster2, comparator1,
-								optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent() && optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
-										.get().value.equals(ElementType.FINE_WORK.value),
-								optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
-										.get().value.equals(ElementType.FINE_WORK.value));
+								optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+										.isPresent()
+										&& optWage.get().getElementInformation().getOneDimensionalElement()
+												.getFixedElement().get().value.equals(ElementType.FINE_WORK.value),
+								optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+										.isPresent()
+										&& optWage.get().getElementInformation().getTwoDimensionalElement().get()
+												.getFixedElement().get().value.equals(ElementType.FINE_WORK.value));
 						Collections.sort(listTwoDms, comparator2);
 						thDms.setListFirstDms(listTwoDms);
 						break;
@@ -207,11 +215,13 @@ public class WageTableContentDto {
 						.getTwoDimensionalElement().get().getFixedElement().get().value,
 						AppContexts.user().companyId());
 			}
-			this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1,
-					optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
+			this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1, optWage
+					.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent()
+					&& optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
 							.equals(ElementType.FINE_WORK.value),
-					optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().get().value
-							.equals(ElementType.FINE_WORK.value));
+					optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().isPresent()
+							&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+									.get().value.equals(ElementType.FINE_WORK.value));
 			Comparator<TwoDmsElementItemDto> comparator2 = Comparator
 					.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(TwoDmsElementItemDto::getFrameNumber,

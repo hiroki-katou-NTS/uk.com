@@ -129,22 +129,24 @@ public class WageTableContentCreater {
 		List<ElementItemDto> result = new ArrayList<>();
 		if (rangeDto.getStepIncrement() == null) { // screen F: enum 精皆勤レベル
 			for (long i = 1; i <= 5; i++) {
-				result.add(new ElementItemDto("M007", null, i, new BigDecimal(i), new BigDecimal(i), null));
+				result.add(new ElementItemDto("M007", null, i, new BigDecimal(i), new BigDecimal(i), new Long(0)));
 			}
 		} else {
 			long frameNum = 1;
 			if (rangeDto.getStepIncrement().compareTo(new BigDecimal(0)) > 0) {
 				while (rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement())
 						.compareTo(rangeDto.getRangeUpperLimit()) < 0) {
-					result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-							rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()).subtract(new BigDecimal(0.01)),
-							null));
+					result.add(
+							new ElementItemDto(null, null, frameNum,
+									rangeDto.getRangeLowerLimit(), rangeDto.getRangeLowerLimit()
+											.add(rangeDto.getStepIncrement()).subtract(new BigDecimal(0.01)),
+									new Long(0)));
 					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()));
 					frameNum++;
 				}
 			}
 			result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-					rangeDto.getRangeUpperLimit(), null));
+					rangeDto.getRangeUpperLimit(), new Long(0)));
 		}
 		return result;
 	}
@@ -153,12 +155,12 @@ public class WageTableContentCreater {
 		List<ElementItemDto> result = new ArrayList<>();
 		if (ElementType.FINE_WORK.value.equals(master)) {
 			for (long i = 1; i <= 5; i++) {
-				result.add(new ElementItemDto(master, null, i, new BigDecimal(i), new BigDecimal(i), null));
+				result.add(new ElementItemDto(master, null, i, new BigDecimal(i), new BigDecimal(i), new Long(0)));
 			}
 		} else {
 			Map<String, String> mapMaster = getMasterItems(master, companyId);
 			result = mapMaster.entrySet().stream()
-					.map(i -> new ElementItemDto(i.getKey(), i.getValue(), null, null, null, null))
+					.map(i -> new ElementItemDto(i.getKey(), i.getValue(), null, null, null, new Long(0)))
 					.collect(Collectors.toList());
 			Comparator<ElementItemDto> comparator = Comparator
 					.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
