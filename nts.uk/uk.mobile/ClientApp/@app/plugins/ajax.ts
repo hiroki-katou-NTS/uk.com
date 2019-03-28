@@ -29,13 +29,17 @@ const WEB_APP_NAME = {
                     return;
                 } else {
                     $.extend(opt, {
-                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
+                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
                     });
                 }
 
                 if ($.isEmpty(opt.method)) {
                     reject('Parameter "method" is required.')
                     return;
+                }
+
+                if (!opt.type) {
+                    opt.type = 'json';
                 }
 
                 const xhr = new XMLHttpRequest(),
