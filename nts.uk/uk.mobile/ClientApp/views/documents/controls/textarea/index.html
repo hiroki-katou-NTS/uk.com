@@ -1,0 +1,14 @@
+<div id="text-component">
+    
+    <h2>1. Demo</h2>
+
+    <nts-text-area
+        v-model="text"
+        :name="'Textarea Item'"
+        :disabled="false"
+        :show-title="true"
+        :errors-always="$errors.title"
+        :columns="{title: 'col-md-2', input: 'col-md-4'}" />
+
+    <markdown />
+</div>
