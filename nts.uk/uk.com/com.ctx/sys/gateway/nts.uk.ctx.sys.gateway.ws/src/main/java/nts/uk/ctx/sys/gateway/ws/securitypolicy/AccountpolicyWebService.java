@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.gateway.app.command.securitypolicy.UpdateAccountPolicyCommand;
@@ -39,5 +40,9 @@ public class AccountpolicyWebService {
 		 this.updateAccountPolicyCommandHandler.handle(updateAccountPolicyCommand);
 	}
 	
-
+	@POST
+	@Path("getPasswordPolicy/{contractCode}")
+	public PasswordPolicyDto getPasswordPolicy(@PathParam("contractCode") String contractCode){
+		return this.passwordPolicyFinder.getPasswordPolicy();
+	}
 }

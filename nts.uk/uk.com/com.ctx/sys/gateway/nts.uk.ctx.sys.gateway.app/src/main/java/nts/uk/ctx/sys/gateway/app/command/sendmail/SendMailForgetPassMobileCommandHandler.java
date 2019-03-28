@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.app.command.sendmail;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -19,13 +20,12 @@ import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
  */
 @Stateless
 @Transactional
-public class SendMailInfoFormGCommandHandler
+public class SendMailForgetPassMobileCommandHandler
 		extends CommandHandlerWithResult<SendMailInfoFormGCommand, List<SendMailReturnDto>> {
-
-	private LoginService sendMailService;
 	
-	/**
-	 * パスワード再設定メール送信（形式２、形式３）
+	/** The login Service. */
+	@Inject
+	private LoginService loginService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,8 +38,10 @@ public class SendMailInfoFormGCommandHandler
 		// get command
 		SendMailInfoFormGCommand command = context.getCommand();
 
-		String companyId = sendMailService.comanyId(command.getContractCode(), command.getCompanyCode());
+		String companyId = loginService.comanyId(command.getContractCode(), command.getCompanyCode());
 		
-		return sendMailService.sendMail(companyId, command.getEmployeeCode(), command.getContractCode());
+		String employeeCode = loginService.employeeCodeEdit(command.getEmployeeCode(), companyId);
+		
+		return loginService.sendMail(companyId, employeeCode, command.getContractCode());
 	}
 }

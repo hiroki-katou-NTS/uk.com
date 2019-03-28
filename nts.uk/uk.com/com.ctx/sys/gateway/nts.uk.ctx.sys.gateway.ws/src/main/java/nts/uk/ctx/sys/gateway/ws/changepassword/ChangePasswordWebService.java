@@ -13,8 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommand;
@@ -22,15 +20,15 @@ import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommandHa
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginInforDto;
+import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
@@ -57,12 +55,11 @@ public class ChangePasswordWebService extends WebService{
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 	
-	/** The employee code setting adapter. */
-	@Inject
-	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
-	
 	@Inject
 	private UrlExecInfoRepository urlExecInfoRepository;
+	
+	@Inject
+	private LoginService service;
 	/**
 	 * Channge pass word.
 	 *
@@ -143,7 +140,7 @@ public class ChangePasswordWebService extends WebService{
 		//set companyId
 		String companyId = infor.getContractCode() + "-" + infor.getCompanyCode();
 		// Edit employee code
-		String employeeCode = this.employeeCodeEdit(infor.getEmployeeCode(), companyId);
+		String employeeCode = service.employeeCodeEdit(infor.getEmployeeCode(), companyId);
 					
 		// Get domain 社員
 		EmployeeImport em = this.getEmployee(companyId, employeeCode);
@@ -158,43 +155,24 @@ public class ChangePasswordWebService extends WebService{
 		return new LoginInforDto();
 	}
 	
-	/**
-	 * Employee code edit.
-	 *
-	 * @param employeeCode the employee code
-	 * @param companyId the company id
-	 * @return the string
-	 */
-	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSettingImport> findemployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
-		if (findemployeeCodeSetting.isPresent()) {
-			EmployeeCodeSettingImport employeeCodeSetting = findemployeeCodeSetting.get();
-			EmployCodeEditType editType = employeeCodeSetting.getEditType();
-			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
-			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
-				// not edit employeeCode
-				return employeeCode;
-			}
-			switch (editType) {
-			case ZeroBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-				break;
-			case ZeroAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-				break;
-			case SpaceBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
-				break;
-			case SpaceAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
-				break;
-			default:
-				break;
-			}
-			return employeeCode;
-		}
-		return employeeCode;
+	@POST
+	@Path("username/mobile")
+	public LoginInforDto getUserName() {
+		//set companyId
+		LoginUserContext user = AppContexts.user();
+		// Edit employee code
+		String employeeCode = service.employeeCodeEdit(user.employeeCode(), user.companyId());
+					
+		// Get domain 社員
+		EmployeeImport em = this.getEmployee(user.companyId(), employeeCode);
+		
+		return userAdapter.findUserByAssociateId(em.getPersonalId()).map(u -> new LoginInforDto(user.employeeCode(),
+																								u.getUserName().get(),
+																								u.getUserId(),
+																								u.getContractCode()))
+																.orElseGet(() -> new LoginInforDto());
 	}
+	
 	
 	/**
 	 * Gets the employee.

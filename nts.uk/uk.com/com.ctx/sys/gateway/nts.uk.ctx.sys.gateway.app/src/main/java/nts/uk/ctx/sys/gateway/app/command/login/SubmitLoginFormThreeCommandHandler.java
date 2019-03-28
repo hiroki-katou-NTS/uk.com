@@ -9,8 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -21,9 +19,9 @@ import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
+import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
@@ -48,7 +46,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 
 	/** The employee code setting adapter. */
 	@Inject
-	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	private LoginService employeeCodeSetting;
 
 	/** The employee adapter. */
 	@Inject
@@ -103,7 +101,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			}
 			
 			// Edit employee code
-			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
+			employeeCode = this.employeeCodeSetting.employeeCodeEdit(employeeCode, companyId);
 			
 			// Get domain 社員
 			em = this.getEmployee(companyId, employeeCode);
@@ -189,44 +187,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 //		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
 //			throw new BusinessException("Msg_310");
 //		}
-	}
-
-	/**
-	 * Employee code edit.
-	 *
-	 * @param employeeCode the employee code
-	 * @param companyId the company id
-	 * @return the string
-	 */
-	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSettingImport> findemployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
-		if (findemployeeCodeSetting.isPresent()) {
-			EmployeeCodeSettingImport employeeCodeSetting = findemployeeCodeSetting.get();
-			EmployCodeEditType editType = employeeCodeSetting.getEditType();
-			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
-			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
-				// not edit employeeCode
-				return employeeCode;
-			}
-			switch (editType) {
-			case ZeroBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-				break;
-			case ZeroAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-				break;
-			case SpaceBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
-				break;
-			case SpaceAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
-				break;
-			default:
-				break;
-			}
-			return employeeCode;
-		}
-		return employeeCode;
 	}
 
 	/**
