@@ -7,16 +7,14 @@ import { component } from '@app/core/component';
         parent: '/documents'
     },
     template: require('./index.html'),
-    validations: {
-        date: {
-            minValue: -720,
-            maxValue: 4319
-        }
-    },
+    markdown: {
+        jp: require('./content/jp.md'),
+        vi: require('./content/vi.md')
+    }
 })
 export class DateInputControl extends Vue {
 
-    date: Date = new Date("2017-08-04");
+    date: Date = new Date();
 
     constructor() {
         super();
