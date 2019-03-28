@@ -21,4 +21,6 @@ public interface AgreementTimeOfClassificationRepository {
 	Optional<String> findEmploymentBasicSettingID(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
 	
 	Optional<AgreementTimeOfClassification> find(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
+	
+	List<AgreementTimeOfClassification> find(String companyId, List<String> classificationCode);
 }
