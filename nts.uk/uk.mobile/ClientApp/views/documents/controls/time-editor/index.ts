@@ -16,14 +16,6 @@ import { component } from '@app/core/component';
     markdown: {
         jp: require('./content/jp.md'),
         vi: require('./content/vi.md')
-    },
-    resource: {
-        'vi': {
-            'LabelControlDocument': 'Label'
-        },
-        'jp': {
-            'LabelControlDocument': 'Label'
-        }
     }
 })
 export class TimeEditorControl extends Vue {
