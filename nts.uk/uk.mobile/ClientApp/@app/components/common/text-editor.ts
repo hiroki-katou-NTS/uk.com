@@ -1,65 +1,21 @@
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';
+import { input, InputComponent } from '@app/components/common/input';
 
-@component({
-  template: `
-  <span >
-    <input type="text"
-    class="form-control"
-    :value="value"
-    :disabled=!enable
-    :readonly=readonly
-    @blur="doWhenBlur"
-    @change="doWhenChanged"
-    @input="doWhenInput"
-    @keyup="doWhenKeyUp"
-    @keydown="doWhenKeyDown"
-    >
-    </input>
-  </span>
-  `
-})
+@input()
+class StringComponent extends InputComponent {
 
-export class TextEditor extends Vue {
-  @Prop()
-  value : String;
+    type: string = 'text';
 
-  @Prop({ default: true})
-  enable: Boolean;
+    get rawValue() {
+        return (this.value || '');
+    }
 
-  @Prop({ default: false })
-  readonly: Boolean;
-
-  @Prop({ default: false })
-  immediate: Boolean;
-
-  @Prop()
-  option : Object;
-
-  get valueUpdate() {
-    return (this.immediate === true) ? 'input' : 'change';
-  }
-
-  doWhenBlur() {
-    console.log("Bluring Bluring Bluring");
-  }
-
-  doWhenChanged() {
-    console.log("Value was Changed");
-  }
-
-  doWhenInput(e) {
-    this.$emit('input', e.target.value);
-  }
-
-  doWhenKeyUp(e) {
-    console.log("You have just key up");
-  }
-
-  doWhenKeyDown(){
-    console.log("You have just key down");
-  }
-
+    @Emit()
+    input() {
+        return (<HTMLInputElement>this.$refs.input).value;
+    }
+    
 }
 
-Vue.component('nts-text-editor', TextEditor);
+Vue.component('nts-text-editor', StringComponent);

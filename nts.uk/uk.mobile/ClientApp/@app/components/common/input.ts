@@ -193,7 +193,6 @@ class DropdownComponent extends InputComponent {
         return (<HTMLSelectElement>this.$refs.input).value;
     }
 }
-
 Vue.component('v-input', StringComponent);
 Vue.component('v-input-string', StringComponent);
 Vue.component('v-input-password', PasswordComponent);
