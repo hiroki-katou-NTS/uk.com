@@ -142,6 +142,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		YearMonth startYm = null;
 		YearMonth endYm = null;
 		Integer monthLimit;
+		GeneralDate baseDate = GeneralDate.fromString(query.getBaseDate(), "yyyy/MM/dd");
 		// ドメインモデル「３６協定運用設定」を取得する
 		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.find(companyId);
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
@@ -158,7 +159,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		} else {
 			monthLimit = TimeOverLimitTypeImport.ZERO_TIMES.value;
 		}
-		ExportData data = this.outputProcess(companyId, query.getSetItemsOutputCd(), fiscalYear, startYm, endYm, employees, printFormat, query.getBreakPage(), excludeEmp, monthLimit, baseMonth, query.getBaseDate());
+		ExportData data = this.outputProcess(companyId, query.getSetItemsOutputCd(), fiscalYear, startYm, endYm, employees, printFormat, query.getBreakPage(), excludeEmp, monthLimit, baseMonth, baseDate);
 		val dataSetter = context.getDataSetter();
 		List<String> employeeError = data.getEmployeeError();
 		if (!employeeError.isEmpty()) {
