@@ -7,14 +7,14 @@ import { component } from '@app/core/component';
         url: '/html/color',
         parent: '/documents'
     },
-    name: 'docs_form',
+    name: 'docs_color',
     template: require('./index.html'),
     resource: {
         vi: {
-            'DocsColorUKMobile': 'Màu sắc'
+            'docs_color': 'Màu sắc'
         },
         jp: {
-            'DocsColorUKMobile': 'Color'
+            'docs_color': 'Color'
         }
     }
 })
