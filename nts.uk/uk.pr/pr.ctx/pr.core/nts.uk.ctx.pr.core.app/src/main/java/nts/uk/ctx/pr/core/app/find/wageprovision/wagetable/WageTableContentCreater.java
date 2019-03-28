@@ -129,7 +129,7 @@ public class WageTableContentCreater {
 		List<ElementItemDto> result = new ArrayList<>();
 		if (rangeDto.getStepIncrement() == null) { // screen F: enum 精皆勤レベル
 			for (long i = 1; i <= 5; i++) {
-				result.add(new ElementItemDto(null, null, i, new BigDecimal(i), new BigDecimal(i), null));
+				result.add(new ElementItemDto("M007", null, i, new BigDecimal(i), new BigDecimal(i), null));
 			}
 		} else {
 			long frameNum = 1;
@@ -150,14 +150,21 @@ public class WageTableContentCreater {
 	}
 
 	private List<ElementItemDto> getMasterElementItems(String master, String companyId) {
-		Map<String, String> mapMaster = getMasterItems(master, companyId);
-		List<ElementItemDto> result = mapMaster.entrySet().stream()
-				.map(i -> new ElementItemDto(i.getKey(), i.getValue(), null, null, null, null))
-				.collect(Collectors.toList());
-		Comparator<ElementItemDto> comparator = Comparator
-				.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
-				.thenComparing(ElementItemDto::getFrameNumber, Comparator.nullsLast(Comparator.naturalOrder()));
-		Collections.sort(result, comparator);
+		List<ElementItemDto> result = new ArrayList<>();
+		if (ElementType.FINE_WORK.value.equals(master)) {
+			for (long i = 1; i <= 5; i++) {
+				result.add(new ElementItemDto(master, null, i, new BigDecimal(i), new BigDecimal(i), null));
+			}
+		} else {
+			Map<String, String> mapMaster = getMasterItems(master, companyId);
+			result = mapMaster.entrySet().stream()
+					.map(i -> new ElementItemDto(i.getKey(), i.getValue(), null, null, null, null))
+					.collect(Collectors.toList());
+			Comparator<ElementItemDto> comparator = Comparator
+					.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(ElementItemDto::getFrameNumber, Comparator.nullsLast(Comparator.naturalOrder()));
+			Collections.sort(result, comparator);
+		}
 		return result;
 	}
 

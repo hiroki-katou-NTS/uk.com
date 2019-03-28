@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementItem;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementsCombinationPaymentAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.MasterNumericAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
@@ -36,7 +37,7 @@ public class WageTableContentDto {
 	private List<ThreeDmsElementItemDto> listWorkElements;
 
 	private ElementRangeSettingDto elemRangeSet;
-	
+
 	private boolean brandNew = false;
 
 	public WageTableContentDto(Optional<WageTableContent> optContent, Optional<WageTable> optWage,
@@ -52,12 +53,17 @@ public class WageTableContentDto {
 			// one dimension
 			if (optWage.get().getElementSetting() == ElementSetting.ONE_DIMENSION) {
 				Map<String, String> mapMaster = new HashMap<>();
-				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				if (optWage.isPresent()
+						&& optWage.get().getElementInformation().getOneDimensionalElement().getMasterNumericAtr()
+								.get() == MasterNumericAtr.MASTER_ITEM
+						&& !optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
 					mapMaster = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
-				this.list1dElements = this.getOneDmsElemItemDto(optContent.get().getPayments(), mapMaster, true);
+				this.list1dElements = this.getOneDmsElemItemDto(optContent.get().getPayments(), mapMaster, true,
+						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
+								.equals(ElementType.FINE_WORK.value));
 				Collections.sort(this.list1dElements, comparator1);
 			}
 			// two dimensions
@@ -65,19 +71,29 @@ public class WageTableContentDto {
 				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = optContent.get().getPayments()
 						.stream().collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 				Map<String, String> mapMaster1 = new HashMap<>();
-				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				if (optWage.isPresent()
+						&& optWage.get().getElementInformation().getOneDimensionalElement().getMasterNumericAtr()
+								.get() == MasterNumericAtr.MASTER_ITEM
+						&& !optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
 					mapMaster1 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				Map<String, String> mapMaster2 = new HashMap<>();
-				if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				if (optWage.isPresent()
+						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getMasterNumericAtr()
+								.get() == MasterNumericAtr.MASTER_ITEM
+						&& !optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
 					mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getTwoDimensionalElement().get().getFixedElement().get().value,
 							AppContexts.user().companyId());
 				}
-				this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1);
+				this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1,
+						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
+								.equals(ElementType.FINE_WORK.value),
+						optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value));
 				Comparator<TwoDmsElementItemDto> comparator2 = Comparator
 						.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
 						.thenComparing(TwoDmsElementItemDto::getFrameNumber,
@@ -89,8 +105,25 @@ public class WageTableContentDto {
 					|| optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
 				ElementRangeSettingDto elemRange = ElementRangeSettingDto.fromDomainToDto(optSetting.get());
 				elemRange.setWageTableCode(optWage.get().getWageTableCode().v());
-				if (optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
+				if (optWage.get().getElementSetting() == ElementSetting.FINE_WORK
+						|| (optWage.get().getElementInformation().getThreeDimensionalElement().isPresent()
+								&& optWage.get().getElementInformation().getThreeDimensionalElement().get()
+										.getFixedElement().isPresent()
+								&& optWage.get().getElementInformation().getThreeDimensionalElement().get()
+										.getFixedElement().get().value.equals(ElementType.FINE_WORK.value))) {
 					elemRange.setThirdElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
+				}
+				if (optWage.get().getElementInformation().getTwoDimensionalElement().isPresent()
+						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+								.isPresent()
+						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
+					elemRange.setSecondElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
+				}
+				if (optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent()
+						&& optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
+					elemRange.setFirstElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
 				}
 				WageTableContentDto temp = wageContentCreater.createThreeDimensionWageTable(elemRange);
 				this.list3dElements = temp.list3dElements;
@@ -103,14 +136,20 @@ public class WageTableContentDto {
 						.thenComparing(TwoDmsElementItemDto::getFrameNumber,
 								Comparator.nullsLast(Comparator.naturalOrder()));
 				Map<String, String> mapMaster1 = new HashMap<>();
-				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				if (optWage.isPresent()
+						&& optWage.get().getElementInformation().getOneDimensionalElement().getMasterNumericAtr()
+								.get() == MasterNumericAtr.MASTER_ITEM
+						&& !optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
 					mapMaster1 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				Map<String, String> mapMaster2 = new HashMap<>();
-				if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+				if (optWage.isPresent()
+						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getMasterNumericAtr()
+								.get() == MasterNumericAtr.MASTER_ITEM
+						&& !optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+								.get().value.equals(ElementType.FINE_WORK.value)) {
 					mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getTwoDimensionalElement().get().getFixedElement().get().value,
 							AppContexts.user().companyId());
@@ -125,7 +164,11 @@ public class WageTableContentDto {
 						Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy1 = value.stream()
 								.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 						List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
-								mapMaster2, comparator1);
+								mapMaster2, comparator1,
+								optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent() && optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
+										.get().value.equals(ElementType.FINE_WORK.value),
+								optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+										.get().value.equals(ElementType.FINE_WORK.value));
 						Collections.sort(listTwoDms, comparator2);
 						thDms.setListFirstDms(listTwoDms);
 						break;
@@ -145,20 +188,30 @@ public class WageTableContentDto {
 			Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = payments.stream()
 					.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 			Map<String, String> mapMaster1 = new HashMap<>();
-			if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
-					.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+			if (optWage.isPresent()
+					&& optWage.get().getElementInformation().getOneDimensionalElement().getMasterNumericAtr()
+							.get() == MasterNumericAtr.MASTER_ITEM
+					&& !optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
+							.equals(ElementType.FINE_WORK.value)) {
 				mapMaster1 = wageContentCreater.getMasterItems(
 						optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value,
 						AppContexts.user().companyId());
 			}
 			Map<String, String> mapMaster2 = new HashMap<>();
-			if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
-					.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
+			if (optWage.isPresent()
+					&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getMasterNumericAtr()
+							.get() == MasterNumericAtr.MASTER_ITEM
+					&& !optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
+							.get().value.equals(ElementType.FINE_WORK.value)) {
 				mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 						.getTwoDimensionalElement().get().getFixedElement().get().value,
 						AppContexts.user().companyId());
 			}
-			this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1);
+			this.list2dElements = this.getTwoDmsElemItemDto(mapPayments, mapMaster1, mapMaster2, comparator1,
+					optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value
+							.equals(ElementType.FINE_WORK.value),
+					optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().get().value
+							.equals(ElementType.FINE_WORK.value));
 			Comparator<TwoDmsElementItemDto> comparator2 = Comparator
 					.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(TwoDmsElementItemDto::getFrameNumber,
@@ -169,7 +222,7 @@ public class WageTableContentDto {
 	}
 
 	private List<ElementItemDto> getOneDmsElemItemDto(List<ElementsCombinationPaymentAmount> listPayment,
-			Map<String, String> mapMaster, boolean isFirst) {
+			Map<String, String> mapMaster, boolean isFirst, boolean isWorkLevel) {
 		List<ElementItemDto> result = new ArrayList<>();
 		for (ElementsCombinationPaymentAmount payment : listPayment) {
 			if (isFirst) {
@@ -187,8 +240,8 @@ public class WageTableContentDto {
 							.get().getFrameLowerLimit();
 					BigDecimal upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem()
 							.get().getFrameUpperLimit();
-					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
-							payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(isWorkLevel ? "M007" : null, null, frameNumber, lowerLimit,
+							upperLimit, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				}
 			} else {
@@ -207,8 +260,8 @@ public class WageTableContentDto {
 							.getNumericElementItem().get().getFrameLowerLimit();
 					BigDecimal upperLimit = payment.getElementAttribute().getSecondElementItem().get()
 							.getNumericElementItem().get().getFrameUpperLimit();
-					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
-							payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(isWorkLevel ? "M007" : null, null, frameNumber, lowerLimit,
+							upperLimit, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				}
 			}
@@ -218,11 +271,13 @@ public class WageTableContentDto {
 
 	private List<TwoDmsElementItemDto> getTwoDmsElemItemDto(
 			Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments, Map<String, String> mapMaster1,
-			Map<String, String> mapMaster2, Comparator<ElementItemDto> comparator) {
+			Map<String, String> mapMaster2, Comparator<ElementItemDto> comparator, boolean isFirstWorkLevel,
+			boolean isSecondWorkLevel) {
 		List<TwoDmsElementItemDto> result = new ArrayList<>();
 		for (ElementItem key : mapPayments.keySet()) {
 			List<ElementsCombinationPaymentAmount> value = mapPayments.get(key);
-			List<ElementItemDto> list2ndDmsElements = this.getOneDmsElemItemDto(value, mapMaster2, false);
+			List<ElementItemDto> list2ndDmsElements = this.getOneDmsElemItemDto(value, mapMaster2, false,
+					isSecondWorkLevel);
 			Collections.sort(list2ndDmsElements, comparator);
 			if (key.getMasterElementItem().isPresent()) {
 				String masterCode = key.getMasterElementItem().get().getMasterCode();
@@ -232,8 +287,8 @@ public class WageTableContentDto {
 				long frameNumber = key.getNumericElementItem().get().getFrameNumber();
 				BigDecimal frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
 				BigDecimal frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
-				result.add(
-						new TwoDmsElementItemDto(null, null, frameNumber, frameLower, frameUpper, list2ndDmsElements));
+				result.add(new TwoDmsElementItemDto(isFirstWorkLevel ? "M007" : null, null, frameNumber, frameLower,
+						frameUpper, list2ndDmsElements));
 			}
 		}
 		return result;

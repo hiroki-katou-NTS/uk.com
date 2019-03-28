@@ -336,18 +336,22 @@ module nts.uk.pr.view.qmm016.share.model {
         paymentAmount: KnockoutObservable<number> = ko.observable(null);
         displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
-            this.masterCode(params ? params.masterCode : null);
+            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.paymentAmount(params ? params.paymentAmount : null);
             if (params != null) {
-                this.displayText(!_.isEmpty(params.masterCode)  
-                    ? params.masterName 
-                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                if (params.masterCode == null) {
+                    this.displayText(formatNumber(params.frameLowerLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 }))
                         + getText("QMM016_31")
-                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 })));
+                } else if (params.frameNumber == null) {
+                    this.displayText(params.masterName);
+                } else {
+                    this.displayText(params.frameLowerLimit);
+                }
             }
         }
     }
@@ -362,18 +366,22 @@ module nts.uk.pr.view.qmm016.share.model {
         displayText: KnockoutObservable<string> = ko.observable(null);
         
         constructor (params: any) {
-            this.masterCode(params ? params.masterCode : null);
+            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.listSecondDms(params && !_.isEmpty(params.listSecondDms) ? params.listSecondDms.map(item => new ElementItem(item)) : []);
             if (params != null) {
-                this.displayText(!_.isEmpty(params.masterCode)  
-                    ? params.masterName 
-                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                if (params.masterCode == null) {
+                    this.displayText(formatNumber(params.frameLowerLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 }))
                         + getText("QMM016_31")
-                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 })));
+                } else if (params.frameNumber == null) {
+                    this.displayText(params.masterName);
+                } else {
+                    this.displayText(params.frameLowerLimit);
+                }
             }
         }
     }
@@ -387,18 +395,22 @@ module nts.uk.pr.view.qmm016.share.model {
         listFirstDms: KnockoutObservableArray<TwoDmsElementItem> = ko.observableArray([]);
         displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
-            this.masterCode(params ? params.masterCode : null);
+            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.listFirstDms(params && !_.isEmpty(params.listFirstDms) ? params.listFirstDms.map(item => new TwoDmsElementItem(item)) : []);
             if (params != null) {
-                this.displayText(!_.isEmpty(params.masterCode)  
-                    ? params.masterName 
-                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                if (params.masterCode == null) {
+                    this.displayText(formatNumber(params.frameLowerLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 }))
                         + getText("QMM016_31")
-                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({ grouplength: 3, decimallength: 2 })));
+                } else if (params.frameNumber == null) {
+                    this.displayText(params.masterName);
+                } else {
+                    this.displayText(params.frameLowerLimit);
+                }
             }
         }
     }
