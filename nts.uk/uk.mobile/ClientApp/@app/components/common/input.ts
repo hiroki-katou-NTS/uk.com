@@ -120,20 +120,6 @@ export class InputComponent extends Vue {
 }
 
 @input()
-class StringComponent extends InputComponent {
-    type: string = 'text';
-
-    get rawValue() {
-        return (this.value || '');
-    }
-
-    @Emit()
-    input() {
-        return (<HTMLInputElement>this.$refs.input).value;
-    }
-}
-
-@input()
 class PasswordComponent extends InputComponent {
     type: string = 'password';
 
@@ -193,8 +179,6 @@ class DropdownComponent extends InputComponent {
         return (<HTMLSelectElement>this.$refs.input).value;
     }
 }
-Vue.component('v-input', StringComponent);
-Vue.component('v-input-string', StringComponent);
 Vue.component('v-input-password', PasswordComponent);
 
 Vue.component('v-input-number', NumberComponent);
