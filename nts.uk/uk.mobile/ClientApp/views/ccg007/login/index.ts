@@ -2,7 +2,7 @@ import { Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
 import { _ } from "@app/provider";
-import { ajax } from "@app/plugins";
+import { NavMenu, SideMenu } from "@app/services";
 
 @component({
     route: '/ccg/007/b',
@@ -21,7 +21,7 @@ import { ajax } from "@app/plugins";
                 required: true
             }
         }
-    }, 
+    },
     name: 'login'
 })
 export class LoginComponent extends Vue {
@@ -41,17 +41,17 @@ export class LoginComponent extends Vue {
 
     beforeCreate() {
         let self = this;
-        if(!_.isNil(this.$route.params.contractCode)){
+        if (!_.isNil(this.$route.params.contractCode)) {
             this.contractCode = this.$route.params.contractCode;
         } else {
             characteristics.restore("contractInfo").then((value: any) => {
-                if(!_.isNil(value)){
+                if (!_.isNil(value)) {
                     self.$data.contractCode = value.contractCode;
                     self.$data.contractPass = value.contractPassword;
                 }
-    
+
                 this.checkContract({ contractCode: self.contractCode, contractPassword: self.contractPass }).then((rel) => {
-                    if(rel.data.onpre) {
+                    if (rel.data.onpre) {
                         self.contractCode = self.$data.defaultContractCode;
                         self.contractPass = null;
                         characteristics.remove("contractInfo");
@@ -59,7 +59,7 @@ export class LoginComponent extends Vue {
                     } else {
                         if (rel.data.showContract && !rel.data.onpre) {
                             //self.openContractAuthDialog();
-                        } 
+                        }
                     }
                 });
             });
@@ -69,23 +69,23 @@ export class LoginComponent extends Vue {
     created() {
         this.getAllCompany().then((response: { data: Array<ICompany>; }) => {
             this.companies = response.data;
-            if(!_.isNil(this.$route.params.companyCode)){
+            if (!_.isNil(this.$route.params.companyCode)) {
                 this.model.comp = this.$route.params.companyCode;
             } else {
                 characteristics.restore("companyCode").then((compCode: any) => {
-                    if(!_.isNil(compCode)){
+                    if (!_.isNil(compCode)) {
                         let currentComp = _.find(this.companies, (comp: ICompany) => { comp.companyCode === compCode }) as ICompany;
-                        if(!_.isNil(currentComp)) {
+                        if (!_.isNil(currentComp)) {
                             this.model.comp = currentComp.companyId;
                         }
                     }
                 });
             }
-            if(!_.isNil(this.$route.params.employeeCode)){
+            if (!_.isNil(this.$route.params.employeeCode)) {
                 this.model.employeeCode = this.$route.params.employeeCode;
             } else {
                 characteristics.restore("employeeCode").then((empCode: any) => {
-                    if(!_.isNil(empCode)){
+                    if (!_.isNil(empCode)) {
                         this.model.employeeCode = empCode;
                     }
                 });
@@ -94,6 +94,16 @@ export class LoginComponent extends Vue {
         this.getVersion().then((response: { data: any; }) => {
             this.model.ver = response.data.ver;
         });
+
+        // Hide top & side menu
+        NavMenu.visible = false;
+        SideMenu.visible = false;
+    }
+
+    destroyed() {
+        // Show menu
+        NavMenu.visible = true;
+        SideMenu.visible = true;
     }
 
     login() {
@@ -120,13 +130,13 @@ export class LoginComponent extends Vue {
                     this.$mask("hide");
                 } else {
                     // login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
-                    characteristics.remove("companyCode").then(function() {
-                        characteristics.save("companyCode", _.escape(self.model.comp)).then(function() {
-                            characteristics.remove("employeeCode").then(function() {
+                    characteristics.remove("companyCode").then(function () {
+                        characteristics.save("companyCode", _.escape(self.model.comp)).then(function () {
+                            characteristics.remove("employeeCode").then(function () {
                                 if (self.model.autoLogin) {
-                                    characteristics.save("employeeCode", _.escape(self.model.employeeCode)).then(function() {
-                                            this.toHomePage();
-                                        });
+                                    characteristics.save("employeeCode", _.escape(self.model.employeeCode)).then(function () {
+                                        this.toHomePage();
+                                    });
                                 } else {
                                     this.toHomePage();
                                 }
@@ -135,10 +145,10 @@ export class LoginComponent extends Vue {
                     });
                 }
             }
-        }).catch((res:any) => {
+        }).catch((res: any) => {
             //Return Dialog Error
             this.$mask("hide");
-            if (!_.isEqual(res.message, "can not found message id")){
+            if (!_.isEqual(res.message, "can not found message id")) {
                 self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
                 self.$dialogError({ messageId: res.messageId });
@@ -146,28 +156,30 @@ export class LoginComponent extends Vue {
         });
     }
 
-    toHomePage(){
+    toHomePage() {
         this.$router.push({ name: 'toppage' });
     }
 
-    forgetPass(){
-        this.$router.push({ name: 'forgetPass', params: {
-            contractCode: this.contractCode,
-            contractPass: this.contractPass,
-            companyCode: this.model.comp,
-            employeeCode: this.model.employeeCode,
-            companies: JSON.stringify(this.companies)
-        }});
+    forgetPass() {
+        this.$goto({
+            name: 'forgetPass', params: {
+                contractCode: this.contractCode,
+                contractPass: this.contractPass,
+                companyCode: this.model.comp,
+                employeeCode: this.model.employeeCode,
+                companies: this.companies
+            }
+        });
     }
 
     checkContract(data: any): Promise<any> {
         return this.$http.post(servicePath.checkContract, JSON.stringify(data));
     }
-    
+
     submitLogin(data: any): Promise<any> {
         return this.$http.post(servicePath.submitLogin, data);
     }
-    
+
     getVersion(): Promise<any> {
         return this.$http.post(servicePath.ver);
     }
@@ -178,7 +190,7 @@ export class LoginComponent extends Vue {
 }
 
 const option = {
-    
+
 }
 
 const servicePath = {
