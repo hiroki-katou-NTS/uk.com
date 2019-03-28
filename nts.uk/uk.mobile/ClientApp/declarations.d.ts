@@ -1,5 +1,6 @@
 import Vue, { ComponentOptions } from "vue";
 import { WebAppId } from '@app/utils/request';
+import { ErrorHandler } from "vue-router/types/router";
 
 declare interface Window {
     Reflect: any;
@@ -71,8 +72,10 @@ declare module "vue/types/vue" {
     interface Vue {
         pgName: string;
         $http: {
-            get: (pgOrUrl: WebAppId | string, url?: string) => Promise<{}>;
-            post: (pgOrUrl: WebAppId | string, urlOrData?: string | any, data?: any) => Promise<{}>;
+            get(url: string): Promise<{}>;
+            get(pg: WebAppId, url: string): Promise<{}>;
+            post(url: string, data?: any): Promise<{}>;
+            post(pg: WebAppId, url: string, data?: any): Promise<{}>;
             headers: {
                 [header: string]: string;
             },
@@ -86,20 +89,25 @@ declare module "vue/types/vue" {
                 cancel: (taskId: string) => Promise<{}>;
             }
         };
-        $i18n: (resr: string, param?: { [key: string]: string }) => string;
-        $close: (data?: any) => void;
-        $mask: (act: 'hide' | 'show' | 'showonce') => {
+        $i18n(resr: string): string;
+        $i18n(resr: string, param: { [key: string]: string }): string;
+        $close(): void;
+        $close(data: any): void;
+        $mask(act: 'hide' | 'show' | 'showonce'): {
             on: (click: () => void, hide?: () => void) => void;
         };
-        $goto: (nameOrLocation: string | { name: string; params?: { [key: string]: any; }; }, params?: { [key: string]: any; }) => void;
-        $modal: (name: (string | ComponentOptions<Vue>), params?: any, options?: IModalOptions) => Promise<{}>;
+        $goto(name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
+        $goto(location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
+        $modal(name: string, params?: any, options?: IModalOptions): Promise<{}>;
+        $modal(name: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
         $valid: boolean;
         $errors: {
             [name: string]: {
                 [rule: string]: string;
             }
         };
-        $validate: (name?: string) => boolean;
+        $validate(): boolean;
+        $validate(name: string): boolean;
         $updateValidator: (rule: IRule) => void;
         validations: {
             [name: string]: IRule;
