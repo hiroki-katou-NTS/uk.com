@@ -114,7 +114,7 @@ export class HomeComponent extends Vue {
         });*/
 
         this.$modal('SampleComponent', { id: 100, name: 'Nguyen Van A' })
-            .onClose((data: any) => {
+            .then((data: any) => {
                 console.log(data);
             });
 

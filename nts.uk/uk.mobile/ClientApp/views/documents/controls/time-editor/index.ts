@@ -13,13 +13,29 @@ import { component } from '@app/core/component';
             maxValue: 4319
         }
     },
+    markdown: {
+        jp: require('./content/jp.md'),
+        vi: require('./content/vi.md')
+    },
+    resource: {
+        'vi': {
+            'LabelControlDocument': 'Label'
+        },
+        'jp': {
+            'LabelControlDocument': 'Label'
+        }
+    }
 })
 export class TimeEditorControl extends Vue {
 
     time: number = 750;
 
-    constructor() {
-        super();
-        let self = this;
+    timeWithDay: object = {
+        name: 'Time-With-Day',
+        value: 750,
+        disabled: false,
+        errors: null,
+        errorsAlways: null,
+        showTitle: true
     }
 }

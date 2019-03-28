@@ -1,11 +1,13 @@
 <div id="time-component">
-    
+    <h2>1. Demo </h2>
+    <label><i> Chú ý: Sử dụng demo này bằng <b>Smartphone</b></i></label>
     <nts-date-input
         v-model="date"
-        :name="'date'"
+        :name="'Date Item'"
         :disabled="disabled"
         :show-title="true"
         v-bind:constraint="validations.date"
         :errors-always="$errors.title"
         :columns="{title: 'col-md-2', input: 'col-md-4'}" />
+    <markdown/>
 </div>

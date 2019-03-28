@@ -23,7 +23,7 @@ export class KDL002Component extends Vue {
     chooseWorkType(item: IWorkType) {
         if (item) {
             this.$modal('worktype', item)
-                .onClose(v => {
+                .then((v: any) => {
                     if (v) {
                         item.code = v.code;
                         item.name = v.name;

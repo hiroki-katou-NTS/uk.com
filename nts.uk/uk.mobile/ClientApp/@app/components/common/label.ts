@@ -25,3 +25,4 @@ class LabelComponent extends Vue {
 }
 
 Vue.component('v-label', LabelComponent);
+Vue.component('nts-label', LabelComponent);

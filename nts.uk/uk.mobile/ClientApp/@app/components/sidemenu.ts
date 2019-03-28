@@ -24,7 +24,7 @@ const _SideMenu = new Vue({
     set visible(visible: boolean) {
         _SideMenu.visible = visible;
     }
-};
+}, resize = () => SideMenu.show = false;
 
 @component({
     template: `<nav class="sidebar" v-bind:class="{ show, iphone}" v-if="visible && items && items.length">
@@ -44,19 +44,19 @@ const _SideMenu = new Vue({
             <li v-for="(m, i) in items" v-bind:class="{ 'list-unstyled-item': m.childs }">
                 <template v-if="m.childs">
                     <a class="dropdown-toggle collapse" v-on:click="toggleDropdown(m)" v-bind:class="{ 'show': active === m }">
-                        <span>{{(m.title) | i18n }}</span>
+                        <span><i class="fas fa-code mr-2"></i>{{(m.title) | i18n }}</span>
                     </a>
                     <ul class="collapse list-unstyled" v-bind:class="{ 'show': active == m }">
                         <li v-for="(t, j) in m.childs">
                             <router-link :to="t.url">
-                                <span v-on:click="hideSideBar">{{t.title | i18n }}</span>
+                                <span v-on:click="hideSideBar"><i class="far fa-file-alt mr-2"></i>{{t.title | i18n }}</span>
                             </router-link>
                         </li>
                     </ul>
                 </template>
                 <template v-else>
                     <router-link :to="m.url">
-                        <span v-on:click="hideSideBar">{{m.title | i18n }}</span>
+                        <span v-on:click="hideSideBar"><i class="far fa-file-alt mr-2"></i>{{m.title | i18n }}</span>
                     </router-link>
                 </template>
             </li>
@@ -131,8 +131,16 @@ export class SideMenuBar extends Vue {
 
             dom.addClass(document.body, 'show-side-bar');
         }
-        
+
         localStorage.setItem('__sidebar__', show ? 'show' : '');
+    }
+
+    created() {
+        dom.registerEventHandler(window, 'resize', resize);
+    }
+
+    destroyed() {
+        dom.removeEventHandler(window, 'resize', resize);
     }
 }
 
@@ -141,21 +149,6 @@ export { SideMenu };
 SideMenu.items = [{
     url: '/',
     title: 'home'
-},
-{
-    url: '',
-    title: 'html',
-    childs: [{
-        url: '/documents/html',
-        title: 'html'
-    }, {
-        url: '/documents/component',
-        title: 'components'
-    }, {
-        url: '/documents/modal',
-        title: 'modal'
-    }
-    ]
 }, {
     url: '/access/login',
     title: 'login'
