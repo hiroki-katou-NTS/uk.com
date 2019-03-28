@@ -2008,6 +2008,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<EmployeeReportData> lstEmployeeReportData = workplaceReportData.getLstEmployeeReportData();
 		
 		// Root workplace won't have employee
+		List<String> departmentCode = new ArrayList<>();
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
 			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
 			while (iteratorEmployee.hasNext()) {
@@ -2029,11 +2030,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						rowPageTracker.useRemainingRow(dataRowCount);
 					}
 
-					// A3_1
-					Cell workplaceTagCell = cells.get(currentRow, 0);
-					workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE + "　"
-							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName());
-					currentRow++;
+					if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())) {
+						// A3_1
+						Cell workplaceTagCell = cells.get(currentRow, 0);
+						workplaceTagCell.setValue(
+								WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　"
+										+ workplaceReportData.getWorkplaceName());
+						departmentCode.add(workplaceReportData.getWorkplaceCode());
+						currentRow++;
+					}
 				}
 				// A3_2
 //				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
@@ -2355,7 +2360,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		/**
 		 * A9 - A13
 		 */
-		if(!condition.getSettingDetailTotalOutput().isCumulativeWorkplace()){
 		TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
 		if ((totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace())
 				&& !(workplaceReportData.getLstChildWorkplaceReportData().isEmpty()
@@ -2448,7 +2452,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				} while (levelIterator != null && levelIterator.hasNext());
 			}
 		}
-		}
+		
 		
 		return currentRow;
 	}
