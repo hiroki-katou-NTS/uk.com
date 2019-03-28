@@ -26,15 +26,22 @@ const modal = {
             }
         });
 
-        vue.prototype.$goto = function (location: { name: string; params: { [key: string]: any; }; }) {
+        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, params?: { [key: string]: any; }) {
             let self = this;
-            
-            self.$router.push({
-                name: location.name,
-                params: {
-                    params: location.params
-                }
-            });
+
+            if (typeof nameOrLocation !== 'string') {
+                self.$router.push({
+                    name: nameOrLocation.name,
+                    params: {
+                        params: nameOrLocation.params
+                    }
+                });
+            } else {
+                self.$router.push({
+                    name: nameOrLocation,
+                    params
+                });
+            }
         };
 
         vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {

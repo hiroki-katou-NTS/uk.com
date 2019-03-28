@@ -91,7 +91,7 @@ declare module "vue/types/vue" {
         $mask: (act: 'hide' | 'show' | 'showonce') => {
             on: (click: () => void, hide?: () => void) => void;
         };
-        $goto: (location: { name: string; params?: { [key: string]: any; }; }) => void;
+        $goto: (nameOrLocation: string | { name: string; params?: { [key: string]: any; }; }, params?: { [key: string]: any; }) => void;
         $modal: (name: (string | ComponentOptions<Vue>), params?: any, options?: IModalOptions) => Promise<{}>;
         $valid: boolean;
         $errors: {
