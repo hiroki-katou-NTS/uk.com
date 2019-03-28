@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-//import java.util.ArrayList;
-//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
