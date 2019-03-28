@@ -40,7 +40,7 @@ public class CalCumulativeGrant {
 			if(i==10) {
 				break;
 			}
-			numberGrantOutput = listDataSort.get(i).getDetails().getGrantNumber().getDays().v();
+			numberGrantOutput =numberGrantOutput+ listDataSort.get(i).getDetails().getGrantNumber().getDays().v();
 			if(numberDayAward<=numberGrantOutput) {
 				checkExist = true;
 				startPeriod = listDataSort.get(i).getGrantDate();
