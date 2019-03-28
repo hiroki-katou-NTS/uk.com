@@ -7,7 +7,7 @@ export const input = () => component({
     template: `<div class="form-group row">
         <template v-if="showTitle">
             <div v-bind:class="columns.title">
-                <v-label v-bind:constraint="constraint">{{ name | i18n }}</v-label>
+                <nts-label v-bind:constraint="constraint" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
             </div>
         </template>
         <template v-else />
@@ -92,6 +92,9 @@ export class InputComponent extends Vue {
 
     @Prop({ default: () => true })
     readonly showTitle!: boolean;
+
+    @Prop({ default: () => false })
+    readonly inlineTitle!: boolean;
 
     @Prop({ default: () => ({ before: '', after: '' }) })
     readonly icons!: { before: string; after: string }
