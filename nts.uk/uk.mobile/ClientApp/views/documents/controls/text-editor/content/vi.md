@@ -3,13 +3,7 @@
 ```html
 <nts-text-editor
     v-model="text"
-    :name="'Text Item'"
-    :disabled="false"
-    :show-title="true"
-    :errors-always="$errors.title"
-    :columns="{title: 'col-md-2', 
-                input: 'col-md-4'}"
-/>
+    :name="'Text Item'"/>
 ```
 
 ## 3. Khai báo trong index.ts

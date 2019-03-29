@@ -3,13 +3,7 @@
 ```html
 <nts-date-input
         v-model="date"
-        :name="'DateItem'"
-        :disabled="disabled"
-        :show-title="true"
-        v-bind:constraint="validations.date"
-        :errors-always="$errors.title"
-        :columns="{title: 'col-md-2', 
-                    input: 'col-md-4'}" />
+        :name="'DateItem'"/>
 ```
 ## 3. Khai báo trong index.ts
 Khai báo một biến 'date' trong ViewModel để bind vào giá trị 'date' sử dụng ở v-model="date"

@@ -4,38 +4,20 @@
 <nts-time-editor
     v-model="time"
     :name="'Time-With-Day'"
-    :disabled="false"
     time-input-type="time-with-day"
-    :show-title="true"
-    v-bind:constraint="validations.time"
-    :errors-always="$errors.title"
-    :columns="{title: 'col-md-2', 
-                input: 'col-md-4'}" 
-    />
+    v-bind:constraint="validations.time"/>
 
 <nts-time-editor
     v-model="time"
     :name="'Time-Point'"
-    :disabled="false"
     time-input-type="time-point"
-    :show-title="true"
-    v-bind:constraint="validations.time"
-    :errors-always="$errors.title"
-    :columns="{title: 'col-md-2', 
-                input: 'col-md-4'}" 
-/>
+    v-bind:constraint="validations.time"/>
 
 <nts-time-editor
     v-model="time"
     :name="'Time-Duration'"
-    :disabled="false"
     time-input-type="time-duration"
-    :show-title="true"
-    v-bind:constraint="validations.time"
-    :errors-always="$errors.title"
-    :columns="{title: 'col-md-2', 
-                input: 'col-md-4'}" 
-    />   
+    v-bind:constraint="validations.time"/>      
 ```
 
 ## 3. Khai báo trong index.ts
