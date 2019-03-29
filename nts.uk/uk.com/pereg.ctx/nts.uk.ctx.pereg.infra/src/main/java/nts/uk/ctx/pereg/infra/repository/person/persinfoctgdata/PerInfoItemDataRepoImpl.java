@@ -272,15 +272,14 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			return new ArrayList<>();
 		}
 
-		List<PpemtPerInfoItemData> entities = new ArrayList<>();
+		List<Object[]> entities = new ArrayList<>();
 		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(GET_BY_RIDS, PpemtPerInfoItemData.class)
+			entities.addAll(this.queryProxy().query(GET_BY_RIDS, Object[].class)
 					.setParameter("recordId", subList).getList());
 		});
 		
 		return entities.stream()
-				.map(ent -> PersonInfoItemData.createFromJavaType(ent.primaryKey.perInfoDefId, ent.primaryKey.recordId,
-						ent.saveDataAtr, ent.stringVal, ent.intVal, ent.dateVal))
+				.map(ent -> toDomainNew(ent))
 				.collect(Collectors.toList());
 	}
 	
