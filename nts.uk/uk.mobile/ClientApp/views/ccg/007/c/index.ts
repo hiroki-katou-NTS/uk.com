@@ -14,20 +14,20 @@ import { NavMenu, SideMenu } from '@app/services';
                 required: true
             },
             newPassword: {
-                required: true,
-                checkSame: {
-                    test(value){
-                        return value === this.model.newPasswordConfirm;
-                    }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                }
+                required: true
+                // checkSame: {
+                //     test(value){
+                //         return value === this.model.newPasswordConfirm;
+                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
+                // }
             },
             newPasswordConfirm: {
-                required: true,
-                checkSame: {
-                    test(value){
-                        return value === this.model.newPassword;
-                    }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                }
+                required: true
+                // checkSame: {
+                //     test(value){
+                //         return value === this.model.newPassword;
+                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
+                // }
             }
         }
     }, 
@@ -89,8 +89,8 @@ export class ChangePassComponent extends Vue {
         this.$mask("show");
         
         //submitChangePass
-        this.$http.post(servicePath.changePass, command).then(function () {
-            this.$goto({ name: 'toppage' });
+        this.$http.post(servicePath.changePass, command).then((res) => {
+            this.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
             //Return Dialog Error
             this.$mask("hide");

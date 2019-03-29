@@ -10,13 +10,11 @@ import { SideMenu, NavMenu } from '@app/services';
     resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
-        model: {
-            comp: {
-                required: true
-            },
-            employeeCode: {
-                required: true
-            }
+        companyCode: {
+            required: true
+        },
+        employeeCode: {
+            required: true
         }
     }, 
     name: 'forgetPass'
@@ -30,18 +28,34 @@ export class ForgetPassComponent extends Vue {
     contractCode: string = '';
     companyCode: string = '';
     contractPass: string = '';
-
-    model = {
-        employeeCode: ''
-    }
+    employeeCode: ''
 
     created() {
         this.contractCode = this.params.contractCode;
         this.contractPass = this.params.contractPass;
         this.companies = this.params.companies;
         this.companyCode = this.params.companyCode;
-        this.model.employeeCode = this.params.employeeCode;
-        
+        this.employeeCode = this.params.employeeCode;
+        if(_.isEmpty(this.companies)){
+            this.getAllCompany().then((response: { data: Array<ICompany>; }) => {
+                this.companies = response.data;
+                if(_.isNil(this.params.companyCode)){
+                    characteristics.restore("companyCode").then((compCode: any) => {
+                        if (!_.isNil(compCode)) {
+                            this.companyCode = compCode;
+                        }
+                    });
+                }
+                if(_.isNil(this.params.employeeCode)){
+                    characteristics.restore("employeeCode").then((empCode: any) => {
+                        if (!_.isNil(empCode)) {
+                            this.employeeCode = empCode;
+                        }
+                    });
+                }
+            });
+        }
+
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -60,14 +74,16 @@ export class ForgetPassComponent extends Vue {
             return;
         }
         submitData.companyCode = _.escape(self.companyCode);
-        submitData.employeeCode = _.escape(self.model.employeeCode);
+        submitData.employeeCode = _.escape(self.employeeCode);
         submitData.contractCode = _.escape(self.contractCode);
         submitData.contractPassword = _.escape(self.contractPass);
         self.$mask("show");
         self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn>}) => {
-            self.$goto({ name: 'malSent', params: { companyCode: self.companyCode, 
-                                                            employeeCode: self.model.employeeCode,
-                                                            contractCode: self.contractCode} });
+            if (!_.isEmpty(result.data)){
+                self.$goto({ name: 'mailSent', params: { companyCode: self.companyCode, 
+                    employeeCode: self.employeeCode,
+                    contractCode: self.contractCode} });
+            }
         }).catch((res:any) => {
             //Return Dialog Error
             self.$mask("hide");
@@ -81,12 +97,18 @@ export class ForgetPassComponent extends Vue {
 
     goBack(){
         this.$goto({ name: 'login', params: { companyCode: this.companyCode, 
-                                                        employeeCode: this.model.employeeCode,
-                                                        contractCode: this.contractCode} });
+                                                        employeeCode: this.employeeCode,
+                                                        contractCode: this.contractCode,
+                                                        companies: this.companies} });
+    }
+
+    getAllCompany(): Promise<any> {
+        return this.$http.post(servicePath.getAllCompany);
     }
 }
 
 const servicePath = {
+    getAllCompany: "ctx/sys/gateway/login/getcompany",
     sendMail: "ctx/sys/gateway/sendmail/mobile"
 }
 

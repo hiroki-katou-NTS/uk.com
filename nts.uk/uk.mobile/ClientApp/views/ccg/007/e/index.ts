@@ -4,7 +4,7 @@ import { _ } from "@app/provider";
 import { SideMenu, NavMenu } from '@app/services';
 
 @component({
-    route: '/ccg/007/c',
+    route: '/ccg/007/e',
     style: require('./style.scss'),
     resource: require('./resources.json'),
     template: require('./index.html'),
@@ -109,7 +109,7 @@ export class ResetPassComponent extends Vue {
             //login
             this.$http.post(servicePath.submitLogin, loginData).then((messError: any) => {
                 //Remove LoginInfo
-                self.$goto({ name: 'toppage', params: { screen: 'login' } });
+                self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
             }).catch((res:any) => {
                 //Return Dialog Error
                 self.$mask("hide");

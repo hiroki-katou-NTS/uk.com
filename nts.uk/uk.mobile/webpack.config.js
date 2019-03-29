@@ -156,7 +156,7 @@ module.exports = (env) => {
             watchContentBase: true,
             index: './index.htm',
             historyApiFallback: true,
-            openPage: './nts.uk.mobile.web'
+            openPage: './nts.uk.mobile.web/ccg/007/b'
         },
         node: {
             __filename: true,

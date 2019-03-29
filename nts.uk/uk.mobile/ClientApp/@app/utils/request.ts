@@ -206,6 +206,7 @@ export module csrf {
         });
     
     export function getToken() {
-        return sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("");
+        /** TODO: now, write token in client logic is not correct, and have not time for fix. */
+        return sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("FIX FOR TEST");
     }
 }

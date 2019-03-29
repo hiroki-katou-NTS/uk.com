@@ -9,31 +9,35 @@
         </div>
         <fieldset class="login-form">
             <nts-dropdown
-                v-model="model.comp"
-                class="control-label-inline"
+                v-model="companyCode"
+                v-bind:inline-title="true"
                 name='CCG007_7'
                 v-bind:disabled="false"
                 v-bind:show-title="true"
-                v-bind:constraint="validations.model.comp"
-                v-bind:errors-always="$errors.model.comp"
+                v-bind:constraint="validations.companyCode"
+                v-bind:errors-always="$errors.companyCode"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
                 <option value="">--- Choose options ---</option>
-                <option v-for="(comp,k) in companies" :value="comp.companyId">
+                <option v-for="(comp,k) in companies" :value="comp.companyCode">
                     {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
                 </option>
             </nts-dropdown>
             
             <nts-text-editor
-                v-model="model.employeeCode"
-                class="control-label-inline"
+                v-model="employeeCode"
+                v-bind:inline-title="true"
                 name='CCG007_8'
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
-                v-bind:constraint="validations.model.employeeCode"
-                v-bind:errors-always="$errors.model.employeeCode"
+                v-bind:constraint="validations.employeeCode"
+                v-bind:errors-always="$errors.employeeCode"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
-            <button class="btn btn-primary btn-block" v-on="$click(sendMail.bind(this))">送信→</button>
-            <button class="btn btn-primary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
+            <div class="mb-2">
+                <button class="btn btn-primary btn-block" v-on="$click(sendMail.bind(this))">送信→</button>
+            </div>
+            <div>
+                <button class="btn btn-primary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
+            </div>
         </fieldset>
     </div>

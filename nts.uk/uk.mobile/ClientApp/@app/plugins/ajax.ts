@@ -1,6 +1,6 @@
 import { $, location, csrf } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
-import { $modal } from './modal';
+import { modal } from './modal';
 interface IFetchOption {
     url: string;
     type?: 'url' | 'form' | 'json';
@@ -103,6 +103,8 @@ const WEB_APP_NAME = {
 
         xhr.open(opt.method, opt.url, true);
 
+        /** use CORS for develop */    
+        xhr.withCredentials = true; 
         if (opt.data) {
             opt.data = parseData();
         }
@@ -135,6 +137,8 @@ const WEB_APP_NAME = {
                     resolve({ data: xhr.response, headers: parseHeaders(xhr) });
                 }
 
+            } else if(xhr.readyState === 4 && xhr.status === 204) {
+                resolve({ data: {}, headers: parseHeaders(xhr) });
             } else {
                 /*$modal({}, {
                     message: xhr.response

@@ -67,37 +67,44 @@ export class LoginComponent extends Vue {
                 });
             });
         }
-        this.getAllCompany().then((response: { data: Array<ICompany>; }) => {
-            this.companies = response.data;
-            if(!_.isNil(this.params.companyCode)){
-                this.model.comp = this.params.companyCode;
-            } else {
-                characteristics.restore("companyCode").then((compCode: any) => {
-                    if (!_.isNil(compCode)) {
-                        let currentComp = _.find(this.companies, (comp: ICompany) => { comp.companyCode === compCode }) as ICompany;
-                        if (!_.isNil(currentComp)) {
-                            this.model.comp = currentComp.companyId;
-                        }
-                    }
-                });
-            }
-            if(!_.isNil(this.params.employeeCode)){
-                this.model.employeeCode = this.params.employeeCode;
-            } else {
-                characteristics.restore("employeeCode").then((empCode: any) => {
-                    if (!_.isNil(empCode)) {
-                        this.model.employeeCode = empCode;
-                    }
-                });
-            }
-        });
-        this.getVersion().then((response: { data: any; }) => {
-            this.model.ver = response.data.ver;
+        if(!_.isEmpty(self.params.companies)){
+            self.companies = self.params.companies;
+            self.checkEmpCodeAndCompCode();
+        } else {
+            self.getAllCompany().then((response: { data: Array<ICompany>; }) => {
+                self.companies = response.data;
+                self.checkEmpCodeAndCompCode();
+            });
+        }
+        self.getVersion().then((response: { data: any; }) => {
+            self.model.ver = response.data.ver;
         });
 
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
+    }
+
+    checkEmpCodeAndCompCode(){
+        let self = this;
+        if(!_.isNil(self.params.companyCode)){
+            self.model.comp = self.params.companyCode;
+        } else {
+            characteristics.restore("companyCode").then((compCode: any) => {
+                if (!_.isNil(compCode)) {
+                    self.model.comp = compCode;
+                }
+            });
+        }
+        if(!_.isNil(self.params.employeeCode)){
+            self.model.employeeCode = self.params.employeeCode;
+        } else {
+            characteristics.restore("employeeCode").then((empCode: any) => {
+                if (!_.isNil(empCode)) {
+                    self.model.employeeCode = empCode;
+                }
+            });
+        }
     }
 
     destroyed() {
@@ -118,18 +125,18 @@ export class LoginComponent extends Vue {
         submitData.contractCode = _.escape(self.contractCode);
         submitData.contractPassword = _.escape(self.contractPass);
         self.$mask("show");
-        self.submitLogin(submitData).then((messError: CheckChangePass) => {
-            if (messError.showContract) {
+        self.submitLogin(submitData).then((res: { data: CheckChangePass}) => {
+            if (res.data.showContract) {
                 // self.openContractAuthDialog();
             }
             else {
                 //check MsgError
-                if (!_.isEmpty(messError.msgErrorId) || messError.showChangePass) {
-                    if (messError.showChangePass) {
+                if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
+                    if (res.data.showChangePass) {
                         self.$goto({ name: 'changepass' });
                     } else {
                         self.model.password = "";
-                        self.$dialogError({ messageId: messError.msgErrorId });
+                        self.$dialogError({ messageId: res.data.msgErrorId });
                     }
                     self.$mask("hide");
                 } else {
@@ -161,7 +168,7 @@ export class LoginComponent extends Vue {
     }
 
     toHomePage(){
-        this.$goto({ name: 'toppage' });
+        this.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
     }
 
     forgetPass(){
@@ -190,10 +197,6 @@ export class LoginComponent extends Vue {
     getAllCompany(): Promise<any> {
         return this.$http.post(servicePath.getAllCompany);
     }
-}
-
-const option = {
-
 }
 
 const servicePath = {
