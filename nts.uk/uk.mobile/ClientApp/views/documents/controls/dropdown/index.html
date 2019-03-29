@@ -1,0 +1,16 @@
+<div id="text-component">
+    
+    <h2>1. Demo</h2>
+
+    <nts-dropdown
+            v-model="selectedValue"
+            name='DropDown Item'>
+
+            <option v-for="item in dropdownList" :value="item.code">
+                {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.text}}
+            </option>
+            
+        </nts-dropdown>
+
+    <markdown />
+</div>
