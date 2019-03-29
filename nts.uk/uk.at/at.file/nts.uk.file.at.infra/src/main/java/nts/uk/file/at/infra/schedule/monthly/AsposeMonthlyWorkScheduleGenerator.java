@@ -680,7 +680,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 		Optional<GeneralDate> baseDate = service.getProcessingYM(companyId, closureId);
 		if (!baseDate.isPresent()) {
-			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
+			//Uchida bảo là lỗi hệ thống _ ThànhPV
+			throw new BusinessException("");
 		}
 		Map<String, YearMonthPeriod> employeePeriod = service.getAffiliationPeriod(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), query.getEndYearMonth()), baseDate.get());
 		{
