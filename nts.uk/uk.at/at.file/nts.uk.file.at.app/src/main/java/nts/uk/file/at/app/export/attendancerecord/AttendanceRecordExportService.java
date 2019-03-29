@@ -86,6 +86,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	final static long LOWER_POSITION = 2;
 	final static int PDF_MODE = 1;
 	final static String ZERO = "0";
+	/** The Constant MASTER_UNREGISTERED. */
+	private static final String MASTER_UNREGISTERED = " マスタ未登録";
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
@@ -166,8 +168,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		GeneralDate endByClosure = GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(), request.getEndDate().lastDateInMonth());
 		GeneralDate startTime = request.getStartDate().addMonths(-1);
 		GeneralDate startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(), 1);
-		
-		DatePeriod period = new DatePeriod(startByClosure, endByClosure);
+		//remove warning
+		//DatePeriod period = new DatePeriod(startByClosure, endByClosure);
 		List<WkpHistImport> wkps = workplaceAdapter.findWkpBySid(empIDs, startByClosure);
 		// Get workplace history
 		for (Employee e : request.getEmployeeList()) {
@@ -1299,7 +1301,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME) ? worktype.get(0).getName().v()
 								: worktype.get(0).getAbbreviationName().v();
-					return value;
+					return value + MASTER_UNREGISTERED ;
 				} else {
 
 					List<WorkTimeSetting> workTime = workTimeSettingList.stream()
@@ -1308,10 +1310,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME)
 								? workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v()
 								: workTime.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v();
-					return value;
+					return value + MASTER_UNREGISTERED;
 				}
 			}
-			return value;
+			return value + MASTER_UNREGISTERED;
 
 		default:
 			return value;
