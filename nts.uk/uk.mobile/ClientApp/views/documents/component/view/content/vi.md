@@ -1,34 +1,21 @@
-# Giới thiệu
-> UK Mobile là dự án sử dụng html, ts, css để xây dựng giao diện người dùng trên mô hình [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel), kết hợp [SPA](https://en.wikipedia.org/wiki/Single-page_application) dựa trên framework VueJS + các thư viện kèm theo như vue-router, vue-ex,....
-
-> UK Mobile không sử dụng jQuery và tuân thủ chặt chẽ mô hình MVVM nên vui lòng không bao giờ viết xử lý của view trên view model, nếu cần những xử lý này, hãy đọc về [filter](https://vi.vuejs.org/v2/guide/filters.html) và [directive](https://vi.vuejs.org/v2/guide/custom-directive.html) của [VueJS](https://vi.vuejs.org/). Trường hợp không thể tự xử lý được, hãy liên hệ với Kiban.
-
-
-# Tổng quan về một view
-> Khái niệm view, component hay page ở trong bài viết này được hiểu theo nghĩa là một trang web tuân thủ theo đúng mô hình MVVM ở trên.
-
-### Cấu trúc một component như sau:
-> Một component cơ bản sẽ gồm có ít nhất là 3 thành phần gồm: ViewModel-Model (file: index.ts), View (file: index.html), CSS (file style.scss hoặc style.css).
-
-#### 1. ViewModel
-> File ViewModel đặt theo nguyên tắc nằm trong thư mục views (nếu là view do dev viết) hoặc thư mục components (nếu là control do kiban viết). Nó sẽ có tên là index.ts hoặc tên của component (nếu không có view).
+##### 1. Định nghĩa
+> `View` là một `file html` hoặc một đoạn string `template html` được khai báo ở [`decorator`](/documents/component/decorator) của mỗi `component` thông qua thuộc tính `template` như ví dụ dưới đây.
 
 ```typescript
-import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    route: 'uk/sample',
-    style: require('style.scss'),
-    template: require('./index.html'),
-    // và một số option khác
+    // có thể là string template
+    template: `<div>{{pgName}}</div>`,
+    // hoặc là file template
+    template: require('./index.html')
 })
-export class SampleComponent extends Vue {
-
-}
 ```
 
-#### 2. View
+> Chi tiết về [`decorator`](/documents/component/decorator) [`xem tại đây`](/documents/component/decorator)
+
+##### 2. Ví dụ
+> **Chú ý**: Dù là `string template` hay `file template` thì một `view` cũng sẽ được đóng/mở bởi **duy nhất một thẻ html**, VueJS không chấp nhận một `template` có nhiều hơn một thẻ **root**.
 
 ```html
 <div id="home">

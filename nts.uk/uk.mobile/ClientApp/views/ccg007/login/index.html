@@ -2,7 +2,7 @@
     <fieldset class="login-form">
         <nts-dropdown
             v-model="model.comp"
-            class="control-label-inline"
+            v-bind:inline-title="true"
             name='CCG007_7'
             v-bind:disabled="false"
             v-bind:show-title="true"
@@ -17,7 +17,7 @@
         
         <nts-text-editor
             v-model="model.employeeCode"
-            class="control-label-inline"
+            v-bind:inline-title="true"
             name='CCG007_8'
             v-bind:disabled="disabled"
             v-bind:show-title="true"
@@ -28,7 +28,7 @@
 
         <nts-input-password
             v-model="model.password"
-            class="control-label-inline"
+            v-bind:inline-title="true"
             name='CCG007_2'
             v-bind:disabled="disabled"
             v-bind:show-title="true"
