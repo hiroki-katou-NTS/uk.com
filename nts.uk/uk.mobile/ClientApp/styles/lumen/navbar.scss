@@ -5,6 +5,7 @@ body {
         padding-left: 35px;
         transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
         cursor: pointer;
+
         .navbar-toggler {
             outline: none;
             padding: 4px 12px;
@@ -12,15 +13,18 @@ body {
             color: #fff;
             border-color: transparent;
             transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+
             &:after {
                 display: block;
             }
         }
+
         .collapse.navbar-collapse {
             &.show {
                 border-top: 2px solid darken($color: $primary, $amount: 5);
             }
         }
+
         .navbar-brand {
             cursor: pointer;
             margin-right: 0;
@@ -28,18 +32,23 @@ body {
             padding-right: 15px;
             border-right: 2px solid darken($color: $primary, $amount: 5);
             transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+
             &:not([href]):not([tabindex]) {
                 color: #fff;
             }
         }
+
         a {
             cursor: pointer;
+
             &.nav-link {
+
                 &>i,
                 &>span {
                     color: #fff;
                 }
             }
+
             &.dropdown-item {
                 &>span {
                     color: $gray-900;
@@ -47,18 +56,22 @@ body {
                 }
             }
         }
+
         .dropdown-menu {
             &.show {
                 width: auto;
                 white-space: nowrap;
                 padding: 5px;
+
                 .menu-group {
                     vertical-align: top;
                     display: inline-block;
+
                     &:not(:first-child) {
                         padding-left: 1rem;
                     }
                 }
+
                 .dropdown-item {
                     padding-left: 0.5rem;
                     padding-right: 0.5rem;
@@ -66,35 +79,47 @@ body {
             }
         }
     }
+
     .container,
     .container-fluid {
         .navbar {
             display: block;
-            padding-top: 2px;
-            padding-left: 45px;
+            border-width: 0;
+            padding: 2px 15px;
+            .row {
+                div[class^=col]:first-child {
+                    padding-left: 45px;
+                }
+            }
+
             &.fixed-top {
                 padding-right: 15px;
             }
+
             .btn-link {
                 color: #fff;
                 text-decoration: none;
             }
         }
     }
+
     &.modal-open {
         .navbar {
             padding-left: 0;
         }
     }
+
     &.show-menu-top {
         .navbar {
             z-index: 1051;
             padding-left: 0;
+
             .navbar-toggler {
                 transform: rotate(180deg) translate(2px, 2px);
             }
         }
     }
+
     &.show-side-bar {
         .navbar {
             z-index: 1029;
@@ -112,10 +137,12 @@ body {
             .navbar-brand {
                 border-right: 0;
             }
+
             &-collapse {
                 padding-left: 15px;
             }
         }
+
         &.modal-open {
             .navbar {
                 padding-left: 0px;
