@@ -330,6 +330,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 localStorage.setItem("ThirdDimensionUpdate" + i, JSON.stringify(updatedData));
             }
             localStorage.setItem("ThirdDimension" + i, JSON.stringify(gridData));
+            return gridData;
         }
         
         createNewWageTable() {
@@ -341,23 +342,51 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
 
         registerWageTable() {
-            let self = this, dimensionCheck = true;
+            let self = this, dimensionCheck = true, listErrorMsg = [];
             $(".nts-input").filter(":enabled").trigger("validate");
             setTimeout(() => {
-                if (_.isEmpty($("#grid2").ntsGrid("errors"))) {
-                    if ((self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION
-                        || self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.FINE_WORK) && self.updateMode()) {
-                        let i3rdIndex = _.findIndex(self.wageTableContent().payment(), p => {
-                            return p.masterCode() == self.fakeSelectedValue() || p.frameNumber() == self.fakeSelectedValue();
-                        });
-                        if (i3rdIndex >= 0) {
-                            self.cacheGridData(i3rdIndex);
+                if ((self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION
+                    || self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.FINE_WORK) && self.updateMode()) {
+                    let validators = $("#grid2").data("ntsValidators");
+
+                    for (var i = 0; i < self.wageTableContent().payment().length; i++) {
+                        let gridData = [];
+                        listErrorMsg = [];
+                        // neu la chieu thu 3 dang chon thi lay data tren grid
+                        if (self.wageTableContent().payment()[i].masterCode() == self.fakeSelectedValue() || self.wageTableContent().payment()[i].frameNumber() == self.fakeSelectedValue()) {
+                            gridData = self.cacheGridData(i);
+                        } else { // neu khong phai chieu dang chon thi lay data tu cache
+                            let cachedGridData = localStorage.getItem("ThirdDimension" + i);
+                            if (cachedGridData) {
+                                gridData = JSON.parse(cachedGridData)
+                            }
+                        }
+                        // neu co data thi check xem da nhap dung het chua
+                        if (gridData.length > 0) {
+                            gridData.forEach(rowData => {
+                                for (let property in rowData) {
+                                    if (rowData.hasOwnProperty(property) && property.indexOf("secondFrameNo") >= 0) {
+                                        let validateResult = validators[property].probe(rowData[property]);
+                                        if (!validateResult.isValid && listErrorMsg.indexOf(validateResult.errorMessage) < 0) {
+                                            listErrorMsg.push(validateResult.errorMessage)
+                                        }
+                                    }
+                                }
+                            });
+                            // chua nhap het bang thi chuyen sang chieu thu 3 do va validate
+                            if (listErrorMsg.length > 0) {
+                                if (self.wageTableContent().payment()[i].masterCode() != self.fakeSelectedValue() && self.wageTableContent().payment()[i].frameNumber() != self.fakeSelectedValue()) {
+                                    self.fakeSelectedValue(self.wageTableContent().payment()[i].masterCode() == null ? self.wageTableContent().payment()[i].frameNumber() : self.wageTableContent().payment()[i].masterCode());
+                                }
+                                dimensionCheck = false;
+                                break;
+                            }
                         }
                     }
-                } else {
+                } else if (!_.isEmpty($("#grid2").ntsGrid("errors"))) {
                     dimensionCheck = false;
                 }
-                
+
                 if (!nts.uk.ui.errors.hasError() && dimensionCheck) {
                     if (self.updateMode()) {
                         self.updateData();
@@ -365,7 +394,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         self.addNewData();
                     }
                 } else if (!dimensionCheck) {
-                    dialog.alertError({message: nts.uk.resource.getMessage("MsgB_1", [getText("QMM016_39")])}).then(() => {
+                    let message = "";
+                    if (listErrorMsg.length > 0) {
+                        listErrorMsg.forEach(e => {
+                            message += e + '\n';
+                        });
+                    } else {
+                        let errors = $("#grid2").ntsGrid("errors");
+                        errors.forEach(e => {
+                            if (message.indexOf(e.message) < 0)
+                                message += e.message + '\n';
+                        });
+                    }
+                    dialog.alertError({ message: message.replace(/undefined/g, "0") }).then(() => {
                         $("#grid2_container").focus();
                     });
                 }
@@ -692,7 +733,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
                     self.createOneDimensionTable();
-//                    $(".input-amount")[0].focus();
+                    $("#grid2_container").focus();
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
@@ -745,6 +786,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     let items = self.convertGridDataSource(data.list2dElements), columns = self.getGridColumns(lst2nd);
                     self.wageTableContent(new model.WageTableContent(data));
                     self.displayGrid(items, columns);
+                    $("#grid2_container").focus();
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
@@ -835,6 +877,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     }
                     self.wageTableContent(new model.WageTableContent(data));
                     self.displayGrid(items, columns);
+                    $("#grid2_container").focus();
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
@@ -916,6 +959,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     }
                     self.wageTableContent(new model.WageTableContent(data));
                     self.displayGrid(items, columns);
+                    $("#grid2_container").focus();
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
@@ -1124,7 +1168,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         min: -9999999999,
                         max: 9999999999,
 //                        required: true, 
-                        decimalLength: -1,
+                        decimalLength: 0,
                         integer: true,
                         cDisplayType: "Currency"
                     }
@@ -1152,7 +1196,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         min: -9999999999,
                         max: 9999999999,
 //                        required: true,
-                        decimalLength: -1,
+                        decimalLength: 0,
                         integer: true,
                         cDisplayType: "Currency"
                     }
