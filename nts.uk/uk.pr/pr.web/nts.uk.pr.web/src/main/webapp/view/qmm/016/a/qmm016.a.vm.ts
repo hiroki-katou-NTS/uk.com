@@ -1123,7 +1123,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     constraint: { 
                         min: -9999999999,
                         max: 9999999999,
-                        required: true, 
+//                        required: true, 
                         decimalLength: -1,
                         integer: true,
                         cDisplayType: "Currency"
@@ -1151,7 +1151,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     constraint: {
                         min: -9999999999,
                         max: 9999999999,
-                        required: true,
+//                        required: true,
                         decimalLength: -1,
                         integer: true,
                         cDisplayType: "Currency"
