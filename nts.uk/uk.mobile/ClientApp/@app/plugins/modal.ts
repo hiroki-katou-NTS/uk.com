@@ -3,7 +3,7 @@ import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
 import { ErrorHandler } from 'vue-router/types/router';
 
-const dialog = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
+const $modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
     let self = this,
         $options = self.$options,
         components = $options.components,
@@ -258,7 +258,7 @@ const dialog = function (name: string | ComponentOptions<Vue>, params?: any, opt
             }
         };
 
-        vue.prototype.$modal = dialog;
+        vue.prototype.$modal = $modal;
 
         // hack view height for modal
         window.addEventListener('resize', () => {
@@ -271,4 +271,4 @@ const dialog = function (name: string | ComponentOptions<Vue>, params?: any, opt
     }
 };
 
-export { modal, dialog };
+export { modal, $modal };

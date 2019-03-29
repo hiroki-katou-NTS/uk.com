@@ -1,6 +1,6 @@
 import { $, location, csrf } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
-import { dialog } from './modal';
+import { $modal } from './modal';
 interface IFetchOption {
     url: string;
     type?: 'url' | 'form' | 'json';
@@ -136,7 +136,7 @@ const WEB_APP_NAME = {
                 }
 
             } else {
-                /*dialog({}, {
+                /*$modal({}, {
                     message: xhr.response
                 }, {
                         title: xhr.responseText
