@@ -7,3 +7,4 @@ import '@app/components/common/text-area';
 import '@app/components/common/time-editor';
 
 import '@app/components/common/date-input';
+import '@app/components/common/dropdown';

@@ -162,28 +162,7 @@ class NumberComponent extends InputComponent {
     }
 }
 
-
-
-@input()
-class DropdownComponent extends InputComponent {
-    type: string = 'select';
-
-    get rawValue() {
-        return this.value;
-    }
-
-    mounted() {
-        this.icons.after = 'fa fa-caret-down';
-        (<HTMLSelectElement>this.$refs.input).parentElement.classList.add("nts-dropdown-list");
-    }
-
-    @Emit()
-    input() {
-        return (<HTMLSelectElement>this.$refs.input).value;
-    }
-}
 Vue.component('nts-input-password', PasswordComponent);
 
 Vue.component('nts-input-number', NumberComponent);
 
-Vue.component('nts-dropdown', DropdownComponent);
