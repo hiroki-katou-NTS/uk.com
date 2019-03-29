@@ -186,7 +186,8 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 
 	private GeneralDate convertToDate(String date) {
 		if (date == null || date.isEmpty()) {
-			return null;
+			return GeneralDate.today();
+			//return null;
 		}
 		String[] parts = date.split("/");
 		if (parts.length == 2) {
