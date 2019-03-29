@@ -14,13 +14,13 @@ import { Vue } from '@app/provider';
 export class ActionButton extends Vue {
     
     @Prop()
-    action: any;
+    action: Function;
 
     @Prop()
-    icon: any;
+    icon: string;
 
     @Prop()
-    jumpto: any;
+    jumpto: string;
     
     jump(){
         if(this.jumpto !== undefined && this.jumpto !== null && this.jumpto.length > 0){
