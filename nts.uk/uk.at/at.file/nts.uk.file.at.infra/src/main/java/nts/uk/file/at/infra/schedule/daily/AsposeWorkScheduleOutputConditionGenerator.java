@@ -558,7 +558,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         }
 
         lstWorkplaceId = workplaceHists.values().stream().map(WkpHistImport::getWorkplaceId).distinct().collect(Collectors.toList());
-        queryData.setLstWorkplaceImport(new ArrayList<>(workplaceHists.values()));
+        queryData.setLstWorkplaceImport(workplaceHists);
 
         // Also add into print order list
         for (String key : workplaceHists.keySet()) {
@@ -630,9 +630,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<String> lstEmployeeWithData = lstAttendanceResultImport.stream().map(AttendanceResultImport::getEmployeeId).distinct().collect(Collectors.toList());
 		
 		// From list employeeId above -> Find back their workplace hierachy code
-		Set<String> lstWorkplaceIdWithData = new HashSet<>();
+		Set<String> lstWorkplaceIdWithData;
 		lstWorkplaceIdWithData = lstEmployeeWithData.stream().map(employeeId -> {
-			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().get(employeeId);
 			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 			return code.getHierarchyCode().v();
 		}).collect(Collectors.toSet());
@@ -862,7 +862,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, Map<GeneralDate, AttendanceResultImport>> lstAttendanceResultImport = queryData.getLstAttendanceResultImport()
 				.stream().collect(Collectors.groupingBy(AttendanceResultImport::getEmployeeId, Collectors.toMap(AttendanceResultImport::getWorkingDate, Function.identity())));
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
-		List<WkpHistImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
+		Map<String, WkpHistImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
 		List<OptionalItem> lstOptionalItem = queryData.getLstOptionalItem();
 		
 		// Get all error alarm code
@@ -878,12 +878,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         List<String> tempErrorCode = errorListAllEmployee.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).distinct().collect(Collectors.toList());
 		List<ErrorAlarmWorkRecord> lstAllErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, tempErrorCode);
 		
+		Map<GeneralDate, WorkplaceDailyReportData> workplaceDailyReportDataMap = reportData.getDailyReportData().getLstDailyReportData().stream().collect(Collectors.toMap(WorkplaceDailyReportData::getDate, Function.identity()));
+		
 		for (String employeeId: lstEmployeeId) {
 			EmployeeDto optEmployeeDto = lstEmployeeDto.get(employeeId);
 			
 			datePeriod.stream().forEach(date -> {
-				Optional<WorkplaceDailyReportData> optDailyWorkplaceData = reportData.getDailyReportData().getLstDailyReportData().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), query.getBaseDate(), lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
+				if (!workplaceDailyReportDataMap.containsKey(date)) {
+					return;
+				}
+				WorkplaceDailyReportData optDailyWorkplaceData = workplaceDailyReportDataMap.get(date);
+				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId, optDailyWorkplaceData.getLstWorkplaceData(), query.getBaseDate(), lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
 				if (dailyWorkplaceData != null) {
 					DailyPersonalPerformanceData personalPerformanceDate = new DailyPersonalPerformanceData();
 					if (optEmployeeDto != null)
@@ -1070,7 +1075,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Get all data from query data container
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
-		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
+		Map<String, WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
 		List<OptionalItem> lstOptionalItem = queryData.getLstOptionalItem();
 		String employeeId = employeeDto.getEmployeeId();
@@ -1581,16 +1586,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the workplace report data
 	 */
 	private WorkplaceReportData findWorkplace(String employeeId, WorkplaceReportData rootWorkplace, GeneralDate baseDate,
-			List<WkpHistImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
+			Map<String, WkpHistImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
-		WkpHistImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+		WkpHistImport workplaceImport = lstWorkplaceHistImport.get(employeeId);
 		//WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
 		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
-			WorkplaceReportData reportData = mapWorkplaceInfo.get(hierarchyCode.v());
 			//reportData.period = workplaceInfo.getDatePeriod();
-			return reportData;
+			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
 		else {
 			for (Map.Entry<String, WorkplaceReportData> keySet : mapWorkplaceInfo.entrySet()) {
@@ -1612,18 +1616,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstWorkplaceConfigInfo the lst workplace config info
 	 * @return the daily workplace data
 	 */
-	private DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate, 
-			List<WkpHistImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
+	private DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate,
+			Map<String, WkpHistImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		
 		Map<String, DailyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
-		WkpHistImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+		WkpHistImport workplaceImport = lstWkpHistImport.get(employeeId);
 		//WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
 		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
-			DailyWorkplaceData workplaceData = mapWorkplaceInfo.get(hierarchyCode.v());
 			//workplaceData.period = workplaceInfo.getDatePeriod();
-			return workplaceData;
+			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
 		else {
 			for (Map.Entry<String, DailyWorkplaceData> keySet : mapWorkplaceInfo.entrySet()) {
