@@ -7,7 +7,7 @@
             </div>
         </div>
         <fieldset class="login-form">
-            <v-input-password
+            <nts-input-password
                 class="control-label-inline"
                 v-model="model.newPassword"
                 name='CCG007_16'
@@ -17,7 +17,7 @@
                 v-bind:errors-always="$errors.model.newPassword"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
     
-            <v-input-password
+            <nts-input-password
                 class="control-label-inline"
                 v-model="model.newPasswordConfirm"
                 name='CCG007_17'

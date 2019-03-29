@@ -10,7 +10,7 @@
             v-bind:errors-always="$errors.model.comp"
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
             <option value="">--- Choose options ---</option>
-            <option v-for="(comp,k) in companies" :value="comp.companyId">
+            <option v-for="(comp,k) in companies" :value="comp.companyCode">
                 {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
             </option>
         </nts-dropdown>
@@ -26,7 +26,7 @@
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
             @keyup.enter="login" />
 
-        <v-input-password
+        <nts-input-password
             v-model="model.password"
             class="control-label-inline"
             name='CCG007_2'

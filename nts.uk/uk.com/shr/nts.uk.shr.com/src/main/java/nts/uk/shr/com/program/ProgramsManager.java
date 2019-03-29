@@ -2182,6 +2182,27 @@ public class ProgramsManager {
 			"/view/kdp/003/c/index.xhtml");
 	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
 			"/view/cmf/007/a/index.xhtml");
+	
+	/** The Constant CCG007D. IN MOBILE */
+	public static final Program CCG007_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007D, "CCG007_54",
+			"/ccg/007/b");
+
+	/** The Constant CCG007E. IN MOBILE */
+	public static final Program CCG007E_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007E, "CCG007_55",
+			"/ccg/007/c");
+
+	/** The Constant CCG007F. IN MOBILE */
+	public static final Program CCG007F_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007F, "CCG007_56",
+			"/ccg/007/d");
+//
+	/** The Constant CCG007G. IN MOBILE */
+	public static final Program CCG007G_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007G, "CCG007_57",
+			"/ccg/007/f");
+
+	/** The Constant CCG007H. IN MOBILE */
+	public static final Program CCG007H_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007H, "CCG007_58",
+			"/ccg/007/c");
+	
 	/**
 	 * All programs map.
 	 */

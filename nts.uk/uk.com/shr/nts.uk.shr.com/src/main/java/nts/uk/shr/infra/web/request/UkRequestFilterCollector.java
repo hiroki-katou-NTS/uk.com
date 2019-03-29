@@ -8,9 +8,10 @@ import javax.ejb.Stateless;
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
 import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
+import nts.arc.security.csrf.CsrfProtectionFilter;
+import nts.uk.shr.com.program.nosession.PathsNoSession;
 import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
 import nts.uk.shr.infra.web.session.BatchRequestProcessor;
-import nts.uk.shr.infra.web.session.ScreenLoginSessionValidator;
 import nts.uk.shr.infra.web.session.SharingSessionFilter;
 import nts.uk.shr.infra.web.session.WebApiLoginSessionValidator;
 
@@ -35,7 +36,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher()),
 			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new StartPageLogWriter()),
-//			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS)),
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS)),
 		
 			// This must be executed last
 			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
