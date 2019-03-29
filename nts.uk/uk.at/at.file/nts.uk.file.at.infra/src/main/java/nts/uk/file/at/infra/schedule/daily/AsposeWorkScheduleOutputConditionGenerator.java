@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,7 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringLength;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
@@ -97,6 +99,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepos
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
+import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentInfo;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
@@ -235,14 +241,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private OptionalItemRepository optionalItemRepo;
 	
+	@Inject
+	private SyCompanyPub symCompany;
+	
+	@Inject
+	private EmploymentStatusPub empStatusPub;
+	
 	/** The Constant filename. */
 	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
 	
 	/** The Constant filename. */
 	private static final String TEMPLATE_EMPLOYEE = "report/KWR001_Employee.xlsx";
 	
-	/** The Constant DATA_PREFIX. */
-	private static final String DATA_PREFIX = "DATA_";
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
@@ -521,8 +531,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		remarkQueryDataContainer.initData(query.getEmployeeId(), period);
 		queryData.setRemarkDataContainter(remarkQueryDataContainer);		
 		
-		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
-		queryData.setDatePeriod(lstDate);
+//		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
+//		queryData.setDatePeriod(lstDate);
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
@@ -718,11 +728,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				.filter(item -> itemsId.contains(item.getAttendanceDisplay()))
 				.sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
 		queryData.setLstDisplayItem(lstAttendanceItemsDisplay);
-		
+		//帳票種別をチェックする
 		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
 			WorkplaceReportData data = new WorkplaceReportData();
 			data.workplaceCode = "";
 			reportData.setWorkplaceReportData(data);
+			
+			DatePeriod datePeriod = new DatePeriod(query.getStartDate(), query.getEndDate());
+			//社員の指定期間中の所属期間を取得する RequestList 588
+			List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(lstEmployeeWithData, datePeriod);
+			
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
@@ -741,15 +756,31 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //			// Convert print order list back into list employee dto so we can keep the correct printing order as inputed
 //			lstEmloyeeDto = lstEmployeePrintOrderWithData.stream().map(employee -> employee.getEmployeeDto().get()).collect(Collectors.toList());
 			
-			for (EmployeeDto dto: lstEmloyeeDto) {
-				EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
-				
-				// Calculate total count day
-				if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
-					employeeReportData.totalCountDay = totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeReportData.totalCountDay);
-				}
+			for (EmployeeDto dto : lstEmloyeeDto) {
+
+				statusEmps.stream().filter(x -> !StringUtil.isNullOrEmpty(x.getEmployeeId(), false)
+						&& x.getEmployeeId().equals(dto.getEmployeeId())).findFirst()
+						.ifPresent(status -> {
+							// アルゴリズム「個人別の日別勤務表を作成する」を実行する
+							status.getListPeriod().forEach(periodDate -> {
+								DateRange range = new DateRange(periodDate.start(), periodDate.end());
+								queryData.setDatePeriod(range.toListDate());
+								EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(
+										reportData, queryData, dto, dataRowCount);
+
+								// Calculate total count day
+								if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
+									employeeReportData.totalCountDay = totalDayCountWs.calculateAllDayCount(
+											dto.getEmployeeId(),
+											new DateRange(query.getStartDate(), query.getEndDate()),
+											employeeReportData.totalCountDay);
+								}
+							});
+							
+						});
+
 			}
-			
+			//取得件数を確認する
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
 		}
 		else {
@@ -770,7 +801,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			lstReportData.forEach(x -> {
 				analyzeInfoExportByDate(lstWorkplaceTemp, x.getLstWorkplaceData(), lstAddedCode);
 			});
-			
+			//Imported(就業)「社員の在職状態」を取得する
+			this.empStatusPub.findListOfEmployee(lstEmployeeWithData, period).forEach(empStatus->{
+				//RQ433で取得した社員在職データを日付毎のデータに並び替える
+				List<EmploymentInfo> empInfos = empStatus.getEmploymentInfo().stream().sorted(Comparator.comparing(EmploymentInfo::getStandardDate)).collect(Collectors.toList());
+				empStatus.setEmploymentInfo(empInfos);
+			});
 			collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
 			// Calculate workplace total
 			lstReportData.forEach(dailyData -> {
@@ -803,7 +839,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	/**
 	 * Collect employee performance data by date.
-	 *
+	 * 日付別の日別勤務表を作成する
 	 * @param reportData the report data
 	 * @param queryData the query data
 	 * @param dataRowCount the data row count
@@ -1008,7 +1044,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 	/**
 	 * Collect employee performance data by employee.
-	 *
+	 * 個人別の日別勤務表を作成する
 	 * @param reportData the report data
 	 * @param queryData the query data
 	 * @param employeeDto the employee dto
@@ -1209,7 +1245,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	/**
 	 * Calculate total export by employee.
-	 *
+	 * 取得件数を確認する
 	 * @param workplaceData the workplace data
 	 * @param lstAttendanceId the lst attendance id
 	 */
@@ -1972,6 +2008,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<EmployeeReportData> lstEmployeeReportData = workplaceReportData.getLstEmployeeReportData();
 		
 		// Root workplace won't have employee
+		List<String> departmentCode = new ArrayList<>();
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
 			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
 			while (iteratorEmployee.hasNext()) {
@@ -1993,11 +2030,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						rowPageTracker.useRemainingRow(dataRowCount);
 					}
 
-					// A3_1
-					Cell workplaceTagCell = cells.get(currentRow, 0);
-					workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE + "　"
-							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName());
-					currentRow++;
+					if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())) {
+						// A3_1
+						Cell workplaceTagCell = cells.get(currentRow, 0);
+						workplaceTagCell.setValue(
+								WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　"
+										+ workplaceReportData.getWorkplaceName());
+						departmentCode.add(workplaceReportData.getWorkplaceCode());
+						currentRow++;
+					}
 				}
 				// A3_2
 //				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
@@ -2008,7 +2049,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
 				}
-				if(condition.isShowPeronal()){
+				if(condition.isPrivatePerson()){
 					Range employeeRangeTemp = templateSheetCollection
 							.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 					Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
@@ -2255,7 +2296,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
-			
 			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2413,6 +2453,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 		}
 		
+		
 		return currentRow;
 	}
 
@@ -2466,8 +2507,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
 		Iterator<WorkplaceDailyReportData> iteratorWorkplaceData  = lstDailyReportData.iterator();
-		
+		if(condition.isDating()){
 		while(iteratorWorkplaceData.hasNext()) {
+			
 			WorkplaceDailyReportData dailyReportData = iteratorWorkplaceData.next();
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
@@ -2494,6 +2536,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
 			}
 		}
 		

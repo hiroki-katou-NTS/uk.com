@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         code: KnockoutObservable<string> = ko.observable("");
         editMode: KnockoutObservable<boolean> = ko.observable(true);
         name: KnockoutObservable<string> = ko.observable("");
-        useConditionCls: KnockoutObservable<boolean> = ko.observable(false);
+        useConditionCls: KnockoutObservable<boolean> = ko.observable(true);
         grantDate: KnockoutObservable<string> = ko.observable("");
         enableGrantDate: KnockoutObservable<boolean> = ko.observable(true);
         A6_2Data: KnockoutObservableArray<any> = ko.observableArray([

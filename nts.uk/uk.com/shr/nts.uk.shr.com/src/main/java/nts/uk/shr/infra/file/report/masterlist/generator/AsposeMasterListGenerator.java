@@ -403,11 +403,17 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 				Cell cell = cells.get(startRow + i, j);
 				// TODO: format date with format
 				MasterCellData cellData = data.cellAt(column.getColumnId());
-				Style style = this.getCellStyle(cell.getStyle(), cellData.getStyle());
-				cell.setValue(cellData.getValue());
-				cell.setStyle(style);
-				if (!StringUtil.isNullOrEmpty(cellData.getStyle().columnFormat(), true)) {
-					cell.setFormula(cellData.getStyle().columnFormat());
+				if(cellData != null) {
+					Style style = this.getCellStyle(cell.getStyle(), cellData.getStyle());
+					cell.setValue(cellData.getValue());
+					cell.setStyle(style);
+					if (!StringUtil.isNullOrEmpty(cellData.getStyle().columnFormat(), true)) {
+						cell.setFormula(cellData.getStyle().columnFormat());
+					}
+				}else{
+					Style style = this.getCellStyle(cell.getStyle(), null);
+					cell.setValue(null);
+					cell.setStyle(style);
 				}
 				j++;
 			}
@@ -426,18 +432,19 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 		Font font = style.getFont();
 
-		font.setSize(cellStyle.fontSize());
-		font.setName(cellStyle.fontFamily());
-		style.setHorizontalAlignment(cellStyle.horizontalAlign().value);
-		style.setVerticalAlignment(cellStyle.verticalAlign().value);
-		if (cellStyle.backgroundColor() != null) {
-			style.setPattern(BackgroundType.SOLID);
-			style.setForegroundColor(toColor(cellStyle.backgroundColor()));
-		}
-		if (cellStyle.textColor() != null) {
-			font.setColor(toColor(cellStyle.textColor()));
-		}
-
+		 if(cellStyle != null) {
+			font.setSize(cellStyle.fontSize());
+			font.setName(cellStyle.fontFamily());
+			style.setHorizontalAlignment(cellStyle.horizontalAlign().value);
+			style.setVerticalAlignment(cellStyle.verticalAlign().value);
+			if (cellStyle.backgroundColor() != null) {
+				style.setPattern(BackgroundType.SOLID);
+				style.setForegroundColor(toColor(cellStyle.backgroundColor()));
+			}
+			if (cellStyle.textColor() != null) {
+				font.setColor(toColor(cellStyle.textColor()));
+			}
+		 }
 		return style;
 	}
 

@@ -63,4 +63,17 @@ public interface GetAgreTimeByPeriod {
 	 * @return 36協定年間時間
 	 */
 	Optional<AgreementTimeYear> timeYear(String companyId, String employeeId, GeneralDate criteria, Year year);
+	
+	/**
+	 * 指定期間36協定時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteria 基準日
+	 * @param startMonth 起算月
+	 * @param year 年度
+	 * @param periodAtr 期間区分
+	 * @return 指定期間36協定時間リスト
+	 */
+	List<AgreementTimeByPeriod> algorithm(String companyId, String employeeId, GeneralDate criteria,
+			Month startMonth, Year year, PeriodAtrOfAgreement periodAtr, AgeementTimeCommonSetting basicSetGetter);
 }

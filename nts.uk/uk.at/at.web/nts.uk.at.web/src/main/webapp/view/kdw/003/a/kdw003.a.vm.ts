@@ -698,6 +698,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
            // self.displayNumberZero();
             self.displayProfileIcon(self.displayFormat());
             self.dislayNumberHeaderText();
+            //set hide control approval
+            _.forEach(data.lstHideControl, hide =>{
+                $("#dpGrid").mGrid("setState", "_"+hide.rowId, hide.columnKey, ["mgrid-hide"]);
+            })
             console.log("thoi gian load 0: " + (performance.now() - startTime));
             //set SPR
             if (data.showErrorDialog) {
@@ -1660,10 +1664,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     rowIdsTemp = _.filter(rowIdsTemp, (v) => !_.includes(self.lstErrorAfterCalcUpdate, v.rowId));
                     data.lstCellState = _.filter(data.lstCellState, (v) => !_.includes(self.lstErrorAfterCalcUpdate, v.rowId));
                     data.lstCellStateCalc = _.filter(data.lstCellStateCalc, (v) => !_.includes(self.lstErrorAfterCalcUpdate, v.rowId));
-                                    
-                    $("#dpGrid").mGrid("clearState", _.map(rowIdsTemp, (value) => {
+                    let lstRowReload = _.map(rowIdsTemp, (value) => {
                         return value.rowId;
-                    }))
+                    })               
+                    $("#dpGrid").mGrid("clearState", lstRowReload);
+                    _.forEach(lstRowReload, tmp => {
+                       $("#dpGrid").mGrid("clearState", tmp, "approval", ["mgrid-hide"]); 
+                    });
+                    
+                    _.forEach(data.lstHideControl, hide => {
+                        $("#dpGrid").mGrid("setState", "_" + hide.rowId, hide.columnKey, ["mgrid-hide"]);
+                    })
                     _.each(data.lstCellState, (valt) => {
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
@@ -2008,6 +2019,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.displayNumberZero();
                         //self.displayProfileIcon(self.displayFormat());
                         self.dislayNumberHeaderText();
+                        // load hide Checkbox approval
+                        _.forEach(data.lstHideControl, hide =>{
+                           $("#dpGrid").mGrid("setState", "_"+hide.rowId, hide.columnKey, ["mgrid-hide"]);
+                        })
                         //check visable MIGrid
                         if (self.displayFormat() != 0) {
                             self.isVisibleMIGrid(false);
@@ -3474,7 +3489,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //                            nts.uk.request.jump("/view/kaer);
                         //                            break;
 
-                        case 15:
+                        case 14:
                             //KAF011-振休振出申請
                             nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
                             break;
@@ -3516,10 +3531,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 endDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
 
             }
-            nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
-            nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm);
-            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-
+            nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
+                parent.nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm).done(function() {
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
+                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                });
+            }); 
         }
 
         reloadGrid() {

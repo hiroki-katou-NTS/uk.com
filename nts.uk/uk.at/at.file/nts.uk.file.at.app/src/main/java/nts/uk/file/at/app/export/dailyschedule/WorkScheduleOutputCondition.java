@@ -56,13 +56,26 @@ public class WorkScheduleOutputCondition  {
 	
 	/**
 	 * Checks if is show workplace.
-	 * 
+	 * A3_1, A3_2, A3_3
 	 * @return	boolean 
 	 */
 	public Boolean isShowWorkplace(){
 		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isWorkplaceTotal() || this.settingDetailTotalOutput.isCumulativeWorkplace();
 	}
+	/**
+	 * Update ver 18 in document
+	 * B3_1, B3_2
+	 * @return
+	 */
 	public Boolean isShowPeronal(){
-		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isPersonalTotal();
+		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isPersonalTotal() || this.settingDetailTotalOutput.isCumulativeWorkplace();
+	}
+	
+	public Boolean isPrivatePerson(){
+		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isPersonalTotal() ;
+	}
+	
+	public Boolean isDating(){
+		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isWorkplaceTotal() || this.settingDetailTotalOutput.isCumulativeWorkplace();
 	}
 }
