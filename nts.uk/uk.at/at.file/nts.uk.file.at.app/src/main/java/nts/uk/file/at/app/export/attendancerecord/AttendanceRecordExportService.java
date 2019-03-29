@@ -1316,7 +1316,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			return value + MASTER_UNREGISTERED;
 
 		default:
-			return value + MASTER_UNREGISTERED;
+			return value;
 
 		}
 	}
