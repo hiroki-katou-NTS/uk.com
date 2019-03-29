@@ -52,7 +52,7 @@ public class AffCompanyHistService {
 	 * @param itemToBeUpdated
 	 */
 	public void updateAll(List<AffCompanyHistItem> itemToBeUpdated){
-
+		if(itemToBeUpdated.isEmpty()) return;
 		affCompanyHistRepository.updateAll(itemToBeUpdated);
 	}
 }
