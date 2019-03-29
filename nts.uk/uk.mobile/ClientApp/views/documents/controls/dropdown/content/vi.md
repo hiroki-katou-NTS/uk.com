@@ -53,12 +53,11 @@ export class ViewModel extends Vue {
 ```
 ## 4. Thông tin bổ sung
 
-"nts-text-editor" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
+"nts-dropdown" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
 
 | Tên Thuộc tính| Type | Mặc định | Mô tả |
 | --------------|------| -------- | ------|
 | name | string | '' | Tên hiển thị của item |
-| value | any | '' | Giá trị đầu vào của item |
 | disabled | boolean | false | Item có bị disable hay không? |
 | errors | any | null | ... |
 | errorsAlways | any | null | ... |
@@ -66,5 +65,5 @@ export class ViewModel extends Vue {
 | item | {before, after} | { before: '', after: ''} | Icon của item |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ... |
 
-Khi khai báo nts-text-editor trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
+Khi khai báo "nts-dropdown" trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
 
