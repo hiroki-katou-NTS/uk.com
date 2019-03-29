@@ -166,7 +166,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		
 			   List < BusinessTypeOfEmployee > entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 			    KrcmtBusinessTypeOfEmployee entity = new KrcmtBusinessTypeOfEmployee();
-			    entity.krcmtBusinessTypeOfEmployeePK.historyId = rec.getString("HIST_ID");
+			    entity.krcmtBusinessTypeOfEmployeePK = new KrcmtBusinessTypeOfEmployeePK(rec.getString("HIST_ID"));
 			    entity.sId = rec.getString("SID");
 			    entity.businessTypeCode = rec.getString("BUSINESS_TYPE_CD");
 			    
