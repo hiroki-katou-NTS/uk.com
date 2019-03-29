@@ -63,9 +63,6 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Override
 	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
 			IntegrationOfDaily dailyData, boolean isPre) {
-		if(isPre && !holidayWorkPara.isScheReflectFlg()) {
-			return;
-		}
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame().entrySet()){
 			//INPUT．休出時間のループ中の番をチェックする
