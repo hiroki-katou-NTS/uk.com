@@ -1,6 +1,6 @@
 import { $, location, csrf } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
-
+import { dialog } from './modal';
 interface IFetchOption {
     url: string;
     type?: 'url' | 'form' | 'json';
@@ -9,175 +9,172 @@ interface IFetchOption {
     headers?: any;
     pg?: 'at' | 'pr' | 'com';
     responseType?: 'blob' | 'arraybuffer' | 'document' | 'json' | 'text' | null;
+    prefixUrl?: 'webapi' | string;
 }
 
 const WEB_APP_NAME = {
     at: 'nts.uk.at.web',
     pr: 'nts.uk.pr.web',
     com: 'nts.uk.com.web'
-}, ajax = {
-    install(vue: VueConstructor<Vue>, prefixUrl: string) {
-        const fetch = function (opt: IFetchOption) {
-            return new Promise(function (resolve, reject) {
-                if (!$.isObject(opt)) {
-                    reject('No required parameters - "url" and "method".')
-                    return;
-                }
+}, fetch = function (opt: IFetchOption) {
+    return new Promise(function (resolve, reject) {
+        if (!$.isObject(opt)) {
+            reject('No required parameters - "url" and "method".')
+            return;
+        }
 
-                if ($.isEmpty(opt.url)) {
-                    reject('Parameter "url" is required.')
-                    return;
-                } else {
-                    $.extend(opt, {
-                        url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
-                    });
-                }
-
-                if ($.isEmpty(opt.method)) {
-                    reject('Parameter "method" is required.')
-                    return;
-                }
-
-                if (!opt.type) {
-                    opt.type = 'json';
-                }
-
-                const xhr = new XMLHttpRequest(),
-                    parseData = () => {
-                        if (opt.type) {
-                            switch (opt.type.toLowerCase()) {
-                                case 'form':
-                                    setHeaders({ 'Content-Type': 'multipart/form-data' });
-                                    return Object.prototype.toString.call(opt.data) === '[object FormData]' ? opt.data : new FormData(opt.data);
-                                case 'url':
-                                    setHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-                                    return JSON.stringify(opt.data);
-                                case 'json':
-                                    setHeaders({ 'Content-Type': 'application/json' });
-                                    return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data);
-                                default:
-                                    return opt.data;
-                            }
-                        }
-                    }, setHeaders = (headers: any) => {
-                        $.objectForEach(headers, (header: string, value: any) => {
-                            xhr.setRequestHeader(header, value);
-                        });
-                    }, isJSON = (json: string) => {
-                        try {
-                            JSON.parse(json)
-                            return true;
-                        }
-                        catch (e) {
-                            return false;
-                        }
-                    }, parseHeaders = (xhr: XMLHttpRequest) => {
-                        return function () {
-                            var raw = xhr.getAllResponseHeaders()
-
-                            return headersParser(raw)
-                        }
-                    }, headersParser = (rawHeaders: string) => {
-                        var headers: any = {};
-
-                        if (!rawHeaders) {
-                            return headers;
-                        }
-
-                        var headerPairs = rawHeaders.split('\u000d\u000a');
-
-                        for (var i = 0; i < headerPairs.length; i++) {
-                            var headerPair = headerPairs[i];
-                            // Can't use split() here because it does the wrong thing
-                            // if the header value has the string ": " in it.
-                            var index = headerPair.indexOf('\u003a\u0020');
-
-                            if (index > 0) {
-                                let key = headerPair.substring(0, index),
-                                    val = headerPair.substring(index + 2);
-
-                                headers[key] = val;
-                            }
-                        }
-                        return headers;
-                    };
-
-                xhr.open(opt.method, opt.url, true);
-
-                if (opt.data) {
-                    opt.data = parseData();
-                }
-
-                if (opt.headers) {
-                    setHeaders(opt.headers);
-                }
-
-                // authentication 
-                setHeaders({
-                    'MOBILE': 'true',
-                    'PG-Path': location.current.serialize(),
-                    'X-CSRF-TOKEN': csrf.getToken()
-                });
-
-                if (opt.responseType) {
-                    xhr.responseType = opt.responseType;
-                }
-
-                xhr.onerror = function () {
-                    reject(xhr);
-                };
-
-                xhr.onload = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        try {
-                            resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
-                        }
-                        catch (e) {
-                            resolve({ data: xhr.response, headers: parseHeaders(xhr) });
-                        }
-
-                    } else {
-                        reject(xhr);
-                    }
-                };
-
-                xhr.send(opt.data);
+        if ($.isEmpty(opt.url)) {
+            reject('Parameter "url" is required.')
+            return;
+        } else {
+            $.extend(opt, {
+                url: (`${process.env ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
             });
-        };
+        }
 
-        // authentication
-        vue.mixin({
-            beforeMount() {
-                if (!localStorage.getItem('csrf')) {
-                    //this.$router.push({ path: '/ccg/007/b' });
+        if ($.isEmpty(opt.method)) {
+            reject('Parameter "method" is required.')
+            return;
+        }
+
+        if (!opt.type) {
+            opt.type = 'json';
+        }
+
+        const xhr = new XMLHttpRequest(),
+            parseData = () => {
+                if (opt.type) {
+                    switch (opt.type.toLowerCase()) {
+                        case 'form':
+                            setHeaders({ 'Content-Type': 'multipart/form-data' });
+                            return Object.prototype.toString.call(opt.data) === '[object FormData]' ? opt.data : new FormData(opt.data);
+                        case 'url':
+                            setHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+                            return JSON.stringify(opt.data);
+                        case 'json':
+                            setHeaders({ 'Content-Type': 'application/json' });
+                            return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data);
+                        default:
+                            return opt.data;
+                    }
                 }
-            }
+            }, setHeaders = (headers: any) => {
+                $.objectForEach(headers, (header: string, value: any) => {
+                    xhr.setRequestHeader(header, value);
+                });
+            }, isJSON = (json: string) => {
+                try {
+                    JSON.parse(json)
+                    return true;
+                }
+                catch (e) {
+                    return false;
+                }
+            }, parseHeaders = (xhr: XMLHttpRequest) => {
+                return function () {
+                    var raw = xhr.getAllResponseHeaders()
+
+                    return headersParser(raw)
+                }
+            }, headersParser = (rawHeaders: string) => {
+                var headers: any = {};
+
+                if (!rawHeaders) {
+                    return headers;
+                }
+
+                var headerPairs = rawHeaders.split('\u000d\u000a');
+
+                for (var i = 0; i < headerPairs.length; i++) {
+                    var headerPair = headerPairs[i];
+                    // Can't use split() here because it does the wrong thing
+                    // if the header value has the string ": " in it.
+                    var index = headerPair.indexOf('\u003a\u0020');
+
+                    if (index > 0) {
+                        let key = headerPair.substring(0, index),
+                            val = headerPair.substring(index + 2);
+
+                        headers[key] = val;
+                    }
+                }
+                return headers;
+            };
+
+        xhr.open(opt.method, opt.url, true);
+
+        if (opt.data) {
+            opt.data = parseData();
+        }
+
+        if (opt.headers) {
+            setHeaders(opt.headers);
+        }
+
+        // authentication 
+        setHeaders({
+            'MOBILE': 'true',
+            'PG-Path': location.current.serialize(),
+            'X-CSRF-TOKEN': csrf.getToken()
         });
 
+        if (opt.responseType) {
+            xhr.responseType = opt.responseType;
+        }
+
+        xhr.onerror = function () {
+            reject(xhr);
+        };
+
+        xhr.onload = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                try {
+                    resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
+                }
+                catch (e) {
+                    resolve({ data: xhr.response, headers: parseHeaders(xhr) });
+                }
+
+            } else {
+                /*dialog({}, {
+                    message: xhr.response
+                }, {
+                        title: xhr.responseText
+                    });*/
+                reject(xhr);
+            }
+        };
+
+        xhr.send(opt.data);
+    });
+}, ajax = {
+    install(vue: VueConstructor<Vue>, prefixUrl: string) {
         vue.prototype.$http = {
             get: (pg: 'at' | 'com' | "pr" | string, url: string) => {
                 if (pg === 'at' || pg === 'com' || pg === 'pr') {
-                    return fetch({ pg, url, method: 'get' });
+                    return fetch({ pg, url, method: 'get', prefixUrl });
                 } else {
-                    return fetch({ pg: 'com', url: pg, method: 'get' });
+                    return fetch({ pg: 'com', url: pg, method: 'get', prefixUrl });
                 }
             },
             post: (pg: 'at' | 'com' | "pr" | string, url?: string | any, data?: any) => {
                 if (pg === 'at' || pg === 'com' || pg === 'pr') {
-                    return fetch({ pg, url, data, method: 'post' });
+                    return fetch({ pg, url, data, method: 'post', prefixUrl });
                 } else {
-                    return fetch({ pg: 'com', url: pg, data: url, method: 'post' });
+                    return fetch({ pg: 'com', url: pg, data: url, method: 'post', prefixUrl });
                 }
             },
             async: {
                 info: (taskdId: string) => {
                     return fetch({
+                        prefixUrl,
                         method: 'post',
                         url: '/ntscommons/arc/task/async/info/' + taskdId
                     });
                 },
                 cancel: (taskdId: string) => {
                     return fetch({
+                        prefixUrl,
                         method: 'post',
                         url: '/ntscommons/arc/task/async/requesttocancel/' + taskdId
                     });
@@ -189,6 +186,7 @@ const WEB_APP_NAME = {
                 },
                 delete: (fileId: string) => {
                     return fetch({
+                        prefixUrl,
                         method: 'post',
                         url: `/shr/infra/file/storage/delete/${fileId}`
                     });
@@ -198,6 +196,7 @@ const WEB_APP_NAME = {
                 },
                 download: (fileId: string) => {
                     return fetch({
+                        prefixUrl,
                         method: 'get',
                         responseType: 'blob',
                         url: `/shr/infra/file/storage/get/${fileId}`
@@ -222,4 +221,4 @@ const WEB_APP_NAME = {
     }
 };
 
-export { ajax };
+export { ajax, fetch };
