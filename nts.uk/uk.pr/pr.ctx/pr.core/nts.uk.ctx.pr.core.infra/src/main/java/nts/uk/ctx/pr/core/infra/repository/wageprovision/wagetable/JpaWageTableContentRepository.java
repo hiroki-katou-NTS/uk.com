@@ -210,13 +210,19 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 							if (newPayment.getElementAttribute().getThirdElementItem().isPresent() && oldPayment.getElementAttribute().getThirdElementItem().isPresent()) {
 								if (isElementItemsEqual(newPayment.getElementAttribute().getThirdElementItem().get(), oldPayment.getElementAttribute().getThirdElementItem().get())) {
 									newPayment.setId(oldPayment.getId());
+									listPayment.remove(oldPayment);
+									break;
 								}
 							} else {
 								newPayment.setId(oldPayment.getId());
+								listPayment.remove(oldPayment);
+								break;
 							}
 						}
 					} else {
 						newPayment.setId(oldPayment.getId());
+						listPayment.remove(oldPayment);
+						break;
 					}
 				}
 			}			
