@@ -2206,7 +2206,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007H. IN MOBILE */
 	public static final Program CCG007H_M = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007H, "CCG007_58",
-			"/ccg/007/c");
+			"/ccg/007/e");
 	
 	/**
 	 * All programs map.
