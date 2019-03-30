@@ -2,7 +2,9 @@ package nts.uk.ctx.bs.employee.pubimp.company;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -105,7 +107,9 @@ public class ComPubImp implements SyCompanyPub {
 		if(listAffComHisByEmp.isEmpty())
 			return Collections.emptyList();
 		
+
 		List<StatusOfEmployee> result = new ArrayList<>();
+
 		
 		for (int i = 0; i < listAffComHisByEmp.size(); i++) {
 			List<DatePeriod> lstPeriod = listAffComHisByEmp.get(i).items()
@@ -121,12 +125,12 @@ public class ComPubImp implements SyCompanyPub {
 	
 	List<DatePeriod> CheckPeriod(List<DatePeriod> lstPeriod, DatePeriod param) {
 
-		List<DatePeriod> result = new ArrayList<>();
+		Set<DatePeriod> result = new HashSet<>();
 		for (int i = 0; i < lstPeriod.size(); i++) {
 			GeneralDate start = lstPeriod.get(i).start();
 			GeneralDate end = lstPeriod.get(i).end();
 			/**
-			 *  case1
+			 *  case1 
 			 *   period |========================>
 			 *   param       |===========>
 			 */
@@ -159,7 +163,7 @@ public class ComPubImp implements SyCompanyPub {
 				result.add(new DatePeriod(param.start() , end));
 			}
 		}
-		return result;
+		return result.stream().collect(Collectors.toList());
 
 	}
 
