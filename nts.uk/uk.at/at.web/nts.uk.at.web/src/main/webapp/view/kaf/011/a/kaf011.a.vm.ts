@@ -66,7 +66,29 @@ module nts.uk.at.view.kaf011.a.screenModel {
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
         remainDays: KnockoutObservable<number> = ko.observable(null);
+        
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
+        
+        kaf011ReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.appTypeSet().displayAppReason() != 0;
+            });
+        kaf011FixedReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return true;
+            });
+        kdl003BtnEnable: KnockoutObservable<boolean> = ko.observable(true);
+        recTimeSwitchEnable: KnockoutObservable<boolean> = ko.observable(true);
+        recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return true;
+        });
+        absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.absWk().changeWorkHoursType();
+            });
+        absTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.absWk().enableWkTime() == true;
+        });
+        changeWorkHoursTypeEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return true;
+        });
         constructor() {
             let self = this;
 
