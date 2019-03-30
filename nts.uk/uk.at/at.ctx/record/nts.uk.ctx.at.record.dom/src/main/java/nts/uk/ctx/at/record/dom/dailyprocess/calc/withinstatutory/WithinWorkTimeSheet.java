@@ -968,16 +968,17 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				}
 		}else {
 			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
-			
-				if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
-					if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
-							&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
-						decisionDeductChild = true;
-					}
-				}else {
-					if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
-							advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
-						decisionDeductChild = true;
+				if(advanceSet.isPresent()){
+					if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+						if(advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
+								&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+							decisionDeductChild = true;
+						}
+					}else {
+						if(advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
+								advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+							decisionDeductChild = true;
+						}
 					}
 				}
 		}
@@ -1026,7 +1027,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   Optional<WorkTimezoneCommonSet> commonSetting
 			) {
 		//パラメータ「控除区分」＝”控除”　かつ　控除しない
-		if(deductionAtr.isDeduction()&&!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+		if(deductionAtr.isDeduction()&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
 			return new AttendanceTime(0);
 		}
 		//遅刻時間の計算   (最低勤務時間　－　パラメータで受け取った就業時間)
@@ -1123,8 +1124,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return
 	 */
 	public AttendanceTime calcLateTime(DeductionAtr deductionAtr,
-			
-			
 			   PremiumAtr premiumAtr, 
 			   CalcurationByActualTimeAtr calcActualTime,
 			   VacationClass vacationClass,
@@ -1150,7 +1149,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   List<LeaveEarlyTimeOfDaily> leaveEarlyTime
 			) {
 		//パラメータ「控除区分」＝”控除”　かつ　控除しない
-		if(deductionAtr.isDeduction()&&!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+		if(deductionAtr.isDeduction()&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
 			return new AttendanceTime(0);
 		}
 		
