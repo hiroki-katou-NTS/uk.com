@@ -117,9 +117,6 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			dataSetter.updateData("dailyCalculateCount", count);
 		}
 		
-		
-
-
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();

@@ -58,7 +58,6 @@ public class DeductionTimeSheet {
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
-
 	//休憩
 	private final List<BreakTimeOfDailyPerformance> breakTimeOfDailyList;
 	//外出
@@ -238,8 +237,8 @@ public class DeductionTimeSheet {
 
 				}
 				break;
+				
 			case BREAK:
-
 				List<TimeSpanForCalc> duplicateBreakSheet = timeSheet.getBreakCalcRange(
 						attendanceLeaveWork.getTimeLeavingWorks(), calcMethod,
 						oneDayRange.getDuplicatedWith(timeSheet.calcrange));
@@ -254,7 +253,6 @@ public class DeductionTimeSheet {
 								timeSheet.midNightTimeSheet, timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
 								timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 					});
-				
 				}
 				break;
 			default:

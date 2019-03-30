@@ -171,7 +171,4 @@ public class OutsideWorkTimeSheet {
 		}
 		return new AttendanceTime(0);
 	}
-
-
-	
 }
