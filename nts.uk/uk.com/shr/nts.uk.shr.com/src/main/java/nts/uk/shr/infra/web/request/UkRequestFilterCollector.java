@@ -21,7 +21,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 	
 	private static class PathPattern {
 		static final String ALL_REQUESTS = ".*";
-		static final String ALL_SCREENS = ".*\\.xhtml.*";
+		static final String ALL_SCREENS = ".*\\.x?html.*";
 		static final String ALL_WEB_APIS = ".*/webapi/.*";
 		static final String BATCH_WEB_APIS = ".*/webapi/batch/.*";
 		static final String LOGIN_SCREENS = ".*/view/ccg/007/.*";
@@ -35,10 +35,12 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.BATCH_WEB_APIS, new BatchRequestProcessor()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()));
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new RequestNavigateFilter()));
 			
 			if (ServerSystemProperties.logMode()) {
 				FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new RequestPerformancePoolFilter()));
 			}
+			
 			
 			//RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()));
