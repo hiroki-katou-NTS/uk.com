@@ -326,17 +326,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			
 			DailyRecordToAttendanceItemConverter converterForAllZero = attendanceItemConvertFactory.createDailyConverter();
 			DailyRecordToAttendanceItemConverter beforDailyRecordDto = converterForAllZero.setData(integrationOfDaily);
-			integrationOfDaily.setAttendanceTimeOfDailyPerformance(peform);
+			val recordAllZeroValueIntegration = beforDailyRecordDto.toDomain();
+			recordAllZeroValueIntegration.setAttendanceTimeOfDailyPerformance(peform);
 			List<ItemValue> itemValueList = Collections.emptyList();
 			if (!attendanceItemIdList.isEmpty()) {
 
 				itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
 				DailyRecordToAttendanceItemConverter afterDailyRecordDto = converterForAllZero
-						.setData(integrationOfDaily);
+						.setData(recordAllZeroValueIntegration);
 				afterDailyRecordDto.merge(itemValueList);
 
 				// 手修正された項目の値を計算前に戻す
 				integrationOfDaily = afterDailyRecordDto.toDomain();
+			}
+			else {
+				integrationOfDaily = recordAllZeroValueIntegration;
 			}
 			
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
@@ -433,17 +437,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 			DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(integrationOfDaily);
-			integrationOfDaily.setAttendanceTimeOfDailyPerformance(peform);
+			val recordAllZeroValueIntegration = beforDailyRecordDto.toDomain();
+			recordAllZeroValueIntegration.setAttendanceTimeOfDailyPerformance(peform);
 			List<ItemValue> itemValueList = Collections.emptyList();
 			if (!attendanceItemIdList.isEmpty()) {
 
 				itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
 				DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter
-						.setData(integrationOfDaily);
+						.setData(recordAllZeroValueIntegration);
 				afterDailyRecordDto.merge(itemValueList);
 
 				// 手修正された項目の値を計算前に戻す
 				integrationOfDaily = afterDailyRecordDto.toDomain();
+			}
+			else {
+				integrationOfDaily = recordAllZeroValueIntegration;
 			}
 			
 		
