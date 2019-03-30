@@ -93,6 +93,8 @@ module nts.uk.at.view.kwr008.a {
             
             selectAverage: KnockoutObservable<boolean> = ko.observable(false);
             
+            ccg001Date: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
+            
             constructor() {
                 var self = this;
 
@@ -199,6 +201,7 @@ module nts.uk.at.view.kwr008.a {
                 data.printFormat = self.printFormat();
                 data.employees = [];
                 data.excludeEmp = self.excludeEmp();
+                data.baseDate = self.baseDate().format("YYYY/MM/DD");
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
                     if (emp) data.employees.push(emp);
@@ -359,6 +362,7 @@ module nts.uk.at.view.kwr008.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        self.baseDate(moment(data.baseDate.toDateTime()));
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -579,6 +583,7 @@ module nts.uk.at.view.kwr008.a {
                 fiscalYear: string = '';
                 printFormat: number = 0;
                 curentMonth: string = '';
+                baseDate: string = '';
                 constructor() { }
             }
         }

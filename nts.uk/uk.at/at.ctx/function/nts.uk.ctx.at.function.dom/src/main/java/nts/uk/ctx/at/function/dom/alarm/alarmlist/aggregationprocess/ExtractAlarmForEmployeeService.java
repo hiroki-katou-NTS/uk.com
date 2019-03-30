@@ -205,9 +205,31 @@ public class ExtractAlarmForEmployeeService {
 			result.addAll(runMultiMonthCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+			result.addAll(runHolidayCheckErAl(comId, checkConList, listPeriodByCategory, employees,
+					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 
 //		parallelManager.forEach(checks, check -> check.run());
 
+		return result;
+	}
+	
+	private List<ValueExtractAlarm> runHolidayCheckErAl(String comId, List<CheckCondition> checkConList,
+			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
+			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
+			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		List<ValueExtractAlarm> result = new ArrayList<>();
+		List<AlarmCheckConditionByCategory> holiday = getAlarmCheckConditionCate(eralCate, AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY, checkConList);
+		if(!holiday.isEmpty()){
+//			PeriodByAlarmCategory multiMonthCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.value).findFirst().get();
+//			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, multiMonthCate);
+//			checkConList.stream().filter(c -> c.getAlarmCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY).forEach(c -> {
+//				for (String checkConditionCode : c.getCheckConditionList()) {
+//					result.addAll(totalProcessAnnualHoliday.totalProcessAnnualHoliday(comId,checkConditionCode, employees));
+//				}
+//			});
+			result.addAll(totalProcessAnnualHoliday.totalProcessAnnualHolidayV2(comId, holiday, employees, counter, shouldStop));
+		}
+		
 		return result;
 	}
 

@@ -680,7 +680,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 		Optional<GeneralDate> baseDate = service.getProcessingYM(companyId, closureId);
 		if (!baseDate.isPresent()) {
-			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
+			//Uchida bảo là lỗi hệ thống _ ThànhPV
+			throw new BusinessException("");
 		}
 		Map<String, YearMonthPeriod> employeePeriod = service.getAffiliationPeriod(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), query.getEndYearMonth()), baseDate.get());
 		{
@@ -1399,6 +1400,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// Root workplace won't have employee
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
 			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
+			int firstWpl = 0;
 			while (iteratorEmployee.hasNext()) {
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
 				
@@ -1414,7 +1416,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.resetRemainingRow();
 				}
 				
-				if (condition.isShowWorkplace()) {
+				if ((condition.isShowWorkplace() && firstWpl == 0) || (condition.isShowWorkplace() && condition.isShowPersonal())) {
 					Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 					Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 					workplaceRange.copy(workplaceRangeTemp);
@@ -1424,6 +1426,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE + "　"
 							+ workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
 					currentRow++;
+					firstWpl ++;
 				} 
 				
 				// A3_2
