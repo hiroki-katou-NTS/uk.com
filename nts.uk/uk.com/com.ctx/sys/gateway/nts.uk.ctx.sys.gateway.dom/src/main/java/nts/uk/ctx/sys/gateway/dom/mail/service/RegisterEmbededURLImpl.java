@@ -101,7 +101,11 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodClsReal, numOfPeriodReal);
 		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
 		if (!Objects.isNull(urlInfo)){
-			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com");
+			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com").replaceFirst("mobile", "com");
+			/** TODO: check for develop environment */
+			if(serverPath.contains("localhost:3000")){
+				serverPath = serverPath.replaceFirst("3000", "8080");
+			}
 			String apiPath = "view/ccg/033/index.xhtml";
 			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
 		}

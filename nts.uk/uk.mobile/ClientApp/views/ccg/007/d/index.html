@@ -1,6 +1,6 @@
 <div id="forget-pass">
         <div class="text-center page-title">{{ 'forget_pass_title' | i18n }}</div>
-        <div class="text-left page-info">
+        <div class="text-left page-info alert-light alert">
             <ul>
                 <li>以下を入力してください。</li>
                 <li>パスワード再設定用ページのURLを記載したメールを送信します。</li>
@@ -37,7 +37,7 @@
                 <button class="btn btn-primary btn-block" v-on="$click(sendMail.bind(this))">送信→</button>
             </div>
             <div>
-                <button class="btn btn-primary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
+                <button class="btn btn-secondary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
             </div>
         </fieldset>
     </div>

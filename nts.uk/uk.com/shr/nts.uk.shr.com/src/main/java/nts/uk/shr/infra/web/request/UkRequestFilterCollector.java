@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
 import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
-import nts.arc.security.csrf.CsrfProtectionFilter;
-import nts.uk.shr.com.program.nosession.PathsNoSession;
 import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
 import nts.uk.shr.infra.web.session.BatchRequestProcessor;
 import nts.uk.shr.infra.web.session.SharingSessionFilter;
@@ -20,7 +18,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 	
 	private static class PathPattern {
 		static final String ALL_REQUESTS = ".*";
-		static final String ALL_SCREENS = ".*\\.xhtml.*";
+		static final String ALL_SCREENS = ".*\\.x?html.*";
 		static final String ALL_WEB_APIS = ".*/webapi/.*";
 		static final String BATCH_WEB_APIS = ".*/webapi/batch/.*";
 		static final String LOGIN_SCREENS = ".*/view/ccg/007/.*";
@@ -32,6 +30,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()),
 			RequestFilterMapping.map(PathPattern.BATCH_WEB_APIS, new BatchRequestProcessor()),
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()),
+			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new RequestNavigateFilter()),
 			//RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher()),

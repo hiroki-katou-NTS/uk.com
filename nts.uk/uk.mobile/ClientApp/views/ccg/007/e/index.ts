@@ -12,19 +12,19 @@ import { SideMenu, NavMenu } from '@app/services';
         model: {
             newPassword: {
                 required: true,
-                checkSame: {
-                    test(value){
-                        return value === this.model.newPasswordConfirm;
-                    }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                }
+                // checkSame: {
+                //     test(value){
+                //         return value === this.model.newPasswordConfirm;
+                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
+                // }
             },
             newPasswordConfirm: {
                 required: true,
-                checkSame: {
-                    test(value){
-                        return value === this.model.newPassword;
-                    }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                }
+                // checkSame: {
+                //     test(value){
+                //         return value === this.model.newPassword;
+                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
+                // }
             }
         }
     }, 
@@ -32,8 +32,9 @@ import { SideMenu, NavMenu } from '@app/services';
 })
 export class ResetPassComponent extends Vue {
 
-    @Prop({ default: '' })
-    id!: string;
+    // @Prop({ default: '' })
+    // id!: string;
+    id: string;
 
     policy = {
         lowestDigits: 0,
@@ -55,13 +56,14 @@ export class ResetPassComponent extends Vue {
 
     created() {
         let self = this;
-        this.$http.post(servicePath.getUserName + this.id).then((res: { data: LoginInfor}) => {
+        self.id = self.$route.query.id as string;
+        self.$http.post(servicePath.getUserName + self.id).then((res: { data: LoginInfor}) => {
             let user: LoginInfor = res.data;
             self.model.userName = user.userName;
             self.model.contractCode = user.contractCode;
             self.model.loginId = user.loginId;
             self.model.userId = user.userId;
-            this.$http.post(servicePath.getPasswordPolicy + user.contractCode).then((res: { data: PassWordPolicy}) => {
+            self.$http.post(servicePath.getPasswordPolicy + user.contractCode).then((res: { data: PassWordPolicy}) => {
                 let policy: PassWordPolicy = res.data;
                 self.policy.lowestDigits = policy.lowestDigits;
                 self.policy.alphabetDigit = policy.alphabetDigit;
@@ -90,24 +92,24 @@ export class ResetPassComponent extends Vue {
         }
 
         let self = this, 
-            command: ResetPasswordCommand = { embeddedId: this.id,
-                                                newPassword: this.model.newPassword,
-                                                confirmNewPassword: this.model.newPasswordConfirm,
-                                                userId: this.model.userId };
+            command: ResetPasswordCommand = { embeddedId: self.id,
+                                                newPassword: self.model.newPassword,
+                                                confirmNewPassword: self.model.newPasswordConfirm,
+                                                userId: self.model.userId };
 
-        this.$mask("show");
+        self.$mask("show");
         
         //submitChangePass
-        this.$http.post(servicePath.changePass, command).then(function () {
+        self.$http.post(servicePath.changePass, command).then(() => {
             let loginData = {
                 loginId: _.padEnd(_.escape(self.model.loginId), 12, ' '),
-                password: this.model.newPassword,
-                contractCode: this.model.contractCode,
+                password: self.model.newPassword,
+                contractCode: self.model.contractCode,
                 contractPassword: null
             }
             
             //login
-            this.$http.post(servicePath.submitLogin, loginData).then((messError: any) => {
+            self.$http.post(servicePath.submitLogin, loginData).then((messError: any) => {
                 //Remove LoginInfo
                 self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
             }).catch((res:any) => {
@@ -139,7 +141,7 @@ export class ResetPassComponent extends Vue {
 }
 
 const servicePath = {
-    getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy106953 ",
+    getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy/ ",
     changePass: "ctx/sys/gateway/changepassword/submitchangepass",
     getUserName: "ctx/sys/gateway/changepassword/getUserNameByURL/",
     submitLogin: "ctx/sys/gateway/login/submit/form1"

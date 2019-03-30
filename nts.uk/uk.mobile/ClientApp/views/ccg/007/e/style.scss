@@ -1,6 +1,18 @@
 .accordion {
     .card {
         border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+
+        .collapse {
+            .card-body {
+                font-size: 13px;
+            }
+        }
     }
     
+}
+.page-title {
+    font-size: 25px;
+}
+.page-info {
+    font-size: 13px;
 }
