@@ -70,11 +70,14 @@ export const time = {
             }
         },
         computeMinute(value: number): number {
-            if (value >= 0) {
+            if (value > 0) {
                 var hour = Math.floor(value / 60)
                 return value - hour * 60;
             } else {
                 var hour = 0 - Math.floor(Math.abs(value) / 60);
+                if (hour == 0) {
+                    return value;
+                }
                 return Math.abs(value) + hour * 60;
             }
         },
