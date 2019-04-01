@@ -200,13 +200,17 @@ export module login {
 export module csrf {
     let STORAGE_KEY_CSRF_TOKEN = "nts.uk.request.csrf.STORAGE_KEY_CSRF_TOKEN";
     
-    cookie.get("nts.arc.CSRF_TOKEN")
-        .ifPresent(csrfToken => {
-            sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
-        });
+    let csrfToken = cookie.get("nts.arc.CSRF_TOKEN");
+    if(!_.isEmpty(csrfToken)) {
+        sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
+    }
     
     export function getToken() {
         /** TODO: now, write token in client logic is not correct, and have not time for fix. */
-        return sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("FIX FOR TEST");
+        let csrfToken = sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN);
+        if(_.isNil(csrfToken)){
+            return "FIXED_TOKEN";
+        }
+        return csrfToken;
     }
 }

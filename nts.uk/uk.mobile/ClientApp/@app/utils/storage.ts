@@ -1,4 +1,4 @@
-import { optional } from "@app/utils/index"
+import { _ } from '@app/provider';
 
 export class WebStorageWrapper {
     nativeStorage: Storage;
@@ -22,12 +22,12 @@ export class WebStorageWrapper {
         return this.getItem(key) !== null;
     };
 
-    getItem(key: string): optional.Optional<string> {
+    getItem(key: string): string {
         var value: string = this.nativeStorage.getItem(key);
         if (value === null || value === undefined || value === 'undefined') {
-            return optional.empty();
+            return null;
         }
-        return optional.of(value);
+        return value;
     }
 
     getItemAndRemove(key: string) {
@@ -90,9 +90,11 @@ export module characteristics {
     export function restore(key: string): Promise<any> {
         let dfd = new Promise((resolve, reject) => {
             setTimeout(() => {
-                let value = localStorage.getItem(createKey(key))
-                    .map(v => JSON.parse(v)).orElse(undefined);
-                resolve(value);
+                let value = localStorage.getItem(createKey(key));
+                if(!_.isNil(value)){
+                    resolve(JSON.parse(value));
+                }
+                resolve(undefined);
             }, delayToEmulateAjax);
         });
 
@@ -117,9 +119,9 @@ export module characteristics {
 
 export module cookie {
         
-    export function get(name: string) {
+    export function get(name: string): string {
         let value = asMap()[name];
-        return optional.of(value);
+        return value;
     }
     
     export function remove(name: string, attr: any) {

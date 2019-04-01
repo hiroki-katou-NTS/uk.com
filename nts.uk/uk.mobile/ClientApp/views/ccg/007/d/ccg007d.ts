@@ -1,7 +1,6 @@
-import { Vue } from '@app/provider';
-import { component, Watch, Prop } from '@app/core/component';
+import { Vue, _ } from '@app/provider';
+import { component, Prop } from '@app/core/component';
 import { characteristics } from "@app/utils/storage";
-import { _ } from "@app/provider";
 import { SideMenu, NavMenu } from '@app/services';
 
 @component({
@@ -31,31 +30,37 @@ export class ForgetPassComponent extends Vue {
     employeeCode: ''
 
     created() {
-        this.contractCode = this.params.contractCode;
-        this.contractPass = this.params.contractPass;
-        this.companies = this.params.companies;
-        this.companyCode = this.params.companyCode;
-        this.employeeCode = this.params.employeeCode;
-        if(_.isEmpty(this.companies)){
-            this.getAllCompany().then((response: { data: Array<ICompany>; }) => {
-                this.companies = response.data;
-                if(_.isNil(this.params.companyCode)){
-                    characteristics.restore("companyCode").then((compCode: any) => {
-                        if (!_.isNil(compCode)) {
-                            this.companyCode = compCode;
-                        }
-                    });
-                }
-                if(_.isNil(this.params.employeeCode)){
-                    characteristics.restore("employeeCode").then((empCode: any) => {
-                        if (!_.isNil(empCode)) {
-                            this.employeeCode = empCode;
-                        }
-                    });
-                }
-            });
-        }
-
+        let self = this;
+        self.contractCode = self.params.contractCode;
+        self.contractPass = self.params.contractPass;
+        new Promise((resolve, reject) => {
+            resolve();
+        }).then(() => {
+            if(_.isEmpty(self.params.companies)){
+                self.$http.post(servicePath.getAllCompany).then((response: { data: Array<ICompany>; }) => {
+                    self.companies = response.data;
+                });
+            } else {
+                self.companies = self.params.companies;
+            }
+        }).then(() => {
+            if(_.isNil(self.params.companyCode)){
+                characteristics.restore("companyCode").then((compCode: any) => {
+                    self.companyCode = compCode;
+                });
+            } else {
+                self.companyCode = self.params.companyCode;
+            }
+        }).then(() => {
+            if(_.isNil(self.params.employeeCode)){
+                characteristics.restore("employeeCode").then((empCode: any) => {
+                    self.employeeCode = empCode;
+                });
+            } else {
+                self.employeeCode = self.params.employeeCode;
+            }
+        });
+        
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -88,9 +93,12 @@ export class ForgetPassComponent extends Vue {
             //Return Dialog Error
             self.$mask("hide");
             if (!_.isEqual(res.message, "can not found message id")){
-                self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
+                /** TODO: wait for dialog error method */
+                self.$toastError(res.messageId);
+                // self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
-                self.$dialogError({ messageId: res.messageId });
+                self.$toastError(res.messageId);
+                // self.$dialogError({ messageId: res.messageId });
             }
         });
     }
@@ -99,11 +107,8 @@ export class ForgetPassComponent extends Vue {
         this.$goto({ name: 'login', params: { companyCode: this.companyCode, 
                                                         employeeCode: this.employeeCode,
                                                         contractCode: this.contractCode,
+                                                        contractPass: this.contractPass,
                                                         companies: this.companies} });
-    }
-
-    getAllCompany(): Promise<any> {
-        return this.$http.post(servicePath.getAllCompany);
     }
 }
 

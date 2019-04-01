@@ -1,6 +1,5 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component } from '@app/core/component';
-import { _ } from "@app/provider";
 import { NavMenu, SideMenu } from '@app/services';
 
 @component({
@@ -53,7 +52,9 @@ export class ChangePassComponent extends Vue {
 
     created() {
         let self = this;
-        Promise.all([this.$http.post(servicePath.getPasswordPolicy), this.$http.post(servicePath.getUserName)]).then((values: Array<any>) => {
+        Promise.all([this.$http.post(servicePath.getPasswordPolicy), 
+                    this.$http.post(servicePath.getUserName)])
+                .then((values: Array<any>) => {
             let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data;
             self.model.userName = user.userName;
             self.policy.lowestDigits = policy.lowestDigits;
@@ -86,14 +87,14 @@ export class ChangePassComponent extends Vue {
                                                                         self.model.newPassword, 
                                                                         self.model.newPasswordConfirm);
 
-        this.$mask("show");
+        self.$mask("show");
         
         //submitChangePass
-        this.$http.post(servicePath.changePass, command).then((res) => {
-            this.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+        self.$http.post(servicePath.changePass, command).then((res) => {
+            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
             //Return Dialog Error
-            this.$mask("hide");
+            self.$mask("hide");
             self.showMessageError(res);
         });
     }

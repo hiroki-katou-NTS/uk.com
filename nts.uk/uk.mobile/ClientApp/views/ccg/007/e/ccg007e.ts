@@ -1,6 +1,5 @@
-import { Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
-import { _ } from "@app/provider";
+import { Vue, _ } from '@app/provider';
+import { component } from '@app/core/component';
 import { SideMenu, NavMenu } from '@app/services';
 
 @component({
@@ -57,21 +56,24 @@ export class ResetPassComponent extends Vue {
     created() {
         let self = this;
         self.id = self.$route.query.id as string;
-        self.$http.post(servicePath.getUserName + self.id).then((res: { data: LoginInfor}) => {
+        self.$http.post(servicePath.getUserName + self.id)
+        .then((res: { data: LoginInfor}) => {
             let user: LoginInfor = res.data;
             self.model.userName = user.userName;
             self.model.contractCode = user.contractCode;
             self.model.loginId = user.loginId;
             self.model.userId = user.userId;
-            self.$http.post(servicePath.getPasswordPolicy + user.contractCode).then((res: { data: PassWordPolicy}) => {
-                let policy: PassWordPolicy = res.data;
-                self.policy.lowestDigits = policy.lowestDigits;
-                self.policy.alphabetDigit = policy.alphabetDigit;
-                self.policy.numberOfDigits = policy.numberOfDigits;
-                self.policy.symbolCharacters = policy.symbolCharacters;
-                self.policy.historyCount = policy.historyCount;
-                self.policy.validPeriod = policy.validityPeriod;
-            });
+            return user;
+        }).then((user) => {
+            return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode)
+        }).then((res: { data: PassWordPolicy}) => {
+            let policy: PassWordPolicy = res.data;
+            self.policy.lowestDigits = policy.lowestDigits;
+            self.policy.alphabetDigit = policy.alphabetDigit;
+            self.policy.numberOfDigits = policy.numberOfDigits;
+            self.policy.symbolCharacters = policy.symbolCharacters;
+            self.policy.historyCount = policy.historyCount;
+            self.policy.validPeriod = policy.validityPeriod;
         });
 
         // Hide top & side menu
@@ -101,23 +103,16 @@ export class ResetPassComponent extends Vue {
         
         //submitChangePass
         self.$http.post(servicePath.changePass, command).then(() => {
-            let loginData = {
+            return {
                 loginId: _.padEnd(_.escape(self.model.loginId), 12, ' '),
                 password: self.model.newPassword,
                 contractCode: self.model.contractCode,
                 contractPassword: null
-            }
-            
-            //login
-            self.$http.post(servicePath.submitLogin, loginData).then((messError: any) => {
-                //Remove LoginInfo
-                self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
-            }).catch((res:any) => {
-                //Return Dialog Error
-                self.$mask("hide");
-                self.showMessageError(res);
-            });
-            
+            };
+        }).then((loginData) => self.$http.post(servicePath.submitLogin, loginData))
+        .then((messError: any) => {
+            //Remove LoginInfo
+            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
             //Return Dialog Error
             self.$mask("hide");

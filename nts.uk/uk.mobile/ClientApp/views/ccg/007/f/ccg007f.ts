@@ -1,7 +1,5 @@
-import { Vue } from '@app/provider';
-import { component, Watch, Prop } from '@app/core/component';
-import { characteristics } from "@app/utils/storage";
-import { _ } from "@app/provider";
+import { Vue, _ } from '@app/provider';
+import { component, Prop } from '@app/core/component';
 import { SideMenu, NavMenu } from '@app/services';
 
 @component({
