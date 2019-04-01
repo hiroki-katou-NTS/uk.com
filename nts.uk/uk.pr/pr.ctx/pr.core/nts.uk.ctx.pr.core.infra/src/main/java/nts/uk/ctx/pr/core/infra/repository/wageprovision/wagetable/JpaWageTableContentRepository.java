@@ -204,25 +204,33 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.getList(i -> i.toDomain());
 		for (ElementsCombinationPaymentAmount newPayment : payments) {
 			for (ElementsCombinationPaymentAmount oldPayment : listPayment) {
-				if (isElementItemsEqual(newPayment.getElementAttribute().getFirstElementItem(), oldPayment.getElementAttribute().getFirstElementItem())) {
-					if (newPayment.getElementAttribute().getSecondElementItem().isPresent() && oldPayment.getElementAttribute().getSecondElementItem().isPresent()) {
-						if (isElementItemsEqual(newPayment.getElementAttribute().getSecondElementItem().get(), oldPayment.getElementAttribute().getSecondElementItem().get())) {
-							if (newPayment.getElementAttribute().getThirdElementItem().isPresent() && oldPayment.getElementAttribute().getThirdElementItem().isPresent()) {
-								if (isElementItemsEqual(newPayment.getElementAttribute().getThirdElementItem().get(), oldPayment.getElementAttribute().getThirdElementItem().get())) {
-									newPayment.setId(oldPayment.getId());
-									break;
-								}
-							} else {
-								newPayment.setId(oldPayment.getId());
-								break;
-							}
+				if (!isElementItemsEqual(newPayment.getElementAttribute().getFirstElementItem(),
+						oldPayment.getElementAttribute().getFirstElementItem()))
+					continue; // neu first element khac nhau thi bo qua luon
+				if (newPayment.getElementAttribute().getSecondElementItem().isPresent()
+						&& oldPayment.getElementAttribute().getSecondElementItem().isPresent()) {
+					if (!isElementItemsEqual(newPayment.getElementAttribute().getSecondElementItem().get(),
+							oldPayment.getElementAttribute().getSecondElementItem().get()))
+						continue; // neu second element khac nhau thi bo qua luon
+					if (newPayment.getElementAttribute().getThirdElementItem().isPresent()
+							&& oldPayment.getElementAttribute().getThirdElementItem().isPresent()) {
+						if (isElementItemsEqual(newPayment.getElementAttribute().getThirdElementItem().get(),
+								oldPayment.getElementAttribute().getThirdElementItem().get())) {
+							newPayment.setId(oldPayment.getId());
+							listPayment.remove(oldPayment);
+							break;
 						}
 					} else {
 						newPayment.setId(oldPayment.getId());
+						listPayment.remove(oldPayment);
 						break;
 					}
+				} else {
+					newPayment.setId(oldPayment.getId());
+					listPayment.remove(oldPayment);
+					break;
 				}
-			}			
+			}
 		}
 		List<QpbmtWageTableComboPayment> listPaymentEntity = payments.stream()
 				.map(i -> new QpbmtWageTableComboPayment(i, historyId, companyId, wageTableCode))
@@ -230,14 +238,18 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 		this.commandProxy().updateAll(listPaymentEntity);
 	}
 	
-	private boolean isElementItemsEqual (ElementItem item1, ElementItem item2) {
+	private boolean isElementItemsEqual(ElementItem item1, ElementItem item2) {
 		if (item1.getMasterElementItem().isPresent() && item2.getMasterElementItem().isPresent()) {
-			return item1.getMasterElementItem().get().getMasterCode().equals(item2.getMasterElementItem().get().getMasterCode());
+			return item1.getMasterElementItem().get().getMasterCode()
+					.equals(item2.getMasterElementItem().get().getMasterCode());
 		}
 		if (item1.getNumericElementItem().isPresent() && item2.getNumericElementItem().isPresent()) {
-			if (item1.getNumericElementItem().get().getFrameLowerLimit().compareTo(item2.getNumericElementItem().get().getFrameLowerLimit()) == 0 
-					&& item1.getNumericElementItem().get().getFrameUpperLimit().compareTo(item2.getNumericElementItem().get().getFrameUpperLimit()) == 0
-					&& item1.getNumericElementItem().get().getFrameNumber().compareTo(item2.getNumericElementItem().get().getFrameNumber()) == 0) {
+			if (item1.getNumericElementItem().get().getFrameLowerLimit()
+					.compareTo(item2.getNumericElementItem().get().getFrameLowerLimit()) == 0
+					&& item1.getNumericElementItem().get().getFrameUpperLimit()
+							.compareTo(item2.getNumericElementItem().get().getFrameUpperLimit()) == 0
+					&& item1.getNumericElementItem().get().getFrameNumber()
+							.compareTo(item2.getNumericElementItem().get().getFrameNumber()) == 0) {
 				return true;
 			} else {
 				return false;

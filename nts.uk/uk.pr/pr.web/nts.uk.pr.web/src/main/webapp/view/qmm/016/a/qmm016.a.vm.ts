@@ -533,6 +533,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     }
                     break;
                 case model.ELEMENT_SETTING.QUALIFICATION:
+                    command.wageTableContent.brandNew = true;
                     command.wageTableContent["wageTableQualifications"] = ko.toJS(self.wageTableContent().qualificationGroupSetting());
                     break;
                 case model.ELEMENT_SETTING.FINE_WORK:
