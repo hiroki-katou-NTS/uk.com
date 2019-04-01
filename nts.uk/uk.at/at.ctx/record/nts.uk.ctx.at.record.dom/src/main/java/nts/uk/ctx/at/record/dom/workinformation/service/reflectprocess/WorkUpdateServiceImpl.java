@@ -552,7 +552,6 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
 				if(!worktimeFrame.containsKey(i)) {
-					
 					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
 				} else {
@@ -583,14 +582,26 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					Integer item = this.lstAfterWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
 				} else {
+					AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
 					if(lstHolidayWorkFrameTime.isEmpty()) {
-						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
 						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
 						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
 								Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(worktimeTmp, new AttendanceTime(0))),
 								Finally.of(timeCalculation),
 								Finally.of(new AttendanceTime(0)));
 						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
+					} else {
+                        for (HolidayWorkFrameTime x : lstHolidayWorkFrameTime) {
+                            if(x.getHolidayFrameNo().v() == i) {
+                                Finally<TimeDivergenceWithCalculation> hwTime = x.getHolidayWorkTime();
+                                if(hwTime.isPresent()) {
+                                    hwTime.get().setTime(worktimeTmp);
+                                } else {
+                                    x.setHolidayWorkTime(Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(worktimeTmp, new AttendanceTime(0))));
+                                }
+                                break;
+                            }
+                        }
 					}
 				}
 			}	
