@@ -11,54 +11,39 @@ export const input = () => component({
             </div>
         </template>
         <template v-else />
+
         <div v-bind:class="columns.input">
             <div class="input-group input-group-transparent">
-                <template v-if="type !== 'select'">
-                    <template v-if="icons.before">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" v-bind:class="iconsClass.before">{{  !iconsClass.before ? icons.before : '' }}</span>
-                        </div>
-                    </template>
-                    <template v-else />
-                    <template v-if="icons.after">
-                        <div class="input-group-append">
-                            <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
-                        </div>
-                    </template>
-                    <template v-else />
-                    <input class="form-control"
-                        ref="input"
-                        v-bind:type="type"
-                        v-validate="{
-                            always: !!errorsAlways,
-                            errors: (errors || errorsAlways || {})
-                        }"
-                        v-bind:disabled="disabled"
-                        v-bind:readonly="!editable"
-                        v-bind:value="rawValue"
-                        v-on:click="click()"
-                        v-on:keydown.13="click()"
-                        v-on:input="input()"
-                    />
+                
+                <template v-if="icons.before">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" v-bind:class="iconsClass.before">{{  !iconsClass.before ? icons.before : '' }}</span>
+                    </div>
                 </template>
-                <template v-else>
-                    <template v-if="icons.after">
-                        <div class="input-group-append">
-                            <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
-                        </div>
-                    </template>
-                    <select class="form-control"
-                        ref="input"
-                        v-validate="{
-                            always: !!errorsAlways,
-                            errors: (errors || errorsAlways || {})
-                        }"
-                        v-bind:disabled="disabled"
-                        v-bind:value="rawValue"
-                        v-on:change="input()">
-                        <slot />
-                    </select>
+                <template v-else />
+
+                <template v-if="icons.after">
+                    <div class="input-group-append">
+                        <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
+                    </div>
                 </template>
+                <template v-else />
+                
+                <input class="form-control"
+                    ref="input"
+                    v-bind:type="type"
+                    v-validate="{
+                        always: !!errorsAlways,
+                        errors: (errors || errorsAlways || {})
+                    }"
+                    v-bind:disabled="disabled"
+                    v-bind:readonly="!editable"
+                    v-bind:value="rawValue"
+                    v-on:click="click()"
+                    v-on:keydown.13="click()"
+                    v-on:input="input()"
+                />
+
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
