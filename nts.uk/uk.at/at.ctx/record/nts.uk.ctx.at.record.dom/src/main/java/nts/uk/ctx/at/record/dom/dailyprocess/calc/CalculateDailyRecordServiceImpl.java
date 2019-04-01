@@ -61,6 +61,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -311,7 +312,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 出退勤打刻順序不正のチェック
 		//　※他の打刻順序不正は計算処理を実施する必要があるため、ここでは弾かない
 		// 不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
-		val stampError = dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
+		EmployeeDailyPerError stampError = dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
 		if (stampError != null) {
 			
 			final String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
