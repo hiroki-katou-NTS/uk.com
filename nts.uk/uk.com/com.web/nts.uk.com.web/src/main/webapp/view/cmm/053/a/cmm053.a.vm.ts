@@ -107,11 +107,17 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.settingManager().departmentCode.subscribe(value => {
                 self.checkSubscribe(STATUS_SUBSCRIBE.PENDING);
                 setTimeout(function() {
+                    if($('#A2_7').ntsError('hasError')){
+                        self.settingManager().departmentApproverId('');
+                        self.settingManager().departmentName('');
+                        self.checkSubscribe(STATUS_SUBSCRIBE.DONE);
+                        return;
+                    }
                     if (value != '' && value != null && value !== undefined){
                         self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }else{
                         self.settingManager().departmentApproverId('');
-                         self.settingManager().departmentName('');
+                        self.settingManager().departmentName('');
                         self.checkSubscribe(STATUS_SUBSCRIBE.DONE);
                     }
                     self.isInitDepartment = false;
@@ -121,6 +127,12 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.settingManager().dailyApprovalCode.subscribe(value => {
                 self.checkSubscribe(STATUS_SUBSCRIBE.PENDING);
                 setTimeout(function() {
+                    if($('#A2_10').ntsError('hasError')){
+                        self.settingManager().dailyApproverId("");
+                        self.settingManager().dailyApprovalName("");
+                        self.checkSubscribe(STATUS_SUBSCRIBE.DONE);
+                        return;
+                    }
                     if (value != '' && value != null && value !== undefined){
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     } else {
@@ -242,8 +254,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                             if (!nts.uk.ui.errors.hasError()) {
                                 let startDate = new Date(self.settingManager().startDate());
                                 let closingStartDate = new Date(self.settingManager().closingStartDate());
+                                let $vm = ko.dataFor(document.querySelector('#function-panel'))
                                 let paramcheckReg = {
-                                    codeA16: self.findA16().code,
+                                    codeA16: $vm.empDisplayCode(),
                                     codeA27: self.settingManager().departmentCode(),
                                     codeA210: self.settingManager().dailyApprovalCode(),
                                     baseDate: moment(new Date(self.settingManager().startDate())).format('YYYY/MM/DD')
@@ -291,13 +304,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     }
                 }, 300);
             },200);
-        }
-
-        findA16(){
-            let self = this;
-            return _.find(self.employeeInputList(), emp =>{
-                return emp.id == self.selectedItem();
-            });     
         }
 
         //削除する

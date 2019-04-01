@@ -89,7 +89,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int MIN_GRANT_DETAIL_COL = 6;
 	private static final int MAX_GRANT_DETAIL_COL = 20;
 	private static final int MAX_COL = 22;
-	private static final int MAX_ROW = 38;
+	private static final int MAX_ROW = 28;
 	private static final int NORMAL_FONT_SIZE = 9;
 	@Inject
 	private CompanyAdapter company;
@@ -136,7 +136,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					programName + "_" + query.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+					programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN)) + REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -12,7 +12,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaUsedDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.SpecDateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
@@ -46,12 +45,12 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	/** 使用義務日数の取得 */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> getObligedUseDays(String companyId, boolean distributeAtr,
-			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+			GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		AnnualLeaveUsedDayNumber result = null;
 		
 		// 按分が必要かどうか判断
-		if (this.checkNeedForProportion(distributeAtr, obligedAnnualLeaveUse)) {
+		if (this.checkNeedForProportion(distributeAtr, criteria, obligedAnnualLeaveUse)) {
 			
 			// 年休使用日数の期間按分
 			val resultOpt = this.distributePeriod(distributeAtr, obligedAnnualLeaveUse);
@@ -76,20 +75,23 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		Optional<AnnualLeaveUsedDayNumber> result = Optional.empty();
 		
 		// 按分が必要かどうか判断
-		if (this.checkNeedForProportion(distributeAtr, obligedAnnualLeaveUse) == false) {
+		DatePeriod period = null;
+		if (this.checkNeedForProportion(distributeAtr, criteria, obligedAnnualLeaveUse) == false) {
 			
-			// 社員の前回付与日から次回付与日までの年休使用日数を取得
-			result = this.getAnnLeaUsedDays.ofGrantPeriod(employeeId, criteria, referenceAtr, true, SpecDateAtr.CRITERIA);
+			// 年休使用義務日数の按分しない場合の期間を取得
+			val periodOpt = this.getPeriodForNotProportion(criteria, obligedAnnualLeaveUse);
+			if (periodOpt.isPresent()) period = periodOpt.get();
 		}
 		else {
 			
 			// 期間を計算
 			val periodOpt = this.calcPeriod(employeeId, distributeAtr, criteria, obligedAnnualLeaveUse);
-			if (!periodOpt.isPresent()) return result;
-			
-			// 指定した期間の年休使用数を取得する
-			result = this.getAnnLeaUsedDays.ofPeriod(employeeId, periodOpt.get(), referenceAtr);
+			if (periodOpt.isPresent()) period = periodOpt.get();
 		}
+		if (period == null) return result;
+		
+		// 指定した期間の年休使用数を取得する
+		result = this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
 		
 		// 年休使用数を返す
 		return result;
@@ -97,26 +99,52 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	
 	/** 按分が必要かどうか判断 */
 	@Override
-	public boolean checkNeedForProportion(boolean distributeAtr, ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	public boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
-		// 現在の付与期間と重複する付与期間を持つ残数履歴データを取得
-		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(distributeAtr, obligedAnnualLeaveUse);
+		// 付与期間と重複する付与期間を持つ残数履歴データを取得
+		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
 		
 		// 付与残数が1件以上存在するか確認
 		return (annLeaGrantInfoOutput.getGrantRemainList().size() >= 1);
 	}
 	
-	/** 現在の付与期間と重複する付与期間を持つ残数履歴データを取得 */
+	/** 年休使用義務日数の按分しない場合の期間を取得 */
 	@Override
-	public AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(boolean distributeAtr,
+	public Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+
+		// 年休使用義務日数の按分しない期間の付与日数を取得
+		Optional<AnnualLeaveGrantRemainingData> remainDataOpt = this.getGrantInfoForNotProportion(
+				criteria, obligedAnnualLeaveUse);
+		if (!remainDataOpt.isPresent()) return Optional.empty();
+		AnnualLeaveGrantRemainingData remainData = remainDataOpt.get();
+		
+		// 期間を作成
+		GeneralDate startDate = remainData.getGrantDate();
+		return Optional.of(new DatePeriod(startDate, startDate.addYears(1)));
+	}
+	
+	/** 年休使用義務日数の按分しない期間の付与日数を取得 */
+	@Override
+	public Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+
+		// 付与期間と重複する付与期間を持つ残数履歴データを取得
+		AnnLeaGrantInfoOutput output = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
+		
+		// 付与日が一番古い年月日のドメインを取り出す　→　取り出した年休付与残数データを返す
+		return output.getGrantRemainList().stream().min((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+	}
+	
+	/** 付与期間と重複する付与期間を持つ残数履歴データを取得 */
+	@Override
+	public AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		String employeeId = obligedAnnualLeaveUse.getEmployeeId();
 		AnnLeaGrantInfoOutput result = new AnnLeaGrantInfoOutput(employeeId);
 		
-		// 基準日　←　システム日付
-		GeneralDate criteria = GeneralDate.today();
-
 		// 社員に対応する処理締めを取得する
 		val closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
 		if (closure == null) return result;
@@ -131,9 +159,6 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		// 前回付与日から次回付与日までの期間をチェックする　（１年以上なら、空の結果を返す）
 		GeneralDate checkYmd = period.start().addYears(1);
 		if (checkYmd.beforeOrEquals(period.end())) return result;
-		
-		// 期間按分使用区分をチェックする
-		if (distributeAtr == false) return result;
 		
 		// 付与残数を取得
 		for (val grantRemain : obligedAnnualLeaveUse.getGrantRemainList()) {
@@ -232,8 +257,8 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		DatePeriod result = null;
 		
-		// 現在の付与期間と重複する付与期間を持つ残数履歴データを取得
-		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(distributeAtr, obligedAnnualLeaveUse);
+		// 付与期間と重複する付与期間を持つ残数履歴データを取得
+		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
 		
 		// 取得したListをソート
 		List<AnnualLeaveGrantRemainingData> grantRemainList = annLeaGrantInfoOutput.getGrantRemainList();

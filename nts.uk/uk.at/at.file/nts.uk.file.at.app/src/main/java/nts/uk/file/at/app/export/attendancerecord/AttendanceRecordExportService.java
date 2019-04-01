@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.data.TaskDataSetter;
@@ -67,6 +68,7 @@ import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDat
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
+import nts.uk.file.at.app.export.schedule.FileService;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
@@ -84,6 +86,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	final static long LOWER_POSITION = 2;
 	final static int PDF_MODE = 1;
 	final static String ZERO = "0";
+	/** The Constant MASTER_UNREGISTERED. */
+	private static final String MASTER_UNREGISTERED = " マスタ未登録";
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
@@ -129,6 +133,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 	@Inject
 	private ManagedParallelWithContext parallel;
+	
+	@Inject
+	private FileService service;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -161,8 +168,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		GeneralDate endByClosure = GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(), request.getEndDate().lastDateInMonth());
 		GeneralDate startTime = request.getStartDate().addMonths(-1);
 		GeneralDate startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(), 1);
-		
-		DatePeriod period = new DatePeriod(startByClosure, endByClosure);
+		//remove warning
+		//DatePeriod period = new DatePeriod(startByClosure, endByClosure);
 		List<WkpHistImport> wkps = workplaceAdapter.findWkpBySid(empIDs, startByClosure);
 		// Get workplace history
 		for (Employee e : request.getEmployeeList()) {
@@ -271,13 +278,23 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		});
 		
 		YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(), request.getEndDate().yearMonth());
-		List<MonthlyAttendanceItemValueResult> monthlyValues = attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId);
-		
+		List<MonthlyAttendanceItemValueResult> monthlyValues = attendanceService.getMonthlyValueOf(empIDs,
+				periodMonthly, monthlyId);
+
+		// 帳票用の基準日取得
+		int closureId = request.getClosureId() == 0 ? 1 : request.getClosureId();
+
+		Optional<GeneralDate> baseDate = service.getProcessingYM(companyId, closureId);
+		if (!baseDate.isPresent()) {
+			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
+		}
+		Map<String, DatePeriod> employeePeriod = service.getAffiliationDatePeriod(empIDs, periodMonthly, baseDate.get());
+
 		List<AttendanceItemValueResult> dailyValues;
 		{
 			List<AttendanceItemValueResult> syncResults = Collections.synchronizedList(new ArrayList<>());
-			this.parallel.forEach(empIDs, empId -> {
-				syncResults.addAll(attendanceService.getValueOf(Arrays.asList(empId), period, singleId));
+			this.parallel.forEach(employeePeriod.entrySet(), emp -> {
+				syncResults.addAll(attendanceService.getValueOf(Arrays.asList(emp.getKey()), emp.getValue(), singleId));
 			});
 			dailyValues = new ArrayList<>(syncResults);
 		}
@@ -1284,7 +1301,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME) ? worktype.get(0).getName().v()
 								: worktype.get(0).getAbbreviationName().v();
-					return value;
+					return value + MASTER_UNREGISTERED ;
 				} else {
 
 					List<WorkTimeSetting> workTime = workTimeSettingList.stream()
@@ -1293,10 +1310,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME)
 								? workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v()
 								: workTime.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v();
-					return value;
+					return value + MASTER_UNREGISTERED;
 				}
 			}
-			return value;
+			return value + MASTER_UNREGISTERED;
 
 		default:
 			return value;
