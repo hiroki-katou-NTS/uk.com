@@ -99,8 +99,18 @@ declare module "vue/types/vue" {
         };
         $goto(name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
         $goto(location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
-        $modal(name: string, params?: any, options?: IModalOptions): Promise<{}>;
-        $modal(name: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
+        $modal: {
+            (name: string, params?: any, options?: IModalOptions): Promise<{}>;
+            (component: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
+            warn(msg: string): Promise<{}>;
+            warn(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            info(msg: string): Promise<{}>;
+            info(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            error(msg: string): Promise<{}>;
+            error(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            confirm(msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+            confirm(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+        };
         $valid: boolean;
         $errors: {
             [name: string]: {
@@ -113,13 +123,6 @@ declare module "vue/types/vue" {
         validations: {
             [name: string]: IRule;
         };
-        $toastAlert: (msgOrResourceId: string, options?: any) => Promise<{}>;
-        $toastError: (msgOrResourceId: string, options?: any) => Promise<{}>;
-        $toastConfirm: (msgOrResourceId: string, options?: any) => Promise<{}>;
-        $dialogError: (msgOrResourceId: string | object, options?: any) => void;
-        $dialogInfo: (msgOrResourceId: string | object, options?: any) => void;
-        $dialogWarn: (msgOrResourceId: string | object, options?: any) => void;
-        $dialogConfirm: (msgOrResourceId: string | object, options?: any) => void;
     }
 
     export interface VueConstructor<V extends Vue = Vue> {

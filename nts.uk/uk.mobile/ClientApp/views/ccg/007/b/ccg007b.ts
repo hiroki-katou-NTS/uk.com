@@ -28,7 +28,7 @@ import { NavMenu, SideMenu } from "@app/services";
     constraints: [ 'nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode' ]
 })
 export class LoginComponent extends Vue {
-    
+
     @Prop({ default: () => ({}) })
     params!: any;
 
@@ -44,10 +44,10 @@ export class LoginComponent extends Vue {
         autoLogin: [true],
         ver: ''
     }
-    
+
     created() {
         let self = this;
-        if(!_.isNil(self.params.contractCode)){
+        if (!_.isNil(self.params.contractCode)) {
             self.contractCode = self.params.contractCode;
             self.contractPass = self.params.contractPass;
         } else {
@@ -56,10 +56,10 @@ export class LoginComponent extends Vue {
                     self.contractCode = value.contractCode;
                     self.contractPass = value.contractPassword;
                 }
-            }).then(() => { 
+            }).then(() => {
                 return this.$http.post(servicePath.checkContract, { contractCode: self.contractCode, contractPassword: self.contractPass });
             }).then((rel: { data: any }) => {
-                if(rel.data.onpre) {
+                if (rel.data.onpre) {
                     self.contractCode = self.defaultContractCode;
                     self.contractPass = null;
                     characteristics.remove("contractInfo")
@@ -73,7 +73,7 @@ export class LoginComponent extends Vue {
 
             });
         }
-        if(!_.isEmpty(self.params.companies)){
+        if (!_.isEmpty(self.params.companies)) {
             self.companies = self.params.companies;
             self.checkEmpCodeAndCompCode();
         } else {
@@ -133,7 +133,7 @@ export class LoginComponent extends Vue {
     login() {
         let self = this, submitData: any = {};
         self.$validate();
-        if(!self.$valid){
+        if (!self.$valid) {
             return;
         }
         submitData.companyCode = self.model.comp;
@@ -142,7 +142,7 @@ export class LoginComponent extends Vue {
         submitData.contractCode = self.contractCode;
         submitData.contractPassword = self.contractPass;
         self.$mask("show");
-        this.$http.post(servicePath.submitLogin, submitData).then((res: { data: CheckChangePass}) => {
+        this.$http.post(servicePath.submitLogin, submitData).then((res: { data: CheckChangePass }) => {
             if (res.data.showContract) {
                 self.authenticateContract();
             }
@@ -154,8 +154,7 @@ export class LoginComponent extends Vue {
                     } else {
                         self.model.password = "";
                         /** TODO: wait for dialog error method */
-                        self.$toastError(res.data.msgErrorId);
-                        // self.$dialogError({ messageId: res.data.msgErrorId });
+                        self.$modal.error({ messageId: res.data.msgErrorId });
                     }
                     self.$mask("hide");
                 } else {
@@ -173,12 +172,9 @@ export class LoginComponent extends Vue {
             //Return Dialog Error
             self.$mask("hide");
             if (!_.isEqual(res.data.message, "can not found message id")) {
-                /** TODO: wait for dialog error method */
-                self.$toastError(res.data.messageId);
-                // self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
+                self.$modal.error({ messageId: res.data.messageId, messageParams: res.data.parameterIds });
             } else {
-                self.$toastError(res.data.messageId);
-                // self.$dialogError({ messageId: res.messageId });
+                self.$modal.error({ messageId: res.data.messageId });
             }
         });
     }
