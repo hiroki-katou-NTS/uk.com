@@ -10,6 +10,8 @@ public interface AgreementTimeOfClassificationRepository {
 
 	void add(AgreementTimeOfClassification agreementTimeOfClassification);
 	
+	void update(AgreementTimeOfClassification agreementTimeOfClassification);
+	
 	void remove(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
 	
 	List<AgreementTimeOfClassification> find(String companyId, LaborSystemtAtr laborSystemAtr);
@@ -17,4 +19,8 @@ public interface AgreementTimeOfClassificationRepository {
 	List<String> findClassificationSetting(String companyId, LaborSystemtAtr laborSystemAtr);
 	
 	Optional<String> findEmploymentBasicSettingID(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
+	
+	Optional<AgreementTimeOfClassification> find(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
+	
+	List<AgreementTimeOfClassification> find(String companyId, List<String> classificationCode);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AlarmChkCondAgree36Dto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.annualholiday.AnnualHolidayAlarmConditionDto;
 
 /**
  * 
@@ -35,4 +36,6 @@ public class AlarmCheckConditionByCategoryDto {
 	private AlarmChkCondAgree36Dto condAgree36;
 	
 	private MulMonAlarmCheckConDto mulMonAlarmCheckConDto;
+	
+	private AnnualHolidayAlarmConditionDto annualHolidayAlConDto;
 }

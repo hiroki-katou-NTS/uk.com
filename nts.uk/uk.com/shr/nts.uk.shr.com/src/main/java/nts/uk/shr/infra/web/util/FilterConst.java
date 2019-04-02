@@ -30,6 +30,8 @@ public class FilterConst {
 	public static final String REFERED_REQUEST = "referer";
 	
 	public static final String JUMP_FROM_MENU = "startfrommenu";
+	
+	public static final String CONTENT_LANG = "Content-Language";
 
 	/** Web app map. */
 	public static final Map<WebAppId, String> webApps = new HashMap<>();

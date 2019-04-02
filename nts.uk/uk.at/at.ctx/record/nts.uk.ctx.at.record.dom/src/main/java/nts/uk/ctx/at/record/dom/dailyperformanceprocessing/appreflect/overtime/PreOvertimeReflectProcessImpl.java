@@ -8,12 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
@@ -27,13 +28,13 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
 	
 	@Override
-	public WorkInfoOfDailyPerformance workTimeWorkTimeUpdate(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo) {
+	public void workTimeWorkTimeUpdate(OvertimeParameter para, IntegrationOfDaily dailyInfo) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
 				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isScheReflectFlg()) {
-			return dailyInfo;
+			return;
 		}
 				
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
@@ -41,53 +42,53 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode(),
 				false); 
-		return workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfo);	
+		workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfo);	
 	}
 	
 	@Override
-	public AppReflectRecordWork changeFlg(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo) {
+	public boolean changeFlg(OvertimeParameter para, IntegrationOfDaily dailyInfo) {
 		boolean ischeck = false;
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
 				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
-			return new AppReflectRecordWork(ischeck, dailyInfo);
+			return ischeck;
 		}
 		
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		
-		if(dailyInfo.getRecordInfo().getSiftCode() == null
-				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
-				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		WorkInformation workInformation = dailyInfo.getWorkInformation().getRecordInfo();
+		if(workInformation.getSiftCode() == null
+				|| workInformation.getWorkTypeCode() == null
+				|| !workInformation.getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!workInformation.getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			ischeck = true;
 		} 
 		//勤種・就時の反映
-		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
+		/*ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode(),
 				false); 
-		dailyInfo = workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);
-		return new AppReflectRecordWork(ischeck, dailyInfo);
+		workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);*/
+		return ischeck;
 		
 	}
 	@Override
-	public WorkInfoOfDailyPerformance startAndEndTimeReflectSche(OvertimeParameter para, boolean changeFlg,
-			WorkInfoOfDailyPerformance dailyData) {
+	public void startAndEndTimeReflectSche(OvertimeParameter para, boolean changeFlg,
+			IntegrationOfDaily dailyData) {
 		//設定による予定開始終了時刻を反映できるかチェックする
-		if(!this.timeReflectCheck(para, changeFlg, dailyData)) {
-			return dailyData;
+		if(!this.timeReflectCheck(para, changeFlg, dailyData.getWorkInformation())) {
+			return;
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
 		//WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
-		
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleInfo().getWorkTimeCode() == null ? null : dailyData.getScheduleInfo().getWorkTimeCode().v(),
-				dailyData.getScheduleInfo().getWorkTypeCode() == null ? null : dailyData.getScheduleInfo().getWorkTypeCode().v());
-		return scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut, dailyData);
+		WorkInformation scheInfor = dailyData.getWorkInformation().getScheduleInfo();
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(scheInfor.getWorkTimeCode() == null ? null : scheInfor.getWorkTimeCode().v(),
+				scheInfor.getWorkTypeCode() == null ? null : scheInfor.getWorkTypeCode().v());
+		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut, dailyData);
 	}
 	@Override
 	public boolean timeReflectCheck(OvertimeParameter para, boolean changeFlg,
@@ -139,7 +140,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	}
 
 	@Override
-	public AttendanceTimeOfDailyPerformance getReflectOfOvertime(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData) {
+	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyInfor) {
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
@@ -150,32 +151,32 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		}
 		
 		//残業時間の反映
-		return workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true, attendanceTimeData);
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true, dailyInfor);
 	}
 
 	@Override
-	public AttendanceTimeOfDailyPerformance overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg,
-			Integer overShiftNight, AttendanceTimeOfDailyPerformance attendanceTimeData) {
+	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg,
+			Integer overShiftNight, IntegrationOfDaily dailyInfor) {
 		// INPUT．残業時間反映フラグをチェックする
 		//INPUT．外深夜時間をチェックする
 		if(overShiftNight == null || overShiftNight < 0) {
-			return attendanceTimeData;
+			return;
 		}
 		//所定外深夜時間の反映
-		return workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight, true, attendanceTimeData);
+		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight, true, dailyInfor);
 	}
 
 	@Override
-	public AttendanceTimeOfDailyPerformance reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, 
-			Integer flexExessTime, AttendanceTimeOfDailyPerformance attendanceTimeData) {
+	public void reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, 
+			Integer flexExessTime, IntegrationOfDaily dailyInfor) {
 		//INPUT．残業時間反映フラグをチェックする
 		//INPUT．フレックス時間をチェックする
 		if(flexExessTime == null || flexExessTime < 0) {
-			return attendanceTimeData;
+			return;
 		}
 		//フレックス時間を反映する
 		//日別実績の残業時間
-		return workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime, true, attendanceTimeData);
+		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime, true, dailyInfor);
 	}
 
 }

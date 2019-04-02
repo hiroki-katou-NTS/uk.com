@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.application.realitystatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +11,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.ApprovalStatusRequestAdapter;
@@ -48,6 +55,8 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
@@ -56,7 +65,8 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@RequestScoped
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class RealityStatusService {
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
@@ -78,43 +88,47 @@ public class RealityStatusService {
 
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+	
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	/**
 	 * 承認状況職場実績起動
 	 */
 	public SttWkpActivityOutputFull getStatusWkpActivity(List<String> listWorkplaceId, GeneralDate startDate,
 			GeneralDate endDate, List<String> listEmpCd, boolean isConfirmData, Integer closureID) {
+		
 		String cId = AppContexts.user().companyId();
-		List<StatusWkpActivityOutput> listStatusActivity = new ArrayList<StatusWkpActivityOutput>();
+		List<StatusWkpActivityOutput> listStatusActivity = Collections.synchronizedList(new ArrayList<StatusWkpActivityOutput>());
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
 		UseSetingOutput useSeting = this.getUseSetting(cId);
-		boolean error = false;
+		
 		// 職場ID(リスト)
-		for (String wkpId : listWorkplaceId) {
+		this.parallel.forEach(listWorkplaceId, wkpId -> {
 			// アルゴリズム「承認状況取得社員」を実行する
 			List<RealityStatusEmployeeImport> listStatusEmp = approvalStatusRequestAdapter
 					.getApprovalStatusEmployee(wkpId, startDate, endDate, listEmpCd);
 			// アルゴリズム「承認状況取得職場実績確認」を実行する
 			SumCountOutput count = new SumCountOutput();
-			try{
-				count = this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting, endDate, closureID);
-			}
-			catch(BusinessException ex){
-				error = true;
-			}
+			count = this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting, endDate, closureID);
+			
 			// 保持内容．未確認データ確認
 			if (isConfirmData) {
 				// 職場本人未確認件数及び職場上司未確認件数、月別未確認件数がすべて「０件」の場合
 				if (count.personUnconfirm == 0 && count.bossUnconfirm == 0 && count.monthUnconfirm == 0) {
-					continue;
+					return;
 				}
 			}
 			
 			listStatusActivity.add(new StatusWkpActivityOutput(wkpId, count.monthConfirm, count.monthUnconfirm,
 					count.personConfirm, count.personUnconfirm, count.bossConfirm, count.bossUnconfirm));
 
-		}
-		return new SttWkpActivityOutputFull(listStatusActivity, error);
+		});
+		
+		return new SttWkpActivityOutputFull(listStatusActivity, false);
 	}
 
 	/**
@@ -219,12 +233,7 @@ public class RealityStatusService {
 			lstParam.add(new EmpPerformMonthParamImport(baseDate.yearMonth(), closureID, closureDate, baseDate, emp));
 		}
 		List<AppRootSttMonthEmpImport> listApproval = new ArrayList<>();
-		try {
-			listApproval = approvalStatusAdapter.getAppRootStatusByEmpsMonth(lstParam);
-		}
-		catch(Exception ex){
-			throw new BusinessException("Msg_1430", "承認者");
-		}
+		listApproval = approvalStatusAdapter.getAppRootStatusByEmpsMonth(lstParam);
 		for (AppRootSttMonthEmpImport appRootStt : listApproval) {
 			result.put(appRootStt.getEmployeeID(), appRootStt);
 		}
@@ -670,22 +679,25 @@ public class RealityStatusService {
 	private List<EmployeeErrorOuput> checkEmployeeErrorOnProcessingDate(String employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<EmployeeErrorOuput> listEmpErrorOutput = new ArrayList<>();
-		List<GeneralDate> daysBetween = this.getDaysBetween(startDate, endDate);
-
+		
+		// 対応するドメインモデル「社員の日別実績エラー一覧」を取得する
 		List<EmployeeDailyPerError> listEmpDailyError = this.employeeDailyPerErrorRepo
 				.findByPeriodOrderByYmd(employeeId, new DatePeriod(startDate, endDate));
-		for (GeneralDate processingDate : daysBetween) {
-			boolean hasError = true;
-			if (listEmpDailyError.stream().filter(x -> x.getDate().equals(processingDate)).count() == 0) {
-				hasError = false;
+		
+		String companyID = AppContexts.user().companyId();
+		// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+		for(EmployeeDailyPerError emp : listEmpDailyError){
+			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
+					companyID, Arrays.asList(emp.getErrorAlarmWorkRecordCode().v()));
+			if(!CollectionUtil.isEmpty(errorAlarmWorkRecordLst)){
+				listEmpErrorOutput.add(new EmployeeErrorOuput(emp.getDate(), true));
 			}
-			EmployeeErrorOuput result = new EmployeeErrorOuput(processingDate, hasError);
-			listEmpErrorOutput.add(result);
 		}
-
+		
 		return listEmpErrorOutput;
 	}
 
+	/*
 	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
 		List<GeneralDate> daysBetween = new ArrayList<>();
 
@@ -697,6 +709,7 @@ public class RealityStatusService {
 
 		return daysBetween;
 	}
+	*/
 	/**
 	 * 承認状況未確認チェック月別
 	 * @param 社員ID - sID

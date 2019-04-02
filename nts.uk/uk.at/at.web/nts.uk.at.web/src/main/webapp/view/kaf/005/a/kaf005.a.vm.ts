@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
+        //申請理由が必須
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
@@ -200,7 +201,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.checkRequiredOvertimeHours();
-                $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
@@ -332,6 +332,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
@@ -636,6 +637,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (nts.uk.ui.errors.hasError()){return;}              
             //block screen
             nts.uk.ui.block.invisible();
+            /*
             let appReason: string,
                 divergenceReason: string;
                 appReason = self.getReason(
@@ -650,10 +652,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                 return;    
             }
-            if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
+            */
+            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
+            
+            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
                 return;
             }
-            divergenceReason = self.getReason(
+            let divergenceReason = self.getReason(
                 self.displayDivergenceReasonForm(),
                 self.selectedReason2(),
                 self.reasonCombo2(),
@@ -677,7 +683,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
-                applicationReason: appReason,
+                applicationReason: textAreaReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
                 workClockFrom1: self.timeStart1(),
@@ -693,7 +699,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.checkBoxValue(),
                 overtimeAtr: self.overtimeAtr(),
-                calculateFlag: self.calculateFlag()
+                calculateFlag: self.calculateFlag(),
+                appReasonID: comboBoxReason
             };
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {                
@@ -743,8 +750,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }                    
                 }
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }
             });
         }
         //登録処理を実行
@@ -933,8 +945,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
+                if(res.messageId=="Msg_424"){
+                    self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
+                    dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });    
+                } else if(res.messageId=="Msg_1508"){
+                    dialog.alertError({messageId:"Msg_1508", messageParams: [res.parameterIds[0]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });   
+                } else {
+                    nts.uk.ui.block.clear();    
+                }
                 dfd.reject(res);
-                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }

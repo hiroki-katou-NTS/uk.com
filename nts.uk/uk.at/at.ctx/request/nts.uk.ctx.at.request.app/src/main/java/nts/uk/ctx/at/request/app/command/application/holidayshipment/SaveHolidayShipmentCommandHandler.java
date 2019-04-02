@@ -770,17 +770,18 @@ public class SaveHolidayShipmentCommandHandler
 		}
 
 	}
-
+//EA修正履歴 No.3103
+	//同日申請存在チェック
 	public void dateCheck(String employeeID, GeneralDate recDate, GeneralDate absDate,
 			SaveHolidayShipmentCommand command, int comType) {
-		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
-		if (isSaveAbs(comType)) {
-			vacationTransferCheck(employeeID, absDate, command.getAppCmd().getPrePostAtr());
-		}
-		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
-		if (isSaveRec(comType)) {
-			vacationTransferCheck(employeeID, recDate, command.getAppCmd().getPrePostAtr());
-		}
+//		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
+//		if (isSaveAbs(comType)) {
+//			vacationTransferCheck(employeeID, absDate, command.getAppCmd().getPrePostAtr());
+//		}
+//		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
+//		if (isSaveRec(comType)) {
+//			vacationTransferCheck(employeeID, recDate, command.getAppCmd().getPrePostAtr());
+//		}
 
 	}
 
@@ -922,12 +923,12 @@ public class SaveHolidayShipmentCommandHandler
 
 		ApplicationSetting appSet = appSetOp.get();
 
-		boolean isAllReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) && isReasonTextFieldDisplay(appTypeSet);
+		boolean isAnyReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) || isReasonTextFieldDisplay(appTypeSet);
 
 		boolean isReasonBlankWhenRequired = appSet.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isBlank(appReason);
 
-		if (isAllReasonControlDisplay && isReasonBlankWhenRequired) {
+		if (isAnyReasonControlDisplay && isReasonBlankWhenRequired) {
 
 			throw new BusinessException("Msg_115");
 

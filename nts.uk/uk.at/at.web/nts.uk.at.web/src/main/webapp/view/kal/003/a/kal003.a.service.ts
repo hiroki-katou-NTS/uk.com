@@ -10,10 +10,10 @@ module nts.uk.at.view.kal003.a.service {
         getAllFixedConData: "at/record/erroralarm/fixeddata/getallfixedcondata",
         getDailyErrorAlarmCheck: "at/function/alarm/checkcondition/findDailyErrorAlarmCheck",
         getClsNameByCodes: "bs/employee/classification/getClsNameByCds",
-        getEmpNameByCodes: "bs/employee/employment/findNamesByCodes",
+        getEmpNameByCodes: "bs/employee/employment/findNamesByCodesNew",
         // chua co
         getJobNamesByIds: "bs/employee/jobtitle/getNamesByIds",
-        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodes",
+        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodesNew",
           //monthly
         getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
         
@@ -81,4 +81,13 @@ module nts.uk.at.view.kal003.a.service {
         return ajax("at", paths.getAllFixedExtraItemMon); 
 
     }
+    
+   
+     export function saveAsExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', 
+                {domainId: 'AlarmCheckCondition', domainType: 'KAL003' + programName, 
+                languageId: 'ja', reportType: 0});
+        }
 }

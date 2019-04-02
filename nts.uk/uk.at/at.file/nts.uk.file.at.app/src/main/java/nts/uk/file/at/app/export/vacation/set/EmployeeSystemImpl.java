@@ -15,6 +15,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -99,6 +100,11 @@ public class EmployeeSystemImpl implements MasterListData {
     public String mainSheetName() {
         return TextResource.localize("KMF001_156");
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery masterListExportQuery) {
@@ -280,6 +286,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(mAnnPaidLeaveRepository.getAnPaidLea(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.ANNUAL_HOLIDAYS))
                 .sheetName(getSheetName(EmployeeSystem.ANNUAL_HOLIDAYS))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData1);
 
@@ -288,14 +295,16 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(listAllRetenYearlySet)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.CROWDED_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.CROWDED_COMPANY))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData2);
 
-        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue() != null && listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE)) {
+        if (listAllRetenYearlySet.isEmpty() || (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue() != null && listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE))) {
             SheetData sheetData3 = SheetData.builder()
                     .mainData(mEmplYearlyRetenSetRepository.getAllEmplYearlyRetenSet(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.STEADY_EMPLOYMENT))
                     .sheetName(getSheetName(EmployeeSystem.STEADY_EMPLOYMENT))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData3);
         }
@@ -305,14 +314,16 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(listAllTemHoliCompany)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData4);
 
-        if (listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS)) {
+        if (listAllTemHoliCompany.isEmpty() ||(listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS))) {
             SheetData sheetData5 = SheetData.builder()
                     .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
                     .sheetName(getSheetName(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData5);
         }
@@ -322,14 +333,16 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(listAllComSubstVacation)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SHUTDOWM_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.SHUTDOWM_COMPANY))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData6);
 
-        if(listAllComSubstVacation.get(0).getRowData().get(EmployeeSystemImpl.KMF001_224).getValue().equals(IS_MANAGE)){
+        if(listAllComSubstVacation.isEmpty() || (listAllComSubstVacation.get(0).getRowData().get(EmployeeSystemImpl.KMF001_224).getValue().equals(IS_MANAGE))){
             SheetData sheetData7 = SheetData.builder()
                     .mainData(mEmpSubstVacaRepository.getAllEmpSubstVacation(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.PAID_WORK))
                     .sheetName(getSheetName(EmployeeSystem.PAID_WORK))
+                    .mode(MasterListMode.NONE)
                     .build();
             sheetDatas.add(sheetData7);
         }
@@ -338,6 +351,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(mCom60HourVacaRepository.getAllCom60HourVacation(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SIXTY_HOURS))
                 .sheetName(getSheetName(EmployeeSystem.SIXTY_HOURS))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData8);
 
@@ -345,6 +359,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
                 .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
+                .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData9);
 

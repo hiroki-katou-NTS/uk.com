@@ -210,14 +210,14 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
 		//申請日でソートする		
-		return this.sortData(lstApp);
+		return lstApp;
 	}
 	private List<Application_New> sortData(List<Application_New> lstApp){
 		//申請日、入力日、事前事後区分　ASC
 		return lstApp.stream().sorted((a,b) ->{
 			Integer rs = a.getAppDate().compareTo(b.getAppDate());
 			if (rs == 0) {
-				Integer sortInputDate = a.getInputDate().toDate().compareTo(b.getInputDate().toDate());
+				Integer sortInputDate = a.getInputDate().compareTo(b.getInputDate());
 				if(sortInputDate == 0) {
 					return a.getPrePostAtr().compareTo(b.getPrePostAtr());
 				}

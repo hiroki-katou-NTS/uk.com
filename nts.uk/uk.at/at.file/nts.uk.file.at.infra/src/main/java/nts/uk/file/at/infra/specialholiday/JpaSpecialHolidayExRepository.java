@@ -81,7 +81,7 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("	ELSE NULL")
 			.append("	END GRANTED_SMAL,")
 			.append("	CASE WHEN  (TABLE_RESULT.TYPE_TIME = 1)  THEN ")
-			.append("		CASE WHEN TABLE_RESULT.MONTHS IS NULL THEN NULL ELSE CONCAT(TABLE_RESULT.MONTHS,'ヵ月') END")
+			.append("		CASE WHEN TABLE_RESULT.MONTHS IS NULL THEN NULL ELSE CONCAT(TABLE_RESULT.MONTHS,'ヶ月') END")
 			.append("	ELSE NULL")
 			.append("	END MONTHS,")
 			.append("	CASE WHEN  (TABLE_RESULT.TYPE_TIME = 1)  THEN ")
@@ -113,7 +113,7 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("	END DEADLINE_YEARS, ")
 			// Time_cls_method is 1 「有効期限を指定する」")
 			.append("	CASE WHEN (TABLE_RESULT.ROW_NUMBER = 1 AND TABLE_RESULT.TIME_CSL_METHOD = 1) THEN ")
-			.append("		CASE WHEN TABLE_RESULT.DEADLINE_MONTHS IS NULL THEN NULL ELSE CONCAT(TABLE_RESULT.DEADLINE_MONTHS,'月') END")
+			.append("		CASE WHEN TABLE_RESULT.DEADLINE_MONTHS IS NULL THEN NULL ELSE CONCAT(TABLE_RESULT.DEADLINE_MONTHS,'ヶ月') END")
 			.append("	ELSE NULL")
 			.append("	END DEADLINE_MONTHS, ")
 			// Time_cls_method is 3 「使用可能期間を指定する」")
@@ -195,18 +195,18 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("			ely.YEARS, graPe.TIME_CSL_METHOD,graPe.LIMIT_CARRYOVER_DAYS, graPe.DEADLINE_YEARS, graPe.DEADLINE_MONTHS,")
 			.append("			graPe.START_DATE, graPe.END_DATE,")
 			.append("			leaRe.GENDER_REST, leaRe.GENDER, leaRe.RESTRICTION_CLS, ")
-			.append("			STUFF((SELECT ',' + CONCAT(mcls1.CLSCD,mcls1.CLSNAME)")
+			.append("			STUFF((SELECT ',' + CONCAT(cls1.CLS_CD,IIF(mcls1.CLSNAME IS NULL, ? ,mcls1.CLSNAME))")
 			.append("					FROM KSHST_SPEC_CLS cls1")
 			.append("						LEFT JOIN BSYMT_CLASSIFICATION mcls1 ON mcls1.CID = cls1.CID AND mcls1.CLSCD = cls1.CLS_CD")
 			.append("					WHERE cls1.SPHD_CD = cls.SPHD_CD  AND cls1.CID = cls.CID")
-			.append("					ORDER BY mcls1.CLSCD")
+			.append("					ORDER BY cls1.CLS_CD")
 			.append("				FOR XML PATH ('')), 1, 1, '') as clsName, ")
 			.append("			leaRe.REST_EMP, ")
-			.append("			STUFF((SELECT ',' + CONCAT(memp1.CODE, memp1.NAME)")
+			.append("			STUFF((SELECT ',' + CONCAT(emp1.EMP_CD,IIF(memp1.NAME IS NULL, ?, memp1.NAME))")
 			.append("					FROM KSHST_SPEC_EMP emp1 ")
 			.append("						LEFT JOIN BSYMT_EMPLOYMENT memp1 ON memp1.CID = emp1.CID AND memp1.CODE = emp1.EMP_CD")
 			.append("					WHERE emp1.SPHD_CD = emp.SPHD_CD  AND emp1.CID = emp.CID")
-			.append("					ORDER BY memp1.CODE")
+			.append("					ORDER BY emp1.EMP_CD")
 			.append("				FOR XML PATH ('')), 1, 1, '') as empName,")
 			.append("			leaRe.AGE_LIMIT, leaRe.AGE_LOWER_LIMIT, leaRe.AGE_HIGHER_LIMIT, leaRe.AGE_CRITERIA_CLS, leaRe.AGE_BASE_DATE,")
 			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD ORDER BY sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_NUMBER,")
@@ -326,9 +326,11 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			stmt.setString(11, TextResource.localize("KMF004_56"));
 			stmt.setString(12, TextResource.localize("Enum_ReferenceYear_THIS_YEAR"));
 			stmt.setString(13, TextResource.localize("Enum_AgeBaseYearAtr_THIS_MONTH"));
+			stmt.setString(14, TextResource.localize("Enum_MasterUnregistered"));
+			stmt.setString(15, TextResource.localize("Enum_MasterUnregistered"));
 			// new Items('0', nts.uk.resource.getText('Enum_ReferenceYear_THIS_YEAR')),
             // new Items('1', nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
-			stmt.setString(14, cid);
+			stmt.setString(16, cid);
 			result.addAll(new NtsResultSet(stmt.executeQuery()).getList(i -> toMasterList(i)));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

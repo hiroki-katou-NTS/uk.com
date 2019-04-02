@@ -19,13 +19,26 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
  */
 public interface ReflectStampDomainService {
 
-//	ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
-//			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
-//			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-//			ExecutionType reCreateAttr);
+	// ReflectStampOutput reflectStampInfo(String companyID, String employeeID,
+	// GeneralDate processingDate,
+	// WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+	// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String
+	// empCalAndSumExecLogID,
+	// ExecutionType reCreateAttr);
 	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr,
-			Optional<CalAttrOfDailyPerformance> calcOfDaily ,Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily ,Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
+			ExecutionType reCreateAttr, Optional<CalAttrOfDailyPerformance> calcOfDaily,
+			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
+
+	// 2.打刻を取得して反映する 
+	// fixbug 105926
+	// class acquireReflectEmbossing gan giong class reflectStampInfo
+	public NewReflectStampOutput acquireReflectEmbossing(String companyID, String employeeID,
+			GeneralDate processingDate, Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
+			ExecutionType reCreateAttr, Optional<CalAttrOfDailyPerformance> calcOfDaily,
+			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
 }

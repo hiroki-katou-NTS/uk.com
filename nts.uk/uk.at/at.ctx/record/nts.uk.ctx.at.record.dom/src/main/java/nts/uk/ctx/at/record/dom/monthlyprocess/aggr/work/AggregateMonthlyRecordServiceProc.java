@@ -8,11 +8,11 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 //import lombok.extern.slf4j.Slf4j;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
@@ -54,7 +54,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResu
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
@@ -66,8 +65,6 @@ import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
-import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
@@ -145,8 +142,10 @@ public class AggregateMonthlyRecordServiceProc {
 	private List<EditStateOfMonthlyPerformance> editStates;
 
 	/** 会社ID */
+	@Setter
 	private String companyId;
 	/** 社員ID */
+	@Setter
 	private String employeeId;
 	/** 年月 */
 	private YearMonth yearMonth;
@@ -156,10 +155,12 @@ public class AggregateMonthlyRecordServiceProc {
 	private ClosureDate closureDate;
 	
 	/** 月別集計で必要な会社別設定 */
+	@Setter
 	private MonAggrCompanySettings companySets;
 	/** 月別集計で必要な社員別設定 */
 	private MonAggrEmployeeSettings employeeSets;
 	/** 月の計算中の日別実績データ */
+	@Setter
 	private MonthlyCalculatingDailys monthlyCalculatingDailys;
 	/** 集計前の月別実績データ */
 	private MonthlyOldDatas monthlyOldDatas;
@@ -738,74 +739,33 @@ public class AggregateMonthlyRecordServiceProc {
 			val bsEmploymentHistOpt = this.employeeSets.getEmployment(period.end());
 			if (optionalItem.checkTermsOfUse(empCondition, bsEmploymentHistOpt))
 			{
-				
-				// 属性に応じて初期化
-				AnyTimeMonth anyTime = null;
-				AnyTimesMonth anyTimes = null;
-				AnyAmountMonth anyAmount = null;
-				switch (optionalItem.getOptionalItemAtr()){
-				case TIME:
-					anyTime = new AnyTimeMonth(0);
-					break;
-				case NUMBER:
-					anyTimes = new AnyTimesMonth(0.0);
-					break;
-				case AMOUNT:
-					anyAmount = new AnyAmountMonth(0);
-					break;
-				}
+				// 利用する
+
+				// 初期化
+				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, optionalItem);
 				
 				// 「実績区分」を判断
 				if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE || isWeek){
 
 					// 日別実績　縦計処理
-					if (anyItemTotals.containsKey(optionalItemNo)){
-						val anyItemTotal = anyItemTotals.get(optionalItemNo);
-						if (anyItemTotal.getTime().isPresent()){
-							if (anyTime == null) anyTime = new AnyTimeMonth(0);
-							anyTime = anyTime.addMinutes(anyItemTotal.getTime().get().v());
-						}
-						if (anyItemTotal.getTimes().isPresent()){
-							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
-							anyTimes = anyTimes.addTimes(anyItemTotal.getTimes().get().v().doubleValue());
-						}
-						if (anyItemTotal.getAmount().isPresent()){
-							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
-							anyAmount = anyAmount.addAmount(anyItemTotal.getAmount().get().v());
-						}
-					}
+					result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
 				}
 				else if (this.aggregateResult.getAttendanceTime().isPresent()){
 					val attendanceTime = this.aggregateResult.getAttendanceTime().get();
 					
 					// 月別実績　計算処理
-					List<Formula> targetFormulas = this.companySets.getFormulaList().stream()
-							.filter(c -> c.getOptionalItemNo().equals(optionalItem.getOptionalItemNo()))
-							.collect(Collectors.toList());
-					val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-					MonthlyRecordToAttendanceItemConverter monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
-					monthlyRecordDto = monthlyRecordDto.withAnyItem(anyItems);
-					val calcResult = optionalItem.caluculationFormula(
-							this.companyId, optionalItem, targetFormulas,
-							Optional.empty(), Optional.of(monthlyRecordDto));
-					if (calcResult != null){
-						if (calcResult.getTime().isPresent()){
-							if (anyTime == null) anyTime = new AnyTimeMonth(0);
-							anyTime = anyTime.addMinutes(calcResult.getTime().get().intValue());
-						}
-						if (calcResult.getCount().isPresent()){
-							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
-							anyTimes = anyTimes.addTimes(calcResult.getCount().get().doubleValue());
-						}
-						if (calcResult.getMoney().isPresent()){
-							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
-							anyAmount = anyAmount.addAmount(calcResult.getMoney().get().intValue());
-						}
-					}
+					result = AnyItemAggrResult.calcFromMonthly(optionalItemNo,
+							optionalItem, attendanceTime, anyItems, this.companySets, this.repositories);
 				}
+				results.put(optionalItemNo, result);
+				anyItems.add(AnyItemOfMonthly.of(
+						this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+			}
+			else {
+				// 利用しない
 				
-				// 任意項目集計結果を返す
-				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, anyTime, anyTimes, anyAmount);
+				// 日別実績　縦計処理
+				AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
 				results.put(optionalItemNo, result);
 				anyItems.add(AnyItemOfMonthly.of(
 						this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
@@ -1011,7 +971,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * Workを考慮した月次処理用の暫定残数管理データを作成する
 	 * @param period 期間
 	 */
-	private void createDailyInterimRemainMngs(DatePeriod period){
+	public void createDailyInterimRemainMngs(DatePeriod period){
 		
 		// 【参考：旧処理】　月次処理用の暫定残数管理データを作成する
 		//this.dailyInterimRemainMngs = this.interimRemOffMonth.monthInterimRemainData(
@@ -1353,8 +1313,9 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void customizeForOtsuka(){
 		
+		//2018.01.21 DEL shuichi_ishida Redmine#105681
 		// 時短日割適用日数
-		this.TimeSavingDailyRateApplyDays();
+		//this.TimeSavingDailyRateApplyDays();
 	}
 	
 	/**

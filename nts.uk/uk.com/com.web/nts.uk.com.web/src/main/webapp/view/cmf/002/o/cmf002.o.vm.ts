@@ -353,7 +353,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 5, // システム区分 - 管理者
-                showEmployeeSelection: true, // 検索タイプ
+                showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: true, // 基準日利用

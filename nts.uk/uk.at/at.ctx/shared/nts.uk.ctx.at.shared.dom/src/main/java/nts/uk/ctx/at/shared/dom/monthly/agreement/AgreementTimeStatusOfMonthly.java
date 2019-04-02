@@ -20,7 +20,9 @@ public enum AgreementTimeStatusOfMonthly {
 	/** 限度エラー時間超過（特例あり） */
 	EXCESS_LIMIT_ERROR_SP(6),
 	/** 限度アラーム時間超過（特例あり） */
-	EXCESS_LIMIT_ALARM_SP(7);
+	EXCESS_LIMIT_ALARM_SP(7),
+	/** tính Tổng hiệp định 36） */
+	EXCESS_BG_GRAY(8);
 	
 	public int value;
 	private AgreementTimeStatusOfMonthly(int value){

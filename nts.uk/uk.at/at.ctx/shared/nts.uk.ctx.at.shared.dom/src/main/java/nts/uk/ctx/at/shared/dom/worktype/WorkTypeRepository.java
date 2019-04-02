@@ -198,6 +198,8 @@ public interface WorkTypeRepository {
 	 */
 	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
 	
+	List<String> findWorkTypeCodeOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
+	
 	/**
 	 * Gets the acquired attendance work types.
 	 *
@@ -299,4 +301,16 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkType> findWorkTypeByCondition(String companyId);
+	/**
+	 * @author hoatt
+	 * get worktype 休暇申請の種類
+	 * @param companyId 会社ID
+	 * @param lstWorkTypeCD 勤務種類リスト
+	 * @param deprecateAtr 廃止区分
+	 * @param hdType 休暇申請の種類
+	 * @return
+	 */
+	List<WorkType> findForAppHdKAF006(String companyId, List<String> lstWorkTypeCD, int deprecateAtr, List<Integer> hdType);
+
+	boolean findWorkTypeRecord(String companyId, String workTypeCode);
 }

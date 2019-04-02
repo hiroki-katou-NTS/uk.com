@@ -14,13 +14,16 @@ public class CompanyCalendarReportData {
 	private int workingDayAtr;
 	
 	private String workingDayAtrName;
+	
+	private String eventName;
 
-	public CompanyCalendarReportData(String companyId, GeneralDate date, int workingDayAtr) {
+	public CompanyCalendarReportData(String companyId, GeneralDate date, int workingDayAtr, String eventName) {
 		super();
 		this.companyId = companyId;
 		this.date = date;
 		this.workingDayAtr = workingDayAtr;
 		this.workingDayAtrName = getName(workingDayAtr);
+		this.eventName = eventName;
 	}
 	
 	private String getName(int workingDayAtr) {
@@ -40,8 +43,8 @@ public class CompanyCalendarReportData {
 		return null;
 	}
 
-	public static CompanyCalendarReportData createFromJavaType(String companyId, GeneralDate date, int workingDayAtr){
-		return new CompanyCalendarReportData(companyId, date, workingDayAtr);
+	public static CompanyCalendarReportData createFromJavaType(String companyId, GeneralDate date, int workingDayAtr, String eventName){
+		return new CompanyCalendarReportData(companyId, date, workingDayAtr, eventName);
 	}
 	
 	public String getYearMonth() {

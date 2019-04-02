@@ -39,20 +39,15 @@ module nts.uk.com.view.ccg022.a.screenModel {
             self.isSystemSelected.subscribe((state) => {
                 self.title(state ? text("CCG022_10") : text("CCG022_11"));
                 if (self.isAdmin()) {
-                    block.invisible();
-                    service.find(state).done((data) => {
-                        self.setData(data);
-                    }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
-                        .always(() => {
-                            block.clear();
-                        });
+                    self.loadData(state);
+
                 }
             });
             self.selectedSystemMode.subscribe((value) => {
                 $("#stop_message_txt").ntsError("clear");
                 $("#in_progress_message_txt").ntsError("clear");
                 
-                ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage() , 
+                ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage , 
                                                                 name: '#[CCG022_20]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},
@@ -60,7 +55,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                                                                 required:value==1
                                                                 }});
                 
-                ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage() , 
+                ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage , 
                                                                 name: '#[CCG022_25]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},
@@ -68,6 +63,17 @@ module nts.uk.com.view.ccg022.a.screenModel {
                                                                 required:value==2
                                                                 }});
             });
+        }
+
+        loadData(state) {
+            let self = this;
+            block.invisible();
+            service.find(state).done((data) => {
+                self.setData(data);
+            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                .always(() => {
+                    block.clear();
+                });
         }
 
         setData(data: IStopSetting) {
@@ -112,6 +118,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
             }
             block.invisible();
             service.save(command).done(() => {
+                self.loadData(command.isSystem);
                 dialog({ messageId: 'Msg_15' }).then(function() { });
             }).always(() => {
                 block.clear();

@@ -7,8 +7,14 @@ module nts.uk.at.view.kmk013.a {
             return nts.uk.request.ajax(paths.getDomainSet);
         }
         export function saveAsExcel(): JQueryPromise<any> {
-          let program= nts.uk.ui._viewModel.kiban.programName().split(" ");
-          let programName = program[1]!=null?program[1]:"";  
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "CalculationSetting", domainType: "KMK013"+programName,languageId: 'ja', reportType: 0});
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+       //     let programName = program[1] != null ? program[1] : "";           
+                let domainType = "KMK013";
+                if (program.length > 1){
+                   program.shift();
+                   domainType = domainType + program.join(" ");
+                }
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "CalculationSetting", domainType: domainType, languageId: 'ja', reportType: 0 });
+        }
     }
 }

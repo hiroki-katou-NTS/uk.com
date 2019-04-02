@@ -39,15 +39,18 @@
 				
 				<com:ko-if bind="currentTab()=='H'">
 					<button class="proceed" data-bind="click: $parent.viewmodelH.addFixedVertical.bind($parent.viewmodelH)">#{i18n.getText('KML002_2')}</button>
+					<button id="A_BTN_001" data-bind="click: exportExcel">#{i18n.getText('KML002_154')}</button>
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='A'">
-					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelA.newBtn.bind($parent.viewmodelA), hasfocus: true">#{i18n.getText('KML002_1')}</button>
-					<button tab-index="2" class="registrationBtn proceed" data-bind="click: $parent.viewmodelA.registrationBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_2')}</button>
-					<button tab-index="3" class="settingBtn" data-bind="click: $parent.viewmodelA.settingBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_3')}</button>
+					<button tabindex="1" class="newBtn" data-bind="click: $parent.viewmodelA.newBtn.bind($parent.viewmodelA), hasfocus: true">#{i18n.getText('KML002_1')}</button>
+					<button tabindex="2" class="registrationBtn proceed" data-bind="click: $parent.viewmodelA.registrationBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_2')}</button>
+					<button tabindex="3" class="settingBtn" data-bind="click: $parent.viewmodelA.settingBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_3')}</button>
 <!-- 					<button tab-index="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.items().length>0">#{i18n.getText('KML002_4')}</button>					 -->
-					<button tab-index="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA), enable: !$parent.viewmodelA.editMode()">#{i18n.getText('KML002_4')}</button>
+					<button tabindex="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA), enable: !$parent.viewmodelA.editMode()">#{i18n.getText('KML002_4')}</button>
+					<button id="A_BTN_001" tabindex="5" data-bind="click: exportExcel">#{i18n.getText('KML002_154')}</button>
 				</com:ko-if>
+				
 			</div>
 			<div id="tabpanel-h" role="tabpanel" class="screen-h" data-bind="with: viewmodelH">
 				<div class="contents-area">
@@ -79,7 +82,7 @@
 								</td>
 								<td>
 									<com:ko-if bind="fixedItemAtr() == 0 || fixedItemAtr() == 1 || fixedItemAtr() == 6">
-										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr()), enable: $data.useAtr()==0" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
+										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr()), enable: $data.useAtr()==1" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
 									</com:ko-if>
 								</td>
 							</tr>

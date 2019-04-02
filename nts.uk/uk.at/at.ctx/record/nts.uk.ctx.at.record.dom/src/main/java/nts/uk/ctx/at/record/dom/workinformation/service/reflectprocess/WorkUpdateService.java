@@ -21,20 +21,22 @@ public interface WorkUpdateService {
 	 * scheUpdate: true: 予定勤種就時を反映, false: 勤種就時を反映
 	 */
 	public WorkInfoOfDailyPerformance updateWorkTimeType(ReflectParameter para, boolean scheUpdate, WorkInfoOfDailyPerformance dailyInfo);
+	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyInfo);
 	
-	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyData);
+	public void updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyData);
 	/**
 	 * 予定時刻の反映
 	 * @param data
 	 */
 	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara data, WorkInfoOfDailyPerformance dailyInfo);
+	public void updateScheStartEndTime(TimeReflectPara data, IntegrationOfDaily dailyInfor);
 	
-	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
+	public void updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
 	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data);
+	public void updateRecordStartEndTimeReflect(TimeReflectPara data, IntegrationOfDaily dailyData);
 	
 	public void updateTimeNotReflect(String employeeId, GeneralDate dateData);
 	
@@ -46,8 +48,8 @@ public interface WorkUpdateService {
 	 * @param mapOvertime
 	 * @param isPre: true 事前申請、false 事後申請
 	 */
-	public AttendanceTimeOfDailyPerformance reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime,
-			boolean isPre, AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime,
+			boolean isPre, IntegrationOfDaily dailyInfor);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
@@ -55,10 +57,9 @@ public interface WorkUpdateService {
 	 * @param timeNight
 	 * @param isPre : true 事前申請、false 事後申請
 	 */
-	public AttendanceTimeOfDailyPerformance updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre,
-			AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre , IntegrationOfDaily dailyInfor);
 	
-	public IntegrationOfDaily updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre, IntegrationOfDaily dailyData);
+	public void updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre, IntegrationOfDaily dailyData);
 	/**
 	 * 休出時間(深夜)の反映
 	 * @param employeeId
@@ -71,8 +72,7 @@ public interface WorkUpdateService {
 	 * @param dateData
 	 * @param flexTime
 	 */
-	public AttendanceTimeOfDailyPerformance updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre,
-			AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre, IntegrationOfDaily dailyInfor);
 	/**
 	 * 勤務種類
 	 * @param employeeId
@@ -80,6 +80,8 @@ public interface WorkUpdateService {
 	 * @param workTypeCode
 	 * @param scheUpdate true: 予定勤務種類, false: 勤務種類
 	 */
+	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate,
+			IntegrationOfDaily dailyInfor);
 	public WorkInfoOfDailyPerformance updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate, WorkInfoOfDailyPerformance dailyPerfor);
 	/**
 	 * 休出時間の反映
@@ -89,7 +91,7 @@ public interface WorkUpdateService {
 	 * @param isPre
 	 * @param isRec: True: 振出申請、False：　休日出勤申請 fix bug 103077
 	 */
-	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, 
+	public void updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, 
 			boolean isPre, IntegrationOfDaily dailyData, boolean isRec);
 	/**
 	 * 就時の反映
@@ -100,6 +102,8 @@ public interface WorkUpdateService {
 	 */
 	public WorkInfoOfDailyPerformance updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate,
 			WorkInfoOfDailyPerformance dailyPerfor);
+	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate,
+			IntegrationOfDaily dailyInfor);
 	/**
 	 * 振替時間(休出)の反映
 	 * @param employeeId

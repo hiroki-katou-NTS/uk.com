@@ -11,6 +11,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -52,6 +53,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     private static final String KMK006_73 = "設定済み";
     private static final String KMK006_74 = "職位コード";
     private static final String NO_REGIS = "マスタ未登録";
+    private static final String SPACE = "";
 
 
     @Inject
@@ -158,10 +160,17 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
         List<MasterData> datas = new ArrayList<>();
         Object[] comAutoCalSetting = comAutoCalSettingExport.getCompanySettingToExport(companyId);
         Map<String, MasterCellData> data = new HashMap<>();
-        this.putDatas(comAutoCalSetting, data);
-        datas.add(MasterData.builder().rowData(data).build());
+        if(comAutoCalSetting != null) {
+            this.putDatas(comAutoCalSetting, data);
+            datas.add(MasterData.builder().rowData(data).build());
+        }
         return datas;
     }
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
+	}
 
     private String getSheetName(AutoCalRegis autoCalRegis){
         switch (autoCalRegis) {
@@ -183,7 +192,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(w[23])
+                                .value(w[23] == null || w[24] == null ? SPACE : w[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
 
@@ -202,7 +211,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<String, MasterCellData>();
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(j[23])
+                                .value(j[23] == null || j[24] == null ? SPACE : j[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()
@@ -220,17 +229,17 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(wj[23])
+                                .value(getWorkPlaceCode(wj))
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_72, MasterCellData.builder()
                                 .columnId(KMK006_72)
-                                .value(wj[24] == null ? NO_REGIS : wj[24])
+                                .value(getWorkPlaceName(wj))
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(wj[25])
+                                .value(wj[25] == null || wj[26] == null ? SPACE : wj[25])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()
@@ -246,23 +255,42 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
             return datas;
     }
 
+    private String getWorkPlaceCode(Object[] obj){
+        if(obj[23] == null || obj[24] == null) {
+            return SPACE;
+        }
+        if("-".equals(obj[23].toString())) {
+            return "";
+        }
+        return obj[23].toString();
+    }
+    private String getWorkPlaceName(Object[] obj){
+        if(obj[24] == null) {
+            return NO_REGIS;
+        }
+        if("-".equals(obj[24].toString())) {
+            return "";
+        }
+        return obj[24].toString();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<SheetData> extraSheets(MasterListExportQuery query){
         List<SheetData> sheetData = new ArrayList<>();
         if(((Map<String, Boolean>) query.getData()).get("useWkpSet")) {
             SheetData wkp = new SheetData(this.getData(query, AutoCalRegis.WORKPLACE),
-                    getHeaderColumns(query, AutoCalRegis.WORKPLACE), null, null, getSheetName(AutoCalRegis.WORKPLACE));
+                    getHeaderColumns(query, AutoCalRegis.WORKPLACE), null, null, getSheetName(AutoCalRegis.WORKPLACE), MasterListMode.NONE);
             sheetData.add(wkp);
         }
         if(((Map<String, Boolean>) query.getData()).get("useJobSet")) {
             SheetData job = new SheetData(this.getData(query, AutoCalRegis.JOB),
-                    getHeaderColumns(query, AutoCalRegis.JOB), null, null, getSheetName(AutoCalRegis.JOB));
+                    getHeaderColumns(query, AutoCalRegis.JOB), null, null, getSheetName(AutoCalRegis.JOB), MasterListMode.NONE);
             sheetData.add(job);
         }
         if(((Map<String, Boolean>) query.getData()).get("useJobwkpSet")) {
             SheetData jobWkp = new SheetData(this.getData(query, AutoCalRegis.WORKJOB),
-                    getHeaderColumns(query, AutoCalRegis.WORKJOB), null, null, getSheetName(AutoCalRegis.WORKJOB));
+                    getHeaderColumns(query, AutoCalRegis.WORKJOB), null, null, getSheetName(AutoCalRegis.WORKJOB), MasterListMode.NONE);
             sheetData.add(jobWkp);
         }
         return sheetData;

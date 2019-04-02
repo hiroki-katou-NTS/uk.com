@@ -66,6 +66,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
         remainDays: KnockoutObservable<number> = ko.observable(null);
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
 
@@ -152,7 +153,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }
@@ -192,6 +192,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
+                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
             }
         }
         validateControl() {
@@ -265,9 +266,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let isControlError = self.validateControl();
             if (isControlError) { return; }
 
-            let isCheckReasonError = !self.checkReason(),
-                checkBoxValue = self.checkBoxValue();
-            if (isCheckReasonError) { return; }
+            // let isCheckReasonError = !self.checkReason(),
+            let checkBoxValue = self.checkBoxValue();
+            // if (isCheckReasonError) { return; }
             block.invisible();
             service.save(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {

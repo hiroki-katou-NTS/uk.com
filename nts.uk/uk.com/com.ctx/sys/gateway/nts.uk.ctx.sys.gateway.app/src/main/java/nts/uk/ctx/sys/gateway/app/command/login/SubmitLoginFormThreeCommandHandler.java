@@ -15,14 +15,28 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+<<<<<<< HEAD
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
+=======
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
+>>>>>>> delivery/release_user
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+<<<<<<< HEAD
+=======
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
+>>>>>>> delivery/release_user
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -45,6 +59,9 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	
 	@Inject
 	private LoginRecordRegistService service;
+	
+	@Inject
+	private SystemSuspendService systemSuspendService;
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -69,6 +86,11 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			//get User
 			user = this.getUserAndCheckLimitTime(windowAcc);
 			oldPassword = user.getPassword();
+			SignonEmployeeInfoData signonData = this.getEmployeeInfoCaseSignon(windowAcc,true);
+			CompanyInformationImport com = signonData.companyInformationImport;
+			EmployeeImportNew emp = signonData.employeeImportNew;
+			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
+			companyCode = com.getCompanyCode();
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
@@ -115,13 +137,22 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		
 		//set info to session
 		command.getRequest().changeSessionId();
-		if (command.isSignOn()){
-			this.initSession(user, command.isSignOn());
-		} else {
-			this.setLoggedInfo(user, em, companyCode);
+        
+        //ログインセッション作成 (Create login session)
+        this.initSessionC(user, em, companyCode);
+		
+		// アルゴリズム「システム利用停止の確認」を実行する
+		String programID = AppContexts.programId().substring(0, 6);
+		String screenID = AppContexts.programId().substring(6);
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(
+				AppContexts.user().contractCode(), 
+				AppContexts.user().companyCode(),
+				command.isSignOn() ? 1 : 0,
+				programID,
+				screenID);
+		if(systemSuspendOutput.isError()){
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
-		//set role Id for LoginUserContextManager
-		this.setRoleId(user.getUserId());
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
@@ -138,7 +169,9 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
 		
-		return new CheckChangePassDto(false, null,false);
+		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
+		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
+		return checkChangePassDto;
 	}
 
 	/**

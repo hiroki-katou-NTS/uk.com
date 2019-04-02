@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -18,6 +21,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanc
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class MonthlyAttendanceItemAcFinder implements MonthlyAttendanceItemAdapter {
 
@@ -52,6 +56,7 @@ public class MonthlyAttendanceItemAcFinder implements MonthlyAttendanceItemAdapt
 	/**
 	 * RequestList421
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public List<MonthlyAttendanceResultImport> getMonthlyValueOf(String employeeId, YearMonthPeriod range,
 			Collection<Integer> itemIds) {
@@ -65,11 +70,10 @@ public class MonthlyAttendanceItemAcFinder implements MonthlyAttendanceItemAdapt
 	}
 
 	@Override
-	public List<MonthlyAttendanceResultImport> getMonthlyValueOfParallel(Collection<String> employeeIds,
-			YearMonthPeriod range, Collection<Integer> itemIds) {
+	public List<MonthlyAttendanceResultImport> getMonthlyValueOfParallel(Map<String, YearMonthPeriod> employees, Collection<Integer> itemIds) {
 		List<MonthlyAttendanceResultImport> itemValuesSync = Collections.synchronizedList(new ArrayList<>());
-		this.parallel.forEach(employeeIds, employeeID -> {
-			itemValuesSync.addAll(this.getMonthlyValueOf(employeeID, range, itemIds));
+		this.parallel.forEach(employees.entrySet(), employee -> {
+			itemValuesSync.addAll(this.getMonthlyValueOf(employee.getKey(), employee.getValue(), itemIds));
 		});
 		return new ArrayList<>(itemValuesSync);
 	}

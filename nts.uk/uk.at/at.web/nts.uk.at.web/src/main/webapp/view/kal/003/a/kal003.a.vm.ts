@@ -40,6 +40,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabCheckAlarm: tab.CheckAlarmTab;
         tabAgreementError: tab.AgreementErrorTab;
         tabAgreementHour: tab.AgreementHourTab;
+        tabAnnualHolidaySubCon: tab.AnnualHolidaySubCon;
+        tabAnnualHolidayCon: tab.AnnualHolidayCon;
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
@@ -55,7 +57,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
-                { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) }
+                { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
+                { id: 'tab-9', title: getText('KAL003_212'), content: '.tab-content-9', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
+                { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) }
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -67,6 +71,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabCheckAlarm = new tab.CheckAlarmTab();
             self.tabAgreementError = new tab.AgreementErrorTab(self.selectedCategory());
             self.tabAgreementHour = new tab.AgreementHourTab(self.selectedCategory());
+            self.tabAnnualHolidaySubCon = new tab.AnnualHolidaySubCon();
+            self.tabAnnualHolidayCon = new tab.AnnualHolidayCon();
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -77,6 +83,22 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
                 self.selectCondition(data);
             });
+            
+            self.tabAnnualHolidaySubCon.narrowUntilNext.subscribe(function(data: any) {
+//               if (data == true) {
+//                   $("#check-sub-period").trigger("validate");
+//               } else {
+//                   $("#check-sub-period").ntsError("clear");
+//               }
+           });
+            
+           self.tabAnnualHolidaySubCon.narrowLastDay.subscribe(function(data: any) {
+//               if (data == true) {
+//                   $("#check-sub-last").trigger("validate");
+//               } else {
+//                   $("#check-sub-last").ntsError("clear");
+//               }
+           });
 
         }
 
@@ -193,6 +215,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 self.tabCheckCondition.listMulMonCheckSet([]);
             }
 
+            if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+                 self.tabAnnualHolidayCon.loadData();
+                 self.tabAnnualHolidaySubCon.loadData();
+            }
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -258,6 +284,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }     
+            }else if(data.category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
+                $("#con_usage_obli_day").trigger("validate");
+                $("#A3_2").trigger("validate");
+                $("#A3_4").trigger("validate");
+                if ($("#con_usage_obli_day").ntsError("hasError") || $("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
+                    return;
+                }     
             }
             
 
@@ -286,7 +319,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     x.errorAlarmCondition().alCheckTargetCondition().lstJobTitleId = data.targetCondition().targetJobTitle();
                     x.errorAlarmCondition().alCheckTargetCondition().lstEmploymentCode = data.targetCondition().targetEmployment();
                     x.errorAlarmCondition().alCheckTargetCondition().lstClassificationCode = data.targetCondition().targetClassification();
+                    x.sortOrderBy = x.rowId; 
                 });
+                
             }
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());
@@ -329,6 +364,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
             }
 
+            if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+                 data.annualHolidayAlCon().alarmCheckSubConAgr(self.tabAnnualHolidaySubCon == null ? null : self.tabAnnualHolidaySubCon);
+                 data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
+            }
+            
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
             if (self.selectedCategory() == model.CATEGORY.DAILY) {
@@ -426,6 +466,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
                         self.tabCheckCondition.listMulMonCheckSet([]);
                     }
+                    
+                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+                        self.tabAnnualHolidayCon.loadData();
+                        self.tabAnnualHolidaySubCon.loadData();
+                    }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -480,6 +525,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             new model.Agreement36(
                                 result.condAgree36.listCondOt,
                                 result.condAgree36.listCondError));
+                        item.annualHolidayAlCon(new model.AnnualHolidayAlarmCondition(result.annualHolidayAlConDto.alCheckSubConAgrDto, result.annualHolidayAlConDto.alCheckConAgrDto));
                         let _listFixExtraMon: Array<model.FixedExtraMonFun> = _.map(result.monAlarmCheckConDto.listFixExtraMon, acc => {
                             return new model.FixedExtraMonFun(acc);
                         });
@@ -530,6 +576,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
+                        
+                        if (item.category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+                            self.tabAnnualHolidaySubCon.loadData(item.annualHolidayAlCon().alarmCheckSubConAgr());
+                            self.tabAnnualHolidayCon.loadData(item.annualHolidayAlCon().alarmCheckConAgr());
+                        }
+                        
 			let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
                         // MinhVV add
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
@@ -550,6 +602,21 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }else{
                 
             }
+        }
+        
+        
+        /**
+         * Print file excel
+         */
+        exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
         }
 
     }

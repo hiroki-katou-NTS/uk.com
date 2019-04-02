@@ -6,7 +6,8 @@ module nts.uk.at.view.kaf018.share.model {
         }
         else {
             let msg = nts.uk.resource.getMessage("Msg_793");
-            _.each(result.listError, function(err) {
+            let listError = _.uniq(result.listError);
+            _.each(listError, function(err) {
                 msg += "\n" + err;
             })
             nts.uk.ui.dialog.error({ messageId: "Msg_793", message: msg });

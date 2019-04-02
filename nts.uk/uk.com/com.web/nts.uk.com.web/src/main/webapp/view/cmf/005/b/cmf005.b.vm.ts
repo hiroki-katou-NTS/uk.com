@@ -493,7 +493,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             // Set component option
             self.ccg001ComponentOption = {
                 /** Common properties */
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 systemType: self.systemType(),
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -564,7 +564,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 15,
+                isSelectAllAfterReload: true
             };
         }
 

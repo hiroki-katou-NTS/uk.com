@@ -15,11 +15,16 @@ public class NewLayoutExportData extends AggregateRoot {
 	private int dispoder;
 	private String categoryName;
 	private String itemName;
-	
+	private String itemNameC;
+	private String itemParentCD;
+	private int dataType;
+	private String itemCD;
+	private int layoutItemType;
 	
 
-	public static NewLayoutExportData createFromJavaType(int dispoder,String categoryName,String itemName) {
-		return new NewLayoutExportData(dispoder, categoryName,itemName);
+	public static NewLayoutExportData createFromJavaType(int dispoder,String categoryName,String itemName,String itemNameC,
+			String itemParentCD, int dataType, String itemCD, int layoutItemType) {
+		return new NewLayoutExportData(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType, itemCD, layoutItemType) ;
 	}
 
 }

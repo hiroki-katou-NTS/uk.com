@@ -157,12 +157,12 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public boolean preGobackReflect(GobackReflectPubParameter para) {
-		return preGobackReflect.gobackReflect(this.toDomainGobackReflect(para));		
+		return preGobackReflect.gobackReflect(this.toDomainGobackReflect(para), true);		
 	}
 
 	@Override
 	public boolean afterGobackReflect(GobackReflectPubParameter para) {		
-		return preGobackReflect.afterGobackReflect(this.toDomainGobackReflect(para));		
+		return preGobackReflect.gobackReflect(this.toDomainGobackReflect(para), false);		
 	}
 	private GobackReflectParameter toDomainGobackReflect(GobackReflectPubParameter para) {
 		GobackAppParameter appPara = new GobackAppParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value, ChangeAppGobackAtr.class),
@@ -238,6 +238,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isHolidayWorkReflectFlg(), 
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheReflectFlg(),
+				param.isHwRecordReflectTime(),
+				param.isHwRecordReflectBreak(),
 				appPara);
 		return holidayworkService.preHolidayWorktimeReflect(para, isPre);
 	}

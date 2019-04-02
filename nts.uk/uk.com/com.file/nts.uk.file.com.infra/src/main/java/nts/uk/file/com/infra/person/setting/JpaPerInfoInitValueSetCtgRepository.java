@@ -65,14 +65,14 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  END REF_METHOD_ATR,");
 	     exportSQL.append(" CONCAT(");
 	     // Workplace
-	     exportSQL.append("  CONCAT(RTRIM(wkp.WKPCD),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
+	     exportSQL.append("  CONCAT(IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'),RTRIM(wkp.WKPCD),''),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
 	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // Employment
 	     exportSQL.append("  CONCAT(RTRIM(emp.CODE), emp.NAME), ");
 	     // Classification
 	     exportSQL.append("  CONCAT(RTRIM(cls.CLSCD), cls.CLSNAME), ");
 	     // Job title
-	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'), job.JOB_NAME, ");
+	     exportSQL.append("  CONCAT(IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'),RTRIM(job.JOB_CD),''),IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'), job.JOB_NAME, ");
 	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // TempAbsence
 		 exportSQL.append("IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME,  ");
@@ -163,10 +163,11 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     WHEN '1' THEN ?Enum_NotUseAtr_USE");
 	     exportSQL.append("     ELSE NULL");
 	     exportSQL.append("    END");
+		 // ManageAtr
 	     exportSQL.append("   WHEN 'E00011' THEN");
 	     exportSQL.append("    CASE initsetitem.STRING_VAL");
-	     exportSQL.append("     WHEN '0' THEN ?Enum_UseClassificationAtr_NOT_USE");
-	     exportSQL.append("     WHEN '1' THEN ?Enum_UseClassificationAtr_USE");
+	     exportSQL.append("     WHEN '0' THEN ?Enum_ManageAtr_NotManage");
+	     exportSQL.append("     WHEN '1' THEN ?Enum_ManageAtr_Manage");
 	     exportSQL.append("     ELSE NULL");
 	     exportSQL.append("    END");
 	     // -- 労働制 WorkingSystem
@@ -456,9 +457,9 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 				.setParameter("Enum_NotUseAtr_NOT_USE",
 						I18NText.getText("Enum_NotUseAtr_NOT_USE"))
 				.setParameter("Enum_NotUseAtr_USE", I18NText.getText("Enum_NotUseAtr_USE"))
-				.setParameter("Enum_UseClassificationAtr_NOT_USE",
-						I18NText.getText("Enum_UseClassificationAtr_NOT_USE"))
-				.setParameter("Enum_UseClassificationAtr_USE", I18NText.getText("Enum_UseClassificationAtr_USE"))
+				.setParameter("Enum_ManageAtr_NotManage",
+						I18NText.getText("Enum_ManageAtr_NotManage"))
+				.setParameter("Enum_ManageAtr_Manage", I18NText.getText("Enum_ManageAtr_Manage"))
 				.setParameter("Enum_WorkingSystem_REGULAR_WORK", I18NText.getText("Enum_WorkingSystem_REGULAR_WORK"))
 				.setParameter("Enum_WorkingSystem_FLEX_TIME_WORK",
 						I18NText.getText("Enum_WorkingSystem_FLEX_TIME_WORK"))

@@ -46,12 +46,14 @@ public class AlarmCheckConditionByCategoryCommand {
 	
 	private MulMonCheckCondCommand mulMonCheckCond;
 	
+	private AnnualHolidayAlarmConditionCommand annualHolidayAlCon;
+	
 	public AlarmCheckConditionByCategoryCommand(String code, String name, int category,
 			AlarmCheckTargetConditionCommand targetCondition, List<String> availableRoles,
 			DailyAlarmCheckConditionCommand dailyAlarmCheckCondition,
 			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action,
 			MonAlarmCheckConCommand monAlarmCheckCon,
-			UpdateAgree36Command agree36, MulMonCheckCondCommand mulMonCheckCond) {
+			UpdateAgree36Command agree36, MulMonCheckCondCommand mulMonCheckCond, AnnualHolidayAlarmConditionCommand annualHolidayAlCon) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -64,6 +66,7 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.monAlarmCheckCon = monAlarmCheckCon;
 		this.condAgree36 = agree36;
 		this.mulMonCheckCond = mulMonCheckCond;
+		this.annualHolidayAlCon = annualHolidayAlCon;
 	}
 
 }

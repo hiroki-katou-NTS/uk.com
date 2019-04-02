@@ -221,50 +221,50 @@ module nts.uk.at.view.ksm011 {
 
                 //Block 1
                 self.alarmCheckAtr = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedAlarm = ko.observable(0);
 
                 self.confirmedAtr = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedConfirmed = ko.observable(0);
 
                 self.publicAtr = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedPublic = ko.observable(1);
 
                 self.outputAtr = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedOutput = ko.observable(0);
 
                 self.workDevision = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedWorkDivision = ko.observable(1);
 
                 self.teamDivision = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedTeamDivision = ko.observable(1);
 
                 self.rankAtr = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedRank = ko.observable(1);
@@ -283,139 +283,139 @@ module nts.uk.at.view.ksm011 {
 
                 //Block 2
                 self.shortNameDisp = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedShortName = ko.observable(0);
 
                 self.timeDisp = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedTime = ko.observable(0);
 
                 self.symbols = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedSymbol = ko.observable(1);
 
                 //Block 3
                 self.dispOn28th = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedDispOn28th = ko.observable(1);
 
                 self.endDateIndication = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedIndication = ko.observable(1);
 
                 //Block 4
                 self.individualDisp = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedIndividual = ko.observable(1);
 
                 self.dispByDate = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedDate = ko.observable(0);
 
                 self.indicationByShift = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedIndicationByShift = ko.observable(1);
 
                 //Block 5
                 self.regularWork = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_29") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_30") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_29") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
 
                 self.selectedRegular = ko.observable(0);
 
                 self.fluidWork = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_29") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_30") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_29") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
 
                 self.selectedFluid = ko.observable(0);
 
                 self.workForFlex = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_29") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_30") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_29") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
 
                 self.selectedFlex = ko.observable(0);
 
                 self.overtime = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_29") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_30") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_29") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
 
                 self.selectedOvertime = ko.observable(0);
 
                 //Block 6
                 self.generalCreated = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedGeneral = ko.observable(1);
 
                 self.simulation = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedSimulation = ko.observable(1);
 
                 self.capture = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedCapture = ko.observable(1);
 
                 //Block 7                
                 self.completeFunc = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedCompFunc = ko.observable(1);
 
                 self.optionComplete = ko.observableArray([
-                    { id: 0, name: nts.uk.resource.getText("KSM011_41") },
-                    { id: 1, name: nts.uk.resource.getText("KSM011_42") }
+                    { id: 1, name: nts.uk.resource.getText("KSM011_41") },
+                    { id: 0, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
 
                 self.selectedOptionComp = ko.observable(0);
 
                 self.alarmCheck = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedAlarmCheck = ko.observable(0);
 
                 self.alarmMethod = ko.observableArray([
-                    { id: 0, name: nts.uk.resource.getText("KSM011_41") },
-                    { id: 1, name: nts.uk.resource.getText("KSM011_42") }
+                    { id: 1, name: nts.uk.resource.getText("KSM011_41") },
+                    { id: 0, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
 
                 self.selectedAlarmMethod = ko.observable(0);
@@ -423,15 +423,15 @@ module nts.uk.at.view.ksm011 {
                 self.conditionList = ko.observable(nts.uk.resource.getText("KSM011_75"));
 
                 self.unhooking = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedUnhooking = ko.observable(0);
 
                 self.confirm = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedConfirm = ko.observable(0);
@@ -439,15 +439,15 @@ module nts.uk.at.view.ksm011 {
 
                 //Block 8
                 self.searchMethod = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                    { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+                    { code: 1, name: nts.uk.resource.getText("KSM011_8") },
+                    { code: 0, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
                 self.selectedSearchMethod = ko.observable(1);
 
                 self.retrievalMethod = ko.observableArray([
-                    { id: 0, name: nts.uk.resource.getText("KSM011_51") },
-                    { id: 1, name: nts.uk.resource.getText("KSM011_52") }
+                    { id: 1, name: nts.uk.resource.getText("KSM011_51") },
+                    { id: 0, name: nts.uk.resource.getText("KSM011_52") }
                 ]);
 
                 self.selectedRetrieval = ko.observable(1);
@@ -596,11 +596,10 @@ module nts.uk.at.view.ksm011 {
                 self.conditionData([]);
 
                 $.when(self.getData(), self.getShiftConditionCat(), self.getShiftCondition()).done(function() {
-                    if (self.conditionData().length > 0 && self.dataA != null) {
+                    if (self.dataA != null) {
                         var conds = "";
                         self.scheFuncCondList([]);
-
-                        self.selectedAlarm(self.dataA.alarmCheckUseCls);
+                           self.selectedAlarm(self.dataA.alarmCheckUseCls);
                         self.selectedConfirmed(self.dataA.confirmedCls);
                         self.selectedPublic(self.dataA.publicCls);
                         self.selectedOutput(self.dataA.outputCls);
@@ -630,29 +629,28 @@ module nts.uk.at.view.ksm011 {
                         self.selectedUnhooking(self.dataA.handleRepairAtr);
                         self.selectedConfirm(self.dataA.confirm);
                         self.selectedSearchMethod(self.dataA.searchMethod);
-                        self.selectedRetrieval(self.dataA.searchMethodDispCls);
-
-                        var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
-                        _.forEach(sortedScheFuncCond, function(item) {
-                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
-                            if (result !== undefined) {
-                                self.scheFuncCondList.push(result);
+                        self.selectedRetrieval(self.dataA.searchMethodDispCls); 
+                            var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
+                            _.forEach(sortedScheFuncCond, function(item) {
+                                var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
+                                if (result !== undefined) {
+                                    self.scheFuncCondList.push(result);
+                                }
+                                else {
+                                    self.scheFuncCondList.push(new ConditionModel({
+                                        conditionNo: item.conditionNo,
+                                        conditionName: nts.uk.resource.getText("KSM011_75"),
+                                        isParent: false,
+                                    }));
+                                }
+                                conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
+                            });
+                            if (conds == "") {
+                                self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                            } else {
+                                self.conditionList(conds.trim().slice(0, -1));
                             }
-                            else {
-                                self.scheFuncCondList.push(new ConditionModel({
-                                    conditionNo: item.conditionNo,
-                                    conditionName: nts.uk.resource.getText("KSM011_75"),
-                                    isParent: false,
-                                }));
-                            }
-                            conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
-                        });
-                        if (conds == "") {
-                            self.conditionList(nts.uk.resource.getText("KSM011_75"));
-                        } else {
-                            self.conditionList(conds.trim().slice(0, -1));
-                        }
-                        self.oldScheFuncCondList = self.scheFuncCondList();
+                            self.oldScheFuncCondList = self.scheFuncCondList();
                     } else {
                         self.selectedAlarm(0);
                         self.selectedConfirmed(0);

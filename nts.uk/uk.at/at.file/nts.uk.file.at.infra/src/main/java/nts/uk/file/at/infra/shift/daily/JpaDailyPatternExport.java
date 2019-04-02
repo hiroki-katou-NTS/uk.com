@@ -35,7 +35,7 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
             +" ROW_NUMBER() OVER (PARTITION BY T1.PATTERN_CD ORDER BY T1.PATTERN_CD, T1.PATTERN_NAME,T2.DISP_ORDER) AS ROW_NUMBER "
             +" FROM KSCMT_DAILY_PATTERN_SET T1 "
             +" INNER JOIN KSCMT_DAILY_PATTERN_VAL T2 ON T1.PATTERN_CD = T2.PATTERN_CD AND T2.CID = T1.CID  "
-            +" INNER JOIN KSHMT_WORKTYPE T3 ON T2.WORK_TYPE_CD = T3.CD AND T3.CID = T1.CID"
+            +" LEFT JOIN KSHMT_WORKTYPE T3 ON T2.WORK_TYPE_CD = T3.CD AND T3.CID = T1.CID"
             +" LEFT JOIN KSHMT_WORK_TIME_SET T4 ON T2.WORKING_CD = T4.WORKTIME_CD AND T4.CID = T1.CID "
             +" WHERE T1.CID = ? ) "
             +" TABLE_RESULT;";
@@ -67,14 +67,15 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
                 .value(r.getString("PATTERN_NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
+
         data.put(DailyPatternExportImpl.KSM003_40, MasterCellData.builder()
                 .columnId(DailyPatternExportImpl.KSM003_40)
-                .value( r.getString("WORK_TYPE_CD")+r.getString("NAME"))
+                .value( r.getString("NAME") == null ? r.getString("WORK_TYPE_CD")+"マスタ未登録" : r.getString("WORK_TYPE_CD")+r.getString("NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(DailyPatternExportImpl.KSM003_41, MasterCellData.builder()
                 .columnId(DailyPatternExportImpl.KSM003_41)
-                .value( r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+r.getString("NAMET4"))
+                .value(  r.getString("NAMET4") == null ?  (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+"マスタ未登録") : (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+r.getString("NAMET4")))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(DailyPatternExportImpl.KSM003_42, MasterCellData.builder()

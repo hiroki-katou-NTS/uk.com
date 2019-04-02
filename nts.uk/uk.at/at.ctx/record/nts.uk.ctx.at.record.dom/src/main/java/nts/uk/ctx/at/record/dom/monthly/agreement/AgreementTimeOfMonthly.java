@@ -106,7 +106,7 @@ public class AgreementTimeOfMonthly {
 		
 		// 「36協定基本設定」を取得する
 		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
-				companyId, employeeId, criteriaDate, workingSystem);
+				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
 		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorOneMonth().v());
 		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmOneMonth().v());
 		
@@ -143,7 +143,7 @@ public class AgreementTimeOfMonthly {
 		
 		// 「36協定基本設定」を取得する
 		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
-				companyId, employeeId, criteriaDate, workingSystem);
+				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
 		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorWeek().v());
 		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmWeek().v());
 	}
@@ -152,6 +152,12 @@ public class AgreementTimeOfMonthly {
 	 * エラーチェック
 	 */
 	public void errorCheck(){
+		
+		// 限度エラー時間をチェック　（Redmine#106502）
+		if (this.limitErrorTime.v() <= 0) {
+			this.status = AgreementTimeStatusOfMonthly.NORMAL;
+			return;
+		}
 		
 		// 特例限度アラーム時間に値が入っているか確認する
 		if (!this.exceptionLimitAlarmTime.isPresent()){

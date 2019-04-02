@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.editstate;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -128,20 +132,30 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<EditStateOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDailyRecEditSet a ");
-		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd <= :end AND a.krcdtDailyRecEditSetPK.processingYmd >= :start");
-		TypedQueryWrapper<KrcdtDailyRecEditSet> tQuery=  this.queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class);
+		
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds)
-					.setParameter("start", ymd.start())
-					.setParameter("end", ymd.end())
-					.getList().stream().collect(Collectors.groupingBy(
-							c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
-					.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
-					.flatMap(List::stream).collect(Collectors.toList()));
+			result.addAll(internalQuery(ymd, empIds));
 		});
 		return result;
+	}
+	
+	@SneakyThrows
+	private List<EditStateOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
+		String subEmp = NtsStatement.In.createParamsString(empIds);
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAILY_REC_EDIT_SET");
+		query.append(" WHERE YMD <= ? AND YMD >= ? ");
+		query.append(" AND SID IN (" + subEmp + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			stmt.setDate(1, Date.valueOf(baseDate.end().localDate()));
+			stmt.setDate(2, Date.valueOf(baseDate.start().localDate()));
+			for (int i = 0; i < empIds.size(); i++) {
+				stmt.setString(i + 3, empIds.get(i));
+			}
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				return new EditStateOfDailyPerformance(rec.getString("SID"), rec.getInt("ATTENDANCE_ITEM_ID"),
+						rec.getGeneralDate("YMD"), EnumAdaptor.valueOf(rec.getInt("EDIT_STATE"), EditStateSetting.class));
+			});
+		}
 	}
 
 	@Override
@@ -252,6 +266,21 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.setParameter("employeeId", sid)
 				.setParameter("ymd", ymd)
 				.setParameter("items", ids)
+				.setParameter("editState", editState.value)
+				.getList(c -> toDomain(c));
+	}
+	@Override
+	public List<EditStateOfDailyPerformance> findByEditState(String sid, GeneralDate ymd, EditStateSetting editState) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDailyRecEditSet a ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
+		builderString.append("AND a.editState = :editState ");
+		builderString.append("ORDER BY a.krcdtDailyRecEditSetPK.attendanceItemId");
+		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+				.setParameter("employeeId", sid)
+				.setParameter("ymd", ymd)
 				.setParameter("editState", editState.value)
 				.getList(c -> toDomain(c));
 	}

@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.dom.standardtime.repository;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSettingsGetter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：36協定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface AgreementDomainService {
 
@@ -18,6 +21,8 @@ public interface AgreementDomainService {
 	 * @param workingSystem 労働制
 	 * @return 36協定基本設定
 	 */
-	BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+	BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 			WorkingSystem workingSystem);
+	
+	BasicAgreementSettingsGetter getBasicSet(String companyId, List<String> employeeIds, DatePeriod datePeriod);
 }

@@ -44,7 +44,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -52,6 +51,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 /**
  *
  * @author hoidd
@@ -94,12 +94,16 @@ public class ErrorAlarmWorkRecordExportImpl {
           String companyId = loginUserContext.companyId();
           
           List<MasterData> datas = new ArrayList<>();
-          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0);// fixedAtr":1
+          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0)
+        		  .stream()
+                  .collect(Collectors.toList());// fixedAtr":1
+
           //7
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
           //16
-         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, GeneralDate.today());
+         GeneralDate lastDate =  GeneralDate.ymd(9999, 12, 31);
+         List<JobTitleInfo> listJobs = jobTitleInfoRepository.findAll(companyId, lastDate);
           //18
 	     List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
          //22
@@ -150,34 +154,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                        .sorted(Comparator.comparing(ErrorAlarmWorkRecordDto::getCode))
                       .collect(Collectors.toList());
 
+
          //40
-       /** { code: 0, name: "残業申請（早出）" },
-         { code: 1, name: "残業申請（通常）" },
-         { code: 2, name: "残業申請（早出・通常）" },
-         { code: 3, name: "休暇申請" },
-         { code: 4, name: "勤務変更申請" },
-         //{ code: 5, name: "出張申請" },
-         { code: 6, name: "直行直帰申請" },
-         { code: 7, name: "休出時間申請" },
-         //{ code: 8, name: "打刻申請（外出許可）" },
-      	 //{ code: 9, name: "打刻申請（出退勤漏れ）" },
-         //{ code: 10, name: "打刻申請（打刻取消）" },
-         //{ code: 11, name: "打刻申請（レコーダイメージ）" },
-         //{ code: 12, name: "打刻申請（その他）" },
-         //{ code: 13, name: "時間年休申請" },
-         //{ code: 14, name: "遅刻早退取消申請" },
-         { code: 15, name: "振休振出申請" },
-         */
-       
-         Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
               if(CollectionUtil.isEmpty(lstDto)){
                      return null;
               }else{
@@ -186,131 +164,164 @@ public class ErrorAlarmWorkRecordExportImpl {
                            putEmptyDataOne(data);
                            data.put(header.get(1), c.getCode());
                            data.put(header.get(2), c.getName());
-                           //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
-                                  data.put(header.get(3), "使用する");
+                                  data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
-                                  data.put(header.get(3), "使用しない");
+//                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
+                        	   return;
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
-                           if(c.getRemarkCancelErrorInput() == 1){
-                                  data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
-                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                                  
-                           }else{
-                        	   	data.put(header.get(5), TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
-                                  data.put(header.get(6), "");
-                           }
+                          if (c.getFixedAtr() != 1 && c.getTypeAtr() != 2) {       
+	                           if(c.getRemarkCancelErrorInput() == 1){
+	                                  data.put(header.get(5), TextResource.localize("KDW007_109"));
+	                                  AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
+	                                  data.put(header.get(6), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                                  
+	                           }else{
+	                        	   	data.put(header.get(5), TextResource.localize("KDW007_110"));
+	                                  data.put(header.get(6), "");
+	                           }
+                          }
                            //7
-                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
-                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
-                           String color = c.getMessageColor();
-                           if(color!=null){
-                    	   data.put(header.get(8), color = color.replace("#", ""));
-                           }
-                           data.put(header.get(9), c.getDisplayMessage());
-                           
-                           if(c.getBoldAtr() ==0){
-                                  data.put(header.get(10), "-");
-                           }else{
-                                  data.put(header.get(10), "○");
-                           }
+                          if (c.getTypeAtr() != 2){
+	                           AttdItemDto attItemDto = mapListDivergenName.get(c.getErrorDisplayItem());
+	                           data.put(header.get(7), attItemDto!=null?attItemDto.getAttendanceItemName():"");
+	                           String color = c.getMessageColor();
+	                           if(color!=null){
+	                    	   data.put(header.get(8), color = color.replace("#", ""));
+	                           }
+	                           data.put(header.get(9), c.getDisplayMessage());
+	                           
+	                           if(c.getBoldAtr() ==0){
+	                                  data.put(header.get(10), "-");
+	                           }else{
+	                                  data.put(header.get(10), "○");
+	                           }
+                          }
                            //11
                             if(c.getAlCheckTargetCondition().isFilterByEmployment() == false){
                                   data.put(header.get(11), "-");
                            }else{
                                   data.put(header.get(11), "○");
-                           }
-                           //12
-                           List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
-                           Collections.sort(lstEmpCode);
-                           List<String> codeAndNameEmp = new ArrayList<>();
-                           for (String key : lstEmpCode) {
-                                  EmploymentCode keyEmp = new EmploymentCode(key);
-                                  Employment emp = mapListEmp.get(keyEmp);
-                                  if(emp!=null){
-                                  codeAndNameEmp.add(emp.getEmploymentCode().v()+emp.getEmploymentName().v());
+                                  //12
+                                  List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
+                                  Collections.sort(lstEmpCode);
+                                  List<String> codeAndNameEmp = new ArrayList<>();
+                                  for (String key : lstEmpCode) {
+                                         EmploymentCode keyEmp = new EmploymentCode(key);
+                                         Employment emp = mapListEmp.get(keyEmp);
+                                         if(emp!=null){
+                                         codeAndNameEmp.add(emp.getEmploymentCode().v()+emp.getEmploymentName().v());
+                                         }else {
+                                        	 codeAndNameEmp.add(key+TextResource.localize("KDW006_226"));
+										}
+                                  }
+                                  
+                                  
+                                  String listStringemp = "";
+                                  if(CollectionUtil.isEmpty(lstEmpCode)){
+                                         data.put(header.get(12), listStringemp);
+                                  }else{
+                                         listStringemp = String.join(",", codeAndNameEmp);
+                                         data.put(header.get(12), listStringemp);
                                   }
                            }
-                           
-                           
-                           String listStringemp = "";
-                           if(CollectionUtil.isEmpty(lstEmpCode)){
-                                  data.put(header.get(12), listStringemp);
-                           }else{
-                                  listStringemp = String.join(",", codeAndNameEmp);
-                                  data.put(header.get(12), listStringemp);
-                           }
+                          
                            //13 filterByClassification
                             if(c.getAlCheckTargetCondition().isFilterByClassification() == false){
                                   data.put(header.get(13), "-");
                            }else{
                                   data.put(header.get(13), "○");
+                                  String sValues14 = "";
+                                  List<String> lstClassificationCode= c.getAlCheckTargetCondition().getLstClassification();
+                                  Collections.sort(lstClassificationCode);
+                                  List<String> codeAndNameClassification = new ArrayList<>();
+                                  for (String key : lstClassificationCode) {
+                                         ClassificationCode keyClass = new ClassificationCode(key);
+                                         Classification classification = mapListClass.get(keyClass);
+                                         if(classification!=null){
+                                        	 codeAndNameClassification.add(classification.getClassificationCode().v()+classification.getClassificationName().v());
+                                         }else {
+                                        	 codeAndNameClassification.add(key+TextResource.localize("KDW006_226"));
+										}
+                                                
+                                  }
+                                   if(!CollectionUtil.isEmpty(codeAndNameClassification)){
+                                         sValues14 = String.join(",", codeAndNameClassification);
+                                         data.put(header.get(14), sValues14);
+                                  }
                            }
-                           String sValues14 = "";
-                           List<String> lstClassificationCode= c.getAlCheckTargetCondition().getLstClassification();
-                           Collections.sort(lstClassificationCode);
-                           List<String> codeAndNameClassification = new ArrayList<>();
-                           for (String key : lstClassificationCode) {
-                                  ClassificationCode keyClass = new ClassificationCode(key);
-                                  Classification classification = mapListClass.get(keyClass);
-                                  if(classification!=null)
-                                         codeAndNameClassification.add(classification.getClassificationCode().v()+classification.getClassificationName().v());
-                           }
-                            if(!CollectionUtil.isEmpty(codeAndNameClassification)){
-                                  sValues14 = String.join(",", codeAndNameClassification);
-                                  data.put(header.get(14), sValues14);
-                           }
+                           
                            
                            //15 filterByJobTitle
                            if(c.getAlCheckTargetCondition().isFilterByJobTitle() == false){
                                   data.put(header.get(15), "-");
                            }else{
                                   data.put(header.get(15), "○");
+                                  List<String> lst3 = new ArrayList<>();
+                                  
+                                  for(int i=0;i<c.getAlCheckTargetCondition().getLstJobTitle().size();i++){
+                                         lst3.add(c.getAlCheckTargetCondition().getLstJobTitle().get(i));
+                                  }
+                                  //16
+                                  String sValues16 = "";
+                                  List<String> lstJobTitleId= c.getAlCheckTargetCondition().getLstJobTitle();
+//                                  Collections.sort(lstJobTitleCode);
+                                  List<JobTitleItemDto> listJobTitleItemDto = new ArrayList<>();
+                                  List<String> lstJobTitleIdDeleted = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(lstJobTitleId)){
+                            	     for (String key : lstJobTitleId) {
+                                         JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
+                                         if(jobTitleItemDto!=null){
+                                       	  listJobTitleItemDto.add(jobTitleItemDto);
+                                         }else {
+                                       	  lstJobTitleIdDeleted.add(key);
+   										}
+                            	     }
+                                  }
+                                  List<String> codeAndNameJobTitle = new ArrayList<>();
+                                  if(!CollectionUtil.isEmpty(listJobTitleItemDto)){
+                                	  listJobTitleItemDto.sort(Comparator.comparing(JobTitleItemDto::getCode));
+                                      for (JobTitleItemDto jobTitleItemDto : listJobTitleItemDto) {
+                                          if(jobTitleItemDto!=null){
+                                         	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                          }
+                                   }
+                                  }
+                                  
+                                  if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
+                                         sValues16 = String.join(",", codeAndNameJobTitle);
+                                         for (int i = 0 ; i <lstJobTitleIdDeleted.size();i++) {
+                                        	 sValues16+=","+TextResource.localize("KDW006_226");
+										}
+                                         data.put(header.get(16), sValues16);
+                                  }
                            }
-                           
-                           List<String> lst3 = new ArrayList<>();
-                           
-                           for(int i=0;i<c.getAlCheckTargetCondition().getLstJobTitle().size();i++){
-                                  lst3.add(c.getAlCheckTargetCondition().getLstJobTitle().get(i));
-                           }
-                           //16
-                           String sValues16 = "";
-                           List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
-                           Collections.sort(lstJobTitleCode);
-                           List<String> codeAndNameJobTitle = new ArrayList<>();
-                           for (String key : lstJobTitleCode) {
-                                  JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
-                                  if(jobTitleItemDto!=null)
-                                         codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
-                           }
-                           if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
-                                  sValues16 = String.join(",", codeAndNameJobTitle);
-                                  data.put(header.get(16), sValues16);
-                           }
-                           
+                          
                            //17
                             if(c.getAlCheckTargetCondition().isFilterByBusinessType() == false){
                                   data.put(header.get(17), "-");
                            }else{
                                   data.put(header.get(17), "○");
-                           }
-                           //18
-                           String sValues18 = "";
-                           List<String> lstBusinessTypeCode= c.getAlCheckTargetCondition().getLstBusinessType();
-                           Collections.sort(lstBusinessTypeCode);
-                           List<String> codeAndBusinessType = new ArrayList<>();
-                           for (String key : lstBusinessTypeCode) {
-                                  BusinessTypeCode keyBz = new BusinessTypeCode(key);
-                                  BusinessType businessType = maplistBusinessType.get(keyBz);
-                                  if(businessType!=null)
-                                         codeAndBusinessType.add(businessType.getBusinessTypeCode().v()+businessType.getBusinessTypeName());
-                           }
-                           if(!CollectionUtil.isEmpty(codeAndBusinessType)){
-                                  sValues18 = String.join(",", codeAndBusinessType);
-                                  data.put(header.get(18), sValues18);
+                                //18
+                                  String sValues18 = "";
+                                  List<String> lstBusinessTypeCode= c.getAlCheckTargetCondition().getLstBusinessType();
+                                  Collections.sort(lstBusinessTypeCode);
+                                  List<String> codeAndBusinessType = new ArrayList<>();
+                                  for (String key : lstBusinessTypeCode) {
+                                         BusinessTypeCode keyBz = new BusinessTypeCode(key);
+                                         BusinessType businessType = maplistBusinessType.get(keyBz);
+                                         if(businessType!=null){
+                                                codeAndBusinessType.add(businessType.getBusinessTypeCode().v()+businessType.getBusinessTypeName());
+                                         }else {
+                                        	 codeAndBusinessType.add(key+TextResource.localize("KDW006_226"));
+										}
+                                  }
+                                  if(!CollectionUtil.isEmpty(codeAndBusinessType)){
+                                         sValues18 = String.join(",", codeAndBusinessType);
+                                         data.put(header.get(18), sValues18);
+                                  }
                            }
                            
                            // 19
@@ -336,7 +347,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
                                          if(workTypeDto!=null){
                                                 codeAndNameActualType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                         }else {
+                                        	 codeAndNameActualType.add(key+TextResource.localize("KDW006_226"));
+										}
                                    }
                                    String stringDataColumn27 = String.join(",", codeAndNameActualType);
                                    data.put(header.get(27),stringDataColumn27);
@@ -344,27 +357,30 @@ public class ErrorAlarmWorkRecordExportImpl {
                            }
                            //20
                             if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
                                    data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
                         	   }else{
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Different"));
                         	   }
                         	   //28,29
                                if(c.getWorkTimeCondition().isActualFilterAtr()== false){
                                    data.put(header.get(28), "-");
                                    data.put(header.get(29),"");
                                }else{
-                                   data.put(header.get(30), "○");
+                                   data.put(header.get(28), "○");
                                    List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
                                    List<String> codeAndNameActualTime = new ArrayList<>();
                                    Collections.sort(listActualTimeCode);
                                    for (String key : listActualTimeCode) {
-                                         WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
-                                         if(workTypeDto!=null){
-                                                codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                	   WorkTimeCode keyWorkTime = new WorkTimeCode(key);
+                                       WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
+                                       if(workTypeDto!=null){
+                                    	   codeAndNameActualTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
+                                       }else {
+                                    	   codeAndNameActualTime.add(key+TextResource.localize("KDW006_226"));
+									}
                                    }
                                    String stringDataColumn29 =String.join(",", codeAndNameActualTime);
                                   
@@ -385,7 +401,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTypeDto workTypeDto = mapListWorkTypeDto.get(key);
                                          if(workTypeDto!=null){
                                                 codeAndNameWorkType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                         }else {
+                                        	 codeAndNameWorkType.add(key+TextResource.localize("KDW006_226"));
+										}
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkType)){
                                          sValues22 = String.join(",", codeAndNameWorkType);
@@ -406,7 +424,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTimeCode keyWorkTime = new WorkTimeCode(key);
                                          WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
                                          if(workTypeDto!=null){
-                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeAbName().v());
+                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
+                                         }else{
+                                        	 codeAndNameWorkTime.add(key+TextResource.localize("KDW006_226"));
                                          }
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkTime)){
@@ -464,7 +484,7 @@ public class ErrorAlarmWorkRecordExportImpl {
 							if (conditionAtr == 3) {
 								mapListAttItemDto = mapListAttItemDto3;
 							}
-							
+							if(conditionType!=2){
 							List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 							List<Integer> listKeySub = erro.getCountableSubAtdItems();
 							List<String> listStringAttNameAdd = new ArrayList<>();
@@ -487,12 +507,18 @@ public class ErrorAlarmWorkRecordExportImpl {
 									}
 								}
 							}
-							Collections.sort(listStringAttNameAdd);
-							Collections.sort(listStringAttNameSub);
+//							Collections.sort(listStringAttNameAdd);
+//							Collections.sort(listStringAttNameSub);
 							String subString = String.join("-", listStringAttNameSub);
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 									: String.join("+", listStringAttNameAdd) + "-" + subString;
+							}else {
+								AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+								if (attItem != null) {
+									targetName = attItem.getAttendanceItemName();
+								}
+							}
 							break;
 						case 2:
 							AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -522,8 +548,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 								break;
 							case 1:
 								String singleAttName = "";
-								if (conditionAtr == 3) {
-									AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+								if (conditionAtr == 2) {
+									AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
 									if (at != null) {
 										singleAttName = at.getAttendanceItemName();
 									}
@@ -543,10 +569,14 @@ public class ErrorAlarmWorkRecordExportImpl {
 								/** 入力されている */
 								// INPUT_DONE(1,
 								// "Enum_ConditionType_AttendanceItem");
+								/**
+								 * fix tam theo man hinh : KDW007_107 = 入力されている
+								 * 							KDW007_108 = 入力されていない	
+								 */
 								conditonName = erro.getInputCheckCondition() == 0
-										? TextResource.localize("Enum_ConditionType_FixedValue")
-										: TextResource.localize("Enum_ConditionType_AttendanceItem");
-								alarmDescription = targetName + conditonName;
+										? TextResource.localize("KDW007_108")
+										: TextResource.localize("KDW007_107");
+								alarmDescription = targetName +" "+ conditonName;
 								break;
 							default:
 								break;
@@ -615,30 +645,42 @@ public class ErrorAlarmWorkRecordExportImpl {
 								if (conditionAtr == 3) {
 									mapListAttItemDto = mapListAttItemDto3;
 								}
+								if(conditionType!=2){
 								List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
 								List<Integer> listKeySub = erro.getCountableSubAtdItems();
 								List<String> listStringAttNameAdd = new ArrayList<>();
 								List<String> listStringAttNameSub = new ArrayList<>();
 								// get list att add
-								for (Integer attId : listKeyAdd) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameAdd.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeyAdd)){
+									for (Integer attId : listKeyAdd) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameAdd.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
 								// get list att sub
-								for (Integer attId : listKeySub) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameSub.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeySub)){
+									for (Integer attId : listKeySub) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameSub.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
-								Collections.sort(listStringAttNameAdd);
-								Collections.sort(listStringAttNameSub);
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
 										: String.join("+", listStringAttNameAdd) + "-" + subString;
+								}
+								else {
+									AttdItemDto attItem = mapListAttItemDto.get(erro.getUncountableAtdItem());
+									if (attItem != null) {
+										targetName = attItem.getAttendanceItemName();
+									}
+								}
 								break;
 							case 2:
 								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -661,16 +703,18 @@ public class ErrorAlarmWorkRecordExportImpl {
 											alarmDescription = startValue + compareOpera.getCompareLeft() + targetName
 													+ compareOpera.getCompareright() + endValue;
 										} else {
-											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue
-													+ "," + endValue + compareOpera.getCompareright() + targetName;
+											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue + ","
+													+ endValue + compareOpera.getCompareright() + targetName;
 										}
 									}
 									break;
 								case 1:
 									String singleAttName = "";
-									if (conditionAtr == 3) {
-										singleAttName = mapListAttItemDto.get(erro.getSingleAtdItem())
-												.getAttendanceItemName();
+									if (conditionAtr == 2) {
+										AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
+										if (at != null) {
+											singleAttName = at.getAttendanceItemName();
+										}
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
 										if (attItem != null) {
@@ -688,9 +732,9 @@ public class ErrorAlarmWorkRecordExportImpl {
 									// INPUT_DONE(1,
 									// "Enum_ConditionType_AttendanceItem");
 									conditonName = erro.getInputCheckCondition() == 0
-											? TextResource.localize("Enum_ConditionType_FixedValue")
-											: TextResource.localize("Enum_ConditionType_AttendanceItem");
-									alarmDescription = targetName + conditonName;
+											? TextResource.localize("KDW007_108")
+											: TextResource.localize("KDW007_107");
+									alarmDescription = targetName +" "+ conditonName;
 									break;
 								default:
 									break;
@@ -715,8 +759,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            List<Integer> lstApplicationTypeCode = c.getLstApplicationTypeCode();
                            List<String> listStrApp = new ArrayList<>();
                            if(!CollectionUtil.isEmpty(lstApplicationTypeCode)){
+                        	   Collections.sort(lstApplicationTypeCode);
                                   for (Integer key : lstApplicationTypeCode) {
-                                         String strAppType = mapApplicationType.get(key);
+                                         String strAppType = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                                          if(strAppType!=null){
                                                 listStrApp.add(strAppType);
                                          }
@@ -729,7 +774,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                            MasterData masterData = new MasterData(data, null, "");
                            for (int i=1;i< header.size();i++) {
 //                        	   String tempTest = header.get(i);
-                        	   if(i==8){
+                        	   if(i==8&& c.getTypeAtr() != 2){
                         		   masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(c.getMessageColor())); 
                         	   }else {
                         		  masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -799,9 +844,9 @@ public class ErrorAlarmWorkRecordExportImpl {
        
        public List<SheetData> extraSheets(MasterListExportQuery query){
               List<SheetData> listSheetData = new ArrayList<>();
-              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_140"));
+              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_140"), MasterListMode.NONE);
               listSheetData.add(sheet1);
-              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_141"));
+              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_141"), MasterListMode.NONE);
               listSheetData.add(sheetDataTwo);
               return listSheetData;
        }
@@ -823,16 +868,7 @@ public class ErrorAlarmWorkRecordExportImpl {
               LoginUserContext loginUserContext = AppContexts.user();
               String companyId = loginUserContext.companyId();
               
-              List<MasterData> datas = new ArrayList<>();
-              Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
+           List<MasterData> datas = new ArrayList<>();
            List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 1);// fixedAtr":1
           
            listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
@@ -846,22 +882,22 @@ public class ErrorAlarmWorkRecordExportImpl {
                      Map<String, Object> data = new HashMap<>();
                            putEmptyDataTwo(data);
                            
-                           data.put("コード", c.getCode());
+                           data.put("コード", c.getCode().v().substring(1));
                            data.put("名称", c.getName());
                            if(c.getUseAtr()){
-                                  data.put("使用区分", "使用しない");
-                           }else{
                                   data.put("使用区分", "使用する");
+                           }else{
+//                                  data.put("使用区分", "使用しない");
+                        	   return;
                            }
                            List<Integer> listApplication  = c.getLstApplication();
-                           listApplication = listApplication.stream().sorted()
-                                         .collect(Collectors.toList());
+                           Collections.sort(listApplication);
                            if(CollectionUtil.isEmpty(listApplication)){
                                   data.put("申請", "");
                            }else{
                         	  
                         	   for (Integer key : listApplication) {
-                        		   String appName = mapApplicationType.get(key);
+                        		   String appName = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                         		   if(appName!=null){
                         			   lstApp.add(appName);
                         		   }

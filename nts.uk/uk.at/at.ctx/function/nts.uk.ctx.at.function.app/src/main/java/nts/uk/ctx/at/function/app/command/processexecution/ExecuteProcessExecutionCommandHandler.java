@@ -19,6 +19,8 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -26,10 +28,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.AppRouteUpdateDailyService;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
+import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
-import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
@@ -219,6 +221,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 	@Inject
 	private AppReflectManagerAdapter appReflectManagerAdapter;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
+	
+	@Inject
+	private AppRouteUpdateDailyService appRouteUpdateDailyService;
+
+	@Inject
+	private AppRouteUpdateMonthlyService appRouteUpdateMonthlyService;
+	
+	public static int MAX_DELAY_PARALLEL = 0;
 
 	/**
 	 * 更新処理を開始する
@@ -328,12 +341,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		 * procExecLog.setCurrentStatus(CurrentExecutionStatus.RUNNING);
 		 * procExecLog.setOverallStatus(null); this.procExecLogRepo.update(procExecLog);
 		 */
-		ProcessExecType processExecType = procExec.getProcessExecType();
+		
 		/*
 		 * 各処理を実行する 【パラメータ】 実行ID ＝ 取得した実行ID
 		 * 取得したドメインモデル「更新処理自動実行」、「実行タスク設定」、「更新処理自動実行ログ」の情報
 		 */
-		this.doProcesses(context, empCalAndSumExeLog, execId, procExec, procExecLog, companyId,processExecType);
+		this.doProcesses(context, empCalAndSumExeLog, execId, procExec, procExecLog, companyId);
 
 		processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
 		// アルゴリズム「自動実行登録処理」を実行する
@@ -443,23 +456,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 *            更新処理自動実行ログ
 	 */
 
-	@Inject
-	private AppRouteUpdateDailyService appRouteUpdateDailyService;
-
-	@Inject
-	private AppRouteUpdateMonthlyService appRouteUpdateMonthlyService;
-
 	// true interrupt false non interrupt
 	// 各処理の分岐
 	private boolean doProcesses(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			EmpCalAndSumExeLog empCalAndSumExeLog, String execId, ProcessExecution procExec,
-			ProcessExecutionLog procExecLog, String companyId,ProcessExecType processExecType) {
+			ProcessExecutionLog procExecLog, String companyId) {
 		// Initialize status [未実施] for each task
 		initAllTaskStatus(procExecLog, EndStatus.NOT_IMPLEMENT);
 		/*
 		 * スケジュールの作成 【パラメータ】 実行ID 取得したドメインモデル「更新処理自動実行」、「実行タスク設定」、「更新処理自動実行ログ」の情報
 		 */
-		boolean checkStop = false;
 		if (!this.createSchedule(context, execId, procExec, procExecLog)) {	
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			// 各処理の終了状態 ＝ [スケジュールの作成、強制終了]
@@ -576,12 +582,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
 		}
 		this.procExecLogRepo.update(procExecLog);
-		AsyncTaskInfo handle = null;
-		boolean isException = true;
+        AsyncTaskInfo handle = null;
 
 		// 就業担当者の社員ID（List）を取得する : RQ526
 		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
-
+		boolean runSchedule = false;
 		try {
 			// 個人スケジュール作成区分の判定
 			if (!procExec.getExecSetting().getPerSchedule().isPerSchedule()) {
@@ -748,14 +753,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 				ScheduleCreatorExecutionCommand scheduleCommand = getScheduleCreatorExecutionAllEmp(execId, procExec,
 						loginContext, calculateSchedulePeriod, empIds);
-				// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
-				// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCommand);
-				// ctx.setTaskId(context.asAsync().getTaskId());
-				handle = this.scheduleExecution.handle(scheduleCommand);
-				/*
-				 * // ドメインモデル「更新処理自動実行ログ」を更新する this.updateEachTaskStatus(procExecLog,
-				 * ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
-				 */
+				
+				try {
+					handle = this.scheduleExecution.handle(scheduleCommand);
+					runSchedule = true;
+				} catch (Exception e) {
+					//再実行の場合にExceptionが発生したかどうかを確認する。
+					if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+						return false;
+					}
+				}
 			}
 			// 異動者・新入社員のみ作成の場合
 			else {
@@ -770,34 +777,29 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				this.filterEmployeeList(procExec, empIds, period, reEmployeeList, newEmployeeList,
 						temporaryEmployeeList);
 				if (!CollectionUtil.isEmpty(reEmployeeList) && !CollectionUtil.isEmpty(newEmployeeList)) {
-					// ScheduleCreatorExecutionCommand scheduleCreatorExecutionRe =
-					// this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-					// calculateSchedulePeriod,reEmployeeList);
-					// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new
-					// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionRe);
-					// ctxRe.setTaskId(context.asAsync().getTaskId());
-					// handle = this.scheduleExecution.handle(scheduleCreatorExecutionRe);
-					// ScheduleCreatorExecutionCommand scheduleCreatorExecutionNew =
-					// this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-					// calculateSchedulePeriod,newEmployeeList);
-					// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
-					// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionNew);
-					// ctxNew.setTaskId(context.asAsync().getTaskId());
-					// handle = this.scheduleExecution.handle(scheduleCreatorExecutionNew);
+
 				} else {
 					// 社員ID（新入社員）（List）のみ and 社員ID（新入社員以外）（List）
 					if (!CollectionUtil.isEmpty(newEmployeeList) && !CollectionUtil.isEmpty(temporaryEmployeeList)) {
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp2 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, newEmployeeList);
-						// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
-						// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
-						// ctxNew.setTaskId(context.asAsync().getTaskId());
-						handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, temporaryEmployeeList);
-						handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+						try {
+							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp2 = this
+									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+											calculateSchedulePeriod, newEmployeeList);
+							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
+							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
+							// ctxNew.setTaskId(context.asAsync().getTaskId());
+							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
+							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
+									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+											calculateSchedulePeriod, temporaryEmployeeList);
+							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+							runSchedule = true;
+						} catch (Exception e) {
+							//再実行の場合にExceptionが発生したかどうかを確認する。
+							if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+								return false;
+							}
+						}
 
 					}
 
@@ -811,16 +813,20 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 										calculateSchedulePeriod, reEmployeeList);
 						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
 								.setPeriod(new DatePeriod(periodDate.start(), endDate));
-						// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new
-						// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
-						// ctxRe.setTaskId(context.asAsync().getTaskId());
-						handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+						try {
+							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+							runSchedule = true;
+						} catch (Exception e) {
+							//再実行の場合にExceptionが発生したかどうかを確認する。
+							if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+								return false;
+							}
+						}
 					}
 
 				}
 			}
 		} catch (Exception e) {
-			isException = false;
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 			ScheduleErrorLogGeterCommand scheduleErrorLogGeterCommand = new ScheduleErrorLogGeterCommand();
@@ -869,16 +875,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 		int timeOut = 1;
 		boolean isInterruption = false;
-
-		if (isException) {
+		if(runSchedule){
 			while (true) {
 				// find execution log by id
 				Optional<ScheduleExecutionLog> domainOpt = this.scheduleExecutionLogRepository
 						.findById(loginContext.companyId(), execId);
 				if (domainOpt.isPresent()) {
 					if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
-						this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION,
-								EndStatus.ABNORMAL_END);
+						this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 						break;
 					}
 					if (domainOpt.get().getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
@@ -891,11 +895,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					}
 
 				}
-				if (timeOut == 24) {
+				if (timeOut == 2400) {
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 					break;
 				}
 				timeOut++;
+				// set thread sleep 10s để cho xử lý schedule insert xong data rồi
+				// mới cho xử lý của anh Nam (KIF001) chạy
+				// nếu không màn KIF001 sẽ get data cũ của màn schedule để insert
+				// vào => như thế sẽ sai
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
@@ -903,6 +911,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 			}
 		}
+		
 		this.procExecLogRepo.update(procExecLog);
 		ExecutionLogImportFn param = new ExecutionLogImportFn();
 		List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
@@ -926,12 +935,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (isInterruption) {
 			return false;
 		}
-		boolean checkError = this.scheCreExeErrorLogHandler
-				.checkExistErrorByExeId(execId);
-		//再実行の場合にExceptionが発生したかどうかを確認する。
-		if(checkError == true && procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
-			return false;
-		}
+		
 		//再実行の場合にExceptionが発生したかどうかを確認する。
 //		if(isException ==false && (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) ) {
 //			return false;
@@ -1057,7 +1061,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
 		reCreateContent.setResetAtr(r);
-		;
 		s.setReCreateContent(reCreateContent);
 		scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
@@ -1659,12 +1662,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			ex.printStackTrace();
 		}
 		// exceptionがあるか確認する（日別作成）
+		// ドメインモデル「エラーメッセージ情報」を取得する
+		List<ErrMessageInfo> listErrDailyCreation = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
+				ExecutionContent.DAILY_CREATION.value);
+		if(!listErrDailyCreation.isEmpty()) {
+			isHasCreateDailyException = true;
+		}
 		if (isHasCreateDailyException) {
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
-			// ドメインモデル「エラーメッセージ情報」を取得する
-			List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-					ExecutionContent.DAILY_CREATION.value);
-
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 
@@ -1679,7 +1684,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// 実行内容 ＝ 日別実績の作成
 			param.setExecutionContent(AlarmCategoryFn.CREATE_DAILY_REPORT);
 
-			if (listErrMessageInfo.isEmpty()) {
+			if (listErrDailyCreation.isEmpty()) {
 				// アルゴリズム「エラーログ書き込み」を実行する
 				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 						ExecutionContent.DAILY_CREATION, GeneralDate.today(),
@@ -1690,7 +1695,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 
 			} else {
-				for (ErrMessageInfo errMessageInfo : listErrMessageInfo) {
+				for (ErrMessageInfo errMessageInfo : listErrDailyCreation) {
 					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
 							errMessageInfo.getEmployeeID()));
 				}
@@ -1718,11 +1723,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// アルゴリズム「実行ログ登録」を実行する 2290 Done
 			executionLogAdapterFn.updateExecuteLog(param);
 		}
+		// ドメインモデル「エラーメッセージ情報」を取得する
+		List<ErrMessageInfo> listErrDailyCalculation = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
+				ExecutionContent.DAILY_CALCULATION.value);
+		if(!listErrDailyCalculation.isEmpty()) {
+			isHasDailyCalculateException = true;
+		}
 		if (isHasDailyCalculateException) {
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
-			// ドメインモデル「エラーメッセージ情報」を取得する
-			List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-					ExecutionContent.DAILY_CALCULATION.value);
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 			// 会社ID ＝ パラメータ.更新処理自動実行.会社ID
@@ -1735,7 +1743,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			param.setExistenceError(1);
 			// 実行内容 ＝ スケジュール作成
 			param.setExecutionContent(AlarmCategoryFn.CALCULATION_DAILY_REPORT);
-			if (listErrMessageInfo.isEmpty()) {
+			if (listErrDailyCalculation.isEmpty()) {
 				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 						ExecutionContent.DAILY_CALCULATION, GeneralDate.today(),
 						new ErrMessageContent(TextResource.localize("Msg_1339"))));
@@ -1744,7 +1752,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
 				}
 			} else {
-				for (ErrMessageInfo errMessageInfo : listErrMessageInfo) {
+				for (ErrMessageInfo errMessageInfo : listErrDailyCalculation) {
 					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
 							errMessageInfo.getEmployeeID()));
 				}
@@ -1808,10 +1816,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// check 異動者を再作成する
 		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
 			// 異動者の絞り込み todo request list 189
-			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter
-					.getWplByListSidAndPeriod(empIds, new DatePeriod(startDate, GeneralDate.ymd(9999, 12, 31)));
-			wplByListSidAndPeriod.forEach(x -> {
-				setEmpIds.add(x.getEmployeeId());
+//			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter
+//					.getWplByListSidAndPeriod(empIds, new DatePeriod(startDate, GeneralDate.ymd(9999, 12, 31)));
+			List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter.getWorkplaceBySidsAndBaseDate(empIds,
+					startDate);
+			list.forEach(emp -> {
+				emp.getHistoryItems().forEach(x -> {
+					if (x.start().afterOrEquals(startDate)) {
+						setEmpIds.add(emp.getSid());
+						return;
+					}
+				});
 			});
 		}
 		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
@@ -2084,18 +2099,32 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// 異動者を再作成するか判定
 			if (setting.isRecreateTransfer()) {
 				// Imported(勤務実績)「所属職場履歴」を取得する : 異動者の絞り込み
-				List<WorkPlaceHistImport> wkpImportList = this.workplaceAdapter.getWplByListSidAndPeriod(employeeIdList,
-						newClosurePeriod);
+//				List<WorkPlaceHistImport> wkpImportList = this.workplaceAdapter.getWplByListSidAndPeriod(employeeIdList,
+//						newClosurePeriod);
+//				
+				List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter
+						.getWorkplaceBySidsAndBaseDate(employeeIdList, closurePeriod.start());
+				list.forEach(emp -> {
+					emp.getHistoryItems().forEach(x -> {
+						if (x.start().afterOrEquals(closurePeriod.start())) {
+							listSetReEmployeeList.add(emp.getSid());
+							return;
+						}
+					});
+				});
+				
 
 				// 「全締めの期間.開始日年月日」以降に「所属職場履歴.期間.開始日」が存在する
-				wkpImportList.forEach(emp -> {
-					for (String empId : employeeIdList) {
-						if (empId.equals(emp.getEmployeeId())) {
-							listSetReEmployeeList.add(emp.getEmployeeId());
-							break;
-						}
-					}
-				});
+//				wkpImportList.forEach(emp -> {
+//					if (employeeIdList.contains(emp.getEmployeeId())) {
+//						emp.getLstWkpIdAndPeriod().forEach(x -> {
+//							if (x.getDatePeriod().start().afterOrEquals(closurePeriod.start())) {
+//								listSetReEmployeeList.add(emp.getEmployeeId());
+//								return;
+//							}
+//						});
+//					}
+//				});
 			}
 
 			// 勤務種別変更者を再作成するか判定
@@ -2107,7 +2136,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (optional.isPresent()) {
 						for (DateHistoryItem history : optional.get().getHistory()) {
 							// 「全締めの期間.開始日年月日」以降に「社員の勤務種別の履歴.履歴.期間.開始日」が存在する
-							if (history.start().beforeOrEquals(closurePeriod.start())) {
+							if (history.start().afterOrEquals(closurePeriod.start())) {
 								// 取得したImported（勤務実績）「所属職場履歴」.社員IDを異動者とする
 								listSetReEmployeeList.add(optional.get().getEmployeeId());
 								break;
@@ -2392,6 +2421,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			return true;
 			// 終了状態 ＝ 中断
 		}
+		// ドメインモデル「エラーメッセージ情報」を取得する
+		List<ErrMessageInfo> listErrReflrct = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
+				ExecutionContent.REFLRCT_APPROVAL_RESULT.value);
+		if(!listErrReflrct.isEmpty()) {
+			isHasException = true;
+		}
 		if (isHasException) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			for (int i = 0; i < size; i++) {
@@ -2403,9 +2438,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
-			// ドメインモデル「エラーメッセージ情報」を取得する
-			List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-					ExecutionContent.REFLRCT_APPROVAL_RESULT.value);
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 
@@ -2420,7 +2452,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// 実行内容 ＝ 承認結果の反映
 			param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
 
-			if (listErrMessageInfo.isEmpty()) {
+			if (listErrReflrct.isEmpty()) {
 				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 						ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
 						new ErrMessageContent(TextResource.localize("Msg_1339"))));
@@ -2429,7 +2461,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
 				}
 			} else {
-				for (ErrMessageInfo errMessageInfo : listErrMessageInfo) {
+				for (ErrMessageInfo errMessageInfo : listErrReflrct) {
 					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
 							errMessageInfo.getEmployeeID()));
 				}
@@ -2532,7 +2564,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		this.executionLogRepository.addExecutionLog(executionLog);
 
 		boolean isHasException = false;
-		boolean endStatusIsInterrupt = false;
+		//boolean endStatusIsInterrupt = false;
+		List<Boolean> listCheck = new ArrayList<>();
 		// 就業担当者の社員ID（List）を取得する : RQ526
 		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
 		try {
@@ -2666,30 +2699,58 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
 						.find(regulationInfoEmployeeAdapterImport);
 
-				int sizeEmployee = lstRegulationInfoEmployee.size();
-				for (int j = 0; j < sizeEmployee; j++) {
-					RegulationInfoEmployeeAdapterDto regulationInfoEmployeeAdapterDto = lstRegulationInfoEmployee
-							.get(j);
-					AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
-					ProcessState aggregate = monthlyService.aggregate(asyContext, companyId,
-							regulationInfoEmployeeAdapterDto.getEmployeeId(), GeneralDate.legacyDate(now.date()),
-							execId, ExecutionType.NORMAL_EXECUTION);
-					// 中断
-					if (aggregate.value == 0) {
-						endStatusIsInterrupt = true;
+				// int sizeEmployee = lstRegulationInfoEmployee.size();
+				this.managedParallelWithContext.forEach(
+						ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+						lstRegulationInfoEmployee,
+						item -> {
+							RegulationInfoEmployeeAdapterDto regulationInfoEmployeeAdapterDto = item;
+							AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
+							ProcessState aggregate = monthlyService.aggregate(asyContext, companyId,
+									regulationInfoEmployeeAdapterDto.getEmployeeId(), GeneralDate.legacyDate(now.date()),
+									execId, ExecutionType.NORMAL_EXECUTION);
+							// 中断
+							if (aggregate.value == 0) {
+								//endStatusIsInterrupt = true;
+								listCheck.add(true);
+								//break;
+								return;
+							}
+							
+						});
+//				for (int j = 0; j < sizeEmployee; j++) {
+//					RegulationInfoEmployeeAdapterDto regulationInfoEmployeeAdapterDto = lstRegulationInfoEmployee
+//							.get(j);
+//					AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
+//					ProcessState aggregate = monthlyService.aggregate(asyContext, companyId,
+//							regulationInfoEmployeeAdapterDto.getEmployeeId(), GeneralDate.legacyDate(now.date()),
+//							execId, ExecutionType.NORMAL_EXECUTION);
+//					// 中断
+//					if (aggregate.value == 0) {
+//						endStatusIsInterrupt = true;
+//						break;
+//					}
+//				}
+				if(!listCheck.isEmpty()) {
+					if (listCheck.get(0)) {
 						break;
 					}
-				}
-				if (endStatusIsInterrupt) {
-					break;
 				}
 			}
 		} catch (Exception e) {
 			isHasException = true;
 		}
-
-		if (endStatusIsInterrupt) {
-			return true; // 終了状態 ＝ 中断
+		
+		if(!listCheck.isEmpty()) {
+			if (listCheck.get(0)) {
+				return true; // 終了状態 ＝ 中断
+			}
+		}
+		// ドメインモデル「エラーメッセージ情報」を取得する
+		List<ErrMessageInfo> listErrMonthlyAggregation = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
+				ExecutionContent.MONTHLY_AGGREGATION.value);
+		if(!listErrMonthlyAggregation.isEmpty()) {
+			isHasException = true;
 		}
 		if (isHasException) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2702,10 +2763,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
-			// ドメインモデル「エラーメッセージ情報」を取得する
-			List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-					ExecutionContent.MONTHLY_AGGREGATION.value);
-
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 
@@ -2720,7 +2777,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// 実行内容 ＝ 月別実績の集計
 			param.setExecutionContent(AlarmCategoryFn.AGGREGATE_RESULT_MONTH);
 
-			if (listErrMessageInfo.isEmpty()) {
+			if (listErrMonthlyAggregation.isEmpty()) {
 				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 						ExecutionContent.MONTHLY_AGGREGATION, GeneralDate.today(),
 						new ErrMessageContent(TextResource.localize("Msg_1339"))));
@@ -2729,7 +2786,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
 				}
 			} else {
-				for (ErrMessageInfo errMessageInfo : listErrMessageInfo) {
+				for (ErrMessageInfo errMessageInfo : listErrMonthlyAggregation) {
 					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
 							errMessageInfo.getEmployeeID()));
 				}
@@ -2844,7 +2901,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// アラームリスト自動実行処理を実行する
 		OutputExecAlarmListPro outputExecAlarmListPro = this.execAlarmListProcessingService.execAlarmListProcessing(
 				extraProcessStatusID, companyId, workplaceIdList, listPatternCode, GeneralDateTime.now(),
-				sendMailPerson, sendMailAdmin);
+				sendMailPerson, sendMailAdmin,
+				!processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?"":processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v());
 
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> processExecutionLog = procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd,
@@ -2926,7 +2984,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		return new DatePeriod(startClosingDate, endClosingDate);
 	}
 
-	//
+	// 実行前登録処理
 	private ProcessExecutionLog preExecutionRegistrationProcessing(String companyId, String execItemCd, String execId,
 			ProcessExecutionLogManage processExecutionLogManage, int execType) {
 		Optional<ProcessExecutionLog> procExecLogOpt = this.procExecLogRepo.getLog(companyId, execItemCd);
@@ -3106,21 +3164,58 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		 * .find(regulationInfoEmployeeAdapterImport);
 		 */
 		boolean isInterrupt = false;
-		int size = lstEmpId.size();
-		for (int i = 0; i < size; i++) {
-			// アルゴリズム「開始日を入社日にする」を実行する
-			DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, lstEmpId.get(i), period);
-			if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
-					.getTargetGroupClassification().isMidJoinEmployee()) {
-				continue;
+		List<Boolean> listIsInterrupt = new ArrayList<>();
+		List<String> listErrorTryCatch = new ArrayList<>();
+		//int size = lstEmpId.size();
+		this.managedParallelWithContext.forEach(
+				ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+				lstEmpId,
+				empId -> {
+					// アルゴリズム「開始日を入社日にする」を実行する
+					try {
+						DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, empId, period);
+						if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
+								.getTargetGroupClassification().isMidJoinEmployee()) {
+							
+						}else {
+							boolean executionDaily = this.executionDaily(companyId, context, processExecution, empId,
+									empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
+							if (executionDaily) {
+								listIsInterrupt.add(true);
+								return;
+							}
+						}
+					} catch (CreateDailyException ex) {
+						listErrorTryCatch.add("errCreateDailyException");
+					} catch (DailyCalculateException ex) {
+						listErrorTryCatch.add("errDailyCalculateException");
+					}
+				});
+		if(!listErrorTryCatch.isEmpty()) {
+			if(listErrorTryCatch.get(0).equals("errCreateDailyException")) {
+				throw new CreateDailyException();
 			}
-			boolean executionDaily = this.executionDaily(companyId, context, processExecution, lstEmpId.get(i),
-					empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
-			if (executionDaily) {
-				isInterrupt = true;
-				break;
+			if(listErrorTryCatch.get(0).equals("errDailyCalculateException")) {
+				throw new DailyCalculateException();
 			}
 		}
+		if(!listIsInterrupt.isEmpty()) {
+			isInterrupt = true;
+		}
+//		for (int i = 0; i < size; i++) {
+//			// アルゴリズム「開始日を入社日にする」を実行する
+//			DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, lstEmpId.get(i), period);
+//			if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
+//					.getTargetGroupClassification().isMidJoinEmployee()) {
+//				continue;
+//			}
+//			boolean executionDaily = this.executionDaily(companyId, context, processExecution, lstEmpId.get(i),
+//					empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
+//			if (executionDaily) {
+//				isInterrupt = true;
+//				break;
+//			}
+//		}
 		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
 				.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 		List<String> errorMessage = errMessageInfos.stream().map(error -> {

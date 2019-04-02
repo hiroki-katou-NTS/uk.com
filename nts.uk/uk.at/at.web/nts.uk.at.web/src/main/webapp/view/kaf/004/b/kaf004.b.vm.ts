@@ -43,7 +43,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         displayOrder: KnockoutObservable<number> = ko.observable(0);
 
         appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(new AppComonSetting());
-
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             //Show Screen
@@ -75,6 +75,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode("").done(function(data) {
+                //申請制限設定.申請理由が必須
+                self.requiredReason(data.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 self.enableSendMail(data.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
                 self.checkBoxValue(data.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
                 self.ListTypeReason.removeAll();

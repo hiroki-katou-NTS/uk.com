@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
 
 @Setter
 @Getter
@@ -58,6 +59,8 @@ public class AnnualWorkScheduleData {
 	private Integer maxDigitAfterDecimalPoint = null;
 
 	private boolean agreementTime;
+	
+	private boolean check36MaximumAgreement = false;
 
 	public void setMonthlyData(ItemData item, YearMonth ym) {
 		int monthIndex = (int) this.startYm.until(ym, ChronoUnit.MONTHS);
@@ -153,9 +156,17 @@ public class AnnualWorkScheduleData {
 		case TIMES:
 		case AMOUNT:
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 1, RoundingMode.HALF_UP);
+			//KWR008 Update export excel ver11 set bg gray
+			if(this.check36MaximumAgreement) {
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+			}
 			break;
 		case TIME:
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 0, RoundingMode.HALF_UP);
+			//KWR008 Update export excel ver11 set bg gray
+			if(this.check36MaximumAgreement) {
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+			}
 			break;
 		}
 		return this;
@@ -297,6 +308,8 @@ public class AnnualWorkScheduleData {
 		case EXCESS_LIMIT_ALARM_SP:
 			// No57: #F6F636 = 16184886
 			return 16184886;
+		case EXCESS_BG_GRAY:
+			return 11119017;
 		default:
 			return null;
 		}
@@ -429,14 +442,18 @@ public class AnnualWorkScheduleData {
 			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
 			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
 			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
-			Integer monthLimit) {
+			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header, boolean check36MaximumAgreement) {
+		
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
-		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
-		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		if (!check36MaximumAgreement) {
+			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
+			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		}
+		annualWorkScheduleData.setCheck36MaximumAgreement(check36MaximumAgreement);
 		annualWorkScheduleData.setAgreementTime(true);
 		listAgreementTimeBymonth.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
@@ -457,14 +474,27 @@ public class AnnualWorkScheduleData {
 		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
 				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
 				.collect(Collectors.toList());
-		int periodIndex = 1;
-		for (AgreementTimeByPeriodImport m : listExcesMonths) {
-			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
-			AgreementTimeStatusOfMonthly status = m.getStatus();
-			ItemData item = new ItemData(value, status);
-			annualWorkScheduleData.setPeriodMonthData(item, periodIndex);
-			periodIndex = periodIndex + 1;
-		}
+			for(int i = 0; i < header.size(); i++){
+				int monthValue = Integer.valueOf(header.get(i).split("～")[0]).intValue();
+				@SuppressWarnings("unused")
+				boolean mark = false;
+				for (AgreementTimeByPeriodImport m : listExcesMonths) {
+					if(monthValue == m.getStartMonth().month()){
+						BigDecimal value = new BigDecimal(m.getAgreementTime().v());
+						AgreementTimeStatusOfMonthly status = m.getStatus();
+						ItemData item = new ItemData(value, status);
+						annualWorkScheduleData.setPeriodMonthData(item, i+1);
+						mark = true;
+						break;
+					}
+				}
+				if(mark = false) {
+					ItemData item = new ItemData(null, AgreementTimeStatusOfMonthly.NORMAL);
+					annualWorkScheduleData.setPeriodMonthData(item, i+1);
+				}else {
+					mark = false;
+				}
+			}
 		return annualWorkScheduleData;
 	}
 	

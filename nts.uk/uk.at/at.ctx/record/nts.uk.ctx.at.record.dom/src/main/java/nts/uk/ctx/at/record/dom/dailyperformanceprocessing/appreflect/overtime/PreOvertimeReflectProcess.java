@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
@@ -14,14 +14,14 @@ public interface PreOvertimeReflectProcess {
 	 * 予定勤種・就時の反映
 	 * @param para
 	 */
-	public WorkInfoOfDailyPerformance workTimeWorkTimeUpdate(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo);
+	public void workTimeWorkTimeUpdate(OvertimeParameter para, IntegrationOfDaily dailyInfo);
 	/**
 	 * 勤種・就時の反映
 	 * @param para
 	 * @return True: 反映前後勤就の変更する
 	 * False: 反映前後勤就の変更したい
 	 */
-	public AppReflectRecordWork changeFlg(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo);
+	public boolean changeFlg(OvertimeParameter para, IntegrationOfDaily dailyInfo);
 	/**
 	 * 予定勤種・就時反映後の予定勤種・就時を取得する
 	 * @param employeeId
@@ -43,8 +43,8 @@ public interface PreOvertimeReflectProcess {
 	 * @param dailyData
 	 * @return
 	 */
-	public WorkInfoOfDailyPerformance startAndEndTimeReflectSche(OvertimeParameter para,
-			boolean changeFlg, WorkInfoOfDailyPerformance dailyData);
+	public void startAndEndTimeReflectSche(OvertimeParameter para,
+			boolean changeFlg, IntegrationOfDaily dailyData);
 	/**
 	 * 設定による予定開始終了時刻を反映できるかチェックする
 	 * @param para
@@ -60,7 +60,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param para
 	 * @return
 	 */
-	public AttendanceTimeOfDailyPerformance getReflectOfOvertime(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyInfor);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
@@ -68,15 +68,15 @@ public interface PreOvertimeReflectProcess {
 	 * @param timeReflectFlg: 残業時間反映フラグ
 	 * @param overShiftNight: 外深夜時間
 	 */
-	public AttendanceTimeOfDailyPerformance overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, 
-			Integer overShiftNight,	AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, 
+			Integer overShiftNight,	IntegrationOfDaily dailyInfor);
 	/**
 	 * フレックス時間の反映
 	 * @param employeeId
 	 * @param dateDate
 	 * @param timeReflectFlg
 	 */
-	public AttendanceTimeOfDailyPerformance reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, 
-			Integer flexExessTime, AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public void reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, 
+			Integer flexExessTime, IntegrationOfDaily dailyInfor);
 
 }

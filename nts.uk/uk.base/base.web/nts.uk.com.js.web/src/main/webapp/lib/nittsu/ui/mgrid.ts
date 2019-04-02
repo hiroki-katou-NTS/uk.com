@@ -272,6 +272,8 @@ module nts.uk.ui.mgrid {
                 let resizing = tn.find(self.features, tn.RESIZING);
                 if (resizing) _redimension = true;
                 if (tn.isEnable(self.features, tn.COPY)) _copie = true;
+                _$grid.mGrid("option", "errOccurred", self.errorOccurred);
+                _$grid.mGrid("option", "errResolved", self.errorResolved);
             }
         }
         
@@ -2419,6 +2421,25 @@ module nts.uk.ui.mgrid {
                 
                 if (td.classList.contains(color.Lock)) {
                     td.style.cssText += tdStyle;
+                    if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                        dkn.getControl(controlDef.controlType)({
+                            rowIdx: rowIdx,
+                            rowId: id,
+                            columnKey: key,
+                            controlDef: controlDef,
+                            update: (v, i, r, p) => {
+                                su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                if (_.isFunction(controlDef.onChange)) {
+                                    controlDef.onChange(id, key, v, rData);
+                                }
+                            },
+                            deleteRow: su.deleteRow,
+                            initValue: data,
+                            rowObj: rData,
+                            enable: !td.classList.contains(color.Disable)
+                        });
+                    }
+                    
                     return td;
                 }
                 
@@ -2737,6 +2758,25 @@ module nts.uk.ui.mgrid {
                 
                 if (td.classList.contains(color.Lock)) {
                     td.style.cssText += tdStyle;
+                    if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                        dkn.getControl(controlDef.controlType)({
+                            rowIdx: rowIdx,
+                            rowId: id,
+                            columnKey: key,
+                            controlDef: controlDef,
+                            update: (v, i, r, p) => {
+                                su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                if (_.isFunction(controlDef.onChange)) {
+                                    controlDef.onChange(id, key, v, rData);
+                                }
+                            },
+                            deleteRow: su.deleteRow,
+                            initValue: data,
+                            rowObj: rData,
+                            enable: !td.classList.contains(color.Disable)
+                        });
+                    }
+                    
                     return td;
                 }
                 
@@ -5445,12 +5485,12 @@ module nts.uk.ui.mgrid {
                 let control = dkn.controlType[key], controlDef, listType, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
                 if (!control || !controlMap || !(controlDef = controlMap[key])) return null;
                 if (control === dkn.REFER_BUTTON) {
-                    return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                    return (controlDef.pattern || {})[(controlDef.list || {})[id]] || null;
                 } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
                     if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
-                        return control.optionsList[listType];
+                        return control.optionsList[listType] || null;
                     } else {
-                        return control.options;
+                        return control.options || null;
                     }
                 } 
                 
@@ -5656,14 +5696,15 @@ module nts.uk.ui.mgrid {
             removeInsertions: function() {
                 v.eliminRows(_.cloneDeep(v._encarRows).sort((a, b) => b - a));
             },
-            validate: function() {
+            validate: function(lock) {
                 let errors = [];
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef) return;
                     _.forEach(_mafollicle[k].dataSource, (data, i) => {
                         _.forEach(_cstifle(), c => {
                             let validator = _validators[c.key];
-                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)) return;
+                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)
+                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock))) return; 
                             let res = validator.probe(data[c.key], data[_pk]);
                             if (res && !res.isValid) {
                                 let err = { id: data[_pk], index: i, columnKey: c.key, message: res.errorMessage };
@@ -5676,6 +5717,19 @@ module nts.uk.ui.mgrid {
                 if (errors.length > 0) {
                     this.setErrors(errors);
                 }
+            },
+            columnOrder: function() {
+                let order = [];
+                if (_vessel().desc) {
+                    let fixedLength = 0;
+                    [ "fixedColIdxes", "colIdxes" ].forEach((col, ord) => {
+                        let idx = _vessel().desc[col];
+                        _.forEach(_.keys(idx), i => order[idx[i] + fixedLength] = i);
+                        if (!ord) fixedLength = _.keys(idx).length;
+                    });
+                }
+                
+                return order;
             },
             getCellValue: function(id, key) {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
@@ -6267,7 +6321,7 @@ module nts.uk.ui.mgrid {
                     let control = dkn.controlType[coord.columnKey];
                     let cEditor = _mEditor;
                     
-                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt)) {
+                    if (control === dkn.CHECKBOX && ti.isSpaceKey(evt) && !$tCell.classList.contains(color.Hide)) {
                         let check = $tCell.querySelector("input[type='checkbox']");
                         if (!check) return;
                         let checked;
@@ -6382,6 +6436,10 @@ module nts.uk.ui.mgrid {
                 if ($bCell) {
                     let spl = {}, column = _columnsMap[editor.columnKey];
                     if (!column) return;
+                    if (inputVal === "") {
+                        ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                    }
+                    
                     let failed = khl.any({ element: $bCell }), 
                         formatted = failed ? inputVal : (_zeroHidden && ti.isZero(inputVal, editor.columnKey) ? "" : format(column[0], inputVal, spl));
                     $bCell.textContent = formatted;
@@ -6468,6 +6526,10 @@ module nts.uk.ui.mgrid {
                     $editor = dkn.controlType[dkn.TEXTBOX].my,
                     $input = $editor.querySelector("input.medit"),
                     mDate = moment.utc($input.value, editor.format, true);
+                if ($input.value === "") {
+                    ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                }
+                
                 if (mDate.isValid()) {
                     date = editor.formatType === "ymd" ? mDate.toDate() : mDate.format(editor.format[0]);
                     wedgeCell($grid, editor, date);
@@ -7343,6 +7405,7 @@ module nts.uk.ui.mgrid {
         export let KEY_UP = "keyup";
         export let RENDERED = "mgridrowsrendered";
         export let MS = "mgridms";
+        export let MS_BEFORE_COMPL = "mgridmsbeforecompletion";
         
         window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
         window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
@@ -8040,6 +8103,10 @@ module nts.uk.ui.mgrid {
             };
             
             $editor.addXEventListener(ssk.KEY_UP, evt => {
+                ms();
+            });
+            
+            $editor.addXEventListener(ssk.MS_BEFORE_COMPL, () => {
                 ms();
             });
             
@@ -9416,7 +9483,7 @@ module nts.uk.ui.mgrid {
                                 options = control.options;
                             }
                         
-                            if (!_.find(options, opt => opt[control.optionsValue] === value)) {
+                            if (constraint.required && !_.find(options, opt => opt[control.optionsValue] === value)) {
                                 result.fail(nts.uk.resource.getMessage("FND_E_REQ_SELECT", [ this.name ]), "FND_E_REQ_SELECT");
                             } else result.success();
                         }
@@ -9734,6 +9801,10 @@ module nts.uk.ui.mgrid {
             })) return;
             
             errors.push(error);
+            let occurred = _$grid.mGrid("option", "errOccurred");
+            if (_.isFunction(occurred)) {
+                occurred();
+            }
         }
     
         /**
@@ -9741,9 +9812,16 @@ module nts.uk.ui.mgrid {
          */
         export function removeCellError(rowId: any, key: any, genre: any) {
             let errors = genre ? genre.errors : _errors;
-            _.remove(errors, function(e) {
+            let removed = _.remove(errors, function(e) {
                 return rowId === e.rowId && key === e.columnKey;
             });
+            
+            if (removed.length > 0 && errors.length === 0) {
+                let resolved = _$grid.mGrid("option", "errResolved");
+                if (_.isFunction(resolved)) {
+                    resolved();
+                }
+            }
         }
         
         /**
@@ -10041,6 +10119,7 @@ module nts.uk.ui.mgrid {
         export const Calculation = "mgrid-calc";
         export const Disable = "mgrid-disable";
         export const Lock = "mgrid-lock";
+        export const Hide = "mgrid-hide";
         export const HOVER = "ui-state-hover";
         export const ALL = [ Error, Alarm, ManualEditTarget, ManualEditOther, Reflect, Calculation, Disable ];
         

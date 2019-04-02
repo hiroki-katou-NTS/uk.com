@@ -79,63 +79,152 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+ " 	WHERE etcs.CID = ?cid AND  ?startDate <= etcs.TARGET_YEAR AND etcs.TARGET_YEAR <= ?endDate"
 			+ " ) AS TABLE_RESULT  ";
 
-	private static final String GET_EXPORT_EXCEL_SHEET_FOUR = "SELECT"
-			+ " 	CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
-			+ " 	,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
-			+ " 	,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.NAME ELSE NULL END NAME"
-			+ " 	,TABLE_RESULT.MONTH_TIME" + " 	,TABLE_RESULT.EST_CONDITION_1ST_TIME"
-			+ " 	,TABLE_RESULT.EST_CONDITION_2ND_TIME" + " 	,TABLE_RESULT.EST_CONDITION_3RD_TIME"
-			+ " 	,TABLE_RESULT.EST_CONDITION_4TH_TIME" + " 	,TABLE_RESULT.EST_CONDITION_5TH_TIME"
-			+ " 	,TABLE_RESULT.EST_CONDITION_1ST_MNY" + " 	,TABLE_RESULT.EST_CONDITION_2ND_MNY"
-			+ " 	,TABLE_RESULT.EST_CONDITION_3RD_MNY" + " 	,TABLE_RESULT.EST_CONDITION_4TH_MNY"
-			+ " 	,TABLE_RESULT.EST_CONDITION_5TH_MNY" + " 	,TABLE_RESULT.EST_CONDITION_1ST_DAYS"
-			+ " 	,TABLE_RESULT.EST_CONDITION_2ND_DAYS" + " 	,TABLE_RESULT.EST_CONDITION_3RD_DAYS"
-			+ " 	,TABLE_RESULT.EST_CONDITION_4TH_DAYS" + " 	,TABLE_RESULT.EST_CONDITION_5TH_DAYS" + " FROM"
-			+ " (SELECT" + " 	etes.TARGET_YEAR AS YEAR_TIME" + " 	,emp.CODE AS CODE" + " 	,emp.NAME AS NAME"
-			+ " 	,etes.TARGET_CLS AS MONTH_TIME" + " 	,etes.EST_CONDITION_1ST_TIME"
-			+ " 	,etes.EST_CONDITION_2ND_TIME" + " 	,etes.EST_CONDITION_3RD_TIME"
-			+ " 	,etes.EST_CONDITION_4TH_TIME" + " 	,etes.EST_CONDITION_5TH_TIME" + " 	,epes.EST_CONDITION_1ST_MNY"
-			+ " 	,epes.EST_CONDITION_2ND_MNY" + " 	,epes.EST_CONDITION_3RD_MNY" + " 	,epes.EST_CONDITION_4TH_MNY"
-			+ " 	,epes.EST_CONDITION_5TH_MNY" + " 	,edes.EST_CONDITION_1ST_DAYS"
-			+ " 	,edes.EST_CONDITION_2ND_DAYS" + " 	,edes.EST_CONDITION_3RD_DAYS"
-			+ " 	,edes.EST_CONDITION_4TH_DAYS" + " 	,edes.EST_CONDITION_5TH_DAYS"
-			+ " 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,emp.CODE, emp.NAME  ORDER BY etes.TARGET_CLS, emp.CODE ASC ) AS ROW_NUMBER"
-			+ " FROM" + " KSCMT_EST_TIME_EMP_SET etes"
-			+ " INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD AND etes.CID = ?cid"
-			+ " INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD AND etes.CID = ?cid"
-			+ " INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE AND etes.CID = ?cid"
-			+ " WHERE ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
-			+ " ) AS TABLE_RESULT ORDER BY TABLE_RESULT.CODE, TABLE_RESULT.YEAR_TIME , TABLE_RESULT.MONTH_TIME ASC ";
+	private static final String GET_EXPORT_EXCEL_SHEET_FOUR = "SELECT "
++" 					 YEAR_TIME"
++" 			 		,CASE WHEN TABLE_RESULT_FULL.ROW_NUMBERR = 1 THEN TABLE_RESULT_FULL.CODE ELSE NULL END CODE "
++" 			 		,CASE WHEN TABLE_RESULT_FULL.ROW_NUMBERR = 1 THEN TABLE_RESULT_FULL.NAME ELSE NULL END NAME	"
++" 			 		,TABLE_RESULT_FULL.MONTH_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_1ST_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_2ND_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_3RD_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_4TH_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_5TH_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_1ST_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_2ND_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_3RD_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_4TH_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_5TH_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_1ST_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_2ND_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_3RD_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_4TH_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_5TH_DAYS"
++" 					FROM"
++" (SELECT"
++" 			 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
++" 			 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
++" 			 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.NAME ELSE NULL END NAME			"
++" 			 		,TABLE_RESULT.MONTH_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_1ST_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_2ND_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_3RD_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_4TH_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_5TH_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_1ST_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_2ND_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_3RD_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_4TH_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_5TH_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_1ST_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_2ND_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_3RD_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_4TH_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_5TH_DAYS"
++" 					,ROW_NUMBER () OVER ( PARTITION BY CODE, NAME ORDER BY  CODE, YEAR_TIME ASC ) AS ROW_NUMBERR"
++" 			 FROM"
++" 			 (SELECT"
++" 			 	etes.TARGET_YEAR AS YEAR_TIME"
++" 			 	,etes.EMPCD AS CODE"
++" 			 	,(CASE			"
++" 			 			WHEN emp.NAME IS NULL THEN"
++" 			 			'マスタ未登録' ELSE emp.NAME "
++" 			 		END) AS NAME"
++" 			 	,etes.TARGET_CLS AS MONTH_TIME"
++" 			 	,etes.EST_CONDITION_1ST_TIME"
++" 			 	,etes.EST_CONDITION_2ND_TIME"
++" 			 	,etes.EST_CONDITION_3RD_TIME"
++" 			 	,etes.EST_CONDITION_4TH_TIME"
++" 			 	,etes.EST_CONDITION_5TH_TIME"
++" 			 	,epes.EST_CONDITION_1ST_MNY"
++" 			 	,epes.EST_CONDITION_2ND_MNY"
++" 			 	,epes.EST_CONDITION_3RD_MNY"
++" 			 	,epes.EST_CONDITION_4TH_MNY"
++" 			 	,epes.EST_CONDITION_5TH_MNY"
++" 			 	,edes.EST_CONDITION_1ST_DAYS"
++" 			 	,edes.EST_CONDITION_2ND_DAYS"
++" 			 	,edes.EST_CONDITION_3RD_DAYS"
++" 			 	,edes.EST_CONDITION_4TH_DAYS"
++" 			 	,edes.EST_CONDITION_5TH_DAYS	"
++" 			 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR, etes.EMPCD, emp.NAME  ORDER BY etes.TARGET_CLS, etes.EMPCD ASC ) AS ROW_NUMBER"
++" 			 FROM"
++" 			 KSCMT_EST_TIME_EMP_SET etes"
++" 			 INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD AND etes.CID = ?cid"
++" 			 LEFT JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD AND etes.CID = ?cid"
++" 			 LEFT JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE AND etes.CID = ?cid"
++" 			 "
++" 			 WHERE ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
++" 			 ) AS TABLE_RESULT) AS TABLE_RESULT_FULL";
 
-	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT"
-			+ " 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
-			+ " 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
-			+ " 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.BUSINESS_NAME ELSE NULL END BUSINESS_NAME"
-			+ " 		,TABLE_RESULT.MONTH_TIME" + " 		,TABLE_RESULT.EST_CONDITION_1ST_TIME"
-			+ " 		,TABLE_RESULT.EST_CONDITION_2ND_TIME" + " 		,TABLE_RESULT.EST_CONDITION_3RD_TIME"
-			+ " 		,TABLE_RESULT.EST_CONDITION_4TH_TIME" + " 		,TABLE_RESULT.EST_CONDITION_5TH_TIME"
-			+ " 		,TABLE_RESULT.EST_CONDITION_1ST_MNY" + " 		,TABLE_RESULT.EST_CONDITION_2ND_MNY"
-			+ " 		,TABLE_RESULT.EST_CONDITION_3RD_MNY" + " 		,TABLE_RESULT.EST_CONDITION_4TH_MNY"
-			+ " 		,TABLE_RESULT.EST_CONDITION_5TH_MNY" + " 		,TABLE_RESULT.EST_CONDITION_1ST_DAYS"
-			+ " 		,TABLE_RESULT.EST_CONDITION_2ND_DAYS" + " 		,TABLE_RESULT.EST_CONDITION_3RD_DAYS"
-			+ " 		,TABLE_RESULT.EST_CONDITION_4TH_DAYS" + " 		,TABLE_RESULT.EST_CONDITION_5TH_DAYS" + " FROM"
-			+ " (SELECT" + " 	etes.TARGET_YEAR AS YEAR_TIME" + " 	,edmi.SCD AS CODE"
-			+ " 	,per.BUSINESS_NAME AS BUSINESS_NAME" + " 	,etes.TARGET_CLS AS MONTH_TIME"
-			+ " 	,etes.EST_CONDITION_1ST_TIME" + " 	,etes.EST_CONDITION_2ND_TIME"
-			+ " 	,etes.EST_CONDITION_3RD_TIME" + " 	,etes.EST_CONDITION_4TH_TIME"
-			+ " 	,etes.EST_CONDITION_5TH_TIME" + " 	,epes.EST_CONDITION_1ST_MNY" + " 	,epes.EST_CONDITION_2ND_MNY"
-			+ " 	,epes.EST_CONDITION_3RD_MNY" + " 	,epes.EST_CONDITION_4TH_MNY" + " 	,epes.EST_CONDITION_5TH_MNY"
-			+ " 	,edes.EST_CONDITION_1ST_DAYS" + " 	,edes.EST_CONDITION_2ND_DAYS"
-			+ " 	,edes.EST_CONDITION_3RD_DAYS" + " 	,edes.EST_CONDITION_4TH_DAYS"
-			+ " 	,edes.EST_CONDITION_5TH_DAYS	"
-			+ " 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
-			+ " FROM" + " 	BSYMT_EMP_DTA_MNG_INFO edmi"
-			+ " 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID  AND edmi.CID = ?cid"
-			+ " 	INNER JOIN KSCMT_EST_TIME_PER_SET etes ON edmi.SID = etes.SID"
-			+ " 	INNER JOIN KSCMT_EST_PRICE_PER_SET epes ON edmi.SID = epes.SID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS"
-			+ " 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
-			+ " 	WHERE " + " ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
-			+ " ) AS TABLE_RESULT ORDER BY TABLE_RESULT.CODE, TABLE_RESULT.YEAR_TIME , TABLE_RESULT.MONTH_TIME ASC";
+	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT "
++" 					YEAR_TIME"
++" 			 		,CASE WHEN TABLE_RESULT_FULL.ROW_NUMBERR = 1 THEN TABLE_RESULT_FULL.CODE ELSE NULL END CODE "
++" 			 		,CASE WHEN TABLE_RESULT_FULL.ROW_NUMBERR = 1 THEN TABLE_RESULT_FULL.BUSINESS_NAME ELSE NULL END BUSINESS_NAME"
++" 			 		,TABLE_RESULT_FULL.MONTH_TIME  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_1ST_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_2ND_TIME  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_3RD_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_4TH_TIME  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_5TH_TIME"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_1ST_MNY  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_2ND_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_3RD_MNY  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_4TH_MNY"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_5TH_MNY  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_1ST_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_2ND_DAYS  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_3RD_DAYS"
++" 			 		,TABLE_RESULT_FULL.EST_CONDITION_4TH_DAYS  		"
++" 					,TABLE_RESULT_FULL.EST_CONDITION_5TH_DAYS"
++" FROM"
++" (SELECT"
++" 			 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
++" 			 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
++" 			 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.BUSINESS_NAME ELSE NULL END BUSINESS_NAME"
++" 			 		,TABLE_RESULT.MONTH_TIME  		"
++" 					,TABLE_RESULT.EST_CONDITION_1ST_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_2ND_TIME  		"
++" 					,TABLE_RESULT.EST_CONDITION_3RD_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_4TH_TIME  		"
++" 					,TABLE_RESULT.EST_CONDITION_5TH_TIME"
++" 			 		,TABLE_RESULT.EST_CONDITION_1ST_MNY  		"
++" 					,TABLE_RESULT.EST_CONDITION_2ND_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_3RD_MNY  		"
++" 					,TABLE_RESULT.EST_CONDITION_4TH_MNY"
++" 			 		,TABLE_RESULT.EST_CONDITION_5TH_MNY  		"
++" 					,TABLE_RESULT.EST_CONDITION_1ST_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_2ND_DAYS  		"
++" 					,TABLE_RESULT.EST_CONDITION_3RD_DAYS"
++" 			 		,TABLE_RESULT.EST_CONDITION_4TH_DAYS  		"
++" 					,TABLE_RESULT.EST_CONDITION_5TH_DAYS  "
++" 					,ROW_NUMBER () OVER ( PARTITION BY CODE  ORDER BY  CODE ASC ) AS ROW_NUMBERR"
++" 					FROM"
++" 			 (SELECT  	etes.TARGET_YEAR AS YEAR_TIME  	"
++" 			  ,edmi.SCD AS CODE"
++" 			 	,per.BUSINESS_NAME AS BUSINESS_NAME  	"
++" 				,etes.TARGET_CLS AS MONTH_TIME"
++" 			 	,etes.EST_CONDITION_1ST_TIME  	"
++" 				,etes.EST_CONDITION_2ND_TIME"
++" 			 	,etes.EST_CONDITION_3RD_TIME  	"
++" 				,etes.EST_CONDITION_4TH_TIME"
++" 			 	,etes.EST_CONDITION_5TH_TIME  	"
++" 				,epes.EST_CONDITION_1ST_MNY  	"
++" 				,epes.EST_CONDITION_2ND_MNY"
++" 			 	,epes.EST_CONDITION_3RD_MNY  	"
++" 				,epes.EST_CONDITION_4TH_MNY  	"
++" 				,epes.EST_CONDITION_5TH_MNY"
++" 			 	,edes.EST_CONDITION_1ST_DAYS  	"
++" 				,edes.EST_CONDITION_2ND_DAYS"
++" 			 	,edes.EST_CONDITION_3RD_DAYS  	"
++" 				,edes.EST_CONDITION_4TH_DAYS"
++" 			 	,edes.EST_CONDITION_5TH_DAYS	"
++" 			 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
++" 			 FROM  	BSYMT_EMP_DTA_MNG_INFO edmi"
++" 			 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID  AND edmi.CID = ?cid"
++" 			 	INNER JOIN KSCMT_EST_TIME_PER_SET etes ON edmi.SID = etes.SID"
++" 			 	INNER JOIN KSCMT_EST_PRICE_PER_SET epes ON edmi.SID = epes.SID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS"
++" 			 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
++" 			 	WHERE   ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
++" 			 ) AS TABLE_RESULT) AS TABLE_RESULT_FULL";
 
 	/** Sheet 1 **/
 	@Override
@@ -345,23 +434,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_153,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_153)
-						.value(object[12] != null ? formatDays(((BigDecimal) object[12]).intValue()) : "")
+						.value(object[12] != null ? formatDays(((BigDecimal) object[12]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_154,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_154)
-						.value(object[13] != null ? formatDays(((BigDecimal) object[13]).intValue()) : "")
+						.value(object[13] != null ? formatDays(((BigDecimal) object[13]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_155,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_155)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_156,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_156)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_157,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_157)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -427,23 +516,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_172,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_172)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_173,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_173)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_174,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_174)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_175,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_175)
-						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).intValue()) : "")
+						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_176,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_176)
-						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).intValue()) : "")
+						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -509,23 +598,23 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_191,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_191)
-						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+						.value(object[14] != null ? formatDays(((BigDecimal) object[14]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_192,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_192)
-						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+						.value(object[15] != null ? formatDays(((BigDecimal) object[15]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_193,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_193)
-						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+						.value(object[16] != null ? formatDays(((BigDecimal) object[16]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_194,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_194)
-						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).intValue()) : "")
+						.value(object[17] != null ? formatDays(((BigDecimal) object[17]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_195,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_195)
-						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).intValue()) : "")
+						.value(object[18] != null ? formatDays(((BigDecimal) object[18]).doubleValue()) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -537,8 +626,8 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		return result;
 	}
 
-	private String formatDays(int day) {
-		String result = String.format("%d.0", day);
+	private String formatDays(Double day) {
+		String result = String.format("%1$.1f", day);
 		return result;
 	}
 

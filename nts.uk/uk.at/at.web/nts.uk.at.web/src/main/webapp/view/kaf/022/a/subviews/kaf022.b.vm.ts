@@ -21,11 +21,12 @@ ko.components.register('kaf022-b', {
                 ]),
                 itemListB24: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
-                    { code: 1, name: text('KAF022_174') },
+                    { code: 1, name: text('KAF022_175') },
                 ]),
                 itemListB30: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
                     { code: 1, name: text('KAF022_175') },
+                    { code: 2, name: text('KAF022_651') },
                 ]),    
                 itemListB26: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
@@ -113,7 +114,7 @@ ko.components.register('kaf022-b', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $bv.selectedIdB10,
-                            enable: true}">
+                            enable: false }">
                         </div>
                     </td>
                 </tr>
@@ -125,7 +126,7 @@ ko.components.register('kaf022-b', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $bv.selectedIdB12,
-                            enable: true}">
+                            enable: false }">
                         </div>
                     </td>
                 </tr>
@@ -258,7 +259,7 @@ ko.components.register('kaf022-b', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $bv.selectedIdB32,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>

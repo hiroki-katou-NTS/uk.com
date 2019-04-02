@@ -1,10 +1,13 @@
 package nts.uk.ctx.workflow.infra.repository.agent;
 
 import java.util.*;
+import java.sql.PreparedStatement;
 
 import javax.ejb.Stateless;
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.agent.Agent;
@@ -35,7 +38,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_AGENT_BY_TYPE4;
 	
 	private static final String SELECT_AGENT_BY_SID_DATE;
-
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -80,10 +83,10 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
-		builderString.append(" AND e.agentSid1 = :employeeId");
+		builderString.append(" AND (e.agentSid1 = :employeeId");
 		builderString.append(" OR e.agentSid2 = :employeeId");
 		builderString.append(" OR e.agentSid3 = :employeeId");
-		builderString.append(" OR e.agentSid4 = :employeeId");
+		builderString.append(" OR e.agentSid4 = :employeeId)");
 		builderString.append(" AND e.startDate <= :startDate");
 		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_ALL_DATE = builderString.toString();
@@ -141,7 +144,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.startDate <= :startDate");
 		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_BY_SID_DATE = builderString.toString();
-
+		
 		}
 	
 		
@@ -268,10 +271,35 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 * Find Agent by Request Id
 	 */
 	@Override
+	@SneakyThrows
 	public Optional<Agent> find(String companyId, String employeeId, String requestId) {
-		CmmmtAgentPK primaryKey = new CmmmtAgentPK(companyId, employeeId, requestId);
-		return this.queryProxy().find(primaryKey, CmmmtAgent.class)
-				.map(x -> convertToDomain(x));
+		
+		String sql = "select * from CMMMT_AGENT"
+				+ " where CID = ?"
+				+ " and SID = ?"
+				+ " and REQUEST_ID = ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, companyId);
+			stmt.setString(2, employeeId);
+			stmt.setString(3, requestId);
+			
+			return new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+				CmmmtAgent ent = new CmmmtAgent();
+				ent.cmmmtAgentPK = new CmmmtAgentPK(companyId, employeeId, requestId);
+				ent.startDate = rec.getGeneralDate("START_DATE");
+				ent.endDate = rec.getGeneralDate("END_DATE");
+				ent.agentSid1 = rec.getString("AGENT_SID1");
+				ent.agentAppType1 = rec.getInt("AGENT_APP_TYPE1");
+				ent.agentSid2 = rec.getString("AGENT_SID2");
+				ent.agentAppType2 = rec.getInt("AGENT_APP_TYPE2");
+				ent.agentSid3 = rec.getString("AGENT_SID3");
+				ent.agentAppType3 = rec.getInt("AGENT_APP_TYPE3");
+				ent.agentSid4 = rec.getString("AGENT_SID4");
+				ent.agentAppType4 = rec.getInt("AGENT_APP_TYPE4");
+				return ent;
+			}).map(e -> convertToDomain(e));
+		}
+		
 	}
 	
 	/**
@@ -380,6 +408,17 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return this.queryProxy().query(SELECT_AGENT_BY_SID_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> convertToDomain(c));
+	}
+
+	@Override
+	public List<Agent> findAgentForSpr(String companyId, String approverID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_TYPE1, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", approverID)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));

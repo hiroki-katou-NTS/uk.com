@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
@@ -340,6 +340,9 @@ public class ExcessOutsideWorkMng {
 					this.settingsByReg, this.settingsByDefo,
 					aggrValue.getAggregateTotalWorkingTime(), repositories);
 			
+			// 月次明細に計算結果をコピーする
+			this.monthlyDetail.setFromAggregateTotalWorkingTime(aggrValue.getAggregateTotalWorkingTime());
+			
 			// 通常・変形労働勤務の逆時系列割り当て
 			this.assignReverseTimeSeriesOfRegAndIrg(
 					regAndIrgTime, aggrValue.getAggregateTotalWorkingTime(), repositories);
@@ -537,9 +540,9 @@ public class ExcessOutsideWorkMng {
 		
 		DatePeriod targetPeriod = new DatePeriod(datePeriod.start(), procDate);
 		
-		// 累計就業時間を集計する
+		// 集計対象時間を集計する
 		AttendanceTimeMonthWithMinus totalWorkTime =
-				new AttendanceTimeMonthWithMinus(workTime.getTimeSeriesTotalLegalActualTime(targetPeriod).v());
+				new AttendanceTimeMonthWithMinus(workTime.getAggregateTargetTime(targetPeriod).v());
 		
 		// 累計フレックス時間を集計する
 		AttendanceTimeMonthWithMinus totalFlexTime =

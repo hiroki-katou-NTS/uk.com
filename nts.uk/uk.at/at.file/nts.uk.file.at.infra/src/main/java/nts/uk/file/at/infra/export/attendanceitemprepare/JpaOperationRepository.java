@@ -50,14 +50,12 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
     //APPLICATIONCALL
     private static final String SELECT_BY_COM_APPLICATIONCALL = "SELECT c.APPLICATION_TYPE FROM KFNMT_APPLICATION_CALL c where c.CID=?cid";
 	//Rold
-    private static final String SELECT_ALL_ROLD = "SELECT a.ROLE_CD as codeRole,a.ROLE_NAME as nameRole,c.DESCRIPTION_OF_FUNCTION as description ,c.DISPLAY_NAME_OF_FUNCTION as displayName, b.AVAILABILITY as availability "
-    											+ "from KACMT_EMPLOYMENT_ROLE x "
-    											+ "left join SACMT_ROLE  a on x.ROLE_ID=a.ROLE_ID and x.CID = a.CID "
-    											+ "left join KRCMT_DAI_PERFORMANCE_AUT b "
-    											+ "on a.ROLE_ID=b.ROLE_ID and a.CID = b.CID "
-    											+ "left join KRCMT_DAI_PERFORMANCE_FUN c "
-    											+ "on b.FUNCTION_NO=c.FUNCTION_NO "
-    											+ "where a.CID=?cid ORDER BY a.ROLE_CD ";
+    private static final String SELECT_ALL_ROLD = "SELECT b.ROLE_CD as codeRole,b.ROLE_NAME as nameRole,c.DESCRIPTION_OF_FUNCTION "
+    		+ "as description ,c.DISPLAY_NAME_OF_FUNCTION as displayName, a.AVAILABILITY "
+    		+ ",a.ROLE_ID "
+    		+ "as availability from KRCMT_DAI_PERFORMANCE_AUT a left join SACMT_ROLE  b "
+    		+ "on a.ROLE_ID=b.ROLE_ID and b.CID = a.CID left join KRCMT_DAI_PERFORMANCE_FUN c "
+    		+ "on a.FUNCTION_NO=c.FUNCTION_NO where a.CID=?cid  ORDER BY b.ROLE_CD ";
 	
     @Override
     public Optional<FormatPerformance> getFormatPerformanceById(String companyId){
@@ -140,9 +138,10 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
 		 String nameRole = (x[1]!=null)?(String) x[1]:null;
 		 String displayName = (x[2]!=null)?(String) x[2]:null;
 		 String description = (x[3]!=null)?(String) x[3]:null;
+		 String roldeId = (String) x[5];
 		 int availability = (x[4]!=null)?((BigDecimal) x[4]).intValue():-1;
 		RoleExport reExport = 
-				new RoleExport(codeRole, nameRole, displayName, description, availability);
+				new RoleExport(codeRole, nameRole, displayName, description, availability,roldeId);
 		result.add(reExport);
 
 	}

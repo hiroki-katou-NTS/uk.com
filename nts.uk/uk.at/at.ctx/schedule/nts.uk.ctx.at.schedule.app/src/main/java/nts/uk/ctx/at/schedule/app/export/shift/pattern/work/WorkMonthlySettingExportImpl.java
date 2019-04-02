@@ -12,6 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
+import nts.uk.ctx.at.shared.app.find.workingconditionitem.WorkingConditionItemFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -31,6 +35,12 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	
 	@Inject
 	private WorkMonthlySettingReportRepository workMonthlySettingReportRepository;
+	
+	@Inject
+	private CompanyEventRepository companyEventRepository;
+	
+	@Inject
+	private WorkingConditionItemFinder workingConditionItemFinder;
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -60,8 +70,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 						}
 					}
 					else {
-						
-						datas.add(newWSWithCodeNameMasterData(listDataPerOneWp.get().get(0)));
+//						datas.add(newWSWithCodeNameMasterData(listDataPerOneWp.get().get(0)));
 					}
 				}
 			});
@@ -70,18 +79,18 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		return datas;
 	}
 	
-	private MasterData newWSWithCodeNameMasterData(WorkMonthlySettingReportData setWorkplaceReportData) {
-		
-		Map<String, Object> data = new HashMap<>();
-		// put empty to columns
-		putEmptyToColumWorkSet(data);
-		data.put("コード", setWorkplaceReportData.getPattenCode());
-		data.put("名称", setWorkplaceReportData.getPatternName());
-
-		MasterData masterData = new MasterData(data, null, "");
-		alignDataWorkSet(masterData.getRowData());
-		return masterData;
-	}
+//	private MasterData newWSWithCodeNameMasterData(WorkMonthlySettingReportData setWorkplaceReportData) {
+//		
+//		Map<String, Object> data = new HashMap<>();
+//		// put empty to columns
+//		putEmptyToColumWorkSet(data);
+//		data.put("コード", setWorkplaceReportData.getPattenCode());
+//		data.put("名称", setWorkplaceReportData.getPatternName());
+//
+//		MasterData masterData = new MasterData(data, null, "");
+//		alignDataWorkSet(masterData.getRowData());
+//		return masterData;
+//	}
 
 	/**
 	 * create row data for WorkPlace sheet
@@ -151,7 +160,25 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	private void putDataToColumnsWorkSet(Map<String, Object> data, WorkMonthlySettingReportData setReportData) {
 		if(setReportData.getWorkSetName().isPresent()) {
 			String key = setReportData.getDay() + "日";
-			data.put(key, setReportData.getWorkSetName().get());
+			String value = setReportData.getWorkSetName().get();
+			
+			/*Optional<GeneralDate> d = setReportData.getDate();
+			if (d.isPresent()){
+				List<GeneralDate> lst = new ArrayList<>();
+				lst.add(d.get());
+				String companyId = AppContexts.user().companyId();
+				List<CompanyEvent> lstEvent = companyEventRepository.getCompanyEventsByListDate(companyId, lst);
+				if (!CollectionUtil.isEmpty(lstEvent)){
+					CompanyEvent e = lstEvent.get(0);
+					if (e.getEventName() != null){
+						value += "「" + e.getEventName() + "」"; 
+					}
+				}
+			}*/
+			if (setReportData.getEventName() != null){
+				value += "「" + setReportData.getEventName() + "」"; 
+			}
+			data.put(key, value);
 		}
 	}
 	
@@ -193,17 +220,11 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM005_77"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM005_78"), ColumnTextAlign.LEFT, "", true));
 
-		 //TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
 		return columns;
 	}
 
 	@Override
 	public String mainSheetName() {
-		
 		return TextResource.localize("KSM005_3");
 	}
 	
@@ -242,9 +263,25 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 				.findAllPersionWorkMonthlySet(companyId, query.getBaseDate());
 		if(optReportDatas.isPresent()) {
 			List<PersionalWorkMonthlySettingReportData> reportDatas = optReportDatas.get();
-			reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd)).forEachOrdered(x -> {
-				datas.add(newPersionSetMasterData(x));
+			List<String> lstSids = new ArrayList<>();
+			reportDatas.stream().forEachOrdered(x -> {
+				if (!lstSids.contains(x.getSid())){
+					lstSids.add(x.getSid());
+				}
 			});
+			List<String> lstSidExcepts = new ArrayList<>();
+			if (!lstSids.isEmpty()){
+				lstSidExcepts = workingConditionItemFinder.findBySidsAndNewestHistory(lstSids);
+			}
+			if (!lstSidExcepts.isEmpty()){
+				reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd));
+				
+				for (PersionalWorkMonthlySettingReportData x : reportDatas) {
+					if (!lstSidExcepts.contains(x.getSid())){
+						datas.add(newPersionSetMasterData(x));
+					}
+				}
+			}
 		}
 		return datas;
 	}

@@ -1,6 +1,5 @@
 package nts.uk.file.at.app.export.worktype;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
@@ -104,7 +103,7 @@ public class PreparationBeforeApplyExport {
                 Map<String, MasterCellData> data = new HashMap<>();
                 data.put(KAF022_516, MasterCellData.builder()
                         .columnId(KAF022_516)
-                        .value(j[0])
+                        .value(j[1] == null ? "" : j[0])
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                         .build());
                 data.put(KAF022_517, MasterCellData.builder()
@@ -130,7 +129,7 @@ public class PreparationBeforeApplyExport {
             if(r[15] != null) {
                 data.put(KAF022_512, MasterCellData.builder()
                         .columnId(KAF022_512)
-                        .value(r[14] == null ? "" : EnumAdaptor.valueOf(((BigDecimal) r[14]).intValue(), ApplicationType.class).nameId)
+                        .value(r[14] == null ? "" : getTextApplication(((BigDecimal)r[14]).intValue()))
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                         .build());
                 data.put(KAF022_513, MasterCellData.builder()
@@ -147,6 +146,49 @@ public class PreparationBeforeApplyExport {
             }
         });
         return datas;
+    }
+
+    public static String getTextApplication(int value){
+        if(value == ApplicationType.OVER_TIME_APPLICATION.value) {
+            return TextResource.localize("KAF022_3");
+        }
+        if(value == ApplicationType.ABSENCE_APPLICATION.value) {
+            return TextResource.localize("KAF022_4");
+        }
+        if(value == ApplicationType.WORK_CHANGE_APPLICATION.value) {
+            return TextResource.localize("KAF022_5");
+        }
+        if(value == ApplicationType.BUSINESS_TRIP_APPLICATION.value) {
+            return TextResource.localize("KAF022_6");
+        }
+        if(value == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value) {
+            return TextResource.localize("KAF022_7");
+        }
+        if(value == ApplicationType.BREAK_TIME_APPLICATION.value) {
+            return TextResource.localize("KAF022_8");
+        }
+        if(value == ApplicationType.STAMP_APPLICATION.value) {
+            return TextResource.localize("KAF022_11");
+        }
+        if(value == ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value) {
+            return TextResource.localize("KAF022_9");
+        }
+        if(value == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value) {
+            return TextResource.localize("KAF022_286");
+        }
+        if(value == ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value) {
+            return TextResource.localize("KAF022_12");
+        }
+        if(value == ApplicationType.STAMP_NR_APPLICATION.value) {
+            return TextResource.localize("KAF022_55");
+        }
+        if(value == ApplicationType.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER.value) {
+            return TextResource.localize("KAF022_56");
+        }
+        if(value == ApplicationType.APPLICATION_36.value) {
+            return TextResource.localize("KAF022_13");
+        }
+        return "";
     }
 
     public List<MasterData> getDataOverTime(List<Object[]> obj) {
@@ -764,7 +806,12 @@ public class PreparationBeforeApplyExport {
             case 12:
                 return ((BigDecimal)firstObject[11]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 13:
-                return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+            	 if(((BigDecimal)obj[12]).intValue() == 2 ) {
+            		  return TextResource.localize("KAF022_652");
+            	 }else{
+            		 return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+            	 }
+                
             case 14:
                 if(((BigDecimal)obj[13]).intValue() == 2 ) {
                     return TextResource.localize("KAF022_175");
@@ -1174,7 +1221,11 @@ public class PreparationBeforeApplyExport {
             case 10:
                 return ((BigDecimal)obj[105]).intValue() == 1 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 11:
-                return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+            	 if(((BigDecimal)obj[12]).intValue() == 2 ) {
+            		  return TextResource.localize("KAF022_652");
+            	}else{
+            		return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+            	}
             case 12:
                 if(obj[13] == null) {
                     return "";

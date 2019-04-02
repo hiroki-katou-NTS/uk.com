@@ -31,6 +31,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -52,19 +53,18 @@ public class DayCalendarExportImpl implements MasterListData {
 	@Inject
 	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
-//	private Period period;
-	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 //		 String companyId = AppContexts.user().companyId();
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"));
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), 
+				 getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"));
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"), MasterListMode.FISCAL_YEAR_RANGE);
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"));
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"), MasterListMode.FISCAL_YEAR_RANGE);
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -78,15 +78,16 @@ public class DayCalendarExportImpl implements MasterListData {
 	}
 
 	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.FISCAL_YEAR_RANGE;
+	}
+
+	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("年月日", TextResource.localize("KSM004_23"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("祝日名称", TextResource.localize("KSM004_24"), ColumnTextAlign.LEFT, "", true));
-		//TODO temp
-		GeneralDate endDate = query.getEndDate();
-		if (endDate.month() != 12) {
-			query.setEndDate(endDate.addYears(-1));
-		}
+		
 		return columns;
 	}
 	
@@ -235,6 +236,11 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		if (setReportData.getEventName() != null){
+			value += "「" + setReportData.getEventName() + "」"; 
+		}
+		
 		data.put(key, value);
 	}
 	
@@ -290,7 +296,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		if (mapSetReportDatas.isPresent()) {
 			//put hierarchy code to data
 			if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-				workplaceHierarchyDtos.forEach(x -> {
+				workplaceHierarchyDtos.stream().forEach(x -> {
 					String wpId = x.getWorkplaceId();
 					String hierarchyCode = x.getHierarchyCode();
 					String code = x.getCode();
@@ -300,7 +306,7 @@ public class DayCalendarExportImpl implements MasterListData {
 							? Optional.ofNullable(mapSetReportDatas.get().get(wpId)) : Optional.empty();
 
 					if (dataByWpId.isPresent()) {
-						dataByWpId.get().forEach(y -> {
+						dataByWpId.get().stream().forEach(y -> {
 							y.setHierarchyCode(Optional.of(hierarchyCode));
 							y.setWorkplaceCode(Optional.of(code));
 							y.setWorkplaceName(Optional.of(name));
@@ -310,26 +316,28 @@ public class DayCalendarExportImpl implements MasterListData {
 			}
 			
 			//sort by hierarchy code
-			mapSetReportDatas.get().entrySet().stream().sorted((e1, e2) -> {
+			mapSetReportDatas.get().entrySet().stream().sorted((e1, e2) -> {				
 				List<WorkplaceCalendarReportData> list1 = e1.getValue();
 				List<WorkplaceCalendarReportData> list2 = e2.getValue();
-				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-						&& list1.get(0).getHierarchyCode().isPresent() && list2.get(0).getHierarchyCode().isPresent())
-					return list1.get(0).getHierarchyCode().get().compareTo(list2.get(0).getHierarchyCode().get());
-				else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode().isPresent()
-						&& CollectionUtil.isEmpty(list2))
-					return 1;
-				else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-						&& list2.get(0).getHierarchyCode().isPresent())
-					return -1;
-				else
-					return 0;
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)) {
+					Optional<String> hierarchyCode1 = list1.get(0).getHierarchyCode();
+					Optional<String> hierarchyCode2 = list2.get(0).getHierarchyCode();
+					if (hierarchyCode1.isPresent() && hierarchyCode2.isPresent())
+						return hierarchyCode1.get().compareTo(hierarchyCode2.get());
+					else if (hierarchyCode1.isPresent() && !hierarchyCode2.isPresent())
+						return 1;
+					else if (!hierarchyCode1.isPresent() && hierarchyCode2.isPresent())
+						return -1;
+					else
+						return 0;
+				}
+				return 0;
 			}).forEachOrdered(dto -> {
 				List<WorkplaceCalendarReportData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					WorkplaceCalendarReportData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//						|| (!firstObject.getHierarchyCode().isPresent() && !firstObject.getWorkplaceCode().isPresent())) {
 						Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode
 								.stream()
 								.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
@@ -430,6 +438,11 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
+		if (setReportData.getEventName() != null){
+			value += "「" + setReportData.getEventName() + "」"; 
+		}
+		
 		data.put(key, value);
 	}
 	
@@ -553,6 +566,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		} else if (value != null && value.isEmpty()) {
 			value += setReportData.getWorkingDayAtrName();
 		}
+		
 		data.put(key, value);
 	}
 }

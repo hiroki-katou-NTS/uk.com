@@ -280,7 +280,7 @@ module nts.uk.at.view.kdl009.a {
         }
         export enum ExpirationDate {
             "当月",//0
-            "常に繰越",//1
+            "無期限",//1
             "年度末クリア",//2
             "1ヶ月",//3
             "2ヶ月",//4

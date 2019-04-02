@@ -12,4 +12,5 @@ public class BusinessDailyExcel {
 	int attItemId;
 	int sheetNo;
 	String sheetName;
+	int order;
 }

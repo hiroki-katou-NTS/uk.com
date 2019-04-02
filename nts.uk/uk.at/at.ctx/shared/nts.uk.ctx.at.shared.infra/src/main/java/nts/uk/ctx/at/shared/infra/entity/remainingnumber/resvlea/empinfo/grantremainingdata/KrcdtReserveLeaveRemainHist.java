@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -22,20 +24,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_RVSLEA_REMAIN_HIST")
-public class KrcdtReserveLeaveRemainHist extends UkJpaEntity {
+public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializable{
 
-	@Id
-	@Column(name = "RVSLEA_ID")
-	public String rvsLeaId;
-
-	@Column(name = "SID")
-	public String sid;
+	@EmbeddedId
+	public KrcdtReserveLeaveRemainHistPK  krcdtReserveLeaveRemainHistPK;
 
 	@Column(name = "CID")
 	public String cid;
-
-	@Column(name = "GRANT_DATE")
-	public GeneralDate grantDate;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -59,48 +54,31 @@ public class KrcdtReserveLeaveRemainHist extends UkJpaEntity {
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
 
-	// 年月
-	@Column(name = "YM")
-	public Integer yearMonth;
-
-	// 締めID
-	@Column(name = "CLOSURE_ID")
-	public Integer closureId;
-
-	// 締め日.日
-	@Column(name = "CLOSURE_DAY")
-	public Integer closeDay;
-
-	// 締め日.末日とする
-	@Column(name = "IS_LAST_DAY")
-	public Integer isLastDay;
-
 	public static KrcdtReserveLeaveRemainHist fromDomain(ReserveLeaveGrantRemainHistoryData domain, String cid) {
-		return new KrcdtReserveLeaveRemainHist(domain.getRsvLeaID(), domain.getEmployeeId(), cid, domain.getGrantDate(),
+		return new KrcdtReserveLeaveRemainHist( cid,domain.getEmployeeId(), domain.getYearMonth().v(), domain.getClosureId().value,
+				domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth() ? 1 : 0,  domain.getGrantDate(),
 				domain.getDeadline(), domain.getExpirationStatus().value, domain.getRegisterType().value,
 				domain.getDetails().getGrantNumber().v(), domain.getDetails().getUsedNumber().getDays().v(),
 				domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
 						? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
-				domain.getDetails().getRemainingNumber().v(), domain.getYearMonth().v(), domain.getClosureId().value,
-				domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
+				domain.getDetails().getRemainingNumber().v());
 	}
 
 	public ReserveLeaveGrantRemainHistoryData toDomain() {
-		return new ReserveLeaveGrantRemainHistoryData(this.rvsLeaId, this.sid, this.grantDate, this.deadline,
+		return new ReserveLeaveGrantRemainHistoryData(
+				this.krcdtReserveLeaveRemainHistPK.sid, new YearMonth(this.krcdtReserveLeaveRemainHistPK.yearMonth), this.krcdtReserveLeaveRemainHistPK.closureId,
+				new ClosureDate(this.krcdtReserveLeaveRemainHistPK.closeDay, this.krcdtReserveLeaveRemainHistPK.isLastDay == 1), this.krcdtReserveLeaveRemainHistPK.grantDate, this.deadline,
 				this.expStatus, this.registerType, this.grantDays, this.usedDays, this.overLimitDays,
-				this.remainingDays, new YearMonth(this.yearMonth), this.closureId,
-				new ClosureDate(this.closeDay, this.isLastDay == 1));
+				this.remainingDays);
 	}
 
-	public KrcdtReserveLeaveRemainHist(String rvsLeaId, String sid, String cid, GeneralDate grantDate,
+	public KrcdtReserveLeaveRemainHist(String cid, String sid, Integer yearMonth, Integer closureId, Integer closeDay,
+			int isLastDay, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, double usedDays,
-			Double overLimitDays, double remainingDays, Integer yearMonth, Integer closureId, Integer closeDay,
-			int isLastDay) {
+			Double overLimitDays, double remainingDays) {
 		super();
-		this.rvsLeaId = rvsLeaId;
-		this.sid = sid;
 		this.cid = cid;
-		this.grantDate = grantDate;
+		this.krcdtReserveLeaveRemainHistPK = new KrcdtReserveLeaveRemainHistPK(sid, yearMonth, closureId, closeDay, isLastDay, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;
 		this.registerType = registerType;
@@ -108,15 +86,14 @@ public class KrcdtReserveLeaveRemainHist extends UkJpaEntity {
 		this.usedDays = usedDays;
 		this.overLimitDays = overLimitDays;
 		this.remainingDays = remainingDays;
-		this.yearMonth = yearMonth;
-		this.closureId = closureId;
-		this.closeDay = closeDay;
-		this.isLastDay = isLastDay;
+
 	}
+	
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected Object getKey() {
-		return this.rvsLeaId;
+		return this.krcdtReserveLeaveRemainHistPK;
 	}
 
 }

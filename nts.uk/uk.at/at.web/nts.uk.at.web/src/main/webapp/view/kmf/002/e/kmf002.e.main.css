@@ -27,3 +27,7 @@
 #scrE table thead tr th:nth-child(1) {
 	width: 60px;
 }
+#opencdl028Dialog {
+	margin-left: 60px;
+	margin-top: 8px;
+}

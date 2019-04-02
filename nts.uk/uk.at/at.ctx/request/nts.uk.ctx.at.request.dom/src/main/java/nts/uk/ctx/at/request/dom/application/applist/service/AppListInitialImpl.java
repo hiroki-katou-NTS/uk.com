@@ -80,6 +80,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
@@ -128,6 +132,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AtEmploymentAdapter employmentAdapter;
 	@Inject
 	private SyEmployeeAdapter syEmpAdapter;
+	@Inject
+	private WorkTypeRepository repoWorkType;
+	@Inject
+	private WorkTimeSettingRepository repoworkTime;
 	
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -334,6 +342,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		String companyId = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
+		GeneralDate sysDate = GeneralDate.today();
 //		GeneralDate baseDate = GeneralDate.today();
 		//ドメインモデル「承認機能設定」を取得する-(Lấy dữ liệu domain 承認機能設定) - wait hoi lai ben nhat
 		//comment code - EA2237
@@ -346,7 +355,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
 		List<Application_New> lstApp = new ArrayList<>();
 			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request 244
-			List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyId, sID, param.getStartDate(), param.getEndDate());
+			List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyId, sID, sysDate, sysDate);
 			List<String> lstEmp = new ArrayList<>();
 			for (AgentDataRequestPubImport agent : lstAgent) {
 				lstEmp.add(agent.getEmployeeId());
@@ -704,7 +713,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", appPre, reasonAppPre, null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", appPre, reasonAppPre, null,null,null,"","");
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -732,9 +741,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						group.setEndTime1(result.getEndTime1());
 						group.setStrTime2(result.getStrTime2());
 						group.setEndTime2(result.getEndTime2());
+						group.setShiftNightTime(result.getShiftNightTime());
+						group.setFlexTime(result.getFlexTime());
 						//NOTE
 					}else{
-						group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", appPre, reasonAppPre, null);
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult(),result.getStrTime1(),
+								result.getEndTime1(),result.getStrTime2(),result.getEndTime2(), appPre, reasonAppPre, null,
+								result.getShiftNightTime(), result.getFlexTime(),"","");
 					}
 				}
 				if(group != null){
@@ -773,7 +786,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				if(!lstAppPre.isEmpty()){
-					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", null, reasonAppPre, appPre);
+					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", null, reasonAppPre, appPre, null, null,"","");
 				}
 			}
 			//承認一覧表示設定.休出の実績
@@ -790,8 +803,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				if(group != null){
 					group.setTime(result.getLstFrameResult());
+					group.setStrTime1(result.getStrTime1());
+					group.setEndTime1(result.getEndTime1());
+					group.setStrTime2(result.getStrTime2());
+					group.setEndTime2(result.getEndTime2());
+					group.setWorkTypeName(result.getWorkTypeName());
+					group.setWorkTimeName(result.getWorkTimeName());
 				}else{
-					group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", null, reasonAppPre, appPre);
+					group = new AppPrePostGroup("", appID, result.getLstFrameResult(),result.getStrTime1(),
+							result.getEndTime1(),result.getStrTime2(),result.getEndTime2(), null, reasonAppPre,
+							appPre, null, null, result.getWorkTypeName(), result.getWorkTimeName());
 				}
 			}
 			if(group != null){
@@ -836,7 +857,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time) {
-		// TODO Auto-generated method stub
+		String companyId = AppContexts.user().companyId();
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
 		//Imported(申請承認)「勤務予定」を取得する - req #4
@@ -857,9 +878,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			frameRes.setApplicationTime(timeCal.getResultCaculation());
 			lstFrameResult.add(frameRes);
 		}
+		String workTypeName = "";
+		if(Strings.isNotBlank(record.getWorkTypeCode())){
+			Optional<WorkType> wt = repoWorkType.findByPK(companyId, record.getWorkTypeCode());
+			 workTypeName = wt.isPresent() ? wt.get().getName().v() : "";
+		} 
+		String workTimeName = "";
+		if(Strings.isNotBlank(record.getWorkTimeCode())){
+			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId, record.getWorkTimeCode());
+			workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+		}
+		
 		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
 				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
-				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()), null, null, workTypeName, workTimeName);
 	}
 	private OverTimeFrame findFrameTime(List<OverTimeFrame> time, int frameNo, int attendanceType){
 		for (OverTimeFrame overTimeFrame : time) {
@@ -895,7 +927,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 		}
-		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
 			for(OverTimeFrame i : time){
@@ -910,7 +941,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 		}
-		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
 		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
@@ -940,7 +970,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
 				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
-				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()), cal.getMidNightTime().getCalTime(), cal.getFlexTime().getCalTime(),"","");
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出

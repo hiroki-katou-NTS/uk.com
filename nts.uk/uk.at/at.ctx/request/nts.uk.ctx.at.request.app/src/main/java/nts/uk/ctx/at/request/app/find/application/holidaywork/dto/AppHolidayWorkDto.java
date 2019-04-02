@@ -239,6 +239,8 @@ public class AppHolidayWorkDto {
 	private List<DeductionTimeDto> timeZones;
 	
 	private boolean enableOvertimeInput;
+	/** 申請理由が必須 */
+	private boolean requireAppReasonFlg;
 	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
@@ -292,6 +294,7 @@ public class AppHolidayWorkDto {
 				null, 
 				null,
 				Collections.emptyList(),
+				false,
 				false);
 	}
 	

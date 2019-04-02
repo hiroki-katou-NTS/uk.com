@@ -16,13 +16,17 @@ module nts.uk.com.view.cps017.a.service {
     
     export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:"";
-            let _params = { domainId: "PersonSelectionItem", 
-                        domainType: "CPS017"+programName, 
+        let domainType = "CPS017";
+        if (program.length > 1){
+            program.shift();
+        }
+        domainType = program.length > 1 ? domainType + program.join(" ") : domainType  + __viewContext.program.programName;
+        let _params = { domainId: "PersonSelectionItem",
+                        domainType:domainType,
                         languageId: languageId, 
                         reportType: 0, mode: 1, baseDate : date };
-            return exportFile('/masterlist/report/print', _params);
-        }
+        return exportFile('/masterlist/report/print', _params);
+    }
 
     export function getAllSelectionItems() {
         return ajax(paths.getAllSelectionItems);

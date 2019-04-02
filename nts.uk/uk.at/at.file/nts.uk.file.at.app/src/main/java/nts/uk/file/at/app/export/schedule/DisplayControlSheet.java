@@ -16,6 +16,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.DisplayControl
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheDispControl;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.SchePerInfoAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheQualifySet;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.FunctionControlRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.ScheFuncControl;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -38,6 +40,9 @@ public class DisplayControlSheet {
 	
 	@Inject
 	private DisplayControlRepository displayControlRepository;
+	
+	@Inject
+	private FunctionControlRepository functionControlRepository;
 	
 	/* (non-Javadoc)
 	 * 
@@ -67,13 +72,21 @@ public class DisplayControlSheet {
 			return null;
 		} else {
 			ScheDispControl scheDispControl = scheDispControlOptional.get();
-			if (CollectionUtil.isEmpty(listItems)) {
+			Optional<ScheFuncControl> scheFuncControlOptional = functionControlRepository.getScheFuncControl(companyId);
+			if (!scheFuncControlOptional.isPresent()){
 				return null;
 			} else {
-				// loop listItems 
-				listItems.stream().forEach(mapItem -> {
-					datas.addAll(createRow(mapItem, scheDispControl));
-				});
+				ScheFuncControl scheFuncControl = scheFuncControlOptional.get();
+				if (CollectionUtil.isEmpty(listItems)) {
+					return null;
+				} else {
+					// loop listItems 
+					if (scheFuncControl != null && scheDispControl != null) {
+						for (Map<String, Object> mapItem : listItems) {
+							datas.addAll(createRow(mapItem, scheDispControl, scheFuncControl));
+						}
+					}
+				}
 			}
 		}
 		return datas;
@@ -115,7 +128,7 @@ public class DisplayControlSheet {
 	 * @return instance of MasterData
 	 */
 	@SuppressWarnings("unchecked")
-	private List<MasterData> createRow (Map<String, Object> item, ScheDispControl scheDispControl ){
+	private List<MasterData> createRow (Map<String, Object> item, ScheDispControl scheDispControl, ScheFuncControl scheFuncControl){
 		if (item.isEmpty()) return null;
 		List<MasterData> listMasterDatas = new ArrayList<>();
 		List<Map<String, Object>> datas = new ArrayList<>();
@@ -151,9 +164,13 @@ public class DisplayControlSheet {
 							if (!schePerInfoAtrs.isEmpty()){
 								for (SchePerInfoAtr info : schePerInfoAtrs) {
 									if (contentText == null){
-										contentText = getInfoDisplayName(info.getPersonInfoAtr().value);
+										if (getInfoDisplayName(info.getPersonInfoAtr().value, scheFuncControl) != null){
+											contentText = getInfoDisplayName(info.getPersonInfoAtr().value, scheFuncControl);
+										}
 									} else {
-										contentText = contentText.concat(",").concat(getInfoDisplayName(info.getPersonInfoAtr().value));
+										if (getInfoDisplayName(info.getPersonInfoAtr().value, scheFuncControl) != null){
+											contentText = contentText.concat(",").concat(getInfoDisplayName(info.getPersonInfoAtr().value, scheFuncControl));
+										}
 									}
 								}
 							}
@@ -206,7 +223,7 @@ public class DisplayControlSheet {
 	 * @param code
 	 * @return
 	 */
-	private String getInfoDisplayName(int code){
+	private String getInfoDisplayName(int code, ScheFuncControl scheFuncControl){
 		String name = null;
 		switch (code) {
 		case 0:
@@ -225,10 +242,14 @@ public class DisplayControlSheet {
 			name = TextResource.localize("KSM011_55");
 			break;
 		case 5:
-			name = TextResource.localize("KSM011_56");
+			if (scheFuncControl.getTeamCls().value == 1){
+				name = TextResource.localize("KSM011_56");
+			}
 			break;
 		case 6:
-			name = TextResource.localize("KSM011_57");
+			if (scheFuncControl.getRankCls().value == 1){
+				name = TextResource.localize("KSM011_57");
+			}
 			break;
 		case 7:
 			name = TextResource.localize("KSM011_58");
@@ -260,10 +281,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_63")) && parent.equals(TextResource.localize("KSM011_62"))){
 			switch (scheDispControl.getSymbolHalfDayAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -272,10 +293,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_64")) && parent.equals(TextResource.localize("KSM011_62"))){
 			switch (scheDispControl.getSymbolAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -284,10 +305,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_66")) && parent.equals(TextResource.localize("KSM011_65"))){
 			switch (scheDispControl.getPubHolidayExcessAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;
@@ -296,10 +317,10 @@ public class DisplayControlSheet {
 		if (key.equals(TextResource.localize("KSM011_67")) && parent.equals(TextResource.localize("KSM011_65"))){
 			switch (scheDispControl.getPubHolidayShortageAtr().value) {
 			case 0:
-				value = TextResource.localize("KSM011_8");
+				value = TextResource.localize("KSM011_9");
 				break;
 			case 1:
-				value = TextResource.localize("KSM011_9");
+				value = TextResource.localize("KSM011_8");
 				break;
 			default:
 				break;

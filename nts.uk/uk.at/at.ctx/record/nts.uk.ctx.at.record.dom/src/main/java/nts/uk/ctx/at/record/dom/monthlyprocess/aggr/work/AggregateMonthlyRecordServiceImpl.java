@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -8,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
@@ -19,11 +22,15 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -106,5 +113,37 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);
+	}
+
+	@Override
+	public Map<GeneralDate, DailyInterimRemainMngData> mapInterimRemainData(String cid, String sid,
+			DatePeriod datePeriod) {
+		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
+				this.repositories,
+				this.interimRemOffMonth,
+				this.remNumCreateInfo,
+				this.periodCreateData,
+				this.createInterimAnnual,
+				this.getAnnAndRsvRemNumWithinPeriod,
+				this.absenceRecruitMng,
+				this.breakDayoffMng,
+				this.getDaysForCalcAttdRate,
+				this.specialHolidayRepo,
+				this.specialLeaveMng,
+				this.createPerErrorFromLeaveErrors,
+				this.editStateRepo,
+				this.executorService);
+		proc.setMonthlyCalculatingDailys(MonthlyCalculatingDailys.loadData(
+				sid, datePeriod, Optional.empty(), this.repositories));
+		proc.setCompanyId(cid);
+		proc.setEmployeeId(sid);
+		Optional<ComSubstVacation> absSettingOpt = repositories.getSubstVacationMng().findById(cid);
+		CompensatoryLeaveComSetting dayOffSetting = repositories.getCompensLeaveMng().find(cid);
+		MonAggrCompanySettings comSetting = new MonAggrCompanySettings();
+		comSetting.setAbsSettingOpt(absSettingOpt);
+		comSetting.setDayOffSetting(dayOffSetting);
+		proc.setCompanySets(comSetting);
+		proc.createDailyInterimRemainMngs(datePeriod);
+		return proc.getDailyInterimRemainMngs();
 	}	
 }

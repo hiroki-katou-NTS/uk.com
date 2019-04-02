@@ -71,15 +71,18 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 			String companyId,
 			String companyCode,
 			String employeeId,
-			String employeeCode) {
+			String employeeCode,
+			boolean isEmployee) {
 		
-		val context = new DefaultLoginUserContext(userId, true);
+		val context = new DefaultLoginUserContext(userId, isEmployee);
 		context.setPersonId(personId);
 		context.setContractCode(contractCode);
 		context.setCompanyId(companyId);
 		context.setCompanyCode(companyCode);
-		context.setEmployeeId(employeeId);
-		context.setEmployeeCode(employeeCode);
+		if(isEmployee){
+			context.setEmployeeId(employeeId);
+			context.setEmployeeCode(employeeCode);
+		}
 		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
 	}
 

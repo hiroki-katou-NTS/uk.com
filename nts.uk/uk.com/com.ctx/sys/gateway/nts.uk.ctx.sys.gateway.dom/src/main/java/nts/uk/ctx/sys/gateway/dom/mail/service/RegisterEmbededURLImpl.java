@@ -43,8 +43,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-		String loginId = AppContexts.user().employeeCode();
-		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
+		return this.registerEmbeddedForApp(appId, appType, prePostAtr, "", employeeId);
 	}
 
 	@Override
@@ -90,7 +89,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				throw new BusinessException("Msg_301");
 			}
 			// 「切替可能な会社一覧を取得する」
-			List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId());
+			List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId(), contractCD);
 			if(CollectionUtil.isEmpty(companyIDLst)){
 				throw new BusinessException("Msg_1419");
 			}

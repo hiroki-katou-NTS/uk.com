@@ -27,6 +27,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  *
@@ -36,7 +37,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
  *
  */
 @Stateless
-@DomainID(value = "BasicWorkrRegister")
+@DomainID(value = "BasicWorkRegister")
 public class BasicWorkRegisterExportImpl implements MasterListData {
 
 	@Inject
@@ -49,9 +50,9 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasWorkplace(query), getHeaderColumnsWorkspace(query),
-				 null, null, TextResource.localize("KSM006_25"));
+				 null, null, TextResource.localize("KSM006_25"), MasterListMode.NONE);
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), getHeaderColumnsForClass(query),
-				 null, null, TextResource.localize("KSM006_26"));
+				 null, null, TextResource.localize("KSM006_26"), MasterListMode.NONE);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
 		 return sheetDatas;
@@ -60,6 +61,11 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM006_24");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 	@Override
@@ -165,7 +171,7 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 		if (mapWorkplaceBasicWorkDatas.isPresent()) {
 			//put hierarchy code to data
 			if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-				workplaceHierarchyDtos.forEach(x -> {
+				workplaceHierarchyDtos.stream().forEach(x -> {
 					String wpId = x.getWorkplaceId();
 					String hierarchyCode = x.getHierarchyCode();
 					String code = x.getCode();
@@ -175,7 +181,7 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 							? Optional.ofNullable(mapWorkplaceBasicWorkDatas.get().get(wpId)) : Optional.empty();
 
 					if (dataByWpId.isPresent()) {
-						dataByWpId.get().forEach(y -> {
+						dataByWpId.get().stream().forEach(y -> {
 							y.setHierarchyCode(Optional.of(hierarchyCode));
 							y.setWorkplaceCode(Optional.of(code));
 							y.setWorkplaceName(Optional.of(name));
@@ -188,23 +194,25 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 			mapWorkplaceBasicWorkDatas.get().entrySet().stream().sorted((e1, e2) -> {
 				List<WorkplaceBasicWorkData> list1 = e1.getValue();
 				List<WorkplaceBasicWorkData> list2 = e2.getValue();
-				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-						&& list1.get(0).getHierarchyCode().isPresent() && list2.get(0).getHierarchyCode().isPresent())
-					return list1.get(0).getHierarchyCode().get().compareTo(list2.get(0).getHierarchyCode().get());
-				else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode().isPresent()
-						&& CollectionUtil.isEmpty(list2))
-					return 1;
-				else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-						&& list2.get(0).getHierarchyCode().isPresent())
-					return -1;
-				else
-					return 0;
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)) {
+					Optional<String> hierarchyCode1 = list1.get(0).getHierarchyCode();
+					Optional<String> hierarchyCode2 = list2.get(0).getHierarchyCode();
+					if (hierarchyCode1.isPresent() && hierarchyCode2.isPresent())
+						return hierarchyCode1.get().compareTo(hierarchyCode2.get());
+					else if (hierarchyCode1.isPresent() && !hierarchyCode2.isPresent())
+						return 1;
+					else if (!hierarchyCode1.isPresent() && hierarchyCode2.isPresent())
+						return -1;
+					else
+						return 0;
+				}
+				return 0;
 			}).forEachOrdered(dto -> {
 				List<WorkplaceBasicWorkData> dataByCode = dto.getValue();
 				if (!CollectionUtil.isEmpty(dataByCode)) {
 					WorkplaceBasicWorkData firstObject = dataByCode.get(0);
-					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
-							&& !firstObject.getWorkplaceCode().isPresent())) {
+					if (firstObject.getHierarchyCode().isPresent()) {
+//						|| (!firstObject.getHierarchyCode().isPresent() && !firstObject.getWorkplaceCode().isPresent())) {
 						datas.add(newWorkplaceMasterData(dataByCode));
 					}
 				}
@@ -238,8 +246,8 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 		
 		WorkplaceBasicWorkData firstObject = workplaceBasicWorkDatas.get(0);
 		if (firstObject.getWorkplaceCode().isPresent()) {
-			data.put("コード", workplaceBasicWorkDatas.get(0).getWorkplaceCode());
-			data.put("名称", workplaceBasicWorkDatas.get(0).getWorkplaceName());
+			data.put("コード", workplaceBasicWorkDatas.get(0).getWorkplaceCode().get());
+			data.put("名称", workplaceBasicWorkDatas.get(0).getWorkplaceName().get());
 		}
 		else {
 			data.put("コード", "");

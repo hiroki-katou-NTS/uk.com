@@ -71,7 +71,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id="function-content">
+				<div id="function-content" data-bind="visible: $root.errors.isEmpty">
 					<!--A1_1 確定ボタン--> 
 					<button data-bind="enable: $root.errors.isEmpty , 
 										visible: showButton().available_A1_1,
@@ -114,13 +114,13 @@
 						<!--A3_1 処理年月--> 
 						<div data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KMW003_9')}</div>
 						<!--A3_2 処理年月--> 
-						<div data-bind="ntsDatePicker: { 
-									name: '#[KMW003_9]', 
-									enable: true, 
+						<div id="yearMonthPicker"  data-bind="ntsDatePicker: { 
 									value: yearMonth,
+									name: '#[KMW003_9]',
+									required: true, 
 									dateFormat: 'yearmonth',
-									valueFormat: 'YYYYMM',
-									showJumpButtons: true}" id="yearMonthPicker"/>
+									showJumpButtons: true,
+									valueFormat: 'YYYYMM'}" />
 						<!--A4_3 実績期間--> 
 						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
 						<!--A4_4 実績期間選択--> 

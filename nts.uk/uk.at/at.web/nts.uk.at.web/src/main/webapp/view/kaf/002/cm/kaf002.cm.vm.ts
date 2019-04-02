@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf002.cm {
             editable: KnockoutObservable<boolean> = ko.observable(true);
             employeeID: string;
             appDate: any;
+            requiredReason: KnockoutObservable<boolean> = ko.observable(false);
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -46,6 +47,7 @@ module nts.uk.at.view.kaf002.cm {
                 self.appDate = appDate;
                 self.employeeID = employeeID;
                 self.editable(editable);
+                self.requiredReason(commonSet.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                 self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
@@ -159,6 +161,22 @@ module nts.uk.at.view.kaf002.cm {
                     case 4: self.m5.update(self.application());break;  
                     default: break;
                 }    
+            }
+            
+            getBoxReason(){
+                var self = this;
+                return appcommon.CommonProcess.getComboBoxReason(self.currentReason(), self.inputReasons(), self.inputReasonsDisp() != 0);
+            }
+        
+            getAreaReason(){
+                var self = this;
+                return appcommon.CommonProcess.getTextAreaReason(self.application().contentReason(), self.detailReasonDisp() != 0, true);   
+            }
+            
+            resfreshReason(appReason: string){
+                var self = this;
+                self.currentReason(''); 
+                self.application().contentReason(appReason);   
             }
             
             getAttendanceItem(date: any, employeeList: Array<any>){

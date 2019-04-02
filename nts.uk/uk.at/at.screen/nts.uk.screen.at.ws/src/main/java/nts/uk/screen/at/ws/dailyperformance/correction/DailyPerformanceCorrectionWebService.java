@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
@@ -136,13 +138,15 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare);
 		HttpSession session = httpRequest.getSession();
+		Integer closureId = params.closureId;
+		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", dtoResult.getLstData());
-		
+		session.setAttribute("closureId", dtoResult.getClosureId());
+		removeSession(session);
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -150,12 +154,14 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes, params.showLock);
 		HttpSession session = httpRequest.getSession();
+		Integer closureId = (Integer) session.getAttribute("closureId");
+		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes, params.showLock, closureId);
 		session.setAttribute("domainOlds", results.getDomainOld());
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", results.getLstData());
+		removeSession(session);
 		results.setDomainOld(Collections.emptyList());
 		return results;
 	}
@@ -163,7 +169,9 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("getErrors")
 	public List<ErrorReferenceDto> getError(DPParams params ) {
-		return this.processor.getListErrorRefer(params.dateRange, params.lstEmployee);
+		HttpSession session = httpRequest.getSession();
+		Integer closureId = (Integer) session.getAttribute("closureId");
+		return this.processor.getListErrorRefer(params.dateRange, params.lstEmployee, closureId);
 	}
 	
 	@POST
@@ -199,7 +207,12 @@ public class DailyPerformanceCorrectionWebService {
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
-        return dailyModifyResCommandFacade.insertItemDomain(dataParent);
+		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
+		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
+		DataResultAfterIU dataResultAfterIU =  dailyModifyResCommandFacade.insertItemDomain(dataParent);
+		session.setAttribute("lstSidDateErrorCalc", dataResultAfterIU.getLstSidDateDomainError());
+		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
+		return dataResultAfterIU;
 	}
 	
 	@POST
@@ -210,8 +223,8 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("releaseClosure")
-	public void releaseClosure(EmpAndDate empAndDate){
-		personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+	public JavaTypeResult<String> releaseClosure(EmpAndDate empAndDate){
+		return new JavaTypeResult<String>(personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate()));
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -244,6 +257,10 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		param.setDailys(dailyEdits);
+		param.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
+		param.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
+		Integer closureId = (Integer) session.getAttribute("closureId");
+		param.setClosureId(closureId);
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
 		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
@@ -307,7 +324,7 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		
-		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
+		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits(), dcTimeParam.getChangeSpr31(), dcTimeParam.getChangeSpr34());
 		session.setAttribute("domainEdits", result.getDailyEdits());
 		result.setDailyEdits(Collections.emptyList());
 		return result;
@@ -333,6 +350,8 @@ public class DailyPerformanceCorrectionWebService {
 		
 		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
 		session.setAttribute("domainEdits", result.getCalculatedRows());
+		session.setAttribute("lstSidDateErrorCalc", result.getLstSidDateDomainError());
+		session.setAttribute("errorAllCalc", result.isErrorAllSidDate());
 		result.setCalculatedRows(Collections.emptyList());
 		return result;
 	}
@@ -346,10 +365,18 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("lock")
 	public DailyPerformanceCorrectionDto processLock(DPDisplayLockParam param) {
+		HttpSession session = httpRequest.getSession();
+		Integer closureId = (Integer) session.getAttribute("closureId");
+		param.setClosureId(closureId);
 		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
 	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
+	}
+	
+	private void removeSession(HttpSession session) {
+		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
+		session.setAttribute("errorAllCalc", false);
 	}
 }

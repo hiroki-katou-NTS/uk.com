@@ -17,7 +17,7 @@ module nts.uk.at.view.kal003.share.model {
 //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
             new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')), 
 //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
-//            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
+            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
 //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
@@ -63,6 +63,7 @@ module nts.uk.at.view.kal003.share.model {
         monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         //MinhVV add
         mulMonCheckCond : KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
+        annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
         
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -112,28 +113,46 @@ module nts.uk.at.view.kal003.share.model {
             ko.computed({
                 read: () => {
                     let fbe = ko.toJS(this.filterByEmployment);
-                    $('[data-bind="with: tabScopeCheck"] #scopechecktab1').trigger('validate');
+                    
+                    if (!fbe) {
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
+                    }
                 }
             });
             
             ko.computed({
                 read: () => {
                     let fbc = ko.toJS(this.filterByClassification);
-                    $('[data-bind="with: tabScopeCheck"] #scopechecktab2').trigger('validate');
+                    if (!fbc) {
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
+                    }
                 }
             });
             
             ko.computed({
                 read: () => {
+                    
                     let fbj = ko.toJS(this.filterByJobTitle);
-                    $('[data-bind="with: tabScopeCheck"] #scopechecktab3').trigger('validate');
+                    if (!fbj) {
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
+                    } 
                 }
             });
             
             ko.computed({
                 read: () => {
                     let fbb = ko.toJS(this.filterByBusinessType);
-                    $('[data-bind="with: tabScopeCheck"] #scopechecktab4').trigger('validate');
+                    if (!fbb) {
+                        setTimeout(() => {
+                            $('[data-bind="with: tabScopeCheck"] input[disabled]').ntsError('clear');
+                        }, 100);
+                    }
                 }
             });
 
@@ -300,6 +319,16 @@ module nts.uk.at.view.kal003.share.model {
             this.listCondOt = ko.observableArray(listCondOt);
             this.listCondError = ko.observableArray(listCondError);
         }
+    }
+    
+    export class AnnualHolidayAlarmCondition{
+        alarmCheckSubConAgr: KnockoutObservable<AlarmCheckSubConAgr>;//tab agreement hour
+        alarmCheckConAgr: KnockoutObservable<AlarmCheckConAgr>;//tab agreement error
+
+        constructor(alarmCheckSubConAgr: AlarmCheckSubConAgr, alarmCheckConAgr: AlarmCheckConAgr) {
+            this.alarmCheckSubConAgr = ko.observable(alarmCheckSubConAgr);
+            this.alarmCheckConAgr = ko.observable(alarmCheckConAgr);
+        } 
     }
 
     export enum CATEGORY {
@@ -2356,6 +2385,63 @@ module nts.uk.at.view.kal003.share.model {
             this.errorAlarm = param.errorAlarm;
             this.messageDisp = ko.observable(param.messageDisp);
             this.name = param.name;
+        }
+    }
+    
+    export interface IAlarmCheckSubConAgr {
+        category: number;
+        code: string;
+        id: string;
+        narrowUntilNext: boolean;
+        narrowLastDay: boolean;
+        numberDayAward: number;
+        periodUntilNext: number;
+    }
+
+    export class AlarmCheckSubConAgr {
+        category: number;
+        code: string;
+        id: string;
+        narrowUntilNext: KnockoutObservable<boolean>;
+        narrowLastDay: KnockoutObservable<boolean>;
+        numberDayAward: KnockoutObservable<number>;
+        periodUntilNext: KnockoutObservable<number>;
+
+        constructor(param: IAlarmCheckSubConAgr) {
+//            this.category = param.category;
+//            this.code = param.code;
+//            this.id = param.id;
+            this.narrowUntilNext = ko.observable(param.narrowUntilNext);
+            this.narrowLastDay =  ko.observable(param.narrowLastDay);
+            this.numberDayAward =  ko.observable(param.numberDayAward);
+            this.periodUntilNext = ko.observable(param.periodUntilNext);
+        }
+    }
+    
+    export interface IAlarmCheckConAgr {
+        category: number;
+        code: string;
+        id: string;
+        distByPeriod: boolean;
+        displayMessage: string;
+        usageObliDay: number;
+    }
+
+    export class AlarmCheckConAgr {
+        category: number;
+        code: string;
+        id: string;
+        distByPeriod: KnockoutObservable<boolean>;
+        displayMessage: KnockoutObservable<string>;
+        usageObliDay: KnockoutObservable<number>;
+
+        constructor(param: IAlarmCheckConAgr) {
+//            this.category = param.category;
+//            this.code = param.code;
+//            this.id = param.id;
+            this.distByPeriod = ko.observable(param.distByPeriod);
+            this.displayMessage =  ko.observable(param.displayMessage);
+            this.usageObliDay =  ko.observable(param.usageObliDay);
         }
     }
 

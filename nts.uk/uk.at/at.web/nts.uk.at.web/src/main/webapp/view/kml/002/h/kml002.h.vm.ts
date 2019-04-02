@@ -65,8 +65,22 @@ module nts.uk.at.view.kml002 {
                         break;
                 }
             }
+            /**
+             * Export excel
+             */
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                h.service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
-
+    
         interface ITabModel {
             id: any;
             name: string;
@@ -103,8 +117,8 @@ module nts.uk.at.view.kml002 {
                 var self = this;
 
                 self.useCls = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KML002_99") },
-                    { code: 1, name: nts.uk.resource.getText("KML002_100") }
+                    { code: 1, name: nts.uk.resource.getText("KML002_99") },
+                    { code: 0, name: nts.uk.resource.getText("KML002_100") }
                 ]);
                 self.items = ko.observableArray([]);
             }

@@ -217,16 +217,16 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		int endDate = query.getEndDate().year();
 		List<SheetData> sheetDatas = new ArrayList<>();
 		SheetData sheetData2 = SheetData.builder().mainData(this.getMasterDatasTwo())
-				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_97")).build();
+				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_97")).mode(MasterListMode.NONE).build();
 
 		SheetData sheetData3 = SheetData.builder().mainData(this.getMasterDatasThree(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsThree()).sheetName(TextResource.localize("KSM001_98")).mode(MasterListMode.FISCAL_YEAR_RANGE).build();
+				.mainDataColumns(this.getHeaderColumnsThree()).sheetName(TextResource.localize("KSM001_98")).mode(MasterListMode.YEAR_RANGE).build();
 
 		SheetData sheetData4 = SheetData.builder().mainData(this.getMasterDatasFour(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsFour()).sheetName(TextResource.localize("KSM001_99")).mode(MasterListMode.FISCAL_YEAR_RANGE).build();
+				.mainDataColumns(this.getHeaderColumnsFour()).sheetName(TextResource.localize("KSM001_99")).mode(MasterListMode.YEAR_RANGE).build();
 
 		SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasFive(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_100")).mode(MasterListMode.FISCAL_YEAR_RANGE).build();
+				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_100")).mode(MasterListMode.YEAR_RANGE).build();
 		
 		Optional<UsageSetting> optUsageSetting = this.commonGuidelineSettingRepo
 				.findByCompanyId(AppContexts.user().companyId());
@@ -246,6 +246,11 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KSM001_96");
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.NONE;
 	}
 
 }

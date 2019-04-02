@@ -173,15 +173,14 @@
             var self = this;
             
             var newItems = [];
-            _.forEach(self.items(), function(item: ItemModel) {
-                if (_.indexOf(self.currentCodeList(), item.primaryKey) !== -1) {
+            _.forEach(self.currentCodeList(), function(selected: any) {
+                if (_.indexOf(_.map(self.newItems(), 'primaryKey'), selected) == -1) {
+                    var item = _.find(self.items(), function(c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
-                    item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(item.primaryKey, item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
+                    //item.primaryKey = nts.uk.util.randomId();
+                    self.newItems.push(new ItemModel(nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
                 } 
-            })
-
-            self.currentCodeList([]);
+            });
             self.newCurrentCodeList([]);
             self.disableSwapButton();
         }
@@ -189,21 +188,20 @@
         /**
          * Remove items selected in right grid list
          */
-        remove(): void{
+        remove(): void {
             var self = this;
             var newItems = self.newItems();
-                                   
+            var items = [];
             _.remove(newItems, function(currentObject: ItemModel) {
                 return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1;
             });
-            
+
             self.newItems([]);
             _.forEach(newItems, function(item) {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
-            })   
-            
-            self.disableSwapButton();
+            });
+                self.disableSwapButton();
         }
                 
         /**

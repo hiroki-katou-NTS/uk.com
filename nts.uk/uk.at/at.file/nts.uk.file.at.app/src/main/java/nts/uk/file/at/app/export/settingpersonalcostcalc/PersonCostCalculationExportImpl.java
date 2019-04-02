@@ -27,6 +27,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "PersonCostCalculation")
@@ -34,8 +35,6 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 	
 	@Inject
 	private PersonCostCalculationFinder personCostCalculationSettingFinder;
-	
-	
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -128,6 +127,11 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 		return columns;
 		
 		
+	}
+
+	@Override
+	public MasterListMode mainSheetMode(){
+		return MasterListMode.BASE_DATE;
 	}
 	
 	private Map<String, Object> putEntryMasterDatas(){

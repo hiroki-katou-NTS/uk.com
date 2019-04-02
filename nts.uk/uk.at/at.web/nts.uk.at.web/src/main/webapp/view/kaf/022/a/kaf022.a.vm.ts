@@ -2161,8 +2161,12 @@ module nts.uk.at.view.kmf022 {
             private exportExcel(domainId: string) {
                 nts.uk.ui.block.grayout();
                 let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-                let programName = program[1] != null != null ? "KAF022" + program[1] : "";
-                service.exportExcel('ja', domainId, programName).done(function() {
+                let domainType = "KAF022";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
+                service.exportExcel('ja', domainId, domainType).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
@@ -2721,12 +2725,24 @@ module nts.uk.at.view.kmf022 {
                     }
                 });
                 this.preOtTime.subscribe((value) => {
-                    if (value) {
-                        nts.uk.ui.errors.clearAll();
+                      if (value) {
+                        $('#a7_23').ntsError('clear');
                         this.requiredA7_23.valueHasMutated();
                     }
                 });
-            }
+                this.normalOtTime.subscribe((value) => {
+                    if (value) {
+                        $('#a7_23_2').ntsError('clear');
+                        this.requiredA7_23.valueHasMutated();
+                    }
+                });
+                this.retrictPreTimeDay.subscribe((value) => {
+                    if (value) {
+                        $('#a7_23_3').ntsError('clear');
+                        this.requiredA7_23.valueHasMutated();
+                    }
+                });
+              }
         }
         class ItemA8 {
             companyId: KnockoutObservable<string>;

@@ -31,7 +31,7 @@
                     </div>
                     <!-- A1_2 -->
                     <div class="cell">
-                        <div id="A1_2" data-bind="ntsDatePicker: {required: true, value: standardDate, dateFormat: 'YYYY/MM/DD', name:'#[CDL028_2]'}"></div>
+                        <div tabindex="1" id="A1_2" data-bind="ntsDatePicker: {required: true, value: standardDate, dateFormat: 'YYYY/MM/DD', name:'#[CDL028_2]'}"></div>
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@
                     <!-- A2_1 -->
                     <div id="A2_1" class="lable table-2" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('CDL028_3')}</div>
                     <!-- A2_2 -->
-                    <div id="A2_2" class="table-2" tabindex="1" data-bind="ntsDateRangePicker: { required: true, showNextPrevious: true, value: yearValue, type: 'year', jumpUnit: 'year', name:'#[CDL028_3]'}"/>
+                    <div tabindex="2" id="A2_2" class="table-2" data-bind="ntsDateRangePicker: { required: true, showNextPrevious: true, value: yearValue, type: 'year', jumpUnit: 'year', name:'#[CDL028_3]'}"/>
 
                 </div>
 
@@ -54,7 +54,7 @@
                     </div>
                     <!-- A1_2 -->
                     <div class="cell">
-                        <div id="A1_2" data-bind="ntsDatePicker: {required: true, value: standardDate, dateFormat: 'YYYY/MM/DD', name:'#[CDL028_2]'}"></div>
+                        <div tabindex="1" id="A1_2" data-bind="ntsDatePicker: {required: true, value: standardDate, dateFormat: 'YYYY/MM/DD', name:'#[CDL028_2]'}"></div>
                     </div>
                 </div>
 
@@ -85,8 +85,8 @@
             </div>
         </div>
         <div id="functions-area-bottom" class="btn-click">
-            <button tabindex="1" data-bind="click: proceed" class="proceed" id="A10_1">#{i18n.getText('CDL028_6')}</button>
-            <button tabindex="2" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL028_7')}</button>
+            <button tabindex="4" data-bind="click: proceed" class="proceed" id="A10_1" >#{i18n.getText('CDL028_6')}</button>
+            <button tabindex="5" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL028_7')}</button>
         </div>
     </ui:define>
 </ui:composition>

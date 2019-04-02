@@ -10,9 +10,16 @@ public interface AgreementTimeOfWorkPlaceRepository {
 	
 	void add(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace);
 	
+	void update(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace);
+	
 	void remove(String workplaceId, LaborSystemtAtr laborSystemAtr);
 	
 	Optional<String> find(String workplaceId , LaborSystemtAtr laborSystemAtr);
 	
 	List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr);
+	
+	Optional<AgreementTimeOfWorkPlace> findAgreementTimeOfWorkPlace(String workplaceId,
+			LaborSystemtAtr laborSystemAtr);
+
+	List<AgreementTimeOfWorkPlace> findWorkPlaceSetting(List<String> workplaceId);
 }
