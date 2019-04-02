@@ -198,6 +198,7 @@ module nts.uk.at.view.kaf010.b {
             
             initData(data: any) {
                 var self = this;
+                self.requiredReason(data.requireAppReasonFlg);
                 self.version = data.application.version;
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
@@ -453,7 +454,7 @@ module nts.uk.at.view.kaf010.b {
             }
 
             setErrorB6_8() {
-                $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+                $('.breakTimesCheck').ntsError('set', { messageId: 'MsgB_1', messageParams: [nts.uk.resource.getText("KAF010_56")] });
             }
 
             clearErrorB6_8() {
@@ -595,8 +596,13 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });
+                    if(nts.uk.util.isNullOrEmpty(res.errors)){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });       
+                    } else {
+                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });      
+                    }
                 });
             }
             

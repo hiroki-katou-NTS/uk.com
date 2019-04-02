@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.pub.monthly.agreement.GetAgreementPeriodPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 36協定期間を取得
@@ -26,5 +28,12 @@ public class GetAgreementPeriodPubImpl implements GetAgreementPeriodPub {
 	@Override
 	public Optional<DatePeriod> byYear(String companyId, String employeeId, GeneralDate criteria, Year year) {
 		return this.getAgreementPeriod.byYear(companyId, employeeId, criteria, year);
+	}
+	
+	/** 指定日を含む年期間を取得 */
+	@Override
+	public Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
+			Optional<AgreementOperationSetting> agreementOperationSet) {
+		return this.getAgreementPeriod.containsDate(companyId, criteria, agreementOperationSet);
 	}
 }

@@ -53,7 +53,7 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 			}
 			
 			//予定勤種就時の反映
-			commonService.reflectScheWorkTimeWorkType(workchangePara, isPre, dailyInfor);
+			boolean isScheReflect = commonService.reflectScheWorkTimeWorkType(workchangePara, isPre, dailyInfor);
 			TimeReflectPara timeReflect =  new TimeReflectPara(param.getCommon().getEmployeeId(),
 					loopDate,
 					param.getCommon().getStartTime(),
@@ -61,7 +61,8 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 					1, true, true);
 			//予定開始終了時刻の反映
 			if(param.getCommon().getStartTime() != null 
-					&& param.getCommon().getEndTime() != null) {
+					&& param.getCommon().getEndTime() != null
+					&& isScheReflect) {
 				workTimeUpdate.updateScheStartEndTime(timeReflect, dailyInfor);	
 			}
 			ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
@@ -74,7 +75,7 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 			//開始終了時刻の反映
 			if(param.getCommon().getStartTime() != null 
 					&& param.getCommon().getEndTime() != null) {
-				workTimeUpdate.updateRecordStartEndTimeReflect(timeReflect);
+				workTimeUpdate.updateRecordStartEndTimeReflect(timeReflect, dailyInfor);
 			}
 			//日別実績の勤務情報  変更
 			List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, workchangePara.getEmployeeId(), loopDate, false);

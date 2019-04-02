@@ -88,14 +88,6 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		}
 	}
 	@Override
-	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode) {
-		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
-		//開始終了時刻をクリアするかチェックする 値：０になる。		
-		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, isCheckClean, isCheckClean);
-		TimeLeavingOfDailyPerformance timeDaily = workTimeUpdate.updateRecordStartEndTimeReflect(timeData);
-		return timeDaily;
-	}
-	@Override
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, IntegrationOfDaily dailyInfor) {
 		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
 		//開始終了時刻をクリアするかチェックする 値：０になる。		
@@ -181,7 +173,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			//予定勤種の反映
 			if(dailyInfor.getScheduleInfo() == null 
 					|| dailyInfor.getScheduleInfo().getWorkTimeCode() == null
-					|| commonService.checkReflectScheWorkTimeType(absencePara, true, dailyInfor.getScheduleInfo().getWorkTimeCode().v())) {
+					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, dailyInfor.getScheduleInfo().getWorkTimeCode().v())) {
 				isRecordWorkType = true;
 				workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), true, 
 						integrationOfDaily);
@@ -194,7 +186,9 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 					integrationOfDaily);
 			//就業時間帯
 			if(param.getExcludeHolidayAtr() != 0) {
-				workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), true, integrationOfDaily);
+				if(isRecordWorkType) {
+					workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), true, integrationOfDaily);	
+				}				
 				workTimeUpdate.updateRecordWorkTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTimeCode(), false, integrationOfDaily);
 			}
 			//開始終了時刻の反映

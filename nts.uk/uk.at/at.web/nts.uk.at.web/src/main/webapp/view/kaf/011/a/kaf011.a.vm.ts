@@ -66,6 +66,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
         remainDays: KnockoutObservable<number> = ko.observable(null);
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
 
@@ -152,7 +153,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }
@@ -192,6 +192,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
+                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
             }
         }
         validateControl() {
@@ -211,7 +212,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (isRecCreate) {
                 let wkTimeCd = self.recWk().wkTimeCD();
                 if (!wkTimeCd) {
-                    $('#recTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                    $('#recTimeBtn').ntsError('set', { messageId: 'MsgB_2', messageParams: [text('KAF011_30')] });
                     isError = true;
                 }
             }
@@ -228,7 +229,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 if (isUseWkTime) {
                     let wkTimeCd = self.absWk().wkTimeCD();
                     if (!wkTimeCd) {
-                        $('#absTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                        $('#absTimeBtn').ntsError('set', { messageId: 'MsgB_2', messageParams: [text('KAF011_30')] });
                         isError = true;
                     }
                 }

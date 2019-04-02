@@ -20,7 +20,8 @@ public interface AnnualLeaveTimeRemainHistRepository {
 	 * 付与時点の残数履歴データを取得 
 	 * ORDER BY 付与日 DESC
 	 * @param sid　社員ID
+	 * @param ymd 付与処理日
 	 * @return
 	 */
-	public List<AnnualLeaveTimeRemainingHistory> findBySid(String sid);
+	public List<AnnualLeaveTimeRemainingHistory> findBySid(String sid, GeneralDate ymd);
 }

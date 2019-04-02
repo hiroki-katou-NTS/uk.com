@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +70,11 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 	public void add(AgreementTimeOfClassification agreementTimeOfClassification) {
 		this.commandProxy().insert(toEntity(agreementTimeOfClassification));
 	}
+	
+	@Override
+	public void update(AgreementTimeOfClassification agreementTimeOfClassification) { 
+		this.commandProxy().update(toEntity(agreementTimeOfClassification));
+	}
 
 	@Override
 	public List<String> findClassificationSetting(String companyId, LaborSystemtAtr laborSystemAtr) {
@@ -85,6 +90,28 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 				.setParameter("classificationCode", classificationCode)
 				.getSingle(f -> f.kmkmtAgeementTimeClassPK.basicSettingId);
 	}
+	
+	@Override
+	public Optional<AgreementTimeOfClassification> find(String companyId, LaborSystemtAtr laborSystemAtr,
+			String classificationCode) {
+		return this.queryProxy().query(FIND_CLASSIFICATION_DETAIL, KmkmtAgeementTimeClass.class)
+				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+				.setParameter("classificationCode", classificationCode).getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<AgreementTimeOfClassification> find(String companyId, List<String> classificationCode) {
+		if(classificationCode.isEmpty()){
+			return new ArrayList<>();
+		}
+		String query = "SELECT a FROM KmkmtAgeementTimeClass a WHERE a.kmkmtAgeementTimeClassPK.companyId = :companyId "
+				+ "AND a.kmkmtAgeementTimeClassPK.classificationCode in :classificationCode ";
+		
+		return this.queryProxy().query(query, KmkmtAgeementTimeClass.class)
+				.setParameter("companyId", companyId)
+				.setParameter("classificationCode", classificationCode)
+				.getList(f -> toDomain(f));
+	}
 
 	private KmkmtAgeementTimeClass toEntity(AgreementTimeOfClassification agreementTimeOfClassification) {
 		val entity = new KmkmtAgeementTimeClass();
@@ -93,7 +120,9 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 		entity.kmkmtAgeementTimeClassPK.basicSettingId = agreementTimeOfClassification.getBasicSettingId();
 		entity.kmkmtAgeementTimeClassPK.classificationCode = agreementTimeOfClassification.getClassificationCode();
 		entity.kmkmtAgeementTimeClassPK.companyId = agreementTimeOfClassification.getCompanyId();
-		entity.laborSystemAtr = new BigDecimal(agreementTimeOfClassification.getLaborSystemAtr().value);
+		entity.laborSystemAtr = agreementTimeOfClassification.getLaborSystemAtr().value;
+		entity.upperMonth = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue();
+		entity.upperMonthAverage = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonthAverage().v().intValue();
 
 		return entity;
 	}
@@ -108,7 +137,8 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 		AgreementTimeOfClassification agreementTimeOfClassification = AgreementTimeOfClassification.createJavaType(
 				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.companyId,
 				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.basicSettingId, kmkmtAgeementTimeClass.laborSystemAtr,
-				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.classificationCode);
+				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.classificationCode,
+				kmkmtAgeementTimeClass.upperMonth, kmkmtAgeementTimeClass.upperMonthAverage);
 		return agreementTimeOfClassification;
 	}
 }

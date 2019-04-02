@@ -2725,12 +2725,24 @@ module nts.uk.at.view.kmf022 {
                     }
                 });
                 this.preOtTime.subscribe((value) => {
-                    if (value) {
-                        nts.uk.ui.errors.clearAll();
+                      if (value) {
+                        $('#a7_23').ntsError('clear');
                         this.requiredA7_23.valueHasMutated();
                     }
                 });
-            }
+                this.normalOtTime.subscribe((value) => {
+                    if (value) {
+                        $('#a7_23_2').ntsError('clear');
+                        this.requiredA7_23.valueHasMutated();
+                    }
+                });
+                this.retrictPreTimeDay.subscribe((value) => {
+                    if (value) {
+                        $('#a7_23_3').ntsError('clear');
+                        this.requiredA7_23.valueHasMutated();
+                    }
+                });
+              }
         }
         class ItemA8 {
             companyId: KnockoutObservable<string>;

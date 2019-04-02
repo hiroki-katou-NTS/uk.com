@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -88,9 +89,6 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 			return domain;
 	}
 	
-
-	
-	
 	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
 			double remainDays, Integer remainMinutes, double usedPercent) {
@@ -102,6 +100,27 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		this.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
 				remainDays, remainMinutes, usedPercent);
 		
+	}
+
+	/**
+	 * 年休付与残数履歴データを年休付与残数データに変換
+	 * @param history 年休付与残数履歴データ
+	 * @return 年休付与残数データ
+	 */
+	// 2019.3.3 ADD shuichi_ishida
+	public static AnnualLeaveGrantRemainingData createFromHistory(AnnualLeaveRemainingHistory history) {
+		
+		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
+		domain.cid = history.getCid();
+		domain.annLeavID = IdentifierUtil.randomUniqueId();
+		domain.employeeId = history.getEmployeeId();
+		domain.grantDate = history.getGrantDate();
+		domain.deadline = history.getDeadline();
+		domain.expirationStatus = EnumAdaptor.valueOf(history.getExpirationStatus().value, LeaveExpirationStatus.class);
+		domain.registerType = EnumAdaptor.valueOf(history.getRegisterType().value, GrantRemainRegisterType.class);
+		domain.details = history.getDetails();
+		domain.annualLeaveConditionInfo = history.getAnnualLeaveConditionInfo();
+		return domain;
 	}
 
 	/**

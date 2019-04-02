@@ -13,7 +13,9 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+
 import nts.arc.time.GeneralDateTime;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
@@ -106,7 +108,8 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 		List<EmployeeInfoContact> result = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_EMP_INFO_CONTACT WHERE SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM BSYMT_EMP_INFO_CONTACT "
+						+ " WHERE SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
@@ -114,9 +117,13 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 				}
 				
 				List<EmployeeInfoContact> empInfoContact = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtEmpInfoContact entity= new BsymtEmpInfoContact(new BsymtEmpInfoContactPK(rec.getString("SID")),  rec.getString("CID"), rec.getString("CELL_PHONE_NO"),
-							rec.getString("MAIL_ADDRESS"), rec.getString("PHONE_MAIL_ADDRESS"),
-							rec.getString("SEAT_DIAL_IN"), rec.getString("SEAT_EXTENSION_NO"));
+					BsymtEmpInfoContact entity= new BsymtEmpInfoContact(new BsymtEmpInfoContactPK(rec.getString("SID")),  
+						rec.getString("CID"), 
+						rec.getString("CELL_PHONE_NO"),
+						rec.getString("MAIL_ADDRESS"), 
+						rec.getString("PHONE_MAIL_ADDRESS"),
+						rec.getString("SEAT_DIAL_IN"), 
+						rec.getString("SEAT_EXTENSION_NO"));
 					return toDomain(entity);
 				});
 				result.addAll(empInfoContact);

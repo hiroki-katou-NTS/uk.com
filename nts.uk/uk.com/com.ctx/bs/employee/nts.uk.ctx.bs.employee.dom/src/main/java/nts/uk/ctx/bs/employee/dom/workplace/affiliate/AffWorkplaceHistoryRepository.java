@@ -98,4 +98,13 @@ public interface AffWorkplaceHistoryRepository {
 	 * @param item
 	 */
 	void updateAll(List<DateHistoryItem> items);
+	
+	/**
+	 * sids, baseDate <= start date
+	 * @param baseDate
+	 * @param employeeIds
+	 * @return
+	 */
+	List<AffWorkplaceHistory> getWorkplaceHistoryBySidsAndDateV2(GeneralDate baseDate, List<String> employeeIds);
+
 }

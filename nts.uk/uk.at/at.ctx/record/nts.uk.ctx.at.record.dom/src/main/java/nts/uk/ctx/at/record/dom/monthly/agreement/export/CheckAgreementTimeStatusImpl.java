@@ -105,6 +105,9 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		// 36協定運用設定を取得
 		val agreementOpeSetOpt = this.agreementOpeSetRepo.find(companyId);
 		
+		// 36協定上限複数月平均時間．上限時間をチェック
+		if (sourceTime.getMaxTime().v() <= 0) return sourceTime;
+		
 		// 36協定上限複数月平均時間を取得　→　取得した件数分ループ
 		for (val averageTime : sourceTime.getAverageTimeList()) {
 			int checkTotalMinutes = averageTime.getTotalTime().v();
@@ -128,25 +131,18 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 						}
 					}
 				}
-				
-				// 平均時間を算出
-				int monthNum = averageTime.getPeriod().yearMonthsBetween().size();
-				int checkAverageMinutes = 0;
-				if (monthNum > 0) {
-					checkAverageMinutes = checkTotalMinutes / monthNum;
-				}
-				
-				// 36協定上限各月平均時間を作成
-				AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of(
-						averageTime.getPeriod(), new AttendanceTimeYear(checkTotalMinutes),
-						new AttendanceTimeMonth(checkAverageMinutes), AgreMaxTimeStatusOfMonthly.NORMAL);
-				
-				// エラーチェック
-				agreMaxAverageTime.errorCheck(sourceTime.getMaxTime());
-				
-				// 36協定上限各月平均時間を返す
-				checkedTimeList.add(agreMaxAverageTime);
 			}
+				
+			// 36協定上限各月平均時間を作成
+			AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of(
+					averageTime.getPeriod(), new AttendanceTimeYear(checkTotalMinutes),
+					AgreMaxTimeStatusOfMonthly.NORMAL);
+			
+			// エラーチェック
+			agreMaxAverageTime.errorCheck(sourceTime.getMaxTime());
+			
+			// 36協定上限各月平均時間を返す
+			checkedTimeList.add(agreMaxAverageTime);
 		}
 		
 		// 36協定上限複数月平均時間を返す

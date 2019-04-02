@@ -43,6 +43,11 @@ ko.components.register('kaf022-g', {
                     { code: 0, name: text('KAF022_139') },
                     { code: 1, name: text('KAF022_140') }
                 ]),
+                itemListG36: ko.observableArray([
+                    { code: 0, name: text('KAF022_173') },
+                    { code: 1, name: text('KAF022_175') },
+                    { code: 2, name: text('KAF022_652') }
+                ]),
                 
             };
 
@@ -90,7 +95,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG4,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td> 
                 </tr>
@@ -102,7 +107,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG6,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>               
                 </tr>`+
@@ -126,7 +131,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG10,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td> 
                 </tr>
@@ -138,7 +143,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG12,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td> 
                 </tr>
@@ -150,7 +155,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG14,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td> 
                 </tr>
@@ -174,7 +179,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG17,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>
@@ -186,7 +191,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG19,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>`+
@@ -236,7 +241,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG26,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>
@@ -292,7 +297,7 @@ ko.components.register('kaf022-g', {
                     <td class="color-header" id="g35" data-bind = "text: text('KAF022_431')"></td>
                     <td>
                         <div class="blockrow" id="g36" tabindex="3" data-bind="ntsRadioBoxGroup: {
-                            options: $gv.itemListG26,
+                            options: $gv.itemListG36,
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG36,
@@ -320,7 +325,7 @@ ko.components.register('kaf022-g', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $gv.selectedIdG40,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>

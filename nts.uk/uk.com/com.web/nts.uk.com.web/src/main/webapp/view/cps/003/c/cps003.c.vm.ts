@@ -193,6 +193,13 @@ module cps003.c.vm {
                     displayItems.push(column.key);
                 });
                 
+                data.employees.sort((emp1, emp2) => {
+                    if (_.isNil(emp1.employeeCode) && _.isNil(emp2.employeeCode)) return 0;
+                    if (_.isNil(emp1.employeeCode)) return -1;
+                    if (_.isNil(emp2.employeeCode)) return 1;
+                    return emp1.employeeCode.compareTo(emp2.employeeCode);
+                });
+                
                 _.forEach(data.employees, (d: EmployeeRowDto) => {
                     let record = new Record(d), disItems = _.cloneDeep(displayItems);
                     _.forEach(d.items, (item: ItemRowDto) => {

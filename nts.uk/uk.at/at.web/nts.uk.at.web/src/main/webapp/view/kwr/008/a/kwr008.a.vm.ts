@@ -5,10 +5,10 @@ module nts.uk.at.view.kwr008.a {
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import share = nts.uk.at.view.kwr008.share.model;
     import alertError = nts.uk.ui.dialog.alertError;
+    import error = nts.uk.ui.dialog.error;
     import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
-
             ccgcomponent: GroupOption;
             systemTypes: KnockoutObservableArray<any>;
 
@@ -86,12 +86,20 @@ module nts.uk.at.view.kwr008.a {
 
             fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
+            //A11
+            standardMonth: any;
+            
+            curentMonth: KnockoutObservable<string> = ko.observable(null);
+            
+            selectAverage: KnockoutObservable<boolean> = ko.observable(false);
+            
+            ccg001Date: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
+            
             constructor() {
                 var self = this;
 
                 // dump
                 self.selectedEmployee = ko.observableArray([]);
-
                 // initial ccg options
                 self.setDefaultCcg001Option();
 
@@ -116,11 +124,43 @@ module nts.uk.at.view.kwr008.a {
 
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
+                });
+                self.selectedOutputItem.subscribe(code => {
+                    self.checkAverage(code);
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
+                });
+                self.selectAverage.subscribe(() => {
+                    if(self.selectAverage() && self.printFormat() == 1){
+                        self.getCurentMonth();
+                    }
                 });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
+                
+                self.standardMonth = {
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                        width: "20px",
+                        textalign: "right"
+                    })),
+                    required: ko.observable(true)
+                };
+            }
+            
+            checkAverage(code) {
+                var self = this;
+                block.invisible();
+                service.checkAverage(code).done(data => {
+                    self.selectAverage(data);
+                }).always(() => {
+                    block.clear();
+                });
             }
 
             getOutItemSettingCode() {
@@ -131,7 +171,6 @@ module nts.uk.at.view.kwr008.a {
                     _.forEach(dataArr, data => {
                         outItemSettingCode.push(new share.ItemModel(data.cd, data.name));
                     });
-
                     self.outputItem(outItemSettingCode);
                     dfd.resolve();
                 });
@@ -154,11 +193,15 @@ module nts.uk.at.view.kwr008.a {
                         data.fiscalYear = moment.utc(year).get('year');
                     }
                 }
+                if(self.selectAverage() && self.printFormat() == 1){
+                    data.curentMonth = self.curentMonth();  
+                }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage = self.selectedBreakPage().toString();
                 data.printFormat = self.printFormat();
                 data.employees = [];
                 data.excludeEmp = self.excludeEmp();
+                data.baseDate = self.baseDate().format("YYYY/MM/DD");
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
                     if (emp) data.employees.push(emp);
@@ -205,14 +248,12 @@ module nts.uk.at.view.kwr008.a {
                     //reload A4_2
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
                     self.getOutItemSettingCode().done(() => {
-                        if (!resultData) {
-                            self.selectedOutputItem(null);
-                            block.clear();
-                            return;
-                        } else {
+                        if (resultData.selectedCd) {
                             self.selectedOutputItem(resultData.selectedCd);
-                            block.clear();
+                            self.selectedOutputItem.valueHasMutated();
                         }
+                        block.clear();
+                        return;
                     }).fail(err => {
                         alertError({ messageId: err.messageId }).then(function() { block.clear(); });
                         block.clear();
@@ -321,18 +362,31 @@ module nts.uk.at.view.kwr008.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        self.baseDate(moment(data.baseDate.toDateTime()));
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
-
+            
+            private getCurentMonth(): void {
+                var self = this;
+                block.invisible();
+                service.getCurentMonth().done((data) => {
+                    self.curentMonth(Number(data.toString().substring(4)));
+                }).fail(() => {
+                    error({ messageId: "Msg_1134"}).then(function() { 
+                        block.clear(); 
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            }
             /**
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
                 var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
                     self.isEmployeeCharge(role.employeeCharge);
                 });
@@ -348,8 +402,7 @@ module nts.uk.at.view.kwr008.a {
                 var restoreOutputConditionAnnualWorkSchedule;
                 self.getOutItemSettingCode().done(() => {
                     // A6
-                    restoreOutputConditionAnnualWorkSchedule
-                        = self.restoreOutputConditionAnnualWorkSchedule()
+                    restoreOutputConditionAnnualWorkSchedule = self.restoreOutputConditionAnnualWorkSchedule()
                             .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
                                 if (data) {
                                     self.selectedOutputItem(data.setItemsOutputCd);
@@ -362,6 +415,8 @@ module nts.uk.at.view.kwr008.a {
                                 if (!self.outputItem().length) {
                                     self.selectedOutputItem(null);
                                 }
+                                self.selectedOutputItem.valueHasMutated();
+                                self.printFormat.valueHasMutated();
                             });
                 });
 
@@ -387,6 +442,7 @@ module nts.uk.at.view.kwr008.a {
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
                 } else {
+                    $('.nts-input').trigger('validate');
                     $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
@@ -530,6 +586,8 @@ module nts.uk.at.view.kwr008.a {
                 breakPage: string;
                 fiscalYear: string = '';
                 printFormat: number = 0;
+                curentMonth: string = '';
+                baseDate: string = '';
                 constructor() { }
             }
         }

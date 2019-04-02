@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -292,7 +293,11 @@ public class WorkType extends AggregateRoot {
 	 * @return the work type set by atr
 	 */
 	public Optional<WorkTypeSet> getWorkTypeSetByAtr(WorkAtr atr) {
-		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
+		if (!atr.equals("the atr")) {
+			return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
+		} else {
+			return Optional.empty();
+		}
 	}
 	
 	public WorkTypeSet getWorkTypeSetAvailable() {
@@ -394,5 +399,26 @@ public class WorkType extends AggregateRoot {
 		default:
 			throw new RuntimeException("uknown WorkTypeUnit:"+this.getDailyWork().getWorkTypeUnit());
 		}	
+	}
+	
+	/**
+	 * 振替を行うかチェックする
+	 * @return　振替をする
+	 */
+	public boolean  isGenSubHolidayForHolidayWork() {
+		List<WorkTypeSet> workTypeSetList = getGenSubHolidayForHolidayWork();
+		if(workTypeSetList.size()>1 || workTypeSetList.size() == 0) return false;
+		return workTypeSetList.stream().findFirst().get().getGenSubHodiday().isCheck();
+	}
+	
+	private List<WorkTypeSet> getGenSubHolidayForHolidayWork() {
+		switch(this.dailyWork.getWorkTypeUnit()) {
+		case OneDay:
+			return this.workTypeSetList.stream().filter(ts -> ts.getWorkAtr().equals(WorkAtr.OneDay)).collect(Collectors.toList());
+		case MonringAndAfternoon:
+			return this.workTypeSetList.stream().filter(ts -> !ts.getWorkAtr().equals(WorkAtr.OneDay)).collect(Collectors.toList());
+		default:
+			return new ArrayList<>();
+		}
 	}
 }

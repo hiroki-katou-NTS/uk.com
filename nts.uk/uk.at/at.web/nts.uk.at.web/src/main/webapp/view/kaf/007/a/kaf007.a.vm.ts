@@ -145,8 +145,6 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
                 //Focus process
                 self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
-                //フォーカス制御
-                self.changeFocus('#singleDate');
                 //phải để subscribe ở đây khi change multiDate focus mới ăn
                 self.registerEvent();
                
@@ -440,7 +438,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string) {
             let self = this;
             date = moment(date).format(self.dateFormat);
-            self.kaf000_a.getAppDataDate(2, date, false, self.employeeID, null);
+            self.kaf000_a.getAppDataDate(2, date, false, self.employeeID, null).done((data)=>{
+                if(!self.prePostDisp()){
+                    self.appWorkChange().application().prePostAtr(data.defaultPrePostAtr);       
+                }         
+            });
         }
         /**
          * フォーカス制御

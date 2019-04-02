@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.standardtime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -24,7 +23,13 @@ public class KmkmtAgeementTimeCompany extends UkJpaEntity implements Serializabl
 	public KmkmtAgeementTimeCompanyPK kmkmtAgeementTimeCompanyPK;
 
 	@Column(name = "LABOR_SYSTEM_ATR")
-	public BigDecimal laborSystemAtr;
+	public int laborSystemAtr;
+	
+	@Column(name = "UPPER_MONTH")
+	public int upperMonth;
+	
+	@Column(name = "UPPER_MONTH_AVERAGE")
+	public int upperMonthAverage;
 
 	@Override
 	protected Object getKey() {

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -32,10 +32,22 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		return this.queryProxy().query(FIND, KmkmtAgeementTimeCompany.class).setParameter("companyId", companyId)
 				.setParameter("laborSystemAtr", laborSystemAtr.value).getSingle(f -> toDomain(f));
 	}
+	
+	@Override
+	public List<AgreementTimeOfCompany> find(String companyId) {
+		String query = "SELECT a FROM KmkmtAgeementTimeCompany a WHERE a.kmkmtAgeementTimeCompanyPK.companyId = :companyId ";
+		
+		return this.queryProxy().query(query, KmkmtAgeementTimeCompany.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
+	}
 
 	@Override
 	public void add(AgreementTimeOfCompany agreementTimeOfCompany) {
 		this.commandProxy().insert(toEntity(agreementTimeOfCompany));
+	}
+	
+	@Override
+	public void update(AgreementTimeOfCompany agreementTimeOfCompany) {
+		this.commandProxy().update(toEntity(agreementTimeOfCompany));
 	}
 
 	private KmkmtAgeementTimeCompany toEntity(AgreementTimeOfCompany agreementTimeOfCompany) {
@@ -44,7 +56,9 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		entity.kmkmtAgeementTimeCompanyPK = new KmkmtAgeementTimeCompanyPK();
 		entity.kmkmtAgeementTimeCompanyPK.companyId = agreementTimeOfCompany.getCompanyId();
 		entity.kmkmtAgeementTimeCompanyPK.basicSettingId = agreementTimeOfCompany.getBasicSettingId();
-		entity.laborSystemAtr = new BigDecimal(agreementTimeOfCompany.getLaborSystemAtr().value);
+		entity.laborSystemAtr = agreementTimeOfCompany.getLaborSystemAtr().value;
+		entity.upperMonth = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+		entity.upperMonthAverage = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
@@ -53,7 +67,7 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 		AgreementTimeOfCompany agreementTimeOfCompany = AgreementTimeOfCompany.createFromJavaType(
 				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.companyId,
 				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.basicSettingId,
-				kmkmtAgeementTimeCompany.laborSystemAtr);
+				kmkmtAgeementTimeCompany.laborSystemAtr, kmkmtAgeementTimeCompany.upperMonth, kmkmtAgeementTimeCompany.upperMonthAverage);
 		return agreementTimeOfCompany;
 	}
 

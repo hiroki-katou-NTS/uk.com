@@ -20,9 +20,9 @@
 }
 
 .tabpanel-1-contents-area-left {
-	width: 450px;
+	width: 440px;
 	margin-left: 40px;
-	margin-top: 20px;
+	margin-top: 17px;
 	float: left;
 	clean: right;
 }
@@ -56,9 +56,27 @@
 }
 
 .lbl-title-employeer-name {
-	margin-bottom: 30px !important;
+	margin-bottom: 15px !important;
 }
 
 .lbl-title-employeer-name>div {
 	margin-right: 20px;
+}
+
+.mt10 {
+	margin-top: 10px
+}
+
+.upperMonth{
+	margin-left: 20px;
+	margin-bottom: 10px
+}
+
+.upperMonth *{
+	vertical-align: middle;
+}
+
+#func-notifier-errors {
+	top: 140px !important;
+	left: 125px !important;
 }

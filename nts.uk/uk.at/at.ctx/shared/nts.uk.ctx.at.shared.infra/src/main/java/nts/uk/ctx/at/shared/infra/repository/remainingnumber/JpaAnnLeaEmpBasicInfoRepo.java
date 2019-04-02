@@ -3,11 +3,10 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -191,4 +190,18 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 	}
+
+	public List<AnnualLeaveEmpBasicInfo> getList(List<String> employeeIds) {
+		if (employeeIds.isEmpty())
+			return Collections.emptyList();
+		String query = "SELECT a FROM KrcmtAnnLeaBasicInfo a WHERE a.sid IN :sids";
+		List<AnnualLeaveEmpBasicInfo> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			result.addAll(this.queryProxy().query(query, KrcmtAnnLeaBasicInfo.class).setParameter("sids", subIdList)
+					.getList(ent -> AnnualLeaveEmpBasicInfo.createFromJavaType(ent.sid, ent.workDaysPerYear,
+							ent.workDaysBeforeIntro, ent.grantTableCode, ent.grantStandardDate)));
+		});
+		return result;
+	}
+
 }

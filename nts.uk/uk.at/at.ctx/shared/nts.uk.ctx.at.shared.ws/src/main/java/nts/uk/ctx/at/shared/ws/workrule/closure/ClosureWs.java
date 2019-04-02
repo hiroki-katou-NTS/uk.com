@@ -229,6 +229,12 @@ public class ClosureWs {
 		dto.setAfterClosureDate(afterClosureDate);
 		return dto;
 	}
+	
+	@POST
+	@Path("find_by_empid")
+	public nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDto findClosureByEmployeeId() {
+		return this.finder.findClosureByEmployeeId();
+	}
 
 	@POST
 	@Path("findCurrentClosure")
@@ -377,4 +383,6 @@ public class ClosureWs {
 		}
 		return closure.getClosureId().value;
 	}
+	
+	
 }

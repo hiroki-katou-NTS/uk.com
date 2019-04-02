@@ -10,6 +10,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.system.ServerSystemProperties;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,7 +38,7 @@ public class ViewContext extends UIComponentBase {
 
 	/**
 	 * Render beginning of component
-	 *
+	 * 
 	 * @param context
 	 *            FacesContext
 	 * @throws IOException
@@ -44,11 +47,11 @@ public class ViewContext extends UIComponentBase {
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 
-		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest(); 
 		String requestedPath = request.getServletPath();
 		String queryString = request.getQueryString();
 		String applicationContextPath = context.getExternalContext().getApplicationContextPath();
-
+		
 		ResponseWriter rw = context.getResponseWriter();
 		rw.write("<script type=\"text/javascript\">window.__viewContext = {");
 
@@ -59,21 +62,21 @@ public class ViewContext extends UIComponentBase {
 		rw.write(",");
 		writeLoginPersonInfo(rw);
 		rw.write(",");
-
+		
 		rw.write("};");
 		rw.write("__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};");
 
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
 		rw.write("</script>");
-
+		
 		rw.write(I18NResourcesWebService.getHtmlToLoadResources());
 
 	}
-
+	
 	private void writeProgramInfo (String requestedPath, String queryString, ResponseWriter rw, String applicationContextPath) throws IOException {
 		WebAppId webApi = Arrays.asList(WebAppId.values()).stream()
 				.filter(w -> applicationContextPath.indexOf(w.name) >= 0).findFirst().orElse(WebAppId.COM);
-
+		
 		StringBuilder builder = new StringBuilder();
 		ProgramsManager.find(webApi, requestedPath).ifPresent(pr -> {
 			builder.append("webapi: " + formatValue(pr.getAppId().name));
@@ -86,25 +89,26 @@ public class ViewContext extends UIComponentBase {
 			}
 		});
 		
-		//writeOperationSetting(builder);
+		writeOperationSetting(builder);
 
 		if(builder.length() > 0){
 			builder.append(", ");
 		}
-
+		
 		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode() + ",");
-
+		
 		rw.write("program: {" + builder.toString() + "}");
 	}
-
+	
 	private String formatValue(String value){
 		if(value == null){
 			return null;
 		}
-
-		return VALUE_FORMAT.replace("{0}", value);
+		
+		String escapeMsg = StringEscapeUtils.escapeEcmaScript(value);
+		return VALUE_FORMAT.replace("{0}", escapeMsg);
 	}
-
+	
 	private void writeOperationSetting(StringBuilder builder) {
 		SystemOperationSetting operationSetting = CDI.current().select(SystemOperationSettingAdapter.class).get().getSetting();
 		if(builder.length() > 0){
@@ -113,11 +117,12 @@ public class ViewContext extends UIComponentBase {
 		builder.append("operationSetting: { ");
 		builder.append("mode: " + operationSetting.getMode().value);
 		builder.append(", type: " + operationSetting.getType().value);
-		builder.append(", message: " + formatValue(operationSetting.getMessage()));
+		builder.append(", message: " + formatValue(operationSetting.getMessage() == null 
+					? null : operationSetting.getMessage().replaceAll("\\r", "").replaceAll("\\n", "")));
 		builder.append(", state: " + operationSetting.getState().value);
 		builder.append("} ");
 	}
-
+	
 	private void writeLoginPersonInfo (ResponseWriter rw) throws IOException {
 		LoginUserContext userInfo = AppContexts.user();
 		StringBuilder builder = new StringBuilder();
@@ -131,10 +136,10 @@ public class ViewContext extends UIComponentBase {
 		writeSelectedLanguage(userInfo.language(), builder);
 		writeRole(userInfo.roles(), builder);
 //		}
-
+		
 		rw.write("user: {" + builder.toString() + "}");
 	}
-
+	
 	private void writeSelectedLanguage (SelectedLanguage language, StringBuilder builder) {
 		builder.append(", selectedLanguage: { ");
 		if(language != null){
@@ -143,7 +148,7 @@ public class ViewContext extends UIComponentBase {
 		}
 		builder.append(" }, ");
 	}
-
+	
 	private void writeRole (LoginUserRoles role, StringBuilder builder) {
 		builder.append("role: { ");
 		if(role != null){

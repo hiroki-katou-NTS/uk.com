@@ -406,6 +406,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
+
 		List<EmployeeDataMngInfo> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
@@ -434,6 +435,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				});
 				
 				resultList.addAll(subResults);
+
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}

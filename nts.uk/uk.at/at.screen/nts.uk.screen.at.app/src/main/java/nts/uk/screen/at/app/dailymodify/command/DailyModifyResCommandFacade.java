@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Co
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
@@ -141,6 +142,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -388,6 +392,7 @@ public class DailyModifyResCommandFacade {
 			dataResultAfterIU.setErrorMap(convertErrorToType(lstResultReturnDailyError, resultErrorMonth));
 			dataResultAfterIU.setMessageAlert("Msg_1489");
 			dataResultAfterIU.setErrorAllSidDate(true);
+			dataResultAfterIU.setShowErrorDialog(dataParent.getShowDialogError());
 			return dataResultAfterIU;
 		}
 		
@@ -409,6 +414,15 @@ public class DailyModifyResCommandFacade {
 			if (dataParent.getSpr() != null) {
 				processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
 						dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+				dailyEdits.stream()
+						.filter(x -> x.getDate().equals(dataParent.getSpr().getDate())
+								&& x.getEmployeeId().equals(dataParent.getSpr().getEmployeeId()))
+						.map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).forEach(d -> {
+							// 任意項目更新
+							d.getAnyItemValue().ifPresent(ai -> {
+								anyItemValueOfDailyRepo.persistAndUpdate(ai);
+							});
+						});
 			}
 			dataResultAfterIU.setShowErrorDialog(null);
 
@@ -456,6 +470,7 @@ public class DailyModifyResCommandFacade {
 							dataResultAfterIU.setErrorMap(convertErrorToType(lstResultReturnDailyError, resultErrorMonth));
 							dataResultAfterIU.setMessageAlert("Msg_1489");
 							dataResultAfterIU.setErrorAllSidDate(true);
+							dataResultAfterIU.setShowErrorDialog(dataParent.getShowDialogError());
 							return dataResultAfterIU;
 						}
 					}
@@ -482,6 +497,7 @@ public class DailyModifyResCommandFacade {
 				if (dataParent.getSpr() != null && !lstResultReturnDailyError.containsKey(Pair.of(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate()))) {
 					processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
 							dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+					
 				}
 
 				// 暫定データを登録する - Register provisional data
@@ -544,13 +560,14 @@ public class DailyModifyResCommandFacade {
 		dataResultAfterIU.setErrorMap(convertErrorToType(lstResultReturnDailyError, resultErrorMonth));
 		
 		//登録確認メッセージ
-		if((dataResultAfterIU.getErrorMap().isEmpty() && dataResultAfterIU.getErrorMap().values().isEmpty() && !hasErrorRow)) {
+		if((dataResultAfterIU.getErrorMap().isEmpty() && dataResultAfterIU.getErrorMap().values().isEmpty() && !hasErrorRow 
+				                                      && (dataResultAfterIU.getFlexShortage() == null || !dataResultAfterIU.getFlexShortage().isError()))) {
 			dataResultAfterIU.setMessageAlert("Msg_15");
 		}else {
 			Map<Integer, List<DPItemValue>> errorMapTemp = dataResultAfterIU.getErrorMap().entrySet().stream()
-					.filter(x -> x.getKey() != TypeError.CONTINUOUS.value)
+					.filter(x -> x.getKey() != TypeError.CONTINUOUS.value && x.getKey() != TypeError.RELEASE_CHECKBOX.value)
 					.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
-			if (errorMapTemp.values().isEmpty()) {
+			if (errorMapTemp.values().isEmpty() && (dataResultAfterIU.getFlexShortage() == null || !dataResultAfterIU.getFlexShortage().isError())) {
 				dataResultAfterIU.setMessageAlert("Msg_15");
 			} else {
 				dataResultAfterIU.setMessageAlert("Msg_1489");
