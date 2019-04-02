@@ -27,8 +27,10 @@ public class CheckExistHolidayGrant {
 		
 		if(!periodGrantDate.isPresent())
 			return false;
+		//EA修正履歴NO.3255
+		GeneralDate endDate = periodGrantDate.get().end().addDays(1);	
 		//INPUT．指定期間に次回年休付与日が含まれているか確認
-		if(periodGrantDate.get().end().afterOrEquals(period.getStartDate()) && periodGrantDate.get().end().beforeOrEquals(period.getEndDate())) {
+		if(endDate.afterOrEquals(period.getStartDate()) && endDate.beforeOrEquals(period.getEndDate())) {
 			return true;
 		}
 		return false;

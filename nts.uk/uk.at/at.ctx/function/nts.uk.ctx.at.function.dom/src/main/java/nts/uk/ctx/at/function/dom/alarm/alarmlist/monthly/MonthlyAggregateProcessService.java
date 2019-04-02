@@ -1594,7 +1594,10 @@ public class MonthlyAggregateProcessService {
 	}
 	
 	private String yearmonthToString(YearMonth yearMonth){
-		return GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).toString("yyyy/MM/dd");
+		if(yearMonth.month()<10){
+			return  String.valueOf(yearMonth.year())+"/0"+  String.valueOf(yearMonth.month());
+		}
+		return String.valueOf(yearMonth.year())+"/"+  String.valueOf(yearMonth.month());
 	}
 	
 	private CompareOperatorText convertCompareType(int compareOperator) {

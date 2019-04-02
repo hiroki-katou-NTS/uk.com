@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：年休使用義務
@@ -46,15 +48,32 @@ public interface ObligedAnnLeaUseService {
 	 */
 	boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+
+	/**
+	 * 年休使用義務日数の按分しない場合の期間を取得
+	 * @param criteria 基準日
+	 * @param obligedAnnualLeaveUse 年休使用義務日数
+	 * @return 期間
+	 */
+	Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+	
+	/**
+	 * 年休使用義務日数の按分しない期間の付与日数を取得
+	 * @param criteria 基準日
+	 * @param obligedAnnualLeaveUse 年休使用義務日数
+	 * @return 年休付与残数データ
+	 */
+	Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria,
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
 	 * 付与期間と重複する付与期間を持つ残数履歴データを取得
-	 * @param distributeAtr 期間按分使用区分
 	 * @param criteria 基準日
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休付与情報Output
 	 */
-	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(boolean distributeAtr, GeneralDate criteria,
+	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
