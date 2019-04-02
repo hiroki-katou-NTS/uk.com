@@ -30,7 +30,7 @@ public class WorkScheduleQueryData {
 	List<WorkplaceConfigInfo> lstWorkplaceConfigInfo;
 	
 	/** The date period. */
-	List<GeneralDate> datePeriod;
+	List<GeneralDate> datePeriod = new ArrayList<>();
 	
 	/** The lst work type. */
 	List<WorkType> lstWorkType;

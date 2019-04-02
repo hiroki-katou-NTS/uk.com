@@ -17,7 +17,7 @@ public class ErrorAlarmCheck {
 	 * @return
 	 */
 	public boolean checkErrorAlarmCheck(AnnualLeaveUsedDayNumber ligedUseDays,AnnualLeaveUsedDayNumber ligedAnnLeaUseService) {
-		if(ligedAnnLeaUseService.v() <ligedUseDays.v())
+		if(ligedAnnLeaUseService.v() < ligedUseDays.v())
 			return true;
 		return false;
 	}

@@ -96,6 +96,7 @@ import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleCondition;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleGenerator;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
+import nts.uk.file.at.app.export.schedule.FileService;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.file.at.infra.schedule.daily.TimeDurationFormatExtend;
 import nts.uk.file.at.infra.schedule.daily.WorkScheOutputConstants;
@@ -158,6 +159,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	@Inject
 	private ManagedParallelWithContext parallel;
+	
+	@Inject
+	private FileService service;
 
 	/** The Constant TEMPLATE_DATE. */
 	private static final String TEMPLATE_DATE= "report/KWR006_Date.xlsx";
@@ -697,11 +701,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		
 		List<MonthlyAttendanceItemValueResult> itemValues;
+		// 帳票用の基準日取得
+		int closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
+
+		Optional<GeneralDate> baseDate = service.getProcessingYM(companyId, closureId);
+		if (!baseDate.isPresent()) {
+			//Uchida bảo là lỗi hệ thống _ ThànhPV
+			throw new BusinessException("");
+		}
+		Map<String, YearMonthPeriod> employeePeriod = service.getAffiliationPeriod(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), query.getEndYearMonth()), baseDate.get());
 		{
+			
 			List<MonthlyAttendanceItemValueResult> itemValuesSync = Collections.synchronizedList(new ArrayList<>());
-			this.parallel.forEach(query.getEmployeeId(), subEmployeeIds -> {
+			this.parallel.forEach(employeePeriod.entrySet(), subEmployee -> {
 				List<MonthlyAttendanceItemValueResult> subValues = attendanceItemValueService.getMonthlyValueOf(
-						subEmployeeIds, new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
+						subEmployee.getKey(), subEmployee.getValue(), listAttendanceId);
 				itemValuesSync.addAll(subValues);
 			});
 			
@@ -1412,6 +1426,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// Root workplace won't have employee
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
 			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
+			int firstWpl = 0;
 			while (iteratorEmployee.hasNext()) {
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
 				
@@ -1430,8 +1445,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 					rowPageTracker.resetRemainingRow();
 				}
-
-                currentRow = this.printWorkplace(cells, currentRow, templateSheetCollection, sheetInfo, workplaceReportData, condition, rowPageTracker);
+				
+				if ((condition.isShowWorkplace() && firstWpl == 0) || (condition.isShowWorkplace() && condition.isShowPersonal())) {
+					currentRow = this.printWorkplace(cells, currentRow, templateSheetCollection, sheetInfo, workplaceReportData, condition, rowPageTracker);
+					firstWpl ++;
+				}
 				
 				// A3_2
 //				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
