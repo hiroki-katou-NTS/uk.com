@@ -43,7 +43,7 @@ document.addEventListener("click", function (e) {
 
                                 let scrollTop = window.scrollY,
                                     scrollHeight = window.innerHeight,
-                                    offsetTop = dropdown.getBoundingClientRect().top,
+                                    offsetTop = parent.offsetTop + parent.clientHeight,
                                     offsetHeight = dropdown.offsetHeight;
 
                                 if (scrollTop + scrollHeight <= offsetTop + offsetHeight) {
@@ -67,6 +67,12 @@ document.addEventListener("click", function (e) {
             [].slice.call(document.querySelectorAll('.dropdown-menu'))
                 .forEach((element: HTMLElement) => {
                     dom.removeClass(element, 'show');
+
+                    let parent = element.parentNode as HTMLElement;
+
+                    if (parent) {
+                        dom.removeClass(parent, 'dropdown dropup');
+                    }
                 });
         }
     })(e);
@@ -107,4 +113,48 @@ document.addEventListener("click", function (e) {
     })(e);
 
     // other event
+    // checkbox & radio
+    //btn-group-toggle
+    ((evt: MouseEvent) => {
+        let input = evt.target as HTMLElement,
+            group = input.closest('.btn-group-toggle') as HTMLElement;
+
+        if (group && input.tagName === 'INPUT' && ['radio', 'checkbox'].indexOf(dom.getAttr(input, 'type')) > -1) {
+            [].slice.call(group.querySelectorAll('input'))
+                .forEach((element: HTMLInputElement) => {
+                    let btn = element.closest('.btn') as HTMLElement;
+
+                    if (btn) {
+                        if (element.checked) {
+                            dom.addClass(btn, 'active');
+                        } else {
+                            dom.removeClass(btn, 'active');
+                        }
+                    }
+                });
+        }
+    })(e);
 }, false);
+
+window.addEventListener('scroll', evt => {
+    // toggle dropdown/dropup menu
+    [].slice.call(document.querySelectorAll('.dropdown-menu.show'))
+        .forEach((dropdown: HTMLElement) => {
+            let parent = dropdown.closest('.dropdown, .dropup') as HTMLElement;
+            if (parent) {
+
+                let scrollTop = window.scrollY,
+                    scrollHeight = window.innerHeight,
+                    offsetTop = parent.offsetTop,
+                    offsetHeight = dropdown.offsetHeight;
+
+                if (scrollTop + scrollHeight <= offsetTop + offsetHeight + 35) {
+                    dom.addClass(parent, 'dropup');
+                    dom.removeClass(parent, 'dropdown');
+                } else {
+                    dom.addClass(parent, 'dropdown');
+                    dom.removeClass(parent, 'dropup');
+                }
+            }
+        });
+});
