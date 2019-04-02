@@ -18,6 +18,13 @@
                         {{radio.id}} - {{radio.name}}
                     </nts-radio>
                     <pre>Value selected: {{checked}}</pre>
+
+                    <nts-checkbox
+                        v-model="checked"
+                        v-bind:value="1"
+                        v-bind:disabled="false">
+                        Single checkbox
+                    </nts-checkbox>
                 </div>
             </div>
 

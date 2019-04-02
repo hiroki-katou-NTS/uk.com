@@ -1,3 +1,4 @@
+import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { component, Prop, Emit, Model } from '@app/core/component';
 
@@ -5,7 +6,7 @@ import { component, Prop, Emit, Model } from '@app/core/component';
 let select = () => component({
     template: `<div class="form-check">
         <label class="form-check-label">
-            <input :name="name" :type="type" :checked="checked" :disabled="disabled" v-on:click="onClick()" class="form-check-input" />
+            <input ref="input" :name="name" :type="type" :checked="checked" :disabled="disabled" v-on:click="onClick()" class="form-check-input" />
             <span><slot /></span>
         </label>
     </div>`
@@ -42,16 +43,24 @@ class CheckBoxComponent extends SelectBoxComponent {
     type: string = 'checkbox';
 
     get checked() {
-        return this.selected.includes(this.value);
+        return obj.isArray(this.selected) ? this.selected.indexOf(this.value) > -1 : this.selected === this.value;
     }
 
     onClick() {
         let self = this;
 
-        if (self.selected.includes(self.value)) {
-            self.selected.splice(self.selected.indexOf(self.value), 1)
+        if (obj.isArray(this.selected)) {
+            if (self.selected.includes(self.value)) {
+                self.selected.splice(self.selected.indexOf(self.value), 1)
+            } else {
+                self.selected.push(self.value)
+            }
         } else {
-            self.selected.push(self.value)
+            if ((<HTMLInputElement>this.$refs.input).checked) {
+                this.$emit('input', this.value);
+            } else {
+                this.$emit('input', undefined);
+            }
         }
     }
 }

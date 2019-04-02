@@ -73,7 +73,7 @@ export class FormCheckComponent extends Vue {
 | Prop | Sử dụng | Kiểu dữ liệu | Diễn giải |
 | -----|---------|--------------|-----------|
 | `name?` | `v-bind:name=""` hoặc `:name=""` | `string` | Thuộc tính nhóm các component cùng loại lại với nhau |
-| `model`| `v-model=""` | `any` hoặc `any[]` | Thuộc tính binding model chứa dữ liệu khi `radio` hoặc `checkbox` xảy ra sự kiện `input` hoặc `change` <br /> Chú ý: model của `nts-radio` là kiểu `any`, của `nts-checkbox` là `any[]` |
+| `model`| `v-model=""` | `any` hoặc `any[]` | Thuộc tính binding model chứa dữ liệu khi `radio` hoặc `checkbox` xảy ra sự kiện `input` hoặc `change` <br /> Chú ý: model của `nts-radio` là kiểu `any`, của `nts-checkbox` là `any[]` (hoặc `any` nếu chỉ sử dụng 1 checkbox input) |
 | `value`| `v-bind:value=""` hoặc `:value=""` | `any` | Thuộc tính binding giá trị để component gán giá trị cho `v-model` khi xảy ra sự kiện `input` hoặc `change' |
 | `disabled?` | `v-bind:disabled=""` hoặc `:disabled=""` | `boolean` | Thuộc tính enable hay disable `radio` hoặc `checkbox` tuỳ thuộc vào giá trị được binding là `false` hay `true` |
 | `class?` | `v-bind:class=""` hoặc `:class=""` | `string` | Thuộc tính bind class cho container của `nts-radio` hoặc `nts-checkbox`. <br /> VD: Muốn các `radio` hoặc `checkbox` hiển thị theo hàng ngang thay vì hàng dọc thì sử dụng: `v-bind:class="'form-check-inline'"` |
