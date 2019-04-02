@@ -14,14 +14,18 @@ import { NavMenu, SideMenu } from "@app/services";
                 required: true
             },
             employeeCode: {
-                required: true
+                required: true,
+                maxLength: 12,
+                constraint: 'EmployeeCode',
+                anyHalf: true
             },
             password: {
                 required: true
             }
         }
     },
-    name: 'login'
+    name: 'login',
+    constraints: [ 'nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode' ]
 })
 export class LoginComponent extends Vue {
     
@@ -37,7 +41,7 @@ export class LoginComponent extends Vue {
         comp: '',
         employeeCode: '',
         password: '',
-        autoLogin: [false],
+        autoLogin: [true],
         ver: ''
     }
     
@@ -65,13 +69,15 @@ export class LoginComponent extends Vue {
                         self.authenticateContract();
                     }
                 }
+            }).catch((res) => {
+
             });
         }
         if(!_.isEmpty(self.params.companies)){
             self.companies = self.params.companies;
             self.checkEmpCodeAndCompCode();
         } else {
-            this.$http.post(servicePath.getAllCompany).then((response: { data: Array<ICompany>; }) => {
+            this.$http.post(servicePath.getAllCompany + self.contractCode).then((response: { data: Array<ICompany>; }) => {
                 self.companies = response.data;
                 self.checkEmpCodeAndCompCode();
             });
@@ -86,25 +92,36 @@ export class LoginComponent extends Vue {
     }
 
     checkEmpCodeAndCompCode(){
-        let self = this;
-        if(!_.isNil(self.params.companyCode)){
-            self.model.comp = self.params.companyCode;
-        } else {
-            characteristics.restore("companyCode").then((compCode: any) => {
-                if (!_.isNil(compCode)) {
-                    self.model.comp = compCode;
-                }
-            });
-        }
-        if(!_.isNil(self.params.employeeCode)){
-            self.model.employeeCode = self.params.employeeCode;
-        } else {
-            characteristics.restore("employeeCode").then((empCode: any) => {
-                if (!_.isNil(empCode)) {
-                    self.model.employeeCode = empCode;
-                }
-            });
-        }
+        let self = this, companyCode = '', employeeCode = '';
+        Promise.resolve().then(() => {
+            if(!_.isNil(self.params.employeeCode)){
+                return Promise.resolve(self.params.employeeCode);
+            } else {
+                return characteristics.restore("employeeCode");
+            }
+        }).then((empCode: string) => {
+            if (!_.isNil(empCode)) {
+                employeeCode = empCode;
+            }
+        }).then(() => {
+            if(!_.isNil(self.params.companyCode)){
+                return Promise.resolve(self.params.companyCode);
+            } else {
+                return characteristics.restore("companyCode");
+            }
+        }).then((compCode: string) => {
+            if (!_.isNil(compCode)) {
+                companyCode = compCode;
+            }
+        }).then(() => {
+            if(_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))){
+                self.model.comp = self.companies[0].companyCode;
+                self.model.employeeCode = '';
+            } else {
+                self.model.comp = companyCode;
+                self.model.employeeCode = employeeCode;
+            }
+        })
     }
 
     destroyed() {
@@ -119,11 +136,11 @@ export class LoginComponent extends Vue {
         if(!self.$valid){
             return;
         }
-        submitData.companyCode = _.escape(self.model.comp);
-        submitData.employeeCode = _.escape(self.model.employeeCode);
-        submitData.password = _.escape(self.model.password);
-        submitData.contractCode = _.escape(self.contractCode);
-        submitData.contractPassword = _.escape(self.contractPass);
+        submitData.companyCode = self.model.comp;
+        submitData.employeeCode = self.model.employeeCode;
+        submitData.password = self.model.password;
+        submitData.contractCode = self.contractCode;
+        submitData.contractPassword = self.contractPass;
         self.$mask("show");
         this.$http.post(servicePath.submitLogin, submitData).then((res: { data: CheckChangePass}) => {
             if (res.data.showContract) {
@@ -133,7 +150,7 @@ export class LoginComponent extends Vue {
                 //check MsgError
                 if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
                     if (res.data.showChangePass) {
-                        self.$goto({ name: 'changepass' });
+                        self.$goto({ name: 'changepass' }, () => this.$destroy());
                     } else {
                         self.model.password = "";
                         /** TODO: wait for dialog error method */
@@ -143,35 +160,35 @@ export class LoginComponent extends Vue {
                     self.$mask("hide");
                 } else {
                     characteristics.remove("companyCode")
-                        .then(() => characteristics.save("companyCode", _.escape(self.model.comp)))
+                        .then(() => characteristics.save("companyCode", self.model.comp))
                         .then(() => characteristics.remove("employeeCode"))
                         .then(() => {
-                            if (self.model.autoLogin) {
-                                characteristics.save("employeeCode", _.escape(self.model.employeeCode));
+                            if (self.model.autoLogin[0] === true) {
+                                characteristics.save("employeeCode", self.model.employeeCode);
                             }
                         }).then(() => self.toHomePage());
                 }
             }
-        }).catch((res: any) => {
+        }).catch((res: { data: any}) => {
             //Return Dialog Error
             self.$mask("hide");
-            if (!_.isEqual(res.message, "can not found message id")) {
+            if (!_.isEqual(res.data.message, "can not found message id")) {
                 /** TODO: wait for dialog error method */
-                self.$toastError(res.messageId);
+                self.$toastError(res.data.messageId);
                 // self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
-                self.$toastError(res.messageId);
+                self.$toastError(res.data.messageId);
                 // self.$dialogError({ messageId: res.messageId });
             }
         });
     }
 
     toHomePage(){
-        this.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+        this.$goto({ name: 'HomeComponent', params: { screen: 'login' } }, () => this.$destroy());
     }
 
     authenticateContract(){
-        this.$goto({ name: 'contractAuthentication' });
+        this.$goto({ name: 'contractAuthentication' }, () => this.$destroy());
     }
 
     forgetPass(){
@@ -181,7 +198,7 @@ export class LoginComponent extends Vue {
             companyCode: this.model.comp,
             employeeCode: this.model.employeeCode,
             companies: this.companies
-        }});
+        }}, () => this.$destroy());
 
     }
 }
@@ -189,7 +206,7 @@ export class LoginComponent extends Vue {
 const servicePath = {
     checkContract: "ctx/sys/gateway/login/checkcontract",
     submitLogin: "ctx/sys/gateway/login/submit/mobile",
-    getAllCompany: "ctx/sys/gateway/login/getcompany",
+    getAllCompany: "ctx/sys/gateway/login/getcompany/",
     ver: "ctx/sys/gateway/login/build_info_time"
 }
 

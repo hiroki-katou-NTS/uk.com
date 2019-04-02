@@ -130,16 +130,23 @@ const WEB_APP_NAME = {
 
         xhr.onload = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
+                let res = { data: xhr.response, headers: parseHeaders(xhr) };
                 try {
-                    resolve({ data: JSON.parse(xhr.response), headers: parseHeaders(xhr) });
+                    res = { data: JSON.parse(xhr.response), headers: parseHeaders(xhr) };
                 }
                 catch (e) {
-                    resolve({ data: xhr.response, headers: parseHeaders(xhr) });
+                    console.log(e);
+                }
+                if(res.data.businessException){
+                    reject(res);
+                } else {
+                    resolve(res);
                 }
 
             } else if(xhr.readyState === 4 && xhr.status === 204) {
                 resolve({ data: {}, headers: parseHeaders(xhr) });
             } else {
+                /** TODO: show error dialog */
                 /*$modal({}, {
                     message: xhr.response
                 }, {

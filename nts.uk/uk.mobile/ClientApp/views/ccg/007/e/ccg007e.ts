@@ -104,7 +104,7 @@ export class ResetPassComponent extends Vue {
         //submitChangePass
         self.$http.post(servicePath.changePass, command).then(() => {
             return {
-                loginId: _.padEnd(_.escape(self.model.loginId), 12, ' '),
+                loginId: _.padEnd(self.model.loginId, 12, ' '),
                 password: self.model.newPassword,
                 contractCode: self.model.contractCode,
                 contractPassword: null
@@ -112,7 +112,7 @@ export class ResetPassComponent extends Vue {
         }).then((loginData) => self.$http.post(servicePath.submitLogin, loginData))
         .then((messError: any) => {
             //Remove LoginInfo
-            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } }, () => this.$destroy());
         }).catch((res) => {
             //Return Dialog Error
             self.$mask("hide");

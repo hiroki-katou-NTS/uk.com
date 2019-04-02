@@ -167,6 +167,17 @@ public class LoginWs extends WebService {
 	public List<CompanyInformationImport> getAllCompany() {
 		return companyInformationFinder.findAll();
 	}
+
+	/**
+	 * Gets the all company.
+	 *
+	 * @return the all company
+	 */
+	@POST
+	@Path("getcompany/{contractCode}")
+	public List<CompanyInformationImport> getAllCompany(@PathParam("contractCode") String contractCode) {
+		return companyInformationFinder.findAll(contractCode);
+	}
 	
 	/**
 	 * Gets the company infor by code.

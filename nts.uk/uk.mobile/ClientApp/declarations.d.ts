@@ -19,6 +19,7 @@ declare interface IRule {
     email?: boolean;
     alpha?: boolean;
     alphaNum?: boolean;
+    allHalf?: boolean;
     numeric?: boolean;
     integer?: boolean;
     decimal?: boolean;

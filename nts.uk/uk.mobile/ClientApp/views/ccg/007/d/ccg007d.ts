@@ -60,7 +60,7 @@ export class ForgetPassComponent extends Vue {
                 self.employeeCode = self.params.employeeCode;
             }
         });
-        
+
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -78,16 +78,16 @@ export class ForgetPassComponent extends Vue {
         if(!self.$valid){
             return;
         }
-        submitData.companyCode = _.escape(self.companyCode);
-        submitData.employeeCode = _.escape(self.employeeCode);
-        submitData.contractCode = _.escape(self.contractCode);
-        submitData.contractPassword = _.escape(self.contractPass);
+        submitData.companyCode = self.companyCode;
+        submitData.employeeCode = self.employeeCode;
+        submitData.contractCode = self.contractCode;
+        submitData.contractPassword = self.contractPass;
         self.$mask("show");
         self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn>}) => {
             if (!_.isEmpty(result.data)){
                 self.$goto({ name: 'mailSent', params: { companyCode: self.companyCode, 
                     employeeCode: self.employeeCode,
-                    contractCode: self.contractCode} });
+                    contractCode: self.contractCode} }, () => this.$destroy());
             }
         }).catch((res:any) => {
             //Return Dialog Error
@@ -108,7 +108,7 @@ export class ForgetPassComponent extends Vue {
                                                         employeeCode: this.employeeCode,
                                                         contractCode: this.contractCode,
                                                         contractPass: this.contractPass,
-                                                        companies: this.companies} });
+                                                        companies: this.companies} }, () => this.$destroy());
     }
 }
 
