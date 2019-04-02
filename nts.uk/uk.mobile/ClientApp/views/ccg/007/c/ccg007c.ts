@@ -91,7 +91,7 @@ export class ChangePassComponent extends Vue {
         
         //submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } }, () => this.$destroy());
+            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
             //Return Dialog Error
             self.$mask("hide");

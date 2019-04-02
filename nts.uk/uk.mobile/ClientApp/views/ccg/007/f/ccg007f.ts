@@ -48,6 +48,6 @@ export class MailSentComponent extends Vue {
         this.$goto({ name: 'login', params: { companyCode: this.compapyCode, 
                                                         employeeCode: this.employeeCode,
                                                         contractCode: this.contractCode
-                                                } }, () => this.$destroy());
+                                                }});
     }
 }

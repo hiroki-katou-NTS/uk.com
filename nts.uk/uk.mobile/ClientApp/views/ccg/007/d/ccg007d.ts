@@ -87,8 +87,7 @@ export class ForgetPassComponent extends Vue {
             if (!_.isEmpty(result.data)){
                 self.$goto({ name: 'mailSent', params: { companyCode: self.companyCode, 
                                                         employeeCode: self.employeeCode,
-                                                        contractCode: self.contractCode} }, 
-                            () => this.$destroy());
+                                                        contractCode: self.contractCode} });
             }
         }).catch((res: any) => {
             //Return Dialog Error
@@ -110,8 +109,7 @@ export class ForgetPassComponent extends Vue {
                                                 employeeCode: this.employeeCode,
                                                 contractCode: this.contractCode,
                                                 contractPass: this.contractPass,
-                                                companies: this.companies} }, 
-                        () => this.$destroy());
+                                                companies: this.companies} });
     }
 }
 

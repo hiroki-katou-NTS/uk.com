@@ -150,7 +150,7 @@ export class LoginComponent extends Vue {
                 //check MsgError
                 if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
                     if (res.data.showChangePass) {
-                        self.$goto({ name: 'changepass' }, () => this.$destroy());
+                        self.$goto({ name: 'changepass' });
                     } else {
                         self.model.password = "";
                         /** TODO: wait for dialog error method */
@@ -180,11 +180,11 @@ export class LoginComponent extends Vue {
     }
 
     toHomePage(){
-        this.$goto({ name: 'HomeComponent', params: { screen: 'login' } }, () => this.$destroy());
+        this.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
     }
 
     authenticateContract(){
-        this.$goto({ name: 'contractAuthentication' }, () => this.$destroy());
+        this.$goto({ name: 'contractAuthentication' });
     }
 
     forgetPass(){
@@ -194,7 +194,7 @@ export class LoginComponent extends Vue {
             companyCode: this.model.comp,
             employeeCode: this.model.employeeCode,
             companies: this.companies
-        }}, () => this.$destroy());
+        }});
 
     }
 }

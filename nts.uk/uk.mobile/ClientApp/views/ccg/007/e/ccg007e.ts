@@ -112,7 +112,7 @@ export class ResetPassComponent extends Vue {
         }).then((loginData) => self.$http.post(servicePath.submitLogin, loginData))
         .then((messError: any) => {
             //Remove LoginInfo
-            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } }, () => this.$destroy());
+            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
             //Return Dialog Error
             self.$mask("hide");
