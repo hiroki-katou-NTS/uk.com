@@ -15,11 +15,11 @@ import { SideMenu, NavMenu } from '@app/services';
         employeeCode: {
             required: true
         }
-    }, 
+    },
     name: 'forgetPass'
 })
 export class ForgetPassComponent extends Vue {
-    
+
     @Prop({ default: () => ({}) })
     params!: any;
 
@@ -36,7 +36,7 @@ export class ForgetPassComponent extends Vue {
         new Promise((resolve, reject) => {
             resolve();
         }).then(() => {
-            if(_.isEmpty(self.params.companies)){
+            if (_.isEmpty(self.params.companies)) {
                 self.$http.post(servicePath.getAllCompany).then((response: { data: Array<ICompany>; }) => {
                     self.companies = response.data;
                 });
@@ -44,7 +44,7 @@ export class ForgetPassComponent extends Vue {
                 self.companies = self.params.companies;
             }
         }).then(() => {
-            if(_.isNil(self.params.companyCode)){
+            if (_.isNil(self.params.companyCode)) {
                 characteristics.restore("companyCode").then((compCode: any) => {
                     self.companyCode = compCode;
                 });
@@ -52,7 +52,7 @@ export class ForgetPassComponent extends Vue {
                 self.companyCode = self.params.companyCode;
             }
         }).then(() => {
-            if(_.isNil(self.params.employeeCode)){
+            if (_.isNil(self.params.employeeCode)) {
                 characteristics.restore("employeeCode").then((empCode: any) => {
                     self.employeeCode = empCode;
                 });
@@ -60,7 +60,7 @@ export class ForgetPassComponent extends Vue {
                 self.employeeCode = self.params.employeeCode;
             }
         });
-        
+
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -75,7 +75,7 @@ export class ForgetPassComponent extends Vue {
     sendMail() {
         let self = this, submitData: any = {};
         self.$validate()
-        if(!self.$valid){
+        if (!self.$valid) {
             return;
         }
         submitData.companyCode = _.escape(self.companyCode);
@@ -83,32 +83,40 @@ export class ForgetPassComponent extends Vue {
         submitData.contractCode = _.escape(self.contractCode);
         submitData.contractPassword = _.escape(self.contractPass);
         self.$mask("show");
-        self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn>}) => {
-            if (!_.isEmpty(result.data)){
-                self.$goto({ name: 'mailSent', params: { companyCode: self.companyCode, 
-                    employeeCode: self.employeeCode,
-                    contractCode: self.contractCode} });
+        self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn> }) => {
+            if (!_.isEmpty(result.data)) {
+                self.$goto({
+                    name: 'mailSent', params: {
+                        companyCode: self.companyCode,
+                        employeeCode: self.employeeCode,
+                        contractCode: self.contractCode
+                    }
+                });
             }
-        }).catch((res:any) => {
+        }).catch((res: any) => {
             //Return Dialog Error
             self.$mask("hide");
-            if (!_.isEqual(res.message, "can not found message id")){
+            if (!_.isEqual(res.message, "can not found message id")) {
                 /** TODO: wait for dialog error method */
-                self.$toastError(res.messageId);
+                self.$modal.error({ messageId: res.messageId });
                 // self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
-                self.$toastError(res.messageId);
+                self.$modal.error({ messageId: res.messageId });
                 // self.$dialogError({ messageId: res.messageId });
             }
         });
     }
 
-    goBack(){
-        this.$goto({ name: 'login', params: { companyCode: this.companyCode, 
-                                                        employeeCode: this.employeeCode,
-                                                        contractCode: this.contractCode,
-                                                        contractPass: this.contractPass,
-                                                        companies: this.companies} });
+    goBack() {
+        this.$goto({
+            name: 'login', params: {
+                companyCode: this.companyCode,
+                employeeCode: this.employeeCode,
+                contractCode: this.contractCode,
+                contractPass: this.contractPass,
+                companies: this.companies
+            }
+        });
     }
 }
 
