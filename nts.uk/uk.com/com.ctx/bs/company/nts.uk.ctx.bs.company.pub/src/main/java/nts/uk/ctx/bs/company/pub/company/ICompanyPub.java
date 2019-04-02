@@ -11,6 +11,14 @@ public interface ICompanyPub {
 	 */
 
 	List<CompanyExport> getAllCompany();
+	
+	/**
+	 * for request list No.51
+	 * 
+	 * @return List Company
+	 */
+
+	List<CompanyExport> getAllCompanyByContract(String contractCode);
 
 	/**
 	 * for request list No.108

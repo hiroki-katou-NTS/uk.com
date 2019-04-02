@@ -42,6 +42,17 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 				c.getCompanyCode(), 
 				c.getCompanyName())).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<CompanyInformationImport> findByContract(String contractCode) {
+		List<CompanyExport> lstReciveCompany = iCompanyPub.getAllCompanyByContract(contractCode);
+
+		List<CompanyInformationImport> lstCompany = new ArrayList<>();
+		lstReciveCompany.stream().map(c -> {
+			return lstCompany.add(new CompanyInformationImport(c.getCompanyId(), c.getCompanyCode(), c.getCompanyName()));
+		}).collect(Collectors.toList());
+		return lstCompany;
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter#findById(java.lang.String)

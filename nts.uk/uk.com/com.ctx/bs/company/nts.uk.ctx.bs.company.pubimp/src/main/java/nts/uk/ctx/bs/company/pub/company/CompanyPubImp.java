@@ -31,6 +31,13 @@ public class CompanyPubImp implements ICompanyPub {
 	}
 
 	@Override
+	public List<CompanyExport> getAllCompanyByContract(String contractCode){
+		return repo.getAllCompanyByContractCdandAboAtr(contractCode, AbolitionAtr.NOT_ABOLITION.value).stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
+						item.getCompanyName().v(), item.getCompanyId(), item.getIsAbolition().value))
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	public BeginOfMonthExport getBeginOfMonth(String cid) {
 
 		BeginOfMonthExport result = new BeginOfMonthExport();
