@@ -9,19 +9,19 @@ import * as _ from 'lodash';
             <div class="row">
 
                 <div class="col-4">
-                    <select class="form-control" :value="dayValue" ref="day" @input="whenDayChange">
+                    <select class="form-control text-center" :value="dayValue" ref="day" @input="whenDayChange">
                         <option v-for="day in dayList">{{day}}</option>
                     </select>
                 </div>
 
                 <div class="col-4">
-                    <select class="form-control" :value="hourValue" ref="hour" @input="whenHourChange">
+                    <select class="form-control text-center" :value="hourValue" ref="hour" @input="whenHourChange">
                         <option v-for="hour in hourList">{{hour}}</option>
                     </select>
                 </div>
                     
                 <div class="col-4">
-                    <select class="form-control" :value="minuteValue" ref="minute" @input="whenMinuteChange">
+                    <select class="form-control text-center" :value="minuteValue" ref="minute" @input="whenMinuteChange">
                         <option v-for="minute in minuteList">{{minute}}</option>
                     </select>
                 </div>
