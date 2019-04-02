@@ -15,23 +15,15 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
-<<<<<<< HEAD
-import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
-=======
+import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
->>>>>>> delivery/release_user
+import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-<<<<<<< HEAD
-=======
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
->>>>>>> delivery/release_user
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
