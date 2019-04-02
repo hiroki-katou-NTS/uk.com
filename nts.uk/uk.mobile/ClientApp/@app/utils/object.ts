@@ -1,5 +1,5 @@
 const $ = {
-    range: (startOrLength: number, end?: number) => {
+    range(startOrLength: number, end?: number): number[] {
         let length = Math.abs((end || 0) - startOrLength);
 
         if (length === startOrLength) {
@@ -8,7 +8,7 @@ const $ = {
             return [...Array(length + 1).keys()].map(m => m + startOrLength);
         }
     },
-    size: (object: Array<any> | string | any | Function) => {
+    size(object: Array<any> | string | any | Function): number {
         if (object instanceof Function) {
             object = object.apply();
         }
@@ -23,31 +23,31 @@ const $ = {
 
         return Object.keys(object).length;
     },
-    has: (obj: any, prop: string) => {
+    has(obj: any, prop: string): boolean {
         return obj != null && Object.prototype.hasOwnProperty.call(obj, prop);
     },
-    isNil: (obj: any) => {
+    isNil(obj: any): obj is null {
         return $.isNull(obj) || $.isUndefined(obj);
     },
-    isNull: (obj: any) => {
+    isNull(obj: any): obj is null {
         return obj === null || ($.isObject(obj) && $.size(obj) === 0);
     },
-    isUndefined: (value: any) => {
+    isUndefined(value: any): value is undefined {
         return typeof value === 'undefined';
     },
-    isString: (value: any) => {
+    isString(value: any): value is String {
         return typeof value === 'string' || value instanceof String;
     },
-    isBoolean: (value: any) => {
+    isBoolean(value: any): value is boolean {
         return typeof value === 'boolean';
     },
-    isFunction: (value: any) => {
+    isFunction(value: any): value is Function {
         return typeof value === 'function';
     },
     isRegExp: (value: any) => {
         return value && typeof value === 'object' && value.constructor === RegExp;
     },
-    isEmpty: (object: any) => {
+    isEmpty(object: any) {
         if ($.isObject(object)) {
             return !Object.keys(object).length;
         } else if (object instanceof Array || typeof object === 'string') {
@@ -84,10 +84,10 @@ const $ = {
 
         return (string || '').replace(/&(?:amp|lt|gt|quot|#39);/g, (chr: string) => htmlUnescapes[chr]);
     },
-    isObject: (object: any) => {
+    isObject(object: any): object is Object {
         return object && typeof object === 'object' && object.constructor === Object;
     },
-    cloneObject: (obj: any) => {
+    cloneObject(obj: any): any {
         let clone = {};
 
         if (!$.isNull(obj)) {
@@ -98,13 +98,13 @@ const $ = {
 
         return clone;
     },
-    isArray: (object: any) => {
+    isArray(object: any): object is any[] {
         return object && Array.isArray(object) && typeof object === 'object' && object.constructor === Array;;
     },
-    isDate: (date: any) => {
+    isDate(date: any): date is Date {
         return date instanceof Date && !isNaN(date.getTime()) ? true : false;
     },
-    get: (object: any | undefined, path: Array<string> | string, defaultVal?: any) => {
+    get(object: any | undefined, path: Array<string> | string, defaultVal?: any): any {
         let _path = Array.isArray(path) ? path : (path || '').split('.').filter(i => i.length);
 
         if (object === undefined) {
@@ -117,10 +117,10 @@ const $ = {
 
         return $.get(object[_path.shift() || -1], _path, defaultVal);
     },
-    extend: (to: any, from: any) => {
+    extend(to: any, from: any): any {
         Object.assign(to, from);
     },
-    omit: (object: any, path: Array<string> | string) => {
+    omit(object: any, path: Array<string> | string): any {
         let _path = Array.isArray(path) ? path : (path || '')
             .split('.').filter(i => i.length),
             child: string = _path.shift() || '';
@@ -137,7 +137,7 @@ const $ = {
 
         return object;
     },
-    set: (object: any, path: Array<string> | string, value: any) => {
+    set(object: any, path: Array<string> | string, value: any): any {
         let _path = Array.isArray(path) ? path : (path || '')
             .split('.').filter(i => i.length),
             child: string = _path.shift() || '';
@@ -158,7 +158,7 @@ const $ = {
 
         return object;
     },
-    update: (object: any, path: Array<string> | string, value: any) => {
+    update(object: any, path: Array<string> | string, value: any): any {
         let _path = Array.isArray(path) ? path : (path || '')
             .split('.').filter(i => i.length),
             child: string = _path.shift() || '';
@@ -193,7 +193,7 @@ const $ = {
 
         return object;
     },
-    merge: (object: any, source: any) => {
+    merge(object: any, source: any): any {
         $.objectForEach(source, (key: string, value: any) => {
             let override = $.get(object, key);
 
@@ -206,7 +206,7 @@ const $ = {
 
         return object;
     },
-    keys: (object: Array<any> | string | any | Function) => {
+    keys(object: Array<any> | string | any | Function): string[] {
         if (object instanceof Function) {
             object = object.apply();
         }
@@ -217,7 +217,7 @@ const $ = {
 
         return Object.keys(object);
     },
-    values: (object: Array<any> | string | any | Function) => {
+    values(object: Array<any> | string | any | Function): any[] {
         if (object instanceof Function) {
             object = object.apply();
         }
@@ -228,7 +228,7 @@ const $ = {
 
         return $.keys(object).map((k: string) => object[k]);
     },
-    pathsOfObject: (object: any) => {
+    pathsOfObject(object: any): string[] {
         if ($.isObject(object)) {
             let $paths = [],
                 nodes = [{
@@ -271,10 +271,10 @@ const $ = {
 
         return $.isObject(object) ? JSON.parse(JSON.stringify(object)) : (<any>Object).assign({}, object);
     },
-    find: (source: any, callback: (value: any, index: number) => any) => {
+    find(source: any, callback: (value: any, index: number) => any): any {
         return [].slice.call(source).filter(callback)[0];
     },
-    isNullOrEmpty(target: any) {
+    isNullOrEmpty(target: any): target is null {
         return (target === undefined || target === null || target.length == 0);
     }
 };
