@@ -1987,8 +1987,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			int month = monthlyReportData.getYearMonth().month();
 			String date = monthlyReportData.getYearMonth().year() + "/" + (month < 10 ? "0" + month : month);
 			String titleDate = WorkScheOutputConstants.DATE_BRACKET + "　" + date;
-			currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-			rowPageTracker.useRemainingRow(1);
 
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheetInfo, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker, titleDate);
 		
@@ -2088,8 +2086,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					|| condition.getTotalOutputSetting().isCumulativeWorkplace()) {
 				// B4_1
 				if (!isPrintWplTitle){
+					currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
 					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
-					rowPageTracker.useRemainingRow(1);
+					rowPageTracker.useRemainingRow(2);
 				}
 
 				/*Cell workplaceTagCell = cells.get(currentRow, 0);
