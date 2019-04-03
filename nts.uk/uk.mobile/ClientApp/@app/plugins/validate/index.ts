@@ -66,7 +66,20 @@ const DIRTY = 'dirty',
                         let rule: IRule = $.get(model, m);
 
                         return $.values(rule)
-                            .filter(c => !$.isObject(c)).length;
+                            .filter(c => {
+                                if (!$.isObject(c)) {
+                                    return true;
+                                } else {
+                                    let keys = $.keys(c);
+
+                                    if (keys.filter(k => ['test', 'message']
+                                        .indexOf(k) > -1).length == keys.length) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                }
+                            }).length;
                     });
             };
 
@@ -147,9 +160,48 @@ const DIRTY = 'dirty',
                             let watch = function (value: any) {
                                 let errors = $.cloneObject(self.$errors),
                                     models = $.get(errors, path),
-                                    rule = $.get($.cloneObject(self.validations), path, {});
+                                    rule = $.get($.cloneObject(self.validations), path, {}),
+                                    msgkey = $.keys(models)[0];
 
-                                console.log(value);
+                                // re validate
+                                if (msgkey) {
+                                    $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
+                                        if (key == msgkey) {
+                                            let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
+                                                message = vldtor.apply(self, [value, ...params]);
+
+                                            if (!message) {
+                                                $.omit(models, key);
+                                            } else {
+                                                if (!$.size(models)) {
+                                                    $.set(models, key, message);
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    let vldtor: { test: RegExp | Function; message: string; } = rule[msgkey];
+
+                                    if (vldtor) {
+                                        if ($.isFunction(vldtor.test)) {
+                                            if (!vldtor.test.apply(self, [value])) {
+                                                if (!$.size(models)) {
+                                                    $.set(models, msgkey, vldtor.message);
+                                                }
+                                            } else {
+                                                $.omit(models, msgkey);
+                                            }
+                                        } else if ($.isRegExp(vldtor.test)) {
+                                            if (value && !vldtor.test.test(value)) {
+                                                if (!$.size(models)) {
+                                                    $.set(models, msgkey, vldtor.message);
+                                                }
+                                            } else {
+                                                $.omit(models, msgkey);
+                                            }
+                                        }
+                                    }
+                                }
 
                                 // check fixed validators
                                 $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
@@ -182,7 +234,7 @@ const DIRTY = 'dirty',
                                                 $.omit(models, key);
                                             }
                                         } else if ($.isRegExp(vldtor.test)) {
-                                            if (!vldtor.test.test(value)) {
+                                            if (value && !vldtor.test.test(value)) {
                                                 if (!$.size(models)) {
                                                     $.set(models, key, vldtor.message);
                                                 }
@@ -208,6 +260,8 @@ const DIRTY = 'dirty',
                     }, { deep: true });
 
                     vue.set(self, 'validations', $.cloneObject(self.validations));
+
+                    setTimeout(() => self.$validate("clear"), 100);
                 }
             });
 
@@ -316,7 +370,7 @@ const DIRTY = 'dirty',
                 if (!$.isString(pathOrRule) && $.isObject(pathOrRule)) {
                     vue.set(self, 'validations', updateValidator.apply(validations, [pathOrRule]));
                 } else if ($.isString(pathOrRule) && $.isObject(rule)) {
-                    $.update(validations, pathOrRule.toString(), rule);
+                    $.update(validations, pathOrRule, rule);
 
                     vue.set(self, 'validations', validations);
                 }
@@ -325,5 +379,3 @@ const DIRTY = 'dirty',
     };
 
 export { validate };
-
-window['$$'] = $;

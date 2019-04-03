@@ -120,7 +120,8 @@ declare module "vue/types/vue" {
         $validate(): void;
         $validate(act: 'clear'): void;
         $validate(name: string): boolean;
-        $updateValidator: (rule: IRule) => void;
+        $updateValidator(rule: IRule): void;
+        $updateValidator(name: string, rule: IRule): void;
         validations: {
             [name: string]: IRule;
         };
