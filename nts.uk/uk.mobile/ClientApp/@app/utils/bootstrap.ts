@@ -13,8 +13,8 @@ document.addEventListener("click", function (e) {
 
     // dropdown menu
     ((evt: MouseEvent) => {
-        for (let node = evt.target as HTMLElement; node != document.body; node = node.parentNode as HTMLElement) {
-            if (!node || !node.parentNode) {
+        for (let node = evt.target as HTMLElement; node != document.body; node = node.parentElement as HTMLElement) {
+            if (!node || !node.parentElement) {
                 break;
             }
 
@@ -30,7 +30,7 @@ document.addEventListener("click", function (e) {
         if (clicked) {
             [].slice.call(document.querySelectorAll('.dropdown-toggle, [data-toggle="dropdown"]'))
                 .forEach((element: HTMLElement) => {
-                    let parent = element.parentNode as HTMLElement,
+                    let parent = element.parentElement as HTMLElement,
                         dropdown = parent.querySelector('.dropdown-menu') as HTMLElement | null;
 
                     dom.addClass(parent, 'dropdown');
@@ -68,7 +68,7 @@ document.addEventListener("click", function (e) {
                 .forEach((element: HTMLElement) => {
                     dom.removeClass(element, 'show');
 
-                    let parent = element.parentNode as HTMLElement;
+                    let parent = element.parentElement as HTMLElement;
 
                     if (parent) {
                         dom.removeClass(parent, 'dropdown dropup');
@@ -80,7 +80,7 @@ document.addEventListener("click", function (e) {
     // tabs
     ((evt: MouseEvent) => {
         let target = evt.target as HTMLElement;
-
+        
         if (dom.hasClass(target, 'nav-link') && !dom.hasClass(target, 'disabled')) {
             let parent = target.closest('.nav.nav-tabs') || target.closest('.nav.nav-pills'),
                 href = dom.getAttr(target, 'href');
@@ -93,7 +93,7 @@ document.addEventListener("click", function (e) {
 
                 dom.addClass(target, 'active');
 
-                let siblings = parent.nextSibling as HTMLElement;
+                let siblings = parent.nextElementSibling as HTMLElement;
 
                 if (siblings && href.match(/#.+/)) {
                     let tab = siblings.querySelector(href) as HTMLElement;
@@ -107,6 +107,7 @@ document.addEventListener("click", function (e) {
                             }
                         });
                 }
+                evt.preventDefault();
             }
             evt.preventDefault();
         }
@@ -126,9 +127,11 @@ document.addEventListener("click", function (e) {
 
                     if (btn) {
                         if (element.checked) {
-                            dom.addClass(btn, 'active');
+                            dom.addClass(btn, 'btn-primary');
+                            dom.removeClass(btn, 'btn-secondary');
                         } else {
-                            dom.removeClass(btn, 'active');
+                            dom.removeClass(btn, 'btn-primary');
+                            dom.addClass(btn, 'btn-secondary');
                         }
                     }
                 });
