@@ -44,7 +44,7 @@ const $ = {
     isFunction(value: any): value is Function {
         return typeof value === 'function';
     },
-    isRegExp: (value: any) => {
+    isRegExp(value: any): value is RegExp {
         return value && typeof value === 'object' && value.constructor === RegExp;
     },
     isEmpty(object: any) {
