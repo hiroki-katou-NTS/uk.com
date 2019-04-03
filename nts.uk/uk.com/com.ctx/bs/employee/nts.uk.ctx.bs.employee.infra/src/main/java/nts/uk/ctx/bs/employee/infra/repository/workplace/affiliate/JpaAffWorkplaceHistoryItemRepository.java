@@ -321,7 +321,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	public void updateAll(List<AffWorkplaceHistoryItem> domain) {
 		
 		String UP_SQL = "UPDATE BSYMT_AFF_WPL_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " WORKPLACE_ID = WORKPLACE_ID_VAL, NORMAL_WORKPLACE_ID = NORMAL_WORKPLACE_ID_VAL"
+				+ " WORKPLACE_ID = WORKPLACE_ID_VAL, NORMAL_WORKPLACE_ID = NORMAL_ID_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -336,7 +336,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			
 			sql = sql.replace("WORKPLACE_ID_VAL", "'" + c.getWorkplaceId() + "'");
-			sql = sql.replace("NORMAL_WORKPLACE_ID","'" +  c.getNormalWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_ID_VAL","'" +  c.getNormalWorkplaceId() + "'");
 			
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");

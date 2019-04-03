@@ -73,11 +73,12 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 							.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
 					if (!itemToBeUpdate.isPresent()) {
 						sidErrors.add(c.getEmployeeId());
+					} else {
+						affWorkplaceHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
+								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+						affWorkplaceHistories
+								.add(new AffWorkplaceHistoryIntermediate(affWorkplaceHistory, itemToBeUpdate.get()));
 					}
-					affWorkplaceHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
-							c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-					affWorkplaceHistories
-							.add(new AffWorkplaceHistoryIntermediate(affWorkplaceHistory, itemToBeUpdate.get()));
 				}
 			}
 			AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(c.getHistoryId(),

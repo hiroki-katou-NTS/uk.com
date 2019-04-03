@@ -567,9 +567,6 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		});
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-	
-		return result;
-
 	}
 
 }

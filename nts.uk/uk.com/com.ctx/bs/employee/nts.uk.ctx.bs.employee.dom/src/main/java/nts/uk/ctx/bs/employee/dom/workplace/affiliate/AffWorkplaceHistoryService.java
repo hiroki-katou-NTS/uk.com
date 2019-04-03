@@ -89,7 +89,9 @@ public class AffWorkplaceHistoryService {
 	 */
 	public void updateAll(List<AffWorkplaceHistoryIntermediate> domains){
 		List<DateHistoryItem> dateHistItems = domains.parallelStream().map(c -> c.getItem()).collect(Collectors.toList());
-		affWorkplaceHistoryRepository.updateAll(dateHistItems);
+		if(!dateHistItems.isEmpty()) {
+			affWorkplaceHistoryRepository.updateAll(dateHistItems);
+		}
 		// Update item before
 		updateAllItemBefore(domains);
 	}
