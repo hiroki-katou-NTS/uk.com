@@ -121,33 +121,4 @@ class PasswordComponent extends InputComponent {
     }
 }
 
-@input()
-class NumberComponent extends InputComponent {
-    type: string = 'number';
-
-    get rawValue() {
-        return (this.value || '').toString();
-    }
-
-    @Emit()
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
-
-        if (value) {
-            let numb = Number(value);
-
-            if (!isNaN(numb)) {
-                return numb;
-            } else {
-                return null;
-            }
-        }
-
-        return null;
-    }
-}
-
 Vue.component('nts-input-password', PasswordComponent);
-
-Vue.component('nts-input-number', NumberComponent);
-
