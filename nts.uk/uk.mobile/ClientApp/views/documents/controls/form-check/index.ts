@@ -13,10 +13,10 @@ import { component } from '@app/core/component';
     },
     resource: {
         'vi': {
-            'FormCheckComponent': 'Checkbox & Radio'
+            'FormCheckComponent': 'Checkbox & Radio & SwitchButton'
         },
         'jp': {
-            'FormCheckComponent': 'Checkbox & Radio'            
+            'FormCheckComponent': 'Checkbox & Radio & SwitchButton'            
         }
     }
 })

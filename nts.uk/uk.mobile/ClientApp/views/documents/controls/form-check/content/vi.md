@@ -47,7 +47,20 @@
     Check 1
 </nts-checkbox>
 ```
-### 2.3 ViewModel
+### 2.3 SwitchBox
+
+```html
+<nts-switchbox 
+    v-for="(radio, k) in radios" 
+    v-model="switchbox" 
+    v-bind:name="'radio1'"
+    v-bind:value="radio.id" 
+    v-bind:disabled="radio.disabled" 
+    v-bind:class="''">
+    {{radio.id}} - {{radio.name}}
+</nts-switchbox>
+```
+### 2.4 ViewModel
 ```typescript
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
