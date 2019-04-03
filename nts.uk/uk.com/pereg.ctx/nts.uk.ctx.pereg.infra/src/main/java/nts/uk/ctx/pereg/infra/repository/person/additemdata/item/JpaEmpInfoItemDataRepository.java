@@ -312,10 +312,12 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	
 	@Override
 	public void addAll(List<EmpInfoItemData> domains) {
-		String INS_SQL = "INSERT PPEMT_EMP_INFO_ITEM_DATA ( INS_DATE , INS_CCD , INS_SCD , INS_PG , "
-				+ "  UPD_DATE ,  UPD_CCD,  UPD_SCD , UPD_PG ,"
-				+ "  RECORD_ID, PER_INFO_DEF_ID, SAVE_DATA_ATR, STRING_VAL , INT_VAL , DATE_VAL) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL, PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR_VAL, STRING_VAL_VAL, INT_VAL_VAL, DATE_VAL_VAL)";
+		String INS_SQL = "INSERT PPEMT_EMP_INFO_ITEM_DATA ( INS_DATE, INS_CCD, INS_SCD, INS_PG, "
+				+ "  UPD_DATE,  UPD_CCD,  UPD_SCD, UPD_PG,"
+				+ "  RECORD_ID, PER_INFO_DEF_ID, SAVE_DATA_ATR, STRING_VAL , INT_VAL , DATE_VAL)"
+				+ "  VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL,"
+				+ "  PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR_VAL, STRING_VAL_VAL, INT_VAL_VAL, DATE_VAL_VAL)";
     	GeneralDateTime insertTime = GeneralDateTime.now();
     	String insCcd = AppContexts.user().companyCode();
     	String insScd = AppContexts.user().employeeCode();
@@ -329,7 +331,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
 			sql = sql.replace("INS_SCD_VAL", "'" + insScd +"'");
-			sql = sql.replace("UPD_PG_VAL", "'" + insPg +"'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg +"'");
 			
 			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");

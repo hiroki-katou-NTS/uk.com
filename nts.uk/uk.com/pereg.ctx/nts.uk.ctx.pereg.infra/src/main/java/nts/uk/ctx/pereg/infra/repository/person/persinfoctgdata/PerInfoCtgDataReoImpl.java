@@ -119,10 +119,11 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 
 	@Override
 	public void addAll(List<PerInfoCtgData> domains) {
-		String INS_SQL = "INSERT INTO PPEMT_PER_INFO_CTG_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
-				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG,"
-				+ "  RECORD_ID, P_INFO_CTG_ID , PID) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL, P_INFO_CTG_ID_VAL, PID_VAL); ";
+		String INS_SQL = "INSERT INTO PPEMT_PER_INFO_CTG_DATA (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
+				+ " UPD_DATE,  UPD_CCD,  UPD_SCD, UPD_PG, RECORD_ID, P_INFO_CTG_ID, PID)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL,"
+				+ " P_INFO_CTG_ID_VAL, PID_VAL); ";
 		
 		
     	GeneralDateTime insertTime = GeneralDateTime.now();
@@ -138,7 +139,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
 			sql = sql.replace("INS_SCD_VAL", "'" + insScd +"'");
-			sql = sql.replace("UPD_PG_VAL", "'" + insPg +"'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg +"'");
 			
 			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
