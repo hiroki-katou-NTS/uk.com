@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.breaktime.BreakTimeOfDailyService;
+import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.overtime.OvertimeOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.timeleave.TimeLeavingOfDailyService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -184,8 +185,10 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 			//出退勤時刻を補正する
 			integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, false).getData();
-			//休憩時間帯を補正する	
-			integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();
+			if(!this.isChangeBreakTime(integrationOfDaily.getEditState())) {
+				//休憩時間帯を補正する	
+				integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();	
+			}			
 			//事前残業、休日時間を補正する
 			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor);
 		}
@@ -209,7 +212,10 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 					integrationOfDaily.getWorkInformation());
 		}
 				
-		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();
+		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();		
+		if(this.isChangeBreakTime(lstEditState)) {
+			return integrationOfDaily;
+		}
 		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
 		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
 				.collect(Collectors.toList());
@@ -257,5 +263,15 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		beforeBreakTime.add(beforBTWork);
 		integrationOfDaily.setBreakTime(beforeBreakTime);
 		return integrationOfDaily;
+	}
+
+	private boolean isChangeBreakTime(List<EditStateOfDailyPerformance> lstEditState) {
+		List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
+				.filter(x -> WorkUpdateService.BREAK_START_TIME.contains(x.getAttendanceItemId())
+						|| WorkUpdateService.BREAK_END_TIME.contains(x.getAttendanceItemId())
+						|| CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId())
+						|| CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId()))
+				.collect(Collectors.toList());
+		return lstEditCheck.isEmpty() ? false : true;
 	}
 }

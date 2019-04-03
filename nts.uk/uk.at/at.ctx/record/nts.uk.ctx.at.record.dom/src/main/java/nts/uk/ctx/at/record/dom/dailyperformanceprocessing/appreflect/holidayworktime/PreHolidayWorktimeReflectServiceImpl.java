@@ -99,6 +99,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		}
 		//休出時間の反映
 		holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara, daily, isPre);
+		//休憩時間の反映
+		holidayWorkProcess.reflectBreakTimeFrame(holidayWorkPara, daily, isPre);
 		//事前所定外深夜時間の反映
 		if(isPre) {
 			workUpdate.updateTimeShiftNightHoliday(holidayWorkPara.getEmployeeId(),

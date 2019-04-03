@@ -46,5 +46,13 @@ public interface HolidayWorkReflectProcess {
 	 */
 	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
 			IntegrationOfDaily dailyData, boolean isPre);
+	/**
+	 * 休憩時間の反映
+	 * @param holidayWorkPara
+	 * @param dailyData
+	 * @param isPre：　True：　事前、False：　事後
+	 */
+	public void reflectBreakTimeFrame(HolidayWorktimePara holidayWorkPara, 
+			IntegrationOfDaily dailyData, boolean isPre);
 
 }

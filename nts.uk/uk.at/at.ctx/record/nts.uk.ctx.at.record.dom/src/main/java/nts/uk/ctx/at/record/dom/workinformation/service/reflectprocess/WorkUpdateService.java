@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -150,4 +152,18 @@ public interface WorkUpdateService {
 	 * @return
 	 */
 	List<Integer> lstTransferTimeOtItem();
+	/** The Constant BREAK_START_TIME. */
+	public final static List<Integer> BREAK_START_TIME = Arrays.asList(7, 9, 11, 13, 15, 17, 19, 21, 23, 25);
+	
+	/** The Constant BREAK_END_TIME. */
+	public final static List<Integer> BREAK_END_TIME = Arrays.asList(8, 10, 12, 14, 16, 18, 20, 22, 24, 26);
+	/**
+	 * 休憩時間帯を変更
+	 * @param dailyInfor
+	 * @param isPre
+	 * @param isReflect
+	 */
+    public void updateBreakTime(Map<Integer, BreakTimeAppPara> mapBreakTimeFrame, boolean recordReflectBreakFlg, boolean isPre, 
+    		IntegrationOfDaily daily);
+
 }
