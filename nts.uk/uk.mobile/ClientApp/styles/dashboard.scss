@@ -4,6 +4,7 @@
 @import './node_modules/bootstrap/scss/bootstrap';
 @import './node_modules/bootswatch/dist/lumen/bootswatch';
 
+@import './lumen/md.scss';
 @import './lumen/color.scss';
 @import './lumen/ripple.scss';
 
@@ -12,6 +13,7 @@
 @import './lumen/label.scss';
 @import './lumen/input.scss';
 @import './lumen/button.scss';
+@import './lumen/tab.scss';
 @import './lumen/navbar.scss';
 @import './lumen/sidemenu.scss';
 @import './lumen/checkbox.scss';
