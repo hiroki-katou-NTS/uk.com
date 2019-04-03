@@ -363,10 +363,10 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 				sql = sql.replace("OLDNAME_FNAME_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getOldName().getFullName().v() +"'");
 				sql = sql.replace("OLDNAME_FNAME_KANA_VAL", personName.getOldName().getFullNameKana() == null? "null": "'" + personName.getOldName().getFullNameKana().v() +"'");
 				
-				sql = sql.replace("TODOKEDE_FNAME_VAL", personName.getPersonRomanji().getFullName() == null? "null": "'" + personName.getPersonRomanji().getFullName().v() +"'");
-				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", personName.getPersonRomanji().getFullNameKana() == null? "null": "'" + personName.getPersonRomanji().getFullNameKana().v()+"'");
-				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getOldName().getFullName().v() +"'");
-				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", personName.getOldName().getFullNameKana() == null? "null": "'" + personName.getOldName().getFullNameKana().v() +"'");
+				sql = sql.replace("TODOKEDE_FNAME_VAL", personName.getTodokedeFullName().getFullName() == null? "null": "'" + personName.getTodokedeFullName().getFullName().v() +"'");
+				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", personName.getTodokedeFullName().getFullNameKana() == null? "null": "'" + personName.getTodokedeFullName().getFullNameKana().v()+"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullName().v() +"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", personName.getPersonalNameMultilingual() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullNameKana().v() +"'");
 				
 			}
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");
