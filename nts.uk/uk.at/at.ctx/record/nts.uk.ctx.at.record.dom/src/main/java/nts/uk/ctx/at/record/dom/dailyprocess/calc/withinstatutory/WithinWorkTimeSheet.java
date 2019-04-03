@@ -1612,9 +1612,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		boolean decisionGetChild = false;
 		if(!(atr.isCare() || atr.isChild()))
 				return false;
-		//2019/04/03 大塚緊急対応　通常勤務時に割増の休暇加算設定を見ないよう対応↓
-		//現時点では、割増に入る(premiumAtr=割増)ことは無いが、念には念を入れての対応 hoshina
-//		if(premiumAtr.isRegularWork()) {			
+		if(premiumAtr.isRegularWork()) {			
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
 				if(advancedSet.isPresent() &&
 					advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
@@ -1626,20 +1624,19 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}
-//		}else {
-//			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
-//			
-//				if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
-//					if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
-//						decisionGetChild = true;
-//					}
-//				}else {
-//					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
-//						decisionGetChild = true;
-//					}
-//				}
-//		}
-		//2019/04/03 大塚緊急対応　通常勤務時に割増の休暇加算設定を見ないよう対応↑
+		}else {
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+			
+				if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+						decisionGetChild = true;
+					}
+				}else {
+					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+						decisionGetChild = true;
+					}
+				}
+		}
 		return decisionGetChild;
 	}
 	
