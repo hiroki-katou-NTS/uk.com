@@ -2003,7 +2003,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private int writeDetailedWorkSchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, WorkplaceReportData workplaceReportData, 
 			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
 		Cells cells = sheet.getCells();
-		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getSettingDetailTotalOutput();
 		List<EmployeeReportData> lstEmployeeReportData = workplaceReportData.getLstEmployeeReportData();
 		
@@ -2322,7 +2321,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	        for(int i = 0; i < numOfChunks; i++) {
 	            start = i * CHUNK_SIZE;
 	            length = Math.min(workplaceTotal.getTotalWorkplaceValue().size() - start, CHUNK_SIZE);
-	
 	            lstItemRow = workplaceTotal.getTotalWorkplaceValue().subList(start, start + length);
 	            
 	            for (int j = 0; j < length; j++) {
@@ -2333,6 +2331,53 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            currentRow++;
 	        }
 		}
+		
+		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0 && totalOutput.isCumulativeWorkplace() && currentRow == 5) {
+			TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
+			List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
+			lstBetweenLevel.add(1);
+			Iterator<Integer> levelIterator = null;
+			if (!lstBetweenLevel.isEmpty()) {
+				levelIterator = lstBetweenLevel.iterator();
+			}
+			
+			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+			wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			// A9_1 - A13_1
+			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next());
+			
+			// A9_2 - A13_2
+			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+			int start, length;
+			List<TotalValue> lstItemRow;
+			
+	        for(int i = 0; i < numOfChunks; i++) {
+	            start = i * CHUNK_SIZE;
+	            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+	
+	            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
+	            
+	            for (int j = 0; j < length; j++) {
+	            	TotalValue totalValue = lstItemRow.get(j);
+	            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
+	            	writeTotalValue(totalValue, cell);
+	            }
+	            currentRow++;
+	        }
+	        
+		}
+		
 		
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
@@ -2361,23 +2406,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		 * A9 - A13
 		 */
 		TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
-		if ((totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace())
+		if ((totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace() && (currentRow != 6 && totalOutput.isCumulativeWorkplace()))
 				&& !(workplaceReportData.getLstChildWorkplaceReportData().isEmpty()
 				&& workplaceReportData.getLstEmployeeReportData().isEmpty())) {
 			
+			WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
+			List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
 			int level = workplaceReportData.getLevel();
 			
 			if (findWorkplaceHigherEnabledLevel(workplaceReportData, totalHierarchyOption) <= level) {
 				String tagStr;
-				
-				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
-				
-				List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
 				Iterator<Integer> levelIterator = null;
 				if (!lstBetweenLevel.isEmpty()) {
 					levelIterator = lstBetweenLevel.iterator();
 				}
-				
 				do {
 					//if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace() && totalHierarchyOption.checkLevelEnabled(level)) {
 					if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace()) {
@@ -2452,8 +2494,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				} while (levelIterator != null && levelIterator.hasNext());
 			}
 		}
-		
-		
 		return currentRow;
 	}
 
@@ -2966,7 +3006,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void createPrintArea( Worksheet sheet) {
 		// Get the last column and row name
 		Cells cells = sheet.getCells();
-		int maxDataRow = cells.getMaxDataRow();
+		// Set max row when print
+		int maxDataRow = cells.getMaxDataRow() + 1;
 		Cell lastCell = cells.get(maxDataRow, 38);
 		String lastCellName = lastCell.getName();
 		
