@@ -6,7 +6,17 @@ package nts.uk.file.at.infra.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -18,9 +28,22 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 
-import com.aspose.cells.*;
-import nts.uk.file.at.infra.schedule.WorkSheetInfo;
 import org.apache.commons.lang3.StringUtils;
+
+import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
+import com.aspose.cells.Font;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Range;
+import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.WorkbookDesigner;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -112,6 +135,7 @@ import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
 import nts.uk.file.at.infra.schedule.EmployeePrintOrder;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
+import nts.uk.file.at.infra.schedule.WorkSheetInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -2047,22 +2071,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
                 rowPageTracker.useRemainingRow(2);
-/*=======
-					if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())) {
-						// A3_1
-						Cell workplaceTagCell = cells.get(currentRow, 0);
-						workplaceTagCell.setValue(
-								WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　"
-										+ workplaceReportData.getWorkplaceName());
-						departmentCode.add(workplaceReportData.getWorkplaceCode());
-						currentRow++;
-					}
-				}
+
 				// A3_2
 //				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
 //				workplaceInfo.setValue(workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
 				
->>>>>>> delivery/release_user*/
+
 
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) <= 0) {
 					if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
