@@ -182,7 +182,7 @@ public class PeregCommonCommandFacade {
 				}
 			});
 			
-			this.add(inputContainerLst, target, baseDate);
+			this.add(inputContainerLst, target, baseDate, modeUpdate);
 			this.update(inputContainerLst, baseDate,  target);
 			
 			
@@ -199,16 +199,16 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public List<String> add(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate) {
-		return addNonTransaction(containerLst, target, baseDate);	
+	public List<String> add(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate, int modeUpdate) {
+		return addNonTransaction(containerLst, target, baseDate, modeUpdate);	
 	}
 
-	private List<String> addNonTransaction(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate) {
+	private List<String> addNonTransaction(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate, int modeUpdate) {
 		List<String> recordIds = new ArrayList<String>();
 		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
 		containerLst.stream().forEach(c ->{
 			ItemsByCategory itemByCtg = c.getInputs();
-			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > -1) {
+			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > -1 || modeUpdate == 2) {
 				containerAdds.add(c);
 			}
 			
@@ -219,7 +219,9 @@ public class PeregCommonCommandFacade {
 		
 		
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
-			updateInputForAdd(containerAdds);
+			if(modeUpdate == 1) {
+				updateInputForAdd(containerAdds);
+			}
 			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
 			
 		});
