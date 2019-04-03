@@ -75,6 +75,14 @@ const DIRTY = 'dirty',
                     let self: Vue = this,
                         validations = self.$options.validations || {};
 
+                    if (self.$options.constraints && self.$options.constraints.length) {
+                        self.$http
+                            .post('/validate/constraints/map', self.$options.constraints)
+                            .then(resp => {
+                                console.log(resp);
+                            });
+                    }
+
                     // init errors & $valid obser
                     defReact(self, '$errors', {});
                     // store all watchers of validators
@@ -141,11 +149,13 @@ const DIRTY = 'dirty',
                                     models = $.get(errors, path),
                                     rule = $.get($.cloneObject(self.validations), path, {});
 
+                                console.log(value);
+
                                 // check fixed validators
                                 $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
                                     if ($.has(rule, key)) {
                                         let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                            message = vldtor.apply(null, [value, ...params]);
+                                            message = vldtor.apply(self, [value, ...params]);
 
                                         if (!message) {
                                             $.omit(models, key);
@@ -164,7 +174,7 @@ const DIRTY = 'dirty',
                                         let vldtor: { test: RegExp | Function; message: string; } = rule[key];
 
                                         if ($.isFunction(vldtor.test)) {
-                                            if (!(<(value: any) => boolean>vldtor.test).apply(value)) {
+                                            if (!vldtor.test.apply(self, [value])) {
                                                 if (!$.size(models)) {
                                                     $.set(models, key, vldtor.message);
                                                 }
@@ -172,7 +182,7 @@ const DIRTY = 'dirty',
                                                 $.omit(models, key);
                                             }
                                         } else if ($.isRegExp(vldtor.test)) {
-                                            if (!(<RegExp>vldtor.test).test(value)) {
+                                            if (!vldtor.test.test(value)) {
                                                 if (!$.size(models)) {
                                                     $.set(models, key, vldtor.message);
                                                 }
@@ -247,16 +257,37 @@ const DIRTY = 'dirty',
             });
 
             // define $validate instance method
-            vue.prototype.$validate = function (field?: string) {
+            vue.prototype.$validate = function (field?: string | 'clear') {
                 let self: Vue = this,
                     errors = $.cloneObject(self.$errors),
                     validations = $.cloneObject(self.validations);
 
                 if (field) { // check match field name
-                    let error = $.get(errors, field, null),
-                        validate = $.get(validations, field, null);
+                    if (field === 'clear') {
+                        let $validators: Array<{
+                            path: string;
+                            watch: (value: any) => void;
+                            unwatch: () => void;
+                        }> = (<any>self).$validators,
+                            errors = {};
 
-                    if (error && validate) {
+                        $.objectForEach($validators, (k: string, validator: {
+                            path: string;
+                            watch: (value: any) => void;
+                            unwatch: () => void;
+                        }) => {
+                            $.set(errors, validator.path, {});
+                        });
+
+                        setTimeout(() => {
+                            vue.set(self, '$errors', errors);
+                        }, 100);
+                    } else {
+                        let error = $.get(errors, field, null),
+                            validate = $.get(validations, field, null);
+
+                        if (error && validate) {
+                        }
                     }
                 } else { // check all
                     let $validators: Array<{
