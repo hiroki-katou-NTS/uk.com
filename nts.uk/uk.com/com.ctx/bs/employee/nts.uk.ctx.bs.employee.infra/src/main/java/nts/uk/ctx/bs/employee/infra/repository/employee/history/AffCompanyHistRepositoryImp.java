@@ -601,10 +601,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	
 	@Override
 	public void addAll(List<AffCompanyHistCustom> domains) {
-		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
-				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG," + "  PID, SID, HIST_ID, CID, "
-				+ "  DESTINATION_DATA, START_DATE , END_DATE) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, PID_VAL, SID_VAL, HIST_ID_VAL, CID_VAL, DESTINATION_DATA_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
+				+ " UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG,"
+				+ " PID, SID, HIST_ID, CID, "
+				+ " DESTINATION_DATA, START_DATE , END_DATE) "
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, PID_VAL, SID_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, DESTINATION_DATA_VAL, START_DATE_VAL, END_DATE_VAL); ";
 
 		String cid = AppContexts.user().companyId();
 		GeneralDateTime insertTime = GeneralDateTime.now();
@@ -645,9 +648,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public void updateAll(List<AffCompanyHistItem> domains) {
-		String UP_SQL = "UPDATE BSYMT_AFF_COM_HIST SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ "  DESTINATION_DATA = DESTINATION_DATA_VAL, START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL "
-				+ "  WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String UP_SQL = "UPDATE BSYMT_AFF_COM_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL,"
+				+ " UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL, DESTINATION_DATA = DESTINATION_DATA_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL "
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
 		String cid = AppContexts.user().companyId();
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
