@@ -143,7 +143,7 @@ const WEB_APP_NAME = {
                                     self.$modal($dialog(), {
                                         message: xhr.response
                                     }, {
-                                            title: xhr.responseText
+                                            title: 'Business exception'
                                         }).then(f => {
                                             reject(response);
                                         });
@@ -165,7 +165,7 @@ const WEB_APP_NAME = {
                             self.$modal($dialog(), {
                                 message: xhr.response
                             }, {
-                                    title: xhr.responseText
+                                    title: 'Business exception'
                                 }).then(() => {
                                     reject(xhr);
                                 });

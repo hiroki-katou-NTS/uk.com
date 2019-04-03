@@ -93,23 +93,26 @@ const modal = {
                                 }
                             },
                             mounted() {
-                                let el = this.$el as HTMLElement,
-                                    footer = el.querySelector('.modal-footer') as HTMLElement;
+                                let el = this.$el as HTMLElement;
+                                
+                                if (el.nodeType !== 8) {
+                                    let footer = el.querySelector('.modal-footer') as HTMLElement;
 
-                                // move footer element from body to modal content
-                                if (footer) {
-                                    let mcontent = el.closest('.modal-content');
+                                    // move footer element from body to modal content
+                                    if (footer) {
+                                        let mcontent = el.closest('.modal-content');
 
-                                    if (mcontent) {
-                                        if (!dom.hasClass(footer, 'top')) {
-                                            mcontent.append(footer);
-                                        } else {
-                                            let body = mcontent.querySelector('.modal-body') as HTMLElement;
-
-                                            if (body) {
-                                                mcontent.insertBefore(footer, body);
-                                            } else {
+                                        if (mcontent) {
+                                            if (!dom.hasClass(footer, 'top')) {
                                                 mcontent.append(footer);
+                                            } else {
+                                                let body = mcontent.querySelector('.modal-body') as HTMLElement;
+
+                                                if (body) {
+                                                    mcontent.insertBefore(footer, body);
+                                                } else {
+                                                    mcontent.append(footer);
+                                                }
                                             }
                                         }
                                     }
