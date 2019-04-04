@@ -14,20 +14,20 @@ import { ccg007 } from "../common/common";
                 required: true
             },
             newPassword: {
-                required: true
-                // checkSame: {
-                //     test(value){
-                //         return value === this.model.newPasswordConfirm;
-                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                // }
+                required: true,
+                checkSame: {
+                    test(value){
+                        return this.model.newPassword !== this.model.newPasswordConfirm;
+                    }, message: 'Msg_961'
+                }
             },
             newPasswordConfirm: {
-                required: true
-                // checkSame: {
-                //     test(value){
-                //         return value === this.model.newPassword;
-                //     }, message: '新しいパスワードと新しいパスワード（確認用）はマッチしてない'
-                // }
+                required: true,
+                checkSame: {
+                    test(value){
+                        return this.model.newPassword !== this.model.newPasswordConfirm;
+                    }, message: 'Msg_961'
+                }
             }
         }
     }, 
