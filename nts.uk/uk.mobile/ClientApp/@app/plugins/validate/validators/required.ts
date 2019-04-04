@@ -19,5 +19,4 @@ const required = function (value: any, checkOr: boolean) {
     return !msg ? null : 'required';
 };
 
-
 export { required };

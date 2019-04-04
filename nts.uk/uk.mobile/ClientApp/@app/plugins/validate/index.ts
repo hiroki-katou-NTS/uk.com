@@ -88,14 +88,6 @@ const DIRTY = 'dirty',
                     let self: Vue = this,
                         validations = self.$options.validations || {};
 
-                    if (self.$options.constraints && self.$options.constraints.length) {
-                        self.$http
-                            .post('/validate/constraints/map', self.$options.constraints)
-                            .then(resp => {
-                                console.log(resp);
-                            });
-                    }
-
                     // init errors & $valid obser
                     defReact(self, '$errors', {});
                     // store all watchers of validators
@@ -125,6 +117,37 @@ const DIRTY = 'dirty',
                     vue.set(self, '$errors', errors);
 
                     delete self.$options.validations;
+
+                    if (self.$options.constraints && self.$options.constraints.length) {
+                        self.$http
+                            .post('/validate/constraints/map', self.$options.constraints)
+                            .then((resp: { data: Array<{ [key: string]: any }> }) => {
+                                paths(validations)
+                                    .forEach((path: string) => {
+                                        let validation: IRule = $.get(validations, path, {});
+
+                                        if (validation.constraint) {
+                                            let cstr = resp.data.filter(c => c.name === validation.constraint)[0];
+
+                                            if (cstr) {
+                                                ['path', 'name', 'valueType']
+                                                    .forEach(v => {
+                                                        cstr = $.omit(cstr, v);
+                                                    });
+
+                                                ['minLength', 'maxLength']
+                                                    .forEach(v => {
+                                                        if ($.has(cstr, v)) {
+                                                            $.set(cstr, v, Number($.get(cstr, v)));
+                                                        }
+                                                    });
+
+                                                self.$updateValidator(path, cstr);
+                                            }
+                                        }
+                                    });
+                            });
+                    }
                 },
                 created() {
                     let self: Vue = this;
