@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の所定内時間
@@ -141,15 +142,14 @@ public class WithinStatutoryTimeOfDaily {
 														  recordReget.getWorkTimezoneCommonSet(),
 														  conditionItem,
 														  predetermineTimeSetByPersonInfo,
-														  Optional.empty());
+														  Optional.empty(),
+														  NotUseAtr.NOT_USE);
 			
 
 		//実働時間の計算
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
-//					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
-//					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-												  true,
-												  true,
+					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
+					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 					  							  recordReget.getPersonalInfo().getWorkingSystem(),
 					  							  recordReget.getWorkDeformedLaborAdditionSet(),
 					  							  recordReget.getWorkFlexAdditionSet(),
@@ -175,7 +175,8 @@ public class WithinStatutoryTimeOfDaily {
 					  							recordReget.getWorkTimezoneCommonSet(),
 					  							conditionItem,
 					  							predetermineTimeSetByPersonInfo,
-					  							Optional.of(new DeductLeaveEarly(0, 1)));
+					  							Optional.of(new DeductLeaveEarly(0, 1)),
+					  							NotUseAtr.USE);
 			actualTime = actualTime.minusMinutes(withinpremiumTime.valueAsMinutes());
 			
 		//所定内深夜時間の計算
@@ -212,7 +213,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<WorkTimezoneCommonSet> commonSetting,
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   												Optional<DeductLeaveEarly> deductLeaveEarly
+			   												Optional<DeductLeaveEarly> deductLeaveEarly,
+			   												NotUseAtr lateEarlyMinusAtr
 			   												   ) {
 		if(conditionItem.getLaborSystem().isFlexTimeWork() 
 //		if(true
@@ -256,7 +258,8 @@ public class WithinStatutoryTimeOfDaily {
 						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									conditionItem,
 						  									predetermineTimeSetByPersonInfo,
-						  									leaveLateset
+						  									leaveLateset,
+						  									lateEarlyMinusAtr
 					   );
 		}
 		else {
@@ -292,7 +295,8 @@ public class WithinStatutoryTimeOfDaily {
 						  														  conditionItem,
 						  														  predetermineTimeSetByPersonInfo,coreTimeSetting,
 						  														  HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-						  									  					  leaveLateset
+						  									  					  leaveLateset,
+						  									  					  lateEarlyMinusAtr
 												).getWorkTime();
 		}
 	}
@@ -392,7 +396,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<WorkTimezoneCommonSet> commonSetting,
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   												Optional<DeductLeaveEarly> deductLeaveEarly
+			   												Optional<DeductLeaveEarly> deductLeaveEarly,
+			   												NotUseAtr lateEarlyMinusAtr
 			   												   ) {
 		if(conditionItem.getLaborSystem().isFlexTimeWork() 
 //		if(true
@@ -436,7 +441,8 @@ public class WithinStatutoryTimeOfDaily {
 						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									conditionItem,
 						  									predetermineTimeSetByPersonInfo,
-						  									leaveLateset
+						  									leaveLateset,
+						  									lateEarlyMinusAtr
 					   );
 		}
 		else {
@@ -481,7 +487,8 @@ public class WithinStatutoryTimeOfDaily {
 						  														  //HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
 						  														  //休暇加算するか(就業時間計算時)はここを見るようにしている
 						  														  HolidayAdditionAtr.HolidayNotAddition,
-						  														  leaveLateset
+						  														  leaveLateset,
+						  														  lateEarlyMinusAtr
 						  														  
 												).getWorkTime();
 		}

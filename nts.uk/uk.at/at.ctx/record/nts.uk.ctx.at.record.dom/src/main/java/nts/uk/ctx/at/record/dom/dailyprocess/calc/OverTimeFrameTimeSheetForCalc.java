@@ -59,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -337,7 +338,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 																  commonSetting, 
 																  conditionItem, 
 																  predetermineTimeSetByPersonInfo, 
-																  Optional.of(new DeductLeaveEarly(0, 1)));
+																  Optional.of(new DeductLeaveEarly(0, 1)),
+																  NotUseAtr.NOT_USE);
 					
 		
         		}
@@ -367,7 +369,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 							  conditionItem,
 							  predetermineTimeSetByPersonInfo,coreTimeSetting
 							  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
-							  new DeductLeaveEarly(1, 0)
+							  new DeductLeaveEarly(1, 0),
+							  NotUseAtr.NOT_USE
 							).getWorkTime();
         		}
         	}
