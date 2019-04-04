@@ -30,6 +30,7 @@ declare interface IRule {
     maxValue?: Date | number;
     between?: Array<Date | number>;
     not?: Array<Date | number | string>;
+    constraint?: string;
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;
