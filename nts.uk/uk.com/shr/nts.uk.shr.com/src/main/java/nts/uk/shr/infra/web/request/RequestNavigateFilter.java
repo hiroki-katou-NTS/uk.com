@@ -35,6 +35,7 @@ public class RequestNavigateFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		Optional<String> pido = FilterHelper.detectProgram(getRequestPath(httpRequest));
 		if(pido.isPresent()) {
+			Program requestProgram = ProgramsManager.findById(pido.get()).get();
 			DeviceInfo deviceInfo = AppContexts.deviceInfo();
 			if(deviceInfo == null) {
 				deviceInfo = DeviceInfo.detectDevice(httpRequest).get();
@@ -43,7 +44,11 @@ public class RequestNavigateFilter implements Filter {
 			String mobiContext = FilterConst.webApps.get(WebAppId.MOBI);
 			if(deviceInfo.isMobile()){
 				if(!httpRequest.getContextPath().contains(mobiContext)) {
-					Optional<Program> programOpt = ProgramsManager.findById(WebAppId.MOBI, pido.get());
+					if(requestProgram.getRelativePid() == null){
+						/** TODO: redirect to not found page */
+						return;
+					}
+					Optional<Program> programOpt = ProgramsManager.findById(WebAppId.MOBI, requestProgram.getRelativePid());
 					if(programOpt.isPresent()){
 						/** TODO: check for develop (remove on after) */
 						if(httpRequest.getHeader("host").contains("localhost")){
@@ -60,7 +65,11 @@ public class RequestNavigateFilter implements Filter {
 				}
 			} else if (deviceInfo.isPc()) {
 				if(httpRequest.getContextPath().contains(mobiContext)) {
-					Optional<Program> programOpt = ProgramsManager.findById(pido.get());
+					if(requestProgram.getRelativePid() == null){
+						/** TODO: redirect to not found page */
+						return;
+					}
+					Optional<Program> programOpt = ProgramsManager.findById(requestProgram.getRelativePid());
 					if(programOpt.isPresent()){
 						redirectPage(httpRequest, response, 
 								buildPagePathToRedirect(httpRequest, FilterConst.webApps.get(programOpt.get().getAppId()), programOpt.get()));
