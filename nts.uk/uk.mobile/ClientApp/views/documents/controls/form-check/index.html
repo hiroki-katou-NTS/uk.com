@@ -26,16 +26,13 @@
                     <v-label v-bind:constraint="{}">{{ 'Radio without foreach' | i18n }}</v-label>
                 </div>
                 <div class="col-md-8">
-                    <nts-radio v-model="checked2" v-bind:name="'radio2'" v-bind:value="1" v-bind:disabled="false"
-                        v-bind:class="''">
+                    <nts-radio v-model="checked2" name="radio2" value="1" disabled="false" class="">
                         Radio 1
                     </nts-radio>
-                    <nts-radio v-model="checked2" v-bind:name="'radio2'" v-bind:value="2" v-bind:disabled="false"
-                        v-bind:class="''">
+                    <nts-radio v-model="checked2" name="radio2" value="2" disabled="false" class="">
                         Radio 2
                     </nts-radio>
-                    <nts-radio v-model="checked2" v-bind:name="'radio2'" v-bind:value="3" v-bind:disabled="false"
-                        v-bind:class="''">
+                    <nts-radio v-model="checked2" name="radio2" value="3" disabled="false" class="">
                         Radio 3
                     </nts-radio>
                     <pre>Value selected: {{checked2}}</pre>

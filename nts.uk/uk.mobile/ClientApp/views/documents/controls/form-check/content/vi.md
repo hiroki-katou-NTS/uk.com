@@ -48,17 +48,19 @@
 </nts-checkbox>
 ```
 ### 2.3 SwitchBox
-
+> **Chú ý:** `nts-switchbox` là một nhóm các control nên cần được đóng trong một thẻ `container` (tức là không nằm đồng mức với bất kỳ control nào khác).
 ```html
-<nts-switchbox 
-    v-for="(radio, k) in radios" 
-    v-model="switchbox" 
-    v-bind:name="'radio1'"
-    v-bind:value="radio.id" 
-    v-bind:disabled="radio.disabled" 
-    v-bind:class="''">
-    {{radio.id}} - {{radio.name}}
-</nts-switchbox>
+<div class="btn-group btn-group-toggle">
+    <nts-switchbox 
+        v-for="(radio, k) in radios" 
+        v-model="switchbox" 
+        v-bind:name="'radio1'"
+        v-bind:value="radio.id" 
+        v-bind:disabled="radio.disabled" 
+        v-bind:class="''">
+        {{radio.id}} - {{radio.name}}
+    </nts-switchbox>
+<div>
 ```
 ### 2.4 ViewModel
 ```typescript

@@ -8,7 +8,7 @@ class RadioBoxComponent extends SelectBoxComponent {
     type: string = 'radio';
 
     get checked() {
-        return this.selected === this.value;
+        return this.selected == this.value;
     }
 
     @Emit('input')

@@ -4,13 +4,13 @@ import { component, Prop, Model } from '@app/core/component';
 export const select = () => component({
     template: `<div class="form-check">
         <label class="form-check-label">
-            <input ref="input" :name="name" :type="type" :checked="checked" :disabled="disabled" v-on:click="onClick()" class="form-check-input" />
+            <input ref="input" :name="name" :type="type" :value="value" :checked="checked" :disabled="!!disabled && disabled !== 'false'" v-on:click="onClick()" class="form-check-input" />
             <span><slot /></span>
         </label>
     </div>`
 }), switchbtn = () => component({
     template: `<label class="btn btn-secondary">
-        <input ref="input" :name="name" :type="type" :checked="checked" :disabled="disabled" v-on:click="onClick()" class="form-check-input" />
+        <input ref="input" :name="name" :type="type" :value="value" :checked="checked" :disabled="!!disabled && disabled !== 'false'" v-on:click="onClick()" class="form-check-input" />
         <span><slot /></span>
     </label>`
 });
@@ -26,5 +26,5 @@ export class SelectBoxComponent extends Vue {
     name!: string;
 
     @Prop({ default: false })
-    disabled!: boolean;
+    disabled!: 'true' | 'false' | boolean;
 }
