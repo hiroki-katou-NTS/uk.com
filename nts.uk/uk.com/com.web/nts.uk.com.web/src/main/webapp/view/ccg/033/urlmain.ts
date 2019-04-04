@@ -3,15 +3,14 @@ __viewContext.ready(function() {
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
-    nts.uk.ui.block.invisible();
     nts.uk.request.ajax("com", server_path).done((success) => {
         //Doi ung password policy
         if(!nts.uk.util.isNullOrUndefined(success.changePw.successMsg)&&!nts.uk.util.isNullOrEmpty(success.changePw.successMsg)){
             nts.uk.ui.dialog.info({ messageId: success.successMsg }).then(()=>{
-                loginDone(success);     
+                loginDone(success, urlID);     
             });
         } else {
-            loginDone(success);    
+            loginDone(success, urlID);    
         }  
     }).fail((failure) => {
         if(!nts.uk.util.isNullOrEmpty(failure.messageId)){
@@ -29,25 +28,26 @@ __viewContext.ready(function() {
         }
     });
 });
-function loginDone(success) {
+
+function loginDone(success, urlID) {
     let changePw = success.changePw;
     if (!nts.uk.util.isNullOrEmpty(changePw.msgErrorId) && changePw.msgErrorId == 'Msg_1517') {
         //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
         nts.uk.ui.dialog.confirm({ messageId: changePw.msgErrorId, messageParams: [changePw.spanDays]})
             .ifYes(() => {
                 success.changePw.changePassReason = 'Msg_1523';
-                openDialogCCG007E(success);
+                openDialogCCG007E(success, urlID);
             }).ifNo(() => {
-                routeData(success);
+                routeData(success, urlID);
             });
     } else if (changePw.showChangePass) {
-        openDialogCCG007E(success);
+        openDialogCCG007E(success, urlID);
     }else{
-        routeData(success);
+        routeData(success, urlID);
     }
 }
 //open dialog CCG007E - change pass 
-function openDialogCCG007E(success) {
+function openDialogCCG007E(success, urlID) {
     let changePw = success.changePw;
     //set LoginId to dialog
     nts.uk.ui.windows.setShared('parentCodes', {
@@ -66,14 +66,14 @@ function openDialogCCG007E(success) {
     }).onClosed(function(): any {
         var changePwDone = nts.uk.ui.windows.getShared('changePwDone');
         if(changePwDone){
-           routeData(success); 
+           routeData(success, urlID); 
         }else{
             window.close();
         }
         
     })
 }
-function routeData(success){
+function routeData(success, urlID){
     switch(success.programID){
         case "ccg007": {
             let path = window.location.href;
@@ -176,4 +176,3 @@ function routeData(success){
         default: nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");
     }        
 }
-

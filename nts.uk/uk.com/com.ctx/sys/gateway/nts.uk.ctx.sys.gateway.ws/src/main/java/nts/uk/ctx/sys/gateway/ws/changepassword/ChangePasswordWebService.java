@@ -19,7 +19,11 @@ import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommand;
+import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginInforDto;
+import nts.uk.ctx.sys.gateway.app.find.securitypolicy.PasswordPolicyFinder;
+import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -27,8 +31,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
@@ -42,6 +44,9 @@ public class ChangePasswordWebService extends WebService{
 	/** The change pass command handler. */
 	@Inject
 	private ChangePasswordCommandHandler changePassCommandHandler;
+	
+	@Inject
+	private MobileChangePasswordCommandHandler mobileChangePassHandler;
 	
 	/** The forgot password command handler. */
 	@Inject
@@ -60,6 +65,9 @@ public class ChangePasswordWebService extends WebService{
 	
 	@Inject
 	private LoginService service;
+	
+	@Inject
+	private PasswordPolicyFinder passwordPolicyFinder;
 	/**
 	 * Channge pass word.
 	 *
@@ -69,6 +77,16 @@ public class ChangePasswordWebService extends WebService{
 	@Path("submitchangepass")
 	public void channgePassWord(ChangePasswordCommand command) {
 		this.changePassCommandHandler.handle(command);
+	}
+	/**
+	 * Channge pass word.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("submitchangepass/mobile")
+	public void channgePassWord(MobileChangePasswordCommand command) {
+		this.mobileChangePassHandler.handle(command);
 	}
 
 	
@@ -157,20 +175,25 @@ public class ChangePasswordWebService extends WebService{
 	
 	@POST
 	@Path("username/mobile")
-	public LoginInforDto getUserName() {
-		//set companyId
-		LoginUserContext user = AppContexts.user();
+	public LoginInforDto getUserName(EmployeeInforDto infor) {
+		String companyId = service.comanyId(infor.getContractCode(), infor.getCompanyCode());
 		// Edit employee code
-		String employeeCode = service.employeeCodeEdit(user.employeeCode(), user.companyId());
+		String employeeCode = service.employeeCodeEdit(infor.getEmployeeCode(), companyId);
 					
 		// Get domain 社員
-		EmployeeImport em = this.getEmployee(user.companyId(), employeeCode);
+		EmployeeImport em = this.getEmployee(companyId, employeeCode);
 		
-		return userAdapter.findUserByAssociateId(em.getPersonalId()).map(u -> new LoginInforDto(user.employeeCode(),
+		return userAdapter.findUserByAssociateId(em.getPersonalId()).map(u -> new LoginInforDto(infor.getEmployeeCode(),
 																								u.getUserName().get(),
 																								u.getUserId(),
 																								u.getContractCode()))
 																.orElseGet(() -> new LoginInforDto());
+	}
+	
+	@POST
+	@Path("getPasswordPolicy/{contractCode}")
+	public PasswordPolicyDto getPasswordPolicy(@PathParam("contractCode") String contractCode){
+		return this.passwordPolicyFinder.getPasswordPolicy(contractCode);
 	}
 	
 	

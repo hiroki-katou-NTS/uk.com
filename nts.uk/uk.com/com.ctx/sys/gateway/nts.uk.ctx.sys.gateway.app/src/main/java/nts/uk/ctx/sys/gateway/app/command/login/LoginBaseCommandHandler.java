@@ -86,6 +86,8 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstallationType;
@@ -368,8 +370,17 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
        //権限（ロール）情報を取得、設定する 
        this.setRoleId(user.getUserId());
    }
+   
+   public void initSessionC(UserImportNew user, EmployeeImport em, String companyCode, LoginUserRoles roles) {
+       //「ログインユーザコンテキスト」を新規作成、セッションに格納
+       manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
+               companyCode, em.getEmployeeId(), em.getEmployeeCode());
+       //権限（ロール）情報を取得、設定する 
+//       this.setRoleId(user.getUserId());
+       manager.roleSet(roles);
+   }
+   
    /**
-
 	/**
 	 * CCG007-B.セッション生成
 	 * @param user ユーザ
@@ -414,66 +425,20 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if(signon){
 			return new CheckChangePassDto(false, null, false);
 		}
-		//ドメインモデル「ユーザ．パスワード状態」をチェックする
-		if(user.getPassStatus() == PassStatus.Reset.value){//「リセット」の場合(reset)
-			//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
-			//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
-//			「社員．パスワード状態=リセット」の場合　⇒　#Msg_283#
-			//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
-			return new CheckChangePassDto("Msg_283");
-		}
-		//「リセット以外」の場合
-		//imported（GateWay）「パスワードポリシー」を取得する
-		Optional<PasswordPolicy> pwPoliOp = pwPolicyRepo.getPasswordPolicy(new ContractCode(user.getContractCode()));
-		if (!pwPoliOp.isPresent()) {
-			return new CheckChangePassDto(false, null, false);
-		}
-		PasswordPolicy pwPoli = pwPoliOp.get();
-		//「パスワードポリシー.利用する」区分をチェックする (Check「PasswoedPlicy.isUse」)
-		if(!pwPoli.isUse()){//利用しない場合(not use)
-			return new CheckChangePassDto(false, null, false);
-		}
-		//利用する場合(use)
-		//「パスワードポリシー.初回ログイン時にパスワード変更する」区分をチェックする (Check 「PasswordPolicy.initialPasswordChange」)
-		if (pwPoli.isInitialPasswordChange()) {//変更する
-			//ドメインモデル「ユーザ．パスワード状態」をチェックする (Check 「User．passwordStatus」)
-			if (user.getPassStatus() == PassStatus.InitPassword.value) {//「初期パスワード」の場合(InitialPassword)
-				//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
-				//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
-//				「社員．パスワード状態=初期パスワード」の場合 　⇒　#Msg_282#
-				//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
-				return new CheckChangePassDto("Msg_282");
-			}
-		}
-		//入力されたパスワードは「パスワードポリシー」を満たしているかをチェックする (Check xem password đã nhập có thỏa mãn  "PasswordPolicy" không)
-		CheckBeforeChangePass mess = userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword, user.getContractCode());
-		if (mess.isError()) {//社員のパスワードがパスワードポリシーを満たさない場合(ko thỏa mãn PasswordPolicy)
-			//「パスワードポリシー.ログイン時にパスワードに従っていない場合変更させる」区分をチェックする (Check 「PasswordPolicy.loginCheck」)
-			if (pwPoli.isLoginCheck()) {//loginCheck = True
-				//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
-				//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
-//				「社員．パスワード」がパスワードポリシーを満たさない場合 　⇒　#Msg_284#
-				//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
-				return new CheckChangePassDto("Msg_284");
+		
+		if (user.getPassStatus() != PassStatus.Reset.value) {
+			// Get PasswordPolicy
+			Optional<PasswordPolicy> pwPoliOp = this.pwPolicyRepo.getPasswordPolicy(new ContractCode(user.getContractCode()));
+
+			if (pwPoliOp.isPresent()) {
+				// Event Check
+				return this.checkEvent(pwPoliOp.get(), user, oldPassword);
+
 			}
 			return new CheckChangePassDto(false, null, false);
 		}
-		//パスワードポリシーを満たす場合(Thỏa mãn PasswordPolicy)
-		//アルゴリズム「パスワードの期限切れチェック」を実行する (Thực hiện thuật toán 「Check hết hạn password」)
-		//エラーあり：パスワードの有効期限が切れた場合
-		if(pWPolicyAlg.checkExpiredPass(user.getUserId(), pwPoli.getValidityPeriod().v().intValue())){
-			return new CheckChangePassDto("Msg_1516");
-		}
-		//エラーなし
-		//アルゴリズム「パスワード変更通知チェック」を実行する (Thực hiện thuật toán 「Check thông báo thay đổi password」)
-		//通知しない(ko thông báo)
-		NotifyResult notifyResult = pWPolicyAlg.checkNotifyChangePass(user.getUserId(), pwPoli.getValidityPeriod().v().intValue(), pwPoli.getNotificationPasswordChange().v().intValue());
-		if(!notifyResult.isNotifyFlg()){
-			return new CheckChangePassDto(false, null, false);
-		}
-		//通知する(có  thông báo- có check vào mục thông báo)
-		//確認メッセージ（Msg_1517）を表示する {0}【残り何日】
-		return new CheckChangePassDto("Msg_1517", notifyResult.getSpanDays());
+			
+		return new CheckChangePassDto(true, "Msg_283", false);
 	}
 
 	/**
@@ -487,7 +452,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the old password
 	 * @return true, if successful
 	 */
-	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
+	protected CheckChangePassDto checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
 		// Check passwordPolicy isUse
 		if (passwordPolicy.isUse()) {
 			// Check Change Password at first login
@@ -495,21 +460,37 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Check state
 				if (user.getPassStatus() == PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					return false;
+					return new CheckChangePassDto(true, "Msg_282", false);
 				}
 			}
 
-			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword,
-					user.getContractCode());
+			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword, user.getContractCode());
 
 			if (mess.isError()) {
 				if (passwordPolicy.isLoginCheck()) {
-					return false;
+					return new CheckChangePassDto(true, "Msg_284", false);
 				}
-				return true;
+				return new CheckChangePassDto(false, null, false);
 			}
+			
+			//パスワードポリシーを満たす場合(Thỏa mãn PasswordPolicy)
+			//アルゴリズム「パスワードの期限切れチェック」を実行する (Thực hiện thuật toán 「Check hết hạn password」)
+			//エラーあり：パスワードの有効期限が切れた場合
+			if(pWPolicyAlg.checkExpiredPass(user.getUserId(), passwordPolicy.getValidityPeriod().v().intValue())){
+				return new CheckChangePassDto("Msg_1516");
+			}
+			//エラーなし
+			//アルゴリズム「パスワード変更通知チェック」を実行する (Thực hiện thuật toán 「Check thông báo thay đổi password」)
+			//通知しない(ko thông báo)
+			NotifyResult notifyResult = pWPolicyAlg.checkNotifyChangePass(user.getUserId(), passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getNotificationPasswordChange().v().intValue());
+			if(!notifyResult.isNotifyFlg()){
+				return new CheckChangePassDto(false, null, false);
+			}
+			//通知する(có  thông báo- có check vào mục thông báo)
+			//確認メッセージ（Msg_1517）を表示する {0}【残り何日】
+			return new CheckChangePassDto("Msg_1517", notifyResult.getSpanDays());
 		}
-		return true;
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -566,6 +547,54 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		return new CheckChangePassDto(false, null, false);
 	}
+	
+	public LoginUserRoles checkRole(String userId, String comId) {
+		DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
+		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE, comId);
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT, comId);
+		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY, comId);
+		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER, comId);
+		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER, comId);
+		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER, comId);
+		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO, comId);
+		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER, comId);
+		// 就業
+		if (employmentRoleId != null) {
+			roles.setRoleIdForAttendance(employmentRoleId);
+		}
+		// 給与
+		if (salaryRoleId != null) {
+			roles.setRoleIdForPayroll(salaryRoleId);
+		}
+		// 人事
+		if (humanResourceRoleId != null) {
+			roles.setRoleIdForPersonnel(humanResourceRoleId);
+		}
+		// オフィスヘルパー
+		if (officeHelperRoleId != null) {
+			roles.setRoleIdforOfficeHelper(officeHelperRoleId);
+		}
+		// 会計
+		// マイナンバー
+		// グループ会社管理
+		if (groupCompanyManagerRoleId != null) {
+			roles.setRoleIdforGroupCompaniesAdmin(groupCompanyManagerRoleId);
+		}
+		// 会社管理者
+		if (companyManagerRoleId != null) {
+			roles.setRoleIdforCompanyAdmin(companyManagerRoleId);
+		}
+		// システム管理者
+		if (systemManagerRoleId != null) {
+			roles.setRoleIdforSystemAdmin(systemManagerRoleId);
+		}
+		// 個人情報
+		if (personalInfoRoleId != null) {
+			roles.setRoleIdforPersonalInfo(personalInfoRoleId);
+		}
+
+		return roles;
+	}
 
 	/**
 	 * Gets the role id.
@@ -583,6 +612,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		return roleId;
 	}
+
+	protected String getRoleId(String userId, RoleType roleType, String comId) {
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today(), comId);
+		if (roleId == null || roleId.isEmpty()) {
+			return null;
+		}
+		return roleId;
+	}
+	
 	/**
 	 * Compare hash password.
 	 *
