@@ -1,6 +1,7 @@
 import { Vue, _ } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
+import { ccg007 } from "../common/common";
 
 @component({
     route: '/ccg/007/c',
@@ -34,6 +35,12 @@ import { NavMenu, SideMenu } from '@app/services';
 })
 export class ChangePassComponent extends Vue {
 
+    @Prop({ default: () => ({}) })
+    params!: any;
+
+    mesId: string;
+    userId: string;
+
     policy = {
         lowestDigits: 0,
         alphabetDigit: 0,
@@ -41,6 +48,7 @@ export class ChangePassComponent extends Vue {
         symbolCharacters: 0,
         historyCount: 0,
         validPeriod: 0,
+        isUse: false
     }
 
     model = {
@@ -52,8 +60,11 @@ export class ChangePassComponent extends Vue {
 
     created() {
         let self = this;
-        Promise.all([this.$http.post(servicePath.getPasswordPolicy), 
-                    this.$http.post(servicePath.getUserName)])
+        self.mesId = self.$i18n(self.params.mesId);
+        Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode), 
+                    this.$http.post(servicePath.getUserName, {  contractCode: self.params.contractCode, 
+                                                                employeeCode: self.params.employeeCode, 
+                                                                companyCode: self.params.companyCode })])
                 .then((values: Array<any>) => {
             let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data;
             self.model.userName = user.userName;
@@ -63,6 +74,8 @@ export class ChangePassComponent extends Vue {
             self.policy.symbolCharacters = policy.symbolCharacters;
             self.policy.historyCount = policy.historyCount;
             self.policy.validPeriod = policy.validityPeriod;
+            self.policy.isUse  = policy.isUse;
+            self.userId = user.userId;
         });
         
         // Hide top & side menu
@@ -85,13 +98,23 @@ export class ChangePassComponent extends Vue {
         let self = this, 
             command: ChangePasswordCommand = new ChangePasswordCommand(self.model.currentPassword, 
                                                                         self.model.newPassword, 
-                                                                        self.model.newPasswordConfirm);
+                                                                        self.model.newPasswordConfirm,
+                                                                        self.userId);
 
         self.$mask("show");
         
         //submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+            ccg007.login(this, {    companyCode : self.params.companyCode,
+                                    employeeCode: self.params.employeeCode,
+                                    password: command.newPassword,
+                                    contractCode : self.params.contractCode,
+                                    contractPassword : self.params.contractPassword
+            }, () => {
+                self.model.currentPassword = "";
+                self.model.newPassword = "";
+                self.model.newPasswordConfirm = "";
+            }, self.params.saveInfo);
         }).catch((res) => {
             //Return Dialog Error
             self.$mask("hide");
@@ -104,19 +127,20 @@ export class ChangePassComponent extends Vue {
         if (!res.businessException) {
             return;
         }
-
         /** TODO: show error message */
-        if (Array.isArray(res.errors)) {
+        if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
             //nts.uk.ui.dialog.bundledErrors(res);
+            /** TODO: show multi line message */
+            this.$modal.error(res.message);
         } else {
-            //nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+            this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         }
     }
 }
 
 const servicePath = {
-    getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy",
-    changePass: "ctx/sys/gateway/changepassword/submitchangepass",
+    getPasswordPolicy: "ctx/sys/gateway/changepassword/getPasswordPolicy/",
+    changePass: "ctx/sys/gateway/changepassword/submitchangepass/mobile",
     getUserName: "ctx/sys/gateway/changepassword/username/mobile"
 }
 
@@ -124,11 +148,13 @@ class ChangePasswordCommand {
     oldPassword: string;
     newPassword: string;
     confirmNewPassword: string;
+    userId: string;
     
-    constructor(oldPassword: string, newPassword: string, confirmNewPassword: string) {
+    constructor(oldPassword: string, newPassword: string, confirmNewPassword: string, userId: string) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
         this.confirmNewPassword = confirmNewPassword;
+        this.userId = userId;
     }
 }
 

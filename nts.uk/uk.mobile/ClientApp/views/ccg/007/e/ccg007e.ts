@@ -42,6 +42,7 @@ export class ResetPassComponent extends Vue {
         symbolCharacters: 0,
         historyCount: 0,
         validPeriod: 0,
+        isUse: false
     }
 
     model = {
@@ -56,6 +57,7 @@ export class ResetPassComponent extends Vue {
     created() {
         let self = this;
         self.id = self.$route.query.id as string;
+
         self.$http.post(servicePath.getUserName + self.id)
         .then((res: { data: LoginInfor}) => {
             let user: LoginInfor = res.data;
@@ -74,6 +76,7 @@ export class ResetPassComponent extends Vue {
             self.policy.symbolCharacters = policy.symbolCharacters;
             self.policy.historyCount = policy.historyCount;
             self.policy.validPeriod = policy.validityPeriod;
+            self.policy.isUse  = policy.isUse;
         });
 
         // Hide top & side menu
@@ -132,12 +135,13 @@ export class ResetPassComponent extends Vue {
         } else {
             //nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
         }
+        this.$modal.error(res.message);
     }
 }
 
 const servicePath = {
-    getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy/ ",
-    changePass: "ctx/sys/gateway/changepassword/submitchangepass",
+    getPasswordPolicy: "ctx/sys/gateway/changepassword/getPasswordPolicy/",
+    changePass: "ctx/sys/gateway/changepassword/submitforgotpass",
     getUserName: "ctx/sys/gateway/changepassword/getUserNameByURL/",
     submitLogin: "ctx/sys/gateway/login/submit/form1"
 }

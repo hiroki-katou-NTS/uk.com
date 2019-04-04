@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommand;
@@ -73,6 +73,9 @@ public class LoginWs extends WebService {
 	/** The submit form 3. */
 	@Inject
 	private SubmitLoginFormThreeCommandHandler submitForm3;
+	
+	@Inject
+	private MobileLoginCommandHandler mobileLoginHandler;
 
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
@@ -213,7 +216,7 @@ public class LoginWs extends WebService {
 	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
 		command.setSignOn(false);
 		command.setRequest(request);
-		return this.submitForm3.handle(command);
+		return this.mobileLoginHandler.handle(command);
 	}
 	
 	/**

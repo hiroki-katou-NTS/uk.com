@@ -13,7 +13,8 @@ import { SideMenu, NavMenu } from '@app/services';
             required: true
         },
         employeeCode: {
-            required: true
+            required: true,
+            anyHalf: true
         }
     },
     name: 'forgetPass'
@@ -27,44 +28,60 @@ export class ForgetPassComponent extends Vue {
     contractCode: string = '';
     companyCode: string = '';
     contractPass: string = '';
-    employeeCode: ''
+    employeeCode: string = '';
 
     created() {
         let self = this;
         self.contractCode = self.params.contractCode;
         self.contractPass = self.params.contractPass;
-        new Promise((resolve, reject) => {
-            resolve();
-        }).then(() => {
-            if (_.isEmpty(self.params.companies)) {
-                self.$http.post(servicePath.getAllCompany).then((response: { data: Array<ICompany>; }) => {
-                    self.companies = response.data;
-                });
-            } else {
-                self.companies = self.params.companies;
-            }
-        }).then(() => {
-            if (_.isNil(self.params.companyCode)) {
-                characteristics.restore("companyCode").then((compCode: any) => {
-                    self.companyCode = compCode;
-                });
-            } else {
-                self.companyCode = self.params.companyCode;
-            }
-        }).then(() => {
-            if (_.isNil(self.params.employeeCode)) {
-                characteristics.restore("employeeCode").then((empCode: any) => {
-                    self.employeeCode = empCode;
-                });
-            } else {
-                self.employeeCode = self.params.employeeCode;
-            }
-        });
+        
+        self.checkEmpCodeAndCompany();
 
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
     }
+
+    checkEmpCodeAndCompany(){
+        let self = this, companyCode = '', employeeCode = '';
+        Promise.resolve().then(() => {
+            if (!_.isEmpty(self.params.companies)) {
+                return { data: self.params.companies };
+            } else {
+                return this.$http.post(servicePath.getAllCompany + self.contractCode);
+            }
+        }).then((response: { data: Array<ICompany> }) => self.companies = response.data)
+        .then(() => {
+            if(!_.isNil(self.params.employeeCode)){
+                return Promise.resolve(self.params.employeeCode);
+            } else {
+                return characteristics.restore("employeeCode");
+            }
+        }).then((empCode: string) => {
+            if (!_.isNil(empCode)) {
+                employeeCode = empCode;
+            }
+        }).then(() => {
+            if(!_.isNil(self.params.companyCode)){
+                return Promise.resolve(self.params.companyCode);
+            } else {
+                return characteristics.restore("companyCode");
+            }
+        }).then((compCode: string) => {
+            if (!_.isNil(compCode)) {
+                companyCode = compCode;
+            }
+        }).then(() => {
+            if(_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))){
+                self.companyCode = self.companies[0].companyCode;
+                self.employeeCode = '';
+            } else {
+                self.companyCode = companyCode;
+                self.employeeCode = employeeCode;
+            }
+        })
+    }
+
 
     destroyed() {
         // Show menu
@@ -84,6 +101,7 @@ export class ForgetPassComponent extends Vue {
         submitData.contractPassword = self.contractPass;
         self.$mask("show");
         self.$http.post(servicePath.sendMail, submitData).then((result: { data: Array<SendMailReturn> }) => {
+            self.$mask("hide");
             if (!_.isEmpty(result.data)){
                 self.$goto({ name: 'mailSent', params: { companyCode: self.companyCode, 
                                                         employeeCode: self.employeeCode,
@@ -94,11 +112,10 @@ export class ForgetPassComponent extends Vue {
             self.$mask("hide");
             if (!_.isEqual(res.message, "can not found message id")) {
                 /** TODO: wait for dialog error method */
-                self.$modal.error({ messageId: res.messageId });
-                // self.$dialogError({ messageId: res.messageId, messageParams: res.parameterIds });
+                // self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                self.$modal.error(res.message);
             } else {
-                self.$modal.error({ messageId: res.messageId });
-                // self.$dialogError({ messageId: res.messageId });
+                self.$modal.error(res.message);
             }
         });
     }
@@ -114,7 +131,7 @@ export class ForgetPassComponent extends Vue {
 }
 
 const servicePath = {
-    getAllCompany: "ctx/sys/gateway/login/getcompany",
+    getAllCompany: "ctx/sys/gateway/login/getcompany/",
     sendMail: "ctx/sys/gateway/sendmail/mobile"
 }
 

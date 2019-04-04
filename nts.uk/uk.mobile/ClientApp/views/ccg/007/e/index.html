@@ -27,7 +27,7 @@
                 v-bind:errors-always="$errors.model.newPasswordConfirm"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
     
-            <div class="accordion" v-nts-accordion>
+            <div class="accordion" v-nts-accordion v-if="policy.isUse">
                 <div class="card">
                     <div class="card-header">
                         <button class="btn btn-link" type="button">
@@ -36,11 +36,16 @@
                     </div>
                     <div class="collapse">
                         <div class="card-body">
-                            最低桁数：　{{ policy.lowestDigits }}文字<br/>
-                            複数条件：　英字{{ policy.alphabetDigit }}桁、数字{{ policy.numberOfDigits }}桁、記号{{ policy.symbolCharacters}}桁<br/>
-                            履歴回数：　1度使ったパスワードは<br/>
-                            　　　　　　過去{{ policy.historyCount }}回まで使用できません<br/>
-                            有効期間：　{{ policy.validPeriod}}日<br/>
+                            <span>最低桁数：　{{ policy.lowestDigits }}文字</span>
+                            <span v-if="policy.alphabetDigit > 0 || policy.numberOfDigits > 0 || policy.symbolCharacters > 0">
+                                <br/>
+                                複数条件：<span v-if="policy.alphabetDigit > 0">　英字{{ policy.alphabetDigit }}桁</span> 
+                                            <span v-if="policy.numberOfDigits > 0">　数字{{ policy.numberOfDigits }}桁</span>
+                                            <span v-if="policy.symbolCharacters > 0">　記号{{ policy.symbolCharacters}}桁</span>
+                            </span><br/>
+                            <span v-if="policy.historyCount > 0">履歴回数：　1度使ったパスワードは<br/>
+                            　　　　　　過去{{ policy.historyCount }}回まで使用できません<br/></span>
+                            <span v-if="policy.validPeriod > 0">有効期間：　{{ policy.validPeriod}}日<br/></span>
                         </div>
                     </div>
                 </div>

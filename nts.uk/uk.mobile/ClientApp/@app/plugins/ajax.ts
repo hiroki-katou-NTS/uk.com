@@ -139,17 +139,17 @@ const WEB_APP_NAME = {
                             let response: { [key: string]: any } = JSON.parse(xhr.response);
 
                             if (response.businessException) {
-                                if (self) {
-                                    self.$modal($dialog(), {
-                                        message: xhr.response
-                                    }, {
-                                            title: xhr.responseText
-                                        }).then(f => {
-                                            reject(response);
-                                        });
-                                } else {
+                                // if (self) {
+                                //     self.$modal($dialog(), {
+                                //         message: xhr.response
+                                //     }, {
+                                //             title: xhr.responseText
+                                //         }).then(f => {
+                                //             reject(response);
+                                //         });
+                                // } else {
                                     reject(response);
-                                }
+                                // }
                             } else {
                                 resolve({ data: response, headers: parseHeaders(xhr) });
                             }

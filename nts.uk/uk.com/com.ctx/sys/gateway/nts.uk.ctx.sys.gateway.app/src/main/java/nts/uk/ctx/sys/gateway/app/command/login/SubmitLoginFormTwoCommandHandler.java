@@ -148,8 +148,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		}
 		
 		//アルゴリズム「ログイン記録」を実行する
-		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null,false);
+		CheckChangePassDto passChecked = this.checkAfterLogin(user, oldPassword);
+		if (passChecked.showChangePass){
+			return passChecked;
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
