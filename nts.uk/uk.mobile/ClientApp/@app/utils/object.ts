@@ -24,7 +24,14 @@ const $ = {
         return Object.keys(object).length;
     },
     has(obj: any, prop: string): boolean {
-        return obj != null && Object.prototype.hasOwnProperty.call(obj, prop);
+        if (prop.indexOf('.') === -1) {
+            return !!obj && Object.prototype.hasOwnProperty.call(obj, prop);
+        } else {
+            let paths = prop.split('.'),
+                _obj = obj && obj[paths.shift()];
+
+            return !!_obj && $.has(_obj, paths.join('.'));
+        }
     },
     isNil(obj: any): obj is null {
         return $.isNull(obj) || $.isUndefined(obj);
