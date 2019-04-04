@@ -86,6 +86,7 @@ body {
             display: block;
             border-width: 0;
             padding: 2px 15px;
+
             .row {
                 div[class^=col]:first-child {
                     padding-left: 45px;
@@ -129,7 +130,25 @@ body {
 
 @media (max-width: 557px) {}
 
-@media (max-width: 767px) {}
+@media (max-width: 767px) {
+    body {
+
+
+        .container,
+        .container-fluid {
+            .navbar {
+                .row {
+                    .navbar-brand {
+                        +div[class^=col-] {
+                            padding-top: 2px;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
 
 @media (max-width: 991px) {
     body {
@@ -157,6 +176,19 @@ body {
             .navbar {
                 z-index: 1050;
                 padding-left: 250px;
+            }
+        }
+
+        .container,
+        .container-fluid {
+            .navbar {
+                .row {
+                    .navbar-brand {
+                        +div[class^=col-] {
+                            padding-left: 45px;
+                        }
+                    }
+                }
             }
         }
     }
