@@ -241,13 +241,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			int lateDeductTime = 0;
 			if(this.lateTimeSheet.isPresent()) {
 				//lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getCalcTime().valueAsMinutes();
-				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(true,NotUseAtr.USE).getTime().valueAsMinutes();
+				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getTime().valueAsMinutes();
 			}
 			//早退控除時間を計算
 			int leaveEarlyDeductTime = 0;
 			if(this.leaveEarlyTimeSheet.isPresent()) {
 				//leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,NotUseAtr.USE).getTime().valueAsMinutes();
-				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(true,NotUseAtr.USE).getTime().valueAsMinutes();
+				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getTime().valueAsMinutes();
 			}
 			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
 			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
