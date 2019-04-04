@@ -1,6 +1,5 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
-import { SampleComponent } from '@app/components';
 
 @component({
     route: '/',
@@ -10,57 +9,15 @@ import { SampleComponent } from '@app/components';
     directives: {
         'focus': focus
     },
-    components: {
-        SampleComponent
-    },
     validations: {
-        time: {
-            minValue: -220,
-            maxValue: 1515
-        },
-        title: {
-            required: true,
-            minLength: 10,
-            constraint: 'EmployeeCode',
-            employeeCode: {
-                test: /\d+/,
-                message: ''
-            }
-        },
-        resource: {
-            required: true,
-            alpha: true
-        },
         model: {
             name: {
-                required: true
+                required: true,
+                constraint: 'EmployeeCode'
             },
             addrs: {
                 required: true,
-                self_validator: {
-                    test: /^\d{3,5}$/,
-                    message: 'xxxx'
-                },
-                dev_def: {
-                    test: function (value) {
-                        return false;
-                    },
-                    message: 'msg_90'
-                }
-            },
-            address: {
-                province: {
-                    required: true
-                },
-                district: {
-                    required: true,
-
-                }
-            },
-            office: {
-                head: {
-                    required: true
-                }
+                constraint: 'LoginId'
             }
         }
     },
@@ -72,55 +29,19 @@ import { SampleComponent } from '@app/components';
     ]
 })
 export class HomeComponent extends Vue {
-
-    time: number = 750;
-
-    title: string = 'home';
-
-    resource: string = '';
-
     model = {
-        name: '',
+        name: 'fsdfsd',
         addrs: 'world'
     };
-
-
-    disabled: boolean = false;
 
     constructor() {
         super();
         let self = this;
+
+        window['vm'] = self;
     }
 
-
-
-    alertNow() {
-        //console.log(this.validations);
-        //alert(this.$i18n(this.title));
-        //this.$router.push({ path: '/about/me' });
-
-        //this.disabled = true;
-        /*
-        this.$http
-            .get('/about/me')
-            .then((value: any) => {
-                debugger;
-            });*/
-
-        /*this.$updateValidator({
-            title: {
-                minLength: 100
-            }
-        });*/
-
-        this.$modal('SampleComponent', { id: 100, name: 'Nguyen Van A' })
-            .then((data: any) => {
-                console.log(data);
-            });
-
-        /*this.$alert('documents')
-            .then(v => {
-                alert(v);
-            });*/
+    created() {
+        this.model.name = '';
     }
 }

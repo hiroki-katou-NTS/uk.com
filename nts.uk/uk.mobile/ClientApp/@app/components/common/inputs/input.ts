@@ -122,11 +122,9 @@ export class InputComponent extends Vue {
             exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
-        if (obj.has(self.$parent, exprs)) {
-            if (!(obj.has(props, 'errors') && obj.has(props, 'constraint')) &&
-                (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
-                Vue.set(self, 'errors', obj.get(newErrs, exprs));
-            }
+        if (obj.has(self.$parent, exprs) && !obj.has(props, 'errors') &&
+            (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
+            Vue.set(self, 'errors', obj.get(newErrs, exprs));
         }
     }
 
@@ -136,11 +134,8 @@ export class InputComponent extends Vue {
             exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
-        if (obj.has(self.$parent, exprs)) {
-            if (!(obj.has(props, 'errors') && obj.has(props, 'constraint')) &&
-                (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
-                Vue.set(self, 'constraint', obj.get(newValidts, exprs));
-            }
+        if (obj.has(self.$parent, exprs) && !obj.has(props, 'constraint')) {
+            Vue.set(self, 'constraint', obj.get(newValidts, exprs));
         }
     }
 }

@@ -1,2 +1,28 @@
 <div id="home">
+    <div v-toolbar>
+        <div class="row">
+            <div class="col-6 col-md-2 navbar-brand">{{pgName}}</div>
+            <div class="col-md-7 col-sm-6 col-6 text-right">
+                <button type="button" class="btn btn-link">
+                    <i class="fa fa-save"></i>
+                </button>
+                <button type="button" class="btn btn-link">Middle</button>
+                <button type="button" class="btn btn-link">Right</button>
+            </div>
+            <div class="col-md-3 col-12">
+                <div class="input-group">
+                    <input type="text" class="form-control">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <nts-text-area name="name" v-model="model.name" inline-title="true" />
+        <nts-text-editor name="address" v-model="model.addrs" inline-title="true" />
+    </div>
 </div>

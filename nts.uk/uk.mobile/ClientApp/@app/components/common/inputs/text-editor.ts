@@ -4,7 +4,6 @@ import { input, InputComponent } from './input';
 
 @input()
 class StringComponent extends InputComponent {
-
     type: string = 'text';
 
     get rawValue() {
