@@ -1,5 +1,8 @@
 import './label';
-import './form-check';
+
+import './selects/radio';
+import './selects/checkbox';
+import './selects/switchbox';
 
 import './inputs/dropdown';
 
