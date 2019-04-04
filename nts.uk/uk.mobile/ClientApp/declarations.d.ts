@@ -31,6 +31,8 @@ declare interface IRule {
     between?: Array<Date | number>;
     not?: Array<Date | number | string>;
     constraint?: string;
+    charType?: string;
+    valueType?: 'String' | 'Decimal' | 'Integer' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;

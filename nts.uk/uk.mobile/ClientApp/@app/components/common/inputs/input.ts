@@ -8,7 +8,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
     template: `<div class="form-group row">
         <template v-if="showTitle && showTitle !== 'false'">
             <div v-bind:class="columns.title">
-                <nts-label v-bind:constraint="constraint" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
+                <nts-label v-bind:constraint="constraints" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
             </div>
         </template>
         <div v-bind:class="columns.input">
@@ -29,7 +29,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                             ref="input"
                             v-validate="{
                                 always: !!errorsAlways,
-                                errors: (errors || errorsAlways || {})
+                                errors: ($errors || errorsAlways || {})
                             }"
                             v-bind:disabled="disabled"
                             v-bind:value="rawValue"
@@ -42,7 +42,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:type="type"
                         v-validate="{
                             always: !!errorsAlways,
-                            errors: (errors || errorsAlways || {})
+                            errors: ($errors || errorsAlways || {})
                         }"
                         v-bind:rows="rows"
                         v-bind:disabled="disabled"
@@ -53,7 +53,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:input="input()"
                     />`
         }
-                <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+                <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
     </div>`,
@@ -116,6 +116,25 @@ export class InputComponent extends Vue {
         };
     }
 
+    readonly $errors: any = {};
+    readonly constraints: any = {};
+
+    @Watch('errors', { deep: true })
+    wSErrs(newErrs: any) {
+        let self = this;
+
+        Vue.set(self, '$errors', newErrs);
+    }
+
+    @Watch('errorsAlways', { deep: true })
+    wSErrAs(newErrs: any) {
+        let self = this;
+
+        if (!obj.isBoolean(newErrs)) {
+            Vue.set(self, '$errors', newErrs);
+        }
+    }
+
     @Watch('$parent.$errors', { deep: true })
     wErrs(newErrs: any) {
         let self = this,
@@ -124,8 +143,15 @@ export class InputComponent extends Vue {
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'errors') &&
             (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
-            Vue.set(self, 'errors', obj.get(newErrs, exprs));
+            Vue.set(self, '$errors', obj.get(newErrs, exprs));
         }
+    }
+
+    @Watch('constraint', { immediate: true, deep: true })
+    wSConsts(newValidts: any) {
+        let self = this;
+
+        Vue.set(self, 'constraints', newValidts);
     }
 
     @Watch('$parent.validations', { immediate: true, deep: true })
@@ -135,7 +161,7 @@ export class InputComponent extends Vue {
             props = (self.$vnode.componentOptions.propsData);
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'constraint')) {
-            Vue.set(self, 'constraint', obj.get(newValidts, exprs));
+            Vue.set(self, 'constraints', obj.get(newValidts, exprs));
         }
     }
 }

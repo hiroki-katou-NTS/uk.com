@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
+import { obj, constraint } from '@app/utils';
 import { component, Prop } from '@app/core/component';
 
 @component({
@@ -16,11 +17,9 @@ class LabelComponent extends Vue {
 
     get primitive(): string {
         let self = this;
-
-        //console.log(self.$parent);
-
+        
         // calculate primitive and return it by string at here
-        return !!Object.keys(self.constraint).filter(k => k != 'dirty').length ? JSON.stringify(self.constraint) : "";
+        return !!Object.keys(self.constraint).filter(k => k != 'dirty').length ? `(${constraint.html(obj.cloneObject(self.constraint))})` : "";
     }
 }
 

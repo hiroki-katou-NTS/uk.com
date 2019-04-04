@@ -130,10 +130,19 @@ const DIRTY = 'dirty',
                                             let cstr = resp.data.filter(c => c.name === validation.constraint)[0];
 
                                             if (cstr) {
-                                                ['path', 'name', 'valueType']
+                                                ['path', 'name']
                                                     .forEach(v => {
                                                         cstr = $.omit(cstr, v);
                                                     });
+
+                                                switch (validation.constraint) {
+                                                    case 'EmployeeCode':
+                                                        cstr.charType = 'EmployeeCode';
+                                                        break;
+                                                    case 'WorkplaceCode':
+                                                        cstr.charType = 'WorkplaceCode';
+                                                        break;
+                                                }
 
                                                 ['minLength', 'maxLength']
                                                     .forEach(v => {
