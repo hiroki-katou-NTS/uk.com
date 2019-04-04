@@ -1,6 +1,6 @@
-import { input, InputComponent } from "@app/components/common/inputs/input";
-import { Emit } from '@app/core/component'
-import { Vue } from '@app/provider'
+import { Vue } from '@app/provider';
+import { Emit } from '@app/core/component';
+import { input, InputComponent } from "./input";
 
 @input()
 class PasswordComponent extends InputComponent {

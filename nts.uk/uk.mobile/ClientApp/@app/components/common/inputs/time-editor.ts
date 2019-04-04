@@ -1,8 +1,7 @@
-import { input, InputComponent } from "@app/components/common/inputs/input";
-import {TimeInputType, time} from "@app/utils"
-import { Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';
-
+import { TimeInputType, time } from "@app/utils";
+import { input, InputComponent } from "./input";
+import { Prop, Emit } from '@app/core/component';
 @input()
 export class TimeComponent extends InputComponent {
     type: string = 'string';
@@ -15,19 +14,18 @@ export class TimeComponent extends InputComponent {
     timeInputType: TimeInputType;
 
     get rawValue() {
-        //return (this.value || '').toString();
         if (this.value == null || this.value == undefined) {
             return '';
         }
 
-        switch(this.timeInputType) {
+        switch (this.timeInputType) {
             case TimeInputType.TimeWithDay:
                 return time.timewd.toString(this.value);
             case TimeInputType.TimePoint:
                 return time.timept.toString(this.value);
             case TimeInputType.TimeDuration:
                 return time.timedr.toString(this.value);
-        }  
+        }
     }
 
     mounted() {

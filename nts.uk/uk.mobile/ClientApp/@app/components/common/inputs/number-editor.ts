@@ -4,7 +4,6 @@ import { Vue } from '@app/provider'
 
 @input()
 class NumberComponent extends InputComponent {
-    
     type: string = 'number';
 
     get rawValue() {

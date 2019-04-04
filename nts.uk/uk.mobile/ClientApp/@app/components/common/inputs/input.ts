@@ -3,7 +3,7 @@ import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
 import { DatePickerComponent, TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
-export const input = (tagName: string = 'input') => component({
+export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
         <template v-if="showTitle">
             <div v-bind:class="columns.title">
@@ -22,21 +22,36 @@ export const input = (tagName: string = 'input') => component({
                         <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
                     </div>
                 </template>                
-                <${tagName} class="form-control"
-                    ref="input"
-                    v-bind:type="type"
-                    v-validate="{
-                        always: !!errorsAlways,
-                        errors: (errors || errorsAlways || {})
-                    }"
-                    v-bind:rows="rows"
-                    v-bind:disabled="disabled"
-                    v-bind:readonly="!editable"
-                    v-bind:value="rawValue"
-                    v-on:click="click()"
-                    v-on:keydown.13="click()"
-                    v-on:input="input()"
-                />
+                ${
+                    tagName === 'select'? 
+                    `<select class="form-control" 
+                            ref="input"
+                            v-validate="{
+                                always: !!errorsAlways,
+                                errors: (errors || errorsAlways || {})
+                            }"
+                            v-bind:disabled="disabled"
+                            v-bind:value="rawValue"
+                            v-on:change="input()">
+                        <slot />
+                    </select>`
+                    :
+                    `<${tagName} class="form-control"
+                        ref="input"
+                        v-bind:type="type"
+                        v-validate="{
+                            always: !!errorsAlways,
+                            errors: (errors || errorsAlways || {})
+                        }"
+                        v-bind:rows="rows"
+                        v-bind:disabled="disabled"
+                        v-bind:readonly="!editable"
+                        v-bind:value="rawValue"
+                        v-on:click="click()"
+                        v-on:keydown.13="click()"
+                        v-on:input="input()"
+                    />`
+                }
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
