@@ -11,7 +11,7 @@ import { component, Prop } from '@app/core/component';
     </div>`
 })
 class LabelComponent extends Vue {
-    @Prop({ default: {} })
+    @Prop({ default: () => ({}) })
     readonly constraint!: IRule;
 
     get primitive(): string {

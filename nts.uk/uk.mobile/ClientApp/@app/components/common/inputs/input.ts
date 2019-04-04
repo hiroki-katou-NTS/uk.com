@@ -1,11 +1,12 @@
+import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
-import { component, Prop, Emit } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { DatePickerComponent, TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
-        <template v-if="showTitle">
+        <template v-if="showTitle && showTitle !== 'false'">
             <div v-bind:class="columns.title">
                 <nts-label v-bind:constraint="constraint" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
             </div>
@@ -23,8 +24,8 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                     </div>
                 </template>                
                 ${
-                    tagName === 'select'? 
-                    `<select class="form-control" 
+        tagName === 'select' ?
+            `<select class="form-control" 
                             ref="input"
                             v-validate="{
                                 always: !!errorsAlways,
@@ -35,8 +36,8 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                             v-on:change="input()">
                         <slot />
                     </select>`
-                    :
-                    `<${tagName} class="form-control"
+            :
+            `<${tagName} class="form-control"
                         ref="input"
                         v-bind:type="type"
                         v-validate="{
@@ -51,7 +52,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:keydown.13="click()"
                         v-on:input="input()"
                     />`
-                }
+        }
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
@@ -61,12 +62,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         'time-point-picker': TimePointPickerComponent,
         'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
-    },
-    mixins: [{
-        created() {
-            console.log(this);
-        }
-    }]
+    }
 });
 
 export class InputComponent extends Vue {
@@ -96,7 +92,7 @@ export class InputComponent extends Vue {
     readonly constraint!: IRule;
 
     @Prop({ default: () => true })
-    readonly showTitle!: boolean;
+    readonly showTitle!: 'true' | 'false' | boolean;
 
     @Prop({ default: () => false })
     readonly inlineTitle!: boolean;
@@ -118,5 +114,33 @@ export class InputComponent extends Vue {
             before: isClass(self.icons.before) ? self.icons.before : '',
             after: isClass(self.icons.after) ? self.icons.after : ''
         };
+    }
+
+    @Watch('$parent.$errors', { deep: true })
+    wErrs(newErrs: any) {
+        let self = this,
+            exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            props = (self.$vnode.componentOptions.propsData);
+
+        if (obj.has(self.$parent, exprs)) {
+            if (!(obj.has(props, 'errors') && obj.has(props, 'constraint')) &&
+                (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
+                Vue.set(self, 'errors', obj.get(newErrs, exprs));
+            }
+        }
+    }
+
+    @Watch('$parent.validations', { immediate: true, deep: true })
+    wConsts(newValidts: any) {
+        let self = this,
+            exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            props = (self.$vnode.componentOptions.propsData);
+
+        if (obj.has(self.$parent, exprs)) {
+            if (!(obj.has(props, 'errors') && obj.has(props, 'constraint')) &&
+                (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
+                Vue.set(self, 'constraint', obj.get(newValidts, exprs));
+            }
+        }
     }
 }
