@@ -1,4 +1,4 @@
-import { input, InputComponent } from "@app/components/common/input";
+import { input, InputComponent } from "@app/components/common/inputs/input";
 import {TimeInputType, time} from "@app/utils"
 import { Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';

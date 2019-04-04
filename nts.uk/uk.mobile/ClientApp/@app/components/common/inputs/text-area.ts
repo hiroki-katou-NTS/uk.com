@@ -1,7 +1,7 @@
 
 import { component, Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';
-import { InputComponent } from '@app/components/common/input';
+import { InputComponent } from '@app/components/common/inputs/input';
 
 @component({
     template: `
