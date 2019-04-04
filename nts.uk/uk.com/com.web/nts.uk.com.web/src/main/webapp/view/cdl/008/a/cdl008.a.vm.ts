@@ -21,6 +21,9 @@ module nts.uk.com.view.cdl008.a {
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
 
+            // 部門対応 #106784
+            treeType: TreeType;
+
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -30,6 +33,7 @@ module nts.uk.com.view.cdl008.a {
                 self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
                 self.restrictionOfReferenceRange = true;
+                self.treeType = TreeType.WORK_PLACE;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
@@ -51,13 +55,16 @@ module nts.uk.com.view.cdl008.a {
 
                     // If Selection Mode is Multiple Then not show Unselected Row
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
+
+                    // 部門対応 #106784
+                    self.treeType = inputCDL008.treeType;
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultipleSelect,
                     isMultipleUse: self.isMultipleUse,
-                    treeType: TreeType.WORK_PLACE,
+                    treeType: self.treeType,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
