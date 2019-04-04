@@ -36,13 +36,14 @@
 					#{i18n.getText('QMM013_3')}
 				</button>
 				<!-- マスタ修正ログ -->
-				<button id="A1_4" tabindex="4" class="" data-bind="enable: false">
+				<button id="A1_4" tabindex="4" class="" data-bind="click : exportExcel,enable: true">
 					#{i18n.getText('QMM013_4')}
 				</button>
 				<!-- 削除 -->
 				<button id="A1_5" tabindex="5" class="deleteBtn danger" data-bind="click: deleteItem, enable: !checkCreate()">
 					#{i18n.getText('QMM013_5')}
 				</button>
+
 			</div>
 			<div id="contents-area">
 				<div class="fixed-flex-layout-left">
