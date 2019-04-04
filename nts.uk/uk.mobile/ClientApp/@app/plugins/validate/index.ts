@@ -127,13 +127,19 @@ const DIRTY = 'dirty',
                                         let validation: IRule = $.get(validations, path, {});
 
                                         if (validation.constraint) {
-                                            let cstr = resp.data.filter(c => c.name === validation.constraint)[0];
+                                            let cstr: { [key: string]: any } = resp.data.filter(c => c.name === validation.constraint)[0];
 
                                             if (cstr) {
                                                 ['path', 'name']
                                                     .forEach(v => {
                                                         cstr = $.omit(cstr, v);
                                                     });
+
+                                                if (cstr.valueType === 'String' || (cstr.minLength || cstr.maxLength)) {
+                                                    if (!cstr.charType) {
+                                                        cstr.charType = 'Any';
+                                                    }
+                                                }
 
                                                 switch (validation.constraint) {
                                                     case 'EmployeeCode':
@@ -144,7 +150,7 @@ const DIRTY = 'dirty',
                                                         break;
                                                 }
 
-                                                ['minLength', 'maxLength']
+                                                ['min', 'max', 'minLength', 'maxLength', 'mantissaMaxLength']
                                                     .forEach(v => {
                                                         if ($.has(cstr, v)) {
                                                             $.set(cstr, v, Number($.get(cstr, v)));
@@ -200,7 +206,7 @@ const DIRTY = 'dirty',
                                     $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
                                         if (key == msgkey) {
                                             let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                                message = vldtor.apply(self, [value, ...params]);
+                                                message = vldtor.apply(self, [value, ...params, rule]);
 
                                             if (!message) {
                                                 $.omit(models, key);
@@ -239,7 +245,7 @@ const DIRTY = 'dirty',
                                 $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
                                     if ($.has(rule, key)) {
                                         let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                            message = vldtor.apply(self, [value, ...params]);
+                                            message = vldtor.apply(self, [value, ...params, rule]);
 
                                         if (!message) {
                                             $.omit(models, key);

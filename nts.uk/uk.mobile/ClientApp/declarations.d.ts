@@ -24,6 +24,9 @@ declare interface IRule {
     integer?: boolean;
     decimal?: boolean;
     required?: boolean;
+    min?: number;
+    max?: number;
+    mantissaMaxLength?: number;
     minLength?: number;
     maxLength?: number;
     minValue?: Date | number;

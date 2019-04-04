@@ -42,6 +42,9 @@ const $ = {
     isUndefined(value: any): value is undefined {
         return typeof value === 'undefined';
     },
+    isNumber(value: any): value is Number {
+        return typeof value === 'number' && !isNaN(value);
+    },
     isString(value: any): value is String {
         return typeof value === 'string' || value instanceof String;
     },

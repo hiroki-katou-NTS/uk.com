@@ -1,36 +1,5 @@
-import { IRule } from "declarations";
 import { obj } from '@app/utils';
-
-export const constraint = {
-    html(prmitive: IRule) {
-        let $content = '';
-
-        if (obj.isEmpty(prmitive)) {
-            return $content;
-        }
-
-        switch (prmitive.valueType) {
-            case 'String':
-                let char = charTypes[prmitive.charType] || charTypes.Any;
-
-                $content += char.viewName + Math.floor(prmitive.maxLength / (char.width * 2)) + '文字';
-                break;
-            case 'Date':
-            case 'Time':
-            case 'Clock':
-            case 'Duration':
-            case 'TimePoint':
-            case 'Decimal':
-            case 'Integer':
-
-                break;
-            default:
-                break;
-        }
-
-        return $content;
-    }
-};
+import { IRule } from "declarations";
 
 const regexp = {
     allHalfNumeric: /^\d*$/,
@@ -83,4 +52,37 @@ const regexp = {
             width: 0.5,
             viewName: '半角英数字'
         }
-    }
+    };
+
+export const constraint = {
+    html(prmitive: IRule) {
+        let $content = '';
+
+        if (obj.isEmpty(prmitive)) {
+            return $content;
+        }
+
+        switch (prmitive.valueType) {
+            case 'String':
+                let char = charTypes[prmitive.charType] || charTypes.Any;
+
+                $content += char.viewName + Math.floor(prmitive.maxLength / (char.width * 2)) + '文字';
+                break;
+            case 'Date':
+            case 'Time':
+            case 'Clock':
+            case 'Duration':
+            case 'TimePoint':
+            case 'Decimal':
+            case 'Integer':
+                $content += ($content.length > 0) ? "/" : "";
+                $content += prmitive.min + "～" + prmitive.max;
+                break;
+            default:
+                break;
+        }
+
+        return $content;
+    },
+    charTypes: charTypes
+};
