@@ -1,7 +1,9 @@
 import './label';
 import './form-check';
-import './time-editor';
-import './date-input';
+
+import './number-editor'
 import './text-editor';
+import './time-editor';
 import './textarea';
-import './dropdown'
+import './date-input';
+import './dropdown';

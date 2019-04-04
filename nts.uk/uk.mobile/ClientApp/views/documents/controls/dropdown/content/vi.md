@@ -58,11 +58,14 @@ export class ViewModel extends Vue {
 | Tên Thuộc tính| Type | Mặc định | Mô tả |
 | --------------|------| -------- | ------|
 | name | string | '' | Tên hiển thị của item |
+| showTitle | boolean | true | Có hiển thị title cùng input hay không? |
+| inlineTitle | boolean | false | Constraint có hiển thị cùng một dòng mới title hay không? |
+| value | any | '' | Giá trị đầu vào của item |
 | disabled | boolean | false | Item có bị disable hay không? |
 | errors | any | null | ... |
-| errorsAlways | any | null | ... |
+| errorsAlways | any | null | ... |inlineTitle 
 | constraint | Irule | {} | Định dạng validate cho item |
-| item | {before, after} | { before: '', after: ''} | Icon của item |
+| icons | {before, after} | { before: '', after: ''} | Icon của item |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ... |
 
 Khi khai báo "nts-dropdown" trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  

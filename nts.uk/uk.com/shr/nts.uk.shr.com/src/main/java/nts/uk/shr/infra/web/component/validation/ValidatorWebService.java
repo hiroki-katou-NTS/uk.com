@@ -30,7 +30,7 @@ public class ValidatorWebService extends WebService {
 			primitive.put("path", fqnOfPrimitiveValueClass);
 			primitive.put("valueType", Helper.getValueType(pvClass));
 			Helper.processConstraints(pvClass, (name, value) -> {
-				primitive.put(name, value);
+				primitive.put(name, value.replaceAll("'", ""));
 			});
 			result.add(primitive);
         }

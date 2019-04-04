@@ -13,10 +13,10 @@ import { component } from '@app/core/component';
     },
     resource: {
         'vi': {
-            'FormCheckComponent': 'Checkbox & Radio'
+            'FormCheckComponent': 'Checkbox & Radio & SwitchButton'
         },
         'jp': {
-            'FormCheckComponent': 'Checkbox & Radio'            
+            'FormCheckComponent': 'Checkbox & Radio & SwitchButton'            
         }
     }
 })
@@ -32,4 +32,6 @@ export class FormCheckComponent extends Vue {
     checked2: number = 2;
     checkeds: Array<number> = [2, 4];
     checked2s: Array<number> = [2, 4];
+
+    switchbox: number = 3;
 }

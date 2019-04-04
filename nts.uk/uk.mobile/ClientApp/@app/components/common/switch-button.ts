@@ -3,7 +3,7 @@ import { Vue } from '@app/provider';
 
 @component({
     template: `
-        <switch-button-renderless :data="data" 
+        <nts-switch-button-renderless :data="data" 
             :dataValue="dataValue" 
             :dataText="dataText" 
             :value="value"
@@ -29,7 +29,7 @@ import { Vue } from '@app/provider';
                 </template>
             </div>
 
-        </switch-button-renderless>
+        </nts-switch-button-renderless>
     `
 })
 export class SwitchButton extends Vue {

@@ -3,47 +3,55 @@ import { IRule } from 'declarations';
 import { component, Prop, Emit } from '@app/core/component';
 import { DatePickerComponent, TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
-export const input = () => component({
+export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
         <template v-if="showTitle">
             <div v-bind:class="columns.title">
                 <nts-label v-bind:constraint="constraint" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
             </div>
         </template>
-        <template v-else />
-
         <div v-bind:class="columns.input">
-            <div class="input-group input-group-transparent">
-                
+            <div class="input-group input-group-transparent">                
                 <template v-if="icons.before">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" v-bind:class="iconsClass.before">{{  !iconsClass.before ? icons.before : '' }}</span>
+                        <span class="input-group-text" v-bind:class="iconsClass.before">{{ !iconsClass.before ? icons.before : '' }}</span>
                     </div>
                 </template>
-                <template v-else />
-
                 <template v-if="icons.after">
                     <div class="input-group-append">
                         <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
                     </div>
-                </template>
-                <template v-else />
-                
-                <input class="form-control"
-                    ref="input"
-                    v-bind:type="type"
-                    v-validate="{
-                        always: !!errorsAlways,
-                        errors: (errors || errorsAlways || {})
-                    }"
-                    v-bind:disabled="disabled"
-                    v-bind:readonly="!editable"
-                    v-bind:value="rawValue"
-                    v-on:click="click()"
-                    v-on:keydown.13="click()"
-                    v-on:input="input()"
-                />
-
+                </template>                
+                ${
+                    tagName === 'select'? 
+                    `<select class="form-control" 
+                            ref="input"
+                            v-validate="{
+                                always: !!errorsAlways,
+                                errors: (errors || errorsAlways || {})
+                            }"
+                            v-bind:disabled="disabled"
+                            v-bind:value="rawValue"
+                            v-on:change="input()">
+                        <slot />
+                    </select>`
+                    :
+                    `<${tagName} class="form-control"
+                        ref="input"
+                        v-bind:type="type"
+                        v-validate="{
+                            always: !!errorsAlways,
+                            errors: (errors || errorsAlways || {})
+                        }"
+                        v-bind:rows="rows"
+                        v-bind:disabled="disabled"
+                        v-bind:readonly="!editable"
+                        v-bind:value="rawValue"
+                        v-on:click="click()"
+                        v-on:keydown.13="click()"
+                        v-on:input="input()"
+                    />`
+                }
                 <v-errors v-for="(error, k) in (errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
@@ -53,10 +61,22 @@ export const input = () => component({
         'time-point-picker': TimePointPickerComponent,
         'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
-    }
+    },
+    mixins: [{
+        created() {
+            console.log(this);
+        }
+    }]
 });
 
 export class InputComponent extends Vue {
+    click() { }
+
+    type: string = '';
+    rows: number | null = null;
+
+    editable: boolean = true;
+
     @Prop({ default: () => '' })
     readonly name: string;
 
@@ -87,8 +107,6 @@ export class InputComponent extends Vue {
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     readonly columns!: { title: string; input: string };
 
-    editable: boolean = true;
-
     get iconsClass() {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
@@ -101,53 +119,4 @@ export class InputComponent extends Vue {
             after: isClass(self.icons.after) ? self.icons.after : ''
         };
     }
-
-    click() {
-
-    }
 }
-
-@input()
-class PasswordComponent extends InputComponent {
-    type: string = 'password';
-
-    get rawValue() {
-        return (this.value || '');
-    }
-
-    @Emit()
-    input() {
-        return (<HTMLInputElement>this.$refs.input).value;
-    }
-}
-
-@input()
-class NumberComponent extends InputComponent {
-    type: string = 'number';
-
-    get rawValue() {
-        return (this.value || '').toString();
-    }
-
-    @Emit()
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
-
-        if (value) {
-            let numb = Number(value);
-
-            if (!isNaN(numb)) {
-                return numb;
-            } else {
-                return null;
-            }
-        }
-
-        return null;
-    }
-}
-
-Vue.component('nts-input-password', PasswordComponent);
-
-Vue.component('nts-input-number', NumberComponent);
-

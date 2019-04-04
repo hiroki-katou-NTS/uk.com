@@ -1,6 +1,6 @@
-import { component, Prop, Emit } from '@app/core/component';
 import { Vue } from '@app/provider';
-import { input, InputComponent } from '@app/components/common/input';
+import { Emit } from '@app/core/component';
+import { input, InputComponent } from './input';
 
 @input()
 class StringComponent extends InputComponent {
@@ -15,7 +15,7 @@ class StringComponent extends InputComponent {
     input() {
         return (<HTMLInputElement>this.$refs.input).value;
     }
-    
+
 }
 
 Vue.component('nts-text-editor', StringComponent);

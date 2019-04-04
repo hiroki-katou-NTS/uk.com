@@ -66,7 +66,20 @@ const DIRTY = 'dirty',
                         let rule: IRule = $.get(model, m);
 
                         return $.values(rule)
-                            .filter(c => !$.isObject(c)).length;
+                            .filter(c => {
+                                if (!$.isObject(c)) {
+                                    return true;
+                                } else {
+                                    let keys = $.keys(c);
+
+                                    if (keys.filter(k => ['test', 'message']
+                                        .indexOf(k) > -1).length == keys.length) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                }
+                            }).length;
                     });
             };
 
@@ -104,6 +117,37 @@ const DIRTY = 'dirty',
                     vue.set(self, '$errors', errors);
 
                     delete self.$options.validations;
+
+                    if (self.$options.constraints && self.$options.constraints.length) {
+                        self.$http
+                            .post('/validate/constraints/map', self.$options.constraints)
+                            .then((resp: { data: Array<{ [key: string]: any }> }) => {
+                                paths(validations)
+                                    .forEach((path: string) => {
+                                        let validation: IRule = $.get(validations, path, {});
+
+                                        if (validation.constraint) {
+                                            let cstr = resp.data.filter(c => c.name === validation.constraint)[0];
+
+                                            if (cstr) {
+                                                ['path', 'name', 'valueType']
+                                                    .forEach(v => {
+                                                        cstr = $.omit(cstr, v);
+                                                    });
+
+                                                ['minLength', 'maxLength']
+                                                    .forEach(v => {
+                                                        if ($.has(cstr, v)) {
+                                                            $.set(cstr, v, Number($.get(cstr, v)));
+                                                        }
+                                                    });
+
+                                                self.$updateValidator(path, cstr);
+                                            }
+                                        }
+                                    });
+                            });
+                    }
                 },
                 created() {
                     let self: Vue = this;
@@ -139,13 +183,54 @@ const DIRTY = 'dirty',
                             let watch = function (value: any) {
                                 let errors = $.cloneObject(self.$errors),
                                     models = $.get(errors, path),
-                                    rule = $.get($.cloneObject(self.validations), path, {});
+                                    rule = $.get($.cloneObject(self.validations), path, {}),
+                                    msgkey = $.keys(models)[0];
+
+                                // re validate
+                                if (msgkey) {
+                                    $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
+                                        if (key == msgkey) {
+                                            let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
+                                                message = vldtor.apply(self, [value, ...params]);
+
+                                            if (!message) {
+                                                $.omit(models, key);
+                                            } else {
+                                                if (!$.size(models)) {
+                                                    $.set(models, key, message);
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    let vldtor: { test: RegExp | Function; message: string; } = rule[msgkey];
+
+                                    if (vldtor) {
+                                        if ($.isFunction(vldtor.test)) {
+                                            if (!vldtor.test.apply(self, [value])) {
+                                                if (!$.size(models)) {
+                                                    $.set(models, msgkey, vldtor.message);
+                                                }
+                                            } else {
+                                                $.omit(models, msgkey);
+                                            }
+                                        } else if ($.isRegExp(vldtor.test)) {
+                                            if (value && !vldtor.test.test(value)) {
+                                                if (!$.size(models)) {
+                                                    $.set(models, msgkey, vldtor.message);
+                                                }
+                                            } else {
+                                                $.omit(models, msgkey);
+                                            }
+                                        }
+                                    }
+                                }
 
                                 // check fixed validators
                                 $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
                                     if ($.has(rule, key)) {
                                         let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                            message = vldtor.apply(null, [value, ...params]);
+                                            message = vldtor.apply(self, [value, ...params]);
 
                                         if (!message) {
                                             $.omit(models, key);
@@ -164,7 +249,7 @@ const DIRTY = 'dirty',
                                         let vldtor: { test: RegExp | Function; message: string; } = rule[key];
 
                                         if ($.isFunction(vldtor.test)) {
-                                            if (!(<(value: any) => boolean>vldtor.test).apply(value)) {
+                                            if (!vldtor.test.apply(self, [value])) {
                                                 if (!$.size(models)) {
                                                     $.set(models, key, vldtor.message);
                                                 }
@@ -172,7 +257,7 @@ const DIRTY = 'dirty',
                                                 $.omit(models, key);
                                             }
                                         } else if ($.isRegExp(vldtor.test)) {
-                                            if (!(<RegExp>vldtor.test).test(value)) {
+                                            if (value && !vldtor.test.test(value)) {
                                                 if (!$.size(models)) {
                                                     $.set(models, key, vldtor.message);
                                                 }
@@ -198,6 +283,8 @@ const DIRTY = 'dirty',
                     }, { deep: true });
 
                     vue.set(self, 'validations', $.cloneObject(self.validations));
+
+                    setTimeout(() => self.$validate("clear"), 100);
                 }
             });
 
@@ -247,16 +334,37 @@ const DIRTY = 'dirty',
             });
 
             // define $validate instance method
-            vue.prototype.$validate = function (field?: string) {
+            vue.prototype.$validate = function (field?: string | 'clear') {
                 let self: Vue = this,
                     errors = $.cloneObject(self.$errors),
                     validations = $.cloneObject(self.validations);
 
                 if (field) { // check match field name
-                    let error = $.get(errors, field, null),
-                        validate = $.get(validations, field, null);
+                    if (field === 'clear') {
+                        let $validators: Array<{
+                            path: string;
+                            watch: (value: any) => void;
+                            unwatch: () => void;
+                        }> = (<any>self).$validators,
+                            errors = {};
 
-                    if (error && validate) {
+                        $.objectForEach($validators, (k: string, validator: {
+                            path: string;
+                            watch: (value: any) => void;
+                            unwatch: () => void;
+                        }) => {
+                            $.set(errors, validator.path, {});
+                        });
+
+                        setTimeout(() => {
+                            vue.set(self, '$errors', errors);
+                        }, 100);
+                    } else {
+                        let error = $.get(errors, field, null),
+                            validate = $.get(validations, field, null);
+
+                        if (error && validate) {
+                        }
                     }
                 } else { // check all
                     let $validators: Array<{
@@ -285,7 +393,7 @@ const DIRTY = 'dirty',
                 if (!$.isString(pathOrRule) && $.isObject(pathOrRule)) {
                     vue.set(self, 'validations', updateValidator.apply(validations, [pathOrRule]));
                 } else if ($.isString(pathOrRule) && $.isObject(rule)) {
-                    $.update(validations, pathOrRule.toString(), rule);
+                    $.update(validations, pathOrRule, rule);
 
                     vue.set(self, 'validations', validations);
                 }
@@ -294,5 +402,3 @@ const DIRTY = 'dirty',
     };
 
 export { validate };
-
-window['$$'] = $;

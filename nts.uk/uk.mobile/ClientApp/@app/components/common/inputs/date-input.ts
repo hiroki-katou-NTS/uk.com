@@ -1,11 +1,9 @@
-import { input, InputComponent } from "@app/components/common/input";
-import { Prop, Emit } from '@app/core/component';
-import { Vue } from '@app/provider';
 import { $ } from "@app/utils";
+import { Vue } from '@app/provider';
+import { input, InputComponent } from "./input";
 
 @input()
 class DateComponent extends InputComponent {
-
     type: string = 'date';
 
     editable: boolean = true;

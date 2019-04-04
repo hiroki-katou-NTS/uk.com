@@ -30,6 +30,7 @@ declare interface IRule {
     maxValue?: Date | number;
     between?: Array<Date | number>;
     not?: Array<Date | number | string>;
+    constraint?: string;
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;
@@ -117,9 +118,11 @@ declare module "vue/types/vue" {
                 [rule: string]: string;
             }
         };
-        $validate(): boolean;
+        $validate(): void;
+        $validate(act: 'clear'): void;
         $validate(name: string): boolean;
-        $updateValidator: (rule: IRule) => void;
+        $updateValidator(rule: IRule): void;
+        $updateValidator(name: string, rule: IRule): void;
         validations: {
             [name: string]: IRule;
         };

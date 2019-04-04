@@ -5,22 +5,23 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { ajax, i18n, mask, modal, dialog, click, validate, Language } from '@app/plugins';
+import { bstrp, ajax, i18n, mask, modal, dialog, click, validate, Language } from '@app/plugins';
 
 import { LanguageBar } from '@app/plugins';
 import { SideMenuBar, NavMenuBar } from '@app/components';
 
-Vue.use(i18n);
-Vue.use(mask);
+// use ajax request
+Vue.use(ajax, 'webapi');
 
+Vue.use(bstrp);
 Vue.use(modal);
 Vue.use(dialog);
 
+Vue.use(i18n);
+Vue.use(mask);
+
 Vue.use(click);
 Vue.use(validate);
-
-// use ajax request
-Vue.use(ajax, 'webapi');
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
