@@ -15,30 +15,22 @@ interface IFetchOption {
 }
 
 declare interface IRule {
-    url?: boolean;
-    email?: boolean;
-    alpha?: boolean;
-    alphaNum?: boolean;
     allHalf?: boolean;
-    numeric?: boolean;
-    integer?: boolean;
-    decimal?: boolean;
     required?: boolean;
     min?: number;
     max?: number;
     mantissaMaxLength?: number;
     minLength?: number;
     maxLength?: number;
-    minValue?: Date | number;
-    maxValue?: Date | number;
-    between?: Array<Date | number>;
-    not?: Array<Date | number | string>;
     constraint?: string;
     charType?: string;
     valueType?: 'String' | 'Decimal' | 'Integer' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;
+    } | {
+        test: RegExp | Function;
+        messageId: string;
     };
 }
 
@@ -50,6 +42,10 @@ declare interface IModalOptions {
         show?: string;
         hide?: string;
     };
+}
+
+declare interface IValidations {
+    [name: string]: IValidations | IRule
 }
 
 declare module "vue/types/options" {
@@ -66,7 +62,7 @@ declare module "vue/types/options" {
             }
         };
         validations?: {
-            [name: string]: IRule;
+            [name: string]: IRule | IValidations;
         },
         markdown?: string | {
             [lang: string]: string;
@@ -83,9 +79,6 @@ declare module "vue/types/vue" {
             get(pg: WebAppId, url: string): Promise<{}>;
             post(url: string, data?: any): Promise<{}>;
             post(pg: WebAppId, url: string, data?: any): Promise<{}>;
-            headers: {
-                [header: string]: string;
-            },
             file: {
                 live: (fileId: string) => string;
                 upload: (form: FormData) => Promise<{}>;
@@ -97,6 +90,8 @@ declare module "vue/types/vue" {
             }
         };
         $i18n(resr: string): string;
+        $i18n(resr: string, param: string): string;
+        $i18n(resr: string, param: string[]): string;
         $i18n(resr: string, param: { [key: string]: string }): string;
         $close(): void;
         $close(data: any): void;

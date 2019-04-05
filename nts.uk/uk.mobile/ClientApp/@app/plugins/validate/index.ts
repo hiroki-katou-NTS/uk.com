@@ -57,7 +57,7 @@ const DIRTY = 'dirty',
                             keysOfRule: Array<string> = $.keys(rule).filter(k => DIRTY !== k);
 
                         if (keysOfRule.length == 2) {
-                            return (keysOfRule.indexOf('test') == -1 && keysOfRule.indexOf('message') == -1);
+                            return (keysOfRule.indexOf('test') == -1 && keysOfRule.indexOf('message') == -1 && keysOfRule.indexOf('messageId') == -1);
                         }
 
                         return true;
@@ -72,7 +72,7 @@ const DIRTY = 'dirty',
                                 } else {
                                     let keys = $.keys(c);
 
-                                    if (keys.filter(k => ['test', 'message']
+                                    if (keys.filter(k => ['test', 'message', 'messageId']
                                         .indexOf(k) > -1).length == keys.length) {
                                         return true;
                                     } else {
@@ -218,13 +218,13 @@ const DIRTY = 'dirty',
                                         }
                                     });
 
-                                    let vldtor: { test: RegExp | Function; message: string; } = rule[msgkey];
+                                    let vldtor: { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
 
                                     if (vldtor) {
                                         if ($.isFunction(vldtor.test)) {
                                             if (!vldtor.test.apply(self, [value])) {
                                                 if (!$.size(models)) {
-                                                    $.set(models, msgkey, vldtor.message);
+                                                    $.set(models, msgkey, vldtor.message || vldtor.messageId);
                                                 }
                                             } else {
                                                 $.omit(models, msgkey);
@@ -232,7 +232,7 @@ const DIRTY = 'dirty',
                                         } else if ($.isRegExp(vldtor.test)) {
                                             if (value && !vldtor.test.test(value)) {
                                                 if (!$.size(models)) {
-                                                    $.set(models, msgkey, vldtor.message);
+                                                    $.set(models, msgkey, vldtor.message || vldtor.messageId);
                                                 }
                                             } else {
                                                 $.omit(models, msgkey);
@@ -261,12 +261,12 @@ const DIRTY = 'dirty',
                                 $.keys(rule)
                                     .filter(f => $.keys(validators).indexOf(f) == -1)
                                     .forEach((key: string) => {
-                                        let vldtor: { test: RegExp | Function; message: string; } = rule[key];
+                                        let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
 
                                         if ($.isFunction(vldtor.test)) {
                                             if (!vldtor.test.apply(self, [value])) {
                                                 if (!$.size(models)) {
-                                                    $.set(models, key, vldtor.message);
+                                                    $.set(models, key, vldtor.message || vldtor.messageId);
                                                 }
                                             } else {
                                                 $.omit(models, key);
@@ -274,7 +274,7 @@ const DIRTY = 'dirty',
                                         } else if ($.isRegExp(vldtor.test)) {
                                             if (value && !vldtor.test.test(value)) {
                                                 if (!$.size(models)) {
-                                                    $.set(models, key, vldtor.message);
+                                                    $.set(models, key, vldtor.message || vldtor.messageId);
                                                 }
                                             } else {
                                                 $.omit(models, key);
@@ -338,7 +338,7 @@ const DIRTY = 'dirty',
 
             vue.component('v-errors', {
                 props: ['data', 'name'],
-                template: `<span class="invalid-feedback">{{$i18n(resource || '', { field: name })}}</span>`,
+                template: `<span class="invalid-feedback">{{ resource | i18n(name) }}</span>`,
                 computed: {
                     resource: {
                         get: function () {
@@ -401,6 +401,9 @@ const DIRTY = 'dirty',
             vue.prototype.$updateValidator = function (pathOrRule: string | IRule, rule?: Array<Date | number | string> | Date | number | boolean | IRule | {
                 test: RegExp | Function;
                 message: string;
+            } | {
+                test: RegExp | Function;
+                messageId: string;
             }) {
                 let self: Vue = this,
                     validations = $.cloneObject(self.validations);

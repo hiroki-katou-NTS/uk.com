@@ -1,3 +1,4 @@
+import { obj } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
 const resources: {
@@ -96,21 +97,37 @@ const resources: {
             }
         });
     }
-}, getText: any = (resource: string, params?: { [key: string]: string }) => {
+}, getText: any = (resource: string, params?: string | string[] | { [key: string]: string }) => {
     let lng = Language.current,
         i18lang = resources[lng],
-        groups: { [key: string]: string } = params || {};
+        groups: { [key: string]: string } = {};
 
-    [].slice.call(resource.match(/#{.+}/g) || [])
-        .map((match: string) => match.replace(/[\#\{\}]/g, ''))
-        .forEach((key: string) => groups[key] = key);
+    if (!!params) {
+        if (!obj.isString(params)) {
+            obj.extend(groups, params);
+        } else {
+            obj.extend(groups, { '0': params });
+        }
+    }
 
-    return ((i18lang[resource.replace(/(^#|#{.+})/, '').trim()] || resource)
-        .replace(/#{.+}/g, (match: string) => {
-            let key = match.replace(/[\#\{\}]/g, '');
+    if (resource) {
+        [].slice.call(resource.match(/(#{.+})|({#.+})|({\d+})/g) || [])
+            .map((match: string) => match.replace(/[\#\{\}]/g, ''))
+            .forEach((key: string) => {
+                if (!obj.has(groups, key)) {
+                    obj.set(groups, key, key);
+                }
+            });
 
-            return getText((groups[key] || key || '').replace(/^#/, ''), groups);
-        }) || resource).toString();
+        return ((i18lang[resource] || resource)
+            .replace(/(#{.+})|({#.+})|({\d+})/g, (match: string) => {
+                let key = match.replace(/[\#\{\}]/g, '');
+
+                return getText((groups[key] || key), groups);
+            }) || resource).toString();
+    }
+
+    return "";
 };
 
 export { i18n, Language, resources, LanguageBar };

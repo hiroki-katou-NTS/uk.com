@@ -16,7 +16,7 @@ const required = function (value: any, checkOr: boolean) {
         msg = String(value).length === 0;
     }
 
-    return !msg ? null : 'required';
+    return !msg ? null : 'MsgB_1';
 };
 
 export { required };

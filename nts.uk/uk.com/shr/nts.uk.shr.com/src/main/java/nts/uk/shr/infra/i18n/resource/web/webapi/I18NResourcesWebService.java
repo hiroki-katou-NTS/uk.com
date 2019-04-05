@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.i18n.resource.web.webapi;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,8 @@ public class I18NResourcesWebService {
 	@GET
 	@Path("mobile/get")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object getMobileResouce() {
+	public Map<String, String> getMobileResouce() {
+		Map<String, String> resources = new HashMap<String, String>();
 		String companyId = DefaultSettingKeys.COMPANY_ID;
 		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
 		
@@ -60,8 +62,11 @@ public class I18NResourcesWebService {
 			companyId = AppContexts.user().companyId();
 			languageId = AppContexts.user().language().basicLanguageId();
 		}
+
+		resources.putAll(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.MESSAGE));
+		resources.putAll(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME));
 		
-		return this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME);
+		return resources;
 	}
 	
 	public static String getHtmlToLoadResources() {
