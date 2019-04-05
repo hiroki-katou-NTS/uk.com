@@ -142,6 +142,9 @@ module kcp.share.tree {
 
     export class TreeType {
         static WORK_PLACE = 1;
+
+        // 部門対応 #106784
+        static DEPARTMENT = 2;
     }
 
     interface TreeStyle {
@@ -185,6 +188,9 @@ module kcp.share.tree {
         restrictionOfReferenceRange: boolean;
         searchBoxId: string;
 
+        // 部門対応 #106784
+        treeType: TreeType;
+
         constructor() {
             let self = this;
             self.searchBoxId = nts.uk.util.randomId();
@@ -214,6 +220,9 @@ module kcp.share.tree {
                 width: 412,
                 height: 0
             };
+
+            // 部門対応 #106784
+            self.treeType = TreeType.WORK_PLACE;
         }
 
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
@@ -239,6 +248,9 @@ module kcp.share.tree {
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             self.systemType =  data.systemType;
+
+            // 部門対応 #106784
+            self.treeType = data.treeType;
 
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;

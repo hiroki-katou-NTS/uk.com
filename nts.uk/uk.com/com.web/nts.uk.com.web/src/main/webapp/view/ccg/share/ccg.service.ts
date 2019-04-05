@@ -6,6 +6,7 @@ module nts.uk.com.view.ccg.share.ccg {
         // Service paths.
         var servicePath = {
             searchEmployeeByLogin: "query/employee/find/currentlogin",
+            searchDepartmentOfEmployee: "basic/organization/employee/departmentemp",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
@@ -140,6 +141,13 @@ module nts.uk.com.view.ccg.share.ccg {
         
         export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<model.EmployeeSearchDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
+        }
+
+        /**
+         * search Department of Employee
+         */
+        export function searchDepartmentOfEmployee(baseDate: Date): JQueryPromise<string[]> {
+            return nts.uk.request.ajax('com', servicePath.searchDepartmentOfEmployee, baseDate);
         }
 
         /**
