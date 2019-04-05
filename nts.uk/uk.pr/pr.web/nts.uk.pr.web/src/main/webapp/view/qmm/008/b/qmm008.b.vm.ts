@@ -151,6 +151,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             // TODO
             console.log('TODO');
         }
+
         startPage(): JQueryPromise<any> {
             let self = this;
             return self.showAllOfficeAndHistory();
@@ -333,6 +334,18 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     self.isUpdateMode(false);
                 }
                 $("#B2_7").focus();
+            });
+        }
+
+        exportExcel(): void {
+            let self = this;
+            let type = 0;
+            nts.uk.ui.block.grayout();
+            service.exportExcel(type).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
 

@@ -37,6 +37,18 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             }
         }
 
+        exportExcel(): void {
+            let self = this;
+            let type = 2;
+            nts.uk.ui.block.grayout();
+            service.exportExcel(type).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+
         initBlankData() {
             let self = this;
             self.contributionRate(new model.ContributionRate(null));
