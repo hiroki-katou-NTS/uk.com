@@ -1,39 +1,68 @@
 .modal {
+
     //-webkit-overflow-scrolling: touch;
     &-backdrop {
         &.show {
             opacity: 0.05;
         }
     }
+
     &-open {
         overflow: hidden;
     }
+
     &.show {
         display: block;
+
         .modal-dialog {
+            &.animated {
+                -webkit-animation-duration: 0.5s;
+                animation-duration: 0.5s;
+
+                &.slideOutUp {
+                    -webkit-animation-duration: 0.2s;
+                    animation-duration: 0.2s;
+                }
+            }
+
+            .modal-content {
+                border-radius: 2px;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .5);
+            }
+
             &.modal-popup {
+                &:not(.modal-info) {
+                    .modal-content {
+                        width: 300px;
+                    }
+                }
+
                 .modal-content {
-                    width: 300px;
                     margin: auto;
+
                     .modal-header,
                     .modal-footer {
                         padding: 0.5rem 1rem;
                     }
+
                     .modal-header {
                         .close {
                             display: none;
                         }
                     }
+
                     .modal-footer {
                         display: block;
                     }
                 }
             }
+
             .modal-footer {
                 &.top {
                     border-bottom: 1px solid #ccc;
                     border-radius: 0;
                     padding: 0.5rem;
+
                     &.text-left {
                         justify-content: flex-start;
                     }
@@ -49,26 +78,32 @@
     .modal {
         &.show {
             .modal-dialog {
+
                 &.modal-popup {
                     .modal-content {
                         max-width: 95vw;
                     }
                 }
+
                 &:not(.modal-popup) {
                     margin: 0;
                     min-width: 100vw;
+
                     .modal-content {
                         border: 0;
                         border-radius: 0;
                         min-width: 100vw;
                         min-height: 100vh;
                         min-height: calc(var(--vh, 1vh) * 100);
+
                         .modal-header {
                             padding: 0.6rem 1rem;
+
                             .modal-title {
                                 line-height: 1rem;
                             }
                         }
+
                         .modal-footer {
                             padding: 0.6rem 1rem;
                         }
@@ -76,6 +111,15 @@
                 }
             }
         }
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+
+@media (min-width: 576px) {
+    .modal-dialog-scrollable {
+        margin: 2.75rem auto;
+        max-height: calc(100% - 7.5rem);
     }
 }
 

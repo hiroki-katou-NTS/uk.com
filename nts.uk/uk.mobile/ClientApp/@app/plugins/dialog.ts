@@ -10,7 +10,7 @@ const $dialog = () => ({
         <div data-msg="No messageId" v-else></div>
         <div class="modal-footer text-right">
             <template v-if="['info', 'error', 'warn'].indexOf(params.type) > -1">
-                <button class="btn btn-link" v-on:click="$close('close')">{{'close' | i18n}}</button>
+                <button v-focus class="btn btn-link" v-on:click="$close('close')">{{'close' | i18n}}</button>
                 <!--<button class="btn btn-link" v-on:click="$close('cancel')">{{'cancel' | i18n}}</button>-->
             </template>
             <template v-else>
@@ -19,7 +19,7 @@ const $dialog = () => ({
                     'btn-danger': danger,
                     'btn-primary': primary
                 }" v-on:click="$close('yes')">{{'yes' | i18n}}</button>
-                <button class="btn" v-bind:class="{
+                <button v-focus class="btn" v-bind:class="{
                     'btn-link': normal,
                     'btn-secondary': !normal
                 }" v-on:click="$close('no')">{{'no' | i18n}}</button>
@@ -51,7 +51,7 @@ const $dialog = () => ({
                                 let params: { [key: string]: any } = {},
                                     option: IModalOptions = {
                                         title: $type,
-                                        type: 'popup',
+                                        type: 'info',
                                         animate: {
                                             hide: 'fadeOut',
                                             show: 'fadeIn'

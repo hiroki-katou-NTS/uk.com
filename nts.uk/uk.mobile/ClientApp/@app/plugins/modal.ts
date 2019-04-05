@@ -59,7 +59,8 @@ const modal = {
             options = options || <IModalOptions>{
                 title: name,
                 size: 'md',
-                type: 'modal'
+                type: 'modal',
+                opacity: 0.5
             };
 
             return new Promise(resolve => {
@@ -144,8 +145,10 @@ const modal = {
 
                                             if (options.type === 'modal' || options.type === undefined) {
                                                 classNames.push('modal-dialog-scrollable');
-                                            } else {
+                                            } else if(options.type === 'popup') {
                                                 classNames.push('modal-popup modal-dialog-centered');
+                                            } else {
+                                                classNames.push('modal-popup modal-info modal-dialog-centered');
                                             }
 
                                             return classNames.join(' ');
@@ -189,6 +192,8 @@ const modal = {
                                 },
                                 mounted() {
                                     this.show = true;
+                                    
+                                    this.$mask('show', options.opacity);
 
                                     dom.addClass(document.body, 'modal-open');
                                 },
@@ -209,6 +214,8 @@ const modal = {
                                     });
                                 },
                                 destroyed() {
+                                    this.$mask('hide');
+                                    
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
 
@@ -232,7 +239,7 @@ const modal = {
                                         focused.focus();
                                     }
                                 },
-                                template: `<div class="modal fade show">
+                                template: `<div class="modal fade show in">
                                         <transition apear 
                                                 v-on:leave="leave"
                                                 v-on:after-leave="afterLeave"

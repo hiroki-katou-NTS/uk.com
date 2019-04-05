@@ -35,13 +35,14 @@ declare interface IRule {
 }
 
 declare interface IModalOptions {
-    type?: 'modal' | 'popup';
+    type?: 'modal' | 'popup' | 'info';
     size?: 'lg' | 'md' | 'sm' | 'xs';
     title?: string;
     animate?: {
         show?: string;
         hide?: string;
     };
+    opacity?: number;
 }
 
 declare interface IValidations {
@@ -95,7 +96,8 @@ declare module "vue/types/vue" {
         $i18n(resr: string, param: { [key: string]: string }): string;
         $close(): void;
         $close(data: any): void;
-        $mask(act: 'hide' | 'show' | 'showonce'): {
+        $mask(hide: 'hide'): void;
+        $mask(act: 'show' | 'showonce', opacity?: number): {
             on: (click: () => void, hide?: () => void) => void;
         };
         $goto(name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
