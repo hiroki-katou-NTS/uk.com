@@ -55,6 +55,10 @@ const resources: {
     },
     watch(callback: Function) {
         language.watch(callback);
+    },
+    refresh() {
+        language.current = '';
+        language.current = localStorage.getItem('lang');
     }
 }, LanguageBar = {
     template: `

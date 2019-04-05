@@ -46,15 +46,19 @@ new Vue({
             }
         }
     },
-    mounted() {
+    beforeCreate() {
         const self = this,
             rapi = '/i18n/resources/mobile/get';
 
         self.$http.get(rapi)
-            .then(resp => {
-                obj.merge(resources, {
-                    jp: resp.data
-                });
+            .then((resp: { data: any }) => {
+                obj.merge(resources,
+                    {
+                        jp: resp.data
+                    });
+            })
+            .then(() => {
+                Language.refresh();
             });
     }
 });
