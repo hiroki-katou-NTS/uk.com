@@ -17,9 +17,16 @@ class LabelComponent extends Vue {
 
     get primitive(): string {
         let self = this;
-        
-        // calculate primitive and return it by string at here
-        return !!Object.keys(self.constraint).filter(k => k != 'dirty').length ? `(${constraint.html(obj.cloneObject(self.constraint))})` : "";
+
+        if (!!Object.keys(self.constraint).filter(k => k != 'dirty').length) {
+            let $const = constraint.html(obj.cloneObject(self.constraint));
+
+            if ($const) {
+                return `(${$const})`;
+            }
+        }
+
+        return "";
     }
 }
 
