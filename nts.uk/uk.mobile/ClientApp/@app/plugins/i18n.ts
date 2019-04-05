@@ -58,7 +58,7 @@ const resources: {
     },
     refresh() {
         language.current = '';
-        language.current = localStorage.getItem('lang');
+        language.current = localStorage.getItem('lang') || 'jp';
     }
 }, LanguageBar = {
     template: `
