@@ -50,8 +50,8 @@ public class SalGenParaValue extends AggregateRoot {
     public SalGenParaValue(String hisId, Integer selection, int availableAtr, BigDecimal numberValue, String characterValue, Integer timeValue, Integer targetAtr) {
         this.historyId = hisId;
         this.availableAtr = EnumAdaptor.valueOf(availableAtr, ParaAvailableValue.class);
-        this.charValue = characterValue == null ? Optional.empty() : Optional.of(new ParamCharacter(characterValue));
-        this.numValue = numberValue == null ? Optional.empty() : Optional.of(new ParamNumber(numberValue));
+            this.charValue = characterValue == null ? Optional.empty() : Optional.of(new ParamCharacter(characterValue));
+            this.numValue = numberValue == null ? Optional.empty() : Optional.of(new ParamNumber(numberValue));
         this.targetAtr = targetAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(targetAtr, ParaTargetAtr.class));
         this.timeValue = timeValue == null ? Optional.empty() : Optional.of(new ParamTime(timeValue));
         this.selection = Optional.ofNullable(selection);
