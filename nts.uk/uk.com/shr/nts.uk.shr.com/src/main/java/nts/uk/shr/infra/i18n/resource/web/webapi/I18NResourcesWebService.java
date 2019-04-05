@@ -49,6 +49,21 @@ public class I18NResourcesWebService {
 		return new JavaTypeResult<String>(i18n.getRawContent(resourceId).orElse(resourceId));
 	}
 	
+	@GET
+	@Path("mobile/get")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Object getMobileResouce() {
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		
+		if (AppContexts.user().hasLoggedIn()) {
+			companyId = AppContexts.user().companyId();
+			languageId = AppContexts.user().language().basicLanguageId();
+		}
+		
+		return this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME);
+	}
+	
 	public static String getHtmlToLoadResources() {
 		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
 

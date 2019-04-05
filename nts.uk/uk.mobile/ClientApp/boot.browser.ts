@@ -5,8 +5,9 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { bstrp, ajax, i18n, mask, modal, dialog, click, validate, Language } from '@app/plugins';
+import { bstrp, ajax, resources, i18n, mask, modal, dialog, click, validate, Language } from '@app/plugins';
 
+import { obj } from '@app/utils';
 import { LanguageBar } from '@app/plugins';
 import { SideMenuBar, NavMenuBar } from '@app/components';
 
@@ -44,5 +45,16 @@ new Vue({
                 return Language.pgName || 'app_name';
             }
         }
+    },
+    mounted() {
+        const self = this,
+            rapi = '/i18n/resources/mobile/get';
+
+        self.$http.get(rapi)
+            .then(resp => {
+                obj.merge(resources, {
+                    jp: resp.data
+                });
+            });
     }
 });

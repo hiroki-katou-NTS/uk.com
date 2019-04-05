@@ -66,7 +66,7 @@ export const constraint = {
             case 'String':
                 let char = charTypes[prmitive.charType] || charTypes.Any;
 
-                $content += char.viewName + Math.floor(prmitive.maxLength / (char.width * 2)) + '文字';
+                $content += `${char.viewName}${Math.floor(prmitive.maxLength / (char.width * 2))}文字`;
                 break;
             case 'Date':
             case 'Time':
@@ -75,8 +75,8 @@ export const constraint = {
             case 'TimePoint':
             case 'Decimal':
             case 'Integer':
-                $content += ($content.length > 0) ? "/" : "";
-                $content += prmitive.min + "～" + prmitive.max;
+                $content += $content.length > 0 ? "/" : "";
+                $content += `${prmitive.min}～${prmitive.max}`;
                 break;
             default:
                 break;
