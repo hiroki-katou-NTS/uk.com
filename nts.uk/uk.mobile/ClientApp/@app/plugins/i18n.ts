@@ -22,6 +22,15 @@ const resources: {
         watchers: [],
         pgName: ''
     },
+    watch: {
+        pgName(name: string) {
+            let title = document.querySelector('head>title') as HTMLElement;
+
+            if (title) {
+                title.innerHTML = `${getText('app_name')}: ${getText(name)}`;
+            }
+        }
+    },
     methods: {
         change: function (lang: string) {
             this.current = lang;
@@ -68,12 +77,6 @@ const resources: {
                 <a class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)">{{lg | i18n}}</a>
             </div>
         </li>`,
-    prop: ['button'],
-    data: function () {
-        return {
-            button: false
-        }
-    },
     methods: {
         change: language.change
     },
