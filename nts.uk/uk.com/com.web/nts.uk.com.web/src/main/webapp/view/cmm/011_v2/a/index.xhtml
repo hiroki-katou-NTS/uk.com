@@ -8,16 +8,16 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceCode
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceName
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceExternalCode
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceDisplayName
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceGeneric
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentCode
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentName
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentExternalCode
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentDisplayName
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentGeneric
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceCode
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceName
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceExternalCode
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceDisplayName
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceGeneric
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentCode
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentName
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentExternalCode
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentDisplayName
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentGeneric
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -40,13 +40,15 @@
 				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
 					<div id="A2_1" data-bind="ntsPanel:{
 							width: '400px', height: '100px', 
-							showIcon: false, direction: 'bottom'}, with: configuration">
-						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: $vm.initMode == 0">#{i18n.getText('CMM011-1_2')}</div>
-						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: $vm.initMode == 1">#{i18n.getText('CMM011-2_2')}</div>
-						<span id="A2_3" data-bind="text: startDate"></span> 
-						<span id="A2_4" style="margin-left: 8px; margin-right: 8px;">#{i18n.getText('CMM011-0_6')}</span>
-						<span id="A2_5" data-bind="text: endDate"></span>
-						<button id="A2_6" tabindex="6">#{i18n.getText('CMM011-0_7')}</button>
+							showIcon: false, direction: 'bottom'}">
+						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 0">#{i18n.getText('CMM011-1_2')}</div>
+						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 1">#{i18n.getText('CMM011-2_2')}</div>
+						<div data-bind="with: configuration">
+							<span id="A2_3" data-bind="text: startDate"></span> 
+							<span id="A2_4" style="margin-left: 8px; margin-right: 8px;">#{i18n.getText('CMM011-0_6')}</span>
+							<span id="A2_5" data-bind="text: endDate"></span>
+						</div>
+						<button id="A2_6" tabindex="6" data-bind="click: openConfigDialog">#{i18n.getText('CMM011-0_7')}</button>
 					</div>
 
 					<div>

@@ -1,8 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
 import lombok.Value;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentInformation;
-import nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 
 /**
  * 

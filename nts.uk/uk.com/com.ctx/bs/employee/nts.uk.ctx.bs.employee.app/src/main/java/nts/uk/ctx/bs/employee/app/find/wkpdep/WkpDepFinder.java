@@ -8,15 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentConfiguration;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentConfigurationRepository;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentInformation;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentInformationRepository;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
 import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
-import nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceConfiguration;
-import nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceConfigurationRepository;
-import nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -92,7 +92,7 @@ public class WkpDepFinder {
 					.collect(Collectors.toList());
 		case DEPARTMENT_MODE:
 			Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
-			if (optDepConfig.isPresent())
+			if (!optDepConfig.isPresent())
 				return null;
 			DepartmentConfiguration depConfig = optDepConfig.get();
 			return depConfig.items().stream().map(

@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (!_.isEmpty(queryString.items)) {
                 self.initMode = Number(queryString.items["initmode"]);
             }
-            self.configuration = ko.observable(null);
+            self.configuration = ko.observable(new WkpDepConfig(null, null, null));
             self.items = ko.observableArray([]);
             self.selectedId = ko.observable(null);
             self.selectedInfor = ko.observable(new WkpDepInformation(null));
@@ -50,7 +50,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         if (_.isEmpty(data)) {
                             dfd.resolve();
                             info("Msg_373").then(() => {
-                                self.openWkpDepCreatDialog();
+//                                self.openWkpDepCreateDialog();
                             });
                         } else {
                             // hien thi len cay
@@ -75,13 +75,23 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         }
         
         openConfigDialog() {
-            let self = this;
+            let self = this,
+                params = {
+                    initMode: self.initMode,
+                    historyId: self.configuration() ? self.configuration().historyId : null
+                };
+            setShared("CMM011AParams", params);
             modal("/view/cmm/011_v2/b/index.xhtml").onClosed(() => {
-                
+                let params = getShared("CMM011BParams");
+                if (params) {
+                    self.configuration().historyId = params.historyId; 
+                    self.configuration().startDate(params.startDate);
+                    self.configuration().endDate(params.endDate);
+                }
             });
         }
         
-        openWkpDepCreatDialog() {
+        openWkpDepCreateDialog() {
             let self = this;
             modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
                 
@@ -132,13 +142,13 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
     
     class WkpDepConfig {
         historyId: string;
-        startDate: string;
-        endDate: string;
+        startDate: KnockoutObservable<string>;
+        endDate: KnockoutObservable<string>;
         
         constructor(histId: string, startDate: string, endDate: string) {
             this.historyId = histId;
-            this.startDate = startDate;
-            this.endDate = endDate;
+            this.startDate = ko.observable(startDate);
+            this.endDate = ko.observable(endDate);
         }
         
     }

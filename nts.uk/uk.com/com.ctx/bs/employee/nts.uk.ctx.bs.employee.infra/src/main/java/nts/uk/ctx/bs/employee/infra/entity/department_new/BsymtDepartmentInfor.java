@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.employee.dom.department_new.DepartmentInformation;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

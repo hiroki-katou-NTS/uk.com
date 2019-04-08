@@ -9,14 +9,14 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 700,
+					width : 800,
 					height : 350
 				};
 			</script>
 
 			<com:scriptfile set="IGNITE" />
 
-			<com:stylefile path="style.css" />
+<!-- 			<com:stylefile path="style.css" /> -->
 			<com:scriptfile path="cmm011.v2.b.service.js" />
 			<com:scriptfile path="cmm011.v2.b.vm.js" />
 			<com:scriptfile path="cmm011.v2.b.start.js" />
@@ -25,17 +25,16 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-inline caret-background pull-left">
+				<div id="left-content" style="display: inline-block;">
 					<div>
-						<button tabindex="1">#{i18n.getText('CMM011_18')}</button>
-						<button tabindex="2">#{i18n.getText('CMM011_19',['Com_Workplace'])}</button>
-						<button tabindex="3" class="danger">#{i18n.getText('CMM011_20')}</button>
+						<button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011-0_17')}</button>
+						<button tabindex="2" data-bind="enable: screenMode() == 0, click: updateHistory">#{i18n.getText('CMM011-0_18')}</button>
+						<button tabindex="3" class="danger" data-bind="enable: screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011-0_19')}</button>
 					</div>
 
 					<div id="list-box" tabindex="4"
 						data-bind="ntsListBox: {
-						name: '#[CMM011_22]',
+						name: '#[CMM011-0_20]',
 						options: lstWpkHistory,
 						optionsValue: 'historyId',
 						optionsText: 'displayText',
@@ -44,22 +43,38 @@
 						enable: true,
 						rows: 4,
 						columns: [
-							{ key: 'textDisplay', length: 15 }
+							{ key: 'displayText', length: 15 }
 						]}"></div>
 				</div>
 
-				<div id="right-content">
-					<div style="margin-left: 35px; margin-right: 20px;"
-						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
-<!-- 					<div tabindex="5" id="startDate" -->
-<!-- 						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD', enable: enable}"></div> -->
-<!-- 					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span> <span -->
-<!-- 						data-bind="text: endDate"></span> -->
+				<div id="right-content" style="display: inline-block;">
+					<div class="valign-center control-group">
+						<span class="label" data-bind="if: screenMode() == 0">#{i18n.getText('CMM011-0_21')}</span>
+						<span class="label" data-bind="if: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011-0_22')}</span>
+						<span class="label" data-bind="if: screenMode() == 3">#{i18n.getText('CMM011-0_23')}</span>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
+				        <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
+							name: '#[CMM011-0_26]', 
+							required: true, 
+							value: selectedStartDate, 
+							dateFormat: 'YYYY/MM/DD', 
+							enable: true}, visible: screenMode() == 1 || screenMode() == 2 || screenMode() == 3"></div>
+						<span class="label" data-bind="text: selectedStartDate, visible: screenMode() == 0"></span>
+						<span class="label">#{i18n.getText('CMM011-0_25')}</span>
+						<span class="label" data-bind="text: selectedEndDate"></span>
+					</div>
+					<div class="valign-center control-group" data-bind="if: screenMode() == 2">
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, if: initMode() == 0">#{i18n.getText('CMM011-1_6')}</div>
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, if: initMode() == 1">#{i18n.getText('CMM011-2_6')}</div>
+						<button data-bind="ntsHelpButton: {textId: 'Help Button Text', position: 'right center' }">？</button>
+					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="6">#{i18n.getText('CMM011_28')}</button>
-				<button class="large" tabindex="7">#{i18n.getText('CMM011_30')}</button>
+				<button class="x-large proceed" tabindex="7" data-bind="click: registerConfig">#{i18n.getText('CMM011-0_27')}</button>
+				<button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('CMM011-0_28')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
