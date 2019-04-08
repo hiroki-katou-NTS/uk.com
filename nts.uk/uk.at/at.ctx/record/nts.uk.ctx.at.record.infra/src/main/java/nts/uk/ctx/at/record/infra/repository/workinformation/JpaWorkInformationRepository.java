@@ -20,9 +20,9 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -312,6 +312,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		}
 	}
 
+	@SneakyThrows
 	private KrcdtDaiPerWorkInfo convertToEntity(NtsResultRecord rec) {
 		KrcdtDaiPerWorkInfoPK pk = new KrcdtDaiPerWorkInfoPK();
 		pk.employeeId = rec.getString("SID");
@@ -347,6 +348,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				return es;
 			});
 		}
+		
+		return entity;
 	}
 
 	@Override
