@@ -12,15 +12,12 @@ module nts.uk.pr.view.qmm008.b.service {
      * get all
     */
 
-    export function exportExcel(type: number): JQueryPromise<any> {
+    export function exportExcel(data: any): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
         let domainType = "QMM008";
         if (program.length > 1){
             program.shift();
             domainType = domainType + program.join(" ");
-        }
-        let data = {
-            exportType: type
         }
         return nts.uk.request.exportFile( paths.exportExcel, data);
     }
