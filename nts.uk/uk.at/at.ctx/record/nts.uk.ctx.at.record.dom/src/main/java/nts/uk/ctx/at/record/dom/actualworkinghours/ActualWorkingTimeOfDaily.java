@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -161,19 +161,6 @@ public class ActualWorkingTimeOfDaily {
 					predetermineTimeSetByPersonInfo,
 					leaveLateSet
 					);
-		/*ログ差し込み*/
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ActualWorkingTimeOfDaily.class);
-		log.info("計算後、大塚処理前の残業値を出力します。");
-		if(totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork() != null
-		&& totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-			for(OverTimeFrameTime otFrame : totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()) {
-				log.info("枠Ｎｏ："+otFrame.getOverWorkFrameNo());
-				log.info("残業時間："+otFrame.getOverTimeWork().getTime());
-				log.info("計算残業時間："+otFrame.getOverTimeWork().getCalcTime());
-			}
-		}
-		/*ログ差し込み*/
-		
 		
 		TotalWorkingTime calcResultOotsuka;
 		if(workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()) {
@@ -293,9 +280,9 @@ public class ActualWorkingTimeOfDaily {
 			}
 			
 			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime obj = new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new AttendanceTime(0),
+					new AttendanceTimeOfExistMinus(0),
+					new AttendanceTimeOfExistMinus(0),
+					new AttendanceTimeOfExistMinus(0),
 					div_index,
 					reasonContent == null ? null : new DivergenceReasonContent(reasonContent),
 					reasonCode == null ? null : new DiverdenceReasonCode(reasonCode));
@@ -323,9 +310,9 @@ public class ActualWorkingTimeOfDaily {
 											else {
 												totalTime = calcDivergenceNo8910(tdi,integrationOfDailyInDto,breakTimeSheets,calcResultOotsuka);
 											}
-											returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTime(totalTime - deductionTime), 
+											returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTimeOfExistMinus(totalTime - deductionTime), 
 													tdi.getDeductionTime(), 
-													new AttendanceTime(totalTime), 
+													new AttendanceTimeOfExistMinus(totalTime), 
 													tdi.getDivTimeId(), 
 											 		tdi.getDivReason(), 
 											 		tdi.getDivResonCode()));
