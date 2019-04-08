@@ -5306,9 +5306,8 @@ module nts.uk.ui.mgrid {
                 if (dkn.controlType[key] === dkn.TEXTBOX) {
                     let col = _columnsMap[key];
                     if (!col || col.length === 0) return;
-                    val = String(val);
                     let formatted = su.format(col[0], val);
-                    $cell.innerHTML = formatted;
+                    $cell.innerHTML = _.isNil(formatted) ? "" : formatted;
                     let disFormat = su.formatSave(col[0], val);
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                     $.data($cell, v.DATA, disFormat);
@@ -5644,6 +5643,11 @@ module nts.uk.ui.mgrid {
                     _.forEach(_mafollicle[k].dataSource, (d, i) => {
                         if (!condition(d[key], d)) return;
                         let setVal = value(d[key], d);
+                        let maf = _mafollicle[k][_currentSheet], r;
+                        if (maf && maf.desc && (r = maf.desc.rows[i])) {
+                            khl.clear({ id: d[_pk], columnKey: key, element: r[maf.desc.colIdxes[key]] }); 
+                        }
+                        
                         _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                     });
                 });
