@@ -451,6 +451,10 @@ module cps003.a.vm {
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).value(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
                 case ITEM_SINGLE_TYPE.DATE:
+                    if (value instanceof moment && !value.isValid()) {
+                        return { value: null, text: null };    
+                    }
+                    
                     let date = moment(value).format("YYYY/MM/DD");
                     return { value: date, text: date };
                 case ITEM_SINGLE_TYPE.SELECTION:
