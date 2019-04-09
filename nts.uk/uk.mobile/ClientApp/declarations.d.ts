@@ -54,7 +54,6 @@ declare module "vue/types/options" {
         route?: string | {
             url: string;
             parent?: string;
-            components?: Array<{ [name: string]: any }>;
         };
         style?: string;
         resource?: {
