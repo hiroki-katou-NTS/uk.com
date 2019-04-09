@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
-import nts.uk.ctx.bs.employee.infra.entity.department_new.BsymtDepartmentConfig;
+import nts.uk.ctx.bs.employee.infra.entity.department.master.BsymtDepartmentConfig;
 
 /**
  * 

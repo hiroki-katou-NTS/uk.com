@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.workplace_new;
+package nts.uk.ctx.bs.employee.infra.entity.workplace.master;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class BsymtWorkplaceConfig extends UkJpaEntity {
 	public static WorkplaceConfiguration toDomain(List<BsymtWorkplaceConfig> listEntities) {
 		if (listEntities.isEmpty())
 			return null;
-		listEntities.sort((e1, e2) -> e1.startDate.compareTo(e2.startDate));
+		listEntities.sort((e1, e2) -> e2.startDate.compareTo(e1.startDate));
 		List<DateHistoryItem> listWorkplaceHistories = listEntities.stream()
 				.map(e -> new DateHistoryItem(e.pk.workplaceHistoryId, new DatePeriod(e.startDate, e.endDate)))
 				.collect(Collectors.toList());

@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
-import nts.uk.ctx.bs.employee.infra.entity.workplace_new.BsymtWorkplaceConfig;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceConfig;
 
 /**
  * 

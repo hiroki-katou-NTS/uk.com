@@ -13,6 +13,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.AddWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.AddWkpDepConfigCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommand;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.wkpdep.ConfigurationDto;
@@ -27,10 +29,13 @@ public class WorkplaceDepartmentWebService extends WebService {
 	private WkpDepFinder wkpDepFinder;
 
 	@Inject
-	private AddWkpDepConfigCommandHandler addWkpDepHandler;
+	private AddWkpDepConfigCommandHandler addWkpDepConfigHandler;
 
 	@Inject
-	private UpdateWkpDepConfigCommandHandler updateWkpDepHandler;
+	private UpdateWkpDepConfigCommandHandler updateWkpDepConfigHandler;
+	
+	@Inject
+	private DeleteWkpDepConfigCommandHandler deleteWkpDepConfigHandler;
 
 	@POST
 	@Path("/get-configuration/{mode}")
@@ -54,13 +59,19 @@ public class WorkplaceDepartmentWebService extends WebService {
 	@POST
 	@Path("/add-configuration")
 	public JavaTypeResult<String> addConfiguration(AddWkpDepConfigCommand command) {
-		return new JavaTypeResult<String>(addWkpDepHandler.handle(command));
+		return new JavaTypeResult<String>(addWkpDepConfigHandler.handle(command));
 	}
 
 	@POST
 	@Path("/update-configuration")
 	public void updateConfiguration(UpdateWkpDepConfigCommand command) {
-		updateWkpDepHandler.handle(command);
+		updateWkpDepConfigHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/delete-configuration")
+	public void deleteConfiguration(DeleteWkpDepConfigCommand command) {
+		deleteWkpDepConfigHandler.handle(command);
 	}
 
 }

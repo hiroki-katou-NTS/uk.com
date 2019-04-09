@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.workplace_new;
+package nts.uk.ctx.bs.employee.infra.entity.workplace.master;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

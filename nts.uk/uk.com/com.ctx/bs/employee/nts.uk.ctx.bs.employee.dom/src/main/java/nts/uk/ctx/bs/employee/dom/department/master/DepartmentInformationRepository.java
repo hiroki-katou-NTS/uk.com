@@ -13,10 +13,12 @@ public interface DepartmentInformationRepository {
 	
 	public List<DepartmentInformation> getAllActiveDepartmentByCompany(String companyId, String depHistId);
 	
+	public List<DepartmentInformation> getDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
+	
 	public void addDepartment(DepartmentInformation department);
 	
 	public void addDepartments(List<DepartmentInformation> listDepartment);
 
-	public void deleteDepartmentInfo(String departmentHistoryId);
+	public void deleteDepartmentInforOfHistory(String companyId, String depHistId);
 
 }

@@ -5,7 +5,8 @@ module nts.uk.com.view.cmm011.v2.b.service {
     var servicePath: any = {
         getAllConfiguration: "bs/employee/wkpdep/get-all-configuration/{0}",
         addConfiguration: "bs/employee/wkpdep/add-configuration",
-        updateConfiguration: "bs/employee/wkpdep/update-configuration"
+        updateConfiguration: "bs/employee/wkpdep/update-configuration", 
+        deleteConfiguration: "bs/employee/wkpdep/delete-configuration"
     };
 
     export function getAllConfiguration(initMode): JQueryPromise<any> {
@@ -19,6 +20,10 @@ module nts.uk.com.view.cmm011.v2.b.service {
     
     export function updateConfiguration(data): JQueryPromise<any> {
         return ajax("com", servicePath.updateConfiguration, data);
+    }
+    
+    export function deleteConfiguration(data): JQueryPromise<any> {
+        return ajax("com", servicePath.deleteConfiguration, data);
     }
     
 }

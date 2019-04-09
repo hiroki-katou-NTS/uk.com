@@ -17,6 +17,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         selectedStartDate: KnockoutObservable<string>;
         selectedEndDate: KnockoutObservable<string>;
         copyPreviousConfig: KnockoutObservable<boolean>;
+        isLatestHistory: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this, params = getShared("CMM011AParams");
@@ -42,6 +43,9 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
 //                        self.selectedEndDate(DEFAULT_END);
                 }
             });
+            self.isLatestHistory = ko.computed(() => {
+                return !_.isEmpty(self.lstWpkHistory()) && self.selectedHistoryId() == self.lstWpkHistory()[0].historyId;
+            }, this);
         }
         
         startPage(): JQueryPromise<any> {
@@ -64,19 +68,37 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         
         addHistory() {
             let self = this;
-            self.screenMode(SCREEN_MODE.ADD);
             self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+            self.screenMode(SCREEN_MODE.ADD);
             self.selectedStartDate(null)
             self.selectedEndDate(DEFAULT_END);
         }
         
         updateHistory() {
             let self = this;
+            self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
             self.screenMode(SCREEN_MODE.UPDATE);
         }
         
         deleteHistory() {
-            
+            let self = this;
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+//                service.deleteBranch(self.selectedCode()).done(() => {
+//                    self.startPage().done(() => {
+//                        info({ messageId: "Msg_16" }).then(() => {
+//                            self.setSelectedCode(nextSelectNodeId);
+//                            if (self.listBank().length == 0) {
+//                                self.openDialogQmm002d();
+//                            }
+//                        });
+//                    });
+//                }).fail(error => {
+//                    alertError(error);
+//                }).always(() => {
+//                    block.clear();
+//                });
+            }).ifNo(() => {
+            });
         }
         
         registerConfig() {
@@ -124,8 +146,22 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                     });
                     break;
                 case SCREEN_MODE.UPDATE:
-                    block.clear();
-                    self.sendDataToParentScreen();
+                    data = {
+                        initMode: self.initMode(),
+                        historyId: self.selectedHistoryId(),
+                        startDate: moment.utc(self.selectedStartDate(), "YYYY/MM/DD").toISOString(),
+                        endDate: moment.utc(self.selectedEndDate(), "YYYY/MM/DD").toISOString()
+                    };
+                    service.updateConfiguration(data).done(() => {
+                        self.startPage().done(() => {
+                            self.selectedHistoryId.valueHasMutated();
+                            self.sendDataToParentScreen();
+                        });
+                    }).fail((error) => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
                     break;
                 default:
                     block.clear();

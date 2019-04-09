@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.department_new;
+package nts.uk.ctx.bs.employee.infra.entity.department.master;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class BsymtDepartmentConfig extends UkJpaEntity {
 	public static DepartmentConfiguration toDomain(List<BsymtDepartmentConfig> listEntities) {
 		if (listEntities.isEmpty())
 			return null;
-		listEntities.sort((e1, e2) -> e1.startDate.compareTo(e2.startDate));
+		listEntities.sort((e1, e2) -> e2.startDate.compareTo(e1.startDate));
 		List<DateHistoryItem> listDepartmentHistories = listEntities.stream()
 				.map(e -> new DateHistoryItem(e.pk.departmentHistoryId, new DatePeriod(e.startDate, e.endDate)))
 				.collect(Collectors.toList());

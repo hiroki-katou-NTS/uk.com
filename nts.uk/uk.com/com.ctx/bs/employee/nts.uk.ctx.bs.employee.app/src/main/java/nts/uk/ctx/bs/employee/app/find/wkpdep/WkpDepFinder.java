@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
-import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
@@ -31,9 +30,6 @@ public class WkpDepFinder {
 
 	private static final int WORKPLACE_MODE = 0;
 	private static final int DEPARTMENT_MODE = 1;
-
-	@Inject
-	private OperationRuleRepository operationRepo;
 
 	@Inject
 	private WorkplaceConfigurationRepository wkpConfigRepo;

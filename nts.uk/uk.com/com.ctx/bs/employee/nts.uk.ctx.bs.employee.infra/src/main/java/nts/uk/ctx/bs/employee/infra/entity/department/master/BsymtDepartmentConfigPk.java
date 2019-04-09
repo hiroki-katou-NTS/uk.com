@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.department_new;
+package nts.uk.ctx.bs.employee.infra.entity.department.master;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,15 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsymtDepartmentInforPk {
+public class BsymtDepartmentConfigPk {
 
 	@Column(name = "CID")
 	public String companyId;
 
 	@Column(name = "DEP_HIST_ID")
 	public String departmentHistoryId;
-
-	@Column(name = "DEP_ID")
-	public String departmentId;
-
+	
 }

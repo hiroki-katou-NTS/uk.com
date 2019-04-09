@@ -29,7 +29,7 @@
 					<div>
 						<button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011-0_17')}</button>
 						<button tabindex="2" data-bind="enable: screenMode() == 0, click: updateHistory">#{i18n.getText('CMM011-0_18')}</button>
-						<button tabindex="3" class="danger" data-bind="enable: screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011-0_19')}</button>
+						<button tabindex="3" class="danger" data-bind="enable: isLatestHistory() || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011-0_19')}</button>
 					</div>
 
 					<div id="list-box" tabindex="4"

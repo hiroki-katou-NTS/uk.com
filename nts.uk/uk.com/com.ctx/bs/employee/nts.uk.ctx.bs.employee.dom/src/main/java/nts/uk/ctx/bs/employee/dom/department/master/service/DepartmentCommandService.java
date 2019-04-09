@@ -77,4 +77,23 @@ public class DepartmentCommandService {
 		}
 	}
 
+	/**
+	 * 部門構成を削除する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 */
+	public void deleteDepartmentConfig(String companyId, String historyId) {
+		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
+		if (optDepConfig.isPresent()) {
+			DepartmentConfiguration depConfig = optDepConfig.get();
+			depConfig.items().stream().filter(i -> i.identifier().equals(historyId)).findFirst()
+					.ifPresent(itemToBeRemoved -> {
+						depConfig.remove(itemToBeRemoved);
+						depConfigRepo.updateDepartmentConfig(depConfig);
+					});
+		}
+		depInforRepo.deleteDepartmentInforOfHistory(companyId, historyId);
+	}
+
 }

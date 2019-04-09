@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.workplace_new;
+package nts.uk.ctx.bs.employee.infra.entity.workplace.master;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,15 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsymtWorkplaceInforPk {
+public class BsymtWorkplaceConfigPk {
 
 	@Column(name = "CID")
 	public String companyId;
 
 	@Column(name = "WKP_HIST_ID")
 	public String workplaceHistoryId;
-
-	@Column(name = "WKP_ID")
-	public String workplaceId;
-
+	
 }

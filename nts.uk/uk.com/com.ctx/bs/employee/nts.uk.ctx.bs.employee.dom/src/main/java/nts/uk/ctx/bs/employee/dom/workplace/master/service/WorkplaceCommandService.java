@@ -76,4 +76,23 @@ public class WorkplaceCommandService {
 		}
 	}
 
+	/**
+	 * 職場構成を削除する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 */
+	public void deleteWorkplaceConfig(String companyId, String historyId) {
+		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(companyId);
+		if (optWkpConfig.isPresent()) {
+			WorkplaceConfiguration wkpConfig = optWkpConfig.get();
+			wkpConfig.items().stream().filter(i -> i.identifier().equals(historyId)).findFirst()
+					.ifPresent(itemToBeRemove -> {
+						wkpConfig.remove(itemToBeRemove);
+						wkpConfigRepo.updateWorkplaceConfig(wkpConfig);
+					});
+		}
+		wkpInforRepo.deleteWorkplaceInforOfHistory(companyId, historyId);
+	}
+
 }
