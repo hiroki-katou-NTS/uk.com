@@ -82,7 +82,7 @@ const _SideMenu = new Vue({
                         .map(m => ({
                             url: m.url,
                             title: m.title,
-                            childs: (m.childs || []).filter(c => i18n(c.title).toLowerCase().indexOf(kwo) > -1),
+                            childs: i18n(m.title).toLowerCase().indexOf(kwo) > -1 ? (m.childs || []) : (m.childs || []).filter(c => i18n(c.title).toLowerCase().indexOf(kwo) > -1),
                             hasc: !!(m.childs || []).length
                         }))
                         .filter(f => {
@@ -105,16 +105,9 @@ const _SideMenu = new Vue({
     }
 })
 export class SideMenuBar extends Vue {
-    filter: string = '';
     active: any = {};
-
-    //items: { title: string }[] = _SideMenu.items;
-
-    @Watch('filter', { immediate: true })
-    getItems(value: string) {
-        //this.items = _SideMenu.items.filter(f => f.title.indexOf(value) > -1);
-    }
-
+    filter: string = '';
+    
     constructor() {
         super();
 
