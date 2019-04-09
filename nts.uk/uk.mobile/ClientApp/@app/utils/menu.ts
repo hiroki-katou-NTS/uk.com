@@ -4,7 +4,7 @@ import { routes } from '@app/core/routes';
 export class Menu {
     public static get all(): Array<any> {
         return _(routes)
-            .map(m => ({
+            .map((m: any) => ({
                 url: m.path,
                 title: m.name,
                 childs: (m.children || []).map(c => ({
