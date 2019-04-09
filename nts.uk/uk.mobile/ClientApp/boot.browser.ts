@@ -5,7 +5,7 @@ import '@app/utils/bootstrap';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { bstrp, ajax, resources, i18n, mask, modal, dialog, click, validate, Language } from '@app/plugins';
+import { bstrp, ajax, resources, i18n, mask, modal, dialog, validate, Language } from '@app/plugins';
 
 import { obj } from '@app/utils';
 import { LanguageBar } from '@app/plugins';
@@ -21,7 +21,6 @@ Vue.use(dialog);
 Vue.use(i18n);
 Vue.use(mask);
 
-Vue.use(click);
 Vue.use(validate);
 
 Vue.use(Vuex);

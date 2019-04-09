@@ -1,5 +1,4 @@
 export * from '@app/plugins/bstrp';
-export * from '@app/plugins/click';
 
 export * from '@app/plugins/ajax';
 export * from '@app/plugins/validate';
