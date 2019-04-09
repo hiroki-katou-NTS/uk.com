@@ -721,7 +721,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
-			throw new BusinessException("Msg_1419");
+			throw new BusinessException("Msg_1527");
 		}
 
 		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();

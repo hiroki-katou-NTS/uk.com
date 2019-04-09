@@ -184,7 +184,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	@Override
 	public List<IntegrationOfDaily> getByRecruitment(CommonReflectParameter param, boolean isPre) {
 		IntegrationOfDaily daily = holidayWorktimeService.createIntegrationOfDailyStart(param.getEmployeeId(), param.getBaseDate(), 
-				param.getWorkTimeCode(), param.getWorkTypeCode(), param.getStartTime(), param.getEndTime());
+				param.getWorkTimeCode(), param.getWorkTypeCode(), param.getStartTime(), param.getEndTime(), isPre);
 		//予定勤種就時の反映
 		//予定開始終了の反映
 		this.reflectScheWorkTimeType(param, isPre, daily);

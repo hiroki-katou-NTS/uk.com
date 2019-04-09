@@ -30,6 +30,10 @@ public class HolidayWorkReflectPubPara {
 	 * False: しない
 	 */
 	private boolean scheReflectFlg;
+    /**    休出事後反映設定: 勤務時間（出勤、退勤時刻） */
+    private boolean hwRecordReflectTime;
+    /**休出事後反映設定: 休憩時間     */
+    private boolean hwRecordReflectBreak;
 	/**
 	 * 休日出勤申請
 	 */

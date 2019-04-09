@@ -587,9 +587,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
 						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
 						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+								Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(worktimeTmp, new AttendanceTime(0))),
 								Finally.of(timeCalculation),
-								Finally.of(timeCalculation),
-								Finally.of(worktimeTmp));
+								Finally.of(new AttendanceTime(0)));
 						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
 					}
 				}
