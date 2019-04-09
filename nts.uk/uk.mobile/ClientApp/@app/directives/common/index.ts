@@ -1,4 +1,6 @@
 import './init';
+import './out';
+import './click';
 import './focus';
 import './touch';
 import './ripple';
