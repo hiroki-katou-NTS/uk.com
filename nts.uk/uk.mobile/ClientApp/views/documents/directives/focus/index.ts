@@ -2,24 +2,16 @@ import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    route: {
-        url: '/directive/focus',
+    name: 'documentsdirectivesfocus',
+    route: { 
+        url: '/directives/focus',
         parent: '/documents'
     },
-    template: require('./index.html'),
-    resource: {
-        'vi': {
-            'd_focus': 'Focus vào một đối tượng'
-        },
-        'jp': {
-            'd_focus': 'Focus to element'
-        }
-    },
+    template: require('./index.vue'),
+    resource: require('./resources.json'),
     markdown: {
         vi: require('./content/vi.md'),
-        jp: require('./content/vi.md')
-    },
-    name: 'd_focus'
+        jp: require('./content/jp.md')
+    }
 })
-export class FocusDirectiveDocument extends Vue {
-}
+export class DocumentsDirectivesFocusComponent extends Vue { }

@@ -1,25 +1,17 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
-
 @component({
-    route: {
-        url: '/plugin/modal',
+    name: 'documentspluginsmodal',
+    route: { 
+        url: '/plugins/modal',
         parent: '/documents'
     },
-    template: require('./index.html'),
+    template: require('./index.vue'),
+    resource: require('./resources.json'),
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
-    },
-    resource: {
-        vi: {
-            ModalDocumentComponent: 'Dialog/modal'
-        },
-        jp: {
-            ModalDocumentComponent: 'Dialog/modal'
-        }
     }
 })
-export class ModalDocumentComponent extends Vue {
-}
+export class DocumentsPluginsModalComponent extends Vue { }

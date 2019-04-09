@@ -1,2 +1,31 @@
-##### 1. Giới thiệu
-> Giống như chuyển một trang, `modal` là một plugin cho phép mở một view chồng lên trên một view khác (tạm thời) và thực hiện các nghiệp vụ rồi trả dữ liệu ngược lại view gọi trước đó.
+##### 2. Explaint
+> Sample quote
+
+- First item list
+- Second item list
+
+**HTML Code:**
+```html
+<div class="sample">
+    <span>Sample html code</span>
+</div>
+```
+
+**Typescript code:**
+```typescript
+class ClassName {
+    constructor() {
+        // sample contructor
+    }
+
+    choose() {
+        // sample method
+    }
+}
+```
+
+##### 3. API
+
+id | name | content
+----|----|------
+id | name | content

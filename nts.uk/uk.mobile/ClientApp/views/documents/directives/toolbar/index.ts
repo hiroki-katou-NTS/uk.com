@@ -2,24 +2,16 @@ import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    route: {
-        url: '/directive/toolbar',
+    name: 'documentsdirectivestoolbar',
+    route: { 
+        url: '/directives/toolbar',
         parent: '/documents'
     },
-    template: require('./index.html'),
+    template: require('./index.vue'),
+    resource: require('./resources.json'),
     markdown: {
         vi: require('./content/vi.md'),
-        jp: require('./content/vi.md')
-    },
-    resource: {
-        vi: {
-            'd_toolbar': 'Thanh công cụ'
-        },
-        jp: {
-            'd_toolbar': 'Toolbar'
-        }
-    },
-    name: 'd_toolbar'
+        jp: require('./content/jp.md')
+    }
 })
-export class ToolbarDirectiveDocument extends Vue {
-}
+export class DocumentsDirectivesToolbarComponent extends Vue { }

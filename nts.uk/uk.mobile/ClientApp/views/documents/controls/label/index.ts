@@ -2,24 +2,16 @@ import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    route: {
+    name: 'documentscontrolslabel',
+    route: { 
         url: '/controls/label',
         parent: '/documents'
     },
-    template: require('./index.html'),
+    template: require('./index.vue'),
+    resource: require('./resources.json'),
     markdown: {
-        jp: require('./content/jp.md'),
-        vi: require('./content/vi.md')
-    },
-    resource: {
-        'vi': {
-            'LabelControlDocument': 'Label'
-        },
-        'jp': {
-            'LabelControlDocument': 'Label'
-        }
+        vi: require('./content/vi.md'),
+        jp: require('./content/jp.md')
     }
 })
-export class LabelControlDocument extends Vue {
-
-}
+export class DocumentsControlsLabelComponent extends Vue { }

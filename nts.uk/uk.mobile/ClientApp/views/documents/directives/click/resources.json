@@ -1,8 +1,8 @@
 {
     "jp": {
-        "dd_click": "Prevent multi click"
+        "documentsdirectivesclick": "Prevent multi click"
     },
     "vi": {
-        "dd_click": "Chặn nhấp chuột liên tiếp"
+        "documentsdirectivesclick": "Phòng chống click liên tục"
     }
 }

@@ -1,4 +1,5 @@
 import { Vue } from '@app/provider';
+import { Language } from '@app/plugins';
 import { dom, browser } from '@app/utils';
 import { component, Watch } from '@app/core/component';
 
@@ -27,7 +28,7 @@ const _SideMenu = new Vue({
 }, resize = () => SideMenu.show = false;
 
 @component({
-    template: `<nav class="sidebar" v-bind:class="{ show, iphone}" v-if="visible && items && items.length">
+    template: `<nav class="sidebar" v-bind:class="{ show, iphone}" v-if="visible">
         <div class="sidebar-header">
             <h3>
                 <router-link to="/">
@@ -41,12 +42,13 @@ const _SideMenu = new Vue({
             </button>
         </div>
         <ul class="list-unstyled list-group components">
+            <li><nts-search-box v-model="filter" class="mt-2 mr-2 ml-2" /></li>
             <li v-for="(m, i) in items" v-bind:class="{ 'list-unstyled-item': m.childs }">
-                <template v-if="m.childs">
-                    <a class="dropdown-toggle collapse" v-on:click="toggleDropdown(m)" v-bind:class="{ 'show': active === m }">
+                <template v-if="m.hasc">
+                    <a class="dropdown-toggle collapse" v-on:click="toggleDropdown(m)" v-bind:class="{ 'show': active === m || (!!filter && m.hasc) }">
                         <span><i class="fas fa-code mr-2"></i>{{(m.title) | i18n }}</span>
                     </a>
-                    <ul class="collapse list-unstyled" v-bind:class="{ 'show': active == m }">
+                    <ul class="collapse list-unstyled" v-bind:class="{ 'show': active == m || (!!filter && m.hasc) }">
                         <li v-for="(t, j) in m.childs">
                             <router-link :to="t.url">
                                 <span v-on:click="hideSideBar"><i class="far fa-file-alt mr-2"></i>{{t.title | i18n }}</span>
@@ -74,7 +76,20 @@ const _SideMenu = new Vue({
         },
         items: {
             get() {
-                return _SideMenu.items;
+                let kwo = this.filter.toLowerCase().trim(),
+                    i18n = Language.i18n,
+                    items = SideMenu.items
+                        .map(m => ({
+                            url: m.url,
+                            title: m.title,
+                            childs: (m.childs || []).filter(c => i18n(c.title).toLowerCase().indexOf(kwo) > -1),
+                            hasc: !!(m.childs || []).length
+                        }))
+                        .filter(f => {
+                            return i18n(f.title).toLowerCase().indexOf(kwo) > -1 || !!f.childs.length;
+                        });
+
+                return items;
             }
         },
         iphone: {
@@ -90,7 +105,15 @@ const _SideMenu = new Vue({
     }
 })
 export class SideMenuBar extends Vue {
+    filter: string = '';
     active: any = {};
+
+    //items: { title: string }[] = _SideMenu.items;
+
+    @Watch('filter', { immediate: true })
+    getItems(value: string) {
+        //this.items = _SideMenu.items.filter(f => f.title.indexOf(value) > -1);
+    }
 
     constructor() {
         super();

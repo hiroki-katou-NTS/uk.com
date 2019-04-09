@@ -1,5 +1,4 @@
-import './toolbar';
-import './float';
 import './click';
+import './float-button';
 import './focus';
-import './accordion';
+import './toolbar';

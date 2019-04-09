@@ -1,9 +1,6 @@
-import './home';
-
-import './html';
-import './plugins';
-import './filters';
+import './_vm';
+import './components';
 import './controls';
 import './directives';
-
-import './component';
+import './filters';
+import './plugins';

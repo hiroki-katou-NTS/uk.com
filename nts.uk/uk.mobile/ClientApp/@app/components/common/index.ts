@@ -1,4 +1,5 @@
 import './label';
+import './search';
 
 import './selects/radio';
 import './selects/checkbox';
