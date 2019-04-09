@@ -40,7 +40,7 @@ module.exports = (env) => {
                     loaders: ['raw-loader', 'vue-md-loader']
                 },
                 {
-                    test: /.html$/,
+                    test: /.(vue|html)$/,
                     include: /(views|components)/,
                     loaders: ["vue-view-loader"]
                 },

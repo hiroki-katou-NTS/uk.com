@@ -7,7 +7,8 @@ module.exports = function (html) {
     html = html
         .replace(/module.exports = /, '')
         .replace(/^"|"$/g, '')
-        .replace(/\\"/g, "'");
+        .replace(/\\"/g, "'")
+        .replace(/^(\<template\>)|(\<\/template\>)$/, '');
 
     const compiled = compiler.compile(html, {
         preserveWhitespace: false
