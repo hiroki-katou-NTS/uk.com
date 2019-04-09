@@ -5,6 +5,7 @@ module.exports = function (html) {
     this.cacheable();
 
     html = html
+        .trim()
         .replace(/module.exports = /, '')
         .replace(/^"|"$/g, '')
         .replace(/\\"/g, "'")

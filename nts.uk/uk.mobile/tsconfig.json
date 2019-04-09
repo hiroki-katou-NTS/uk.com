@@ -21,6 +21,9 @@
       ]
     }
   },
+  "include": [
+    "ClientApp/**/*"
+  ],
   "exclude": [
     "bin",
     "node_modules"
