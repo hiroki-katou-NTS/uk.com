@@ -576,7 +576,7 @@ module nts.uk.com.view.cmf003.b {
                                 self.next();
                                 $(".selectEmpType").focus();
                             } else {
-                                alertError({ messageId: 'Msg_463' });
+                                alertError({ messageId: 'Msg_471' });
                             }
                         } else {
                             alertError({ messageId: 'Msg_566' });
@@ -586,7 +586,7 @@ module nts.uk.com.view.cmf003.b {
                             self.next();
                             $(".selectEmpType").focus();
                         } else {
-                            alertError({ messageId: 'Msg_463' });
+                            alertError({ messageId: 'Msg_471' });
                         }
                     }
                 }
