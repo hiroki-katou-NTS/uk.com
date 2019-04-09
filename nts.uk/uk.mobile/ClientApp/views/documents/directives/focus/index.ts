@@ -9,20 +9,17 @@ import { component } from '@app/core/component';
     template: require('./index.html'),
     resource: {
         'vi': {
-            'AccordionDocumentComponent': 'Accordions/Step Wizard',
-            'next': 'Tiếp',
-            'preview': 'Lùi lại'
+            'd_focus': 'Focus vào một đối tượng'
         },
         'jp': {
-            'AccordionDocumentComponent': 'Accordions/Step Wizard',
-            'next': 'Next',
-            'preview': 'Preview'
+            'd_focus': 'Focus to element'
         }
     },
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/vi.md')
-    }
+    },
+    name: 'd_focus'
 })
 export class FocusDirectiveDocument extends Vue {
 }
