@@ -151,6 +151,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             // TODO
             console.log('TODO');
         }
+
         startPage(): JQueryPromise<any> {
             let self = this;
             return self.showAllOfficeAndHistory();
@@ -333,6 +334,34 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     self.isUpdateMode(false);
                 }
                 $("#B2_7").focus();
+            });
+        }
+
+        exportExcel(): void {
+            let type = 0;
+            let params = {
+                date: null,
+                mode: 6
+            };
+
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let startDate = result.startDate;
+                    let data = {
+                        type: type,
+                        startDate: startDate
+                    }
+                    service.exportExcel(data).done(function() {
+                        //nts.uk.ui.windows.close();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
             });
         }
 

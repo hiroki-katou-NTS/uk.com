@@ -162,6 +162,17 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
             // TODO
         }
 
+         exportExcel(): void {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            service.exportExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+
         deleteOffice () {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this, command = ko.toJS(self.selectedLaborOffice), listOffice = ko.toJS(self.laborInsuranceOfficeList), currentIndex, newOfficeCode;

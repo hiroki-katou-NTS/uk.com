@@ -6,11 +6,25 @@ module nts.uk.pr.view.qmm010.a.service {
         findByOfficeCode: "ctx/pr/core/laborinsurance/laborinsuranceoffice/findLaborOfficeByCode/{0}",
         addLaborOffice: "ctx/pr/core/laborinsurance/laborinsuranceoffice/addLaborOffice",
         updateLaborOffice: "ctx/pr/core/laborinsurance/laborinsuranceoffice/updateLaborOffice",
-        removeLaborOffice: "ctx/pr/core/laborinsurance/laborinsuranceoffice/removeLaborOffice"
+        removeLaborOffice: "ctx/pr/core/laborinsurance/laborinsuranceoffice/removeLaborOffice",
+        exportExcel: "file/core/laborInsurance/laborInsuranceoffice/export"
     }
+
+    export function exportExcel(): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = "QMM010";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
+        return nts.uk.request.exportFile( paths.exportExcel);
+    }
+
     /**
      * get all
      */
+
+
     export function findAllOffice(): JQueryPromise<any> {
         return ajax(paths.getAllOffice);
     }
