@@ -685,7 +685,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 //                    _.each(dataChange, data => {
 //                        $("#dpGrid").mGrid("updateCell", data.rowId, data.columnKey, data.value, true);
 //                    });
-
+					  nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
 //                    if (self.initMode() != ScreenMode.APPROVAL) {
                         self.loadRowScreen().done(() => {
                             nts.uk.ui.block.clear();
@@ -703,7 +703,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     } else {
                         nts.uk.ui.dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });    
                     }
-                });;
+                });
             }
         }
 
