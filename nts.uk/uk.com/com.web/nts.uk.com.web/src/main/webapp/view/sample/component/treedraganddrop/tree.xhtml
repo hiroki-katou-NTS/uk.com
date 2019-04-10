@@ -113,6 +113,7 @@
 							<ol>
 								<li><a href="#tabs-html">HTML Binding</a></li>
 								<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								<li><a href="#tabs-method">Method</a></li>
 							</ol>
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
@@ -341,6 +342,137 @@
     }]]>
 								</pre>
 							</div>
+							<div id="tabs-method" class="cf">
+								<h2>Method</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Method</h4></th>
+											<th><h4>Parameter</h4></th>
+											<th><h4>Return</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("getPrevious", node)</td>
+											<td>
+												node: base node.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												Object for node or null<br/>
+												<i>Structure: <br/>
+													␣␣␣␣binding: property for binding a node<br/>
+													␣␣␣␣data: data of node <br/>
+													␣␣␣␣element: element in html of node<br/>
+													␣␣␣␣id: id of node in data source <br/>
+													␣␣␣␣path: path for structure in tree (sample: '0_0')</i>
+											</td>
+											<td>Get sibling before passed node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("getSelected")</td>
+											<td>none</td>
+											<td>
+												Object for selected node or null<br/>
+												<i>Structure: <br/>
+													␣␣␣␣binding: property for binding a node<br/>
+													␣␣␣␣data: data of node <br/>
+													␣␣␣␣element: element in html of node<br/>
+													␣␣␣␣id: id of node in data source <br/>
+													␣␣␣␣path: path for structure in tree (sample: '0_0')</i>
+											</td>
+											<td>Get current selected node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("setSelected", ids)</td>
+											<td>ids: a id or list ids of node</td>
+											<td>none</td>
+											<td>set selected node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("deselectAll")</td>
+											<td>none</td>
+											<td>none</td>
+											<td>deselect all selected node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("isMulti")</td>
+											<td>none</td>
+											<td>boolean</td>
+											<td>check tree is multiple or single select.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("getParent", node)</td>
+											<td>
+												node: base node.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												Object for node or null<br/>
+												<i>Structure: <br/>
+													␣␣␣␣binding: property for binding a node<br/>
+													␣␣␣␣data: data of node <br/>
+													␣␣␣␣element: element in html of node<br/>
+													␣␣␣␣id: id of node in data source <br/>
+													␣␣␣␣path: path for structure in tree (sample: '0_0')</i>
+											</td>
+											<td>Get parent of passed node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("moveNext", target, node)</td>
+											<td>
+												target: a node that will put to next (will become siblings).<br/>
+												node: base node for move.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												boolean: moved or not
+											</td>
+											<td>move to next target node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("moveInto", target, node)</td>
+											<td>
+												target: a node that will put into (will become child).<br/>
+												node: base node for move.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												boolean: moved or not
+											</td>
+											<td>move into target node.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("moveUp", node)</td>
+											<td>
+												node: base node for move.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												boolean: moved or not
+											</td>
+											<td>move target node up 1.</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeDrag("moveDown", node)</td>
+											<td>
+												node: base node for move.<br/>
+												<i>Type: any (<b>id of node</b> in data source or object get with method <b>getSelected or getPrevious</b>)</i>
+											</td>
+											<td>
+												boolean: moved or not
+											</td>
+											<td>move target node down 1.</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							
 						</div>
 					</article>
 					<div class="footer cf">
