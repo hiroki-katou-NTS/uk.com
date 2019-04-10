@@ -74,11 +74,13 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                      self.listDataDisp.push(contentDisp);
                 } else {
                     if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION || data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
-                        appEndDate = data.appEndDate;
+                        if (data.appEndDate != appStartDate) {
+                            appEndDate = data.appEndDate;
+                        }
                     } else {
                         appEndDate == "";
                     }
-                    let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(appEndDate));
+                    let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
                     let reflectStateContent = self.disReflectionStatus(data.reflectState);
                     self.listDataDisp.push(new ContentDisp(data.applicationID, data.appName, data.prePostAtr == 1 ? "事後" : "事前", dateRange, data.appContent, data.reflectState, reflectStateContent, self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
                 }
