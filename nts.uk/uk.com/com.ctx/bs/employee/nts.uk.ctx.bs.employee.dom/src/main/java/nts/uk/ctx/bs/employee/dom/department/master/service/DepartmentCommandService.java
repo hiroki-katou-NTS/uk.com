@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
@@ -87,9 +89,18 @@ public class DepartmentCommandService {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (optDepConfig.isPresent()) {
 			DepartmentConfiguration depConfig = optDepConfig.get();
+			if (depConfig.items().size() == 1) {
+				throw new BusinessException("Msg_57");
+			}
 			depConfig.items().stream().filter(i -> i.identifier().equals(historyId)).findFirst()
 					.ifPresent(itemToBeRemoved -> {
+						if (!itemToBeRemoved.contains(GeneralDate.ymd(9999, 12, 31))) {
+							throw new BusinessException("Msg_55");
+						}
 						depConfig.remove(itemToBeRemoved);
+						depConfig.items().get(0).changeSpan(
+								new DatePeriod(depConfig.items().get(0).start(), GeneralDate.ymd(9999, 12, 31)));
+						depConfigRepo.deleteDepartmentConfig(companyId, historyId);
 						depConfigRepo.updateDepartmentConfig(depConfig);
 					});
 		}

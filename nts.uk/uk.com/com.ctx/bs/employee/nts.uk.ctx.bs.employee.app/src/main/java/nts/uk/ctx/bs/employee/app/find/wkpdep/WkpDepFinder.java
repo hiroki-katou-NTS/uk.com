@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
@@ -30,6 +35,8 @@ public class WkpDepFinder {
 
 	private static final int WORKPLACE_MODE = 0;
 	private static final int DEPARTMENT_MODE = 1;
+	private static final Integer HIERARCHY_LENGTH = 3;
+	private static final int MAX_WKP_DEP_NUMBER = 9999;
 
 	@Inject
 	private WorkplaceConfigurationRepository wkpConfigRepo;
@@ -110,6 +117,75 @@ public class WkpDepFinder {
 			return listDep.stream().map(i -> new InformationDto(i)).collect(Collectors.toList());
 		default:
 			return null;
+		}
+	}
+
+	public void checkTotalWkpDep(int mode, String historyId) {
+		String companyId = AppContexts.user().companyId();
+		switch (mode) {
+		case WORKPLACE_MODE:
+			if (wkpInforRepo.getAllActiveWorkplaceByCompany(companyId, historyId).size() >= MAX_WKP_DEP_NUMBER)
+				throw new BusinessException("Msg_367");
+			break;
+		case DEPARTMENT_MODE:
+			if (depInforRepo.getAllActiveDepartmentByCompany(companyId, historyId).size() >= MAX_WKP_DEP_NUMBER)
+				throw new BusinessException("Msg_367");
+			break;
+		default:
+			break;
+		}
+	}
+
+	public List<WkpDepTreeDto> getWkpDepInforTree(int mode, String historyId) {
+		List<InformationDto> listInfor = this.getWkpDepInfor(mode, historyId);
+		List<WkpDepTreeDto> result = this.createTree(listInfor);
+		return result;
+	}
+	
+	private List<WkpDepTreeDto> createTree(List<InformationDto> lstHWkpInfo) {
+		List<WkpDepTreeDto> lstReturn = new ArrayList<>();
+		// Higher hierarchyCode has shorter length
+		int highestHierarchy = lstHWkpInfo.stream()
+				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get()
+				.getHierarchyCode().length();
+		Iterator<InformationDto> iteratorWkpHierarchy = lstHWkpInfo.iterator();
+		// while have workplace
+		while (iteratorWkpHierarchy.hasNext()) {
+			// pop 1 item
+			InformationDto wkpHierarchy = iteratorWkpHierarchy.next();
+			// convert
+			WkpDepTreeDto dto = new WkpDepTreeDto(wkpHierarchy.getId(), wkpHierarchy.getCode(), wkpHierarchy.getName(), wkpHierarchy.getHierarchyCode(), new ArrayList<>());
+			// build List
+			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
+		}
+		return lstReturn;
+	}
+
+	private void pushToList(List<WkpDepTreeDto> lstReturn, WkpDepTreeDto dto, String hierarchyCode,
+			String preCode, int highestHierarchy) {
+		if (hierarchyCode.length() == highestHierarchy) {
+			// check duplicate code
+			if (lstReturn.isEmpty()) {
+				lstReturn.add(dto);
+				return;
+			}
+			for (WkpDepTreeDto item : lstReturn) {
+				if (!item.getCode().equals(dto.getCode())) {
+					lstReturn.add(dto);
+					break;
+				}
+			}
+		} else {
+			String searchCode = preCode.isEmpty() ? preCode + hierarchyCode.substring(0, highestHierarchy)
+					: preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
+			Optional<WkpDepTreeDto> optWorkplaceFindDto = lstReturn.stream()
+					.filter(item -> item.getHierarchyCode().equals(searchCode)).findFirst();
+			if (!optWorkplaceFindDto.isPresent()) {
+				return;
+			}
+			List<WkpDepTreeDto> currentItemChilds = optWorkplaceFindDto.get().getChildren();
+			pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
+					searchCode, highestHierarchy);
 		}
 	}
 

@@ -14,7 +14,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.NEW);
         lstWpkHistory: KnockoutObservableArray<HistoryItem>;
         selectedHistoryId: KnockoutObservable<string>;
-        selectedStartDate: KnockoutObservable<string>;
+        selectedStartDateInput: KnockoutObservable<string>;
+        selectedStartDateText: KnockoutObservable<string>;
         selectedEndDate: KnockoutObservable<string>;
         copyPreviousConfig: KnockoutObservable<boolean>;
         isLatestHistory: KnockoutObservable<boolean>;
@@ -23,7 +24,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             let self = this, params = getShared("CMM011AParams");
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
-            self.selectedStartDate = ko.observable(null);
+            self.selectedStartDateInput = ko.observable(null);
+            self.selectedStartDateText = ko.observable(null);
             self.selectedEndDate = ko.observable(DEFAULT_END);
             self.copyPreviousConfig = ko.observable(false);
             if (params) {
@@ -34,7 +36,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 if (value) {
                     let history: HistoryItem = _.find(self.lstWpkHistory(), i => i.historyId == value);
                     if (history) {
-                        self.selectedStartDate(history.startDate);
+                        self.selectedStartDateInput(history.startDate);
+                        self.selectedStartDateText(history.startDate);
                         self.selectedEndDate(history.endDate);
                     }
                     self.screenMode(SCREEN_MODE.SELECT);
@@ -70,48 +73,49 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             let self = this;
             self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
             self.screenMode(SCREEN_MODE.ADD);
-            self.selectedStartDate(null)
+            self.selectedStartDateInput(null)
             self.selectedEndDate(DEFAULT_END);
         }
         
         updateHistory() {
             let self = this;
-            self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
             self.screenMode(SCREEN_MODE.UPDATE);
         }
         
         deleteHistory() {
             let self = this;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
-//                service.deleteBranch(self.selectedCode()).done(() => {
-//                    self.startPage().done(() => {
-//                        info({ messageId: "Msg_16" }).then(() => {
-//                            self.setSelectedCode(nextSelectNodeId);
-//                            if (self.listBank().length == 0) {
-//                                self.openDialogQmm002d();
-//                            }
-//                        });
-//                    });
-//                }).fail(error => {
-//                    alertError(error);
-//                }).always(() => {
-//                    block.clear();
-//                });
+                block.invisible();
+                let data = { historyId: self.selectedHistoryId(), initMode: self.initMode() };
+                service.deleteConfiguration(data).done(() => {
+                    self.startPage().done(() => {
+                        self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
             }).ifNo(() => {
             });
         }
         
         registerConfig() {
             let self = this, data = null;
+            $(".nts-input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) 
+                return;
             block.invisible();
+            let startDate = moment.utc(self.selectedStartDateInput(), "YYYY/MM/DD"),
+                endDate = moment.utc(self.selectedEndDate(), "YYYY/MM/DD");
             switch (self.screenMode()) {
                 case SCREEN_MODE.NEW:
                     data = {
                         initMode: self.initMode(),
                         newHistoryId: null,
                         prevHistoryId: null,
-                        startDate: moment.utc(self.selectedStartDate(), "YYYY/MM/DD").toISOString(),
-                        endDate: moment.utc(self.selectedEndDate(), "YYYY/MM/DD").toISOString(),
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString(),
                         copyPreviousConfig: false
                     };
                     service.addConfiguration(data).done((historyId) => {
@@ -130,8 +134,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                         initMode: self.initMode(),
                         newHistoryId: null,
                         prevHistoryId: self.lstWpkHistory()[0].historyId,
-                        startDate: moment.utc(self.selectedStartDate(), "YYYY/MM/DD").toISOString(),
-                        endDate: moment.utc(self.selectedEndDate(), "YYYY/MM/DD").toISOString(),
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString(),
                         copyPreviousConfig: self.copyPreviousConfig()
                     };
                     service.addConfiguration(data).done((historyId) => {
@@ -149,8 +153,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                     data = {
                         initMode: self.initMode(),
                         historyId: self.selectedHistoryId(),
-                        startDate: moment.utc(self.selectedStartDate(), "YYYY/MM/DD").toISOString(),
-                        endDate: moment.utc(self.selectedEndDate(), "YYYY/MM/DD").toISOString()
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString()
                     };
                     service.updateConfiguration(data).done(() => {
                         self.startPage().done(() => {
@@ -174,7 +178,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             let self = this;
             let params = { 
                 historyId: self.selectedHistoryId(), 
-                startDate: self.selectedStartDate(), 
+                startDate: self.selectedStartDateText(), 
                 endDate: self.selectedEndDate() 
             };
             setShared("CMM011BParams", params);

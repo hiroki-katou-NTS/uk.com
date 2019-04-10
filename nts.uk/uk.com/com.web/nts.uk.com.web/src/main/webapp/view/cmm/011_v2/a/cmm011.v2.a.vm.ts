@@ -19,6 +19,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         items: KnockoutObservableArray<WkpDepNode>;
         selectedId: KnockoutObservable<string>;
         selectedInfor: KnockoutObservable<WkpDepInformation>;
+        isSynchronized: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -30,13 +31,21 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             self.selectedId = ko.observable(null);
             self.selectedInfor = ko.observable(new WkpDepInformation(null));
             self.selectedId.subscribe(value => {
-                self.selectedInfor().id(value);
-                self.selectedInfor().code(value);
-                self.selectedInfor().name(value);
-                self.selectedInfor().dispName(value);
-                self.selectedInfor().genericName(value);
-                self.selectedInfor().hierarchyCode(value);
-                self.selectedInfor().externalCode(value);
+                let infor = _.find(self.items(), i => i.id == value);
+                if (infor) {
+                    self.selectedInfor().id(value);
+                    self.selectedInfor().code(infor.code);
+                    self.selectedInfor().name(infor.name);
+                    self.selectedInfor().dispName(infor.name);
+                    self.selectedInfor().genericName(infor.name);
+                    self.selectedInfor().hierarchyCode(infor.hierarchyCode);
+                    self.selectedInfor().externalCode(null);
+                }
+            });
+            service.getOperationRule().done(res => {
+                self.isSynchronized(res.synchWkpDep);
+            }).fail((error) => {
+                alertError(error);
             });
         }
 
@@ -67,14 +76,23 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 
         getAllWkpDepInfor(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            service.getAllWkpDepInfor(self.initMode, self.configuration().historyId).done((data) => {
+            service.getAllWkpDepInforTree(self.initMode, self.configuration().historyId).done((data) => {
                 if (_.isEmpty(data)) {
                     dfd.resolve();
-                    info("Msg_373").then(() => {
-//                        self.openWkpDepCreateDialog();
-                    });
+                    if (self.initMode == SCREEN_MODE.WORKPLACE) {
+                        info("Msg_373").then(() => {
+                            self.openWkpDepCreateDialog();
+                        });
+                    } else {
+                        info("Msg_1503").then(() => {
+                            self.openWkpDepCreateDialog();
+                        });
+                    }
                 } else {
-                    // hien thi len cay
+                    let listNode = _.map(data, i => {
+                        return new WkpDepNode(i);
+                    });
+                    self.items(listNode);
                     dfd.resolve();
                 }
             }).fail((error) => {
@@ -99,14 +117,31 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.configuration().historyId = params.historyId;
                     self.configuration().startDate(params.startDate);
                     self.configuration().endDate(params.endDate);
+                    block.invisible();
+                    self.getAllWkpDepInfor().always(() => {
+                        block.clear();
+                    });
                 }
             });
         }
 
         openWkpDepCreateDialog() {
             let self = this;
-            modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
-
+            block.invisible();
+            service.checkTotalWkpDepInfor(self.initMode, self.configuration().historyId).done(() => {
+                let params = {
+                    initMode: self.initMode,
+                    selectedCode: self.selectedInfor().code(),
+                    selectedName: self.selectedInfor().name()
+                };
+                setShared("CMM011AParams", params);
+                modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
+                    
+                });
+            }).fail((error) => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -141,14 +176,15 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         hierarchyCode: string;
         children: Array<WkpDepNode>;
 
-        constructor(id: string, code: string, name: string, hierarchyCode: string, children: Array<WkpDepNode>) {
-            var self = this;
-            self.id = id;
-            self.code = code;
-            self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.hierarchyCode = hierarchyCode;
-            self.children = children;
+        constructor(param) {
+            if (param) {
+                this.id = param.id;
+                this.code = param.code;
+                this.name = param.name;
+                this.nodeText = param.code + ' ' + param.name;
+                this.hierarchyCode = param.hierarchyCode;
+                this.children = _.isEmpty(param.children) ? [] : _.map(param.children, i => {return new WkpDepNode(i)});
+            }
         }
     }
 

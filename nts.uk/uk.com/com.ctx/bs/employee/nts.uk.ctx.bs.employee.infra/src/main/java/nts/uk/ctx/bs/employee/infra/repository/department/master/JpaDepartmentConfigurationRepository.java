@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.infra.entity.department.master.BsymtDepartmentConfig;
+import nts.uk.ctx.bs.employee.infra.entity.department.master.BsymtDepartmentConfigPk;
 
 /**
  * 
@@ -38,9 +39,9 @@ public class JpaDepartmentConfigurationRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void deleteDepartmentConfig(String departmentHistoryId) {
-		// TODO Auto-generated method stub
-
+	public void deleteDepartmentConfig(String companyId, String departmentHistoryId) {
+		this.commandProxy().remove(BsymtDepartmentConfig.class,
+				new BsymtDepartmentConfigPk(companyId, departmentHistoryId));
 	}
 
 }

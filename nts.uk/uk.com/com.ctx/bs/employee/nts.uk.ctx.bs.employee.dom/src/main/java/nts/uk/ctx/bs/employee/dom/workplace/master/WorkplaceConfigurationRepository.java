@@ -15,6 +15,6 @@ public interface WorkplaceConfigurationRepository {
 	
 	public void updateWorkplaceConfig(WorkplaceConfiguration workplaceConfig); 
 	
-	public void deleteWorkplaceConfig(String departmentHistoryId);
+	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId);
 
 }

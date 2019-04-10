@@ -20,6 +20,7 @@ import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommandHandle
 import nts.uk.ctx.bs.employee.app.find.wkpdep.ConfigurationDto;
 import nts.uk.ctx.bs.employee.app.find.wkpdep.InformationDto;
 import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepFinder;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepTreeDto;
 
 @Path("bs/employee/wkpdep")
 @Produces("application/json")
@@ -49,6 +50,13 @@ public class WorkplaceDepartmentWebService extends WebService {
 			@PathParam("historyId") String historyId) {
 		return wkpDepFinder.getWkpDepInfor(initMode, historyId);
 	}
+	
+	@POST
+	@Path("/get-wkpdepinfo-tree/{mode}/{historyId}")
+	public List<WkpDepTreeDto> getWkpDepInforTree(@PathParam("mode") int initMode,
+			@PathParam("historyId") String historyId) {
+		return wkpDepFinder.getWkpDepInforTree(initMode, historyId);
+	}
 
 	@POST
 	@Path("/get-all-configuration/{mode}")
@@ -72,6 +80,12 @@ public class WorkplaceDepartmentWebService extends WebService {
 	@Path("/delete-configuration")
 	public void deleteConfiguration(DeleteWkpDepConfigCommand command) {
 		deleteWkpDepConfigHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/check-total-wkpdepinfo/{mode}/{historyId}")
+	public void checkTotalWkpDep(@PathParam("mode") int initMode, @PathParam("historyId") String historyId) {
+		wkpDepFinder.checkTotalWkpDep(initMode, historyId);
 	}
 
 }

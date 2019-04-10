@@ -15,6 +15,6 @@ public interface DepartmentConfigurationRepository {
 	
 	public void updateDepartmentConfig(DepartmentConfiguration depConfig);
 	
-	public void deleteDepartmentConfig(String departmentHistoryId);
+	public void deleteDepartmentConfig(String companyId, String departmentHistoryId);
 
 }

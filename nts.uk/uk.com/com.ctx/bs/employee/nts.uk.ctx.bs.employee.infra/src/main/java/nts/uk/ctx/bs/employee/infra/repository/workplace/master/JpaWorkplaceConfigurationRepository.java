@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceConfig;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceConfigPk;
 
 /**
  * 
@@ -26,7 +27,7 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 				.setParameter("companyId", companyId).getList();
 		return Optional.ofNullable(BsymtWorkplaceConfig.toDomain(listEntities));
 	}
-	
+
 	@Override
 	public void addWorkplaceConfig(WorkplaceConfiguration workplaceConfig) {
 		this.commandProxy().insertAll(BsymtWorkplaceConfig.fromDomain(workplaceConfig));
@@ -38,9 +39,9 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	}
 
 	@Override
-	public void deleteWorkplaceConfig(String departmentHistoryId) {
-		// TODO Auto-generated method stub
-
+	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId) {
+		this.commandProxy().remove(BsymtWorkplaceConfig.class,
+				new BsymtWorkplaceConfigPk(companyId, workplaceHistoryId));
 	}
 
 }
