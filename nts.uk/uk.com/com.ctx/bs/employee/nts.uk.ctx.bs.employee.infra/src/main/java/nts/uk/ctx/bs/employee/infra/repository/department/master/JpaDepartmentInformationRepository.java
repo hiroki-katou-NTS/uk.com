@@ -62,12 +62,12 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 	}
 
 	@Override
-	public List<DepartmentInformation> getDepartmentByDepIds(String companyId, String depHistId,
+	public List<DepartmentInformation> getActiveDepartmentByDepIds(String companyId, String depHistId,
 			List<String> listDepartmentId) {
 		if (listDepartmentId.isEmpty())
 			return Collections.emptyList();
 		String query = "SELECT i FROM BsymtDepartmentInfor i WHERE i.pk.companyId = :companyId "
-				+ "AND i.pk.departmentHistoryId = :depHistId AND i.pk.departmentId IN :listDepId";
+				+ "AND i.pk.departmentHistoryId = :depHistId AND i.pk.departmentId IN :listDepId AND i.deleteFlag = 0";
 		List<DepartmentInformation> result = new ArrayList<>();
 		CollectionUtil.split(listDepartmentId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListId -> {
 			result.addAll(this.queryProxy().query(query, BsymtDepartmentInfor.class)

@@ -75,7 +75,7 @@ public class WorkplaceExportService {
 		if (!optWkpHistory.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem wkpHistory = optWkpHistory.get();
-		List<WorkplaceInformation> result = wkpInforRepo.getWorkplaceByWkpIds(companyId, wkpHistory.identifier(),
+		List<WorkplaceInformation> result = wkpInforRepo.getActiveWorkplaceByWkpIds(companyId, wkpHistory.identifier(),
 				listWorkplaceId);
 		List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
 		List<String> listWkpIdNoResult = listWorkplaceId.stream().filter(i -> !listAccquiredWkpId.contains(i))
@@ -114,7 +114,7 @@ public class WorkplaceExportService {
 		int size = wkpConfig.items().size();
 		List<WorkplaceInformation> result = new ArrayList<>();
 		for (int i = currentIndex + 1; i < size; i++) {
-			result.addAll(wkpInforRepo.getWorkplaceByWkpIds(companyId, wkpConfig.items().get(i).identifier(),
+			result.addAll(wkpInforRepo.getActiveWorkplaceByWkpIds(companyId, wkpConfig.items().get(i).identifier(),
 					listWorkplaceId));
 			List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
 			listWorkplaceId = listWorkplaceId.stream().filter(id -> !listAccquiredWkpId.contains(id))

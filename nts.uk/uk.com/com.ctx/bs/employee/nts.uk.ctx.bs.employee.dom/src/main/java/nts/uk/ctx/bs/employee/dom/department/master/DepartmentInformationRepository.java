@@ -13,7 +13,7 @@ public interface DepartmentInformationRepository {
 	
 	public List<DepartmentInformation> getAllActiveDepartmentByCompany(String companyId, String depHistId);
 	
-	public List<DepartmentInformation> getDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
+	public List<DepartmentInformation> getActiveDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
 	
 	public void addDepartment(DepartmentInformation department);
 	

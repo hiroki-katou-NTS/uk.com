@@ -44,7 +44,7 @@ public class DepartmentExportSerivce {
 			return Collections.emptyList();
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.contains(baseDate)).findFirst();
-		if (!optDepConfig.isPresent())
+		if (!optDepHist.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem depHist = optDepHist.get();
 		List<DepartmentInformation> result = depInforRepo.getAllActiveDepartmentByCompany(companyId,
@@ -70,10 +70,10 @@ public class DepartmentExportSerivce {
 			return Collections.emptyList();
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.contains(baseDate)).findFirst();
-		if (!optDepConfig.isPresent())
+		if (!optDepHist.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem depHist = optDepHist.get();
-		List<DepartmentInformation> result = depInforRepo.getDepartmentByDepIds(companyId, depHist.identifier(),
+		List<DepartmentInformation> result = depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(),
 				listDepartmentId);
 		List<String> listAccquiredId = result.stream().map(i -> i.getDepartmentId()).collect(Collectors.toList());
 		List<String> listDepIdNoResult = listDepartmentId.stream().filter(i -> !listAccquiredId.contains(i))
@@ -103,14 +103,14 @@ public class DepartmentExportSerivce {
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.identifier().equals(depHistId))
 				.findFirst();
-		if (!optDepConfig.isPresent())
+		if (!optDepHist.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem depHist = optDepHist.get();
 		int currentIndex = depConfig.items().indexOf(depHist);
 		int size = depConfig.items().size();
 		List<DepartmentInformation> result = new ArrayList<>();
 		for (int i = currentIndex + 1; i < size; i++) {
-			result.addAll(depInforRepo.getDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId));
+			result.addAll(depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId));
 			List<String> listAccquiredId = result.stream().map(d -> d.getDepartmentId()).collect(Collectors.toList());
 			listDepartmentId = listDepartmentId.stream().filter(id -> !listAccquiredId.contains(id))
 					.collect(Collectors.toList());

@@ -13,7 +13,7 @@ public interface WorkplaceInformationRepository {
 	
 	public List<WorkplaceInformation> getAllActiveWorkplaceByCompany(String companyId, String wkpHistId);
 	
-	public List<WorkplaceInformation> getWorkplaceByWkpIds(String companyId, String wkpHistId, List<String> listWorkplaceId);
+	public List<WorkplaceInformation> getActiveWorkplaceByWkpIds(String companyId, String wkpHistId, List<String> listWorkplaceId);
 	
 	public void addWorkplace(WorkplaceInformation workplace);
 	
