@@ -467,6 +467,15 @@ public class MonthlyPerformanceCorrectionProcessor {
 				List<MonthlyModifyResult> results = new GetDataMonthly(employeeIds, new YearMonth(yearMonth),
 						ClosureId.valueOf(screenDto.getClosureId()), screenDto.getClosureDate().toDomain(), ITEM_ID_ALL,
 						monthlyModifyQueryProcessor).call();
+				
+				//指定した年月の期間を算出する
+				DatePeriod datePeriodClosure = closureService.getClosurePeriod(screenDto.getClosureId().intValue(), new YearMonth(yearMonth));
+				//社員ID（List）と指定期間から所属会社履歴項目を取得
+				// RequestList211
+				List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter
+						.getAffCompanyHistByEmployee(employeeIds, datePeriodClosure);
+				
+				screenDto.setLstAffComHist(lstAffComHist);
 
 				// lay lai employeeID cua nhung nhan vien co du lieu
 				employeeIds = results.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
@@ -794,7 +803,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// loc lai list item cua tung nhan vien theo cac item lay duoc truoc do
 		results.forEach(r -> {
 			r.setItems(r.getItems().stream().filter(i -> attdanceIds.contains(i.getItemId())).collect(Collectors.toList()));
-		});;
+		});
 		if (results.size() > 0) {
 			screenDto.getItemValues().addAll(results.get(0).getItems());
 		}
@@ -991,6 +1000,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			   
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
 					employeeId, "", identify, approve, dailyConfirm, "");
+			mpdata.setVersion(rowData.getVersion());
 			// lock check box1 identify
 //			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2 
 //					|| ((!StringUtil.isNullOrEmpty(lockStatus, true)) && (approvalProcessingUseSetting.getUseMonthApproverConfirm() && approve == true))) {
