@@ -30,7 +30,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywor
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
@@ -70,8 +69,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private PreGoBackReflectService preGobackReflect;
 	@Inject
 	private PreOvertimeReflectService preOvertimeReflect;
-	@Inject
-	private AfterOvertimeReflectService afterOvertimeReflect;
 	@Inject
 	private AbsenceReflectService absenceReflect;
 	@Inject
@@ -187,11 +184,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Override
 	public boolean preOvertimeReflect(PreOvertimePubParameter param) {
 		return preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));		
-	}
-
-	@Override
-	public boolean afterOvertimeReflect(PreOvertimePubParameter param) {
-		return afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));		
 	}
 
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
