@@ -183,14 +183,20 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
 				&& !isOt) {
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
-			//出退勤時刻を補正する
-			integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, false).getData();
-			if(!this.isChangeBreakTime(integrationOfDaily.getEditState())) {
+            List<EditStateOfDailyPerformance> lstTime = integrationOfDaily.getEditState().stream()
+                    .filter(x -> CorrectEventConts.LEAVE_ITEMS.contains(x.getAttendanceItemId()) 
+                            || CorrectEventConts.ATTENDANCE_ITEMS.contains(x.getAttendanceItemId()))
+                    .collect(Collectors.toList());
+          //事前残業、休日時間を補正する
+			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor);
+            //休日出勤申請の対応
+            if(workTypeInfor.isPresent() && (!workTypeInfor.get().getDailyWork().isHolidayWork() 
+            		||(workTypeInfor.get().getDailyWork().isHolidayWork() && lstTime.isEmpty()))) {
+            	//出退勤時刻を補正する
+                integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, true).getData();    
 				//休憩時間帯を補正する	
 				integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();	
 			}			
-			//事前残業、休日時間を補正する
-			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor);
 		}
 		
 		List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
@@ -219,6 +225,19 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
 		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
 				.collect(Collectors.toList());
+        if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
+            Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+            //休日出勤申請しか反映してない
+            if(this.isChangeBreakTime(lstEditState) && breakTimeInfor != null
+                    && workTypeInfor.isPresent() && workTypeInfor.get().getDailyWork().isHolidayWork()) {
+                if(lstBeforeBreakTimeInfor.size() == 1
+                        && lstBeforeBreakTimeInfor.get(0).getBreakType() != breakTimeInfor.getBreakType()) {
+                    integrationOfDaily.getBreakTime().add(breakTimeInfor);
+                    breakTimeRepo.updateNotDelete(integrationOfDaily.getBreakTime());
+                }
+            	return integrationOfDaily;
+            }
+        }
 		
 		BreakTimeOfDailyPerformance beforBTWork = new BreakTimeOfDailyPerformance(sid, BreakType.REFER_WORK_TIME, new ArrayList<>(), ymd);
 		if(!beforeBreakTime.isEmpty()) {
