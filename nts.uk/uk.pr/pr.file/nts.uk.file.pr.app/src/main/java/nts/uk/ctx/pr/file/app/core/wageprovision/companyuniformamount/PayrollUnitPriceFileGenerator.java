@@ -6,5 +6,5 @@ import java.util.List;
 
 
 public interface PayrollUnitPriceFileGenerator {
-    void generate(FileGeneratorContext fileContext, List<Object[]> exportData);
+    void generate(FileGeneratorContext fileContext, List<Object[]> exportData, String companyName);
 }

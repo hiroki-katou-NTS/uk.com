@@ -34,7 +34,9 @@
                     data-bind=" enable: false">#{i18n.getText('QMM007_3')}</button>
 
             <button id="A1_4" tabindex="4"
-                    data-bind=" click: exportExcel;, enable: $root.errors.isEmpty()">#{i18n.getText('QMM007_4')}</button>
+                    data-bind="enable: false">#{i18n.getText('QMM007_4')}</button>
+            <button id="A1_5" tabindex="4"
+                    data-bind=" click: exportExcel;, enable: true">#{i18n.getText('QMM007_50')}</button>
 
         </div>
         <div  class="fixed-flex-layout" style="margin-top: 10px">

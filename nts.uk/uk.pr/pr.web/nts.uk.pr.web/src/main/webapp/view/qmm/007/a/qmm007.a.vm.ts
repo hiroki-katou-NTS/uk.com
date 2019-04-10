@@ -464,7 +464,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         exportExcel(){
             let self = this;
             let data = {
-                baseDate : nts.uk.time.today();
+
             };
             service.exportExcel(data).done(()=>{
 

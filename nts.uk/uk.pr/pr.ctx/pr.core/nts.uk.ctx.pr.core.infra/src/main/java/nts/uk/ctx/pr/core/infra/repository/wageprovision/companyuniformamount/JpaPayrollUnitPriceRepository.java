@@ -24,16 +24,16 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
             " t2.START_YM," +
             " t2.AMOUNT_OF_MONEY, " +
             " t2.TARGET_CLASS_ATR, " +
+            " t2.MONTH_SALARY_ATR, " +
             " t2.MONTH_SALARY_PER_DAY_ATR," +
             " t2.A_DAY_PAYEE_ATR, " +
             " t2.HOURLY_PAY_ATR, " +
-            " t2.MONTH_SALARY_ATR, " +
             " t2.SET_CLASSIFICATION_ATR " +
             " FROM QPBMT_PAY_UNIT_PRICE t1 " +
             " INNER JOIN QPBMT_PAY_UNIT_PRICE_HIS t2 " +
             " ON t1.CID = t2.CID AND t1.UNIT_PRICE_CD = t2.UNIT_PRICE_CD " +
             " WHERE t1.CID = ?cid AND t2.CID = ?cid " +
-            " ORDER BY t1.UNIT_PRICE_CD, t2.START_YM ";
+            " ORDER BY t1.UNIT_PRICE_CD ASC, t2.START_YM DESC ";
 
     @Override
     public List<Object[]> getAllPayrollUnitPriceSetByCID(String cid) {

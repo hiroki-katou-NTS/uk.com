@@ -5,5 +5,5 @@ import nts.arc.time.GeneralDate;
 
 @Data
 public class PayrollUnitPriceExportQuery {
-    GeneralDate baseDate;
+
 }
