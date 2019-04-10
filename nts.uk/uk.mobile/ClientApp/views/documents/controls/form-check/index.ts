@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsform-check',
-    route: { 
+    route: {
         url: '/controls/form-check',
         parent: '/documents'
     },
@@ -14,4 +14,18 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsFormCheckComponent extends Vue { }
+export class DocumentsControlsFormCheckComponent extends Vue {
+    radios = [
+        { id: 1, name: 'Option 1' },
+        { id: 2, name: 'Option 2' },
+        { id: 3, name: 'Option 3' },
+        { id: 4, name: 'Option 4' }
+    ];
+
+    checked: number = 3;
+    checked2: number = 2;
+    checkeds: Array<number> = [2, 4];
+    checked2s: Array<number> = [2, 4];
+
+    switchbox: number = 3;
+}
