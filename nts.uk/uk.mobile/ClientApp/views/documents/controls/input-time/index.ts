@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsinput-time',
-    route: { 
+    route: {
         url: '/controls/input-time',
         parent: '/documents'
     },
@@ -14,4 +14,15 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsInputTimeComponent extends Vue { }
+export class DocumentsControlsInputTimeComponent extends Vue {
+    time: number = 750;
+
+    timeWithDay: object = {
+        name: 'Time-With-Day',
+        value: 750,
+        disabled: false,
+        errors: null,
+        errorsAlways: null,
+        showTitle: true
+    }
+}
