@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolstext-area',
-    route: { 
+    route: {
         url: '/controls/text-area',
         parent: '/documents'
     },
@@ -14,4 +14,6 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsTextAreaComponent extends Vue { }
+export class DocumentsControlsTextAreaComponent extends Vue {
+    text: string = 'Init Value Area';
+}
