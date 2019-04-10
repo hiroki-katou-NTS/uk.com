@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsinput-date',
-    route: { 
+    route: {
         url: '/controls/input-date',
         parent: '/documents'
     },
@@ -14,4 +14,6 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsInputDateComponent extends Vue { }
+export class DocumentsControlsInputDateComponent extends Vue {
+    date: Date = new Date();
+}
