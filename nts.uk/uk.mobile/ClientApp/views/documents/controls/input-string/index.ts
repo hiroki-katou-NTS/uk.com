@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsinput-string',
-    route: { 
+    route: {
         url: '/controls/input-string',
         parent: '/documents'
     },
@@ -14,4 +14,6 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsInputStringComponent extends Vue { }
+export class DocumentsControlsInputStringComponent extends Vue {
+    text: string = 'Init Value';
+}
