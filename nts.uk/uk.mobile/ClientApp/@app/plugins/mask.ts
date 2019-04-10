@@ -10,7 +10,7 @@ const MaskLayer = new Vue({
         },
         opacity: null
     },
-    template: `<div v-bind:style="{ opacity }" v-bind:class="toggle" v-on:click="onClick" data-comment="UK Masklayer" ></div>`,
+    template: `<div v-bind:style="{ opacity }" v-bind:class="toggle" v-on:touchmove="preventTouch" v-on:click="onClick" data-comment="UK Masklayer" ></div>`,
     computed: {
         toggle: {
             get() {
@@ -19,12 +19,19 @@ const MaskLayer = new Vue({
         }
     },
     methods: {
-        onClick: function () {
+        onClick(evt: MouseEvent) {
             this.showOne = false;
 
             if (this.callback.click) {
                 this.callback.click();
             }
+
+            evt.preventDefault();
+            evt.stopPropagation();
+        },
+        preventTouch(evt: TouchEvent) {
+            evt.preventDefault();
+            evt.stopPropagation();
         }
     },
     watch: {
