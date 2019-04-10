@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
@@ -73,6 +74,9 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private WorkInformationRepository workRepository;
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeError;
+    @Inject
+    private DailyRecordTransactionService dailyTransaction;
+
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
 		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;
@@ -161,6 +165,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			if(!x.getEmployeeError().isEmpty()) {
 				employeeError.insert(x.getEmployeeError());	
 			}
+			dailyTransaction.updated(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd());
 		});
 	}
 	@Override
@@ -187,7 +192,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			//休憩時間帯を補正する	
 			integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();
 			//事前残業、休日時間を補正する
-			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor);
+			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor, false);
 		}
 		
 		List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),

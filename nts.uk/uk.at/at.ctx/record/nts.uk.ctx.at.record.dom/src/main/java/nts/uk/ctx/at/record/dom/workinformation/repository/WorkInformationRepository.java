@@ -27,6 +27,9 @@ public interface WorkInformationRepository {
 	
 	void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
+	void verShouldUp(String employeeId, GeneralDate date);
+	long getVer(String employeeId, GeneralDate date);
+	
 	void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
 	void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
