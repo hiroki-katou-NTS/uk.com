@@ -14,4 +14,6 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsInputNumberComponent extends Vue { }
+export class DocumentsControlsInputNumberComponent extends Vue {
+    number: number = 10;
+}
