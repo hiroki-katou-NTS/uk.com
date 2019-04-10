@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentsdirectivesclick',
-    route: { 
+    route: {
         url: '/directives/click',
         parent: '/documents'
     },
@@ -14,4 +14,10 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsDirectivesClickComponent extends Vue { }
+export class DocumentsDirectivesClickComponent extends Vue {
+    results: string[] = [];
+
+    multiClick() {
+        this.results.push('Click time: ' + new Date().toISOString());
+    }
+}
