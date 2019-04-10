@@ -14,4 +14,24 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsDropdownComponent extends Vue { }
+export class DocumentsControlsDropdownComponent extends Vue {
+
+    dropdownList: Array<Object> = [{
+        code: 1,
+        text: "The First"
+    }, {
+        code: 2,
+        text: "The Second"
+    }, {
+        code: 3,
+        text: "The Third"
+    }, {
+        code: 4,
+        text: "The Fourth"
+    },{
+        code: 5,
+        text: "The Fifth"
+    }];
+
+    selectedValue: number = 3;
+}
