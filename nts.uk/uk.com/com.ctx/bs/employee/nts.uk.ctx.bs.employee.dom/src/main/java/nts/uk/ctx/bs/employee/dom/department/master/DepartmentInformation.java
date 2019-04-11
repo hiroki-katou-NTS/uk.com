@@ -84,4 +84,8 @@ public class DepartmentInformation extends AggregateRoot {
 				: Optional.of(new DepartmentExternalCode(externalCode));
 	}
 	
+	public void delete() {
+		this.deleteFlag = true;
+	}
+	
 }

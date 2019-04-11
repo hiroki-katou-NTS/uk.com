@@ -18,7 +18,12 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         configuration: KnockoutObservable<WkpDepConfig>;
         items: KnockoutObservableArray<WkpDepNode>;
         selectedId: KnockoutObservable<string>;
-        selectedInfor: KnockoutObservable<WkpDepInformation>;
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
+        selectedName: KnockoutObservable<string> = ko.observable(null);
+        selectedDispName: KnockoutObservable<string> = ko.observable(null);
+        selectedGenericName: KnockoutObservable<string> = ko.observable(null);
+        selectedHierarchyCode: KnockoutObservable<string> = ko.observable(null);
+        selectedExternalCode: KnockoutObservable<string> = ko.observable(null);
         isSynchronized: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -29,18 +34,32 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             self.configuration = ko.observable(new WkpDepConfig(null, null, null));
             self.items = ko.observableArray([]);
             self.selectedId = ko.observable(null);
-            self.selectedInfor = ko.observable(new WkpDepInformation(null));
             self.selectedId.subscribe(value => {
-                let infor = _.find(self.items(), i => i.id == value);
-                if (infor) {
-                    self.selectedInfor().id(value);
-                    self.selectedInfor().code(infor.code);
-                    self.selectedInfor().name(infor.name);
-                    self.selectedInfor().dispName(infor.name);
-                    self.selectedInfor().genericName(infor.name);
-                    self.selectedInfor().hierarchyCode(infor.hierarchyCode);
-                    self.selectedInfor().externalCode(null);
+                nts.uk.ui.errors.clearAll();
+                block.invisible();
+                service.getWkpDepInforById(self.initMode, self.configuration().historyId, value).done(res => {
+                    self.selectedCode(res.code);
+                    self.selectedName(res.name);
+                    self.selectedDispName(res.dispName);
+                    self.selectedGenericName(res.genericName);
+                    self.selectedHierarchyCode(res.hierarchyCode);
+                    self.selectedExternalCode(res.externalCode);
+                }).fail((error) => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            });
+            self.selectedName.subscribe(value => {
+                if (_.isEmpty(value)) 
+                    return;
+                if (_.isEmpty(self.selectedDispName())) {
+                    self.selectedDispName(value);
                 }
+                if (_.isEmpty(self.selectedGenericName())) {
+                    self.selectedGenericName(self.getGenericName(value, self.items()));
+                }
+                $(".nts-input").trigger("validate");
             });
             service.getOperationRule().done(res => {
                 self.isSynchronized(res.synchWkpDep);
@@ -56,6 +75,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 if (configuration) {
                     self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
                     self.getAllWkpDepInfor().done(() => {
+                        if (self.items().length > 0)
+                            self.selectedId(self.items()[0].id);
                         dfd.resolve();
                     }).fail((error) => {
                         dfd.reject();
@@ -103,6 +124,42 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        registerMaster() {
+            let self = this;
+            $(".nts-input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) 
+                return;
+            
+        }
+        
+        deleteMaster() {
+            let self = this;
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block.invisible();
+                let data = {
+                    initMode: self.initMode,
+                    historyId: self.configuration().historyId,
+                    selectedWkpDepId: self.selectedId()
+                };
+                service.deleteWkpDepInfor(data).done(() => {
+                    info({ messageId: "Msg_16" }).then(() => {
+                        block.invisible();
+                        self.getAllWkpDepInfor().done(() => {
+                            if (self.items().length > 0)
+                                self.selectedId(self.items()[0].id);
+                        }).always(() => {
+                            block.clear()
+                        });
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            }).ifNo(() => {
+            });
+        }
 
         openConfigDialog() {
             let self = this,
@@ -131,8 +188,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             service.checkTotalWkpDepInfor(self.initMode, self.configuration().historyId).done(() => {
                 let params = {
                     initMode: self.initMode,
-                    selectedCode: self.selectedInfor().code(),
-                    selectedName: self.selectedInfor().name()
+                    selectedCode: self.selectedCode(),
+                    selectedName: self.selectedName()
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
@@ -159,6 +216,21 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 
         moveDown() {
             let self = this;
+        }
+        
+        getGenericName(value: string, items: Array<WkpDepNode>): string {
+            let self = this, result = "";
+            items.some(function(element, index) {
+                if (element.id == self.selectedId()) {
+                    return true;
+                } else {
+                    result += element.name;
+                    if (_.isEmpty(element.children))
+                        return false;
+                    result = self.getGenericName(result, element.children);
+                }
+            });
+            return result + " " + value;
         }
 
     }
