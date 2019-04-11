@@ -95,7 +95,7 @@ const modal = {
                             },
                             mounted() {
                                 let el = this.$el as HTMLElement;
-                                
+
                                 if (el.nodeType !== 8) {
                                     let footer = el.querySelector('.modal-footer') as HTMLElement;
 
@@ -145,7 +145,7 @@ const modal = {
 
                                             if (options.type === 'modal' || options.type === undefined) {
                                                 classNames.push('modal-dialog-scrollable');
-                                            } else if(options.type === 'popup') {
+                                            } else if (options.type === 'popup') {
                                                 classNames.push('modal-popup modal-dialog-centered');
                                             } else {
                                                 classNames.push('modal-popup modal-info modal-dialog-centered');
@@ -188,11 +188,16 @@ const modal = {
                                     afterLeave() {
                                         // destroy modal app
                                         this.$destroy(true);
+                                    },
+                                    preventScroll(evt: TouchEvent) {
+                                        //evt.preventDefault();
+                                        evt.stopPropagation();
+                                        evt.stopImmediatePropagation();
                                     }
                                 },
                                 mounted() {
                                     this.show = true;
-                                    
+
                                     this.$mask('show', options.opacity);
 
                                     dom.addClass(document.body, 'modal-open');
@@ -215,7 +220,7 @@ const modal = {
                                 },
                                 destroyed() {
                                     this.$mask('hide');
-                                    
+
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
 
@@ -239,13 +244,13 @@ const modal = {
                                         focused.focus();
                                     }
                                 },
-                                template: `<div class="modal fade show in">
+                                template: `<div class="modal fade show in" v-on:touchmove="preventScroll">
                                         <transition apear 
                                                 v-on:leave="leave"
                                                 v-on:after-leave="afterLeave"
                                                 v-bind:enter-active-class="$enter"
                                                 v-bind:leave-active-class="$leave">
-                                            <div class="modal-dialog animated" v-bind:class="$class" v-if="show">
+                                            <div class="modal-dialog animated" v-bind:class="$class" v-if="show" v-on:touchmove="preventScroll">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">

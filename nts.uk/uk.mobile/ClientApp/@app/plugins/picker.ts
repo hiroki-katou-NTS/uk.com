@@ -9,7 +9,7 @@ const Picker = new Vue({
         i18n: Language.i18n
     },
     template: `<transition name="picker-fade">
-        <div class="picker-container" v-show="show">
+        <div class="picker-container" v-show="show" v-on:touchmove="preventScroll">
             <div class="pk-btn-groups">
                 <button class="btn btn-link" ref="close" v-on:click="close">{{'cancel' | i18n}}</button>
                 <div>
@@ -21,8 +21,8 @@ const Picker = new Vue({
                 {{ (options.title || '') | i18n }}:
             </div>
             <div v-else data-comment="Title of picker"></div>
-            <div class="picker_mask">
-                <div class="picker_roll">
+            <div class="picker_mask" v-on:touchmove="preventScroll">
+                <div class="picker_roll" v-on:touchmove="preventScroll">
                 <div class="picker-column" v-for="(cols, idx) in dataSources" v-bind:key="idx">
                     <div
                     class="gear"
@@ -241,7 +241,7 @@ const Picker = new Vue({
 
             function setDuration() {
                 stopGear = true;
-                target.style.webkitTransitionDuration = target.style.transitionDuration = '200ms';
+                target.style.webkitTransitionDuration = target.style.transitionDuration = '100ms';
             }
 
             clearInterval(target['int_' + target.id]);
@@ -279,7 +279,7 @@ const Picker = new Vue({
                 target.setAttribute('top', position + 'em');
 
                 d++;
-            }, 10);
+            }, 30);
         },
         setGear(key: string, index: number) {
             var self = this,
@@ -287,6 +287,11 @@ const Picker = new Vue({
                 items = self.dataSources[key];
 
             self.selects[key] = items[Math.round(index)][opts.value];
+        },
+        preventScroll(evt: TouchEvent) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
         }
     }
 }), picker = {

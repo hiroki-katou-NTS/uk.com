@@ -1,6 +1,5 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
-
 @component({
     route: '/',
     style: require('./style.scss'),
@@ -10,27 +9,40 @@ import { component } from '@app/core/component';
     constraints: []
 })
 export class HomeComponent extends Vue {
-    slots = [
-        {
-            flex: 1,
-            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
-            className: 'slot1',
-            textAlign: 'right'
-        }, {
-            divider: true,
-            content: '-',
-            className: 'slot2'
-        }, {
-            flex: 1,
-            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
-            className: 'slot3',
-            textAlign: 'left'
-        }
-    ];
+    selecteds = {
+        year: 2019,
+        month: 1,
+        day: 2
+    };
 
-    onValuesChange(picker, values) {
-        if (values[0] > values[1]) {
-            picker.setSlotValue(1, values[0]);
+    dataSources = {
+        year: [],
+        month: [],
+        day: []
+    };
+
+    created() {
+        for (var i = 1900; i <= 2099; i++) {
+            this.dataSources.year.push({ text: `${i}年`, value: i });
         }
+
+        for (var i = 1; i <= 12; i++) {
+            this.dataSources.month.push({ text: `${i}`, value: i });
+        }
+
+        for (var i = 1; i <= 31; i++) {
+            this.dataSources.day.push({ text: `${i}`, value: i });
+        }
+
+        window['vm'] = this;
+    }
+
+    showPicker() {
+        this.$picker(this.selecteds, this.dataSources, { title: 'home' })
+            .then((v: any) => {
+                if (v !== undefined) {
+                    this.selecteds = v;
+                }
+            })
     }
 }
