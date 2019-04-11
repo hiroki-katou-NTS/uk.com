@@ -1,15 +1,14 @@
 package nts.uk.file.pr.infra.core.socialinsurance.socialinsuranceoffice;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.Export;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceExportData;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceFileGenerator;
+import nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeExportData;
+import nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeFileGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 
 @Stateless
-public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGenerator implements SocialInsuranceFileGenerator {
+public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGenerator implements SocialInsuranceOfficeFileGenerator {
 
     private static final String TEMPLATE_FILE_B = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
     private static final String TEMPLATE_FILE_C = "report/TEMPLATE_QMM008_C.xlsx";
@@ -20,7 +19,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
     private static final String FILE_NAME_B = "QMM008-社会保険事業所の登録_健康保険料率一覧";
 
     @Override
-    public void generate(FileGeneratorContext generatorContext, SocialInsuranceExportData exportData) {
+    public void generate(FileGeneratorContext generatorContext, SocialInsuranceOfficeExportData exportData) {
         /*try (AsposeCellsReportContext reportContext = this.createContext(getTemplate(exportData.getExport()))) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
@@ -54,27 +53,6 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
 
     }
 
-    private String getFileName(int export){
-        if(export == Export.HEALTHY.value) {
-            return FILE_NAME_B;
-        }
-        return "";
-    }
-    private String getTemplate(int export){
-        if(export == Export.HEALTHY.value) {
-            return TEMPLATE_FILE_B;
-        }
-        if(export == Export.WELFARE_PENSION.value) {
-            return TEMPLATE_FILE_C;
-        }
-        if(export == Export.SOCIAL_INSURANCE_OFFICE.value) {
-            return TEMPLATE_FILE_I;
-        }
-        if(export == Export.CONTRIBUTION_RATE.value) {
-            return TEMPLATE_FILE_D;
-        }
-        return TEMPLATE_FILE_F;
-    }
 
     /*private void printDataHealthy(Worksheet worksheet, List<Object[]> data) {
         try {

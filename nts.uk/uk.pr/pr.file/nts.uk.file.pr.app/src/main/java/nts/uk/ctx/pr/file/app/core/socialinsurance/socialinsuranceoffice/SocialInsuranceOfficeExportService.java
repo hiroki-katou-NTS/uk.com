@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.*;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -14,39 +13,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class SocialInsuranceOfficeExportService extends ExportService<SocialInsuranceExportQuery> {
+public class SocialInsuranceOfficeExportService extends ExportService<SocialInsuranceOfficeExportQuery> {
 
 	@Inject
-	private SocialInsuranceRepository socialInsuranceRepository;
+	private SocialInsuranceOfficeExRepository socialInsuranceRepository;
 
 	@Inject
-	private SocialInsuranceFileGenerator socialInsuranceFileGenerator;
+	private SocialInsuranceOfficeFileGenerator socialInsuranceFileGenerator;
 
 	@Inject
 	private CompanyAdapter company;
 
 	@Override
-	protected void handle(ExportServiceContext<SocialInsuranceExportQuery> exportServiceContext) {
+	protected void handle(ExportServiceContext<SocialInsuranceOfficeExportQuery> exportServiceContext) {
 		Optional<CompanyInfor> companyInfo = this.company.getCurrentCompany();
 		String companyName = companyInfo.isPresent() ? companyInfo.get().getCompanyName() : "";
 		String cid = AppContexts.user().companyId();
 		List<Object[]> socialInsurance = new ArrayList<>();
-		if(Export.HEALTHY.value == exportServiceContext.getQuery().getExportType()) {
-			socialInsurance = socialInsuranceRepository.getHeathyInsurance(cid);
-		}
-		if(Export.WELFARE_PENSION.value == exportServiceContext.getQuery().getExportType()) {
-			socialInsurance = socialInsuranceRepository.getWelfarepensionInsurance(cid);
-		}
-		if(Export.SOCIAL_INSURANCE_OFFICE.value == exportServiceContext.getQuery().getExportType()) {
-			socialInsurance = socialInsuranceRepository.getSocialInsuranceoffice(cid);
-		}
-		if(Export.CONTRIBUTION_RATE.value == exportServiceContext.getQuery().getExportType()) {
-			socialInsurance = socialInsuranceRepository.getContributionRate(cid);
-		}
-		if(Export.SALARY_HEALTHY.value == exportServiceContext.getQuery().getExportType()) {
-			socialInsurance = socialInsuranceRepository.getSalaryHealth(cid);
-		}
-		SocialInsuranceExportData data = new SocialInsuranceExportData(socialInsurance,null, companyName, exportServiceContext.getQuery().getExportType() );
+		socialInsurance = socialInsuranceRepository.getSocialInsuranceoffice(cid);
+		SocialInsuranceOfficeExportData data = new SocialInsuranceOfficeExportData(socialInsurance, companyName);
 		socialInsuranceFileGenerator.generate(exportServiceContext.getGeneratorContext(), data);
 	}
 }

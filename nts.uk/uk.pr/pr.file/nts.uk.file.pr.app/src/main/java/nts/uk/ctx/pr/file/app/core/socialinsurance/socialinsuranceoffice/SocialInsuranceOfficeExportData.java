@@ -13,7 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class SocialInsuranceOfficeExportData {
     private List<Object[]> data;
-    private List<Object[]> data2;
     private String companyName;
-    private int export;
 }

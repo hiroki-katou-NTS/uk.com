@@ -1,7 +1,8 @@
 package nts.uk.file.pr.ws.core.socialinsurance.contributionrate;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceExportQuery;
+import nts.uk.ctx.pr.file.app.core.socialinsurance.contributionrate.ContributionRateExportQuery;
+import nts.uk.ctx.pr.file.app.core.socialinsurance.contributionrate.ContributionRateExportService;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceExportService;
 
 import javax.inject.Inject;
@@ -14,11 +15,11 @@ import javax.ws.rs.Produces;
 public class SocialInsuranceOfficeWebService {
 
     @Inject
-    private HealthInsuranceExportService healthInsuranceExportService;
+    private ContributionRateExportService contributionRateExportService;
 
     @POST
     @Path("export")
-    public ExportServiceResult generate(HealthInsuranceExportQuery query) {
-        return this.healthInsuranceExportService.start(query);
+    public ExportServiceResult generate(ContributionRateExportQuery query) {
+        return this.contributionRateExportService.start(query);
     }
 }
