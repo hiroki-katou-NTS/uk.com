@@ -66,6 +66,18 @@ module nts.uk.pr.view.qmm008.f {
 
 
             }
+
+            exportExcel(): void {
+                let self = this;
+                let type = 4;
+                nts.uk.ui.block.grayout();
+                service.exportExcel(type).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
             
             genNumber(itemNumber: any, decimalPart: any) {
                let option: any;
