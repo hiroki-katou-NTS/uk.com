@@ -23,7 +23,7 @@ public class TaxExemptLimitExportService extends ExportService<TaxExemptLimitExp
     @Override
     protected void handle(ExportServiceContext<TaxExemptLimitExportQuery> exportServiceContext) {
 
-        List<TaxExemptionLimit> mTaxExemptionLimits = mTaxExemptionLimitRepository.getTaxExemptLimitByCompanyId(AppContexts.user().companyId());
+        List<TaxExemptionLimit> mTaxExemptionLimits = mTaxExemptionLimitRepository.getTaxExemptLimitByCompanyId(AppContexts.user().companyId()).stream().sorted().collect(Collectors.toList());
         mTaxExemptLimitFileGenerator.generate(exportServiceContext.getGeneratorContext(),
                 mTaxExemptionLimits.stream()
                         .map(e -> {
