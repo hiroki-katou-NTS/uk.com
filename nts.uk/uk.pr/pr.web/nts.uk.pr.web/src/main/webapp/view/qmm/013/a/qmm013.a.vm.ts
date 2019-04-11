@@ -193,7 +193,7 @@ module nts.uk.pr.view.qmm013.a {
 
             public exportExcel(): void {
                 block.invisible();
-                service.exportExcel()
+                nts.uk.pr.view.qmm013.a.service.exportExcel()
                     .done(function () {
                         block.clear();
 
