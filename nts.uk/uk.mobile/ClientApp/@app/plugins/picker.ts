@@ -94,7 +94,9 @@ const Picker = new Vue({
                             let position = 0,
                                 columns = refs[key][0] as HTMLElement;
 
-                            if (!defaultData[key]) {
+                            if (defaultData[key] !== undefined) {
+                                self.selects[key] = defaultData[key];
+                            } else {
                                 self.selects[key] = items[0][opts.value];
                             }
 
@@ -121,28 +123,31 @@ const Picker = new Vue({
                     opts = self.options;
 
                 obj.objectForEach(dataSources, (key: string, items: any[]) => {
+
                     if (!self.selects[key]) {
                         self.selects[key] = self.value[key] || items[0][opts.value];
                     } else if (!items.filter(f => f[opts.value] === self.selects[key]).length) {
-                        self.selects[key] = items[0][opts.value];
+                        let pos = refs[key][0].getAttribute('top'),
+                            index = Math.abs(Number(pos ? pos : 2) / 2);
+
+                        if (index <= items.length - 1) {
+                            self.selects[key] = items[0][opts.value];
+                        } else {
+                            self.selects[key] = items[items.length - 1][opts.value];
+                        }
                     }
 
-                    //self.rollGear(refs[key][0]);
+                    let keys = items.map(m => m[opts.value]),
+                        index = keys.indexOf(self.selects[key]);
+
+                    if (refs[key] && refs[key][0]) {
+                        refs[key][0].setAttribute('top', -index * 2);
+                        refs[key][0].style["-webkit-transform"] = `translate3d(0, ${-index * 2}em, 0)`;
+                    }
                 });
             }
         },
-        value: { // same as selects
-            deep: true,
-            immediate: true,
-            handler(value: { [key: string]: any }) {
-                let self = this;
-
-                if (obj.isFunction(self.options.onSelect)) {
-                    self.options.onSelect.apply(null, [obj.cloneObject(value), self]);
-                }
-            }
-        },
-        selects: { // same as value
+        selects: {
             deep: true,
             immediate: true,
             handler(value: { [key: string]: any }) {
@@ -374,5 +379,3 @@ const Picker = new Vue({
 }
 
 export { picker };
-
-window['pkr'] = Picker
