@@ -1,0 +1,37 @@
+.radio{
+    padding-left: 100px;
+}
+#D1_1{
+    width: 120px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+#A5_1, #A6_1, #A7_1, #A8_1, #A9_1{
+    width: 120px;
+    margin-left: 20px;
+}
+.radio{
+    margin-left: 45px;
+}
+.item{
+    padding: 10px 0px;
+    width: 550px;
+}
+#A5_2{
+    width: 150px;
+}
+#A6_2{
+    width: 170px;
+}
+#A7_2{
+    width: 250px;
+}
+#A8_2{
+    width: 300px;
+}
+#A9_2{
+    width: 150px;
+}
+.item{
+    width: 500px;
+}

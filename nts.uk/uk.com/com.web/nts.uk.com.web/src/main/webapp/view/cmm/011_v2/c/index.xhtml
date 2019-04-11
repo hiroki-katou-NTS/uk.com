@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = { width: 500, height: 400 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="style.css" />
+        <com:scriptfile path="cmm011.v2.c.service.js" />
+        <com:scriptfile path="cmm011.v2.c.vm.js" />
+        <com:scriptfile path="cmm011.v2.c.start.js" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="C1_1" class="label">
+                #{i18n.getText('CMM011-1_7')}
+            </div>
+            <div id="C2_1" style="width: 200px;" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                name: '#CMM011-0_',
+                options: itemList,
+                optionsValue: 'id',
+                optionsText: 'name',
+                value: selectedId,
+                enable: true}">
+            </div>
+            <div align="center">
+                <div align="right" style="width: 370px">
+                    <button data-bind="ntsHelpButton: {position: 'top left', enable: true }">?</button>
+                </div>
+                <table id="single-list" tabindex="2" data-bind="ntsGridList: {
+                                            height: 100,
+                                            dataSource: inputList,
+                                            columns: listColums,
+                                            primaryKey: 'code',
+                                            multiple: false,
+                                            value: currentCode}">
+                </table>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button id="C4_2" class="proceed x-large">#{i18n.getText('CMM011-0_27')}</button>
+            <button id="C4_3" class="large">#{i18n.getText('CMM011-0_28')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
