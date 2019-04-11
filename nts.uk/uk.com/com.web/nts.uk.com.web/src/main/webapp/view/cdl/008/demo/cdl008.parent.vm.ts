@@ -7,16 +7,18 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         selectedBaseDate: KnockoutObservable<Date>;
         selectMode: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
-        listSystemType: KnockoutObservableArray<any>;        
+        listSystemType: KnockoutObservableArray<any>;
         selectedSystemType: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
         restrictionOfReferenceRange: boolean;
         isDisplayUnselect: KnockoutObservable<boolean>;
         isShowBaseDate: KnockoutObservable<boolean>;
+        selectedStartMode: KnockoutObservable<number>;
+        listStartMode: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
-            //construct codes 
+            //construct codes
             self.canSelectWorkplaceIds = ko.observable('000000000000000000000000000000000002,000000000000000000000000000000000003');
             self.selectMode = ko.observable(true);
             self.selectWorkplaceIds = ko.observable('');
@@ -29,8 +31,8 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 {code : 3, name: '給与', enable: self.enable},
                 {code : 4, name: '人事', enable: self.enable},
                 {code : 5, name: '管理者', enable: self.enable}
-            ]);   
-            self.selectedSystemType = ko.observable(5);         
+            ]);
+            self.selectedSystemType = ko.observable(5);
             self.restrictionOfReferenceRange = true;
             self.isDisplayUnselect = ko.observable(false);
             self.isShowBaseDate = ko.observable(false);
@@ -40,7 +42,13 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                     nts.uk.ui.dialog.alert("Displaying Unselect Item is not available for Multiple Selection!");
                     self.isDisplayUnselect(false);
                 }
-            })
+            });
+
+            self.listStartMode = ko.observableArray([
+                {code : 0, name: 'Workplace'},
+                {code : 1, name: 'Department'}
+            ]);
+            self.selectedStartMode = ko.observable(0);
         }
 
         /**
@@ -56,7 +64,8 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 selectedSystemType: self.selectedSystemType(),
                 isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,
                 showNoSelection: self.isDisplayUnselect(),
-                isShowBaseDate: self.isShowBaseDate()
+                isShowBaseDate: self.isShowBaseDate(),
+                startMode: self.selectedStartMode()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
@@ -64,7 +73,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                     return;
                 }
-                //view all code of selected item 
+                //view all code of selected item
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
                 var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
                 self.selectWorkplaceIds(output);

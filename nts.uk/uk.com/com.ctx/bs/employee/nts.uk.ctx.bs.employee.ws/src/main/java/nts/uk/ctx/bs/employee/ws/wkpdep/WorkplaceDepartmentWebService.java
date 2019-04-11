@@ -17,10 +17,7 @@ import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.ConfigurationDto;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.InformationDto;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepFinder;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepTreeDto;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.*;
 
 @Path("bs/employee/wkpdep")
 @Produces("application/json")
@@ -88,4 +85,9 @@ public class WorkplaceDepartmentWebService extends WebService {
 		wkpDepFinder.checkTotalWkpDep(initMode, historyId);
 	}
 
+	@POST
+	@Path("/get-wkpdepinfo-kcp004")
+	public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
+		return wkpDepFinder.getDepWkpInfoTree(findObject);
+	}
 }

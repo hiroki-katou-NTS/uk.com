@@ -4,7 +4,7 @@ module nts.uk.com.view.cdl008.a {
     import SelectType = kcp.share.list.SelectType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    import TreeType = kcp.share.tree.TreeType;
+    import StartMode = kcp.share.tree.StartMode;
 
     export module viewmodel {
         /**
@@ -22,7 +22,7 @@ module nts.uk.com.view.cdl008.a {
             isDisplayUnselect: KnockoutObservable<boolean>;
 
             // 部門対応 #106784
-            treeType: TreeType;
+            startMode: StartMode;
 
             constructor() {
                 var self = this;
@@ -33,7 +33,7 @@ module nts.uk.com.view.cdl008.a {
                 self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
                 self.restrictionOfReferenceRange = true;
-                self.treeType = TreeType.WORK_PLACE;
+
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
@@ -57,14 +57,14 @@ module nts.uk.com.view.cdl008.a {
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
 
                     // 部門対応 #106784
-                    self.treeType = inputCDL008.treeType;
+                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultipleSelect,
                     isMultipleUse: self.isMultipleUse,
-                    treeType: self.treeType,
+                    startMode: self.startMode,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
