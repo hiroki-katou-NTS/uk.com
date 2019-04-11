@@ -146,7 +146,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtMonMergePk krcdtMonMergePk;
 	
-//	@Version
+	@Version
 	@Column(name = "EXCLUS_VER")
 	public long version;
 
