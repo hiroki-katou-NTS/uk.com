@@ -106,4 +106,25 @@ public class WorkplaceCommandService {
 		wkpInforRepo.deleteWorkplaceInforOfHistory(companyId, historyId);
 	}
 
+	/**
+	 * 職場情報を削除する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param workplaceId
+	 */
+	public void deleteWorkplaceInformation(String companyId, String historyId, String workplaceId) {
+		Optional<WorkplaceInformation> optWkp = wkpInforRepo.getWorkplaceByKey(companyId, historyId, workplaceId);
+		if (optWkp.isPresent()) {
+			WorkplaceInformation workplace = optWkp.get();
+			Optional<WorkplaceInformation> optDeletedWkp = wkpInforRepo.getDeletedWorkplaceByCode(companyId, historyId,
+					workplace.getWorkplaceCode().v());
+			if (optDeletedWkp.isPresent()) {
+				wkpInforRepo.deleteWorkplaceInfor(companyId, historyId, optDeletedWkp.get().getWorkplaceId());
+			}
+			workplace.delete();
+			wkpInforRepo.updateWorkplace(workplace);
+		}
+	}
+
 }

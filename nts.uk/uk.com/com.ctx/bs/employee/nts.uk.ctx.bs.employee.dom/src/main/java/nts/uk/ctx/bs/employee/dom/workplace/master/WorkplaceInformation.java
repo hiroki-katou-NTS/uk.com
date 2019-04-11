@@ -84,4 +84,8 @@ public class WorkplaceInformation extends AggregateRoot {
 				: Optional.of(new WorkplaceExternalCode(externalCode));
 	}
 	
+	public void delete() {
+		this.deleteFlag = true;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.department.master.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -123,4 +124,37 @@ public class DepartmentExportSerivce {
 		return result;
 	}
 
+	/**
+	 * [No.568]部門の下位部門を取得する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param parentDepartmentId
+	 * @return
+	 */
+	public List<String> getAllChildDepartmentId(String companyId, String historyId, String parentDepartmentId) {
+		List<DepartmentInformation> listDep = depInforRepo.getAllActiveDepartmentByCompany(companyId, historyId);
+		Optional<DepartmentInformation> optParentDep = listDep.stream()
+				.filter(d -> d.getDepartmentId().equals(parentDepartmentId)).findFirst();
+		if (!optParentDep.isPresent())
+			return Collections.emptyList();
+		DepartmentInformation parentDep = optParentDep.get();
+		listDep.remove(parentDep);
+		return listDep.stream().filter(d -> d.getHierarchyCode().v().startsWith(parentDep.getHierarchyCode().v()))
+				.map(d -> d.getDepartmentId()).collect(Collectors.toList());
+	}
+
+	/**
+	 * [No.574]部門の下位部門を基準部門を含めて取得する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param departmentId
+	 * @return
+	 */
+	public List<String> getDepartmentIdAndChildren(String companyId, String historyId, String departmentId) {
+		List<String> result = Arrays.asList(departmentId);
+		result.addAll(this.getAllChildDepartmentId(companyId, historyId, departmentId));
+		return result;
+	}
 }

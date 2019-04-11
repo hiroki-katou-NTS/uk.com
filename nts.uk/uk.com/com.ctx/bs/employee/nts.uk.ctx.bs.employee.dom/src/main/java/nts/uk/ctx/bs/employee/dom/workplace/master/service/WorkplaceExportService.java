@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -125,6 +126,40 @@ public class WorkplaceExportService {
 		result.sort((e1, e2) -> {
 			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
 		});
+		return result;
+	}
+
+	/**
+	 * [No.567]職場の下位職場を取得する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param parentWorkplaceId
+	 * @return
+	 */
+	public List<String> getAllChildWorkplaceId(String companyId, String historyId, String parentWorkplaceId) {
+		List<WorkplaceInformation> listWkp = wkpInforRepo.getAllActiveWorkplaceByCompany(companyId, historyId);
+		Optional<WorkplaceInformation> optParentWkp = listWkp.stream()
+				.filter(w -> w.getWorkplaceId().equals(parentWorkplaceId)).findFirst();
+		if (!optParentWkp.isPresent())
+			return Collections.emptyList();
+		WorkplaceInformation parentWkp = optParentWkp.get();
+		listWkp.remove(parentWkp);
+		return listWkp.stream().filter(w -> w.getHierarchyCode().v().startsWith(parentWkp.getHierarchyCode().v()))
+				.map(w -> w.getWorkplaceId()).collect(Collectors.toList());
+	}
+
+	/**
+	 * [No.573]職場の下位職場を基準職場を含めて取得する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param workplaceId
+	 * @return
+	 */
+	public List<String> getWorkplaceIdAndChildren(String companyId, String historyId, String workplaceId) {
+		List<String> result = Arrays.asList(workplaceId);
+		result.addAll(this.getAllChildWorkplaceId(companyId, historyId, workplaceId));
 		return result;
 	}
 

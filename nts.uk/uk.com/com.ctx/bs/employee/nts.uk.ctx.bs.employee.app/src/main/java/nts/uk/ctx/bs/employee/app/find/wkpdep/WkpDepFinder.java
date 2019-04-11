@@ -119,6 +119,20 @@ public class WkpDepFinder {
 			return null;
 		}
 	}
+	
+	public InformationDto getWkpDepInfor(int mode, String historyId, String id) {
+		String companyId = AppContexts.user().companyId();
+		switch (mode) {
+		case WORKPLACE_MODE:
+			Optional<WorkplaceInformation> optWkp = wkpInforRepo.getWorkplaceByKey(companyId, historyId, id);
+			return optWkp.isPresent() ? new InformationDto(optWkp.get()) : null;
+		case DEPARTMENT_MODE:
+			Optional<DepartmentInformation> optDep = depInforRepo.getDepartmentByKey(companyId, historyId, id);
+			return optDep.isPresent() ? new InformationDto(optDep.get()) : null;
+		default:
+			return null;
+		}
+	}
 
 	public void checkTotalWkpDep(int mode, String historyId) {
 		String companyId = AppContexts.user().companyId();
@@ -144,6 +158,8 @@ public class WkpDepFinder {
 	
 	private List<WkpDepTreeDto> createTree(List<InformationDto> lstHWkpInfo) {
 		List<WkpDepTreeDto> lstReturn = new ArrayList<>();
+		if (lstHWkpInfo.isEmpty()) 
+			return lstReturn;
 		// Higher hierarchyCode has shorter length
 		int highestHierarchy = lstHWkpInfo.stream()
 				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get()
