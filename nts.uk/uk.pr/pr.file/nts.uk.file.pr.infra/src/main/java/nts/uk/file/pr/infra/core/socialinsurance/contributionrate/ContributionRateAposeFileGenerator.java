@@ -1,23 +1,15 @@
-package nts.uk.file.pr.infra.core.socialinsurance;
+package nts.uk.file.pr.infra.core.socialinsurance.contributionrate;
 
-import com.aspose.cells.Cells;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.Export;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceFileGenerator;
-import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
-import java.util.List;
 
 @Stateless
-public class SocialInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements SocialInsuranceFileGenerator {
+public class ContributionRateAposeFileGenerator extends AsposeCellsReportGenerator implements SocialInsuranceFileGenerator {
 
     private static final String TEMPLATE_FILE_B = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
     private static final String TEMPLATE_FILE_C = "report/TEMPLATE_QMM008_C.xlsx";

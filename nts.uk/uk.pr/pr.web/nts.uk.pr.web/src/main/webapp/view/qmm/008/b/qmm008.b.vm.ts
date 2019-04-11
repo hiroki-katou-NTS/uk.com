@@ -349,9 +349,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
                 if (result.status) {
                     nts.uk.ui.block.grayout();
-                    let startDate = result.startDate;
+                    let startDate = result.standardYearMonth;
                     let data = {
-                        type: type,
                         startDate: startDate
                     }
                     service.exportExcel(data).done(function() {

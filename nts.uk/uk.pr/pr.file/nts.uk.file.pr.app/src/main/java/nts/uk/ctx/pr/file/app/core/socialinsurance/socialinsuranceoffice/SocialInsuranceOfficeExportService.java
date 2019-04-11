@@ -1,7 +1,8 @@
-package nts.uk.ctx.pr.file.app.core.socialinsurance;
+package nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.pr.file.app.core.socialinsurance.*;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class SocialInsuranceExportService extends ExportService<SocialInsuranceExportQuery> {
+public class SocialInsuranceOfficeExportService extends ExportService<SocialInsuranceExportQuery> {
 
 	@Inject
 	private SocialInsuranceRepository socialInsuranceRepository;

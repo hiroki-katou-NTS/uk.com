@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.file.app.core.socialinsurance;
+package nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SocialInsuranceExportData {
-    private List<Object[]> data;
-    private List<Object[]> data2;
+public class HealthInsuranceExportData {
+    private List<Object[]> healthMonth;
+    private List<Object[]> bonusHealth;
     private String companyName;
-    private int export;
 }

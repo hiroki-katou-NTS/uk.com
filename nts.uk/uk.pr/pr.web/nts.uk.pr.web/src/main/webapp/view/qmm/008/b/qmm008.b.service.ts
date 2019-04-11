@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm008.b.service {
         findEmployeeHealthInsuranceByHistoryId: "ctx/core/socialinsurance/healthinsurance/getByHistoryId/{0}" ,
         registerEmployeeHealthInsurance: "ctx/core/socialinsurance/healthinsurance/register",
         checkHealthInsuranceGradeFeeChange: "ctx/core/socialinsurance/healthinsurance/checkGradeFeeChange",
-        exportExcel: "file/core/socialinsurance/export"
+        exportExcel: "file/core/socialinsurance/healthinsurance/export"
     }
     /**
      * get all

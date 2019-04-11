@@ -25,15 +25,19 @@ public class JpaLaborInsuranceOfficeExRepository extends JpaRepository implement
         sql.append("    PHONE_NUMBER,");
         sql.append("    ADDRESS1,");
         sql.append("    ADDRESS_KANA1,");
+        sql.append("    ADDRESS2,");
         sql.append("    ADDRESS_KANA2,");
         sql.append("    CITY_CODE,");
         sql.append("    EMPLOYMENT_OFFFICE_CODE,");
         sql.append("    EMPLOYMENT_OFFICE_NUMBER1,");
+        sql.append("    EMPLOYMENT_OFFICE_NUMBER2,");
+        sql.append("    EMPLOYMENT_OFFICE_NUMBER3,");
         sql.append("    NOTES ");
         sql.append("FROM ");
         sql.append("    QPBMT_LABOR_INSU_OFFICE ");
         sql.append("WHERE");
         sql.append("    CID = ?cid");
+        sql.append("    ORDER BY LABOR_OFFICE_CODE");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString()).setParameter("cid", cid)
                     .getResultList();
