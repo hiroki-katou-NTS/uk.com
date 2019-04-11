@@ -62,6 +62,20 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         'time-point-picker': TimePointPickerComponent,
         'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
+    },
+    resource: {
+        vi: {
+            before_today: "Hôm qua",
+            today: "Hôm nay",
+            after_today: "Ngày mai",
+            next_after_tody: "Ngày kia"
+        },
+        jp: {
+            before_today: "前日",
+            today: "当日",
+            after_today: "翌日",
+            next_after_tody: "翌々日"
+        }
     }
 });
 
@@ -117,7 +131,7 @@ export class InputComponent extends Vue {
     }
 
     readonly $errors: any = {};
-    readonly constraints: any = {};
+    readonly constraints: IRule = {};
 
     @Watch('errors', { deep: true })
     wSErrs(newErrs: any) {

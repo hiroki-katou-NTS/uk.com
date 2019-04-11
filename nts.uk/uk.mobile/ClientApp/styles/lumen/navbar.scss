@@ -106,6 +106,7 @@ body {
 
     &.modal-open {
         .navbar {
+            z-index: 1029;
             padding-left: 0;
         }
     }

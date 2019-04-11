@@ -32,6 +32,7 @@ const MaskLayer = new Vue({
         preventTouch(evt: TouchEvent) {
             evt.preventDefault();
             evt.stopPropagation();
+            evt.stopImmediatePropagation();
         }
     },
     watch: {
