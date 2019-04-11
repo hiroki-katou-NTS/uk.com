@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class WelfarepensionInsuranceExportQuery {
-    private int exportType;
+    private int startDate;
 }

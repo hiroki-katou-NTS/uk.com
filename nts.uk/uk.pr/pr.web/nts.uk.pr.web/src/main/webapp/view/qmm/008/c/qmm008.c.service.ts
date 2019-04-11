@@ -6,19 +6,10 @@ module nts.uk.pr.view.qmm008.c.service {
         findEmployeePensionByHistoryId: "ctx/core/socialinsurance/welfarepensioninsurance/getByHistoryId/{0}",
         registerEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/registerEmployeePension",
         checkWelfarePensionInsuranceGradeFeeChange: "ctx/core/socialinsurance/welfarepensioninsurance/checkGradeFeeChange",
-        exportExcel: "file/core/socialinsurance/export"
+        exportExcel: "file/core/socialinsurance/welfarepensioninsurance/export"
     }
 
-    export function exportExcel(type: number): JQueryPromise<any> {
-        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = "QMM008";
-        if (program.length > 1){
-            program.shift();
-            domainType = domainType + program.join(" ");
-        }
-        let data = {
-            exportType: type
-        }
+    export function exportExcel(data: any): JQueryPromise<any> {
         return nts.uk.request.exportFile( paths.exportExcel, data);
     }
     /**
