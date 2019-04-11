@@ -25,10 +25,13 @@ const _SideMenu = new Vue({
     set visible(visible: boolean) {
         _SideMenu.visible = visible;
     }
-}, resize = () => SideMenu.show = false;
-
+}, resize = () => {
+    if (!browser.mobile) {
+        SideMenu.show = false;
+    }
+};
 @component({
-    template: `<nav class="sidebar" v-bind:class="{ show, iphone}" v-if="visible">
+    template: `<nav class="sidebar" v-bind:class="{ show, iphone}" v-if="visible" v-on:touchmove="preventScroll">
         <div class="sidebar-header">
             <h3>
                 <router-link to="/">
@@ -107,7 +110,7 @@ const _SideMenu = new Vue({
 export class SideMenuBar extends Vue {
     active: any = {};
     filter: string = '';
-    
+
     constructor() {
         super();
 
@@ -129,6 +132,12 @@ export class SideMenuBar extends Vue {
         } else {
             this.active = item;
         }
+    }
+
+    preventScroll(evt: TouchEvent) {
+        //evt.preventDefault();
+        evt.stopPropagation();
+        evt.stopImmediatePropagation();
     }
 
     @Watch('show', { immediate: true })
