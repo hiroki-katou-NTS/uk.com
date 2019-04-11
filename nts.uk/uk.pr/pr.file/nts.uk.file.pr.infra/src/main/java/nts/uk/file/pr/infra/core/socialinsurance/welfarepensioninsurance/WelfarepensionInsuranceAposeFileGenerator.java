@@ -1,7 +1,6 @@
 package nts.uk.file.pr.infra.core.socialinsurance.welfarepensioninsurance;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.Export;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.welfarepensioninsurance.WelfarepensionInsuranceExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.welfarepensioninsurance.WelfarepensionInsuranceFileGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -11,13 +10,9 @@ import javax.ejb.Stateless;
 @Stateless
 public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements WelfarepensionInsuranceFileGenerator {
 
-    private static final String TEMPLATE_FILE_B = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
-    private static final String TEMPLATE_FILE_C = "report/TEMPLATE_QMM008_C.xlsx";
-    private static final String TEMPLATE_FILE_I = "report/TEMPLATE_QMM008_I.xlsx";
-    private static final String TEMPLATE_FILE_D = "report/TEMPLATE_QMM008_D.xlsx";
-    private static final String TEMPLATE_FILE_F = "report/TEMPLATE_QMM008_F.xlsx";
+    private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".xlsx";
-    private static final String FILE_NAME_B = "QMM008-社会保険事業所の登録_健康保険料率一覧";
+    private static final String FILE_NAME = "QMM008-社会保険事業所の登録_健康保険料率一覧";
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WelfarepensionInsuranceExportData exportData) {
@@ -54,43 +49,8 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
 
     }
 
-   /* private void printDataHealthy(Worksheet worksheet, List<Object[]> data) {
-        Cells cells = worksheet.getCells();
-        int numRow = 47;
-        int numColumn = 12;
-        int rowStart = 3;
-        int columnStart = 1;
-        fillData(cells, data, numRow, numColumn, rowStart, columnStart);
-    }
 
-    private void printDataSocialOffice(Worksheet worksheet, List<Object[]> data){
-        Cells cells = worksheet.getCells();
-        int numRow = 2;
-        int numColumn = 17;
-        int rowStart = 4;
-        int columnStart = 1;
-        fillData(cells, data, numRow, numColumn, rowStart, columnStart);
-    }
-
-    private void printContributionRate(Worksheet worksheet, List<Object[]> data) {
-        Cells cells = worksheet.getCells();
-        int numRow = 2;
-        int numColumn = 13;
-        int rowStart = 6;
-        int columnStart = 1;
-        fillData(cells, data, numRow, numColumn, rowStart, columnStart);
-    }
-
-    private void printSalaryHealthy(Worksheet worksheet, List<Object[]> data){
-        Cells cells = worksheet.getCells();
-        int numRow = 2;
-        int numColumn = 12;
-        int rowStart = 4;
-        int columnStart = 1;
-        fillData(cells, data, numRow, numColumn, rowStart, columnStart);
-    }
-
-    private void printDataWelfarePension(Worksheet worksheet, List<Object[]> data) {
+    /*private void printDataWelfarePension(Worksheet worksheet, List<Object[]> data) {
         Cells cells = worksheet.getCells();
         int rowStart = 5;
         int numRow = 2;
