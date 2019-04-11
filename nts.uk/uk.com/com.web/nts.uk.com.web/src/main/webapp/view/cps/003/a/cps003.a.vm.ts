@@ -428,8 +428,11 @@ module cps003.a.vm {
                         case ITEM_SELECT_TYPE.CODE_NAME:
                             return 1;
                         case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            if (_.isNil(value) || isNaN(Number(value))) return 1;
-                            return 2;
+                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                                return 2;
+                            }
+                            return 1;
                     }
                 case ITEM_SINGLE_TYPE.READONLY:
                 case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
