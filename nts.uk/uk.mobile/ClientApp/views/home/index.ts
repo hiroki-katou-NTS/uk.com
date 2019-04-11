@@ -38,7 +38,21 @@ export class HomeComponent extends Vue {
     }
 
     showPicker() {
-        this.$picker(this.selecteds, this.dataSources, { title: 'home' })
+        let onSelect = function (selects: any, pkr: { dataSources: { day: any[] } }) {
+            pkr.dataSources.day = [];
+
+            if (selects.month === 2) {
+                for (var i = 1; i <= 28; i++) {
+                    pkr.dataSources.day.push({ text: `${i}`, value: i });
+                }
+            } else {
+                for (var i = 1; i <= 31; i++) {
+                    pkr.dataSources.day.push({ text: `${i}`, value: i });
+                }
+            }
+        };
+
+        this.$picker(this.selecteds, this.dataSources, { title: 'home', onSelect })
             .then((v: any) => {
                 if (v !== undefined) {
                     this.selecteds = v;

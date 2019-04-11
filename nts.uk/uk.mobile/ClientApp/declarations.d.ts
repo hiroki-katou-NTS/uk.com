@@ -113,15 +113,16 @@ declare module "vue/types/vue" {
             confirm(msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
             confirm(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
         };
-        $picker(value: string | number | Date | {
-            [key: string]: string | number | Date
-        }, dataSources: Array<string | number | Date> | {
-            [key: string]: Array<string | number | Date>
+        $picker(value: {
+            [key: string]: any
+        }, dataSources: {
+            [key: string]: any[]
         }, options?: {
             text?: string;
             value?: string;
             title?: string;
             required?: boolean;
+            onSelect?: (selects: { [key: string]: any }, pkr: { dataSources: { [key: string]: any[] } }) => void;
         }): Promise<{}>;
         $valid: boolean;
         $errors: {

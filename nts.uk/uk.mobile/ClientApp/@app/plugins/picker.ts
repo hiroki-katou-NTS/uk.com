@@ -115,35 +115,77 @@ const Picker = new Vue({
         dataSources: {
             deep: true,
             immediate: true,
-            handler() {
+            handler(dataSources: any[]) {
+                let self = this,
+                    refs = self.$refs,
+                    opts = self.options;
+
+                obj.objectForEach(dataSources, (key: string, items: any[]) => {
+                    if (!self.selects[key]) {
+                        self.selects[key] = self.value[key] || items[0][opts.value];
+                    } else if (!items.filter(f => f[opts.value] === self.selects[key]).length) {
+                        self.selects[key] = items[0][opts.value];
+                    }
+
+                    //self.rollGear(refs[key][0]);
+                });
+            }
+        },
+        value: { // same as selects
+            deep: true,
+            immediate: true,
+            handler(value: { [key: string]: any }) {
                 let self = this;
 
-                obj.objectForEach(self.dataSources, (key: string, items: any[]) => {
-                    self.selects[key] = self.value[key] || items[0];
-                });
+                if (obj.isFunction(self.options.onSelect)) {
+                    self.options.onSelect.apply(null, [obj.cloneObject(value), self]);
+                }
+            }
+        },
+        selects: { // same as value
+            deep: true,
+            immediate: true,
+            handler(value: { [key: string]: any }) {
+                let self = this;
+
+                if (obj.isFunction(self.options.onSelect)) {
+                    self.options.onSelect.apply(null, [obj.cloneObject(value), self]);
+                }
             }
         }
     },
     computed: {
-        deleteAble() {
-            return !this.options.required && !!obj.keys(obj.cloneObject(this.value)).length;
-        },
         textField() {
             return this.options.text;
+        },
+        deleteAble() {
+            return !this.options.required && !!obj.keys(obj.cloneObject(this.value)).length;
         }
     },
     methods: {
         close() {
             this.show = false;
             this.$emit('close');
+
+            this.$nextTick(() => {
+                this.selects = {};
+            });
         },
         remove() {
             this.show = false;
             this.$emit('remove', {});
+
+            this.$nextTick(() => {
+                this.selects = {};
+            });
         },
         finish() {
             this.show = false;
             this.$emit('finish', obj.cloneObject(this.selects));
+
+            this.$nextTick(() => {
+                this.selects = {};
+            })
         },
         gearTouchStart(evt: TouchEvent) {
             evt.preventDefault();
@@ -284,9 +326,13 @@ const Picker = new Vue({
         setGear(key: string, index: number) {
             var self = this,
                 opts = self.options,
-                items = self.dataSources[key];
+                items = self.dataSources[key],
+                selects = obj.cloneObject(self.selects);
 
-            self.selects[key] = items[Math.round(index)][opts.value];
+            index = Math.round(index);
+            selects[key] = items[index][opts.value];
+
+            Vue.set(self, 'selects', selects);
         },
         preventScroll(evt: TouchEvent) {
             evt.preventDefault();
@@ -305,12 +351,9 @@ const Picker = new Vue({
                 value: string;
                 required?: boolean;
             } = { text: 'text', value: 'value', required: false }) {
-            const isPrimitive = !obj.isObject(value) && obj.isArray(dataSources);
-
-            value = isPrimitive ? { column: value } : obj.cloneObject(value);
-            dataSources = isPrimitive ? { column: dataSources } : obj.cloneObject(dataSources);
-
+            value = obj.cloneObject(value);
             options = obj.cloneObject(options);
+            dataSources = obj.cloneObject(dataSources);
 
             obj.merge(options, { text: 'text', value: 'value', required: false });
 
@@ -324,10 +367,12 @@ const Picker = new Vue({
                 Picker
                     .$once('close', () => resolve())
                     .$once('remove', () => resolve(null))
-                    .$once('finish', (value: any) => resolve(isPrimitive ? value.column : value));
+                    .$once('finish', (value: any) => resolve(value));
             });
         };
     }
 }
 
 export { picker };
+
+window['pkr'] = Picker
