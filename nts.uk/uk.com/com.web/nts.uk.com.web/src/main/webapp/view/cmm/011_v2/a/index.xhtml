@@ -8,16 +8,16 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceCode
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceName
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceExternalCode
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceDisplayName
-				nts.uk.ctx.bs.employee.dom.workplace_new.WorkplaceGeneric
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentCode
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentName
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentExternalCode
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentDisplayName
-				nts.uk.ctx.bs.employee.dom.department_new.DepartmentGeneric
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceCode
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceName
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceExternalCode
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceDisplayName
+				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceGeneric
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentCode
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentName
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentExternalCode
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentDisplayName
+				nts.uk.ctx.bs.employee.dom.department.master.DepartmentGeneric
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -40,13 +40,15 @@
 				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
 					<div id="A2_1" data-bind="ntsPanel:{
 							width: '400px', height: '100px', 
-							showIcon: false, direction: 'bottom'}, with: configuration">
-						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: $vm.initMode == 0">#{i18n.getText('CMM011-1_2')}</div>
-						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: $vm.initMode == 1">#{i18n.getText('CMM011-2_2')}</div>
-						<span id="A2_3" data-bind="text: startDate"></span> 
-						<span id="A2_4" style="margin-left: 8px; margin-right: 8px;">#{i18n.getText('CMM011-0_6')}</span>
-						<span id="A2_5" data-bind="text: endDate"></span>
-						<button id="A2_6" tabindex="6">#{i18n.getText('CMM011-0_7')}</button>
+							showIcon: false, direction: 'bottom'}">
+						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 0">#{i18n.getText('CMM011-1_2')}</div>
+						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 1">#{i18n.getText('CMM011-2_2')}</div>
+						<div data-bind="with: configuration">
+							<span id="A2_3" data-bind="text: startDate"></span> 
+							<span id="A2_4" style="margin-left: 8px; margin-right: 8px;">#{i18n.getText('CMM011-0_6')}</span>
+							<span id="A2_5" data-bind="text: endDate"></span>
+						</div>
+						<button id="A2_6" tabindex="6" data-bind="click: openConfigDialog">#{i18n.getText('CMM011-0_7')}</button>
 					</div>
 
 					<div>
@@ -77,89 +79,46 @@
 				</div>
 				
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;" data-bind="with: selectedInfor">
-					<div data-bind="if: $vm.initMode == 0"> <!-- Workplace Mode -->
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceCode' }">#{i18n.getText('CMM011-0_12')}</div>
-							<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_12]',
-								value: code,
-								constraint: 'WorkplaceCode',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceName' }">#{i18n.getText('CMM011-0_13')}</div>
-							<input tabindex="13" id="A6_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_13]',
-								value: name,
-								constraint: 'WorkplaceName',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011-0_14')}</div>
-							<input tabindex="14" id="A7_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_14]',
-								value: dispName,
-								constraint: 'WorkplaceDisplayName',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011-0_15')}</div>
-							<input tabindex="15" id="A8_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_15]',
-								value: genericName,
-								constraint: 'WorkplaceGeneric',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011-0_16')}</div>
-							<input tabindex="16" id="A9_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_16]',
-								value: externalCode,
-								constraint: 'WorkplaceExternalCode',
-								required: true, enable: true}" />
-						</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceCode' }">#{i18n.getText('CMM011-0_12')}</div>
+						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
+							name: '#[CMM011-0_12]',
+							value: code,
+							constraint: 'WorkplaceCode',
+							required: true, enable: true}" />
 					</div>
-					<div data-bind="if: $vm.initMode == 1"> <!-- Department Mode -->
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011-0_12')}</div>
-							<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_12]',
-								value: code,
-								constraint: 'DepartmentCode',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011-0_13')}</div>
-							<input tabindex="13" id="A6_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_13]',
-								value: name,
-								constraint: 'DepartmentName',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentDisplayName' }">#{i18n.getText('CMM011-0_14')}</div>
-							<input tabindex="14" id="A7_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_14]',
-								value: dispName,
-								constraint: 'DepartmentDisplayName',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentGeneric' }">#{i18n.getText('CMM011-0_15')}</div>
-							<input tabindex="15" id="A8_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_15]',
-								value: genericName,
-								constraint: 'DepartmentGeneric',
-								required: true, enable: true}" />
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentExternalCode' }">#{i18n.getText('CMM011-0_16')}</div>
-							<input tabindex="16" id="A9_2" data-bind="ntsTextEditor: {
-								name: '#[CMM011-0_16]',
-								value: externalCode,
-								constraint: 'DepartmentExternalCode',
-								required: true, enable: true}" />
-						</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceName' }">#{i18n.getText('CMM011-0_13')}</div>
+						<input tabindex="13" id="A6_2" data-bind="ntsTextEditor: {
+							name: '#[CMM011-0_13]',
+							value: name,
+							constraint: 'WorkplaceName',
+							required: true, enable: true}" />
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011-0_14')}</div>
+						<input tabindex="14" id="A7_2" data-bind="ntsTextEditor: {
+							name: '#[CMM011-0_14]',
+							value: dispName,
+							constraint: 'WorkplaceDisplayName',
+							required: true, enable: true}" />
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011-0_15')}</div>
+						<input tabindex="15" id="A8_2" data-bind="ntsTextEditor: {
+							name: '#[CMM011-0_15]',
+							value: genericName,
+							constraint: 'WorkplaceGeneric',
+							option: { width: '512px' },
+							required: true, enable: true}" />
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011-0_16')}</div>
+						<input tabindex="16" id="A9_2" data-bind="ntsTextEditor: {
+							name: '#[CMM011-0_16]',
+							value: externalCode,
+							constraint: 'WorkplaceExternalCode',
+							required: false, enable: true}" />
 					</div>
 				</div>
 			</div>
