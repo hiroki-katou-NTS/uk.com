@@ -164,3 +164,10 @@
         }
     }
 }
+
+.show-side-bar,
+.show-menu-top {
+    .fixed-action-btn {
+        z-index: 1039;
+    }
+}

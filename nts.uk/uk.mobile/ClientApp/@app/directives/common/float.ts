@@ -32,24 +32,21 @@ Vue.directive('float-action', {
 
                 if (!dom.hasClass(el, 'active')) {
                     $vm.$mask('hide');
-                    dom.removeAttr(ul, 'style');
                 } else {
-                    $vm.$mask('show')
-                        .on(() => {
-                            $vm.$mask('hide');
+                    dom.addClass(document.body, 'modal-open');
+                    
+                    $vm.$mask('show', 0.02)
+                        .on(() => $vm.$mask('hide'), () => {
                             dom.removeAttr(ul, 'style');
                             dom.removeClass(el, 'active');
+                            dom.removeClass(document.body, 'modal-open');
                         });
 
                     dom.setAttr(ul, 'style', `height: ${57 * [].slice.call(ul.querySelectorAll('li.btn-floating')).length}px`);
                 }
             });
 
-            dom.registerGlobalEventHandler(el, 'click', 'li.btn-floating', () => {
-                $vm.$mask('hide');
-                dom.removeAttr(ul, 'style');
-                dom.removeClass(el, 'active');
-            });
+            dom.registerGlobalEventHandler(el, 'click', 'li.btn-floating', () => $vm.$mask('hide'));
         }
     }
 });
