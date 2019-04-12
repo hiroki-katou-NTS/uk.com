@@ -1,14 +1,8 @@
+import { obj, dom } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
-import { obj, dom, browser } from '@app/utils';
-import { Language } from '@app/plugins';
-
-//import { PickerComponent } from '@app/components/picker/index';
 
 const vm = Vue.extend({
-    filters: {
-        i18n: Language.i18n
-    },
-    template: `<transition name="picker-fade" v-on:after-leave="dispose()">
+    template: `<transition name="picker-fade" v-on:after-leave="$destroy(true)">
         <div class="picker-container" v-show="show" v-on:touchmove="preventScroll">
             <div class="pk-btn-groups">
                 <button class="btn btn-link" ref="close" v-on:click="close">{{'cancel' | i18n}}</button>
@@ -191,9 +185,6 @@ const vm = Vue.extend({
             this.$nextTick(() => {
                 this.selects = {};
             })
-        },
-        dispose() {
-            this.$destroy(true);
         },
         gearTouchStart(evt: TouchEvent) {
             evt.preventDefault();
@@ -381,15 +372,9 @@ const vm = Vue.extend({
                 Picker.$nextTick(() => Picker.show = true);
 
                 Picker
-                    .$once('close', () => {
-                        resolve();
-                    })
-                    .$once('remove', () => {
-                        resolve(null);
-                    })
-                    .$once('finish', (value: any) => {
-                        resolve(value);
-                    });
+                    .$once('close', () => resolve())
+                    .$once('remove', () => resolve(null))
+                    .$once('finish', (value: any) => resolve(value));
             });
         };
     }
