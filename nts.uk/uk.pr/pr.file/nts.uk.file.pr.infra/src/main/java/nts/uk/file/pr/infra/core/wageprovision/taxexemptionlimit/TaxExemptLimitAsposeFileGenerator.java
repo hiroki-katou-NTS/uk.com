@@ -57,7 +57,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             Cells cells = ws.getCells();
             //break page
             HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-            int page =  exportData.size() / 72;
+            int page =  (exportData.size() / 72);
             boolean isFirst = (page == 1 ) && page%72 == 0 ? true : false;
             int countElement = 0;
             boolean pageThua = page%72 != 0 ? true : false;
@@ -65,8 +65,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                 page++;
             }
             for(int i = 0 ; i < page ; i++){
-
-                if(!isFirst){
+                if(!isFirst && i < page-1){
                     ws.getCells().copyRows(cells,0, 39*(i+1), 39 );
                     pageBreaks.add(39*(i+1));
                 }

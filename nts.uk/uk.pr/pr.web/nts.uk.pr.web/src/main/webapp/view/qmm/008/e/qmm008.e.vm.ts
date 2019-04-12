@@ -105,8 +105,34 @@ module nts.uk.pr.view.qmm008.e {
            private closeDialog(): void {
                nts.uk.ui.windows.close();
            }
-           
-           
+           /*
+           * Export excel
+           * */
+           public exportExcel(): void {
+               let self = this;
+               block.invisible();
+               let data = {
+                   targetStartYm: self.startMonth(),
+                   hisId : self.historyId(),
+                   officeCode :self.officeCode(),
+                   socialInsuranceName : self.socialInsuranceName(),
+                   displayStart : self.displayStart(),
+                   displayEnd: self.displayEnd()
+               }
+               nts.uk.pr.view.qmm008.e.service.exportExcel(data)
+                   .done(function () {
+                       block.clear();
+
+                   })
+                   .fail(function (error) {
+                       dialog.alertError({messageId: error.messageId});
+                       block.clear();
+                   })
+                   .always(function () {
+                       block.clear();
+                   });
+               ;
+           }
            /**
             * count
             */
