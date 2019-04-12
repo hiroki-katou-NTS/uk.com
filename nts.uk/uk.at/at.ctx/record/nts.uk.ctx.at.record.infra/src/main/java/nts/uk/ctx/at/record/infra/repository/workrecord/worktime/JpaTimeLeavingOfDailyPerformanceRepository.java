@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -28,7 +27,6 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -53,48 +51,15 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
 
-//	private static final String REMOVE_BY_EMPLOYEE;
-//
-//	private static final String REMOVE_TIME_LEAVING_WORK;
-
 	private static final String FIND_BY_KEY;
-
-//	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
-
-	@Inject
-	private WorkInformationRepository workInfo;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDaiLeavingWork a ");
-//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
-//		REMOVE_BY_EMPLOYEE = builderString.toString();
-//
-//		builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtTimeLeavingWork a ");
-//		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
-//		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
-//		REMOVE_TIME_LEAVING_WORK = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiLeavingWork a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
-
-//		builderString = new StringBuilder();
-//		builderString.append("SELECT a ");
-//		builderString.append("FROM KrcdtDaiLeavingWork a ");
-//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
-//		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
-//		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -113,7 +78,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 				statement.execute();
 			}
-			workInfo.dirtying(employeeId, ymd);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -200,7 +164,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		}
 		
 		internalUpdate(domain, getDailyLeaving(domain.getEmployeeId(), domain.getYmd()));
-		workInfo.dirtying(domain.getEmployeeId(), domain.getYmd());
 		// this.getEntityManager().flush();
 	}
 
@@ -505,7 +468,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ leaveStampLocationCode + " , " + leaveStampSource + ", " + leaveNumberReflec + " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
-			workInfo.dirtying(timeLeavingOfDailyPerformance.getEmployeeId(), timeLeavingOfDailyPerformance.getYmd());
 		} catch (Exception e) {
 
 		}
@@ -516,7 +478,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
-		workInfo.dirtying(timeLeaving.getEmployeeId(), timeLeaving.getYmd());
 	}
 	//
 	// @Override
