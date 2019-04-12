@@ -33,7 +33,6 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
             reportContext.setHeader(0,exportData.getCompanyName());
             //reportContext.setHeader(2, GeneralDateTime.now().toString());
             String time = GeneralDateTime.now().toString();
-
             reportContext.setHeader(2,  time  + "\n page &P");
             printData(normalSheet, exportData.getData(), TextResource.localize("QMM010_36"));
             worksheets.setActiveSheetIndex(0);

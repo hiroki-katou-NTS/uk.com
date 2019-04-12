@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface WelfarepensionInsuranceRepository {
 
-    List<Object[]> getWelfarepensionInsurance(String cid);
+    List<Object[]> getWelfarepensionInsuranceEmp(String cid, int startDate);
+    List<Object[]> getWelfarepensionInsuranceBonus(String cid, int startDate);
 
 }

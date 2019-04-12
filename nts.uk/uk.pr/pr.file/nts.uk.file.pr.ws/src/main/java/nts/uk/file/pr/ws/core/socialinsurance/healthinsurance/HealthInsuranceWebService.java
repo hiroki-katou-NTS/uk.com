@@ -1,8 +1,6 @@
 package nts.uk.file.pr.ws.core.socialinsurance.healthinsurance;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceExportQuery;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.SocialInsuranceExportService;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceExportQuery;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceExportService;
 

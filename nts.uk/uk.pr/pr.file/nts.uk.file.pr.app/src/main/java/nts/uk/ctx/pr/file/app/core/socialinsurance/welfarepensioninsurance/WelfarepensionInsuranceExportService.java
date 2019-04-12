@@ -29,9 +29,11 @@ public class WelfarepensionInsuranceExportService extends ExportService<Welfarep
 		Optional<CompanyInfor> companyInfo = this.company.getCurrentCompany();
 		String companyName = companyInfo.isPresent() ? companyInfo.get().getCompanyName() : "";
 		String cid = AppContexts.user().companyId();
-		List<Object[]> welfarepensioninsurance = new ArrayList<>();
-		welfarepensioninsurance = welfarepensionInsuranceRepository.getWelfarepensionInsurance(cid);
-		WelfarepensionInsuranceExportData data = new WelfarepensionInsuranceExportData(welfarepensioninsurance, companyName);
+		List<Object[]> welfarepensioninsuranceEmp = new ArrayList<>();
+		List<Object[]> welfarepensioninsuranceBonus = new ArrayList<>();
+		welfarepensioninsuranceEmp = welfarepensionInsuranceRepository.getWelfarepensionInsuranceEmp(cid, exportServiceContext.getQuery().getStartDate());
+		welfarepensioninsuranceBonus = welfarepensionInsuranceRepository.getWelfarepensionInsuranceBonus(cid, exportServiceContext.getQuery().getStartDate());
+		WelfarepensionInsuranceExportData data = new WelfarepensionInsuranceExportData(welfarepensioninsuranceEmp, welfarepensioninsuranceBonus, companyName);
 		welfarepensionInsuranceFileGenerator.generate(exportServiceContext.getGeneratorContext(), data);
 	}
 }
