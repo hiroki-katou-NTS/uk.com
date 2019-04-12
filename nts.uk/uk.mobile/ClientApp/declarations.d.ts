@@ -38,10 +38,7 @@ declare interface IModalOptions {
     type?: 'modal' | 'popup' | 'info';
     size?: 'lg' | 'md' | 'sm' | 'xs';
     title?: string;
-    animate?: {
-        show?: string;
-        hide?: string;
-    };
+    animate?: 'up' | 'right' | 'down' | 'left';
     opacity?: number;
 }
 

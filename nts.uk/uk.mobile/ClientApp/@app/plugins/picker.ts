@@ -117,7 +117,6 @@ const vm = Vue.extend({
                     opts = self.options;
 
                 obj.objectForEach(dataSources, (key: string, items: any[]) => {
-
                     if (!self.selects[key]) {
                         self.selects[key] = self.value[key] || items[0][opts.value];
                     } else if (!items.filter(f => f[opts.value] === self.selects[key]).length) {

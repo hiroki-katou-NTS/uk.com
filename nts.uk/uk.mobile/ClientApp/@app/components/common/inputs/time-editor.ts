@@ -71,10 +71,7 @@ export class TimeComponent extends InputComponent {
             }, {
                     type: "popup",
                     title: this.name,
-                    animate: {
-                        show: 'zoomIn',
-                        hide: 'zoomOut'
-                    }
+                    animate: 'down'
                 })
             .then(v => {
                 if (v !== undefined) {

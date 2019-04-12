@@ -128,49 +128,30 @@ const modal = {
                                 },
                                 data: () => ({ name: 'nts-dialog', params, show: false }),
                                 computed: {
-                                    title: {
-                                        get() {
-                                            return options.title || (typeof name === 'string' ? name : 'nts-dialog');
-                                        }
+                                    title() {
+                                        return options.title || (typeof name === 'string' ? name : 'nts-dialog');
                                     },
-                                    $class: {
-                                        get() {
-                                            let classNames: Array<string> = [];
+                                    $class() {
+                                        let classNames: Array<string> = [];
 
-                                            if (!options.size) {
-                                                classNames.push(`modal-md`);
-                                            } else {
-                                                classNames.push(`modal-${options.size}`);
-                                            }
-
-                                            if (options.type === 'modal' || options.type === undefined) {
-                                                classNames.push('modal-dialog-scrollable');
-                                            } else if (options.type === 'popup') {
-                                                classNames.push('modal-popup modal-dialog-centered');
-                                            } else {
-                                                classNames.push('modal-popup modal-info modal-dialog-centered');
-                                            }
-
-                                            return classNames.join(' ');
+                                        if (!options.size) {
+                                            classNames.push(`modal-md`);
+                                        } else {
+                                            classNames.push(`modal-${options.size}`);
                                         }
+
+                                        if (options.type === 'modal' || options.type === undefined) {
+                                            classNames.push('modal-dialog-scrollable');
+                                        } else if (options.type === 'popup') {
+                                            classNames.push('modal-popup modal-dialog-centered');
+                                        } else {
+                                            classNames.push('modal-popup modal-info modal-dialog-centered');
+                                        }
+
+                                        return classNames.join(' ');
                                     },
-                                    $enter: {
-                                        get() {
-                                            if (options.animate && options.animate.show) {
-                                                return options.animate.show;
-                                            }
-
-                                            return browser.mobile && !browser.landscapse ? 'slideInRight' : 'slideInDown';
-                                        }
-                                    },
-                                    $leave: {
-                                        get() {
-                                            if (options.animate && options.animate.hide) {
-                                                return options.animate.hide;
-                                            }
-
-                                            return browser.mobile && !browser.landscapse ? 'slideOutRight' : 'slideOutUp';
-                                        }
+                                    animate() {
+                                        return `modal-fade-${options.animate || (browser.width < 576 ? 'right' : 'down')}`;
                                     }
                                 },
                                 methods: {
@@ -244,13 +225,9 @@ const modal = {
                                         focused.focus();
                                     }
                                 },
-                                template: `<div class="modal fade show in" v-on:touchmove="preventScroll">
-                                        <transition apear 
-                                                v-on:leave="leave"
-                                                v-on:after-leave="afterLeave"
-                                                v-bind:enter-active-class="$enter"
-                                                v-bind:leave-active-class="$leave">
-                                            <div class="modal-dialog animated" v-bind:class="$class" v-if="show" v-on:touchmove="preventScroll">
+                                template: `<transition apear v-bind:name="animate" v-on:leave="leave" v-on:after-leave="afterLeave">
+                                    <div class="modal show" v-if="show" v-on:touchmove="preventScroll">
+                                            <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">
@@ -263,8 +240,8 @@ const modal = {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </transition>
-                                    </div>`
+                                    </div>
+                                </transition>`
                             });
 
                         document.body.appendChild(dlg);

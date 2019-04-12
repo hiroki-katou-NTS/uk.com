@@ -52,10 +52,7 @@ const $dialog = () => ({
                                     option: IModalOptions = {
                                         title: $type,
                                         type: 'info',
-                                        animate: {
-                                            hide: 'fadeOut',
-                                            show: 'fadeIn'
-                                        }
+                                        animate: 'down'
                                     };
 
                                 if (typeof msg !== 'string') {
