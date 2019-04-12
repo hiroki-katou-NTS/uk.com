@@ -593,6 +593,40 @@ public class MonthlyPerformanceReload {
 			lstData.add(mpdata);
 		}
 	screenDto.setMPSateCellHideControl(mPSateCellHideControls);
+			//get histtory into company
+			List<AffCompanyHistImport> listAffCompanyHistImport = screenDto.getLstAffComHist();
+		List<CheckEmpEralOuput> listCheckEmpEralOuput = checkDailyPerError
+				.checkDailyPerError(listEmployeeIds,
+						new DatePeriod(screenDto.getSelectedActualTime().getStartDate(),
+								screenDto.getSelectedActualTime().getEndDate()),
+						listAffCompanyHistImport, monthlyResults);
+			//取得した情報を元に月別実績を画面に表示する
+			//NOTE: ※取得した「会社所属履歴」をもとに、菜食していない期間の実績は表示しないでください
+			List<MPDataDto> listData =  new ArrayList<>();
+			screenDto.getLstData().forEach(x -> {
+				Optional<AffCompanyHistImport> optMonthlyPerformanceEmployeeDto = listAffCompanyHistImport.stream()
+						.filter(y -> x.getEmployeeId().equals(y.getEmployeeId())).findFirst();
+				
+				if (optMonthlyPerformanceEmployeeDto.isPresent()
+						&& optMonthlyPerformanceEmployeeDto.get().getLstAffComHistItem().size() > 0)
+					for(CheckEmpEralOuput checkEmpEralOuput: listCheckEmpEralOuput) {
+						if(x.getEmployeeId().equals(checkEmpEralOuput.getEmployId())) {
+							if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR) {
+								x.setError("ER");
+							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ALARM) {
+								x.setError("AL");
+							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR_ALARM) {
+								x.setError("ER/AL");
+							}else {
+								x.setError("");
+							}
+							break;
+						}
+					}
+					listData.add(x);
+			});
+			screenDto.setLstCellState(lstCellState);
+			screenDto.setLstData(listData);
 	}
 
 	// copy ben MonthlyPerformanceDisplay
