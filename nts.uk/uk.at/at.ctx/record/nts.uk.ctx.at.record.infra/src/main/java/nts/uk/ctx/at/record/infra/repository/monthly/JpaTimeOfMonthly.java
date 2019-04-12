@@ -1,16 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.monthly;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -225,6 +229,54 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				.setParameter("yearMonth", yearMonth.v())
 				.executeUpdate();
 	}
+	
+	@Override
+	public void verShouldUp(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth) {
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId,
+				closureDate,
+				lastOfMonth ? 1 : 0);		
+		
+		dirtying(() -> key);
+	}
+	
+	public void verShouldUp(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth, long version) {
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId,
+				closureDate,
+				lastOfMonth ? 1 : 0);		
+		
+		this.queryProxy().find(key, KrcdtMonMerge.class).ifPresent(entity -> {
+			entity.version = version;
+			this.commandProxy().update(entity);
+		});
+	}
+	
+	@Override
+	@SneakyThrows
+	public long getVer(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth) {
+		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
+				"SELECT EXCLUS_VER from KRCDT_MON_MERGE"
+				+ " WHERE SID = ? AND YM = ? AND CLOSURE_ID = ? AND CLOSURE_DAY = ? AND IS_LAST_DAY = ?")) {
+			stmtFindById.setString(1, employeeId);
+			stmtFindById.setInt(2, yearMonth.v());
+			stmtFindById.setInt(3, closureId);
+			stmtFindById.setInt(4, closureDate);
+			stmtFindById.setInt(5, lastOfMonth ? 1 : 0);
+
+			return new NtsResultSet(stmtFindById.executeQuery()).getSingle(rec -> {
+				return rec.getLong(1);
+			}).orElse(0L);
+		}
+	}
 
 	private TimeOfMonthly toDomain(KrcdtMonMerge c) {
 		return new TimeOfMonthly(c.toDomainAttendanceTimeOfMonthly(), c.toDomainAffiliationInfoOfMonthly());
@@ -282,5 +334,13 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 						.setParameter("employeeId", employeeId)
 						.setParameter("yearMonth", yearMonth.v())
 						.getList().stream().forEach(c -> c.resetAttendanceTime());
+	}
+
+	public void dirtying(Supplier<Object> getKey) {
+		
+		this.queryProxy().find(getKey.get(), KrcdtMonMerge.class).ifPresent(entity -> {
+			entity.dirtying();
+			this.commandProxy().update(entity);
+		});
 	}
 }

@@ -30,6 +30,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
 	private CommonProcessCheckService commonService;
+	
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
@@ -51,7 +52,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		if(isPre) {
 			AttendanceTimeOfDailyPerformance attendanceTime = AttendanceTimeOfDailyPerformance.allZeroValue(employeeId, baseDate);
 			daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime));
-			timeAndAnyItemUpService.addAndUpdate(daily);	
+			timeAndAnyItemUpService.addAndUpdate(daily);
 		}				
 		return daily;
 	}

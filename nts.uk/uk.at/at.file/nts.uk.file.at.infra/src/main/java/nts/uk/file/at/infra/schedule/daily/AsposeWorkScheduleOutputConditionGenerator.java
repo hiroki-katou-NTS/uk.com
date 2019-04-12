@@ -541,8 +541,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		remarkQueryDataContainer.initData(query.getEmployeeId(), period);
 		queryData.setRemarkDataContainter(remarkQueryDataContainer);		
 		
-//		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
-//		queryData.setDatePeriod(lstDate);
+		// delete comment of 106578 
+		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
+		queryData.setDatePeriod(lstDate);
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
@@ -2622,13 +2623,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
 		Iterator<WorkplaceDailyReportData> iteratorWorkplaceData  = lstDailyReportData.iterator();
-		if(condition.isDating()){
 		while(iteratorWorkplaceData.hasNext()) {
-			
 			WorkplaceDailyReportData dailyReportData = iteratorWorkplaceData.next();
 			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 
 			DailyWorkplaceData rootWorkplace = dailyReportData.getLstWorkplaceData();
+			if(condition.isDating()){
 
 			if (rowPageTracker.checkRemainingRowSufficient(3) <= 0) {
 				if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
@@ -2658,7 +2658,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 }
                 rowPageTracker.resetRemainingRow();
 			}
-			}
+		}
 		}
 		
 		if (condition.getSettingDetailTotalOutput().isGrossTotal()) {
@@ -3551,7 +3551,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								 WorkSheetInfo sheetInfo, String titleDate) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
-		Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
+		Range dateRange = cells.createRange(currentRow, 0, 1, 42);
 		dateRange.copy(dateRangeTemp);
 		Cell dateTagCell = cells.get(currentRow, 0);
 		dateTagCell.setValue(titleDate);
@@ -3563,7 +3563,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                                WorkSheetInfo sheetInfo, String workplaceTitle) throws Exception {
         Cells cells = sheetInfo.getSheet().getCells();
         Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAILY_WORKPLACE_ROW);
-        Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
+        Range workplaceRange = cells.createRange(currentRow, 0, 1, 42);
         workplaceRange.copy(workplaceRangeTemp);
         Cell workplaceTagCell = cells.get(currentRow, 0);
         workplaceTagCell.setValue(workplaceTitle);
