@@ -11,6 +11,8 @@ public interface ContributionRateRepository {
 
 	Optional<ContributionRate> getContributionRateByHistoryId(String historyId);
 
+	Optional<ContributionRate> getContributionRateByDate(String cid, String officeCode, int yearMonth);
+
 	void deleteByHistoryIds(List<String> historyIds,String officeCode);
 
 	void add(ContributionRate domain, String officeCode, YearMonthHistoryItem yearMonth);

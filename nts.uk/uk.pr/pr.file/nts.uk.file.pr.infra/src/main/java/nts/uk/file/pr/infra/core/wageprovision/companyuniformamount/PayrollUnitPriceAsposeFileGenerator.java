@@ -70,7 +70,6 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
-
         for(int i = 0; i < Math.round(exportData.size()/MAX_LINE) ; i ++){
             try {
                 ws.getCells().copyRows(ws.getCells(),sourceRowIndex,destinationRowIndex,numberRow );
