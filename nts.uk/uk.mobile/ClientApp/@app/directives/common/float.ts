@@ -34,8 +34,9 @@ Vue.directive('float-action', {
                     $vm.$mask('hide');
                     dom.removeAttr(ul, 'style');
                 } else {
-                    $vm.$mask('showonce')
+                    $vm.$mask('show')
                         .on(() => {
+                            $vm.$mask('hide');
                             dom.removeAttr(ul, 'style');
                             dom.removeClass(el, 'active');
                         });

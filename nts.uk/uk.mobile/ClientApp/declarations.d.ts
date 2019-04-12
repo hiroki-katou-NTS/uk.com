@@ -92,8 +92,8 @@ declare module "vue/types/vue" {
         $i18n(resr: string, param: { [key: string]: string }): string;
         $close(): void;
         $close(data: any): void;
-        $mask(hide: 'hide'): void;
-        $mask(act: 'show' | 'showonce', opacity?: number): {
+        $mask(act: 'hide'): void;
+        $mask(act: 'show', opacity?: number): {
             on: (click: () => void, hide?: () => void) => void;
         };
         $goto(name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;

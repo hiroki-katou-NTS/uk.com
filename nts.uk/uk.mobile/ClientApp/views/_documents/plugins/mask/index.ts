@@ -1,7 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 
-
 @component({
     route: {
         url: '/plugin/mask-layer',
@@ -56,7 +55,7 @@ export class MaskLayerPluginDocument extends Vue {
         self.timeout = 5;
         self.messages.push('mask_show_once');
 
-        self.$mask('showonce')
+        self.$mask('show')
             .on(() => {
                 self.messages.push('mask_one_click');
             }, () => {

@@ -1,9 +1,9 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Watch } from '@app/core/component';
 
 @component({
     name: 'documentspluginsmask',
-    route: { 
+    route: {
         url: '/plugins/mask',
         parent: '/documents'
     },
@@ -14,4 +14,37 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsPluginsMaskComponent extends Vue { }
+export class DocumentsPluginsMaskComponent extends Vue {
+    messages: string[] = [];
+
+    timeout: number = 0;
+
+    showMask() {
+        let self = this;
+
+        self.timeout = 5;
+        self.messages.push('mask_show');
+
+        self.$mask('show')
+            .on(() => {
+                self.messages.push('mask_click');
+            }, () => {
+                self.messages.push('mask_hide');
+            });
+    }
+
+    @Watch('timeout')
+    countdown(v: number) {
+        let self = this;
+
+        if (v >= 1) {
+            setTimeout(() => {
+                if (self.timeout > 0) {
+                    self.timeout--;
+                }
+            }, 1000);
+        } else {
+            self.$mask('hide');
+        }
+    }
+}

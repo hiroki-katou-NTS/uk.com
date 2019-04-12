@@ -1,78 +1,97 @@
+import { obj } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
-const body = document.body,
-    mdi = document.createElement('div'),
-    MaskLayer = new Vue({
-        data: {
-            show: false,
-            showOne: false,
-            callback: {
-                hide: undefined,
-                click: undefined
-            },
-            opacity: null
+const vm = Vue.extend({
+    data: () => ({
+        show: false,
+        callback: {
+            hide: [],
+            click: []
         },
-        template: `<div v-bind:style="{ opacity }" v-bind:class="toggle" v-on:touchmove="preventTouch" v-on:click="onClick" data-comment="UK Masklayer" ></div>`,
-        computed: {
-            toggle: {
-                get() {
-                    return this.show || this.showOne ? 'modal-backdrop show' : '';
-                }
-            }
-        },
-        methods: {
-            onClick(evt: MouseEvent) {
-                this.showOne = false;
+        opacity: null
+    }),
+    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-on:touchmove="preventTouch" v-on:click="onClick"></div>`,
+    methods: {
+        onClick(evt: MouseEvent) {
+            this.callback.click
+                .forEach(click => {
+                    click();
+                });
 
-                if (this.callback.click) {
-                    this.callback.click();
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            },
-            preventTouch(evt: TouchEvent) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                evt.stopImmediatePropagation();
-            }
+            evt.preventDefault();
+            evt.stopPropagation();
         },
-        watch: {
-            toggle(show: string) {
-                if (!show) {
-                    this.opacity = null;
-                    if (this.callback.hide) {
-                        this.callback.hide();
-                    }
+        preventTouch(evt: TouchEvent) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
+        }
+    },
+    watch: {
+        show(show: string) {
+            if (!show) {
+                this.opacity = null;
+
+                while (this.callback.hide.length > 0) {
+                    this.callback.hide.shift()();
                 }
             }
         }
-    }), mask = {
-        install(vue: VueConstructor<Vue>) {
-            body.appendChild(mdi);
-            MaskLayer.$mount(mdi);
+    }
+}), mask = {
+    install(vue: VueConstructor<Vue>) {
+        let $mask: {
+            show: boolean;
+            opacity: number;
+            readonly toggle: boolean;
+            callback: {
+                hide: Array<Function>;
+                click: Array<Function>;
+            };
+            $el: HTMLElement;
+            $once(act: 'remove', callback: () => void);
+            $mount(to: HTMLElement);
+        } | undefined;
 
-            vue.prototype.$mask = function (act: 'hide' | 'show' | 'showonce', opacity: number = 0.2) {
-                if (act === "hide") {
-                    MaskLayer.show = false;
-                    MaskLayer.showOne = false;
-                } else {
-                    MaskLayer.opacity = opacity;
+        vue.prototype.$mask = function (act: 'hide' | 'show', opacity: number = 0.2) {
+            if (act === "hide") {
+                if ($mask) {
+                    $mask.show = false;
 
-                    MaskLayer.show = act === "show";
-                    MaskLayer.showOne = act === "showonce";
+                    document.body.removeChild($mask.$el);
+
+                    $mask = undefined;
+                }
+            } else {
+                if (!$mask) {
+                    let msk = document.createElement('div');
+                    document.body.appendChild(msk);
+
+                    {
+                        $mask = new vm();
+                        $mask.$mount(msk);
+
+                        $mask.show = true;
+                        $mask.opacity = opacity;
+
+                        $mask.$once('remove', () => $mask = undefined);
+                    }
                 }
 
                 return {
                     on: function (click: () => void, hide: () => void) {
-                        if (MaskLayer.toggle) {
-                            MaskLayer.callback.hide = hide;
-                            MaskLayer.callback.click = click;
+                        if (obj.isFunction(hide)) {
+                            $mask.callback.hide.push(hide);
+                        }
+
+                        if (obj.isFunction(click)) {
+                            $mask.callback.click.push(click);
                         }
                     }
                 };
-            };
-        }
-    };
+            }
+        };
+    }
+};
 
 export { mask };
