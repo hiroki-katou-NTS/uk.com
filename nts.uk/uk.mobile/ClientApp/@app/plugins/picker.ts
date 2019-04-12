@@ -4,16 +4,16 @@ import { Language } from '@app/plugins';
 
 //import { PickerComponent } from '@app/components/picker/index';
 
-const Picker = new Vue({
+const vm = Vue.extend({
     filters: {
         i18n: Language.i18n
     },
-    template: `<transition name="picker-fade">
+    template: `<transition name="picker-fade" v-on:after-leave="dispose()">
         <div class="picker-container" v-show="show" v-on:touchmove="preventScroll">
             <div class="pk-btn-groups">
                 <button class="btn btn-link" ref="close" v-on:click="close">{{'cancel' | i18n}}</button>
                 <div>
-                    <button class="btn btn-link mr-4" v-if="deleteAble" v-on:click="remove">{{'delete' | i18n}}</button>
+                    <button class="btn btn-link mr-4" v-bind:disabled="!deleteAble" v-on:click="remove">{{'delete' | i18n}}</button>
                     <button class="btn btn-link" v-on:click="finish">{{'accept' | i18n}}</button>
                 </div>
             </div>
@@ -192,6 +192,9 @@ const Picker = new Vue({
                 this.selects = {};
             })
         },
+        dispose() {
+            this.$destroy(true);
+        },
         gearTouchStart(evt: TouchEvent) {
             evt.preventDefault();
             evt.stopPropagation();
@@ -344,11 +347,12 @@ const Picker = new Vue({
             evt.stopPropagation();
             evt.stopImmediatePropagation();
         }
+    },
+    destroyed() {
+        document.body.removeChild(this.$el);
     }
 }), picker = {
     install(vue: VueConstructor<Vue>) {
-        Picker.$mount(document.querySelector('body>#uk_picker'));
-
         vue.prototype.$picker = function (value: string | number | Date | { [key: string]: string | number | Date },
             dataSources: Array<string | number | Date> | { [key: string]: Array<string | number | Date> },
             options: {
@@ -363,6 +367,13 @@ const Picker = new Vue({
             obj.merge(options, { text: 'text', value: 'value', required: false });
 
             return new Promise(resolve => {
+                let Picker = new vm(),
+                    pkr = dom.create('div');
+
+                document.body.appendChild(pkr);
+
+                Picker.$mount(pkr);
+
                 Picker.value = obj.cloneObject(value);
                 Picker.options = obj.cloneObject(options);
                 Picker.dataSources = obj.cloneObject(dataSources);
@@ -370,9 +381,15 @@ const Picker = new Vue({
                 Picker.$nextTick(() => Picker.show = true);
 
                 Picker
-                    .$once('close', () => resolve())
-                    .$once('remove', () => resolve(null))
-                    .$once('finish', (value: any) => resolve(value));
+                    .$once('close', () => {
+                        resolve();
+                    })
+                    .$once('remove', () => {
+                        resolve(null);
+                    })
+                    .$once('finish', (value: any) => {
+                        resolve(value);
+                    });
             });
         };
     }
