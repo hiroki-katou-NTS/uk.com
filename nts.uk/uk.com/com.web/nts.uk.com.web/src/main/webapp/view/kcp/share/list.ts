@@ -706,6 +706,10 @@ module kcp.share.list {
                 startComponent();
             }
             
+            if (data.autoAdjustHeight) {
+                self.autoAdjustHeight(data, $input);
+            }
+            
             return dfd.promise();
         }
 
@@ -889,10 +893,7 @@ module kcp.share.list {
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
-            if ( data.listType === ListType.EMPLOYEE) {
-                totalHeight -= 48;
-            }
+            var totalHeight: number = self.calcTotalHeightRev(data);
             
             var optionalColumnSize = 0;
 
@@ -923,6 +924,36 @@ module kcp.share.list {
             if (data.maxWidth && data.maxWidth <= 350) {
                 data.maxWidth = 350;
             }
+        }
+        
+        private calcTotalHeightRev(data: ComponentOption) {
+            var totalHeightRev = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
+            if (data.listType === ListType.EMPLOYEE) {
+                totalHeightRev -= 48;
+            }
+            return totalHeightRev;
+        }
+        
+        private autoAdjustHeight(data: ComponentOption, $input: JQuery) {
+            _.defer(() => {
+                $("#" + this.componentWrapperId).css("height", "auto");
+                this.resetGridHeight(data, $input);
+                $(window).resize(() => this.resetGridHeight(data, $input));
+            });
+        }
+        
+        private resetGridHeight(data: ComponentOption, $input: JQuery) {
+            
+            let offsetTop = $input.offset().top;
+            
+            var totalHeightRev = this.calcTotalHeightRev(data);
+            
+            let PADDING = 20;
+            let MARGIN = 20;
+            let totalHeight = $(window).height() - $input.offset().top - PADDING * 2 - MARGIN;
+            
+            let $grid = $('#' + this.componentGridId);
+            $grid.igGrid("option", "height", totalHeight - totalHeightRev);
         }
         
         /**
