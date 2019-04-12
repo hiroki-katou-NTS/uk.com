@@ -150,25 +150,17 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
-		
-		//アルゴリズム「ログイン記録」を実行する
-		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null,false);
-		}
-		
-		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
-		
-		if (command.isSignOn()) {
-			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
-		}
-		
+		//EA修正履歴3231
+		//hoatt 2019.03.27
+		Integer loginMethod = command.isSignOn() ? LoginMethod.SINGLE_SIGN_ON.value : LoginMethod.NORMAL_LOGIN.value;
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
 		
-		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
-		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
-		return checkChangePassDto;
+		//アルゴリズム「ログイン後チェック」を実行する
+		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword);
+		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
+		return checkChangePass;
 	}
 
 	/**
