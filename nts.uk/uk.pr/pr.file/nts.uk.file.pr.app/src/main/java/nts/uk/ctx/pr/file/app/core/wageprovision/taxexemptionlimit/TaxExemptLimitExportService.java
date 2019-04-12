@@ -8,6 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,7 @@ public class TaxExemptLimitExportService extends ExportService<TaxExemptLimitExp
 
     @Override
     protected void handle(ExportServiceContext<TaxExemptLimitExportQuery> exportServiceContext) {
-
-        List<TaxExemptionLimit> mTaxExemptionLimits = mTaxExemptionLimitRepository.getTaxExemptLimitByCompanyId(AppContexts.user().companyId()).stream().sorted().collect(Collectors.toList());
+        List<TaxExemptionLimit> mTaxExemptionLimits = mTaxExemptionLimitRepository.getTaxExemptLimitByCompanyId(AppContexts.user().companyId()).stream().sorted(Comparator.comparing(TaxExemptionLimit::getTaxFreeAmountCode)).collect(Collectors.toList());
         mTaxExemptLimitFileGenerator.generate(exportServiceContext.getGeneratorContext(),
                 mTaxExemptionLimits.stream()
                         .map(e -> {
