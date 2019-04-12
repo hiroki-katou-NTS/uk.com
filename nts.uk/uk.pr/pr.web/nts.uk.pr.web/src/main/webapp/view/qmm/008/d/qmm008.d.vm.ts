@@ -120,13 +120,10 @@ module nts.uk.pr.view.qmm008.d {
             }
 
             exportExcel(): void {
-                let self = this;
-                let type = 3;
-                nts.uk.ui.block.grayout();
-                service.exportExcel(type).done(function() {
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(function() {
+                service.exportExcel().done(function () {
+                }).fail(function (error) {
+                    nts.uk.ui.dialog.alertError({messageId: error.messageId});
+                }).always(function () {
                     nts.uk.ui.block.clear();
                 });
             }

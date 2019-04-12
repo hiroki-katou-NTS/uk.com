@@ -62,6 +62,8 @@
                     data-bind="click: deleteOffice , enable: $vm.isEnableBtnDelete()">#{i18n.getText('QMM008_107')}</button>
 
             <button id="D1_5" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
+            <button  tabindex="5"
+                    data-bind="click: exportExcel, enable: true">#{i18n.getText('QMM008_213')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div id="content-left" class="fixed-flex-layout-left">

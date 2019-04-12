@@ -15,4 +15,5 @@ public class WelfarepensionInsuranceExportData {
     private List<Object[]> welfarepensionInsuranceEmp;
     private List<Object[]> welfarepensionInsuranceBonus;
     private String companyName;
+    private int startDate;
 }

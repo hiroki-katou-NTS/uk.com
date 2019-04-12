@@ -21,8 +21,9 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_厚生年金保険料率一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".xlsx";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_厚生年金保険料率一覧";
-    private static final int ROW_IN_PAGE = 61;
+    private static final int ROW_IN_PAGE = 60;
     private static final int RECORD_IN_PAGE = 55;
+    private static final int INDEX_START = 4;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WelfarepensionInsuranceExportData exportData) {
@@ -33,11 +34,14 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
             String time = GeneralDateTime.now().toString();
             reportContext.setHeader(2,  time  + "\n page &P");
             Worksheet firstSheet = worksheets.get(0);
+            Cells cells = firstSheet.getCells();
+            cells.get(0,1).setValue("対象年月：　"+ convertYearMonth(exportData.getStartDate()));
             firstSheet.setName(TextResource.localize("QMM008_212"));
             int pageHealthyData = exportData.getWelfarepensionInsuranceEmp().size() / RECORD_IN_PAGE;
             int pageBonusData = exportData.getWelfarepensionInsuranceBonus().size() / RECORD_IN_PAGE;
             createTable(firstSheet, pageHealthyData, pageBonusData);
             printDataWelfarePensionEmp(firstSheet, exportData.getWelfarepensionInsuranceEmp());
+            printDataWelfarePensionBonus(firstSheet, exportData.getWelfarepensionInsuranceBonus(), (ROW_IN_PAGE - 1) * (pageHealthyData + 2) + INDEX_START);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsExcel(this.createNewFile(generatorContext,
@@ -47,6 +51,10 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
             throw new RuntimeException(e);
         }
 
+    }
+
+    private String convertYearMonth(Integer startYearMonth){
+         return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
     }
 
     private void createTable(Worksheet worksheet,int pageMonth, int pageBonus){
@@ -76,7 +84,14 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
     private void printDataWelfarePensionEmp(Worksheet worksheet, List<Object[]> data) {
         Cells cells = worksheet.getCells();
         int rowStart = 4;
-        int numColumn = 13;
+        int numColumn = 17;
+        int columnStart = 1;
+        fillData(cells, data, numColumn, rowStart, columnStart);
+    }
+
+    private void printDataWelfarePensionBonus(Worksheet worksheet, List<Object[]> data, int rowStart) {
+        Cells cells = worksheet.getCells();
+        int numColumn = 17;
         int columnStart = 1;
         fillData(cells, data, numColumn, rowStart, columnStart);
     }
@@ -88,7 +103,11 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
                 for (int j = 0; j < numColumn; j++) {
                     cells.get(i + startRow, j + startColumn).setValue(dataRow[j] != null ? dataRow[j] : "");
                 }
+                if((i + 1) % (RECORD_IN_PAGE) == 0 && i > 0) {
+                    startRow = startRow + INDEX_START;
+                }
             }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

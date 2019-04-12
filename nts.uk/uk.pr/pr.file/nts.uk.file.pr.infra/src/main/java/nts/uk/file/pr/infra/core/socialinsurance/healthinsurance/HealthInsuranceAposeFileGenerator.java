@@ -36,6 +36,8 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
             String time = GeneralDateTime.now().toString();
             reportContext.setHeader(2,  time  + "\n page &P");
             Worksheet firstSheet = worksheets.get(0);
+            Cells cells = firstSheet.getCells();
+            cells.get(0,1).setValue("対象年月：　"+ convertYearMonth(exportData.getStartDate()));
             int pageHealthyData = exportData.getHealthMonth().size() / RECORD_IN_PAGE;
             int pageBonusData = exportData.getBonusHealth().size() / RECORD_IN_PAGE;
             createTable(firstSheet, pageHealthyData, pageBonusData);
@@ -50,6 +52,10 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String convertYearMonth(Integer startYearMonth){
+        return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
     }
 
     private void createTable(Worksheet worksheet,int pageMonth, int pageBonus){
