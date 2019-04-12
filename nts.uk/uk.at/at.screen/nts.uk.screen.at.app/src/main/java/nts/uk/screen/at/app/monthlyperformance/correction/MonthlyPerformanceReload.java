@@ -72,6 +72,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.screen.at.app.monthlyperformance.CheckDailyPerError;
+import nts.uk.screen.at.app.monthlyperformance.CheckEmpEralOuput;
+import nts.uk.screen.at.app.monthlyperformance.TypeErrorAlarm;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
@@ -177,6 +180,9 @@ public class MonthlyPerformanceReload {
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 
+	@Inject
+	private CheckDailyPerError checkDailyPerError;
+	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
 		String companyId = AppContexts.user().companyId();
@@ -216,6 +222,7 @@ public class MonthlyPerformanceReload {
 		// RequestList211
 		List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter
 				.getAffCompanyHistByEmployee(employeeIds, datePeriodClosure);
+		screenDto.setLstAffComHist(lstAffComHist);
 		
 		List<String> listEmployeeIds = param.getLstEmployees().stream().map(x -> x.getId())
 				.collect(Collectors.toList());
@@ -346,7 +353,6 @@ public class MonthlyPerformanceReload {
 		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell
 																// state
 		screenDto.setLstData(lstData);
-		screenDto.setLstCellState(lstCellState);
 
 		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
