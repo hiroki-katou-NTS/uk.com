@@ -46,18 +46,20 @@ const _SideMenu = new Vue({
         </div>
         <ul class="list-unstyled list-group components">
             <li><nts-search-box v-model="filter" class="mt-2 mr-2 ml-2" /></li>
-            <li v-for="(m, i) in items" v-bind:class="{ 'list-unstyled-item': m.childs }">
+            <li v-for="(m, i) in items" v-bind:class="{ 'list-unstyled-item': m.childs }" v-bind:key="i">
                 <template v-if="m.hasc">
                     <a class="dropdown-toggle collapse" v-on:click="toggleDropdown(m)" v-bind:class="{ 'show': active === m || (!!filter && m.hasc) }">
                         <span><i class="fas fa-code mr-2"></i>{{(m.title) | i18n }}</span>
                     </a>
-                    <ul class="collapse list-unstyled" v-bind:class="{ 'show': active == m || (!!filter && m.hasc) }">
-                        <li v-for="(t, j) in m.childs">
-                            <router-link :to="t.url">
-                                <span v-on:click="hideSideBar"><i class="far fa-file-alt mr-2"></i>{{t.title | i18n }}</span>
-                            </router-link>
-                        </li>
-                    </ul>
+                    <transition name="collapse">
+                        <ul class="list-unstyled" v-show="active == m || (!!filter && m.hasc)">
+                            <li v-for="(t, j) in m.childs" v-bind:key="j">
+                                <router-link :to="t.url">
+                                    <span v-on:click="hideSideBar"><i class="far fa-file-alt mr-2"></i>{{t.title | i18n }}</span>
+                                </router-link>
+                            </li>
+                        </ul>
+                    </transition>
                 </template>
                 <template v-else>
                     <router-link :to="m.url">
