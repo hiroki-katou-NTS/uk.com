@@ -22,58 +22,82 @@
     &-leave {
         max-height: 60em;
     }
+
+    &-long {
+
+        &-enter-active,
+        &-leave-active {
+            overflow: hidden;
+        }
+
+        &-enter-active {
+            transition: 1s ease all;
+        }
+
+        &-leave-active {
+            transition: 0.5s ease all;
+        }
+
+        &-enter,
+        &-leave-to {
+            max-height: 0;
+        }
+
+        &-enter-to,
+        &-leave {
+            max-height: 60em;
+        }
+    }
 }
 
-.modal {
-    &-fade {
+.fade {
 
-        &-up,
-        &-down,
-        &-left,
-        &-right {
+    &-up,
+    &-down,
+    &-left,
+    &-right {
 
-            &-enter-active,
-            &-leave-active {
-                transition: -webkit-transform .3s ease-out;
-                transition: transform .3s ease-out;
-                transition: transform .3s ease-out, -webkit-transform .3s ease-out;
-            }
+        &-enter-active,
+        &-leave-active {
+            transition: -webkit-transform .3s ease-out;
+            transition: transform .3s ease-out;
+            transition: transform .3s ease-out, -webkit-transform .3s ease-out;
         }
+    }
 
-        &-up {
+    &-up {
 
-            &-enter,
-            &-leave-to {
-                -webkit-transform: translate3d(0, 100%, 0);
-                transform: translate3d(0, 100%, 0);
-            }
+        &-enter,
+        &-leave-to {
+            -webkit-transform: translate3d(0, 100%, 0);
+            transform: translate3d(0, 100%, 0);
         }
+    }
 
-        &-down {
+    &-down {
 
-            &-enter,
-            &-leave-to {
-                -webkit-transform: translate3d(0, -100%, 0);
-                transform: translate3d(0, -100%, 0);
-            }
+        &-enter,
+        &-leave-to {
+            -webkit-transform: translate3d(0, -100%, 0);
+            transform: translate3d(0, -100%, 0);
         }
+    }
 
-        &-left {
+    &-left {
 
-            &-enter,
-            &-leave-to {
-                -webkit-transform: translate3d(-100%, 0, 0);
-                transform: translate3d(-100%, 0, 0);
-            }
+        &-enter,
+        &-leave-to {
+            -webkit-transform: translate3d(-100%, 0, 0);
+            transform: translate3d(-100%, 0, 0);
         }
+    }
 
-        &-right {
+    &-right {
 
-            &-enter,
-            &-leave-to {
-                -webkit-transform: translate3d(100%, 0, 0);
-                transform: translate3d(100%, 0, 0);
-            }
+        &-enter,
+        &-leave-to {
+            -webkit-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
         }
     }
 }

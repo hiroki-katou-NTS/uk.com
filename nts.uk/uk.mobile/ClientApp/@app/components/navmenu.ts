@@ -32,18 +32,20 @@ const _NavMenu = new Vue({
     template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible && items && items.length">
         <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
-        <div class="collapse navbar-collapse" v-bind:class="{show}">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item" v-for="(t, i) in items">
-                    <router-link :to="t.url" class="nav-link">
-                        <span v-on:click="show = false">{{t.title | i18n}}</span>
-                    </router-link>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <language-bar />
-            </ul>
-        </div>
+        <transition name="collapse-long">
+            <div class="collapse navbar-collapse show" v-show="show">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" v-for="(t, i) in items">
+                        <router-link :to="t.url" class="nav-link">
+                            <span v-on:click="show = false">{{t.title | i18n}}</span>
+                        </router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <language-bar />
+                </ul>
+            </div>
+        </transition>
     </nav>
     <nav v-else data-comment="Navigation bar"></nav>`,
     computed: {

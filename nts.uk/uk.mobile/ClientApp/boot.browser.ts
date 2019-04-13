@@ -27,7 +27,7 @@ Vue.use(validate);
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
-//Vue.config.silent = true;
+Vue.config.silent = true;
 Vue.config.devtools = true;
 Vue.config.productionTip = false;
 

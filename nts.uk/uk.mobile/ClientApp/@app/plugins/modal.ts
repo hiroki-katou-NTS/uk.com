@@ -151,7 +151,7 @@ const modal = {
                                         return classNames.join(' ');
                                     },
                                     animate() {
-                                        return `modal-fade-${options.animate || (browser.width < 576 ? 'right' : 'down')}`;
+                                        return `fade-${options.animate || (browser.width < 576 ? 'right' : 'down')}`;
                                     }
                                 },
                                 methods: {
