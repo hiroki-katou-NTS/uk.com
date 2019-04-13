@@ -10,13 +10,11 @@
             <button type="button" class="btn btn-link">Right</button>
         </div>
         <div class="col-md-3">
-            <div class="input-group">
-                <input type="text" class="form-control">
+            <div class="input-group input-group-transparent input-group-search">
                 <div class="input-group-append">
-                    <button class="btn btn-secondary">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <span class="input-group-text fa fa-search"></span>
                 </div>
+                <input type="text" class="form-control" />
             </div>
         </div>
     </div>
@@ -35,13 +33,11 @@
             <button type="button" class="btn btn-link">Right</button>
         </div>
         <div class="col-md-3">
-            <div class="input-group">
-                <input type="text" class="form-control">
+            <div class="input-group input-group-transparent input-group-search">
                 <div class="input-group-append">
-                    <button class="btn btn-secondary">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <span class="input-group-text fa fa-search"></span>
                 </div>
+                <input type="text" class="form-control" />
             </div>
         </div>
     </div>
