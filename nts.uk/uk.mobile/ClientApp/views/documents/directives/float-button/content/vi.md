@@ -6,7 +6,7 @@
 <div class="fixed-action-btn active" style="z-index: 99; position: relative; width: 330px; margin-top: 50px;">
     <ul class="list-unstyled" style="height: 228px">
         <li class="btn-info btn btn-floating">
-            <span>vote_app</span>'
+            <span>vote_app</span>
             <i class="fas fa-star"></i>
         </li>
         <li class="btn-primary btn btn-floating">
