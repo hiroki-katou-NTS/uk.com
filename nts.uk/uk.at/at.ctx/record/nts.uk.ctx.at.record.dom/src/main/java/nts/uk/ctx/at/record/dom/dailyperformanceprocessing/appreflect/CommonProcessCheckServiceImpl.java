@@ -191,12 +191,13 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 			//出退勤時刻を補正する
 			integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, false).getData();
+			//事前残業、休日時間を補正する
+			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor, true);
 			if(!this.isChangeBreakTime(integrationOfDaily.getEditState())) {
 				//休憩時間帯を補正する	
 				integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();	
 			}			
-			//事前残業、休日時間を補正する
-			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor, false);
+			
 		}
 		
 		List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
@@ -219,13 +220,22 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		}
 				
 		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();		
-		if(this.isChangeBreakTime(lstEditState)) {
-			return integrationOfDaily;
-		}
 		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
 		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
 				.collect(Collectors.toList());
-		
+		Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		if(this.isChangeBreakTime(lstEditState)
+				&& workTypeInfor.isPresent() && workTypeInfor.get().getDailyWork().isHolidayWork()) {
+			List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
+					.filter(x -> CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId())
+							|| CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId()))
+					.collect(Collectors.toList());
+            if(breakTimeInfor != null && beforeBreakTime.isEmpty() && lstEditCheck.isEmpty()) {
+                integrationOfDaily.getBreakTime().add(breakTimeInfor);
+                breakTimeRepo.updateNotDelete(integrationOfDaily.getBreakTime());
+            }
+			return integrationOfDaily;
+		}
 		BreakTimeOfDailyPerformance beforBTWork = new BreakTimeOfDailyPerformance(sid, BreakType.REFER_WORK_TIME, new ArrayList<>(), ymd);
 		if(!beforeBreakTime.isEmpty()) {
 			beforBTWork = beforeBreakTime.get(0);
