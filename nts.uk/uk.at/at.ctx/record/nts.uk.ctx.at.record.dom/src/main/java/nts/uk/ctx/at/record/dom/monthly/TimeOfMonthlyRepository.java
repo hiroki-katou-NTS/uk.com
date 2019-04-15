@@ -116,5 +116,8 @@ public interface TimeOfMonthlyRepository {
 	void removeAffiliation(String employeeId, YearMonth yearMonth);
 	void removeAttendanceTime(String employeeId, YearMonth yearMonth);
 	
+	void verShouldUp(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth);
+	void verShouldUp(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth, long version);
+	long getVer(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth);
 	void dirtying(Supplier<Object> getKey);
 }

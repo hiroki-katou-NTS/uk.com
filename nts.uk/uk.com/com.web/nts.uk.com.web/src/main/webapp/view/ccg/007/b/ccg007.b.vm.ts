@@ -155,16 +155,30 @@ module nts.uk.pr.view.ccg007.b {
                 });
             }
             
-            private doSuccessLogin(messError: CheckChangePassDto){
+            private doSuccessLogin(messError){
                 var self = this;    
                 if (messError.showContract) {
                     self.openContractAuthDialog();
                 }
                 else {
+                    if(!nts.uk.util.isNullOrEmpty(messError.msgErrorId) && messError.msgErrorId == 'Msg_1517'){
+                        //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+                        nts.uk.ui.dialog.confirm({ messageId: messError.msgErrorId, messageParams: [messError.spanDays]})
+                        .ifYes(()=>{
+                            messError.changePassReason = 'Msg_1523';
+                            self.OpenDialogE(messError);
+                        })
+                        .ifNo(()=>{
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
+                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                            });
+                        });
+                    }else
                     //check MsgError
                     if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
                         if (messError.showChangePass) {
-                            self.OpenDialogE();
+                            self.OpenDialogE(messError);
                         } else {
                             nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
                             self.password("");
@@ -188,7 +202,7 @@ module nts.uk.pr.view.ccg007.b {
             }
             
             //open dialog E 
-            private OpenDialogE() {
+            private OpenDialogE(messError) {
                 let self = this;
                 
                 //set LoginId to dialog
@@ -198,14 +212,19 @@ module nts.uk.pr.view.ccg007.b {
                     contractCode : self.contractCode(),
                     contractPassword: self.contractPassword()
                 }, true);
-
+                nts.uk.ui.windows.setShared("changePw", {
+                    reasonUpdatePw: messError.changePassReason,
+                    spanDays: messError.spanDays});
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{
                     width : 520,
                     height : 450
                 }).onClosed(function(): any {
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData.submit) {
-                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                    var changePwDone = nts.uk.ui.windows.getShared('changePwDone');
+                    if (changePwDone) {
+                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
+                        nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                        });
                     }    
                 })
             }
