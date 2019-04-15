@@ -84,6 +84,11 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				displayReason += System.lineSeparator();
 			}
 			displayReason += command.getApplicationReason();
+		} else {
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
 		}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);

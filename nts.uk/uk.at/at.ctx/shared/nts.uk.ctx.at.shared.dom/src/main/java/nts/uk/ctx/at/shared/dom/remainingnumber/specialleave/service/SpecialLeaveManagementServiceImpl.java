@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,12 +134,16 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					new DatePeriod(param.getComplileDate().end().addDays(1),
 							param.getComplileDate().end().addDays(1)), null);
 			if(getSpecialHolidayOfEmp.getStatus() == InforStatus.GRANTED) {
+				List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = new ArrayList<>();
 				//取得した特別休暇の付与データを「特別休暇の付与明細」に１行を追加する
 				List<SpecialHolidayInfor> lstInfor = getSpecialHolidayOfEmp.getSpeHolidayInfor();
 				if(lstInfor.isEmpty()) {
-					return  this.lstError(getOffsetDay);
+					return this.lstError(getOffsetDay);
 				}
 				SpecialHolidayInfor speInfor = lstInfor.get(0);
+				if(speInfor.getGrantDaysInfor().getErrorFlg().isPresent()) {
+					return this.lstError(getOffsetDay);
+				}
 				SpecialHolidayRemainInfor afterData = getOffsetDay.getRemainDays().getGrantDetailAfter().isPresent()
 						? getOffsetDay.getRemainDays().getGrantDetailAfter().get() : new SpecialHolidayRemainInfor(0, 0, 0);
 				double granDay = speInfor.getGrantDaysInfor().getGrantDays();
@@ -173,6 +176,22 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					afterData.setRemainDays(afterData.getRemainDays() + x.getDetails().getRemainingNumber().getDayNumberOfRemain().v());
 				});
 				getOffsetDay.getRemainDays().setGrantDetailAfter(Optional.of(afterData));
+				SpecialLeaveNumberInfoService numberInfor = new SpecialLeaveNumberInfoService(granDay,
+						0,
+						granDay,
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty());
+				SpecialLeaveGrantDetails detailAdd = new SpecialLeaveGrantDetails(param.getSpecialLeaveCode(),
+						DataAtr.GRANTSCHE,
+						LeaveExpirationStatus.AVAILABLE,
+						speInfor.getDeadlineDate().isPresent() ? speInfor.getDeadlineDate().get() : GeneralDate.max(),
+						param.getSid(),
+						speInfor.getGrantDaysInfor().getYmd(),
+						numberInfor);
+				lstSpeLeaveGrantDetails.add(detailAdd);
+				getOffsetDay.setLstSpeLeaveGrantDetails(lstSpeLeaveGrantDetails);
 			}
 			
 		}
