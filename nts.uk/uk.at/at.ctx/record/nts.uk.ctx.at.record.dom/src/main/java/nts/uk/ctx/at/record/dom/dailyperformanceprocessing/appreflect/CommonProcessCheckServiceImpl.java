@@ -99,7 +99,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	@Override
 	public boolean reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre, IntegrationOfDaily dailyInfor) {
 		//予定勤種を反映できるかチェックする
-		if(!this.checkReflectScheWorkTimeType(commonPara, isPre, commonPara.getWorkTimeCode())) {
+		if(!this.checkReflectScheWorkTimeType(commonPara.isScheTimeReflectAtr(), commonPara.getScheAndRecordSameChangeFlg(),
+				isPre, commonPara.getWorkTimeCode())) {
 			return false;
 		}
 		//予定勤種の反映		
@@ -110,14 +111,14 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	}
 
 	@Override
-	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre, String workTimeCode) {
+	public boolean checkReflectScheWorkTimeType(boolean isScheTimeReflectAtr, ScheAndRecordSameChangeFlg isChangeFlg,boolean isPre, String workTimeCode) {
 		//INPUT．予定反映区分をチェックする
-		if((commonPara.isScheTimeReflectAtr() == true && isPre)
-				|| commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
+		if((isScheTimeReflectAtr == true && isPre)
+				|| isChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
+		if(isChangeFlg == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(workTimeCode);
 		}

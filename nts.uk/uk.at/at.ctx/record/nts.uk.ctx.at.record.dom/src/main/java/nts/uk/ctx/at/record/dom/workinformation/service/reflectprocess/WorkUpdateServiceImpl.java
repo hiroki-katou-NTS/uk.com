@@ -942,30 +942,28 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	@Override
 	public void reflectReason(String sid, GeneralDate appDate, String appReason, OverTimeRecordAtr overTimeAtr,
 			IntegrationOfDaily daily) {
-		//申請理由の文字の長さをチェックする
-		if(appReason.length() > 50) {
-			appReason = appReason.substring(0, 50);
-		}
 		//備考の編集状態を更新する
 		List<Integer> lstItem = new ArrayList<>();
-		
 		int columnNo = 4;
 		//残業区分をチェックする
-		if(overTimeAtr == OverTimeRecordAtr.PREOVERTIME) {
-			columnNo = 3;
-			lstItem.add(835);
-		} else {
-			lstItem.add(836);	
-		}
-		
+		lstItem.add(836);	
 		//日別実績の備考を存在チェックする
 		Optional<RemarksOfDailyPerform> optRemark = remarksOfDailyRepo.getByKeys(sid, appDate, columnNo);		
 		if(optRemark.isPresent()) {
 			RemarksOfDailyPerform remarkData = optRemark.get();
-			remarkData.setRemarks(new RecordRemarks(appReason));
+			String remarkUpdate = remarkData.getRemarks().v() + appReason;
+			//申請理由の文字の長さをチェックする
+			if(remarkUpdate.length() > 50) {
+				remarkUpdate = remarkUpdate.substring(0, 50);
+			}
+			remarkData.setRemarks(new RecordRemarks(remarkUpdate));
 			//日別実績の備考を変更する
 			remarksOfDailyRepo.update(remarkData);
 		} else {
+			//申請理由の文字の長さをチェックする
+			if(appReason.length() > 50) {
+				appReason = appReason.substring(0, 50);
+			}
 			RemarksOfDailyPerform remarkInfo = new RemarksOfDailyPerform(sid,
 					appDate, 
 					new RecordRemarks(appReason), 
@@ -973,7 +971,6 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			//日別実績の備考を追加する
 			remarksOfDailyRepo.add(remarkInfo);
 		}
-
 		this.updateEditStateOfDailyPerformance(sid, appDate, daily.getEditState(), lstItem);
 	}
 	@Override
