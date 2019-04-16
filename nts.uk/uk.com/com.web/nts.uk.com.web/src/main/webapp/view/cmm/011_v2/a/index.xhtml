@@ -31,10 +31,10 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_1" tabindex="1" class="proceed">#{i18n.getText('CMM011-0_2')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0">#{i18n.getText('CMM011-1_4')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1">#{i18n.getText('CMM011-2_4')}</button>
-				<button id="A1_3" tabindex="3" class="danger">#{i18n.getText('CMM011-0_3')}</button>
+				<button id="A1_1" tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerMaster">#{i18n.getText('CMM011-0_2')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0, click: openWkpDepCreateDialog">#{i18n.getText('CMM011-1_4')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1, click: openWkpDepCreateDialog">#{i18n.getText('CMM011-2_4')}</button>
+				<button id="A1_3" tabindex="3" class="danger" data-bind="click: deleteMaster">#{i18n.getText('CMM011-0_3')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
@@ -52,8 +52,8 @@
 					</div>
 
 					<div>
-						<span id="A2_7" data-bind="visible: initMode == 0">#{i18n.getText('CMM011-1_5')}</span>
-						<span id="A2_7" data-bind="visible: initMode == 1">#{i18n.getText('CMM011-2_5')}</span>
+						<span id="A2_7" data-bind="visible: initMode == 0 &amp;&amp; isSynchronized()">#{i18n.getText('CMM011-1_5')}</span>
+						<span id="A2_7" data-bind="visible: initMode == 1 &amp;&amp; isSynchronized()">#{i18n.getText('CMM011-2_5')}</span>
 						<div>
 							<button id="A3_1" tabindex="7" class="small">#{i18n.getText('CMM011-0_8')}</button>
 							<button id="A3_2" tabindex="8" class="small">#{i18n.getText('CMM011-0_9')}</button>
@@ -78,12 +78,12 @@
 					
 				</div>
 				
-				<div class="fixed-flex-layout-right" style="padding-top: 20px;" data-bind="with: selectedInfor">
+				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceCode' }">#{i18n.getText('CMM011-0_12')}</div>
 						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011-0_12]',
-							value: code,
+							value: selectedCode,
 							constraint: 'WorkplaceCode',
 							required: true, enable: true}" />
 					</div>
@@ -91,7 +91,7 @@
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceName' }">#{i18n.getText('CMM011-0_13')}</div>
 						<input tabindex="13" id="A6_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011-0_13]',
-							value: name,
+							value: selectedName,
 							constraint: 'WorkplaceName',
 							required: true, enable: true}" />
 					</div>
@@ -99,7 +99,7 @@
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011-0_14')}</div>
 						<input tabindex="14" id="A7_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011-0_14]',
-							value: dispName,
+							value: selectedDispName,
 							constraint: 'WorkplaceDisplayName',
 							required: true, enable: true}" />
 					</div>
@@ -107,7 +107,7 @@
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011-0_15')}</div>
 						<input tabindex="15" id="A8_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011-0_15]',
-							value: genericName,
+							value: selectedGenericName,
 							constraint: 'WorkplaceGeneric',
 							option: { width: '512px' },
 							required: true, enable: true}" />
@@ -116,7 +116,7 @@
 						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011-0_16')}</div>
 						<input tabindex="16" id="A9_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011-0_16]',
-							value: externalCode,
+							value: selectedExternalCode,
 							constraint: 'WorkplaceExternalCode',
 							required: false, enable: true}" />
 					</div>

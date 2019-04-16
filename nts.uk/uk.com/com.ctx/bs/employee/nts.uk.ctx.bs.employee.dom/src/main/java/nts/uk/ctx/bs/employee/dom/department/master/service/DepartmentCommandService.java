@@ -107,4 +107,25 @@ public class DepartmentCommandService {
 		depInforRepo.deleteDepartmentInforOfHistory(companyId, historyId);
 	}
 
+	/**
+	 * 部門情報を削除する
+	 * 
+	 * @param companyId
+	 * @param historyId
+	 * @param departmentId
+	 */
+	public void deleteDepartmentInformation(String companyId, String historyId, String departmentId) {
+		Optional<DepartmentInformation> optDep = depInforRepo.getDepartmentByKey(companyId, historyId, departmentId);
+		if (optDep.isPresent()) {
+			DepartmentInformation department = optDep.get();
+			Optional<DepartmentInformation> optDeletedDep = depInforRepo.getDeletedDepartmentByCode(companyId,
+					historyId, department.getDepartmentCode().v());
+			if (optDeletedDep.isPresent()) {
+				depInforRepo.deleteDepartmentInfor(companyId, historyId, optDeletedDep.get().getDepartmentId());
+			}
+			department.delete();
+			depInforRepo.updateDepartment(department);
+		}
+	}
+
 }

@@ -110,7 +110,7 @@ module nts.uk.ui.jqueryExtentions {
     
     module ntsTreeDrag {
 
-        $.fn.ntsTreeDrag = function(action: string, param?: any): any {
+        $.fn.ntsTreeDrag = function(action: string, param?: any, param2?: any): any {
 
             var $tree = $(this);
 
@@ -123,6 +123,18 @@ module nts.uk.ui.jqueryExtentions {
                     return deselectAll($tree);
                 case 'isMulti':
                     return isMultiple($tree);
+                case 'getParent':
+                    return getParent($tree, param);
+                case 'getPrevious':
+                    return getPrevious($tree, param);
+                case 'moveNext':
+                    return moveNext($tree, param, param2);
+                case 'moveInto':
+                    return moveInto($tree, param, param2);
+                case 'moveUp':
+                    return moveUp($tree, param);
+                case 'moveDown':
+                    return moveDown($tree, param);
             }
         };
         
@@ -141,9 +153,200 @@ module nts.uk.ui.jqueryExtentions {
                 return values;
             } else {
                 let value: any = $tree.igTree("selectedNode");
-                value["id"] = value.data[value.binding.valueKey]; 
+                if(!_.isNil(value)){
+                    value["id"] = value.data[value.binding.valueKey];     
+                }
                 return value;      
             }
+        }
+        
+        function getParent($tree, target) {
+            target = getTarget($tree, target);
+            if(_.isNil(target)){
+                return null;
+            }
+            let parent = $tree.igTree( "parentNode", $(target.element) );
+            if(_.isNil(parent)){
+                return null;
+            }
+            
+            return $tree.igTree("nodeFromElement", parent);
+        }
+        
+        function getTarget($tree, target){
+            if(!_.isObjectLike(target)){
+                 return $tree.igTree("nodeFromElement",  $tree.igTree("nodesByValue", target));
+            }
+        }
+        
+        function getPrevious($tree, target) {
+            target = getTarget($tree, target);
+            if(_.isNil(target)){
+                return null;
+            }
+            let parent = $tree.igTree( "parentNode", $(target.element) );
+            if(_.isNil(parent)){
+                let source = $tree.igTree("option", "dataSource").__ds, 
+                    parentIndex = _.findIndex(source, (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                if(parentIndex <= 0){
+                    return null;
+                }
+                let previous = $tree.igTree("nodesByValue", source[parentIndex][target.binding.valueKey]);
+            
+                return $tree.igTree("nodeFromElement", previous);
+            }
+            let binding = target.binding, parentData = $tree.igTree("nodeFromElement", parent).data;
+            let parentIndex = _.findIndex(parentData[binding.childDataProperty], (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+            if(parentIndex <= 0){
+                return null;
+            }
+            let previous = $tree.igTree("nodesByValue", parentData[binding.childDataProperty][parentIndex - 1][binding.valueKey]);
+            
+            return $tree.igTree("nodeFromElement", previous);
+        }
+        
+        function moveDown($tree, target) {
+            target = getTarget($tree, target);
+            if(_.isNil(target)){
+                return false;
+            }
+            let binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, 
+                parent = $tree.igTree( "parentNode", $(target.element) );
+            
+            if(_.isNil(parent)){
+                let firstIdx = _.findIndex(source, (v) =>  v[binding.valueKey] === target.data[binding.valueKey]);
+                if(firstIdx < 0){
+                    return false;
+                }
+                let currentIndex = _.findIndex(source,  (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                if(currentIndex < 0 || currentIndex >= source.length - 1){
+                    return false;
+                }
+                source.splice(currentIndex, 1);
+                source.splice(currentIndex + 1, 0, target.data);
+            } else {
+                let parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);  
+                let currentIndex = _.findIndex(parentClonedData[binding.childDataProperty],  (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                if(currentIndex < 0 || currentIndex >= parentClonedData[binding.childDataProperty].length - 1){
+                    return false;
+                }
+                parentClonedData[binding.childDataProperty].splice(currentIndex, 1);
+                parentClonedData[binding.childDataProperty].splice(currentIndex + 1, 0, target.data);
+                source = resetSource(source, parentClonedData, binding);    
+            }
+            
+            $tree.igTree("option", "dataSource", source);
+            $tree.igTree("dataBind");
+            $tree.trigger("sourcechanging");
+        }
+        
+        function moveUp($tree, target) {
+            target = getTarget($tree, target);
+            if(_.isNil(target)){
+                return false;
+            }
+            let binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, 
+                parent = $tree.igTree( "parentNode", $(target.element) );
+            
+            if(_.isNil(parent)){
+                let firstIdx = _.findIndex(source, (v) =>  v[binding.valueKey] === target.data[binding.valueKey]);
+                if(firstIdx < 0){
+                    return false;
+                }
+                let currentIndex = _.findIndex(source,  (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                if(currentIndex <= 0){
+                    return false;
+                }
+                source.splice(currentIndex, 1);
+                source.splice(currentIndex - 1, 0, target.data);
+            } else {
+                let parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);  
+                let currentIndex = _.findIndex(parentClonedData[binding.childDataProperty],  (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                if(currentIndex <= 0){
+                    return false;
+                }
+                parentClonedData[binding.childDataProperty].splice(currentIndex, 1);
+                parentClonedData[binding.childDataProperty].splice(currentIndex - 1, 0, target.data);
+                source = resetSource(source, parentClonedData, binding);    
+            }
+            
+            $tree.igTree("option", "dataSource", source);
+            $tree.igTree("dataBind");
+            $tree.trigger("sourcechanging");
+        }
+        
+        function moveInto($tree, nextParent, target) {
+            target = getTarget($tree, target);
+            nextParent = getTarget($tree, nextParent);
+            if(_.isNil(target) || _.isNil(nextParent)){
+                return false;
+            }
+            let binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, 
+                parent = $tree.igTree( "parentNode", $(target.element) );
+            
+            if(_.isNil(parent)){
+                let firstIdx = _.findIndex(source, (v) =>  v[binding.valueKey] === target.data[binding.valueKey]);
+                if(firstIdx < 0){
+                    return false;
+                }
+                _.remove(source, (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+            } else {
+                let parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);  
+                _.remove(parentClonedData[binding.childDataProperty], (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+                source = resetSource(source, parentClonedData, binding);
+            }
+            
+            nextParent.data[binding.childDataProperty].push(target.data);
+            source = resetSource(source, nextParent.data, binding);
+            
+            $tree.igTree("option", "dataSource", source);
+            $tree.igTree("dataBind");
+            $tree.trigger("sourcechanging");
+        }
+        
+        function moveNext($tree, nextTo, target) {
+            target = getTarget($tree, target);
+            nextTo = getTarget($tree, nextTo);
+            if(_.isNil(target) || _.isNil(nextTo)){
+                return false;
+            }
+            let binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, 
+                parent = $tree.igTree( "parentNode", $(target.element) ),
+                parentOfPrevious = $tree.igTree( "parentNode", $(nextTo.element));
+            
+            if(_.isNil(parent)){
+                return false;
+            }
+            let parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);  
+            _.remove(parentClonedData[binding.childDataProperty], (v) => v[binding.valueKey] === target.data[binding.valueKey]);
+            source = resetSource(source, parentClonedData, binding);
+            if(_.isNil(parentOfPrevious)){
+                let parentIndex = _.findIndex(source, (v) =>  v[binding.valueKey] === nextTo.data[binding.valueKey]);
+                source.splice(parentIndex + 1, 0, target.data);
+            } else {
+                let parentPreviousData = _.cloneDeep($tree.igTree("nodeFromElement", parentOfPrevious).data);  
+                let parentIndex = _.findIndex(parentPreviousData[binding.childDataProperty], (v) => v[binding.valueKey] === nextTo.data[binding.valueKey]);
+                parentPreviousData[binding.childDataProperty].splice(parentIndex + 1, 0, target.data);
+                source = resetSource(source, parentPreviousData, binding);
+            }
+            
+            $tree.igTree("option", "dataSource", source);
+            $tree.igTree("dataBind");
+            $tree.trigger("sourcechanging");
+        }
+        
+        function resetSource(source, target, binding) {
+            for(let i = 0; i < source.length; i++) {
+                if(source[i][binding.valueKey] === target[binding.valueKey]) {
+                   source[i] = target; 
+                } else {
+                    if(!_.isEmpty(source[i][binding.childDataProperty])){
+                        let sourceX = resetSource(source[i][binding.childDataProperty], target, binding);
+                        source[i][binding.childDataProperty] = sourceX;
+                    }    
+                }
+            }
+            return source;
         }
 
         function setSelected($tree: JQuery, selectedId: any) {

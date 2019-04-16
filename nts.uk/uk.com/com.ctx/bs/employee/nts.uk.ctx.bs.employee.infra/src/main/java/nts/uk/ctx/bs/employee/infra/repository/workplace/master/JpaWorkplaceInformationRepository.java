@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.master;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInforPk;
 
 /**
  * 
@@ -74,6 +76,31 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 					.getList(f -> f.toDomain()));
 		});
 		return result;
+	}
+
+	@Override
+	public Optional<WorkplaceInformation> getWorkplaceByKey(String companyId, String wkpHistId, String wkpId) {
+		return this.queryProxy().find(new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId), BsymtWorkplaceInfor.class)
+				.map(i -> i.toDomain());
+	}
+
+	@Override
+	public Optional<WorkplaceInformation> getDeletedWorkplaceByCode(String companyId, String wkpHistId,
+			String wkpCode) {
+		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.workplaceCode = :wkpCode AND i.deleteFlag = 1";
+		return this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+				.setParameter("wkpHistId", wkpHistId).setParameter("wkpCode", wkpCode).getSingle(i -> i.toDomain());
+	}
+
+	@Override
+	public void updateWorkplace(WorkplaceInformation workplace) {
+		this.commandProxy().update(BsymtWorkplaceInfor.fromDomain(workplace));
+	}
+
+	@Override
+	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId) {
+		this.commandProxy().remove(BsymtWorkplaceInfor.class, new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId));
 	}
 
 }

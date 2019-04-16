@@ -15,12 +15,11 @@ import nts.uk.ctx.bs.employee.app.command.wkpdep.AddWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.AddWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepInforCommand;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepInforCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.ConfigurationDto;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.InformationDto;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepFinder;
-import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepTreeDto;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.*;
 
 @Path("bs/employee/wkpdep")
 @Produces("application/json")
@@ -37,6 +36,9 @@ public class WorkplaceDepartmentWebService extends WebService {
 	
 	@Inject
 	private DeleteWkpDepConfigCommandHandler deleteWkpDepConfigHandler;
+	
+	@Inject
+	private DeleteWkpDepInforCommandHandler deleteWkpDepInforHandler;
 
 	@POST
 	@Path("/get-configuration/{mode}")
@@ -49,6 +51,13 @@ public class WorkplaceDepartmentWebService extends WebService {
 	public List<InformationDto> getWkpDepInfor(@PathParam("mode") int initMode,
 			@PathParam("historyId") String historyId) {
 		return wkpDepFinder.getWkpDepInfor(initMode, historyId);
+	}
+	
+	@POST
+	@Path("/get-wkpdepinfo/{mode}/{historyId}/{wkpDepId}")
+	public InformationDto getWkpDepInforById(@PathParam("mode") int initMode,
+			@PathParam("historyId") String historyId, @PathParam("wkpDepId") String id) {
+		return wkpDepFinder.getWkpDepInfor(initMode, historyId, id);
 	}
 	
 	@POST
@@ -88,4 +97,15 @@ public class WorkplaceDepartmentWebService extends WebService {
 		wkpDepFinder.checkTotalWkpDep(initMode, historyId);
 	}
 
+	@POST
+	@Path("/delete-wkpdepinfo")
+	public void deleteWkpDepInfor(DeleteWkpDepInforCommand command) {
+		deleteWkpDepInforHandler.handle(command);
+	}
+
+	@POST
+	@Path("/get-wkpdepinfo-kcp004")
+	public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
+		return wkpDepFinder.getDepWkpInfoTree(findObject);
+	}
 }

@@ -28,6 +28,16 @@
 					<div>
 						<table>
 							<tr>
+								<td class="header-text">起動モード:</td>
+								<td class="content-sample"><div
+										data-bind="ntsRadioBoxGroup: {
+										 options: listStartMode,
+									     optionsValue: 'code',
+									     optionsText: 'name',
+									     value: selectedStartMode,
+									     enable: enable}"></div></td>
+							</tr>
+							<tr>
 								<td class="header-text">基準日</td>
 								<td class="content-sample">
 									<div

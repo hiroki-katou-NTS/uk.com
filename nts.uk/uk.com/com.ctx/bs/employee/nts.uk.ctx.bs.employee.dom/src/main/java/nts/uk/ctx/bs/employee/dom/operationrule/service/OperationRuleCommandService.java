@@ -118,9 +118,10 @@ public class OperationRuleCommandService {
 			break;
 		}
 	}
-	
+
 	/**
 	 * 部門職場構成の削除
+	 * 
 	 * @param param
 	 */
 	public void deleteWkpDepConfig(int initMode, String companyId, String historyId) {
@@ -148,5 +149,36 @@ public class OperationRuleCommandService {
 			break;
 		}
 	}
-	
+
+	/**
+	 * 部門職場の削除
+	 * 
+	 * @param param
+	 */
+	public void deleteWkpDepInfor(DeleteWkpDepInforParam param) {
+		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(param.getCompanyId());
+		if (!optOperationRule.isPresent())
+			throw new BusinessException("OperationRule not found!");
+		OperationRule operationRule = optOperationRule.get();
+		switch (operationRule.getDepWkpSynchAtr()) {
+		case SYNCHRONIZED:
+			wkpCommandService.deleteWorkplaceInformation(param.getCompanyId(), param.getHistoryId(),
+					param.getWkpDepId());
+			depCommandService.deleteDepartmentInformation(param.getCompanyId(), param.getHistoryId(),
+					param.getWkpDepId());
+			break;
+		case NOT_SYNCHRONIZED:
+			if (param.getInitMode() == DEPARTMENT_MODE) {
+				depCommandService.deleteDepartmentInformation(param.getCompanyId(), param.getHistoryId(),
+						param.getWkpDepId());
+			} else {
+				wkpCommandService.deleteWorkplaceInformation(param.getCompanyId(), param.getHistoryId(),
+						param.getWkpDepId());
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 }

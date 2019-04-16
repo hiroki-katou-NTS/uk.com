@@ -1,13 +1,13 @@
 module kcp.share.tree {
     export interface UnitModel {
-        workplaceId: string;
+        id: string;
         code: string;
         name: string;
         nodeText?: string;
         level: number;
         hierarchyCode: string;
         isAlreadySetting?: boolean;
-        childs: Array<UnitModel>;
+        children: Array<UnitModel>;
     }
 
     export interface UnitAlreadySettingModel {
@@ -49,7 +49,7 @@ module kcp.share.tree {
         /**
          * Tree type, if not set, default is work place.
          */
-        treeType?: TreeType;
+        startMode?: StartMode;
 
         /**
          * selected value.
@@ -84,7 +84,7 @@ module kcp.share.tree {
         hasPadding?: boolean;
 
         /**
-         * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
+         * Already setting list code. structure: {id: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -140,11 +140,11 @@ module kcp.share.tree {
         static ADMINISTRATOR: number = 5;
     }
 
-    export class TreeType {
-        static WORK_PLACE = 1;
+    export class StartMode {
+        static WORKPLACE = 0;
 
         // 部門対応 #106784
-        static DEPARTMENT = 2;
+        static DEPARTMENT = 1;
     }
 
     interface TreeStyle {
@@ -176,7 +176,7 @@ module kcp.share.tree {
         listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         $input: JQuery;
-        data: TreeComponentOption
+        data: TreeComponentOption;
         maxRows: number;
         systemType: SystemType;
         isFullView: KnockoutObservable<boolean>;
@@ -189,7 +189,7 @@ module kcp.share.tree {
         searchBoxId: string;
 
         // 部門対応 #106784
-        treeType: TreeType;
+        startMode: StartMode;
 
         constructor() {
             let self = this;
@@ -222,7 +222,7 @@ module kcp.share.tree {
             };
 
             // 部門対応 #106784
-            self.treeType = TreeType.WORK_PLACE;
+            self.startMode = StartMode.WORKPLACE;
         }
 
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
@@ -250,7 +250,7 @@ module kcp.share.tree {
             self.systemType =  data.systemType;
 
             // 部門対応 #106784
-            self.treeType = data.treeType;
+            self.startMode = _.isNil(data.startMode) ? StartMode.WORKPLACE : data.startMode; //default = workplace
 
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
@@ -286,10 +286,11 @@ module kcp.share.tree {
 
             // Find data.
             const param = <service.WorkplaceParam>{};
+            param.startMode = self.startMode;
             param.baseDate = self.baseDate();
             param.systemType = self.systemType;
             param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
-            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
+            service.findDepWkpTree(param).done(function(res: Array<UnitModel>) {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -358,7 +359,7 @@ module kcp.share.tree {
                 workplaceId: '',
                 level: 1,
                 hierarchyCode: '',
-                childs: []
+                children: []
             };
 
             // Remove No select row.
@@ -382,7 +383,7 @@ module kcp.share.tree {
             self.calHeightTree(300, data);
 
             self.treeComponentColumn = [
-                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
+                { headerText: "", key: 'id', dataType: "string", hidden: true },
                 {
                     headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
@@ -437,8 +438,8 @@ module kcp.share.tree {
             let self = this;
             let res = [];
             _.forEach(dataList, function(item) {
-                if (item.childs && item.childs.length > 0) {
-                    res = res.concat(self.convertTreeToArray(item.childs));
+                if (item.children && item.children.length > 0) {
+                    res = res.concat(self.convertTreeToArray(item.children));
                 }
                 res.push({ name: item.nodeText, level: item.level });
             })
@@ -547,8 +548,8 @@ module kcp.share.tree {
             let self = this;
             for (let unitModel of dataList) {
 
-                // add workplaceId work place
-                self.listWorkplaceId.push(unitModel.workplaceId);
+                // add id work place
+                self.listWorkplaceId.push(unitModel.id);
 
                 // set level
                 unitModel.level = unitModel.hierarchyCode.length / 3;
@@ -557,7 +558,7 @@ module kcp.share.tree {
                 unitModel.nodeText = unitModel.code + ' ' + unitModel.name;
 
                 // set already setting 
-                let isAlreadySetting = mapAlreadySetting[unitModel.workplaceId];
+                let isAlreadySetting = mapAlreadySetting[unitModel.id];
                 unitModel.isAlreadySetting = isAlreadySetting;
 
                 let hierarchyCode: string = null;
@@ -578,8 +579,8 @@ module kcp.share.tree {
                         unitModel.isAlreadySetting = isAlreadySettingParent;
                     }
                 }
-                if (unitModel.childs.length > 0) {
-                    this.updateTreeData(unitModel.childs, mapAlreadySetting,
+                if (unitModel.children.length > 0) {
+                    this.updateTreeData(unitModel.children, mapAlreadySetting,
                         isAlreadySetting ? isAlreadySetting : isAlreadySettingParent,
                         hierarchyCode ? hierarchyCode : hierarchyCodeParent);
                 }
@@ -619,7 +620,7 @@ module kcp.share.tree {
                 
                 let found;
                 const flat = function(wk) {
-                    return [wk.workplaceId, _.flatMap(wk.childs, flat)];
+                    return [wk.id, _.flatMap(wk.children, flat)];
                 }
                 const selectableList = _.flatMapDeep(self.itemList(), flat);
                 if (self.isMultiSelect) {
@@ -633,8 +634,8 @@ module kcp.share.tree {
                     width: self.treeStyle.width,
                     dataSource: self.itemList(),
                     selectedValues: self.selectedWorkplaceIds(),
-                    optionsValue: 'workplaceId',
-                    optionsChild: 'childs',
+                    optionsValue: 'id',
+                    optionsChild: 'children',
                     optionsText: 'nodeText',
                     multiple: self.isMultiSelect,
                     virtualization: true,
@@ -645,12 +646,12 @@ module kcp.share.tree {
                     showCheckBox: self.isMultiSelect
                 };
                 const searchBoxOptions = {
-                    childField: 'childs',
-                    targetKey: 'workplaceId',
+                    childField: 'children',
+                    targetKey: 'id',
                     comId: self.getComIdSearchBox(),
                     items: self.itemList(),
                     selected: self.selectedWorkplaceIds(),
-                    selectedKey: 'workplaceId',
+                    selectedKey: 'id',
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
@@ -772,10 +773,11 @@ module kcp.share.tree {
                 return;
             }
             const param = <service.WorkplaceParam>{};
+            param.startMode = self.startMode;
             param.baseDate = self.baseDate();
             param.systemType = self.systemType;
             param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
-            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
+            service.findDepWkpTree(param).done(function(res: Array<UnitModel>) {
                 if (!res || res.length <= 0) {
                     self.itemList([]);
                     self.backupItemList([]);
@@ -832,14 +834,14 @@ module kcp.share.tree {
         }
 
         /**
-         * Find list sub workplaceId of parent
+         * Find list sub id of parent
          */
         private findListSubWorkplaceId(dataList: Array<UnitModel>, listSubWorkplaceId: Array<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                listSubWorkplaceId.push(alreadySetting.workplaceId);
-                if (alreadySetting.childs && alreadySetting.childs.length > 0) {
-                    this.findListSubWorkplaceId(alreadySetting.childs, listSubWorkplaceId);
+                listSubWorkplaceId.push(alreadySetting.id);
+                if (alreadySetting.children && alreadySetting.children.length > 0) {
+                    this.findListSubWorkplaceId(alreadySetting.children, listSubWorkplaceId);
                 }
             }
         }
@@ -849,9 +851,9 @@ module kcp.share.tree {
          */
         private selectData(option: TreeComponentOption, data: UnitModel): any {
             if (this.isMultiSelect) {
-                return [data.workplaceId];
+                return [data.id];
             }
-            return data.workplaceId;
+            return data.id;
         }
 
         /**
@@ -865,21 +867,21 @@ module kcp.share.tree {
         }
 
         /**
-         * Find UnitModel by workplaceId
+         * Find UnitModel by id
          */
         private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
                                            listModel: Array<UnitModel>): Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
-                if (item.workplaceId == workplaceId) {
+                if (item.id == workplaceId) {
                     let modelString = JSON.stringify(listModel);
                     // Check item existed
-                    if (modelString.indexOf(item.workplaceId) < 0) {
+                    if (modelString.indexOf(item.id) < 0) {
                         listModel.push(item);
                     }
                 }
-                if (item.childs.length > 0) {
-                    this.findUnitModelByWorkplaceId(item.childs, workplaceId, listModel);
+                if (item.children.length > 0) {
+                    this.findUnitModelByWorkplaceId(item.children, workplaceId, listModel);
                 }
             }
             return listModel;
@@ -892,14 +894,14 @@ module kcp.share.tree {
             let self = this;
             let selectedWorkplaces = self.getSelectedWorkplace();
             for (let unitModel of dataList) {
-                if (_.some(selectedWorkplaces, id => id == unitModel.workplaceId)) {
+                if (_.some(selectedWorkplaces, id => id == unitModel.id)) {
                     listRowData.push({
-                        workplaceId: unitModel.workplaceId,
+                        workplaceId: unitModel.id,
                         workplaceCode: unitModel.code
                     });
                 }
-                if (unitModel.childs.length > 0) {
-                    this.findSelectionRowData(unitModel.childs, listRowData);
+                if (unitModel.children.length > 0) {
+                    this.findSelectionRowData(unitModel.children, listRowData);
                 }
             }
         }
@@ -922,14 +924,14 @@ module kcp.share.tree {
             for (let item of dataList) {
                 let newItem: any = {};
                 if (item.level <= level) {
-                    self.listWorkplaceId.push(item.workplaceId);
+                    self.listWorkplaceId.push(item.id);
                     newItem = JSON.parse(JSON.stringify(item));
                     listModel.push(newItem);
                     if (level == 1) {
-                        newItem.childs = [];
-                    } else if (item.childs && item.childs.length > 0) {
-                        let tmpModels = this.filterByLevel(newItem.childs, level, new Array<UnitModel>());
-                        newItem.childs = tmpModels;
+                        newItem.children = [];
+                    } else if (item.children && item.children.length > 0) {
+                        let tmpModels = this.filterByLevel(newItem.children, level, new Array<UnitModel>());
+                        newItem.children = tmpModels;
                     }
                 }
             }
@@ -941,22 +943,23 @@ module kcp.share.tree {
 
         // Service paths.
         var servicePath = {
-            findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
-        }
+            findDepWkpTree: "bs/employee/wkpdep/get-wkpdepinfo-kcp004",
+        };
 
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+        export function findDepWkpTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
             if (_.isNil(param.systemType)) {
                 let dfd = $.Deferred<any>();
                 dfd.resolve([]);
                 return dfd.promise();
             }
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
+            return nts.uk.request.ajax('com', servicePath.findDepWkpTree, param);
         }
 
         export interface WorkplaceParam {
+            startMode: StartMode,
             baseDate: Date;
             systemType: SystemType;
             restrictionOfReferenceRange: boolean;

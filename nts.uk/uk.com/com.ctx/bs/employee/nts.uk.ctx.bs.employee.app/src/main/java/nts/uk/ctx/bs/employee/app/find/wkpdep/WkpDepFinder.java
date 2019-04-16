@@ -1,14 +1,13 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -49,6 +48,12 @@ public class WkpDepFinder {
 
 	@Inject
 	private DepartmentInformationRepository depInforRepo;
+
+	@Inject
+	private DepartmentExportSerivce depExportSerivce;
+
+	@Inject
+	private WorkplaceExportService wkpExportService;
 
 	public ConfigurationDto getWkpDepConfig(int mode, GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
@@ -119,6 +124,20 @@ public class WkpDepFinder {
 			return null;
 		}
 	}
+	
+	public InformationDto getWkpDepInfor(int mode, String historyId, String id) {
+		String companyId = AppContexts.user().companyId();
+		switch (mode) {
+		case WORKPLACE_MODE:
+			Optional<WorkplaceInformation> optWkp = wkpInforRepo.getWorkplaceByKey(companyId, historyId, id);
+			return optWkp.isPresent() ? new InformationDto(optWkp.get()) : null;
+		case DEPARTMENT_MODE:
+			Optional<DepartmentInformation> optDep = depInforRepo.getDepartmentByKey(companyId, historyId, id);
+			return optDep.isPresent() ? new InformationDto(optDep.get()) : null;
+		default:
+			return null;
+		}
+	}
 
 	public void checkTotalWkpDep(int mode, String historyId) {
 		String companyId = AppContexts.user().companyId();
@@ -144,6 +163,8 @@ public class WkpDepFinder {
 	
 	private List<WkpDepTreeDto> createTree(List<InformationDto> lstHWkpInfo) {
 		List<WkpDepTreeDto> lstReturn = new ArrayList<>();
+		if (lstHWkpInfo.isEmpty()) 
+			return lstReturn;
 		// Higher hierarchyCode has shorter length
 		int highestHierarchy = lstHWkpInfo.stream()
 				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get()
@@ -188,5 +209,30 @@ public class WkpDepFinder {
 					searchCode, highestHierarchy);
 		}
 	}
+
+    public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
+        List<InformationDto> listInfo = this.getDepWkpInfo(findObject);
+        return this.createTree(listInfo);
+    }
+
+    private List<InformationDto> getDepWkpInfo(DepWkpInfoFindObject findObject) {
+
+        String companyId = AppContexts.user().companyId();
+
+        // Check system type.
+        if (findObject.getSystemType() == null) {
+            return Collections.emptyList();
+        }
+        // Check start mode (department or workplace)
+        switch (findObject.getStartMode()) {
+            // Pending check filter reference range
+            case WORKPLACE_MODE:
+                return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+            case DEPARTMENT_MODE:
+                return depExportSerivce.getAllActiveDepartment(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+            default:
+                return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+        }
+    }
 
 }
