@@ -108,6 +108,10 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				} else {
 					displayReason += command.getApplicationReason();
 				}
+			}else{
+				if (Strings.isBlank(typicalReason)) {
+					displayReason = opAppAbsence.get().getApplication().getAppReason().v();
+				}
 			}
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 					.getApplicationSettingByComID(companyID);
