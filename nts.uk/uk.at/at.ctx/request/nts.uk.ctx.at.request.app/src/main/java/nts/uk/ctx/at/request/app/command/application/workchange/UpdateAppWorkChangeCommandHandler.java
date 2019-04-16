@@ -91,7 +91,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				displayReason += appCommand.getApplicationReason();
 			}else{
 				if(Strings.isBlank(typicalReason)){
-					appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
+					displayReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 				}
 			}
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
