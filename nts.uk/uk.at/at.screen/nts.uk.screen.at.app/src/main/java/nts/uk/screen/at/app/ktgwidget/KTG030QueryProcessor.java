@@ -6,18 +6,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTargetItemDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTrackRecord;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-
 @Stateless
 public class KTG030QueryProcessor {
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-
-	
 
 	@Inject
 	private CheckTrackRecord  checkTrackRecord;
