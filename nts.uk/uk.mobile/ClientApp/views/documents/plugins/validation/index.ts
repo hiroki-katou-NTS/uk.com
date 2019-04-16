@@ -3,7 +3,7 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentspluginsvalidation',
-    route: { 
+    route: {
         url: '/plugins/validation',
         parent: '/documents'
     },
@@ -12,6 +12,28 @@ import { component } from '@app/core/component';
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
+    },
+    validations: {
+        model: {
+            username: {
+                required: true,
+                custom_validator: {
+                    test: /\d{3,5}/,
+                    message: '{0} is number in range [100, 99999].'
+                }
+            },
+            password: {
+                required: true
+            }
+        }
     }
 })
-export class DocumentsPluginsValidationComponent extends Vue { }
+export class DocumentsPluginsValidationComponent extends Vue {
+    public model: {
+        username: string;
+        password: string;
+    } = {
+        username: 'username',
+        password: 'password'
+    };
+}
