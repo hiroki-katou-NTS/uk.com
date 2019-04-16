@@ -24,24 +24,6 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
     private static final String REPORT_FILE_EXTENSION = ".xlsx";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（厚生年金)";
 
-    private static final int WELFARE_PENSION_GRADE = 2;
-    private static final int STANDARD_MONTHLY_FEE = 3;
-
-    private static final int REWARD_MONTHLY_LOWER_LIMIT = 4;
-    private static final int REWARD_MONTHLY_UPER_LIMIT = 5;
-
-    private static final int IN_MALE_INSURANCE_PREMIUM = 5;
-    private static final int EM_MALE_INSURANCE_PREMIUM = 5;
-    private static final int IN_MALE_EXEMPTION_INSURANCE = 5;
-    private static final int EM_MALE_EXEMPTION_INSURANCE = 5;
-
-    private static final int IN_FEMALE_INSURANCE_PREMIUM = 6;
-    private static final int EM_FEMALE_INSURANCE_PREMIUM = 5;
-    private static final int IN_FEMALE_EXEMPTION_INSURANCE = 5;
-    private static final int EM_FEMALE_EXEMPTION_INSURANCE = 5;
-
-
-
     @Override
     public void generate(FileGeneratorContext generatorContext, SalaryHealthExportData exportData,List<CusWelfarePensionStandardDto> list) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE_B)) {
@@ -63,7 +45,6 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
     private void writeExcel(Worksheet ws,SalaryHealthExportData exportData, List<CusWelfarePensionStandardDto> list){
 
         int rowIndex = 5;
-        int count = 0;
 
         // Set print page
         PageSetup pageSetup = ws.getPageSetup();
@@ -72,37 +53,8 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
         // Set header date
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
-        HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-        for(int i = 0; i < Math.round(exportData.getResponseWelfarePension().getCusWelfarePensions().size()/62); i ++){
-            try {
-                ws.getCells().copyRows(ws.getCells(),0,67,69 );
-            }catch (Exception e){
-
-            }
-        }
         for (CusWelfarePensionDto cusWelfarePensions : exportData.getResponseWelfarePension().getCusWelfarePensions()) {
-
-            /*ws.getCells().get(rowIndex,WELFARE_PENSION_GRADE).putValue(cusWelfarePensions.getWelfarePensionGrade());
-            ws.getCells().get(rowIndex,STANDARD_MONTHLY_FEE).putValue(cusWelfarePensions.getStandardMonthlyFee());
-            ws.getCells().get(rowIndex,REWARD_MONTHLY_LOWER_LIMIT).putValue(cusWelfarePensions.getRewardMonthlyLowerLimit());
-            ws.getCells().get(rowIndex,REWARD_MONTHLY_UPER_LIMIT).putValue(cusWelfarePensions.getRewardMonthlyUpperLimit());
-
-            ws.getCells().get(rowIndex,IN_MALE_INSURANCE_PREMIUM).putValue(cusWelfarePensions.getInMaleInsurancePremium());
-            ws.getCells().get(rowIndex,IN_FEMALE_INSURANCE_PREMIUM).putValue(cusWelfarePensions.getInFemaleInsurancePremium());
-
-            ws.getCells().get(rowIndex,EM_MALE_INSURANCE_PREMIUM).putValue(cusWelfarePensions.getEmMaleInsurancePremium());
-            ws.getCells().get(rowIndex,EM_FEMALE_INSURANCE_PREMIUM).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
-
-            ws.getCells().get(rowIndex,IN_MALE_EXEMPTION_INSURANCE).putValue(cusWelfarePensions.getInMaleExemptionInsurance());
-            ws.getCells().get(rowIndex,IN_FEMALE_EXEMPTION_INSURANCE).putValue(cusWelfarePensions.getInFemaleInsurancePremium());
-
-            ws.getCells().get(rowIndex,EM_MALE_EXEMPTION_INSURANCE).putValue(cusWelfarePensions.getEmMaleExemptionInsurance());
-            ws.getCells().get(rowIndex,EM_FEMALE_EXEMPTION_INSURANCE).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
-*/
-
-            if(count == 62){
-                pageBreaks.add(rowIndex);
-                count = 0;
+            if(rowIndex == 67){
                 rowIndex = rowIndex + 6;
             }
             ws.getCells().get(rowIndex,2).putValue(cusWelfarePensions.getWelfarePensionGrade());
@@ -130,7 +82,6 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
             }
 
             rowIndex ++;
-            count++;
         }
     }
 
