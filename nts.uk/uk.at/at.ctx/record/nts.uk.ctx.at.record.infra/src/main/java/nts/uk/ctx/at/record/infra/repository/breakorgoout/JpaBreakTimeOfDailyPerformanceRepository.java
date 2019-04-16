@@ -400,4 +400,12 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
+	@Override
+	public void updateNotDelete(List<BreakTimeOfDailyPerformance> breakTimes) {
+		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
+				.collect(Collectors.toList());
+		if(!all.isEmpty()) {
+			commandProxy().updateAll(all);
+		}
+	}
 }

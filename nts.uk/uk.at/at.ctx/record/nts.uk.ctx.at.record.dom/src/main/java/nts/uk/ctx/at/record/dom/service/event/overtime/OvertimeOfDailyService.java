@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -60,9 +61,20 @@ public class OvertimeOfDailyService {
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
 			itemIdList.add(565); //事前所定外深夜時間
 			itemIdList.add(563); //所定外深夜時間
+            //休日出勤申請：休憩時間しか反映してない
+            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
+            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+            itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
+            itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
+
 		} else {
 			itemIdList.addAll(recordUpdate.lstPreWorktimeFrameItem());
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
+			 //休日出勤申請：休憩時間しか反映してない
+            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
+            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+            itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
+            itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
 		}
 		//替時間(休出)の反映、をクリアする
 		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
