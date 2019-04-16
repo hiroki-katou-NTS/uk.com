@@ -21,10 +21,27 @@ public class DepartmentPubImpl implements DepartmentPub {
 	public List<DepartmentInforExport> getDepartmentInforByDepIds(String companyId, List<String> listDepartmentId,
 			GeneralDate baseDate) {
 		return depExpService.getDepartmentInforFromDepIds(companyId, listDepartmentId, baseDate).stream()
+				.map(i -> new DepartmentInforExport(i.getDepartmentId(), i.getHierarchyCode(), i.getDepartmentCode(),
+						i.getDepartmentName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DepartmentInforExport> getAllActiveDepartment(String companyId, GeneralDate baseDate) {
+		return depExpService.getAllActiveDepartment(companyId, baseDate).stream()
 				.map(i -> new DepartmentInforExport(i.getDepartmentId(), i.getHierarchyCode().v(),
 						i.getDepartmentCode().v(), i.getDepartmentName().v(), i.getDepartmentDisplayName().v(),
 						i.getDepartmentGeneric().v(),
 						i.getDepartmentExternalCode().isPresent() ? i.getDepartmentExternalCode().get().v() : null))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DepartmentInforExport> getPastDepartmentInfor(String companyId, String depHistId,
+			List<String> listDepartmentId) {
+		return depExpService.getPastDepartmentInfor(companyId, depHistId, listDepartmentId).stream()
+				.map(i -> new DepartmentInforExport(i.getDepartmentId(), i.getHierarchyCode(), i.getDepartmentCode(),
+						i.getDepartmentName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
 				.collect(Collectors.toList());
 	}
 

@@ -21,10 +21,27 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
 			GeneralDate baseDate) {
 		return wkpExpService.getWorkplaceInforFromWkpIds(companyId, listWorkplaceId, baseDate).stream()
+				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
+						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WorkplaceInforExport> getAllActiveWorkplaceInfor(String companyId, GeneralDate baseDate) {
+		return wkpExpService.getAllActiveWorkplace(companyId, baseDate).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode().v(),
 						i.getWorkplaceCode().v(), i.getWorkplaceName().v(), i.getWorkplaceDisplayName().v(),
 						i.getWorkplaceGeneric().v(),
 						i.getWorkplaceExternalCode().isPresent() ? i.getWorkplaceExternalCode().get().v() : null))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WorkplaceInforExport> getPastWorkplaceInfor(String companyId, String historyId,
+			List<String> listWorkplaceId) {
+		return wkpExpService.getPastWorkplaceInfor(companyId, historyId, listWorkplaceId).stream()
+				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
+						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
 				.collect(Collectors.toList());
 	}
 
