@@ -13,7 +13,7 @@ import { SideMenu, NavMenu } from '@app/services';
                 required: true,
                 checkSame: {
                     test(value){
-                        return this.model.newPassword !== this.model.newPasswordConfirm;
+                        return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
             },
@@ -21,7 +21,7 @@ import { SideMenu, NavMenu } from '@app/services';
                 required: true,
                 checkSame: {
                     test(value){
-                        return this.model.newPasswordConfirm !== this.model.newPassword;
+                        return this.model.newPasswordConfirm === this.model.newPassword;
                     }, message: 'Msg_961'
                 }
             }

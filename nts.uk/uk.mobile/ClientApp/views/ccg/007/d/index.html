@@ -34,10 +34,10 @@
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
             <div class="mb-2">
-                <button class="btn btn-primary btn-block" v-on="$click(sendMail.bind(this))">送信→</button>
+                <button class="btn btn-primary btn-block" v-click:500="sendMail">送信→</button>
             </div>
             <div>
-                <button class="btn btn-secondary btn-block" v-on="$click(goBack.bind(this))">←戻る</button>
+                <button class="btn btn-secondary btn-block" @click="goBack">←戻る</button>
             </div>
         </fieldset>
     </div>

@@ -17,7 +17,7 @@ import { ccg007 } from "../common/common";
                 required: true,
                 checkSame: {
                     test(value){
-                        return this.model.newPassword !== this.model.newPasswordConfirm;
+                        return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
             },
@@ -25,7 +25,7 @@ import { ccg007 } from "../common/common";
                 required: true,
                 checkSame: {
                     test(value){
-                        return this.model.newPassword !== this.model.newPasswordConfirm;
+                        return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
             }
