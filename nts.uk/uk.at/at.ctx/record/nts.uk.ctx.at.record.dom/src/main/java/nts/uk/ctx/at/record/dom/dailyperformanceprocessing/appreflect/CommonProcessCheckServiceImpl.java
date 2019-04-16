@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.breaktime.BreakTimeOfDailyService;
+import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.overtime.OvertimeOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.timeleave.TimeLeavingOfDailyService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -98,7 +99,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	@Override
 	public boolean reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre, IntegrationOfDaily dailyInfor) {
 		//予定勤種を反映できるかチェックする
-		if(!this.checkReflectScheWorkTimeType(commonPara, isPre, commonPara.getWorkTimeCode())) {
+		if(!this.checkReflectScheWorkTimeType(commonPara.isScheTimeReflectAtr(), commonPara.getScheAndRecordSameChangeFlg(),
+				isPre, commonPara.getWorkTimeCode())) {
 			return false;
 		}
 		//予定勤種の反映		
@@ -109,14 +111,14 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	}
 
 	@Override
-	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre, String workTimeCode) {
+	public boolean checkReflectScheWorkTimeType(boolean isScheTimeReflectAtr, ScheAndRecordSameChangeFlg isChangeFlg,boolean isPre, String workTimeCode) {
 		//INPUT．予定反映区分をチェックする
-		if((commonPara.isScheTimeReflectAtr() == true && isPre)
-				|| commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
+		if((isScheTimeReflectAtr == true && isPre)
+				|| isChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
+		if(isChangeFlg == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(workTimeCode);
 		}
@@ -189,10 +191,13 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 			//出退勤時刻を補正する
 			integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, false).getData();
-			//休憩時間帯を補正する	
-			integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();
 			//事前残業、休日時間を補正する
-			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor, false);
+			integrationOfDaily = overTimeService.correct(integrationOfDaily, workTypeInfor, true);
+			if(!this.isChangeBreakTime(integrationOfDaily.getEditState())) {
+				//休憩時間帯を補正する	
+				integrationOfDaily = breakTimeDailyService.correct(companyId, integrationOfDaily, workTypeInfor, false).getData();	
+			}			
+			
 		}
 		
 		List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
@@ -214,11 +219,23 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 					integrationOfDaily.getWorkInformation());
 		}
 				
-		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();
+		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();		
 		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
 		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
 				.collect(Collectors.toList());
-		
+		Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		if(this.isChangeBreakTime(lstEditState)
+				&& workTypeInfor.isPresent() && workTypeInfor.get().getDailyWork().isHolidayWork()) {
+			List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
+					.filter(x -> CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId())
+							|| CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId()))
+					.collect(Collectors.toList());
+            if(breakTimeInfor != null && beforeBreakTime.isEmpty() && lstEditCheck.isEmpty()) {
+                integrationOfDaily.getBreakTime().add(breakTimeInfor);
+                breakTimeRepo.updateNotDelete(integrationOfDaily.getBreakTime());
+            }
+			return integrationOfDaily;
+		}
 		BreakTimeOfDailyPerformance beforBTWork = new BreakTimeOfDailyPerformance(sid, BreakType.REFER_WORK_TIME, new ArrayList<>(), ymd);
 		if(!beforeBreakTime.isEmpty()) {
 			beforBTWork = beforeBreakTime.get(0);
@@ -262,5 +279,15 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		beforeBreakTime.add(beforBTWork);
 		integrationOfDaily.setBreakTime(beforeBreakTime);
 		return integrationOfDaily;
+	}
+
+	private boolean isChangeBreakTime(List<EditStateOfDailyPerformance> lstEditState) {
+		List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
+				.filter(x -> WorkUpdateService.BREAK_START_TIME.contains(x.getAttendanceItemId())
+						|| WorkUpdateService.BREAK_END_TIME.contains(x.getAttendanceItemId())
+						|| CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId())
+						|| CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId()))
+				.collect(Collectors.toList());
+		return lstEditCheck.isEmpty() ? false : true;
 	}
 }

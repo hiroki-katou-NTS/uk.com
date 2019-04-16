@@ -5,7 +5,6 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
 @AllArgsConstructor
 @Setter
 @Getter
@@ -37,4 +36,8 @@ public class HolidayWorktimeAppPubPara {
 	
 	private Integer startTime;
 	private Integer endTime;
+	/**
+	 * 休憩時間
+	 */
+	private Map<Integer, BreakTimePubPara> mapBreakTime;
 }

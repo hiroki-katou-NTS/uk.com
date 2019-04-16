@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
-import java.util.Map;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -45,6 +43,14 @@ public interface HolidayWorkReflectProcess {
 	 * @param mapWorkTimeFrame 休出時間1～10
 	 */
 	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
+			IntegrationOfDaily dailyData, boolean isPre);
+	/**
+	 * 休憩時間の反映
+	 * @param holidayWorkPara
+	 * @param dailyData
+	 * @param isPre：　True：　事前、False：　事後
+	 */
+	public void reflectBreakTimeFrame(HolidayWorktimePara holidayWorkPara, 
 			IntegrationOfDaily dailyData, boolean isPre);
 
 }
