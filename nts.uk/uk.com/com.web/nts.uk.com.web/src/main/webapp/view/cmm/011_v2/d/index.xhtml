@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <script>
-            var dialogSize = {width: 700, height: 450};
+            var dialogSize = {width: 550, height: 600};
         </script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="style.css"/>
@@ -19,24 +19,26 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div style="width: 500px" class="valign-center control-group">
-                <div id="D1_1" data-bind="ntsFormLabel: { required: true }">
-                    #{i18n.getText('CMM011-0_33')}
-                </div>
-                <span data-bind="if: screenMode == 1" id="D1_2" class="label">
+            <div data-bind="if: $vm.tagretHistory >= 1">
+                <div style="width: 500px" class="valign-center control-group">
+                    <div id="D1_1" data-bind="ntsFormLabel: { required: true }">
+                        #{i18n.getText('CMM011-0_33')}
+                    </div>
+                    <span data-bind="if: $vm.screenMode == 1" id="D1_2" class="label">
                      #{i18n.getText('CMM011-1_10')}
                  </span>
-                <span data-bind="if: screenMode == 2" id="D1_2" class="label">
+                    <span data-bind="if: $vm.screenMode == 2" id="D1_2" class="label">
                      #{i18n.getText('CMM011-2_10')}
                  </span>
-                <span id="D1_3" class="label">
+                    <span id="D1_3" class="label">
                     項目移送
                  </span>
-                <span id="D1_4" class="label">
+                    <span id="D1_4" class="label">
                     項目移送
                 </span>
+                </div>
             </div>
-            <div class="radio">
+            <div class="radio" data-bind="if: $vm.tagretHistory >= 1">
                 <div id="D2_1" style="width: 200px;" tabindex="1" data-bind="ntsRadioBoxGroup: {
                 options: itemList,
                 optionsValue: 'id',
@@ -46,124 +48,59 @@
                 </div>
             </div>
             <div class="insert">
-                <div data-bind="if: $vm.screenMode == 1">
                     <div class="item valign-center control-group">
-                        <div id="A5_1" data-bind="ntsFormLabel: { required: true, constraint: 'workCode' }">
+                        <div id="A5_1" data-bind="ntsFormLabel: { required: true,}">
                             #{i18n.getText('CMM011-0_12')}
                         </div>
                         <input id="A5_2" data-bind="ntsTextEditor: {
                                             name: '#[CMM011-0_12]',
-                                            constraint: 'workCode',
                                             value: code,
                                             required: true,
                                             enable: true}"/>
                     </div>
                     <div class="item valign-center control-group">
-                        <div id="A6_1" data-bind="ntsFormLabel: { required: true, constraint: 'workName' }">
+                        <div id="A6_1" data-bind="ntsFormLabel: { required: true}">
                             #{i18n.getText('CMM011-0_13')}
                         </div>
                         <input id="A6_2" data-bind="ntsTextEditor: {
                                             name: '#[CMM011-0_13]',
-                                            constraint: 'workName',
                                             value: name,
                                             required: true,
                                             enable: true}"/>
                     </div>
                     <div class="item valign-center control-group">
-                        <div id="A7_1" data-bind="ntsFormLabel: { required: true, constraint: 'workDisplayName' }">
+                        <div id="A7_1" data-bind="ntsFormLabel: { required: true }">
                             #{i18n.getText('CMM011-0_14')}
                         </div>
                         <input id="A7_2" data-bind="ntsTextEditor: {
                                             name: '#[CMM011-0_14]',
-                                            constraint: 'workDisplayName',
                                             value: displayName,
                                             required: true,
                                             enable: true}"/>
                     </div>
                     <div class="item valign-center control-group">
-                        <div id="A8_1" data-bind="ntsFormLabel: { required: true, constraint: 'workGenericName' }">
+                        <div id="A8_1" data-bind="ntsFormLabel: { required: true }">
                             #{i18n.getText('CMM011-0_15')}
                         </div>
                         <input id="A8_2" data-bind="ntsTextEditor: {
                                             name: '#[CMM011-0_15]',
-                                            constraint: 'workGenericName',
                                             value: genericName,
                                             required: true,
                                             enable: true}"/>
                     </div>
                     <div class="item valign-center control-group">
-                        <div id="A9_1" data-bind="ntsFormLabel: { required: true, constraint: 'workExternalCode' }">
+                        <div id="A9_1" data-bind="ntsFormLabel: { }">
                             #{i18n.getText('CMM011-0_16')}
                         </div>
                         <input id="A9_2" data-bind="ntsTextEditor: {
                                             name: '#[CMM011-0_16]',
-                                            constraint: 'workExternalCode',
                                             value: externalCode,
-                                            required: true,
                                             enable: true}"/>
                     </div>
-                </div>
-                <div data-bind="if: $vm.screenMode == 2">
-                    <div class="item valign-center control-group">
-                        <div id="A5_1" data-bind="ntsFormLabel: { required: true, constraint: 'departmentCode' }">
-                            #{i18n.getText('CMM011-0_12')}
-                        </div>
-                        <input id="A5_2" data-bind="ntsTextEditor: {
-                                            name: '#[CMM011-0_12]',
-                                            constraint: 'departmentCode',
-                                            value: code,
-                                            required: true,
-                                            enable: true}"/>
-                    </div>
-                    <div class="item valign-center control-group">
-                        <div id="A6_1" data-bind="ntsFormLabel: { required: true, constraint: 'departmentName' }">
-                            #{i18n.getText('CMM011-0_13')}
-                        </div>
-                        <input id="A6_2" data-bind="ntsTextEditor: {
-                                            name: '#[CMM011-0_13]',
-                                            constraint: 'departmentName',
-                                            value: name,
-                                            required: true,
-                                            enable: true}"/>
-                    </div>
-                    <div class="item valign-center control-group">
-                        <div id="A7_1" data-bind="ntsFormLabel: { required: true, constraint: 'departmentDisplayName' }">
-                            #{i18n.getText('CMM011-0_14')}
-                        </div>
-                        <input id="A7_2" data-bind="ntsTextEditor: {
-                                            name: '#[CMM011-0_14]',
-                                            constraint: 'departmentDisplayName',
-                                            value: displayName,
-                                            required: true,
-                                            enable: true}"/>
-                    </div>
-                    <div class="item valign-center control-group">
-                        <div id="A8_1" data-bind="ntsFormLabel: { required: true, constraint: 'departmentGenericName' }">
-                            #{i18n.getText('CMM011-0_15')}
-                        </div>
-                        <input id="A8_2" data-bind="ntsTextEditor: {
-                                            name: '#[CMM011-0_15]',
-                                            constraint: 'departmentGenericName',
-                                            value: genericName,
-                                            required: true,
-                                            enable: true}"/>
-                    </div>
-                    <div class="item valign-center control-group">
-                        <div id="A9_1" data-bind="ntsFormLabel: { required: true, constraint: 'departmentExternalCode' }">
-                            #{i18n.getText('CMM011-0_16')}
-                        </div>
-                        <input id="A9_2" data-bind="ntsTextEditor: {
-                                            name: '#[CMM011-0_16]',
-                                            constraint: 'departmentExternalCode',
-                                            value: externalCode,
-                                            required: true,
-                                            enable: true}"/>
-                    </div>
-                </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="D3_2" tabindex="2" class="x-large proceed">#{i18n.getText('CMM011-0_2')}#{i18n.getText('CMM011-0_2')}</button>
+            <button id="D3_2" tabindex="2" data-bind="enable: $root.errors.isEmpty" class="x-large proceed">#{i18n.getText('CMM011-0_2')}</button>
             <button id="D3_3" tabindex="3" class="large">#{i18n.getText('CMM011-0_28')}</button>
         </div>
     </ui:define>

@@ -19,8 +19,15 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div id="C1_1" class="label">
-                #{i18n.getText('CMM011-1_7')}
+            <div data-bind="if: $vm.screenMode == 1">
+                <span  id="C1_1" class="label">
+                    #{i18n.getText('CMM011-1_7')}
+                </span>
+            </div>
+            <div data-bind="if: $vm.screenMode == 2">
+                <span  id="C1_1" class="label">
+                    #{i18n.getText('CMM011-2_7')}
+                </span>
             </div>
             <div id="C2_1" style="width: 200px;" tabindex="1" data-bind="ntsRadioBoxGroup: {
                 name: '#CMM011-0_',
@@ -45,7 +52,7 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="C4_2" class="proceed x-large">#{i18n.getText('CMM011-0_27')}</button>
+            <button id="C4_2" data-bind="enable: $root.errors.isEmpty" class="proceed x-large">#{i18n.getText('CMM011-0_27')}</button>
             <button id="C4_3" class="large">#{i18n.getText('CMM011-0_28')}</button>
         </div>
     </ui:define>
