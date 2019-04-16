@@ -25,6 +25,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         selectedHierarchyCode: KnockoutObservable<string> = ko.observable(null);
         selectedExternalCode: KnockoutObservable<string> = ko.observable(null);
         isSynchronized: KnockoutObservable<boolean> = ko.observable(false);
+        listHierarchyChange: Array<any> = [];
 
         constructor() {
             let self = this;
@@ -35,20 +36,30 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             self.items = ko.observableArray([]);
             self.selectedId = ko.observable(null);
             self.selectedId.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                block.invisible();
-                service.getWkpDepInforById(self.initMode, self.configuration().historyId, value).done(res => {
-                    self.selectedCode(res.code);
-                    self.selectedName(res.name);
-                    self.selectedDispName(res.dispName);
-                    self.selectedGenericName(res.genericName);
-                    self.selectedHierarchyCode(res.hierarchyCode);
-                    self.selectedExternalCode(res.externalCode);
-                }).fail((error) => {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
-                });
+                if (_.isEmpty(value)) {
+                    self.selectedCode(null);
+                    self.selectedDispName(null);
+                    self.selectedGenericName(null);
+                    self.selectedHierarchyCode(null);
+                    self.selectedExternalCode(null);
+                    self.selectedName(null);
+                    nts.uk.ui.errors.clearAll();
+                } else {
+                    block.invisible();
+                    service.getWkpDepInforById(self.initMode, self.configuration().historyId, value).done(res => {
+                        self.selectedCode(res.code);
+                        self.selectedDispName(res.dispName);
+                        self.selectedGenericName(res.genericName);
+                        self.selectedHierarchyCode(res.hierarchyCode);
+                        self.selectedExternalCode(res.externalCode);
+                        self.selectedName(res.name);
+                        nts.uk.ui.errors.clearAll();
+                    }).fail((error) => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
             });
             self.selectedName.subscribe(value => {
                 if (_.isEmpty(value)) 
@@ -57,7 +68,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.selectedDispName(value);
                 }
                 if (_.isEmpty(self.selectedGenericName())) {
-                    self.selectedGenericName(self.getGenericName(value, self.items()));
+                    self.selectedGenericName(self.getGenericName(value));
                 }
                 $(".nts-input").trigger("validate");
             });
@@ -75,8 +86,6 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 if (configuration) {
                     self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
                     self.getAllWkpDepInfor().done(() => {
-                        if (self.items().length > 0)
-                            self.selectedId(self.items()[0].id);
                         dfd.resolve();
                     }).fail((error) => {
                         dfd.reject();
@@ -95,7 +104,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             return dfd.promise();
         }
 
-        getAllWkpDepInfor(): JQueryPromise<any> {
+        getAllWkpDepInfor(idToSelect?: string): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getAllWkpDepInforTree(self.initMode, self.configuration().historyId).done((data) => {
                 if (_.isEmpty(data)) {
@@ -114,6 +123,10 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         return new WkpDepNode(i);
                     });
                     self.items(listNode);
+                    if (idToSelect)
+                        self.selectedId(idToSelect);
+                    else if (self.items().length > 0)
+                        self.selectedId(self.items()[0].id);
                     dfd.resolve();
                 }
             }).fail((error) => {
@@ -130,7 +143,28 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) 
                 return;
-            
+            block.invisible();
+            let command = {
+                initMode: self.initMode,
+                historyId: self.configuration().historyId,
+                id: self.selectedId(),
+                code: self.selectedCode(),
+                name: self.selectedName(),
+                dispName: self.selectedDispName(),
+                genericName: self.selectedGenericName(),
+                externalCode: self.selectedExternalCode(),
+                hierarchyCode: self.selectedHierarchyCode(), 
+                listHierarchyChange: self.listHierarchyChange
+            };
+            service.registerWkpDepInfor(command).done((id) => {
+                info({ messageId: "Msg_15" }).then(() => {
+                    self.getAllWkpDepInfor(id);
+                });
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
         
         deleteMaster() {
@@ -146,8 +180,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     info({ messageId: "Msg_16" }).then(() => {
                         block.invisible();
                         self.getAllWkpDepInfor().done(() => {
-                            if (self.items().length > 0)
-                                self.selectedId(self.items()[0].id);
+                            
                         }).always(() => {
                             block.clear()
                         });
@@ -175,8 +208,10 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.configuration().startDate(params.startDate);
                     self.configuration().endDate(params.endDate);
                     block.invisible();
-                    self.getAllWkpDepInfor().always(() => {
-                        block.clear();
+                    self.getAllWkpDepInfor().done(() => {
+                        
+                    }).always(() => {
+                        block.clear()
                     });
                 }
             });
@@ -189,11 +224,60 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 let params = {
                     initMode: self.initMode,
                     selectedCode: self.selectedCode(),
-                    selectedName: self.selectedName()
+                    selectedName: self.selectedName(),
+                    history: self.configuration().historyId
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
-                    
+                    let value = getShared("CreatedWorkplaceCondition");
+                    if (value) {
+                        let newHCode = "", currentHierarchyCode = self.selectedHierarchyCode();
+                        if (value == CreationType.CREATE_TO_CHILD) {
+                            newHCode = currentHierarchyCode + "001";
+                            self.selectedId(null);
+                            self.selectedHierarchyCode(newHCode);
+                        } else {
+                            let level = currentHierarchyCode.length / 3;
+                            let parentCode = currentHierarchyCode.substring(0, (level - 1) * 3);
+                            let items = _.cloneDeep(self.items()), newItems = [];
+                            for (let i = 1; i < level; i++) {
+                                let hCode = currentHierarchyCode.substring(0, 3 * i);
+                                let node = _.find(items, i => i.hierarchyCode == hCode);
+                                items = node.children;
+                            }
+                            let currIndex = _.findIndex(items, i => i.hierarchyCode == currentHierarchyCode);
+                            switch (value) {
+                                case CreationType.CREATE_ON_TOP:
+                                    items.forEach((item, index) => {
+                                        if (index == currIndex) {
+                                            newItems.push({ hierarchyCode: item.hierarchyCode, children: [] });
+                                        }
+                                        newItems.push(item);
+                                    });
+                                    break;
+                                case CreationType.CREATE_BELOW:
+                                    currIndex += 1;
+                                    if (currIndex == items.length) {
+                                        newItems = items;
+                                        newItems.push({ hierarchyCode: "", children: [] });
+                                    } else {
+                                        items.forEach((item, index) => {
+                                            if (index == currIndex) {
+                                                newItems.push({ hierarchyCode: item.hierarchyCode, children: [] });
+                                            }
+                                            newItems.push(item);
+                                        });
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            self.listHierarchyChange = [];
+                            self.generateHierarchyCode(newItems, parentCode);
+                            self.selectedId(null);
+                            self.selectedHierarchyCode(newItems[currIndex].hierarchyCode);
+                        }
+                    }
                 });
             }).fail((error) => {
                 alertError(error);
@@ -204,33 +288,58 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 
         moveLeft() {
             let self = this;
+            let node = $("#A4_1").ntsTreeDrag("getSelected");
+            let target = $("#A4_1").ntsTreeDrag("getParent", node.data.id)
+            if (target)
+                $("#A4_1").ntsTreeDrag("moveNext", target.data.id, node.data.id);
         }
 
         moveRight() {
             let self = this;
+            let node = $("#A4_1").ntsTreeDrag("getSelected");
+            let target = $("#A4_1").ntsTreeDrag("getPrevious", node.data.id)
+            if (target)
+                $("#A4_1").ntsTreeDrag("moveInto", target.data.id, node.data.id);
         }
 
         moveUp() {
             let self = this;
+            let node = $("#A4_1").ntsTreeDrag("getSelected");
+            $("#A4_1").ntsTreeDrag("moveUp", node.id);
         }
 
         moveDown() {
             let self = this;
+            let node = $("#A4_1").ntsTreeDrag("getSelected");
+            $("#A4_1").ntsTreeDrag("moveDown", node.id);
         }
         
-        getGenericName(value: string, items: Array<WkpDepNode>): string {
+        getGenericName(value: string): string {
             let self = this, result = "";
-            items.some(function(element, index) {
-                if (element.id == self.selectedId()) {
-                    return true;
-                } else {
-                    result += element.name;
-                    if (_.isEmpty(element.children))
-                        return false;
-                    result = self.getGenericName(result, element.children);
+            let currentHierarchyCode = self.selectedHierarchyCode();
+            if (currentHierarchyCode) {
+                let level = currentHierarchyCode.length/3;
+                let items = self.items();
+                for (let i = 1; i < level; i++) {
+                    let hCode = currentHierarchyCode.substring(0, 3*i);
+                    let node = _.find(items, i => i.hierarchyCode == hCode);
+                    result = result + node.name + " ";
+                    items = node.children;
                 }
-            });
-            return result + " " + value;
+            }
+            return _.isEmpty(result) ? value : result + " " + value;
+        }
+        
+        generateHierarchyCode(items: Array<WkpDepNode>, parentHierarchyCode: string) {
+            let self = this;
+            items.forEach((node, index) => {
+                let hCode = ++index + "";
+                if (hCode.length == 1) hCode = "00"+ hCode;
+                if (hCode.length == 2) hCode = "0"+ hCode;
+                node.hierarchyCode = parentHierarchyCode + hCode;
+                self.listHierarchyChange.push({ id: node.id, hierarchyCode: node.hierarchyCode });
+                self.generateHierarchyCode(node.children, node.hierarchyCode);
+            })
         }
 
     }
@@ -238,6 +347,12 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
     enum SCREEN_MODE {
         WORKPLACE = 0,
         DEPARTMENT = 1
+    }
+    
+    enum CreationType {
+        CREATE_ON_TOP = 1,
+        CREATE_BELOW = 2,
+        CREATE_TO_CHILD = 3
     }
 
     class WkpDepNode {
