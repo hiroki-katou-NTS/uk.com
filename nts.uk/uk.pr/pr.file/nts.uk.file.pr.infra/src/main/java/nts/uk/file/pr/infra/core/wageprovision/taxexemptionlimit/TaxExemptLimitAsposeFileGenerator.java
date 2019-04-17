@@ -1,7 +1,6 @@
 package nts.uk.file.pr.infra.core.wageprovision.taxexemptionlimit;
 
 import com.aspose.cells.*;
-import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.file.app.core.wageprovision.taxexemptionlimit.TaxExemptLimitFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.taxexemptionlimit.TaxExemptLimitSetExportData;
@@ -56,18 +55,18 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
             Cells cells = ws.getCells();
             //break page
-            HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
+
             int page =  (exportData.size() / 72);
-            boolean isFirst = (page == 1 ) && page%72 == 0 ? true : false;
+
             int countElement = 0;
-            boolean pageThua = page%72 != 0 ? true : false;
-            if(pageThua || page == 0){
-                page++;
+            for (int i = 1; i <= page; i++) {
+                wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
             }
-            for(int i = 0 ; i < page ; i++){
-                if(!isFirst && i < page-1){
-                    ws.getCells().copyRows(cells,0, 39*(i+1), 39 );
-                    pageBreaks.add(39*(i+1));
+            for (int i = 0; i <= page; i++) {
+                if (countElement % 72 == 0 && i != 0) {
+                    Worksheet sheet = wsc.get("sheetName" + i);
+                    cells = sheet.getCells();
+                    rowStart = 2;
                 }
                 for(int x = 0 ; x < 72 ; x++){
                     if(countElement == exportData.size()){
@@ -87,9 +86,6 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                     }
                     if(x == 35){
                         rowStart = 1;
-                    }
-                    if(x == 71){
-                        rowStart = rowStart + 3;
                     }
                     rowStart++;
                     countElement++;

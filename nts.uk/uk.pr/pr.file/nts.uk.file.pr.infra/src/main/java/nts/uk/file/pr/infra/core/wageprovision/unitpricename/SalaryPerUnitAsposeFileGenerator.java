@@ -1,7 +1,6 @@
 package nts.uk.file.pr.infra.core.wageprovision.unitpricename;
 
 import com.aspose.cells.*;
-import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.file.app.core.wageprovision.unitpricename.SalaryPerUnitFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.unitpricename.SalaryPerUnitSetExportData;
@@ -15,8 +14,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Stateless
 public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
@@ -53,21 +55,24 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
             DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss", Locale.JAPAN);
             pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
-            Cells cells = ws.getCells();
+
             //break page
             HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-           int page =  exportData.size() / 39;
-           boolean isFirst = (page == 1 ) && page%39 == 0 ? true : false;
 
-            // fill data
+//           boolean isFirst = (page == 1 ) && page%39 == 0 ? true : false;
+            Cells cells = ws.getCells();
+            // fill data           
+            int page = exportData.size() / 37;
             for (int i = 0; i < exportData.size(); i++) {
-                if(i < page && !isFirst ){
-                    ws.getCells().copyRows(cells,0, 39*(i+1), 39 );
-                    pageBreaks.add(39*(i+1));
+                if (i >= 1 && i <= page && page != 1) {
+                    wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
                 }
-                if(i%36 == 0 && i != 0){
-                    rowStart = rowStart+3;
+                if (i % 37 == 0 && i != 0) {
+                    Worksheet sheet = wsc.get("sheetName" + i / 37);
+                    cells = sheet.getCells();
+                    rowStart = 3;
                 }
+
                 SalaryPerUnitSetExportData e = exportData.get(i);
                 cells.get(rowStart, COLUMN_START).setValue(e.getCode());
                 cells.get(rowStart, COLUMN_START + 1).setValue(e.getName());
