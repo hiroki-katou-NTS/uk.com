@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.ResponseWelfarePension;
 
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SalaryHealthExportData {
-    private List<Object[]> data;
+    ResponseWelfarePension responseWelfarePension;
     private String companyName;
 }

@@ -33,7 +33,9 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             printData(worksheets, exportData.getData(), exportData.getCompanyName());
-            worksheets.removeAt(0);
+            if(exportData.getData().size() > 0) {
+                worksheets.removeAt(0);
+            }
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
@@ -69,7 +71,7 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
                 pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
                 pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
                 pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + companyName);
-                pageSetup.setHeader(1,"労働保険事業所の登録");
+                pageSetup.setHeader(1, "&16&\"MS ゴシック\""+"労働保険事業所の登録");
                 DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
                 String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
                 pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
