@@ -23,6 +23,8 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
 
     private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.xlsx";
 
+    private static final String EXTENDSION_PDF = ".pdf";
+
     private static final int MAX_LINE = 36;
 
     private static final int COLUMN_INDEX_CODE = 1;
@@ -48,7 +50,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             ws.setName(TextResource.localize("QMM007_49"));
             this.writeFileExcel(ws,exportData,companyName);
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName("QMM007会社一律金額の登録.pdf")));
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +71,6 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-
 
         for(int i = 0; i < Math.round(exportData.size()/MAX_LINE) ; i ++){
             try {

@@ -463,6 +463,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         }
         exportExcel(){
             let self = this;
+            nts.uk.ui.block.grayout();
             let data = {
 
             };
@@ -471,6 +472,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             }).fail((err)=>{
                 if (err)
                     dialog.alertError(err);
+            }).always(()=>{
+                nts.uk.ui.block.clear();
             });
         }
         register(){

@@ -29,6 +29,10 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	private static final String DELETE = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionHistPk.cid = :cid AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode";
 	private static final String DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId IN :historyId";
 	private static final String GET_CONTRIBUTION_RATE_BY_HISTORY_ID = "SELECT a from QpbmtContributionRate a WHERE a.contributionRatePk.historyId =:historyId";
+	private static final String GET_CONTRIBUTION_RATE_BY_DATE = "SELECT a from QpbmtContributionRate a WHERE a.contributionRatePk.cid = :cid AND a.contributionRatePk.socialInsuranceOfficeCd = :officeCode AND ( :yearMonth BETWEEN a.startYearMonth AND a.endYearMonth )";
+	private static final String GET_CONTRIBUTION_BY_GRADE_BY_DATE = "SELECT a from QpbmtContributionByGrade a WHERE a.contributionByGradePk.cid = :cid  AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode AND ( :yearMonth BETWEEN a.startYearMonth AND a.endYearMonth )";
+
+
 
 	private ContributionRate toDomain(QpbmtContributionRate contributionRate,
 									  List<QpbmtContributionByGrade> contributionByGrade) {
@@ -63,6 +67,23 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 		List<QpbmtContributionByGrade> qpbmtContributionByGrade = this.queryProxy()
 				.query(GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
 				.setParameter("historyId", historyId).getList();
+		return contributionRate.map(item -> toDomain(item, qpbmtContributionByGrade));
+	}
+
+	@Override
+	public Optional<ContributionRate> getContributionRateByDate(String cid, String officeCode, int yearMonth) {
+		Optional<QpbmtContributionRate> contributionRate = this.queryProxy()
+				.query(GET_CONTRIBUTION_RATE_BY_DATE, QpbmtContributionRate.class)
+				.setParameter("cid",cid)
+				.setParameter("officeCode",officeCode)
+				.setParameter("yearMonth", yearMonth)
+				.getSingle();
+		List<QpbmtContributionByGrade> qpbmtContributionByGrade = this.queryProxy()
+				.query(GET_CONTRIBUTION_BY_GRADE_BY_DATE, QpbmtContributionByGrade.class)
+				.setParameter("cid",cid)
+				.setParameter("officeCode",officeCode)
+				.setParameter("yearMonth", yearMonth)
+				.getList();
 		return contributionRate.map(item -> toDomain(item, qpbmtContributionByGrade));
 	}
 

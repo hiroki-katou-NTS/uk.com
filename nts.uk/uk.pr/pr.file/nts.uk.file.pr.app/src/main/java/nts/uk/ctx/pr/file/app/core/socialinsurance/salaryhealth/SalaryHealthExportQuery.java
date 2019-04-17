@@ -4,5 +4,8 @@ import lombok.Data;
 
 @Data
 public class SalaryHealthExportQuery {
-    private int exportType;
+    private String historyId;
+    private int date;
+    private String socialInsuranceCode;
+    private String socialInsuranceName;
 }

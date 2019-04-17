@@ -24,7 +24,7 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private static final String TEMPLATE_FILE = "report/QMM013.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM013単価名の登録.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM013単価名の登録.pdf";
 
     private static final int COLUMN_START = 1;
     @Inject
@@ -82,7 +82,7 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
                 rowStart++;
             }
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
