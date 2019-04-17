@@ -21,21 +21,20 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
 
     private static final String TEMPLATE_FILE = "report/QMM007会社一律金額の登録.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.pdf";
 
-    private static final String EXTENDSION_PDF = ".pdf";
 
     private static final int MAX_LINE = 36;
 
-    private static final int COLUMN_INDEX_CODE = 1;
-    private static final int COLUMN_INDEX_NAME = 2;
-    private static final int COLUMN_INDEX_DATE = 3;
-    private static final int COLUMN_INDEX_MONEY = 4;
-    private static final int COLUMN_INDEX_ALL = 5;
-    private static final int COLUMN_INDEX_MONTH_SALARY = 6;
-    private static final int COLUMN_INDEX_MONTH_SALARY_PER_DAY = 7;
-    private static final int COLUMN_INDEX_ADAY_PAYEE = 8;
-    private static final int COLUMN_INDEX_HOURLY_DAY = 9;
+    private static final int COLUMN_INDEX_CODE = 2;
+    private static final int COLUMN_INDEX_NAME = 3;
+    private static final int COLUMN_INDEX_DATE = 4;
+    private static final int COLUMN_INDEX_MONEY = 5;
+    private static final int COLUMN_INDEX_ALL = 6;
+    private static final int COLUMN_INDEX_MONTH_SALARY = 7;
+    private static final int COLUMN_INDEX_MONTH_SALARY_PER_DAY = 8;
+    private static final int COLUMN_INDEX_ADAY_PAYEE = 9;
+    private static final int COLUMN_INDEX_HOURLY_DAY = 10;
 
     private static final int NUMBER_ROW_HEADER = 2;
 
@@ -50,7 +49,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             ws.setName(TextResource.localize("QMM007_49"));
             this.writeFileExcel(ws,exportData,companyName);
             reportContext.processDesigner();
-            reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName("QMM007会社一律金額の登録.pdf")));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
