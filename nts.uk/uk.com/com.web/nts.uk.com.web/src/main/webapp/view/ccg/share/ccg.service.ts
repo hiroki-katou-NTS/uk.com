@@ -1,12 +1,11 @@
 module nts.uk.com.view.ccg.share.ccg {
-    
+
 
     export module service {
 
         // Service paths.
         var servicePath = {
             searchEmployeeByLogin: "query/employee/find/currentlogin",
-            searchDepartmentOfEmployee: "basic/organization/employee/departmentemp",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
@@ -24,7 +23,7 @@ module nts.uk.com.view.ccg.share.ccg {
             searchByCode: "query/employee/find/code",
             searchByEntryDate: "query/employee/find/entrydate",
             searchByRetirementDate: "query/employee/find/retirementdate",
-        }
+        };
 
         /**
          * Find regulation info employee
@@ -139,16 +138,11 @@ module nts.uk.com.view.ccg.share.ccg {
          * call service get employee by login
          */
         
-        export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<model.EmployeeSearchDto> {
-            return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
+        export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {
+            return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, query);
         }
 
-        /**
-         * search Department of Employee
-         */
-        export function searchDepartmentOfEmployee(baseDate: Date): JQueryPromise<string[]> {
-            return nts.uk.request.ajax('com', servicePath.searchDepartmentOfEmployee, baseDate);
-        }
+
 
         /**
          * search WorkPlace of Employee

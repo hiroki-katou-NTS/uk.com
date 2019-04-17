@@ -9,14 +9,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
-import nts.uk.query.app.employee.SearchEmployeeQuery;
+import nts.uk.query.app.employee.*;
 
 /**
  * The Class RegulationInfoEmployeeWs.
@@ -97,8 +95,8 @@ public class RegulationInfoEmployeeWs {
 	 */
 	@POST
 	@Path("find/currentlogin")
-	public RegulationInfoEmployeeDto findCurrentLoginEmployee(GeneralDateTime baseDate) {
-		return this.finder.findCurrentLoginEmployeeInfo(baseDate);
+	public RegulationInfoEmployeeDto findCurrentLoginEmployee(LoginEmployeeQuery query) {
+		return this.finder.findCurrentLoginEmployeeInfo(query);
 	}
 
 }
