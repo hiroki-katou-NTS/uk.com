@@ -33,7 +33,9 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             printData(worksheets, exportData.getData(), exportData.getCompanyName());
-            worksheets.removeAt(0);
+            if(exportData.getData().size() > 0) {
+                worksheets.removeAt(0);
+            }
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
