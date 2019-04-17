@@ -43,6 +43,6 @@ public class SalaryHealthExportService extends ExportService<SalaryHealthExportQ
 		ResponseWelfarePension exportData =  feeFinder.findAllWelfarePensionAndRate(startCommandHealth,false);
 		List<CusWelfarePensionStandardDto> list = feeFinder.findAllWelfarePensionAndContributionRate(startCommandHealth,false,query.getDate());
 		SalaryHealthExportData data = new SalaryHealthExportData(exportData, companyName);
-		salaryHealthFileGenerator.generate(exportServiceContext.getGeneratorContext(), data, list);
+		salaryHealthFileGenerator.generate(exportServiceContext.getGeneratorContext(), data, list,query.getSocialInsuranceCode(),query.getSocialInsuranceName());
 	}
 }

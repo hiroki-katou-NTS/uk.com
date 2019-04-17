@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm008.f {
 
             exportExcel(): void {
                 let self = this;
-                let data = { historyId: self.historyId(),date : self.startMonth(),socialInsuranceCode: self.officeCode() };
+                let data = { historyId: self.historyId(),date : self.startMonth(),socialInsuranceCode: self.officeCode(), socialInsuranceName: self.socialInsuranceName() };
                 nts.uk.ui.block.grayout();
                 service.exportExcel(data).done(function() {
                 }).fail(function(error) {

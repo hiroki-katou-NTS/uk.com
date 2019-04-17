@@ -7,4 +7,5 @@ public class SalaryHealthExportQuery {
     private String historyId;
     private int date;
     private String socialInsuranceCode;
+    private String socialInsuranceName;
 }

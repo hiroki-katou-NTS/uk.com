@@ -6,5 +6,5 @@ import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.CusWelfar
 import java.util.List;
 
 public interface SalaryHealthFileGenerator {
-    void generate(FileGeneratorContext fileContext, SalaryHealthExportData data,List<CusWelfarePensionStandardDto> list);
+    void generate(FileGeneratorContext fileContext, SalaryHealthExportData data,List<CusWelfarePensionStandardDto> list,String socialInsuranceCode, String socialInsuranceName);
 }
