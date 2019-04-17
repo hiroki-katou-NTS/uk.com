@@ -1,7 +1,7 @@
 package nts.uk.query.ac.department;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
+import nts.uk.ctx.bs.employee.pub.deparment.master.DepartmentPub;
 import nts.uk.query.model.department.DepartmentAdapter;
 import nts.uk.query.model.department.DepartmentInfoImport;
 
