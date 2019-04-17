@@ -36,13 +36,13 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
     private static final int COLUMN_INDEX_ADAY_PAYEE = 9;
     private static final int COLUMN_INDEX_HOURLY_DAY = 10;
 
-    private static final int NUMBER_ROW_HEADER = 2;
+    private static final int NUMBER_ROW_HEADER = 3;
 
 
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<Object[]> exportData, String companyName) {
-        try(AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
+        try(AsposeCellsReportContext reportContext = this.createContext("report/QMM007会社一律金額の登録.xlsx")){
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
             Worksheet ws = wsc.get(0);
@@ -60,7 +60,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         int count = 0;
         int numberRow = 39;
         int sourceRowIndex = 0;
-        int destinationRowIndex = 38;
+        int destinationRowIndex = 39;
 
         // Set print page
         PageSetup pageSetup = ws.getPageSetup();
@@ -71,9 +71,9 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
-        for(int i = 0; i < Math.round(exportData.size()/MAX_LINE) ; i ++){
+        for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
             try {
-                ws.getCells().copyRows(ws.getCells(),sourceRowIndex,destinationRowIndex,numberRow );
+                ws.getCells().copyRows(ws.getCells(),sourceRowIndex,destinationRowIndex,numberRow);
             }catch (Exception e){
 
             }
@@ -81,6 +81,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             sourceRowIndex = sourceRowIndex + 38;
             destinationRowIndex = destinationRowIndex + 38;
         }
+ 
         for(Object[] entity : exportData){
             if(count == MAX_LINE){
                 pageBreaks.add(rowIndex);
