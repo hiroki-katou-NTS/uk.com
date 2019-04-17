@@ -52,8 +52,8 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="C4_2" data-bind="enable: $root.errors.isEmpty" class="proceed x-large">#{i18n.getText('CMM011-0_27')}</button>
-            <button id="C4_3" class="large">#{i18n.getText('CMM011-0_28')}</button>
+            <button id="C4_2" data-bind="enable: $root.errors.isEmpty, click: Create" class="proceed x-large">#{i18n.getText('CMM011-0_27')}</button>
+            <button id="C4_3" class="large" data-bind="click: Close">#{i18n.getText('CMM011-0_28')}</button>
         </div>
     </ui:define>
 </ui:composition>
