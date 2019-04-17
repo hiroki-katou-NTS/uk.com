@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +64,7 @@ public class WorkplaceExportService {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<WorkplaceInformation> getWorkplaceInforFromWkpIds(String companyId, List<String> listWorkplaceId,
+	public List<WorkplaceInforParam> getWorkplaceInforFromWkpIds(String companyId, List<String> listWorkplaceId,
 			GeneralDate baseDate) {
 		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(companyId);
 		if (!optWkpConfig.isPresent())
@@ -76,18 +75,23 @@ public class WorkplaceExportService {
 		if (!optWkpHistory.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem wkpHistory = optWkpHistory.get();
-		List<WorkplaceInformation> result = wkpInforRepo.getActiveWorkplaceByWkpIds(companyId, wkpHistory.identifier(),
-				listWorkplaceId);
+		List<WorkplaceInforParam> result = wkpInforRepo
+				.getActiveWorkplaceByWkpIds(companyId, wkpHistory.identifier(), listWorkplaceId).stream()
+				.map(w -> new WorkplaceInforParam(w.getWorkplaceId(), w.getHierarchyCode().v(),
+						w.getWorkplaceCode().v(), w.getWorkplaceName().v(), w.getWorkplaceDisplayName().v(),
+						w.getWorkplaceGeneric().v(),
+						w.getWorkplaceExternalCode().isPresent() ? w.getWorkplaceExternalCode().get().v() : null))
+				.collect(Collectors.toList());
 		List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
 		List<String> listWkpIdNoResult = listWorkplaceId.stream().filter(i -> !listAccquiredWkpId.contains(i))
 				.collect(Collectors.toList());
 		if (!listWkpIdNoResult.isEmpty()) {
-			List<WorkplaceInformation> listPastWkpInfor = this.getPastWorkplaceInfor(companyId, wkpHistory.identifier(),
+			List<WorkplaceInforParam> listPastWkpInfor = this.getPastWorkplaceInfor(companyId, wkpHistory.identifier(),
 					listWkpIdNoResult);
 			result.addAll(listPastWkpInfor);
 		}
 		result.sort((e1, e2) -> {
-			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+			return e1.getHierarchyCode().compareTo(e2.getHierarchyCode());
 		});
 		return result;
 	}
@@ -100,7 +104,7 @@ public class WorkplaceExportService {
 	 * @param listWorkplaceId
 	 * @return
 	 */
-	public List<WorkplaceInformation> getPastWorkplaceInfor(String companyId, String historyId,
+	public List<WorkplaceInforParam> getPastWorkplaceInfor(String companyId, String historyId,
 			List<String> listWorkplaceId) {
 		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(companyId);
 		if (!optWkpConfig.isPresent())
@@ -113,18 +117,28 @@ public class WorkplaceExportService {
 		DateHistoryItem wkpHistory = optWkpHistory.get();
 		int currentIndex = wkpConfig.items().indexOf(wkpHistory);
 		int size = wkpConfig.items().size();
-		List<WorkplaceInformation> result = new ArrayList<>();
+		List<WorkplaceInforParam> result = new ArrayList<>();
 		for (int i = currentIndex + 1; i < size; i++) {
-			result.addAll(wkpInforRepo.getActiveWorkplaceByWkpIds(companyId, wkpConfig.items().get(i).identifier(),
-					listWorkplaceId));
+			result.addAll(wkpInforRepo
+					.getActiveWorkplaceByWkpIds(companyId, wkpConfig.items().get(i).identifier(), listWorkplaceId)
+					.stream()
+					.map(w -> new WorkplaceInforParam(w.getWorkplaceId(), w.getHierarchyCode().v(),
+							w.getWorkplaceCode().v(), "マスタ未登録", "マスタ未登録", "マスタ未登録",
+							w.getWorkplaceExternalCode().isPresent() ? w.getWorkplaceExternalCode().get().v() : null))
+					.collect(Collectors.toList()));
 			List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
 			listWorkplaceId = listWorkplaceId.stream().filter(id -> !listAccquiredWkpId.contains(id))
 					.collect(Collectors.toList());
 			if (listWorkplaceId.isEmpty())
 				break;
 		}
+		if (!listWorkplaceId.isEmpty()) {
+			result.addAll(listWorkplaceId.stream()
+					.map(w -> new WorkplaceInforParam(w, "コード削除済", "コード削除済", "マスタ未登録", "マスタ未登録", "マスタ未登録", null))
+					.collect(Collectors.toList()));
+		}
 		result.sort((e1, e2) -> {
-			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+			return e1.getHierarchyCode().compareTo(e2.getHierarchyCode());
 		});
 		return result;
 	}
@@ -142,7 +156,7 @@ public class WorkplaceExportService {
 		Optional<WorkplaceInformation> optParentWkp = listWkp.stream()
 				.filter(w -> w.getWorkplaceId().equals(parentWorkplaceId)).findFirst();
 		if (!optParentWkp.isPresent())
-			return Collections.emptyList();
+			return new ArrayList<>();
 		WorkplaceInformation parentWkp = optParentWkp.get();
 		listWkp.remove(parentWkp);
 		return listWkp.stream().filter(w -> w.getHierarchyCode().v().startsWith(parentWkp.getHierarchyCode().v()))
@@ -158,8 +172,8 @@ public class WorkplaceExportService {
 	 * @return
 	 */
 	public List<String> getWorkplaceIdAndChildren(String companyId, String historyId, String workplaceId) {
-		List<String> result = Arrays.asList(workplaceId);
-		result.addAll(this.getAllChildWorkplaceId(companyId, historyId, workplaceId));
+		List<String> result = this.getAllChildWorkplaceId(companyId, historyId, workplaceId);
+		result.add(workplaceId);
 		return result;
 	}
 

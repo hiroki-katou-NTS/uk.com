@@ -213,7 +213,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 this.historyId = params.historyId;
                 this.startDate = params.startDate;
                 this.endDate = params.endDate;
-                this.displayText = params.startDate + getText("CMM011-0_25") + params.endDate;
+                this.displayText = params.startDate + " " + getText("CMM011_125") + " " + params.endDate;
             }
         }
     }

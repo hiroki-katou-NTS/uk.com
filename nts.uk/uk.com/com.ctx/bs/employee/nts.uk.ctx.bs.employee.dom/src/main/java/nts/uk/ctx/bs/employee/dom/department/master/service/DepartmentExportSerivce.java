@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.department.master.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class DepartmentExportSerivce {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<DepartmentInformation> getDepartmentInforFromDepIds(String companyId, List<String> listDepartmentId,
+	public List<DepartmentInforParam> getDepartmentInforFromDepIds(String companyId, List<String> listDepartmentId,
 			GeneralDate baseDate) {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
@@ -74,8 +73,13 @@ public class DepartmentExportSerivce {
 		if (!optDepHist.isPresent())
 			return Collections.emptyList();
 		DateHistoryItem depHist = optDepHist.get();
-		List<DepartmentInformation> result = depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(),
-				listDepartmentId);
+		List<DepartmentInforParam> result = depInforRepo
+				.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId).stream()
+				.map(d -> new DepartmentInforParam(d.getDepartmentId(), d.getHierarchyCode().v(),
+						d.getDepartmentCode().v(), d.getDepartmentName().v(), d.getDepartmentDisplayName().v(),
+						d.getDepartmentGeneric().v(),
+						d.getDepartmentExternalCode().isPresent() ? d.getDepartmentExternalCode().get().v() : null))
+				.collect(Collectors.toList());
 		List<String> listAccquiredId = result.stream().map(i -> i.getDepartmentId()).collect(Collectors.toList());
 		List<String> listDepIdNoResult = listDepartmentId.stream().filter(i -> !listAccquiredId.contains(i))
 				.collect(Collectors.toList());
@@ -83,7 +87,7 @@ public class DepartmentExportSerivce {
 			result.addAll(this.getPastDepartmentInfor(companyId, depHist.identifier(), listDepIdNoResult));
 		}
 		result.sort((e1, e2) -> {
-			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+			return e1.getHierarchyCode().compareTo(e2.getHierarchyCode());
 		});
 		return result;
 	}
@@ -96,7 +100,7 @@ public class DepartmentExportSerivce {
 	 * @param listDepartmentId
 	 * @return
 	 */
-	public List<DepartmentInformation> getPastDepartmentInfor(String companyId, String depHistId,
+	public List<DepartmentInforParam> getPastDepartmentInfor(String companyId, String depHistId,
 			List<String> listDepartmentId) {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
@@ -109,17 +113,27 @@ public class DepartmentExportSerivce {
 		DateHistoryItem depHist = optDepHist.get();
 		int currentIndex = depConfig.items().indexOf(depHist);
 		int size = depConfig.items().size();
-		List<DepartmentInformation> result = new ArrayList<>();
+		List<DepartmentInforParam> result = new ArrayList<>();
 		for (int i = currentIndex + 1; i < size; i++) {
-			result.addAll(depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId));
+			result.addAll(depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId)
+					.stream()
+					.map(d -> new DepartmentInforParam(d.getDepartmentId(), d.getHierarchyCode().v(),
+							d.getDepartmentCode().v(), "マスタ未登録", "マスタ未登録", "マスタ未登録",
+							d.getDepartmentExternalCode().isPresent() ? d.getDepartmentExternalCode().get().v() : null))
+					.collect(Collectors.toList()));
 			List<String> listAccquiredId = result.stream().map(d -> d.getDepartmentId()).collect(Collectors.toList());
 			listDepartmentId = listDepartmentId.stream().filter(id -> !listAccquiredId.contains(id))
 					.collect(Collectors.toList());
 			if (listDepartmentId.isEmpty())
 				break;
 		}
+		if (!listDepartmentId.isEmpty()) {
+			result.addAll(listDepartmentId.stream()
+					.map(d -> new DepartmentInforParam(d, "コード削除済", "コード削除済", "マスタ未登録", "マスタ未登録", "マスタ未登録", null))
+					.collect(Collectors.toList()));
+		}
 		result.sort((e1, e2) -> {
-			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+			return e1.getHierarchyCode().compareTo(e2.getHierarchyCode());
 		});
 		return result;
 	}
@@ -137,7 +151,7 @@ public class DepartmentExportSerivce {
 		Optional<DepartmentInformation> optParentDep = listDep.stream()
 				.filter(d -> d.getDepartmentId().equals(parentDepartmentId)).findFirst();
 		if (!optParentDep.isPresent())
-			return Collections.emptyList();
+			return new ArrayList<>();
 		DepartmentInformation parentDep = optParentDep.get();
 		listDep.remove(parentDep);
 		return listDep.stream().filter(d -> d.getHierarchyCode().v().startsWith(parentDep.getHierarchyCode().v()))
@@ -153,8 +167,8 @@ public class DepartmentExportSerivce {
 	 * @return
 	 */
 	public List<String> getDepartmentIdAndChildren(String companyId, String historyId, String departmentId) {
-		List<String> result = Arrays.asList(departmentId);
-		result.addAll(this.getAllChildDepartmentId(companyId, historyId, departmentId));
+		List<String> result = this.getAllChildDepartmentId(companyId, historyId, departmentId);
+		result.add(departmentId);
 		return result;
 	}
 }
