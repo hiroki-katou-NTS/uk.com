@@ -112,6 +112,8 @@ public class CreatAppAbsenceCommand {
 	private boolean displayEndDateFlg;
 	//specHoliday
 	private SpecHolidayCommand specHd;
-	private boolean checkContradiction;
 	
+	private boolean checkOver1Year;
+	
+	private boolean checkContradiction;
 }
