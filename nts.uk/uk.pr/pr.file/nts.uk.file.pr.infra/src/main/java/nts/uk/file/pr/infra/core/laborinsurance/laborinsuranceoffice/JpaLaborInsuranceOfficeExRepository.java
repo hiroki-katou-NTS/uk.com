@@ -24,8 +24,8 @@ public class JpaLaborInsuranceOfficeExRepository extends JpaRepository implement
         sql.append("    REPRESENTATIVE_POSITION,");
         sql.append("    PHONE_NUMBER,");
         sql.append("    ADDRESS1,");
-        sql.append("    ADDRESS_KANA1,");
         sql.append("    ADDRESS2,");
+        sql.append("    ADDRESS_KANA1,");
         sql.append("    ADDRESS_KANA2,");
         sql.append("    CITY_CODE,");
         sql.append("    EMPLOYMENT_OFFFICE_CODE,");

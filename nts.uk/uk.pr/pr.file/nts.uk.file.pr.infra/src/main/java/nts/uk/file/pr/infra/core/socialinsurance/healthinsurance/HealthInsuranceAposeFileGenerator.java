@@ -32,98 +32,97 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            reportContext.setHeader(0, exportData.getCompanyName());
-            String time = GeneralDateTime.now().toString();
-            reportContext.setHeader(2,  time  + "\n page &P");
-            Worksheet firstSheet = worksheets.get(0);
-            Cells cells = firstSheet.getCells();
-            cells.get(0,1).setValue("対象年月：　"+ convertYearMonth(exportData.getStartDate()));
-            int pageHealthyData = exportData.getHealthMonth().size() / RECORD_IN_PAGE;
-            int pageBonusData = exportData.getBonusHealth().size() / RECORD_IN_PAGE;
-            createTable(firstSheet, pageHealthyData, pageBonusData);
-            printDataHealthy(firstSheet, exportData.getHealthMonth());
+            int pageHealthyData = exportData.getHealthMonth().size() / RECORD_IN_PAGE + 1;
+            int pageBonusData = exportData.getBonusHealth().size() / RECORD_IN_PAGE + 1;
+            createTableHealthy(worksheets, pageHealthyData, exportData.getStartDate(), exportData.getCompanyName());
+            createTableBonus(worksheets, pageBonusData, exportData.getStartDate(), exportData.getCompanyName());
+            printDataHealthy(worksheets, exportData.getHealthMonth());
+            printDataBonus(worksheets, exportData.getBonusHealth());
+            worksheets.removeAt(0);
+            worksheets.removeAt("sheetName2");
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
-
+            /*reportContext.saveAsPdf(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));*/
+            reportContext.saveAsExcel(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private String convertYearMonth(Integer startYearMonth){
-        return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
+        return startYearMonth.toString().substring(0,4) + "/" + startYearMonth.toString().substring(4,6);
     }
 
-    private void createTable(Worksheet worksheet,int pageMonth, int pageBonus){
-        Cells cells = worksheet.getCells();
+    private void createTableHealthy(WorksheetCollection worksheets,int pageMonth, int startDate, String companyName) throws Exception {
+        worksheets.get(worksheets.addCopy(0)).setName("sheetName1");
+        Worksheet worksheet = worksheets.get("sheetName1");
+        worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
+        settingPage(worksheet, startDate, companyName);
+        for(int i = 0 ; i< pageMonth; i++) {
+            worksheets.get(worksheets.addCopy("sheetName1")).setName("sheetName1"+ i);
+        }
+    }
+
+    private void createTableBonus(WorksheetCollection worksheets,int pageBonus, int startDate, String companyName) throws Exception {
+        worksheets.get(worksheets.addCopy(0)).setName("sheetName2");
+        Worksheet worksheet = worksheets.get("sheetName2");
+        worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
+        worksheet.getCells().deleteRows(ROW_IN_PAGE, ROW_IN_PAGE);
+        settingPage(worksheet, startDate, companyName);
+        for(int i = 0 ; i< pageBonus; i++) {
+            worksheets.get(worksheets.addCopy("sheetName2")).setName("sheetName2"+ i);
+        }
+    }
+
+    private void settingPage(Worksheet worksheet, int startDate, String companyName){
+        worksheet.getCells().get(0,1).setValue("対象年月：　"+ convertYearMonth(startDate));
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + "dfdf");
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + companyName);
         pageSetup.setHeader(1,"労働保険事業所の登録");
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
         pageSetup.setFitToPagesTall(1);
         pageSetup.setFitToPagesWide(1);
-        int indexMonth = ROW_IN_PAGE - 1;
-        int indexBonus = (ROW_IN_PAGE - 1) * (pageMonth + 2);
-        for(int i = 0 ; i< pageBonus; i++) {
-                try {
-                    cells.copyRows(cells, ROW_IN_PAGE - 1, indexBonus , ROW_IN_PAGE);
-                    indexBonus = indexBonus + ROW_IN_PAGE;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-        }
-        if( pageBonus == 0 && pageMonth != 0) {
-            try {
-                cells.copyRows(cells, ROW_IN_PAGE , indexBonus + 2 , ROW_IN_PAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        for(int i = 0 ; i< pageMonth; i++) {
-            try {
-                cells.copyRows(cells, 0, indexMonth , ROW_IN_PAGE);
-                indexMonth = indexMonth + ROW_IN_PAGE - 1;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
-    private void printDataHealthy(Worksheet worksheet, List<Object[]> data) {
-        Cells cells = worksheet.getCells();
+    private void printDataHealthy(WorksheetCollection worksheets, List<Object[]> data) {
         int numColumn = 12;
         int rowStart = 3;
         int columnStart = 1;
-        fillData(cells, data, numColumn, rowStart, columnStart);
+        fillData(worksheets, data, numColumn, columnStart, "sheetName1");
     }
 
-    private void printDataBonus(Worksheet worksheet, List<Object[]> data, int rowStart) {
-        Cells cells = worksheet.getCells();
+    private void printDataBonus(WorksheetCollection worksheets, List<Object[]> data) {
         int numColumn = 12;
         int columnStart = 1;
-        fillData(cells, data, numColumn, rowStart, columnStart);
+        fillData(worksheets, data, numColumn, columnStart, "sheetName2");
     }
 
-    private void fillData(Cells cells, List<Object[]> data, int numColumn, int startRow, int startColumn) {
+    private void fillData(WorksheetCollection worksheets, List<Object[]> data, int numColumn, int startColumn, String sheetName) {
         try {
+            int rowStart = 3;
+            Worksheet sheet = worksheets.get(sheetName);
+            Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
+                if(i % RECORD_IN_PAGE == 0) {
+                    sheet = worksheets.get(sheetName + i/RECORD_IN_PAGE);
+                    cells = sheet.getCells();
+                    rowStart = 3;
+                }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
                     if(j == 6 || j == 11) {
-                        cells.get(i + startRow, j + startColumn).setValue(dataRow[j] != null
+                        cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null
                                 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), InsurancePremiumFractionClassification.class).nameId) : "");
                     } else {
-                        cells.get(i + startRow, j + startColumn).setValue(dataRow[j] != null ? dataRow[j] : "");
+                        cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? dataRow[j] : "");
                     }
                 }
-                if((i + 1) % (RECORD_IN_PAGE) == 0 && i > 0) {
-                    startRow = startRow + 3;
-                }
+                rowStart++;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
