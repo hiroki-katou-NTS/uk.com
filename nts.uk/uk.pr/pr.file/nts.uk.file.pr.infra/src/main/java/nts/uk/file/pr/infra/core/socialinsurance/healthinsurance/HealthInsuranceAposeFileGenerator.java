@@ -1,9 +1,6 @@
 package nts.uk.file.pr.infra.core.socialinsurance.healthinsurance;
 
-import com.aspose.cells.Cells;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
@@ -16,13 +13,16 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Stateless
 public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements HealthInsuranceFileGenerator {
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
-    private static final String REPORT_FILE_EXTENSION = ".xlsx";
+    private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final String FILE_NAME = "QMM008-社会保険事業所の登録_健康保険料率一覧";
     private static final int ROW_IN_PAGE = 49;
     private static final int RECORD_IN_PAGE = 45;
@@ -36,15 +36,15 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
             String time = GeneralDateTime.now().toString();
             reportContext.setHeader(2,  time  + "\n page &P");
             Worksheet firstSheet = worksheets.get(0);
+            Cells cells = firstSheet.getCells();
+            cells.get(0,1).setValue("対象年月：　"+ convertYearMonth(exportData.getStartDate()));
             int pageHealthyData = exportData.getHealthMonth().size() / RECORD_IN_PAGE;
             int pageBonusData = exportData.getBonusHealth().size() / RECORD_IN_PAGE;
             createTable(firstSheet, pageHealthyData, pageBonusData);
             printDataHealthy(firstSheet, exportData.getHealthMonth());
-
-            firstSheet.setName(TextResource.localize("QMM008_212"));
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(generatorContext,
+            reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
 
         } catch (Exception e) {
@@ -52,8 +52,22 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         }
     }
 
+    private String convertYearMonth(Integer startYearMonth){
+        return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
+    }
+
     private void createTable(Worksheet worksheet,int pageMonth, int pageBonus){
         Cells cells = worksheet.getCells();
+        PageSetup pageSetup = worksheet.getPageSetup();
+        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + "dfdf");
+        pageSetup.setHeader(1,"労働保険事業所の登録");
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+        String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
+        pageSetup.setFitToPagesTall(1);
+        pageSetup.setFitToPagesWide(1);
         int indexMonth = ROW_IN_PAGE - 1;
         int indexBonus = (ROW_IN_PAGE - 1) * (pageMonth + 2);
         for(int i = 0 ; i< pageBonus; i++) {
@@ -70,9 +84,6 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        if(pageMonth > 0){
-            cells.deleteRows(ROW_IN_PAGE , ROW_IN_PAGE);
         }
         for(int i = 0 ; i< pageMonth; i++) {
             try {

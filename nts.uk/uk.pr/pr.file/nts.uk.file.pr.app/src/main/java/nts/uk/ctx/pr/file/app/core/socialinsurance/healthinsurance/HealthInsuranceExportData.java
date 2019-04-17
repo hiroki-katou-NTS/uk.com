@@ -15,4 +15,5 @@ public class HealthInsuranceExportData {
     private List<Object[]> healthMonth;
     private List<Object[]> bonusHealth;
     private String companyName;
+    private int startDate;
 }

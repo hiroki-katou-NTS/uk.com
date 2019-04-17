@@ -11,14 +11,17 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Stateless
 public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements LaborInsuranceFileGenerator {
     private static final String TEMPLATE_FILE = "report/QMM010労働保険事業所の登録.xlsx";
     private static final String FILE_NAME = "QMM010労働保険事業所の登録_";
-    private static final String REPORT_FILE_EXTENSION = ".xlsx";
+    private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final int NUM_ROW = 8;
     private static final int NUM_LINE = 19;
 
@@ -29,16 +32,14 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            Worksheet normalSheet = worksheets.get(0);
-            reportContext.setHeader(0,exportData.getCompanyName());
-            //reportContext.setHeader(2, GeneralDateTime.now().toString());
-            String time = GeneralDateTime.now().toString();
-            reportContext.setHeader(2,  time  + "\n page &P");
-            printData(normalSheet, exportData.getData(), TextResource.localize("QMM010_36"));
+            printData(worksheets, exportData.getData(), exportData.getCompanyName());
+            worksheets.removeAt(0);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(generatorContext,
+            reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+            /*reportContext.saveAsExcel(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));*/
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -54,23 +55,32 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
         return phone.toString();
     }
 
-    private void printData(Worksheet worksheet, List<Object[]> data,
-                           String sheetName) {
+    private void printData(WorksheetCollection worksheets, List<Object[]> data,
+                           String companyName) {
         try {
-            worksheet.setName(sheetName);
+            Worksheet worksheet = worksheets.get(0);
             Cells cells = worksheet.getCells();
             int startIndex = 1;
-            int copyToRow = NUM_LINE - 1;
             // Main Data
-            for(int page = 2; page < data.size() ; page += 2) {
-                cells.copyRows(cells, 0, copyToRow , NUM_LINE);
-                copyToRow = copyToRow + NUM_LINE - 1;
+            for(int page = 0; page < data.size() ; page += 2) {
+                worksheets.get(worksheets.addCopy(0)).setName("sheetName" + page/2);
+                worksheet = worksheets.get("sheetName" + page/2);
+                PageSetup pageSetup = worksheet.getPageSetup();
+                pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+                pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+                pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + companyName);
+                pageSetup.setHeader(1,"労働保険事業所の登録");
+                DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+                String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+                pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
+                pageSetup.setFitToPagesTall(1);
+                pageSetup.setFitToPagesWide(1);
             }
             for (int i = 0; i < data.size(); i++) {
                 if( i % 2 == 0) {
-                    if(i>0) {
-                        startIndex = startIndex + 2;
-                    }
+                    Worksheet sheet = worksheets.get("sheetName" + i/2);
+                    cells = sheet.getCells();
+                    startIndex = 1;
                 }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < NUM_ROW; j++) {
@@ -89,7 +99,6 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
                     }
                     if(j == 3) {
                         cells.get(startIndex + j, 2).setValue(Objects.toString(dataRow[7], ""));
-
                     }
                     if(j == 4) {
                         cells.get(startIndex + j, 2).setValue(Objects.toString(dataRow[8], ""));
@@ -106,7 +115,6 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
                 }
                 startIndex = startIndex + NUM_ROW ;
             }
-           // cells.deleteRows(startIndex - 1, NUM_ROW + 1);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

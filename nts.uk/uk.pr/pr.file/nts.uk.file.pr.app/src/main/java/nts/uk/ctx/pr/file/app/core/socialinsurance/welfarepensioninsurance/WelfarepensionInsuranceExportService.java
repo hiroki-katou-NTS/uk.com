@@ -33,7 +33,7 @@ public class WelfarepensionInsuranceExportService extends ExportService<Welfarep
 		List<Object[]> welfarepensioninsuranceBonus = new ArrayList<>();
 		welfarepensioninsuranceEmp = welfarepensionInsuranceRepository.getWelfarepensionInsuranceEmp(cid, exportServiceContext.getQuery().getStartDate());
 		welfarepensioninsuranceBonus = welfarepensionInsuranceRepository.getWelfarepensionInsuranceBonus(cid, exportServiceContext.getQuery().getStartDate());
-		WelfarepensionInsuranceExportData data = new WelfarepensionInsuranceExportData(welfarepensioninsuranceEmp, welfarepensioninsuranceBonus, companyName);
+		WelfarepensionInsuranceExportData data = new WelfarepensionInsuranceExportData(welfarepensioninsuranceEmp, welfarepensioninsuranceBonus, companyName, exportServiceContext.getQuery().getStartDate());
 		welfarepensionInsuranceFileGenerator.generate(exportServiceContext.getGeneratorContext(), data);
 	}
 }
