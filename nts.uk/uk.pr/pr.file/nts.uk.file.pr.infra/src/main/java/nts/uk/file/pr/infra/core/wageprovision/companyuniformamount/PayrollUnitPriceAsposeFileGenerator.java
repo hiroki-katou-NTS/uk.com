@@ -21,19 +21,20 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
 
     private static final String TEMPLATE_FILE = "report/QMM007会社一律金額の登録.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.pdf";
+
 
     private static final int MAX_LINE = 36;
 
-    private static final int COLUMN_INDEX_CODE = 1;
-    private static final int COLUMN_INDEX_NAME = 2;
-    private static final int COLUMN_INDEX_DATE = 3;
-    private static final int COLUMN_INDEX_MONEY = 4;
-    private static final int COLUMN_INDEX_ALL = 5;
-    private static final int COLUMN_INDEX_MONTH_SALARY = 6;
-    private static final int COLUMN_INDEX_MONTH_SALARY_PER_DAY = 7;
-    private static final int COLUMN_INDEX_ADAY_PAYEE = 8;
-    private static final int COLUMN_INDEX_HOURLY_DAY = 9;
+    private static final int COLUMN_INDEX_CODE = 2;
+    private static final int COLUMN_INDEX_NAME = 3;
+    private static final int COLUMN_INDEX_DATE = 4;
+    private static final int COLUMN_INDEX_MONEY = 5;
+    private static final int COLUMN_INDEX_ALL = 6;
+    private static final int COLUMN_INDEX_MONTH_SALARY = 7;
+    private static final int COLUMN_INDEX_MONTH_SALARY_PER_DAY = 8;
+    private static final int COLUMN_INDEX_ADAY_PAYEE = 9;
+    private static final int COLUMN_INDEX_HOURLY_DAY = 10;
 
     private static final int NUMBER_ROW_HEADER = 2;
 
@@ -48,7 +49,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             ws.setName(TextResource.localize("QMM007_49"));
             this.writeFileExcel(ws,exportData,companyName);
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +70,6 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-
 
         for(int i = 0; i < Math.round(exportData.size()/MAX_LINE) ; i ++){
             try {
