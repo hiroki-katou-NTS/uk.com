@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WelfarepensionInsuranceExportData {
-    private List<Object[]> data;
+    private List<Object[]> welfarepensionInsuranceEmp;
+    private List<Object[]> welfarepensionInsuranceBonus;
     private String companyName;
+    private int startDate;
 }

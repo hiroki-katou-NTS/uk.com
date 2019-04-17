@@ -7,20 +7,11 @@ module nts.uk.pr.view.qmm008.d.service {
         update: "ctx/pr/core/socialinsurance/socialinsuranceoffice/update",
         create: "ctx/pr/core/socialinsurance/socialinsuranceoffice/create",
         deleteOffice: "ctx/pr/core/socialinsurance/socialinsuranceoffice/remove",
-        exportExcel: "file/core/socialinsurance/export"
+        exportExcel: "file/core/socialinsurance/socialinsuranceoffice/export"
     }
 
-    export function exportExcel(type: number): JQueryPromise<any> {
-        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = "QMM008";
-        if (program.length > 1){
-            program.shift();
-            domainType = domainType + program.join(" ");
-        }
-        let data = {
-            exportType: type
-        }
-        return nts.uk.request.exportFile( paths.exportExcel, data);
+    export function exportExcel(): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportExcel);
     }
 
     export function defaultData(): JQueryPromise<any> {

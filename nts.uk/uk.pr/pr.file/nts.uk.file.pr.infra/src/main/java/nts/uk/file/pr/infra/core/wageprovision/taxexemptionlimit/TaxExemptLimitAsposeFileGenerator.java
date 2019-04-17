@@ -26,7 +26,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
 
     private static final String TEMPLATE_FILE = "report/QMM023.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM023-非課税限度額の登録.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM023-非課税限度額の登録.pdf";
 
     private static final int COLUMN_START_1= 1;
     private static final int COLUMN_START_2 = 5;
@@ -57,7 +57,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             Cells cells = ws.getCells();
             //break page
             HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-            int page =  exportData.size() / 72;
+            int page =  (exportData.size() / 72);
             boolean isFirst = (page == 1 ) && page%72 == 0 ? true : false;
             int countElement = 0;
             boolean pageThua = page%72 != 0 ? true : false;
@@ -65,8 +65,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                 page++;
             }
             for(int i = 0 ; i < page ; i++){
-
-                if(!isFirst){
+                if(!isFirst && i < page-1){
                     ws.getCells().copyRows(cells,0, 39*(i+1), 39 );
                     pageBreaks.add(39*(i+1));
                 }
@@ -97,7 +96,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                 }
             }
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

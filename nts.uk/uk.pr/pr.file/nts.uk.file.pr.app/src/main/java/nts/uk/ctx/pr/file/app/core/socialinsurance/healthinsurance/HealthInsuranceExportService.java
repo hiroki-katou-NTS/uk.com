@@ -34,7 +34,7 @@ public class HealthInsuranceExportService extends ExportService<HealthInsuranceE
 		List<Object[]> bonusHealthInsuranceMonth = new ArrayList<>();
 		healthInsuranceMonth = healthInsuranceRepository.getHeathyInsuranceMonth(cid, exportServiceContext.getQuery().startDate);
 		bonusHealthInsuranceMonth = healthInsuranceRepository.getBonusHeathyInsurance(cid, exportServiceContext.getQuery().startDate);
-		HealthInsuranceExportData data = new HealthInsuranceExportData(healthInsuranceMonth,bonusHealthInsuranceMonth, companyName );
+		HealthInsuranceExportData data = new HealthInsuranceExportData(healthInsuranceMonth,bonusHealthInsuranceMonth, companyName, exportServiceContext.getQuery().startDate );
 		healthInsuranceFileGenerator.generate(exportServiceContext.getGeneratorContext(), data);
 	}
 }
