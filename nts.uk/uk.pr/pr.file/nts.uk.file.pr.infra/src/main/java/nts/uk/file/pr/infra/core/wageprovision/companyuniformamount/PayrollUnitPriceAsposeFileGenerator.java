@@ -81,12 +81,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             sourceRowIndex = sourceRowIndex + 38;
             destinationRowIndex = destinationRowIndex + 38;
         }
-        /*try {
-            ws.getCells().copyRows(ws.getCells(),sourceRowIndex,39,numberRow);
-            //ws.getCells().copyRows(ws.getCells(),sourceRowIndex,destinationRowIndex,numberRow + 38);
-        }catch (Exception e){
-
-        }*/
+ 
         for(Object[] entity : exportData){
             if(count == MAX_LINE){
                 pageBreaks.add(rowIndex);
