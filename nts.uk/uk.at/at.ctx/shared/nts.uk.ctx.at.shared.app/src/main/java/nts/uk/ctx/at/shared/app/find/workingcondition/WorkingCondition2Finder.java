@@ -120,7 +120,7 @@ public class WorkingCondition2Finder implements PeregFinder<WorkingCondition2Dto
 			if (histItemOpt.isPresent()) {
 				DateHistoryItem dateHistItem = dateHistLst.get(c.getEmployeeId());
 				c.setPeregDomainDto(dateHistItem != null
-						? WorkingConditionDto.createWorkingConditionDto(dateHistItem, histItemOpt.get())
+						? WorkingCondition2Dto.createWorkingConditionDto(dateHistItem, histItemOpt.get())
 						: null);
 			}
 		});
