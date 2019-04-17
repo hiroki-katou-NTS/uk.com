@@ -415,26 +415,34 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 		FixedColumnDisplay fixedCol = dataSource.getFixedHeader();
 		List<GridHeaderData> dynamicCol = dataSource.getDynamicHeader();
 		
-		widthLst.add(new Integer(200));
-		widthLst.add(new Integer(300));
+		Integer employeeCode = width.get("employeeCode");
+		widthLst.add(employeeCode.intValue());
+		Integer employeeName = width.get("employeeName");
+		widthLst.add(employeeName.intValue());
+		
 		if(fixedCol.isShowClassification()) {
-			widthLst.add(new Integer(300));
+			Integer w = width.get("className");
+			widthLst.add(w.intValue());
 		}
 		
 		if(fixedCol.isShowDepartment()) {
-			widthLst.add(new Integer(300));
+			Integer w = width.get("deptName");
+			widthLst.add(w.intValue());
 		}
 		
 		if(fixedCol.isShowEmployment()) {
-			widthLst.add(new Integer(300));
+			Integer w = width.get("employmentName");
+			widthLst.add(w.intValue());
 		}
 		
 		if(fixedCol.isShowPosition()) {
-			widthLst.add(new Integer(300));
+			Integer w = width.get("positionName");
+			widthLst.add(w.intValue());
 		}
 		
 		if(fixedCol.isShowWorkplace()) {
-			widthLst.add(new Integer(300));
+			Integer w = width.get("workplaceName");
+			widthLst.add(w.intValue());
 		}
 		
 		dynamicCol.stream().forEach(c ->{
