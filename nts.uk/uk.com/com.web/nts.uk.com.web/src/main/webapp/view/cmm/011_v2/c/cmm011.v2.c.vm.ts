@@ -35,9 +35,8 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
 
             self.inputList.push(new InputItems("001","targetID1", "A", "カラム1", "2018/04/01", "histryID1"));
             self.inputList.push(new InputItems("002","targetID2", "A", "カラム2", "2018/04/02", "histryID2"));
-            _.sortBy(self.inputList(),[function (x) {
-                return -x.date;
-            }])
+
+            self.inputList(_.orderBy(self.inputList(),['date'],['desc']));
             //Grid list columns
             self.listColums = ko.observableArray([
                 {headerText: 'id' ,key: 'id', hidden: true},
