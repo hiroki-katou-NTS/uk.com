@@ -15,15 +15,14 @@ interface IFetchOption {
 }
 
 declare interface IRule {
-    allHalf?: boolean;
     required?: boolean;
-    min?: number;
-    max?: number;
+    min?: number | Date;
+    max?: number | Date;
     mantissaMaxLength?: number;
     minLength?: number;
     maxLength?: number;
     constraint?: string;
-    charType?: string;
+    charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric';
     valueType?: 'String' | 'Decimal' | 'Integer' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;

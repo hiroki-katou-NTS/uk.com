@@ -2,7 +2,7 @@ import { IRule } from 'declarations';
 import { resources } from '@app/plugins/i18n';
 import { Vue, VueConstructor, VNode, DirectiveFunction } from '@app/provider';
 
-import { $, dom } from '@app/utils';
+import { $, dom, TimeDuration, TimeWithDay } from '@app/utils';
 import * as validators from '@app/plugins/validate/validators';
 
 $.merge(resources, {
@@ -153,7 +153,15 @@ const DIRTY = 'dirty',
                                                 ['min', 'max', 'minLength', 'maxLength', 'mantissaMaxLength']
                                                     .forEach(v => {
                                                         if ($.has(cstr, v)) {
-                                                            $.set(cstr, v, Number($.get(cstr, v)));
+                                                            if (['Decimal', 'Integer'].indexOf($.get(cstr, 'valueType')) > -1) {
+                                                                $.set(cstr, v, Number($.get(cstr, v)));
+                                                            } else if (['Clock'].indexOf($.get(cstr, 'valueType')) > -1) {
+                                                                $.set(cstr, v, TimeWithDay.from($.get(cstr, v)).toNumber());
+                                                            } else if (['Time'].indexOf($.get(cstr, 'valueType')) > -1) {
+                                                                $.set(cstr, v, TimeDuration.from($.get(cstr, v)).toNumber());
+                                                            } else {
+                                                                // date ?
+                                                            }
                                                         }
                                                     });
 

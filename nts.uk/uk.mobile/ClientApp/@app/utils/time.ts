@@ -1,5 +1,7 @@
+import { _ } from '@app/provider';
+
 export const time = {
-    timewd : {
+    timewd: {
         computeDay(value: number): string {
             if (value < 0) {
                 return DAYS.TheDayBefore;
@@ -13,11 +15,13 @@ export const time = {
         },
         computeHour(value: number): number {
             var minutesInDay = 0;
+
             if (value >= 0) {
                 minutesInDay = value % 1440;
             } else {
                 minutesInDay = 1440 + value;
             }
+
             return Math.floor(minutesInDay / 60);
         },
         computeMinute(value: number): number {
@@ -29,7 +33,7 @@ export const time = {
             }
             var hour = Math.floor(minutesInDay / 60);
             return minutesInDay - hour * 60;
-        }, 
+        },
         computeValue(newDay: string, newHour: number, newMinute: number): number {
             var newMinutes = 0;
             switch (newDay) {
@@ -47,7 +51,7 @@ export const time = {
                     break;
             }
             return newMinutes;
-        }, 
+        },
         computeTimePoint(value: number): TimeWithDayPoint {
             var day = time.timewd.computeDay(value);
             var hour = time.timewd.computeHour(value);
@@ -60,7 +64,7 @@ export const time = {
             var timePoint = time.timewd.computeTimePoint(value);
             return timePoint.day + ' ' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
-    }, 
+    },
     timedr: {
         computeHour(value: number): number {
             if (value >= 0) {
@@ -97,7 +101,7 @@ export const time = {
             }
         },
         computeValue(newHour: number, newMinute: number): number {
-            if (newHour >= 0 ) {
+            if (newHour >= 0) {
                 return newHour * 60 + newMinute;
             } else {
                 return newHour * 60 - newMinute;
@@ -108,8 +112,8 @@ export const time = {
 
             if (timePoint.hour == 0 && value < 0) {
                 return '-' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
-            }  
-            
+            }
+
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
 
@@ -130,26 +134,30 @@ export const time = {
             } else {
                 var minutesInDay = 1440 + value;
                 hour = Math.floor(minutesInDay / 60);
+
                 return minutesInDay - hour * 60;
             }
         },
         computeTimePoint(value: number): TimePoint {
             var hour = 0;
             var minute = 0;
+
             if (value >= 0) {
                 hour = Math.floor(value / 60);
                 minute = value - hour * 60;
-                return { hour, minute }
+
+                return { hour, minute };
             } else {
                 var minutesInDay = 1440 + value;
+
                 hour = Math.floor(minutesInDay / 60);
                 minute = minutesInDay - hour * 60;
-                return { hour: -hour, minute};
+
+                return { hour: -hour, minute };
             }
-            
         },
         computeValue(newHour: number, newMinute: number): number {
-            if ( newHour >= 0 ) {
+            if (newHour >= 0) {
                 return newHour * 60 + newMinute;
             } else {
                 return -1440 - newHour * 60 + newMinute;
@@ -160,11 +168,11 @@ export const time = {
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
-    leftpad(value: number) : string {
-        if ( value >= 0 && value < 10) {
+    leftpad(value: number): string {
+        if (value >= 0 && value < 10) {
             return '0' + value;
-        } else if (value < 0 && value > -10){
-            return '-0' + (0 - value); 
+        } else if (value < 0 && value > -10) {
+            return '-0' + (0 - value);
         }
 
         return '' + value;
@@ -199,3 +207,195 @@ export enum TimeInputType {
     TimePoint = 'time-point',
     TimeDuration = 'time-duration'
 }
+
+
+export class TimeWithDay {
+    value: number | undefined = undefined;
+
+    constructor(value: string | number) {
+        if (typeof value === "number") {
+            this.value = value;
+        } else {
+            this.value = this.toNumber(value);
+        }
+    }
+
+    public static from(value: string | number) {
+        return new TimeWithDay(value);
+    }
+
+    public static toNumber(value: string): number {
+        return TimeWithDay.from(value).value;
+    }
+
+    public static toString(value: number): string {
+        return TimeWithDay.from(value).toString();
+    }
+
+    public static getDayOffset(value: string | number): number {
+        return TimeWithDay.from(value).day;
+    }
+
+    public static getDayName(value: string | number): string {
+        return TimeWithDay.from(value).dayName;
+    }
+
+    public static getHour(value: string | number): number {
+        return TimeWithDay.from(value).hour;
+    }
+
+    public static getMinute(value: string | number): number {
+        return TimeWithDay.from(value).minute;
+    }
+
+    toNumber(value?: string): number {
+        if (value === undefined) {
+            return this.value;
+        }
+
+        let negative: boolean = value.indexOf('-') == 0,
+            rawNumber: number = Number(value.replace(/[\:\-]/g, '')),
+            hour: number = Math.floor(rawNumber / 100),
+            minute: number = Math.floor(rawNumber % 100);
+
+        if (!negative) {
+            return 60 * hour + minute;
+        } else {
+            return -(1440 - (60 * hour + minute));
+        }
+    }
+
+    toString(): string {
+        let negative = this.isNegative,
+            value = Math.abs(this.value + (negative ? 1440 : 0)),
+            hour = Math.floor(value / 60).toString(),
+            minute = Math.floor(value % 60).toString();
+
+        return `${negative ? '-' : ''}${_.padStart(hour, 2, '0')}:${_.padStart(minute, 2, '0')}`;
+    }
+
+    toLocalString() {
+        return `{${this.dayName}}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    }
+
+    get isNegative(): boolean {
+        return this.day === -1;
+    }
+
+    get day(): number {
+        if (this.value < 0) {
+            return -1;  //  前日
+        } else if (this.value < 1440) {
+            return 0;   //  当日
+        } else if (this.value < 2880) {
+            return 1;   //  翌日
+        } else if (this.value < 4320) {
+            return 2;   //  翌々日
+        }
+
+        return 0;
+    }
+
+    get dayName(): string {
+        switch (this.day) {
+            case -1:
+                return 'BeforeToday';
+            case 0:
+                return 'Today';
+            case 1:
+                return 'NextDay';
+            case 2:
+                return 'TwoDaysLater';
+        }
+    }
+
+    get hour(): number {
+        return Math.floor(this.positiveValue / 60);
+    }
+
+    get minute(): number {
+        return Math.floor(this.positiveValue % 60);
+    }
+
+    private get positiveValue() {
+        let value = this.value;
+
+        switch (this.day) {
+            case -1:
+                value += 1440;
+                break;
+            case 0:
+                value += 0;
+                break;
+            case 1:
+                value -= 1440;
+                break;
+            case 2:
+                value -= 2880;
+                break;
+        }
+
+        return Math.abs(value);
+    }
+}
+
+
+export class TimeDuration {
+    value: number | undefined = undefined;
+
+    constructor(value: string | number) {
+        if (typeof value === "number") {
+            this.value = value;
+        } else {
+            this.value = this.toNumber(value);
+        }
+    }
+
+    public static from(value: string | number) {
+        return new TimeDuration(value);
+    }
+
+    toNumber(value?: string) {
+        if (value) {
+            let negative: boolean = value.indexOf('-') == 0,
+                rawNumber: number = Number(value.replace(/[\:\-]/g, '')),
+                hour: number = Math.floor(rawNumber / 100),
+                minute: number = Math.floor(rawNumber % 100);
+
+            if (!negative) {
+                return hour * 60 + minute;
+            } else {
+                return -(hour * 60 + minute);
+            }
+        }
+
+        return this.value;
+    }
+
+    toString() {
+        return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    }
+
+    toLocalString() {
+        return this.toString();
+    }
+
+    get isNegative() {
+        return this.value < 0;
+    }
+
+    get hour() {
+        return Math.floor(this.positiveValue / 60);
+    }
+
+    get minute() {
+        return Math.floor(this.positiveValue % 60);
+    }
+
+    private get positiveValue() {
+        return Math.abs(this.value);
+    }
+}
+
+window['timewd'] = TimeWithDay;
+window['timedr'] = TimeDuration;
