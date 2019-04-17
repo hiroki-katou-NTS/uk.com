@@ -3,7 +3,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import ListType = kcp.share.list.ListType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    import TreeType = kcp.share.tree.TreeType;
+    import StartMode = kcp.share.tree.StartMode;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
@@ -607,16 +607,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameDepartment;
                 self.showSameDepartmentAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                        || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
+                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
+                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
                     && self.showSameDepartmentAndChild;
 
                 self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
                     self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameWorkplace;
                 self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                        || self.referenceRange == EmployeeReferenceRange.WORKPLACE_AND_CHILD)
+                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
+                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
                     && self.showSameWorkplaceAndChild;
             }
 
@@ -642,7 +642,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private setAdvancedSearchParam(): void {
                 let self = this;
                 let param = this.queryParam;
-                param.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
+                param.referenceRange = SearchReferenceRange.ALL_REFERENCE_RANGE;
 
                 // filter param
                 param.filterByEmployment = self.showEmployment;
@@ -1329,13 +1329,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showDepartment) {
-                    service.searchDepartmentOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
-                        .done(selectedCodes => {
-                            self.selectedCodeDepartment(selectedCodes);
-                            $('#departmentList').ntsTreeComponent(self.departments).done(() => {
-                                dfd.resolve();
-                            });
-                        })
+                    $('#departmentList').ntsTreeComponent(self.departments).done(() => {
+                        dfd.resolve();
+                    });
                 } else {
                     dfd.resolve();
                 }
@@ -1349,13 +1345,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showWorkplace) {
-                    service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
-                        .done(selectedCodes => {
-                            self.selectedCodeWorkplace(selectedCodes);
-                            $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
-                                dfd.resolve();
-                            });
-                        })
+                    $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
+                        dfd.resolve();
+                    });
                 } else {
                     dfd.resolve();
                 }
@@ -1383,7 +1375,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function click by button detail department or work place (open dialog)
              */
-            detailDepartmentWorkplace(treeType: TreeType): void {
+            detailDepartmentWorkplace(startMode: StartMode): void {
                 let self = this;
                 let inputCDL008 = {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
@@ -1391,7 +1383,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedSystemType: self.systemType,
                     selectedCodes: self.selectedCodeWorkplace(),
                     isShowBaseDate: false,
-                    treeType: treeType
+                    startMode: startMode
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
                 nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
@@ -1401,14 +1393,15 @@ module nts.uk.com.view.ccg.share.ccg {
                     // reload KCP004
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     // 部門対応
-                    switch (treeType) {
-                        case TreeType.WORK_PLACE:
+                    switch (startMode) {
+                        case StartMode.WORKPLACE:
                             $('#workplaceList').ntsTreeComponent(self.workplaces);
                             break;
-                        case TreeType.DEPARTMENT:
+                        case StartMode.DEPARTMENT:
                             $('#departmentList').ntsTreeComponent(self.departments);
                             break;
                         default:
+                            $('#workplaceList').ntsTreeComponent(self.workplaces);
                             break;
                     }
 
@@ -1514,7 +1507,11 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmployeeLogin(): void {
                 let self = this;
                 nts.uk.ui.block.grayout(); // block ui
-                service.searchEmployeeByLogin(moment.utc().toDate())
+                let param = {
+                    baseDate: moment.utc("2018-06-30 00:00:00").toDate(),
+                    systemType: self.systemType
+                };
+                service.searchEmployeeByLogin(param)
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
@@ -1740,7 +1737,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return false;
                 }
                 if (self.showDepartment && nts.uk.util.isNullOrEmpty(self.selectedCodeDepartment())) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1197' });
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1196' });
                     return false;
                 }
                 if (self.showWorkplace && nts.uk.util.isNullOrEmpty(self.selectedCodeWorkplace())) {
@@ -2071,7 +2068,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
                     maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
-                }
+                };
 
                 self.jobtitles = {
                     isShowAlreadySet: false,
@@ -2086,15 +2083,32 @@ module nts.uk.com.view.ccg.share.ccg {
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
                     maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
-                }
+                };
+
+                self.departments = {
+                    isShowAlreadySet: false,
+                    systemType: self.systemType,
+                    isMultipleUse: true,
+                    isMultiSelect: true,
+                    startMode: StartMode.DEPARTMENT,
+                    selectType: SelectType.SELECT_ALL,
+                    isShowSelectButton: true,
+                    selectedWorkplaceId: self.selectedCodeDepartment,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isFullView: true,
+                    hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
+                    isDialog: true
+                };
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     systemType: self.systemType,
                     isMultipleUse: true,
                     isMultiSelect: true,
-                    treeType: TreeType.WORK_PLACE,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    startMode: StartMode.WORKPLACE,
+                    selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
                     selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
@@ -2103,7 +2117,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
                     isDialog: true
-                }
+                };
             }
         }
         
@@ -2134,11 +2148,9 @@ module nts.uk.com.view.ccg.share.ccg {
         }
         
         export class ReferenceRange {
-            static ALL_EMPLOYEE = 0;
-            static DEPARTMENT_AND_CHILD = 1;
-            static DEPARTMENT_ONLY = 2;
-            static WORKPLACE_AND_CHILD = 3;
-            static WORKPLACE_ONLY = 4;
+            static ALL_REFERENCE_RANGE = 0;
+            static AFFILIATION_AND_ALL_SUBORDINATES = 1;
+            static AFFILIATION_ONLY = 2;
         }
 
         export class EmployeeReferenceRange extends ReferenceRange {
@@ -2267,7 +2279,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_EMPLOYEE+`)}">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_REFERENCE_RANGE+`)}">
                                 <i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
                                 <label class="labelBigButton">`+CCG001TextResource.CCG001_34+`</label> 
                             </div>
@@ -2287,7 +2299,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showSameDepartment -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.DEPARTMENT_ONLY+`)}">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_36+`</label> 
                             </div>
@@ -2297,7 +2309,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showSameDepartmentAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.DEPARTMENT_AND_CHILD+`)}">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_37+`</label> 
                             </div>
@@ -2307,7 +2319,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showSameWorkplace -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.WORKPLACE_ONLY+`)}">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_38+`</label> 
                             </div>
@@ -2317,7 +2329,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showSameWorkplaceAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.WORKPLACE_AND_CHILD+`)}">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_39+`</label> 
                             </div>
@@ -2413,8 +2425,8 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         </h3>
                                         <div class="contentkcpWorkplace">
                                             <div id="departmentList"></div><br/>
-                                            <button id="btnDetailWorkplace"
-                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+TreeType.DEPARTMENT+`)}">`+CCG001TextResource.CCG001_55+`</button>
+                                            <button id="btnDetailWorkplace" class="small"
+                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+StartMode.DEPARTMENT+`)}">`+CCG001TextResource.CCG001_55+`</button>
                                         </div>
                                     </div>
                                 <!-- /ko -->
@@ -2426,8 +2438,8 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         </h3>
                                         <div class="contentkcpWorkplace">
                                             <div id="workplaceList"></div><br/>
-                                            <button id="btnDetailWorkplace"
-                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+TreeType.WORK_PLACE+`)}">`+CCG001TextResource.CCG001_55+`</button>
+                                            <button id="btnDetailWorkplace"  class="small"
+                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+StartMode.WORKPLACE+`)}">`+CCG001TextResource.CCG001_55+`</button>
                                         </div>
                                     </div>
                                 <!-- /ko -->

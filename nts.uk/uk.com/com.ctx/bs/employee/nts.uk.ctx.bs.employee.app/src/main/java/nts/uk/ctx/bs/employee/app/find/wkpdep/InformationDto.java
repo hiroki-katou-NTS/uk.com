@@ -1,15 +1,17 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
 @Value
+@AllArgsConstructor
 public class InformationDto {
 
 	private String id;

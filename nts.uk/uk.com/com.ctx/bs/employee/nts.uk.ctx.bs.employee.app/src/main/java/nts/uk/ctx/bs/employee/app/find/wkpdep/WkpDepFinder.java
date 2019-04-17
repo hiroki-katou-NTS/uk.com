@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import org.apache.logging.log4j.util.Strings;
@@ -54,6 +55,9 @@ public class WkpDepFinder {
 
 	@Inject
 	private WorkplaceExportService wkpExportService;
+
+	@Inject
+	private SyRoleAdapter syRoleWorkplaceAdapter;
 
 	public ConfigurationDto getWkpDepConfig(int mode, GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
@@ -225,13 +229,32 @@ public class WkpDepFinder {
         }
         // Check start mode (department or workplace)
         switch (findObject.getStartMode()) {
-            // Pending check filter reference range
+
             case WORKPLACE_MODE:
-                return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+            	if (findObject.getRestrictionOfReferenceRange()) {
+					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
+							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate()).getListWorkplaceIds();
+            		return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
+						.stream().map(
+							wkp -> new InformationDto(
+								wkp.getWorkplaceId(),
+								wkp.getWorkplaceCode(),
+								wkp.getWorkplaceName(),
+								wkp.getDisplayName(),
+								wkp.getGenericName(),
+								wkp.getHierarchyCode(),
+								wkp.getExternalCode()))
+						.collect(Collectors.toList());
+				} else {
+					return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate())
+							.stream().map(InformationDto::new).collect(Collectors.toList());
+				}
             case DEPARTMENT_MODE:
-                return depExportSerivce.getAllActiveDepartment(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+				// Pending check filter reference range
+                return depExportSerivce.getAllActiveDepartment(companyId, findObject.getBaseDate())
+						.stream().map(InformationDto::new).collect(Collectors.toList());
             default:
-                return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream().map(InformationDto::new).collect(Collectors.toList());
+                return Collections.emptyList();
         }
     }
 

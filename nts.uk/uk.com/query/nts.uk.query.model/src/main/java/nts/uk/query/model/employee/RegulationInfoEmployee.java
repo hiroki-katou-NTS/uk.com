@@ -51,10 +51,22 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	/** The department code. */
 	private Optional<String> departmentCode; // 部門の階層コード
 
+	/** The department id. */
+	private Optional<String> departmentId;
+
+	/** The department name. */
+	private Optional<String> departmentName;
+
 	/** The employment code. */
 	private Optional<String> employmentCode; // 雇用コード
 
-	/** The workplacename. */
+	/** The workplace name. */
 	private Optional<String> workplaceName;
+
+	/** The department delete flag. */
+	private Optional<Boolean> depDeleteFlag;
+
+	/** The workplace delete flag. */
+	private Optional<Boolean> wkpDeleteFlag;
 
 }

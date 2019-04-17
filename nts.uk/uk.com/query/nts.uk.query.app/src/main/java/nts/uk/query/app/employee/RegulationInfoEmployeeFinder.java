@@ -4,17 +4,20 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.bs.employee.pub.operationrule.OperationRuleExport;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.query.model.department.DepartmentAdapter;
+import nts.uk.query.model.department.DepartmentInfoImport;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
@@ -27,10 +30,15 @@ import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
+import nts.uk.query.model.operationrule.OperationRuleAdapter;
+import nts.uk.query.model.operationrule.OperationRuleImport;
 import nts.uk.query.model.person.QueryPersonAdapter;
+import nts.uk.query.model.workplace.WorkplaceAdapter;
+import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -73,6 +81,16 @@ public class RegulationInfoEmployeeFinder {
 	@Inject
 	private EmploymentHistoryAdapter empHisAdapter;
 
+	@Inject
+	private DepartmentAdapter departmentAdapter;
+
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+
+	@Inject
+	private OperationRuleAdapter operationRuleAdapter;
+
+
 	/**
 	 * Find.
 	 *
@@ -88,9 +106,9 @@ public class RegulationInfoEmployeeFinder {
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
 		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
-					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
-							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT)));
+			LoginEmployeeQuery query = new LoginEmployeeQuery(GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
+					RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.getSystemType());
+			return Arrays.asList(this.findCurrentLoginEmployeeInfo(query));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
@@ -190,12 +208,13 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
 	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
+		Optional<OperationRuleImport> optOperationRuleImport = operationRuleAdapter.getOperationRuleByCompanyId(AppContexts.user().companyId());
 		EmployeeReferenceRange employeeReferenceRange = role.getEmployeeReferenceRange(); // employee's reference authority
 		SearchReferenceRange searchReferenceRange = SearchReferenceRange.valueOf(queryDto.getReferenceRange());
 
 		// An employee's search reference range depends on his reference authority
 		switch (searchReferenceRange) {
-		case ALL_EMPLOYEE:
+		case ALL_REFERENCE_RANGE:
 			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				// not change workplaceCodes
 				break;
@@ -204,11 +223,11 @@ public class RegulationInfoEmployeeFinder {
 				this.changeListWorkplaces(queryDto);
 			}
 			break;
-		case DEPARTMENT_ONLY:
+		case AFFILIATION_ONLY:
 			// Get list String Workplace
 			this.changeListWorkplaces(queryDto);
 			break;
-		case DEPARTMENT_AND_CHILD:
+		case AFFILIATION_AND_ALL_SUBORDINATES:
 			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
 					|| employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
@@ -337,9 +356,9 @@ public class RegulationInfoEmployeeFinder {
 				.employeeCode(model.getEmployeeCode())
 				.employeeId(model.getEmployeeID())
 				.employeeName(model.getName().orElse(""))
-				.workplaceId(model.getWorkplaceId().orElse(""))
-				.workplaceCode(model.getWorkplaceCode().orElse(""))
-				.workplaceName(model.getWorkplaceName().orElse(""))
+				.affiliationId(model.getWorkplaceId().orElse(""))
+				.affiliationCode(model.getWorkplaceCode().orElse(""))
+				.affiliationName(model.getWorkplaceName().orElse(""))
 				.build();
 	}
 
@@ -348,20 +367,49 @@ public class RegulationInfoEmployeeFinder {
 	 *
 	 * @return the list
 	 */
-	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate) {
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(LoginEmployeeQuery query) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
-		if (loginEmployee == null) {
-			throw new BusinessException("Msg_317");
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate(), query.getSystemType());
+
+		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
+			case SALARY:
+				if (loginEmployee == null) {
+					throw new BusinessException("Msg_317");
+				}
+				List<DepartmentInfoImport> departmentInfoImports = new ArrayList<>();
+				if (!loginEmployee.getDepartmentCode().isPresent() ||
+					!loginEmployee.getDepDeleteFlag().isPresent() ||
+					loginEmployee.getDepDeleteFlag().get()) {
+					departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().orElse(null)), query.getBaseDate().toDate());
+				}
+				return RegulationInfoEmployeeDto.builder()
+						.employeeCode(loginEmployee.getEmployeeCode())
+						.employeeId(loginEmployee.getEmployeeID())
+						.employeeName(loginEmployee.getName().orElse(""))
+						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
+						.affiliationCode(loginEmployee.getDepartmentCode().orElse(departmentInfoImports.get(0).getDepartmentCode()))
+						.affiliationName(loginEmployee.getDepartmentName().orElse(departmentInfoImports.get(0).getDepartmentName()))
+						.build();
+			default:
+				if (loginEmployee == null) {
+					throw new BusinessException("Msg_317");
+				}
+				List<WorkplaceInfoImport> workplaceInfoImports = new ArrayList<>();
+				if (!loginEmployee.getWorkplaceCode().isPresent() ||
+					!loginEmployee.getWkpDeleteFlag().isPresent() ||
+					loginEmployee.getWkpDeleteFlag().get()) {
+					workplaceInfoImports = workplaceAdapter.getWorkplaceInfoFromWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().orElse(null)), query.getBaseDate().toDate());
+				}
+				return RegulationInfoEmployeeDto.builder()
+					.employeeCode(loginEmployee.getEmployeeCode())
+					.employeeId(loginEmployee.getEmployeeID())
+					.employeeName(loginEmployee.getName().orElse(""))
+					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
+					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(workplaceInfoImports.get(0).getWorkplaceCode()))
+					.affiliationName(loginEmployee.getWorkplaceName().orElse(workplaceInfoImports.get(0).getWorkplaceName()))
+					.build();
 		}
-		return RegulationInfoEmployeeDto.builder()
-				.employeeCode(loginEmployee.getEmployeeCode())
-				.employeeId(loginEmployee.getEmployeeID())
-				.employeeName(loginEmployee.getName().orElse(""))
-				.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
-				.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
-				.workplaceName(loginEmployee.getWorkplaceName().orElse("")).build();
 	}
 
 	/**

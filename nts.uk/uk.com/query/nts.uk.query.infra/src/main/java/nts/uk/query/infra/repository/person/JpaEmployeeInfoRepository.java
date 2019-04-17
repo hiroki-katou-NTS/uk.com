@@ -74,8 +74,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 
 		// Find workplace.
 		if (query.isFindWorkPlaceInfo()) {
-			workPlacePredicate = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), endDateTime),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), startDateTime));
+			workPlacePredicate = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), endDateTime),
+					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), startDateTime));
 		}
 
 		// Find classification.
@@ -143,12 +143,12 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 		// Add workplace info.
 		if (query.isFindWorkPlaceInfo()) {
 			List<WorkPlaceHistoryModel> workPlaces = datas.stream()
-					.filter(data -> data.getWorkplaceId() != null)
-					.filter(this.distinctByKey(EmployeeDataView::getWplStrDate))
+					.filter(data -> data.getWkpId() != null)
+					.filter(this.distinctByKey(EmployeeDataView::getWkpStrDate))
 					.map(data -> {
 						return WorkPlaceHistoryModel.builder().employeeId(data.getSid())
-								.workplaceId(data.getWorkplaceId()).startDate(data.getWplStrDate())
-								.endDate(data.getWplEndDate()).build();
+								.workplaceId(data.getWkpId()).startDate(data.getWkpStrDate())
+								.endDate(data.getWkpEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setWorkPlaceHistorys(workPlaces);
 		} else {
