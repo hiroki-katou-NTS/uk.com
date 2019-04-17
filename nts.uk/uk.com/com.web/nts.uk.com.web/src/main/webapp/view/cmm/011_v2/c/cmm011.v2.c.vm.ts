@@ -1,15 +1,13 @@
 module nts.uk.com.view.cmm011.v2.c.viewmodel {
     import getText = nts.uk.resource.getText;
-    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
-
-        inputList: KnockoutObservableArray<inputItems>;
+        inputList: KnockoutObservableArray<InputItems>;
         listColums: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
-
         screenMode: number = 1;
 
         constructor() {
@@ -33,14 +31,25 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
             self.selectedId = ko.observable(2);
 
             //Grid list item
-            this.inputList = ko.observableArray([]);
+            self.inputList = ko.observableArray([]);
+
+            self.inputList.push(new InputItems("001","targetID1", "A", "カラム1", "2018/04/01", "histryID1"));
+            self.inputList.push(new InputItems("002","targetID2", "A", "カラム2", "2018/04/02", "histryID2"));
+
+            self.inputList(_.orderBy(self.inputList(),['date'],['desc']));
             //Grid list columns
-            this.listColums = ko.observableArray([
-                {headerText: getText('CMM011-0_30'), key: 'code', width: 100},
+            self.listColums = ko.observableArray([
+                {headerText: 'id' ,key: 'id', hidden: true},
+                {headerText: getText('CMM011-0_30'), key: 'code', width: 100, formatter: _.escape},
                 {headerText: getText('CMM011-0_31'), key: 'name', width: 100, formatter: _.escape},
-                {headerText: getText('CMM011-0_32'), key: 'date', width: 150, formatter: _.escape}
+                {headerText: getText('CMM011-0_32'), key: 'date', width: 150, format: 'YYYY/MM/DD', formatter: _.escape}
             ]);
             this.currentCode = ko.observable();
+            //get param
+            let param = nts.uk.ui.windows.getShared("cmm001Param");
+            if (param) {
+                self.inputList(param.outputList);
+            }
         }
 
         startPage(): JQueryPromise<any> {
@@ -49,10 +58,30 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-        openDialogD(){
-            modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
 
-        });
+        Create() {
+            var self = this;
+            if (self.selectedId() == 2 && !self.currentCode()) {
+                nts.uk.ui.dialog.info({messageId: "Msg_1504"});
+            }
+            else {
+                if (self.currentCode()) {
+                    var item = _.find(self.inputList(), x => x.id == self.currentCode());
+                    setShared("cmm001v2Output", {
+                        targetID: item.targetID,
+                        historyID: item.historyID
+                    });
+                    nts.uk.ui.windows.close();
+                }
+                else {
+                    setShared("cmm001v2Output", {targetID: null, historyID: null});
+                    nts.uk.ui.windows.close();
+                }
+            }
+        }
+
+        Close() {
+            nts.uk.ui.windows.close();
         }
     }
 
@@ -67,16 +96,21 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
         }
     }
 
-    class inputItems {
+    class InputItems {
+        id:string;
+        targetID: string;
         code: string;
         name: string;
         date: string;
+        historyID: string;
 
-        constructor(code: string, name: string, date: string) {
+        constructor(id:string, targetID: string, code: string, name: string, date: string, historyID: string) {
+            this.id=id;
+            this.targetID = targetID;
             this.code = code;
             this.name = name;
             this.date = date;
+            this.historyID = historyID;
         }
     }
-
 }
