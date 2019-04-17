@@ -16,7 +16,6 @@
 
 			<com:scriptfile set="IGNITE" />
 
-<!-- 			<com:stylefile path="style.css" /> -->
 			<com:scriptfile path="cmm011.v2.b.service.js" />
 			<com:scriptfile path="cmm011.v2.b.vm.js" />
 			<com:scriptfile path="cmm011.v2.b.start.js" />
@@ -32,7 +31,7 @@
 						<button tabindex="3" class="danger" data-bind="enable: isLatestHistory() || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
 					</div>
 
-					<div id="list-box" tabindex="4"
+					<div tabindex="4" id="B1_4"
 						data-bind="ntsListBox: {
 						name: '#[CMM011_120]',
 						options: lstWpkHistory,

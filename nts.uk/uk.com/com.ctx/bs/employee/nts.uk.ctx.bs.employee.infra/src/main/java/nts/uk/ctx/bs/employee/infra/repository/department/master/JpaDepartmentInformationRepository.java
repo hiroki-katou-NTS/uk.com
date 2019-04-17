@@ -33,14 +33,22 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 
 	@Override
 	public List<DepartmentInformation> getAllDepartmentByCompany(String companyId, String depHistId) {
-		return this.queryProxy().query(FIND_ALL_DEP_BY_COMPANY_AND_HIST, BsymtDepartmentInfor.class)
+		List<DepartmentInformation> result = this.queryProxy().query(FIND_ALL_DEP_BY_COMPANY_AND_HIST, BsymtDepartmentInfor.class)
 				.setParameter("companyId", companyId).setParameter("depHistId", depHistId).getList(i -> i.toDomain());
+		result.sort((e1, e2) -> {
+			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+		});
+		return result;
 	}
 
 	@Override
 	public List<DepartmentInformation> getAllActiveDepartmentByCompany(String companyId, String depHistId) {
-		return this.queryProxy().query(FIND_ALL_ACTIVE_DEP_BY_COMPANY_AND_HIST, BsymtDepartmentInfor.class)
+		List<DepartmentInformation> result = this.queryProxy().query(FIND_ALL_ACTIVE_DEP_BY_COMPANY_AND_HIST, BsymtDepartmentInfor.class)
 				.setParameter("companyId", companyId).setParameter("depHistId", depHistId).getList(i -> i.toDomain());
+		result.sort((e1, e2) -> {
+			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+		});
+		return result;
 	}
 
 	@Override
@@ -91,6 +99,15 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 			String depCode) {
 		String query = "SELECT i FROM BsymtDepartmentInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.departmentHistoryId = :depHistId AND i.departmentCode = :depCode AND i.deleteFlag = 1";
+		return this.queryProxy().query(query, BsymtDepartmentInfor.class).setParameter("companyId", companyId)
+				.setParameter("depHistId", depHistId).setParameter("depCode", depCode).getSingle(i -> i.toDomain());
+	}
+	
+	@Override
+	public Optional<DepartmentInformation> getActiveDepartmentByCode(String companyId, String depHistId,
+			String depCode) {
+		String query = "SELECT i FROM BsymtDepartmentInfor i WHERE i.pk.companyId = :companyId "
+				+ "AND i.pk.departmentHistoryId = :depHistId AND i.departmentCode = :depCode AND i.deleteFlag = 0";
 		return this.queryProxy().query(query, BsymtDepartmentInfor.class).setParameter("companyId", companyId)
 				.setParameter("depHistId", depHistId).setParameter("depCode", depCode).getSingle(i -> i.toDomain());
 	}

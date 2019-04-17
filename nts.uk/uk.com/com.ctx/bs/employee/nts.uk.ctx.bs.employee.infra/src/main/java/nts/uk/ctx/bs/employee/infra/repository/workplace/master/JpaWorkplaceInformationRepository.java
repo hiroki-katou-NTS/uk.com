@@ -32,14 +32,24 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 
 	@Override
 	public List<WorkplaceInformation> getAllWorkplaceByCompany(String companyId, String wkpHistId) {
-		return this.queryProxy().query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class)
-				.setParameter("companyId", companyId).setParameter("wkpHistId", wkpHistId).getList(i -> i.toDomain());
+		List<WorkplaceInformation> result = this.queryProxy()
+				.query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+				.setParameter("wkpHistId", wkpHistId).getList(i -> i.toDomain());
+		result.sort((e1, e2) -> {
+			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+		});
+		return result;
 	}
 
 	@Override
 	public List<WorkplaceInformation> getAllActiveWorkplaceByCompany(String companyId, String wkpHistId) {
-		return this.queryProxy().query(FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class)
+		List<WorkplaceInformation> result = this.queryProxy()
+				.query(FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class)
 				.setParameter("companyId", companyId).setParameter("wkpHistId", wkpHistId).getList(i -> i.toDomain());
+		result.sort((e1, e2) -> {
+			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
+		});
+		return result;
 	}
 
 	@Override
@@ -89,6 +99,15 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			String wkpCode) {
 		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.workplaceCode = :wkpCode AND i.deleteFlag = 1";
+		return this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+				.setParameter("wkpHistId", wkpHistId).setParameter("wkpCode", wkpCode).getSingle(i -> i.toDomain());
+	}
+	
+	@Override
+	public Optional<WorkplaceInformation> getActiveWorkplaceByCode(String companyId, String wkpHistId,
+			String wkpCode) {
+		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.workplaceCode = :wkpCode AND i.deleteFlag = 0";
 		return this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
 				.setParameter("wkpHistId", wkpHistId).setParameter("wkpCode", wkpCode).getSingle(i -> i.toDomain());
 	}

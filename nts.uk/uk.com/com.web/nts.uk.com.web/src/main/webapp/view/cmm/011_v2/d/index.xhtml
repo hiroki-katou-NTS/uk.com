@@ -26,32 +26,32 @@
 
     <ui:define name="content">
         <div id="contents-area">
-				<div data-bind="if: $vm.tagretHistory >= 1">
-					<div style="width: 500px" class="valign-center control-group">
+				<div data-bind="visible: itemsCount() >= 1">
+					<div class="valign-center control-group">
 						<div id="D1_1" data-bind="ntsFormLabel: { required: true }">
 							#{i18n.getText('CMM011_133')}</div>
-						<span data-bind="if: $vm.screenMode == 1" id="D1_2" class="label">
+						<span data-bind="visible: screenMode == 0" id="D1_2" class="label">
 							#{i18n.getText('CMM011_210')} </span> <span
-							data-bind="if: $vm.screenMode == 2" id="D1_2" class="label">
+							data-bind="visible: screenMode == 1" id="D1_2" class="label">
 							#{i18n.getText('CMM011_310')} </span> 
-						<span id="D1_3" class="label">項目移送</span>
-						<span id="D1_4" class="label">項目移送</span>
+						<span id="D1_3" class="label" data-bind="text: selectedCode"></span>
+						<span id="D1_4" class="label" data-bind="text: selectedName"></span>
 					</div>
 				</div>
-				<div class="radio" data-bind="if: $vm.tagretHistory >= 1">
+				<div class="radio" data-bind="visible: itemsCount() >= 1">
 					<div id="D2_1" style="width: 300px;" tabindex="1"
 						data-bind="ntsRadioBoxGroup: {
 			                options: itemList,
 			                optionsValue: 'id',
 			                optionsText: 'name',
-			                value: selectedId,
-			                enable: enable}">
+			                value: createMethod,
+			                enable: true}">
 					</div>
 				</div>
 				<div class="insert">
                     <div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
-						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
+						<input id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: code,
 							constraint: 'DepartmentCode',
@@ -59,7 +59,7 @@
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
-						<input tabindex="13" id="A6_2" data-bind="ntsTextEditor: {
+						<input id="A6_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_113]',
 							value: name,
 							constraint: 'DepartmentName',
@@ -67,7 +67,7 @@
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
-						<input tabindex="14" id="A7_2" data-bind="ntsTextEditor: {
+						<input id="A7_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_114]',
 							value: displayName,
 							constraint: 'WorkplaceDisplayName',
@@ -75,7 +75,7 @@
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
-						<input tabindex="15" id="A8_2" data-bind="ntsTextEditor: {
+						<input id="A8_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_115]',
 							value: genericName,
 							constraint: 'WorkplaceGeneric',
@@ -84,7 +84,7 @@
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
-						<input tabindex="16" id="A9_2" data-bind="ntsTextEditor: {
+						<input id="A9_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_116]',
 							value: externalCode,
 							constraint: 'WorkplaceExternalCode',
@@ -93,7 +93,7 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="D3_2" tabindex="2" data-bind="enable: $root.errors.isEmpty" class="x-large proceed">#{i18n.getText('CMM011_102')}</button>
+            <button id="D3_2" tabindex="2" data-bind="enable: $root.errors.isEmpty, click: register" class="x-large proceed">#{i18n.getText('CMM011_102')}</button>
             <button id="D3_3" tabindex="3" data-bind="click: cancel" class="large">#{i18n.getText('CMM011_128')}</button>
         </div>
     </ui:define>

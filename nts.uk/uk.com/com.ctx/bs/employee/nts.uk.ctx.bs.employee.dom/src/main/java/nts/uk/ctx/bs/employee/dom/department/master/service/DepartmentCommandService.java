@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.department.master.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
+import nts.uk.ctx.bs.employee.dom.operationrule.service.AddWkpDepInforParam;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -126,6 +128,38 @@ public class DepartmentCommandService {
 			department.delete();
 			depInforRepo.updateDepartment(department);
 		}
+	}
+
+	/**
+	 * 部門情報を登録する
+	 * 
+	 * @param param
+	 * @param isUpdate
+	 */
+	public void registerDepartmentInformation(AddWkpDepInforParam param, boolean isUpdate) {
+		DepartmentInformation depInfor = new DepartmentInformation(param.getCompanyId(), false, param.getHistoryId(),
+				param.getId(), param.getCode(), param.getName(), param.getGenericName(), param.getDispName(),
+				param.getHierarchyCode(), param.getExternalCode());
+		if (!isUpdate) { // add new
+			if (depInforRepo.getActiveDepartmentByCode(depInfor.getCompanyId(), depInfor.getDepartmentHistoryId(),
+					depInfor.getDepartmentCode().v()).isPresent())
+				throw new BusinessException("Msg_3");
+			depInforRepo.addDepartment(depInfor);
+		} else { // update
+			depInforRepo.updateDepartment(depInfor);
+		}
+		this.updateHierarchyCode(param.getCompanyId(), param.getHistoryId(), param.getMapHierarchyChange());
+	}
+
+	public void updateHierarchyCode(String companyId, String historyId, Map<String, String> mapHierarchyChange) {
+		List<String> listDepId = mapHierarchyChange.keySet().stream().filter(k -> k != null)
+				.collect(Collectors.toList());
+		List<DepartmentInformation> listDepartment = depInforRepo.getActiveDepartmentByDepIds(companyId, historyId,
+				listDepId);
+		listDepartment.forEach(dep -> {
+			dep.changeHierarchyCode(mapHierarchyChange.get(dep.getDepartmentId()));
+			depInforRepo.updateDepartment(dep);
+		});
 	}
 
 }

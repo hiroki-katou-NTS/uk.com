@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -86,6 +87,18 @@ public class WorkplaceInformation extends AggregateRoot {
 	
 	public void delete() {
 		this.deleteFlag = true;
+	}
+	
+	public void changeHierarchyCode(String hierarchyCode) {
+		this.hierarchyCode = new WorkplaceHierarchyCode(hierarchyCode);
+	}
+	
+	@Override
+	public void validate() {
+		if (this.hierarchyCode.v().length() % 3 != 0) {
+			throw new BusinessException("Msg_368");
+		} else if (this.hierarchyCode.v().length() > 30)
+			throw new BusinessException("Msg_369");
 	}
 	
 }

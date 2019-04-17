@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.wkpdep;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -52,6 +53,9 @@ public class DeleteWkpDepInforCommandHandler extends CommandHandler<DeleteWkpDep
 					command.getHistoryId(), wkpDepId);
 			operationCommandService.deleteWkpDepInfor(param);
 		});
+		operationCommandService.updateHierarchyCode(command.getInitMode(), companyId, command.getHistoryId(),
+				command.getListHierarchyChange().stream()
+						.collect(Collectors.toMap(i -> i.getId(), i -> i.getHierarchyCode())));
 	}
 
 }

@@ -22,10 +22,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         selectedName: KnockoutObservable<string> = ko.observable(null);
         selectedDispName: KnockoutObservable<string> = ko.observable(null);
         selectedGenericName: KnockoutObservable<string> = ko.observable(null);
-        selectedHierarchyCode: KnockoutObservable<string> = ko.observable(null);
+        selectedHierarchyCode: KnockoutObservable<string> = ko.observable("");
         selectedExternalCode: KnockoutObservable<string> = ko.observable(null);
         isSynchronized: KnockoutObservable<boolean> = ko.observable(false);
         listHierarchyChange: Array<any> = [];
+        needRegenerateHierarchyCode: boolean = false;
 
         constructor() {
             let self = this;
@@ -40,7 +41,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.selectedCode(null);
                     self.selectedDispName(null);
                     self.selectedGenericName(null);
-                    self.selectedHierarchyCode(null);
+                    self.selectedHierarchyCode("");
                     self.selectedExternalCode(null);
                     self.selectedName(null);
                     nts.uk.ui.errors.clearAll();
@@ -106,6 +107,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 
         getAllWkpDepInfor(idToSelect?: string): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            self.items([]);
+            self.selectedId(null);
             service.getAllWkpDepInforTree(self.initMode, self.configuration().historyId).done((data) => {
                 if (_.isEmpty(data)) {
                     dfd.resolve();
@@ -127,8 +130,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         self.selectedId(idToSelect);
                     else if (self.items().length > 0)
                         self.selectedId(self.items()[0].id);
+                    $("#A5_2").focus();
                     dfd.resolve();
                 }
+                self.listHierarchyChange = [];
+                self.needRegenerateHierarchyCode = false;
             }).fail((error) => {
                 dfd.reject();
                 alertError(error);
@@ -144,6 +150,9 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
+            if (self.needRegenerateHierarchyCode) {
+                self.generateHierarchyCode(self.items(), "");
+            }
             let command = {
                 initMode: self.initMode,
                 historyId: self.configuration().historyId,
@@ -171,10 +180,30 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
+                if (self.needRegenerateHierarchyCode) {
+                    self.generateHierarchyCode(self.items(), "");
+                } 
+                let currentHierarchyCode = self.selectedHierarchyCode();
+                let level = currentHierarchyCode.length / 3;
+                let parentCode = currentHierarchyCode.substring(0, (level - 1) * 3);
+                let items = _.cloneDeep(self.items()), newItems = [];
+                for (let i = 1; i < level; i++) {
+                    let hCode = currentHierarchyCode.substring(0, 3 * i);
+                    let node = _.find(items, i => i.hierarchyCode == hCode);
+                    items = node.children;
+                }
+                let currIndex = _.findIndex(items, i => i.id == self.selectedId());
+                items.forEach((item, index) => {
+                    if (index != currIndex) {
+                        newItems.push(item);
+                    }                    
+                });
+                self.generateHierarchyCode(newItems, parentCode);
                 let data = {
                     initMode: self.initMode,
                     historyId: self.configuration().historyId,
-                    selectedWkpDepId: self.selectedId()
+                    selectedWkpDepId: self.selectedId(),
+                    listHierarchyChange: self.listHierarchyChange
                 };
                 service.deleteWkpDepInfor(data).done(() => {
                     info({ messageId: "Msg_16" }).then(() => {
@@ -221,62 +250,25 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this;
             block.invisible();
             service.checkTotalWkpDepInfor(self.initMode, self.configuration().historyId).done(() => {
+                if (self.needRegenerateHierarchyCode) {
+                    self.generateHierarchyCode(self.items(), "");
+                }
                 let params = {
                     initMode: self.initMode,
                     selectedCode: self.selectedCode(),
                     selectedName: self.selectedName(),
-                    history: self.configuration().historyId
+                    selectedHierarchyCode: self.selectedHierarchyCode(),
+                    history: self.configuration().historyId,
+                    items: self.items()
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
-                    let value = getShared("CreatedWorkplaceCondition");
+                    let value = getShared("CreatedWorkplace");
                     if (value) {
-                        let newHCode = "", currentHierarchyCode = self.selectedHierarchyCode();
-                        if (value == CreationType.CREATE_TO_CHILD) {
-                            newHCode = currentHierarchyCode + "001";
-                            self.selectedId(null);
-                            self.selectedHierarchyCode(newHCode);
-                        } else {
-                            let level = currentHierarchyCode.length / 3;
-                            let parentCode = currentHierarchyCode.substring(0, (level - 1) * 3);
-                            let items = _.cloneDeep(self.items()), newItems = [];
-                            for (let i = 1; i < level; i++) {
-                                let hCode = currentHierarchyCode.substring(0, 3 * i);
-                                let node = _.find(items, i => i.hierarchyCode == hCode);
-                                items = node.children;
-                            }
-                            let currIndex = _.findIndex(items, i => i.hierarchyCode == currentHierarchyCode);
-                            switch (value) {
-                                case CreationType.CREATE_ON_TOP:
-                                    items.forEach((item, index) => {
-                                        if (index == currIndex) {
-                                            newItems.push({ hierarchyCode: item.hierarchyCode, children: [] });
-                                        }
-                                        newItems.push(item);
-                                    });
-                                    break;
-                                case CreationType.CREATE_BELOW:
-                                    currIndex += 1;
-                                    if (currIndex == items.length) {
-                                        newItems = items;
-                                        newItems.push({ hierarchyCode: "", children: [] });
-                                    } else {
-                                        items.forEach((item, index) => {
-                                            if (index == currIndex) {
-                                                newItems.push({ hierarchyCode: item.hierarchyCode, children: [] });
-                                            }
-                                            newItems.push(item);
-                                        });
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            self.listHierarchyChange = [];
-                            self.generateHierarchyCode(newItems, parentCode);
-                            self.selectedId(null);
-                            self.selectedHierarchyCode(newItems[currIndex].hierarchyCode);
-                        }
+                        block.invisible();
+                        self.getAllWkpDepInfor().always(() => {
+                            block.clear();
+                        });
                     }
                 });
             }).fail((error) => {
@@ -290,28 +282,34 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this;
             let node = $("#A4_1").ntsTreeDrag("getSelected");
             let target = $("#A4_1").ntsTreeDrag("getParent", node.data.id)
-            if (target)
+            if (target) {
                 $("#A4_1").ntsTreeDrag("moveNext", target.data.id, node.data.id);
+                self.needRegenerateHierarchyCode = true;
+            }
         }
 
         moveRight() {
             let self = this;
             let node = $("#A4_1").ntsTreeDrag("getSelected");
             let target = $("#A4_1").ntsTreeDrag("getPrevious", node.data.id)
-            if (target)
+            if (target) {
                 $("#A4_1").ntsTreeDrag("moveInto", target.data.id, node.data.id);
+                self.needRegenerateHierarchyCode = true;
+            }
         }
 
         moveUp() {
             let self = this;
             let node = $("#A4_1").ntsTreeDrag("getSelected");
             $("#A4_1").ntsTreeDrag("moveUp", node.id);
+            self.needRegenerateHierarchyCode = true;
         }
 
         moveDown() {
             let self = this;
             let node = $("#A4_1").ntsTreeDrag("getSelected");
             $("#A4_1").ntsTreeDrag("moveDown", node.id);
+            self.needRegenerateHierarchyCode = true;
         }
         
         getGenericName(value: string): string {
@@ -336,8 +334,15 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 let hCode = ++index + "";
                 if (hCode.length == 1) hCode = "00"+ hCode;
                 if (hCode.length == 2) hCode = "0"+ hCode;
-                node.hierarchyCode = parentHierarchyCode + hCode;
-                self.listHierarchyChange.push({ id: node.id, hierarchyCode: node.hierarchyCode });
+                let newHierarchyCode = parentHierarchyCode + hCode;
+                if (node.hierarchyCode != newHierarchyCode) {
+                    node.hierarchyCode = newHierarchyCode;
+                    self.listHierarchyChange = self.listHierarchyChange.filter(i => i.id != node.id);
+                    self.listHierarchyChange.push({ id: node.id, hierarchyCode: node.hierarchyCode });
+                }
+                if (node.id == self.selectedId()) {
+                    self.selectedHierarchyCode(newHierarchyCode);
+                }
                 self.generateHierarchyCode(node.children, node.hierarchyCode);
             })
         }

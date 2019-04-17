@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.operationrule.service;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -174,6 +175,61 @@ public class OperationRuleCommandService {
 			} else {
 				wkpCommandService.deleteWorkplaceInformation(param.getCompanyId(), param.getHistoryId(),
 						param.getWkpDepId());
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 部門職場の登録
+	 * 
+	 * @param param
+	 */
+	public String registerWkpDepInformation(AddWkpDepInforParam param) {
+		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(param.getCompanyId());
+		if (!optOperationRule.isPresent())
+			throw new BusinessException("OperationRule not found!");
+		OperationRule operationRule = optOperationRule.get();
+		boolean isUpdate = true;
+		if (param.getId() == null) {
+			param.setId(IdentifierUtil.randomUniqueId());
+			isUpdate = false;
+		}
+		switch (operationRule.getDepWkpSynchAtr()) {
+		case SYNCHRONIZED:
+			wkpCommandService.registerWorkplaceInformation(param, isUpdate);
+			depCommandService.registerDepartmentInformation(param, isUpdate);
+			break;
+		case NOT_SYNCHRONIZED:
+			if (param.getInitMode() == DEPARTMENT_MODE) {
+				depCommandService.registerDepartmentInformation(param, isUpdate);
+			} else {
+				wkpCommandService.registerWorkplaceInformation(param, isUpdate);
+			}
+			break;
+		default:
+			break;
+		}
+		return param.getId();
+	}
+	
+	public void updateHierarchyCode(int initMode, String companyId, String historyId, Map<String, String> mapHierarchyChange) {
+		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(companyId);
+		if (!optOperationRule.isPresent())
+			throw new BusinessException("OperationRule not found!");
+		OperationRule operationRule = optOperationRule.get();
+		switch (operationRule.getDepWkpSynchAtr()) {
+		case SYNCHRONIZED:
+			wkpCommandService.updateHierarchyCode(companyId, historyId, mapHierarchyChange);
+			depCommandService.updateHierarchyCode(companyId, historyId, mapHierarchyChange);
+			break;
+		case NOT_SYNCHRONIZED:
+			if (initMode == DEPARTMENT_MODE) {
+				depCommandService.updateHierarchyCode(companyId, historyId, mapHierarchyChange);
+			} else {
+				wkpCommandService.updateHierarchyCode(companyId, historyId, mapHierarchyChange);
 			}
 			break;
 		default:

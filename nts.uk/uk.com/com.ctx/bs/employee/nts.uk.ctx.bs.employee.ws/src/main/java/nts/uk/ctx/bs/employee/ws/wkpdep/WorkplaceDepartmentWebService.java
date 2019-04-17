@@ -17,6 +17,8 @@ import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepInforCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.DeleteWkpDepInforCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.RegisterWkpDepInforCommand;
+import nts.uk.ctx.bs.employee.app.command.wkpdep.RegisterWkpDepInforCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.wkpdep.UpdateWkpDepConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.wkpdep.*;
@@ -39,6 +41,9 @@ public class WorkplaceDepartmentWebService extends WebService {
 	
 	@Inject
 	private DeleteWkpDepInforCommandHandler deleteWkpDepInforHandler;
+	
+	@Inject
+	private RegisterWkpDepInforCommandHandler regWkpDepInforHandler;
 
 	@POST
 	@Path("/get-configuration/{mode}")
@@ -107,5 +112,17 @@ public class WorkplaceDepartmentWebService extends WebService {
 	@Path("/get-wkpdepinfo-kcp004")
 	public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
 		return wkpDepFinder.getDepWkpInfoTree(findObject);
+	}
+	
+	@POST
+	@Path("/reg-wkpdepinfo")
+	public JavaTypeResult<String> registerWkpDepInfor(RegisterWkpDepInforCommand command) {
+		return new JavaTypeResult<String>(regWkpDepInforHandler.handle(command));
+	}
+	
+	@POST
+	@Path("/check-duplicate-wkpdepinfo/{mode}/{historyId}/{code}")
+	public WkpDepCheckCodeDto checkWkpDepCodeInThePast(@PathParam("mode") int initMode, @PathParam("historyId") String historyId, @PathParam("code") String code) {
+		return wkpDepFinder.checkWkpDepCodeInThePast(initMode, historyId, code);
 	}
 }

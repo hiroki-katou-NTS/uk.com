@@ -18,6 +18,8 @@ public interface DepartmentInformationRepository {
 	
 	public Optional<DepartmentInformation> getDeletedDepartmentByCode(String companyId, String depHistId, String depCode);
 	
+	public Optional<DepartmentInformation> getActiveDepartmentByCode(String companyId, String depHistId, String depCode);
+	
 	public List<DepartmentInformation> getActiveDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
 	
 	public void addDepartment(DepartmentInformation department);

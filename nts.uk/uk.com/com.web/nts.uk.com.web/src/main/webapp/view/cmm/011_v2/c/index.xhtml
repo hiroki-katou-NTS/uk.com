@@ -19,14 +19,14 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div data-bind="if: $vm.screenMode == 1">
+            <div data-bind="if: screenMode == 0">
                 <span  id="C1_1" class="label">
-                    #{i18n.getText('CMM011-1_7')}
+                    #{i18n.getText('CMM011_207')}
                 </span>
             </div>
-            <div data-bind="if: $vm.screenMode == 2">
+            <div data-bind="if: screenMode == 1">
                 <span  id="C1_1" class="label">
-                    #{i18n.getText('CMM011-2_7')}
+                    #{i18n.getText('CMM011_307')}
                 </span>
             </div>
             <div id="C2_1" style="width: 200px;" tabindex="1" data-bind="ntsRadioBoxGroup: {
@@ -45,7 +45,7 @@
                                             height: 100,
                                             dataSource: inputList,
                                             columns: listColums,
-                                            primaryKey: 'id',
+                                            primaryKey: 'historyId',
                                             multiple: false,
                                             value: currentCode,
                                             name:'#CMM011-0_29'}">
@@ -53,8 +53,8 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="C4_2" data-bind="enable: $root.errors.isEmpty, click: Create" class="proceed x-large" tabindex="3">#{i18n.getText('CMM011-0_27')}</button>
-            <button id="C4_3" class="large" data-bind="click: Close" tabindex="4">#{i18n.getText('CMM011-0_28')}</button>
+            <button id="C4_2" data-bind="enable: $root.errors.isEmpty, click: create" class="proceed x-large" tabindex="3">#{i18n.getText('CMM011-0_27')}</button>
+            <button id="C4_3" class="large" data-bind="click: close" tabindex="4">#{i18n.getText('CMM011-0_28')}</button>
         </div>
     </ui:define>
 </ui:composition>

@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.master.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.employee.dom.operationrule.service.AddWkpDepInforParam;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
@@ -125,6 +127,38 @@ public class WorkplaceCommandService {
 			workplace.delete();
 			wkpInforRepo.updateWorkplace(workplace);
 		}
+	}
+
+	/**
+	 * 職場情報を登録する
+	 * 
+	 * @param param
+	 * @param isUpdate
+	 */
+	public void registerWorkplaceInformation(AddWkpDepInforParam param, boolean isUpdate) {
+		WorkplaceInformation workplace = new WorkplaceInformation(param.getCompanyId(), false, param.getHistoryId(),
+				param.getId(), param.getCode(), param.getName(), param.getGenericName(), param.getDispName(),
+				param.getHierarchyCode(), param.getExternalCode());
+		if (!isUpdate) { // add new
+			if (wkpInforRepo.getActiveWorkplaceByCode(workplace.getCompanyId(), workplace.getWorkplaceHistoryId(),
+					workplace.getWorkplaceCode().v()).isPresent())
+				throw new BusinessException("Msg_3");
+			wkpInforRepo.addWorkplace(workplace);
+		} else { // update
+			wkpInforRepo.updateWorkplace(workplace);
+		}
+		this.updateHierarchyCode(param.getCompanyId(), param.getHistoryId(), param.getMapHierarchyChange());
+	}
+
+	public void updateHierarchyCode(String companyId, String historyId, Map<String, String> mapHierarchyChange) {
+		List<String> listWkpId = mapHierarchyChange.keySet().stream().filter(k -> k != null)
+				.collect(Collectors.toList());
+		List<WorkplaceInformation> listWorkplace = wkpInforRepo.getActiveWorkplaceByWkpIds(companyId, historyId,
+				listWkpId);
+		listWorkplace.forEach(wkp -> {
+			wkp.changeHierarchyCode(mapHierarchyChange.get(wkp.getWorkplaceId()));
+			wkpInforRepo.updateWorkplace(wkp);
+		});
 	}
 
 }

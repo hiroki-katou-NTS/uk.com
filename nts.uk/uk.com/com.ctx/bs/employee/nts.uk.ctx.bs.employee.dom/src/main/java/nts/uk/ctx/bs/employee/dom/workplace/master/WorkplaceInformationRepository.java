@@ -18,6 +18,8 @@ public interface WorkplaceInformationRepository {
 	
 	public Optional<WorkplaceInformation> getDeletedWorkplaceByCode(String companyId, String wkpHistId, String wkpCode);
 	
+	public Optional<WorkplaceInformation> getActiveWorkplaceByCode(String companyId, String wkpHistId, String wkpCode);
+	
 	public List<WorkplaceInformation> getActiveWorkplaceByWkpIds(String companyId, String wkpHistId, List<String> listWorkplaceId);
 	
 	public void addWorkplace(WorkplaceInformation workplace);
