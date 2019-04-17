@@ -66,9 +66,10 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 						immedidately.add(new AffJobTitleHistoryImmediately(affJobTitleHistory, itemToBeUpdate.get()));
 					}
 				}
-				AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(c.getHistoryId(), c.getSid(), c.getJobTitleId(), c.getNote());
-				histItems.add(histItem);
 			}
+			
+			AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(c.getHistoryId(), c.getSid(), c.getJobTitleId(), c.getNote());
+			histItems.add(histItem);
 		});
 		
 		if(!immedidately.isEmpty()) {

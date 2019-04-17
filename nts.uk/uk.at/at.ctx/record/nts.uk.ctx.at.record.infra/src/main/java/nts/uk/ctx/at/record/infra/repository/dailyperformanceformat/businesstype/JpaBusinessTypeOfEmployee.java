@@ -153,7 +153,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 
 	@Override
 	@SneakyThrows
-	public List < BusinessTypeOfEmployee > findAllByHistIds(List <String> histIds) {
+	public List <BusinessTypeOfEmployee> findAllByHistIds(List <String> histIds) {
 		 List < BusinessTypeOfEmployee > result = new ArrayList < > ();
 		 
 		 CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -164,14 +164,9 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 			    stmt.setString(i + 1, subList.get(i));
 			   }
 		
-			   List < BusinessTypeOfEmployee > entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-			    KrcmtBusinessTypeOfEmployee entity = new KrcmtBusinessTypeOfEmployee();
-			    entity.krcmtBusinessTypeOfEmployeePK = new KrcmtBusinessTypeOfEmployeePK(rec.getString("HIST_ID"));
-			    entity.sId = rec.getString("SID");
-			    entity.businessTypeCode = rec.getString("BUSINESS_TYPE_CD");
-			    
-			    return toDomain(entity);
-		
+			   List < BusinessTypeOfEmployee > entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {			    
+			    return BusinessTypeOfEmployee.createFromJavaType(rec.getString("BUSINESS_TYPE_CD"),
+			    		rec.getString("HIST_ID"), rec.getString("SID"));
 			   });
 		
 			   result.addAll(entities);

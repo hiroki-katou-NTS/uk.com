@@ -301,7 +301,7 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	public void updateAll(List<AffJobTitleHistoryItem> domains) {
 		
 		String UP_SQL = "UPDATE BSYMT_AFF_JOB_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " JOB_TITLE_ID = JOB_TITLE_ID_VAL, NOTE = NOTE_VAL"
+				+ " JOB_TITLE_ID = JOB_ID, NOTE = NOTE_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -315,7 +315,7 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			
-			sql = sql.replace("JOB_TITLE_ID_VAL", "'" + c.getJobTitleId() + "'");
+			sql = sql.replace("JOB_ID", "'" + c.getJobTitleId() + "'");
 			sql = sql.replace("NOTE_VAL","'" +  c.getNote().v() + "'");
 			
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");

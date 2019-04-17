@@ -492,8 +492,8 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 
 	@Override
 	public void updateAll(List<TempAbsenceHisItem> domains) {
-		String INTER = "UPDATE BSYMT_TEMP_ABS_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,";
-		String _WHERE =" WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL AND TEMP_ABS_FRAME_NO = TEMP_ABS_FRAME_NO_VAL";
+		String INTER = "UPDATE BSYMT_TEMP_ABS_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL, TEMP_ABS_FRAME_NO = TEMP_ABS_FRAME_NO_VAL, ";
+		String _WHERE =" WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL ";
 		TempAbsenceHisItem tempAbsenceHisItem = domains.get(0);		
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -638,18 +638,18 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
 			String INS_SQL = INTER;
 			domains.parallelStream().forEach(c ->{
-				SickLeave sickLeave = (SickLeave) c;
+				AnyLeave anyLeave = (AnyLeave) c;
 				String sql = INS_SQL;
 				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 				sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
 				sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 				sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 				
-				sql = sql.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
-				sql = sql.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
+				sql = sql.replace("HIST_ID_VAL", "'" + anyLeave.getHistoryId() + "'");
+				sql = sql.replace("SID_VAL", "'" + anyLeave.getEmployeeId() + "'");
 				sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
-				sql = sql.replace("REMARKS_VAL", sickLeave.getRemarks()== null? "null" : "'" + sickLeave.getRemarks() + "'");
-				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave.getSoInsPayCategory() == null? "null": "" +  sickLeave.getSoInsPayCategory().intValue() + "");
+				sql = sql.replace("REMARKS_VAL", anyLeave.getRemarks()== null? "null" : "'" + anyLeave.getRemarks() + "'");
+				sql = sql.replace("SO_INS_PAY_CATEGORY_VAL", anyLeave.getSoInsPayCategory() == null? "null": "" +  anyLeave.getSoInsPayCategory().intValue() + "");
 	
 				sb.append(sql);
 			});

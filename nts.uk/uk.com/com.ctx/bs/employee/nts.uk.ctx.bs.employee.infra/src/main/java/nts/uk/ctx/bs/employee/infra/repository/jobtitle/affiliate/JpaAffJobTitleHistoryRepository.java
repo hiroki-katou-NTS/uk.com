@@ -419,7 +419,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 						+ " WHERE h.CID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					statement.setString( 1 + i, subList.get(i));
+					statement.setString( 2 + i, subList.get(i));
 				}
 				List<Map<String, Object>> map = new NtsResultSet(statement.executeQuery()).getList(rec -> {
 					Map<String, Object> m = new HashMap<>();

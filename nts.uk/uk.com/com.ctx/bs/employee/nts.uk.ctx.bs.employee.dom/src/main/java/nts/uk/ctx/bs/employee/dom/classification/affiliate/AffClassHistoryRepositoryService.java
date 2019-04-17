@@ -134,7 +134,9 @@ public class AffClassHistoryRepositoryService {
 		midAffClass.parallelStream().forEach(c ->{
 			historiesInsertLst.add(new AffClassHistory(c.getHistory().getCompanyId(), c.getHistory().getEmployeeId(), Arrays.asList(c.getItem())));
 		});
-		updateAllItemBefore(historiesInsertLst);
+		if(!historiesInsertLst.isEmpty()) {
+			updateAllItemBefore(historiesInsertLst);
+		}
 	}
 	
 	
