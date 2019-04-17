@@ -2,13 +2,9 @@ package nts.uk.file.pr.infra.core.socialinsurance.salaryhealth_healthinsur;
 
 import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.CusHealthInsuDto;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth.SalaryHealthExportData;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth.SalaryHealthFileGenerator;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth_healthinsur.SalaryHealthInsurExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth_healthinsur.SalaryHealthInsurFileGenerator;
-import nts.uk.ctx.pr.file.app.core.wageprovision.unitpricename.SalaryPerUnitSetExportData;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.i18n.TextResource;
@@ -26,7 +22,7 @@ import java.util.Locale;
 public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenerator implements SalaryHealthInsurFileGenerator {
 
     private static final String TEMPLATE_FILE_B = "report/TEMPLATE_QMM008_E.xlsx";
-    private static final String REPORT_FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（健康保険）.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（健康保険）.pdf";
 
     @Inject
     private CompanyAdapter company;
@@ -57,22 +53,23 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
             //break page
             HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
-
+            for (int i = 0; i < 300; i++) {
+                exportData.getCusDataDtos().add(exportData.getCusDataDtos().get(i));
+            }
             int page =  exportData.getCusDataDtos().size() / 55;
-            boolean isFirst = (page == 1 ) && page%55 == 0 ? true : false;
-
+            if(exportData.getCusDataDtos().size() % 55 != 0){
+                page++;
+            }
             cells.get(0, 2).setValue(exportData.getOfficeCode());
-            cells.get(0, 3).setValue(exportData.getSocialInsuranceName());
-            cells.get(0, 5).setValue(exportData.getDisplayStart());
-            cells.get(0, 6).setValue(exportData.getDisplayEnd());
-
+            cells.get(0, 4).setValue(exportData.getSocialInsuranceName());
             for (int i = 0; i < exportData.getCusDataDtos().size(); i++) {
-                if(i < page && !isFirst ){
-                    ws.getCells().copyRows(cells,0, 62*(i+1), 62 );
-                    pageBreaks.add(62*(i+1));
+                if(i >= 1 && i <= page-1 && page != 1 ){
+                    wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
                 }
                 if(i%55 == 0 && i != 0){
-                    rowStart = rowStart+7;
+                    Worksheet sheet = wsc.get("sheetName" + i / 55);
+                    cells = sheet.getCells();
+                    rowStart = 4;
                 }
                 CusHealthInsuDto e = exportData.getCusDataDtos().get(i);
                 cells.get(rowStart, COLUMN_START).setValue(e.getHealthInsuranceGrade());
@@ -92,17 +89,12 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
 
                 rowStart++;
             }
-
-
             reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
-
-
     private void printSalaryHealthy(Worksheet worksheet, List<Object[]> data){
         Cells cells = worksheet.getCells();
         int numRow = 2;
