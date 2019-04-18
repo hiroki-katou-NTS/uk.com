@@ -876,6 +876,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
 		String employeeId = employeeDto.getEmployeeId();
+		List<CodeName> lstWorkPlace = queryData.getLstWorkPlace(); 		
+		List<CodeName> lstClassification = queryData.getLstClassification();		
+		List<CodeName> lstPossition = queryData.getLstPossition();		
+		List<CodeName> lstEmployment = queryData.getLstEmployment();		
+		List<CodeName> lstBussinessType = queryData.getLstBussinessType();
 		
 		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
 		EmployeeReportData employeeData = new EmployeeReportData();
@@ -935,7 +940,51 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Optional<ItemValue> optItemValue = x.getItemValues().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 				if (optItemValue.isPresent()) {
 					ItemValue itemValue = optItemValue.get();
-					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value));
+					ActualValue value = new ActualValue();
+					String codeName = "";
+//					勤怠項目ID＝192、197：アルゴリズム「雇用を取得する」
+					if(itemValue.getItemId() == 192 || itemValue.getItemId() == 197 ) {
+						Optional<CodeName> object = lstEmployment.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						if(object.isPresent()) {
+							codeName = object.get().getCode()+ "　" + object.get().getName();
+						}
+						value = new ActualValue(itemValue.getItemId(), codeName, ValueType.TEXT.value);
+					}
+//					勤怠項目ID＝193、198：アルゴリズム「職位を取得する」
+					else if(itemValue.getItemId() == 193 || itemValue.getItemId() == 198 ) {
+						Optional<CodeName> object = lstPossition.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						if(object.isPresent()) {
+							codeName = object.get().getCode()+ "　" + object.get().getName();
+						}
+						value = new ActualValue(itemValue.getItemId(), codeName, ValueType.TEXT.value);
+					}
+//					勤怠項目ID＝194、199：アルゴリズム「職場を取得する」
+					else if(itemValue.getItemId() == 194 || itemValue.getItemId() == 199 ) {
+						Optional<CodeName> object = lstWorkPlace.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						if(object.isPresent()) {
+							codeName = object.get().getCode()+ "　" + object.get().getName();
+						}
+						value = new ActualValue(itemValue.getItemId(), codeName, ValueType.TEXT.value);
+					}
+//					勤怠項目ID＝195、200：アルゴリズム「分類を取得する」
+					else if(itemValue.getItemId() == 195 || itemValue.getItemId() == 200 ) {
+						Optional<CodeName> object = lstClassification.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						if(object.isPresent()) {
+							codeName = object.get().getCode()+ "　" + object.get().getName();
+						}
+						value = new ActualValue(itemValue.getItemId(), codeName, ValueType.TEXT.value);
+					}
+//					勤怠項目ID＝196、201：アルゴリズム「勤務種別を取得する」
+					else if(itemValue.getItemId() == 196 || itemValue.getItemId() == 201 ) {
+						Optional<CodeName> object = lstBussinessType.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						if(object.isPresent()) {
+							codeName = object.get().getCode()+ "　" + object.get().getName();
+						}
+						value = new ActualValue(itemValue.getItemId(), codeName, ValueType.TEXT.value);
+					}else {
+						value = new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value);
+					}
+					detailedDate.actualValue.add(value);
 				}
 				else {
 					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
@@ -1192,6 +1241,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
 				}
+				if (valueTypeEnum == ValueType.TEXT) {
+					totalVal.setValue(val.value());
+					totalVal.setValueType(val.getValueType());
+				}
 			});
 		});
 		
@@ -1250,6 +1303,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
+						if(valueTypeEnum == ValueType.TEXT) {
+							personalTotal.setValue(aVal.getValue());
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							totalVal.setValue(aVal.getValue());
+							totalGrossVal.setValue(aVal.getValue());
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+						}
 					});
 				});
 			});
@@ -1275,6 +1335,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						}
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+						}
+						if (valueTypeEnum == ValueType.TEXT) {
+							totalVal.setValue(item.getValue());
 						}
 					}
 					else {
@@ -1641,7 +1704,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else {
-				            		cell.setValue(value);
+				            		cell.putValue(value);
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
 				            	}
 				            	setFontStyle(style);
@@ -1748,6 +1811,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							}
 			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
+			            	}else if (valueTypeEnum == ValueType.TEXT && value != null) {
+			            		cell.putValue(value, false);
 			            	}
 			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -1829,6 +1894,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
+	            	}
+	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+	            		cell.putValue(value, false);
 	            	}
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -1981,6 +2049,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								}
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
+				            	}
+				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+				            		cell.putValue(value, false);
 				            	}
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -2521,6 +2592,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
+	            	}
+	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+	            		cell.putValue(value, false);
 	            	}
 					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
