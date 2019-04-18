@@ -38,11 +38,9 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private void settingPage(Worksheet worksheet, String companyName){

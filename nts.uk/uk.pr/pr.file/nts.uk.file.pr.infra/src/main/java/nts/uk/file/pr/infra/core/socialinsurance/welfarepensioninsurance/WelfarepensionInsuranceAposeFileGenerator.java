@@ -44,11 +44,8 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
             worksheets.removeAt(0);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            /*reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));*/
-            reportContext.saveAsExcel(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
-
+            reportContext.saveAsPdf(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +76,7 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
     }
 
     private String convertYearMonth(Integer startYearMonth){
-         return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
+         return startYearMonth.toString().substring(0,4) + "/" + startYearMonth.toString().substring(4,6);
     }
 
     private void settingPage(Worksheet worksheet, int startDate, String companyName){
