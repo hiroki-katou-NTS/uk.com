@@ -51,11 +51,6 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
             pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
             Cells cells = ws.getCells();
             //break page
-            HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-
-            for (int i = 0; i < 300; i++) {
-                exportData.getCusDataDtos().add(exportData.getCusDataDtos().get(i));
-            }
             int page =  exportData.getCusDataDtos().size() / 55;
             if(exportData.getCusDataDtos().size() % 55 != 0){
                 page++;
