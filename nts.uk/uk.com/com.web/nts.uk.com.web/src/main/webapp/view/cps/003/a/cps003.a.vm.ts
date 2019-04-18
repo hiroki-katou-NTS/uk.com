@@ -428,8 +428,11 @@ module cps003.a.vm {
                         case ITEM_SELECT_TYPE.CODE_NAME:
                             return 1;
                         case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            if (_.isNil(value) || isNaN(Number(value))) return 1;
-                            return 2;
+                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                                return 2;
+                            }
+                            return 1;
                     }
                 case ITEM_SINGLE_TYPE.READONLY:
                 case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
@@ -451,6 +454,10 @@ module cps003.a.vm {
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).value(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
                 case ITEM_SINGLE_TYPE.DATE:
+                    if (value instanceof moment && !value.isValid()) {
+                        return { value: null, text: null };    
+                    }
+                    
                     let date = moment(value).format("YYYY/MM/DD");
                     return { value: date, text: date };
                 case ITEM_SINGLE_TYPE.SELECTION:
