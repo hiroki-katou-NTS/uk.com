@@ -56,24 +56,24 @@
 							constraint: 'DepartmentCode',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
+					<div class="item valign-center control-group">
+						<div id="A6_1" data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
 						<input id="A6_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_113]',
 							value: name,
 							constraint: 'DepartmentName',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
+					<div class="item valign-center control-group">
+						<div id="A7_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
 						<input id="A7_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_114]',
 							value: displayName,
 							constraint: 'WorkplaceDisplayName',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
+					<div class="item valign-center control-group">
+						<div id="A8_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
 						<input id="A8_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_115]',
 							value: genericName,
@@ -81,8 +81,8 @@
 							option: { width: '393px' },
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
+					<div class="item valign-center control-group">
+						<div id="A9_1" data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
 						<input id="A9_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_116]',
 							value: externalCode,
