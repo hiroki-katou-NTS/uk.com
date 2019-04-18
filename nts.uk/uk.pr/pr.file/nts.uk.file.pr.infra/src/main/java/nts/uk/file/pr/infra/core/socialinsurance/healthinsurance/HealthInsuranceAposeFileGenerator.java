@@ -39,8 +39,8 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
             printDataHealthy(worksheets, exportData.getHealthMonth());
             printDataBonus(worksheets, exportData.getBonusHealth());
             worksheets.removeAt(0);
-            worksheets.removeAt("sheetName1");
-            worksheets.removeAt("sheetName2");
+            worksheets.removeAt("healthy");
+            worksheets.removeAt("bonus");
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
@@ -55,23 +55,25 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
     }
 
     private void createTableHealthy(WorksheetCollection worksheets,int pageMonth, int startDate, String companyName) throws Exception {
-        worksheets.get(worksheets.addCopy(0)).setName("sheetName1");
-        Worksheet worksheet = worksheets.get("sheetName1");
+        String sheetName = "healthy";
+        worksheets.get(worksheets.addCopy(0)).setName(sheetName);
+        Worksheet worksheet = worksheets.get(sheetName);
         worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
         settingPage(worksheet, startDate, companyName);
         for(int i = 0 ; i< pageMonth; i++) {
-            worksheets.get(worksheets.addCopy("sheetName1")).setName("sheetName1"+ i);
+            worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName + i);
         }
     }
 
     private void createTableBonus(WorksheetCollection worksheets,int pageBonus, int startDate, String companyName) throws Exception {
-        worksheets.get(worksheets.addCopy(0)).setName("sheetName2");
-        Worksheet worksheet = worksheets.get("sheetName2");
+        String sheetName = "bonus";
+        worksheets.get(worksheets.addCopy(0)).setName(sheetName);
+        Worksheet worksheet = worksheets.get(sheetName);
         worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
         worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
         settingPage(worksheet, startDate, companyName);
         for(int i = 0 ; i< pageBonus; i++) {
-            worksheets.get(worksheets.addCopy("sheetName2")).setName("sheetName2"+ i);
+            worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName + i);
         }
     }
 
@@ -88,16 +90,19 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         pageSetup.setFitToPagesTall(1);
         pageSetup.setFitToPagesWide(1);
     }
+
     private void printDataHealthy(WorksheetCollection worksheets, List<Object[]> data) {
+        String sheetName = "healthy";
         int numColumn = 12;
         int columnStart = 1;
-        fillData(worksheets, data, numColumn, columnStart, "sheetName1");
+        fillData(worksheets, data, numColumn, columnStart, sheetName);
     }
 
     private void printDataBonus(WorksheetCollection worksheets, List<Object[]> data) {
+        String sheetName = "bonus";
         int numColumn = 12;
         int columnStart = 1;
-        fillData(worksheets, data, numColumn, columnStart, "sheetName2");
+        fillData(worksheets, data, numColumn, columnStart, sheetName);
     }
 
     private void fillData(WorksheetCollection worksheets, List<Object[]> data, int numColumn, int startColumn, String sheetName) {
