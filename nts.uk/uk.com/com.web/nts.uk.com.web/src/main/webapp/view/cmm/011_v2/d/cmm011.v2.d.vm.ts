@@ -71,6 +71,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 if (_.isEmpty(self.genericName())) {
                     self.genericName(self.getGenericName(value));
                 }
+                $(".nts-input").trigger("validate");
             });
             self.createMethod.subscribe(value => {
                 let items = _.cloneDeep(self.items);
