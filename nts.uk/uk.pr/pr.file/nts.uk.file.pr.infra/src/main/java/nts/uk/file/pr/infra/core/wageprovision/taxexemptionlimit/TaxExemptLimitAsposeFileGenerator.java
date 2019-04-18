@@ -64,7 +64,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                 wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
             }
             for (int i = 0; i <= page; i++) {
-                if (countElement % 72 == 0 && i != 0) {
+                if (countElement % 72 > 0 && i != 0) {
                     Worksheet sheet = wsc.get("sheetName" + i);
                     cells = sheet.getCells();
                     rowStart = 2;
