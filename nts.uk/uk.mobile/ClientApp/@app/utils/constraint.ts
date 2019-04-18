@@ -66,14 +66,17 @@ export const constraint = {
             case 'TimePoint':
             case 'Decimal':
             case 'Integer':
-                $content += $content.length > 0 ? "/" : "";
-                $content += `${prmitive.min}～${prmitive.max}`;
+                //$content += $content.length > 0 ? "/" : "";
+                $content += constraint.getMinMax(prmitive);
                 break;
             default:
                 break;
         }
 
         return $content;
+    },
+    getMinMax(prmitive: IRule): string {
+        return `${prmitive.min}～${prmitive.max}`;
     },
     getCharLength(prmitive: IRule): number {
         let char = charTypes[prmitive.charType] || charTypes.Any;
