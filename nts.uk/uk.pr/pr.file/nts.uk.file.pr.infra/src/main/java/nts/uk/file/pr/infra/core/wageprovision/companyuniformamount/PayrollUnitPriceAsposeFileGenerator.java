@@ -67,7 +67,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
 
         // Set header date
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
@@ -81,7 +81,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             sourceRowIndex = sourceRowIndex + 38;
             destinationRowIndex = destinationRowIndex + 38;
         }
- 
+
         for(Object[] entity : exportData){
             if(count == MAX_LINE){
                 pageBreaks.add(rowIndex);
@@ -90,13 +90,13 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
             }
             ws.getCells().get(rowIndex,COLUMN_INDEX_CODE).putValue(entity[0]);
             ws.getCells().get(rowIndex,COLUMN_INDEX_NAME).putValue(entity[1]);
-            ws.getCells().get(rowIndex,COLUMN_INDEX_DATE).putValue(this.convertYearMonth(entity[2].toString()));
-            ws.getCells().get(rowIndex,COLUMN_INDEX_MONEY).putValue(entity[3]);
-            ws.getCells().get(rowIndex,COLUMN_INDEX_ALL).putValue(((BigDecimal) entity[9]).intValue() == 1 ? this.getTextResource(((BigDecimal)entity[4]).intValue())  : "-");
-            ws.getCells().get(rowIndex,COLUMN_INDEX_MONTH_SALARY).putValue(((BigDecimal) entity[9]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[5]).intValue()) : "-");
-            ws.getCells().get(rowIndex,COLUMN_INDEX_MONTH_SALARY_PER_DAY).putValue(((BigDecimal) entity[9]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[6]).intValue()) : "-");
-            ws.getCells().get(rowIndex,COLUMN_INDEX_ADAY_PAYEE).putValue(((BigDecimal) entity[9]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[7]).intValue()) : "-");
-            ws.getCells().get(rowIndex,COLUMN_INDEX_HOURLY_DAY).putValue(((BigDecimal) entity[9]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[8]).intValue()) : "-");
+            ws.getCells().get(rowIndex,COLUMN_INDEX_DATE).putValue(this.convertYearMonth(entity[4].toString()));
+            ws.getCells().get(rowIndex,COLUMN_INDEX_MONEY).putValue(entity[5]);
+            ws.getCells().get(rowIndex,COLUMN_INDEX_ALL).putValue(((BigDecimal) entity[11]).intValue() == 1 ? this.getTextResource(((BigDecimal)entity[6]).intValue())  : "-");
+            ws.getCells().get(rowIndex,COLUMN_INDEX_MONTH_SALARY).putValue(((BigDecimal) entity[11]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[7]).intValue()) : "-");
+            ws.getCells().get(rowIndex,COLUMN_INDEX_MONTH_SALARY_PER_DAY).putValue(((BigDecimal) entity[11]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[8]).intValue()) : "-");
+            ws.getCells().get(rowIndex,COLUMN_INDEX_ADAY_PAYEE).putValue(((BigDecimal) entity[11]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[9]).intValue()) : "-");
+            ws.getCells().get(rowIndex,COLUMN_INDEX_HOURLY_DAY).putValue(((BigDecimal) entity[11]).intValue() == 0 ? this.getTextResource(((BigDecimal)entity[10]).intValue()) : "-");
             rowIndex++;
             count ++;
         }
