@@ -66,14 +66,15 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlB
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.screen.at.app.monthlyperformance.CheckDailyPerError;
+import nts.uk.screen.at.app.monthlyperformance.CheckEmpEralOuput;
+import nts.uk.screen.at.app.monthlyperformance.TypeErrorAlarm;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
@@ -179,6 +180,9 @@ public class MonthlyPerformanceReload {
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 
+	@Inject
+	private CheckDailyPerError checkDailyPerError;
+	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
 		String companyId = AppContexts.user().companyId();
@@ -218,6 +222,7 @@ public class MonthlyPerformanceReload {
 		// RequestList211
 		List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter
 				.getAffCompanyHistByEmployee(employeeIds, datePeriodClosure);
+		screenDto.setLstAffComHist(lstAffComHist);
 		
 		List<String> listEmployeeIds = param.getLstEmployees().stream().map(x -> x.getId())
 				.collect(Collectors.toList());
@@ -348,7 +353,6 @@ public class MonthlyPerformanceReload {
 		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell
 																// state
 		screenDto.setLstData(lstData);
-		screenDto.setLstCellState(lstCellState);
 
 		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
@@ -374,13 +378,13 @@ public class MonthlyPerformanceReload {
 			listCss.add("daily-confirm-color");
 			if (monthlyPerformaceLockStatus != null) {
 				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK) {
-					dailyConfirm = "！";
+					dailyConfirm = "未";
 					// mau cua kiban chua dap ung duoc nen dang tu set mau
 					// set color for cell dailyConfirm
 					listCss.add("color-cell-un-approved");
 					screenDto.setListStateCell("dailyconfirm", employeeId, listCss);
 				} else {
-					dailyConfirm = "〇";
+					dailyConfirm = "済";
 					// mau cua kiban chua dap ung duoc nen dang tu set mau
 					// set color for cell dailyConfirm
 					listCss.add("color-cell-approved");
@@ -595,6 +599,40 @@ public class MonthlyPerformanceReload {
 			lstData.add(mpdata);
 		}
 	screenDto.setMPSateCellHideControl(mPSateCellHideControls);
+			//get histtory into company
+			List<AffCompanyHistImport> listAffCompanyHistImport = screenDto.getLstAffComHist();
+		List<CheckEmpEralOuput> listCheckEmpEralOuput = checkDailyPerError
+				.checkDailyPerError(listEmployeeIds,
+						new DatePeriod(screenDto.getSelectedActualTime().getStartDate(),
+								screenDto.getSelectedActualTime().getEndDate()),
+						listAffCompanyHistImport, monthlyResults);
+			//取得した情報を元に月別実績を画面に表示する
+			//NOTE: ※取得した「会社所属履歴」をもとに、菜食していない期間の実績は表示しないでください
+			List<MPDataDto> listData =  new ArrayList<>();
+			screenDto.getLstData().forEach(x -> {
+				Optional<AffCompanyHistImport> optMonthlyPerformanceEmployeeDto = listAffCompanyHistImport.stream()
+						.filter(y -> x.getEmployeeId().equals(y.getEmployeeId())).findFirst();
+				
+				if (optMonthlyPerformanceEmployeeDto.isPresent()
+						&& optMonthlyPerformanceEmployeeDto.get().getLstAffComHistItem().size() > 0)
+					for(CheckEmpEralOuput checkEmpEralOuput: listCheckEmpEralOuput) {
+						if(x.getEmployeeId().equals(checkEmpEralOuput.getEmployId())) {
+							if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR) {
+								x.setError("ER");
+							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ALARM) {
+								x.setError("AL");
+							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR_ALARM) {
+								x.setError("ER/AL");
+							}else {
+								x.setError("");
+							}
+							break;
+						}
+					}
+					listData.add(x);
+			});
+			screenDto.setLstCellState(lstCellState);
+			screenDto.setLstData(listData);
 	}
 
 	// copy ben MonthlyPerformanceDisplay

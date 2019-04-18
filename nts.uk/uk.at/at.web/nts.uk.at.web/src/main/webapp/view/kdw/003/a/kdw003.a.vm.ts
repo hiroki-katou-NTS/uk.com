@@ -348,6 +348,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 var win = $(this); //this = window
                 //$(".grid-container").attr('style', 'height: ' + (win.height() -150) + 'px !IMPORTANT');
             });
+           nts.uk.characteristics.remove(__viewContext.user.employeeId + __viewContext.user.companyId);
         }
 
         helps(event, data) {
@@ -3075,7 +3076,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(dataList: any) {
-                    // self.selectedEmployee(dataList.listEmployee);
+                     nts.uk.ui.block.invisible();
+                     nts.uk.ui.block.grayout();
+                    setTimeout(() => {
+                     // self.selectedEmployee(dataList.listEmployee);
                     self.lstEmployee(dataList.listEmployee.map((data: EmployeeSearchDto) => {
                         return {
                             id: data.employeeId,
@@ -3094,6 +3098,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.closureId = dataList.closureId;
                     self.loadKcp009();
                     self.btnExtraction_Click();
+                    }, 50);
                 },
             }
         }
