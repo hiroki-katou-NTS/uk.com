@@ -34,12 +34,12 @@ import nts.arc.primitive.constraint.TimeMinValue;
 import nts.arc.primitive.constraint.TimeRange;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
-class Helper {
+public class Helper {
 
 	/**
 	 * these constraints have single parameter
 	 */
-	static HashMap<String, String> CONSTRAINTS_SIGNLE_PARAM = new HashMap<>();
+	public static HashMap<String, String> CONSTRAINTS_SIGNLE_PARAM = new HashMap<>();
 	static {
 		CONSTRAINTS_SIGNLE_PARAM.put(StringCharType.class.getSimpleName(), "charType");
 		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLength.class.getSimpleName(), "maxLength");
@@ -61,7 +61,7 @@ class Helper {
 	/**
 	 * these constraints have multiple parameters: max, min
 	 */
-	static HashSet<String> CONSTRAINTS_MAX_MIN_PARAM = new HashSet<>();
+	public static HashSet<String> CONSTRAINTS_MAX_MIN_PARAM = new HashSet<>();
 	static {
 		CONSTRAINTS_MAX_MIN_PARAM.add(IntegerRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(LongRange.class.getSimpleName());
@@ -79,7 +79,7 @@ class Helper {
 		CHARTYPE_NAMES_MAP.put(CharType.KANA.name(), "Kana");
 	}
 
-	static String getValueType(Class<?> inputClass) {
+	public static String getValueType(Class<?> inputClass) {
 		if (StringPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "String";
 		} else if (TimeDurationPrimitiveValue.class.isAssignableFrom(inputClass)) {
@@ -99,7 +99,7 @@ class Helper {
 		}
 	}
 
-	static String getAnnotationName(String representationOfAnnotation) {
+	public static String getAnnotationName(String representationOfAnnotation) {
 		int end = representationOfAnnotation.indexOf("(");
 		String noEnd = representationOfAnnotation.substring(0, end);
 		int start = noEnd.lastIndexOf(".") + 1;
@@ -107,13 +107,13 @@ class Helper {
 		return noEnd.substring(start, end);
 	}
 
-	static String getAnnotationParametersString(String representationOfAnnotation) {
+	public static String getAnnotationParametersString(String representationOfAnnotation) {
 		int start = representationOfAnnotation.indexOf("(") + 1;
 		int end = representationOfAnnotation.lastIndexOf(")");
 		return representationOfAnnotation.substring(start, end);
 	}
 
-	static String parseSingleParameterValue(String constraintName, String parametersString) {
+	public static String parseSingleParameterValue(String constraintName, String parametersString) {
 		String jsValue = parametersString.replaceAll("value=", "");
 
 		if (constraintName.equalsIgnoreCase("StringCharType")) {
@@ -127,7 +127,7 @@ class Helper {
 		return jsValue;
 	}
 
-	static Map<String, String> parseMultipleParametersString(String parametersString) {
+	public static Map<String, String> parseMultipleParametersString(String parametersString) {
 		val results = new HashMap<String, String>();
 
 		for (String param : parametersString.split(",")) {
