@@ -80,8 +80,8 @@ public class DepartmentExportSerivce {
 						d.getDepartmentGeneric().v(),
 						d.getDepartmentExternalCode().isPresent() ? d.getDepartmentExternalCode().get().v() : null))
 				.collect(Collectors.toList());
-		List<String> listAccquiredId = result.stream().map(i -> i.getDepartmentId()).collect(Collectors.toList());
-		List<String> listDepIdNoResult = listDepartmentId.stream().filter(i -> !listAccquiredId.contains(i))
+		List<String> listAcquiredId = result.stream().map(i -> i.getDepartmentId()).collect(Collectors.toList());
+		List<String> listDepIdNoResult = listDepartmentId.stream().filter(i -> !listAcquiredId.contains(i))
 				.collect(Collectors.toList());
 		if (!listDepIdNoResult.isEmpty()) {
 			result.addAll(this.getPastDepartmentInfor(companyId, depHist.identifier(), listDepIdNoResult));
@@ -125,8 +125,8 @@ public class DepartmentExportSerivce {
 							d.getDepartmentCode().v(), "マスタ未登録", "マスタ未登録", "マスタ未登録",
 							d.getDepartmentExternalCode().isPresent() ? d.getDepartmentExternalCode().get().v() : null))
 					.collect(Collectors.toList()));
-			List<String> listAccquiredId = result.stream().map(d -> d.getDepartmentId()).collect(Collectors.toList());
-			listDepartmentId = listDepartmentId.stream().filter(id -> !listAccquiredId.contains(id))
+			List<String> listAcquiredId = result.stream().map(d -> d.getDepartmentId()).collect(Collectors.toList());
+			listDepartmentId = listDepartmentId.stream().filter(id -> !listAcquiredId.contains(id))
 					.collect(Collectors.toList());
 			if (listDepartmentId.isEmpty())
 				break;

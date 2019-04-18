@@ -82,8 +82,8 @@ public class WorkplaceExportService {
 						w.getWorkplaceGeneric().v(),
 						w.getWorkplaceExternalCode().isPresent() ? w.getWorkplaceExternalCode().get().v() : null))
 				.collect(Collectors.toList());
-		List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
-		List<String> listWkpIdNoResult = listWorkplaceId.stream().filter(i -> !listAccquiredWkpId.contains(i))
+		List<String> listAcquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
+		List<String> listWkpIdNoResult = listWorkplaceId.stream().filter(i -> !listAcquiredWkpId.contains(i))
 				.collect(Collectors.toList());
 		if (!listWkpIdNoResult.isEmpty()) {
 			List<WorkplaceInforParam> listPastWkpInfor = this.getPastWorkplaceInfor(companyId, wkpHistory.identifier(),
@@ -130,8 +130,8 @@ public class WorkplaceExportService {
 							w.getWorkplaceCode().v(), "マスタ未登録", "マスタ未登録", "マスタ未登録",
 							w.getWorkplaceExternalCode().isPresent() ? w.getWorkplaceExternalCode().get().v() : null))
 					.collect(Collectors.toList()));
-			List<String> listAccquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
-			listWorkplaceId = listWorkplaceId.stream().filter(id -> !listAccquiredWkpId.contains(id))
+			List<String> listAcquiredWkpId = result.stream().map(w -> w.getWorkplaceId()).collect(Collectors.toList());
+			listWorkplaceId = listWorkplaceId.stream().filter(id -> !listAcquiredWkpId.contains(id))
 					.collect(Collectors.toList());
 			if (listWorkplaceId.isEmpty())
 				break;

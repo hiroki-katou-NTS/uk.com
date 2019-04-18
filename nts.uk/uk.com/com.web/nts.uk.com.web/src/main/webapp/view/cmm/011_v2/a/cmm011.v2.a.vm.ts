@@ -130,11 +130,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 if (_.isEmpty(data)) {
                     dfd.resolve();
                     if (self.initMode == SCREEN_MODE.WORKPLACE) {
-                        info("Msg_373").then(() => {
+                        info({ messageId: "Msg_373" }).then(() => {
                             self.openWkpDepCreateDialog();
                         });
                     } else {
-                        info("Msg_1503").then(() => {
+                        info({ messageId: "Msg_1503" }).then(() => {
                             self.openWkpDepCreateDialog();
                         });
                     }
