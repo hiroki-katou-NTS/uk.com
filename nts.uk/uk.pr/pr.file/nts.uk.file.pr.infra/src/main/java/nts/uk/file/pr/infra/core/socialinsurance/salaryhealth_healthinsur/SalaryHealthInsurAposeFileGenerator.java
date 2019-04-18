@@ -47,8 +47,10 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
             pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "標準報酬月額表（健康保険）");
 
             // Set header date
-            DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss", Locale.JAPAN);
-            pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+            DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+            String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+            pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
+            //
             Cells cells = ws.getCells();
             //break page
             int page =  exportData.getCusDataDtos().size() / 55;
