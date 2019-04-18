@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface OperationRulePub {
 
-    Optional<OperationRuleExport> getOperationRuleByCompanyId(String companyId);
+    public Optional<OperationRuleExport> getOperationRuleByCompanyId(String companyId);
 }
