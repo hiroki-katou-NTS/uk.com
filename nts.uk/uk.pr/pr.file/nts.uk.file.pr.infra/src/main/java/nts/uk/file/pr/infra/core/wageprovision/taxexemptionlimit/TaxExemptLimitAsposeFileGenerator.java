@@ -45,7 +45,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             // Company name
             String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
             PageSetup pageSetup = ws.getPageSetup();
-            pageSetup.setHeader(0, "&8&\"MS ゴシック\"" + companyName);
+            pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
 
             // Output item name
             pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "非課税限度額の登録");
@@ -64,7 +64,7 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
                 wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
             }
             for (int i = 0; i <= page; i++) {
-                if (countElement % 72 == 0 && i != 0) {
+                if (countElement % 72 > 0 && i != 0) {
                     Worksheet sheet = wsc.get("sheetName" + i);
                     cells = sheet.getCells();
                     rowStart = 2;
