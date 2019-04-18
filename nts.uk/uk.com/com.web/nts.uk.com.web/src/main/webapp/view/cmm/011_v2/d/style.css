@@ -1,10 +1,17 @@
 .radio{
     padding-left: 100px;
+    margin-bottom: 10px;
 }
 #D1_1{
     width: 120px;
     margin-left: 10px;
     margin-right: 10px;
+}
+#D1_2{
+    padding-right: 20px;
+}
+#D1_3{
+    padding-right: 10px;
 }
 #A5_1, #A6_1, #A7_1, #A8_1, #A9_1{
     width: 120px;
@@ -14,24 +21,9 @@
     margin-left: 45px;
 }
 .item{
-    padding: 10px 0px;
-    width: 550px;
+    padding: 5px 0px;
+    width: 680px;
 }
-#A5_2{
-    width: 100px;
-}
-#A6_2{
-    width: 130px;
-}
-#A7_2{
-    width: 250px;
-}
-#A8_2{
-    width: 300px;
-}
-#A9_2{
-    width: 100px;
-}
-.item{
-    width: 500px;
+.insert{
+
 }

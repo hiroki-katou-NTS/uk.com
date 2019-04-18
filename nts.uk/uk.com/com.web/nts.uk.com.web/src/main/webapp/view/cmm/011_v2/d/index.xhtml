@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <script>
-            var dialogSize = {width: 550, height: 600};
+            var dialogSize = {width: 720, height: 600};
         </script>
         <com:ValidatorScript>
 			nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceExternalCode
@@ -27,7 +27,7 @@
     <ui:define name="content">
         <div id="contents-area">
 				<div data-bind="visible: itemsCount() >= 1">
-					<div class="valign-center control-group">
+					<div class="valign-center control-group" style="width: 600px">
 						<div id="D1_1" data-bind="ntsFormLabel: { required: true }">
 							#{i18n.getText('CMM011_133')}</div>
 						<span data-bind="visible: screenMode == 0" id="D1_2" class="label">
@@ -49,32 +49,32 @@
 					</div>
 				</div>
 				<div class="insert">
-                    <div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
+                    <div class="item valign-center control-group">
+						<div id="A5_1" data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
 						<input id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: code,
 							constraint: 'DepartmentCode',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
+					<div class="item valign-center control-group">
+						<div id="A6_1" data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
 						<input id="A6_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_113]',
 							value: name,
 							constraint: 'DepartmentName',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
+					<div class="item valign-center control-group">
+						<div id="A7_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
 						<input id="A7_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_114]',
 							value: displayName,
 							constraint: 'WorkplaceDisplayName',
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
+					<div class="item valign-center control-group">
+						<div id="A8_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
 						<input id="A8_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_115]',
 							value: genericName,
@@ -82,8 +82,8 @@
 							option: { width: '512px' },
 							required: true, enable: true}" />
 					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
+					<div class="item valign-center control-group">
+						<div id="A9_1" data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
 						<input id="A9_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_116]',
 							value: externalCode,
