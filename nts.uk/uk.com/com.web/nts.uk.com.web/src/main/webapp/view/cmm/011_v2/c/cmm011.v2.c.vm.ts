@@ -2,13 +2,14 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
+        createMethod: KnockoutObservable<number>;
         inputList: KnockoutObservableArray<InputItems>;
         listColums: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
+        targetHistId: KnockoutObservable<any>;
         screenMode: number = 0;
 
         constructor() {
@@ -21,45 +22,52 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
                 self.inputList(_.orderBy(self.inputList(),['date'],['desc']));
             }
             self.itemList = ko.observableArray([
-                new BoxModel(1, self.screenMode == 0 ? getText('CMM011_208') : getText('CMM011_308')),
-                new BoxModel(2, self.screenMode == 0 ? getText('CMM011_209') : getText('CMM011_309'))
+                new BoxModel(CREATE_METHOD.CREATE_NEW, self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_208') : getText('CMM011_308')),
+                new BoxModel(CREATE_METHOD.RECOVER_PAST, self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_209') : getText('CMM011_309'))
             ]);
-            self.selectedId = ko.observable(2);
+            self.createMethod = ko.observable(CREATE_METHOD.RECOVER_PAST);
          
             //Grid list columns
             self.listColums = ko.observableArray([
                 {headerText: 'historyId' ,key: 'historyId', hidden: true},
                 {headerText: getText('CMM011_130'), key: 'targetCode', width: 100, formatter: _.escape},
-                {headerText: getText('CMM011_131'), key: 'targetName', width: 100, formatter: _.escape},
-                {headerText: getText('CMM011_132'), key: 'deleteDate', width: 150, format: 'YYYY/MM/DD', formatter: _.escape}
+                {headerText: getText('CMM011_131'), key: 'targetName', width: 150, formatter: _.escape},
+                {headerText: getText('CMM011_132'), key: 'deleteDate', width: 100, format: 'YYYY/MM/DD', formatter: _.escape}
             ]);
-            this.currentCode = ko.observable(null);
+            this.targetHistId = ko.observable(null);
         }
 
         create() {
             let self = this;
-            if (self.selectedId() == 2 && !self.currentCode()) {
-                nts.uk.ui.dialog.info({messageId: "Msg_1504"});
-            }
-            else {
-                if (self.currentCode()) {
-                    let item = _.find(self.inputList(), x => x.historyId == self.currentCode());
-                    setShared("CMM011CParams", {
-                        targetId: item.targetId,
-                        historyId: item.historyId
-                    });
-                    nts.uk.ui.windows.close();
-                }
-                else {
-                    setShared("CMM011CParams", {targetId: null, historyId: null});
-                    nts.uk.ui.windows.close();
-                }
+            if (self.createMethod() == CREATE_METHOD.CREATE_NEW) {
+                setShared("CMM011CParams", {targetId: null, historyId: null});
+                nts.uk.ui.windows.close();
+            } else if (self.targetHistId()) {
+                let item = _.find(self.inputList(), x => x.historyId == self.targetHistId());
+                setShared("CMM011CParams", {
+                    targetId: item.targetId,
+                    historyId: item.historyId
+                });
+                nts.uk.ui.windows.close();
+            } else {
+                alertError({messageId: "Msg_1504"});
             }
         }
 
         close() {
             nts.uk.ui.windows.close();
         }
+        
+    }
+    
+    enum CREATE_METHOD {
+        CREATE_NEW = 1,
+        RECOVER_PAST = 2
+    }
+    
+    enum SCREEN_MODE {
+        WORKPLACE = 0,
+        DEPARTMENT = 1
     }
 
     class BoxModel {

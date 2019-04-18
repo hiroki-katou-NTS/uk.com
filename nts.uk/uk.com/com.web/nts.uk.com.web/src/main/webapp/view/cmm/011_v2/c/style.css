@@ -1,8 +1,13 @@
-#C1_1{
+#C1_1 {
     padding: 10px;
-    width: 450px;
 }
-#C2_1{
-    padding-left: 20px;
+
+label.ntsRadioBox {
     padding-bottom: 10px;
+}
+
+div.ntsControl.ntsHelpButton {
+	position: fixed;
+    top: 101px;
+    right: 47px;
 }

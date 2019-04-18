@@ -41,6 +41,13 @@ public class WorkplaceQueryService {
 			if (!optWkpHistory.isPresent())
 				return null;
 			DateHistoryItem wkpHistory = optWkpHistory.get();
+			Optional<WorkplaceInformation> optDeletdWkp = wkpInforRepo.getDeletedWorkplaceByCode(companyId, historyId,
+					wkpCode);
+			if (optDeletdWkp.isPresent()) {
+				listDuplicatePast.add(new WorkplacePastCodeOutput(optDeletdWkp.get().getWorkplaceId(),
+						optDeletdWkp.get().getWorkplaceCode().v(), optDeletdWkp.get().getWorkplaceName().v(),
+						wkpHistory.start(), optDeletdWkp.get().getWorkplaceHistoryId()));
+			}
 			int size = wkpConfig.items().size();
 			for (int i = 0; i < size; i++) {
 				DateHistoryItem tmpHist = wkpConfig.items().get(i);
@@ -49,8 +56,8 @@ public class WorkplaceQueryService {
 							tmpHist.identifier(), wkpCode);
 					if (optPastWkp.isPresent()) {
 						listDuplicatePast.add(new WorkplacePastCodeOutput(optPastWkp.get().getWorkplaceId(),
-								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(),
-								tmpHist.start(), optPastWkp.get().getWorkplaceHistoryId()));
+								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), null,
+								optPastWkp.get().getWorkplaceHistoryId()));
 					}
 				}
 				if (tmpHist.start().after(wkpHistory.start())) {
@@ -58,8 +65,8 @@ public class WorkplaceQueryService {
 							tmpHist.identifier(), wkpCode);
 					if (optPastWkp.isPresent()) {
 						listDuplicateFuture.add(new WorkplacePastCodeOutput(optPastWkp.get().getWorkplaceId(),
-								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(),
-								tmpHist.start(), optPastWkp.get().getWorkplaceHistoryId()));
+								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), null,
+								optPastWkp.get().getWorkplaceHistoryId()));
 					}
 				}
 			}

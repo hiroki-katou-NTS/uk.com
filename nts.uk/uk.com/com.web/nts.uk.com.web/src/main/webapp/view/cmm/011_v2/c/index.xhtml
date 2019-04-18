@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <script>
-            var dialogSize = { width: 500, height: 400 };
+            var dialogSize = { width: 500, height: 420 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="style.css" />
@@ -19,36 +19,36 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div data-bind="if: screenMode == 0">
-                <span  id="C1_1" class="label">
+            <div class="valign-center control-group">
+                <span id="C1_1" class="label" data-bind="visible: screenMode == 0">
                     #{i18n.getText('CMM011_207')}
                 </span>
-            </div>
-            <div data-bind="if: screenMode == 1">
-                <span  id="C1_1" class="label">
+                <span id="C1_1" class="label" data-bind="visible: screenMode == 1">
                     #{i18n.getText('CMM011_307')}
                 </span>
             </div>
-            <div id="C2_1" tabindex="1" data-bind="ntsRadioBoxGroup: {
-                name: '#CMM011-0_',
-                options: itemList,
-                optionsValue: 'id',
-                optionsText: 'name',
-                value: selectedId,
-                enable: true}">
+            <div class="valign-center control-group" align="center">
+            	<div id="C2_1" tabindex="1" style="width: 354px;"
+            		data-bind="ntsRadioBoxGroup: {
+		                name: '#CMM011-0_',
+		                options: itemList,
+		                optionsValue: 'id',
+		                optionsText: 'name',
+		                value: createMethod,
+		                enable: true}">
+	            </div>
             </div>
-            <div align="center">
-                <div align="right" style="width: 370px">
-                    <button data-bind="ntsHelpButton: {position: 'top left', enable: true }">?</button>
-                </div>
-                <table id="single-list" tabindex="2" data-bind="ntsGridList: {
-                                            height: 100,
-                                            dataSource: inputList,
-                                            columns: listColums,
-                                            primaryKey: 'historyId',
-                                            multiple: false,
-                                            value: currentCode,
-                                            name:'#CMM011-0_29'}">
+            <button data-bind="ntsHelpButton: {textId: 'Help Button Text', position: 'left top', enable: true }">?</button>
+            <div class="valign-center control-group" align="center">
+                <table id="single-list" tabindex="2" 
+                	data-bind="ntsGridList: {
+                          rows: 5,
+                          dataSource: inputList,
+                          columns: listColums,
+                          primaryKey: 'historyId',
+                          multiple: false,
+                          value: targetHistId,
+                          name:'#CMM011-0_29'}">
                 </table>
             </div>
         </div>

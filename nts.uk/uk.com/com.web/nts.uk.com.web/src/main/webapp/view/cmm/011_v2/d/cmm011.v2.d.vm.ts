@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<any>;
-        createMethod: KnockoutObservable<number> = ko.observable(null);
+        createMethod: KnockoutObservable<number>;
 
         id: KnockoutObservable<string> = ko.observable(null);
         code: KnockoutObservable<string> = ko.observable(null);
@@ -57,9 +57,10 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     self.hierarchyLevel < 10
                 )
             ]);
+            self.createMethod = ko.observable(CreationType.CREATE_BELOW);
             self.code.subscribe(value => {
                 if (value)
-                    self.checkInputCode();
+                    self.checkInputCode(value);
             });
             self.name.subscribe(value => {
                 if (_.isEmpty(value)) 
@@ -70,7 +71,6 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 if (_.isEmpty(self.genericName())) {
                     self.genericName(self.getGenericName(value));
                 }
-//                $(".nts-input").trigger("validate");
             });
             self.createMethod.subscribe(value => {
                 let items = _.cloneDeep(self.items);
@@ -121,12 +121,13 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     }
                 }
             });
+            self.createMethod.valueHasMutated();
         }
 
-        checkInputCode() {
+        checkInputCode(inputCode: string) {
             let self = this;
             block.invisible();
-            service.checkCode(self.screenMode, self.selectedHistoryId, self.code()).done(checkResult => {
+            service.checkCode(self.screenMode, self.selectedHistoryId, inputCode).done(checkResult => {
                 if (checkResult.usedInThePast) {
                     let params = {
                         initMode: self.screenMode,
@@ -137,7 +138,19 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                         let result = getShared("CMM011CParams");
                         if (result) {
                             if (result.targetId && result.historyId) {
-                                
+                                self.id(result.targetId)
+                                block.invisible();
+                                service.getWkpDepInforById(self.screenMode, result.historyId, result.targetId).done(res => {
+                                    self.displayName(res.dispName);
+                                    self.genericName(res.genericName);
+                                    self.externalCode(res.externalCode);
+                                    self.name(res.name);
+                                    nts.uk.ui.errors.clearAll();
+                                }).fail((error) => {
+                                    alertError(error);
+                                }).always(() => {
+                                    block.clear();
+                                });
                             } else {
                                 // NEW MODE
                             }
@@ -179,7 +192,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             };
             service.registerWkpDepInfor(command).done((id) => {
                 info({ messageId: "Msg_15" }).then(() => {
-                    setShared("CreatedWorkplace", { created: true });
+                    setShared("CreatedWorkplace", { idToSelect: id });
                     nts.uk.ui.windows.close();
                 });
             }).fail(error => {

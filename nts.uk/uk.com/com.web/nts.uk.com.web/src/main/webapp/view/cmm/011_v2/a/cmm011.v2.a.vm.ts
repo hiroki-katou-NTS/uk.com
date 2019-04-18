@@ -55,6 +55,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         self.selectedExternalCode(res.externalCode);
                         self.selectedName(res.name);
                         nts.uk.ui.errors.clearAll();
+                        $("#A5_2").focus();
                     }).fail((error) => {
                         alertError(error);
                     }).always(() => {
@@ -130,7 +131,6 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         self.selectedId(idToSelect);
                     else if (self.items().length > 0)
                         self.selectedId(self.items()[0].id);
-                    $("#A5_2").focus();
                     dfd.resolve();
                 }
                 self.listHierarchyChange = [];
@@ -263,10 +263,10 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
-                    let value = getShared("CreatedWorkplace");
-                    if (value) {
+                    let result = getShared("CreatedWorkplace");
+                    if (result) {
                         block.invisible();
-                        self.getAllWkpDepInfor().always(() => {
+                        self.getAllWkpDepInfor(result.idToSelect).always(() => {
                             block.clear();
                         });
                     }
