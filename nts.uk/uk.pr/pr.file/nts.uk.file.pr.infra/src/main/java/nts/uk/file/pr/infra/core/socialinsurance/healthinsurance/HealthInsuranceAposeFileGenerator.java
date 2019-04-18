@@ -39,13 +39,12 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
             printDataHealthy(worksheets, exportData.getHealthMonth());
             printDataBonus(worksheets, exportData.getBonusHealth());
             worksheets.removeAt(0);
+            worksheets.removeAt("sheetName1");
             worksheets.removeAt("sheetName2");
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            /*reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));*/
-            reportContext.saveAsExcel(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
+            reportContext.saveAsPdf(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +68,7 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         worksheets.get(worksheets.addCopy(0)).setName("sheetName2");
         Worksheet worksheet = worksheets.get("sheetName2");
         worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
-        worksheet.getCells().deleteRows(ROW_IN_PAGE, ROW_IN_PAGE);
+        worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
         settingPage(worksheet, startDate, companyName);
         for(int i = 0 ; i< pageBonus; i++) {
             worksheets.get(worksheets.addCopy("sheetName2")).setName("sheetName2"+ i);
@@ -91,7 +90,6 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
     }
     private void printDataHealthy(WorksheetCollection worksheets, List<Object[]> data) {
         int numColumn = 12;
-        int rowStart = 3;
         int columnStart = 1;
         fillData(worksheets, data, numColumn, columnStart, "sheetName1");
     }

@@ -60,7 +60,7 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
         pageSetup.setHeader(1, "&16&\"MS ゴシック\""+"労働保険事業所の登録");
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/dd  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
         pageSetup.setFitToPagesTall(1);
