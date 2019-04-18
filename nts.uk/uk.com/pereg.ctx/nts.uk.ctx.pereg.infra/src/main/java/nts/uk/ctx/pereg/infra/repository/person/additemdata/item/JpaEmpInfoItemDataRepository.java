@@ -342,6 +342,12 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			sql = sql.replace("PER_INFO_DEF_ID_VAL", "'" + c.getPerInfoDefId() +"'");
 			
 			sql = sql.replace("SAVE_DATA_ATR_VAL", ""+c.getDataState().getDataStateType().value +"");
+			
+			if(c.getDataState().getDataStateType() == DataStateType.String) {
+				sql = sql.replace("STRING_VAL_VAL", c.getDataState().getStringValue() == null ? "null": "'" + c.getDataState().getStringValue() +"'");
+			}else {
+				sql = sql.replace("STRING_VAL_VAL", "null");
+			}
 		
 			if(c.getDataState().getDataStateType() == DataStateType.Numeric) {
 				sql = sql.replace("INT_VAL_VAL",  c.getDataState().getNumberValue() == null? "null": "" + c.getDataState().getNumberValue() +"");
