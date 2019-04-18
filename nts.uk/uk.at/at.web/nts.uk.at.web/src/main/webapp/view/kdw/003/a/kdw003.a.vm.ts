@@ -4425,7 +4425,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     return item.code == output;
                                 });
                                 self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
-                                dfd.resolve()
+                                dfd6.resolve()
                             });
                         } else {
                             __viewContext.vm.clickCounter.clickLinkGrid = false;
@@ -4482,7 +4482,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dfd8 = $.Deferred();
                     setShared('CDL002Params', {
                         isMultiple: false,
-                        selectedCodes: self.selectedCode(),
+                        selectedCodes: [self.selectedCode()],
                         showNoSelection: false
                     }, true);
 
