@@ -1,4 +1,13 @@
-export const text = {
+export const regexp = {
+    allHalfNumeric: /^\d*$/,
+    allHalfAlphabet: /^[a-zA-Z]*$/,
+    allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
+    allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
+    allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
+    allHiragana: /^[ぁ-ん　ー ]*$/,
+    workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/,
+    employeeCode: /^[a-zA-Z0-9 ]*$/
+}, text = {
     countHalf(text: string): number {
         let count = 0;
 
@@ -15,5 +24,38 @@ export const text = {
         }
 
         return count;
+    },
+    is: {
+        halfNumeric(value: string) {
+            return regexp.allHalfNumeric.test(value);
+        },
+        halfAlphabet(value: string) {
+            return regexp.allHalfAlphabet.test(value);
+        },
+        halfAlphanumeric(value: string) {
+            return regexp.allHalfAlphanumeric.test(value);
+        },
+        halfKatakanaReg(value: string) {
+            return regexp.allHalfKatakanaReg.test(value);
+        },
+        fullKatakanaReg(value: string) {
+            return regexp.allFullKatakanaReg.test(value);
+        },
+        allHiragana(value: string) {
+            return regexp.allHiragana.test(value);
+        }
     }
 };
+
+export class Text {
+    constructor(private value: string) { }
+
+    get is() {
+        let self = this;
+        return {
+            get halfNumeric() {
+                return
+            }
+        }
+    }
+}
