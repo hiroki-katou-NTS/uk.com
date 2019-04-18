@@ -51,8 +51,9 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "非課税限度額の登録");
 
             // Set header date
-            DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss", Locale.JAPAN);
-            pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+            DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+            String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+            pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
             Cells cells = ws.getCells();
             //break page
 
