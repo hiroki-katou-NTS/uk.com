@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceRepo
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,10 @@ public class SalaryPerUnitExportService extends ExportService<SalaryPreUnitExpor
 
     @Override
     protected void handle(ExportServiceContext<SalaryPreUnitExportQuery> exportServiceContext) {
-        List<SalaryPerUnitPrice> mSalaryPerUnitPrices =  mSalaryPerUnitPriceRepository.getAllSalaryPerUnitPrice();
+        List<SalaryPerUnitPrice> mSalaryPerUnitPrices =  mSalaryPerUnitPriceRepository.getAllSalaryPerUnitPrice()
+                .stream()
+                .sorted(Comparator.comparing(o -> o.getSalaryPerUnitPriceName().getCode()))
+                .collect(Collectors.toList());
         mSalaryPerUnitFileGenerator.generate(exportServiceContext.getGeneratorContext(),mSalaryPerUnitPrices
                 .stream()
                 .map(e -> {
