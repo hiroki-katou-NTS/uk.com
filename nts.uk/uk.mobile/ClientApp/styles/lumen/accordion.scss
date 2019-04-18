@@ -1,0 +1,45 @@
+.accordion {
+    .card {
+        &.show {
+            .collapse {
+                display: block;
+            }
+        }
+    }
+    &-steps {
+        position: relative;
+        .card {
+            border: 0;
+            &:not(.show) {
+                position: absolute;
+                &:not(.animated) {
+                    display: none;
+                }
+            }
+            &.show {
+                position: relative;
+                .collapse {
+                    display: block;
+                }
+            }
+            .card {
+                &-header {
+                    background-color: transparent;
+                    border-bottom: none;
+                    padding: 0.3rem;
+                    padding-left: 0;
+                    .btn {
+                        &.btn-link {
+                            padding: 0;
+                            text-decoration: none;
+                            cursor: pointer;
+                        }
+                    }
+                }
+                &-body {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}

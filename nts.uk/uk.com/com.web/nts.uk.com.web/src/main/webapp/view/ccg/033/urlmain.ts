@@ -8,10 +8,10 @@ __viewContext.ready(function() {
     .done((success) => {   
         if(!nts.uk.util.isNullOrUndefined(success.successMsg)&&!nts.uk.util.isNullOrEmpty(success.successMsg)){
             nts.uk.ui.dialog.info({ messageId: success.successMsg }).then(()=>{
-                routeData(success);     
+                routeData(success, urlID);     
             });
         } else {
-            routeData(success);    
+            routeData(success, urlID);    
         }  
     })
     .fail((failure) => {
@@ -31,7 +31,7 @@ __viewContext.ready(function() {
     });
 });
 
-function routeData(success){
+function routeData(success, urlID){
     switch(success.programID){
         case "ccg007": {
             // forgot password screen

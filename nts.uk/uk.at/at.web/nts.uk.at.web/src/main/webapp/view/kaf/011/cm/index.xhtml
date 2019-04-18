@@ -144,7 +144,7 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour">
-						<button id="recTimeBtn" data-bind=" click: openKDL003,enable:$parent.kdl003BtnEnable">#{i18n.getText('KAF011_5')}</button>
+						<button id="recTimeBtn" data-bind=" click: openKDL003">#{i18n.getText('KAF011_5')}</button>
 						<div data-bind='text:wkText'></div>
 					</div>
 				</div>
@@ -221,8 +221,8 @@
 								<button data-bind="click:$parent.removeAbs" class="danger">#{i18n.getText('KAF011_24')}</button>
 								<button data-bind="click:$parent.cancelAbs">#{i18n.getText('KAF011_25')}</button>
 							</div> -->
-							<button style="display: inline-block;"
-								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button>
+							<!-- <button style="display: inline-block;"
+								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button> -->
 							<div style="display: inline-block;"
 								data-bind="if:wkType().workAtr() == 0">
 								<button data-bind="click:changeAbsDateToHoliday">#{i18n.getText('KAF011_27')}</button>
@@ -314,7 +314,7 @@
 										value: appReasonSelectedID ,
 										optionsText: 'reasonTemp',
 										editable: false,
-										enable: kaf011ReasonIsEditable ,
+										enable: true ,
 										columns:[
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
@@ -333,7 +333,7 @@
 						data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,
-									enable: kaf011ReasonIsEditable ,
+									enable: appTypeSet().displayAppReason() != 0 ,
 									name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,

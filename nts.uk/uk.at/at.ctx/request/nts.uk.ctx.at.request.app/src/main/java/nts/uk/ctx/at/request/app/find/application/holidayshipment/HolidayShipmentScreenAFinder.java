@@ -631,8 +631,15 @@ public class HolidayShipmentScreenAFinder {
 
 		}
 		// sort by CD
-		outputWkTypes.sort(Comparator.comparing(WorkType::getWorkTypeCode));
-		return outputWkTypes;
+		List<WorkType> disOrderList = outputWkTypes.stream().filter(w -> w.getDispOrder() != null)
+				.sorted(Comparator.comparing(WorkType::getDispOrder)).collect(Collectors.toList());
+
+		List<WorkType> wkTypeCDList = outputWkTypes.stream().filter(w -> w.getDispOrder() == null)
+				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
+
+		disOrderList.addAll(wkTypeCDList);
+
+		return disOrderList;
 
 	}
 

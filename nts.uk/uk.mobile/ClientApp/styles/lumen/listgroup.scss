@@ -1,0 +1,26 @@
+.list-group {
+    &-selection {
+        .list-group-item {
+            &.selected {
+                color: #fff;
+                background-color: $primary;
+            }
+            &:after {
+                content: "›";
+                font-size: 32px;
+                position: absolute;
+                top: calc(50% - 24px);
+                right: 15px;
+                color: #aaa;
+            }
+        }
+    }
+    &-single-select {
+        .list-group-item {
+            &.selected {
+                color: #fff;
+                background-color: $primary;
+            }
+        }
+    }
+}

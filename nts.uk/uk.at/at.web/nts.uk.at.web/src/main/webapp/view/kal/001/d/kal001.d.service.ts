@@ -54,21 +54,26 @@ module nts.uk.at.view.kal001.d.service {
                                     
                                     let dataX = []; 
                                     _.forEach(result.empEralDatas, item => {
-                                        let start = null, end = null;
-                                        if(item[2].indexOf("～") > 0) {
-                                            let parts = item[2].split("～");
-                                            start = moment(parts[0].trim(), dateFormat), end = moment(parts[1].trim(), dateFormat);
-                                        } else {
-                                            start = moment(item[2], dateFormat);
-                                        }    
-                                        //let eralData = JSON.parse(item.valueAsString);
-                                        let empInfo = _.find(empMap[item[0]], (e) => {
-                                            if(end !== null) {
-                                                return e.start.isSameOrBefore(start) && e.end.isSameOrAfter(end);
+                                        let empInfo = null;
+                                        if(item[2] !== "") {
+                                            let start = null, end = null;
+                                            if(item[2].indexOf("～") > 0) {
+                                                let parts = item[2].split("～");
+                                                start = moment(parts[0].trim(), dateFormat), end = moment(parts[1].trim(), dateFormat);
                                             } else {
-                                                return e.start.isSameOrBefore(start) && e.end.isSameOrAfter(start);
+                                                start = moment(item[2], dateFormat);
                                             }    
-                                        });
+                                            //let eralData = JSON.parse(item.valueAsString);
+                                            empInfo = _.find(empMap[item[0]], (e) => {
+                                                if(end !== null) { 
+                                                    return e.start.isSameOrBefore(start) && e.end.isSameOrAfter(end);
+                                                } else {
+                                                    return e.start.isSameOrBefore(start) && e.end.isSameOrAfter(start);
+                                                }    
+                                            });
+                                        } else { 
+                                            empInfo = empMap[item[0]][0];
+                                        }
                                         if(!_.isNil(empInfo)) {
                                             dataX.push(_.merge({
                                                 guid: item[1],
@@ -79,7 +84,6 @@ module nts.uk.at.view.kal001.d.service {
                                                 comment: item[6]
                                             }, empInfo));    
                                         }
-                                        
                                     });
                                     data["extractedAlarmData"] = dataX;
                                     def.resolve(data); 
