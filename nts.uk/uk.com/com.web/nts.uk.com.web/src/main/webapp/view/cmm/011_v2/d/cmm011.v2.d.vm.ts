@@ -136,7 +136,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     modal("/view/cmm/011_v2/c/index.xhtml").onClosed(() => {
                         let result = getShared("CMM011CParams");
                         if (result) {
-                            if (result.recoverItem) {
+                            if (result.targetId && result.historyId) {
                                 
                             } else {
                                 // NEW MODE

@@ -226,34 +226,6 @@ public class WkpDepFinder {
 		}
 	}
 
-	public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
-		List<InformationDto> listInfo = this.getDepWkpInfo(findObject);
-		return this.createTree(listInfo);
-	}
-
-	private List<InformationDto> getDepWkpInfo(DepWkpInfoFindObject findObject) {
-
-		String companyId = AppContexts.user().companyId();
-
-		// Check system type.
-		if (findObject.getSystemType() == null) {
-			return Collections.emptyList();
-		}
-		// Check start mode (department or workplace)
-		switch (findObject.getStartMode()) {
-		// Pending check filter reference range
-		case WORKPLACE_MODE:
-			return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream()
-					.map(InformationDto::new).collect(Collectors.toList());
-		case DEPARTMENT_MODE:
-			return depExportSerivce.getAllActiveDepartment(companyId, findObject.getBaseDate()).stream()
-					.map(InformationDto::new).collect(Collectors.toList());
-		default:
-			return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate()).stream()
-					.map(InformationDto::new).collect(Collectors.toList());
-		}
-	}
-
 	public WkpDepCheckCodeDto checkWkpDepCodeInThePast(int initMode, String historyId, String code) {
 		String companyId = AppContexts.user().companyId();
 		switch (initMode) {

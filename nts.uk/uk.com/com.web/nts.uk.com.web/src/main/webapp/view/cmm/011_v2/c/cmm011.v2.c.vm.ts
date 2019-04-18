@@ -51,7 +51,7 @@ module nts.uk.com.view.cmm011.v2.c.viewmodel {
                     nts.uk.ui.windows.close();
                 }
                 else {
-                    setShared("CMM011CParams", {targetID: null, historyID: null});
+                    setShared("CMM011CParams", {targetId: null, historyId: null});
                     nts.uk.ui.windows.close();
                 }
             }
