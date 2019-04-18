@@ -55,15 +55,11 @@
             <button id="D1_1" tabindex="1" data-bind="click: create , enable: $vm.isEnableBtnCreate()">#{i18n.getText('QMM008_106')}</button>
             <button class="proceed" data-bind="click: update,enable: $root.errors.isEmpty" id="D1_2"
                     tabindex="2">#{i18n.getText('QMM008_1')}</button>
-            <button id="D1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
-            <button tabindex="4"
-                    data-bind="click: exportExcel, enable: true">#{i18n.getText('QMM008_5')}</button>
+            <button id="D1_3" tabindex="3" data-bind="click: exportExcel, enable: true">#{i18n.getText('QMM008_2')}</button>
             <button class="danger" id="D1_4" tabindex="4"
                     data-bind="click: deleteOffice , enable: $vm.isEnableBtnDelete()">#{i18n.getText('QMM008_107')}</button>
 
             <button id="D1_5" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
-            <button  tabindex="5"
-                    data-bind="click: exportExcel, enable: true">#{i18n.getText('QMM008_213')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div id="content-left" class="fixed-flex-layout-left">

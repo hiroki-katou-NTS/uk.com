@@ -1,11 +1,10 @@
 package nts.uk.file.pr.infra.core.socialinsurance.welfarepensioninsurance;
 
-import com.aspose.cells.Cells;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.InsurancePremiumFractionClassification;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.welfarepensioninsurance.WelfarepensionInsuranceExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.welfarepensioninsurance.WelfarepensionInsuranceFileGenerator;
 import nts.uk.shr.com.i18n.TextResource;
@@ -13,15 +12,19 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Stateless
 public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements WelfarepensionInsuranceFileGenerator {
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_厚生年金保険料率一覧.xlsx";
-    private static final String REPORT_FILE_EXTENSION = ".xlsx";
+    private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_厚生年金保険料率一覧";
-    private static final int ROW_IN_PAGE = 60;
+    private static final int ROW_IN_PAGE = 61;
     private static final int RECORD_IN_PAGE = 55;
     private static final int INDEX_START = 4;
 
@@ -30,22 +33,21 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            reportContext.setHeader(0,exportData.getCompanyName());
-            String time = GeneralDateTime.now().toString();
-            reportContext.setHeader(2,  time  + "\n page &P");
-            Worksheet firstSheet = worksheets.get(0);
-            Cells cells = firstSheet.getCells();
-            cells.get(0,1).setValue("対象年月：　"+ convertYearMonth(exportData.getStartDate()));
-            firstSheet.setName(TextResource.localize("QMM008_212"));
-            int pageHealthyData = exportData.getWelfarepensionInsuranceEmp().size() / RECORD_IN_PAGE;
-            int pageBonusData = exportData.getWelfarepensionInsuranceBonus().size() / RECORD_IN_PAGE;
-            createTable(firstSheet, pageHealthyData, pageBonusData);
-            printDataWelfarePensionEmp(firstSheet, exportData.getWelfarepensionInsuranceEmp());
-            printDataWelfarePensionBonus(firstSheet, exportData.getWelfarepensionInsuranceBonus(), (ROW_IN_PAGE - 1) * (pageHealthyData + 2) + INDEX_START);
+            int pageHealthyData = exportData.getWelfarepensionInsuranceEmp().size() / RECORD_IN_PAGE + 1;
+            int pageBonusData = exportData.getWelfarepensionInsuranceBonus().size() / RECORD_IN_PAGE + 1;
+            createTableEmp(worksheets, pageHealthyData, exportData.getStartDate(), exportData.getCompanyName());
+            createTableBonus(worksheets, pageBonusData, exportData.getStartDate(), exportData.getCompanyName());
+            printDataWelfarePensionEmp(worksheets, exportData.getWelfarepensionInsuranceEmp());
+            printDataWelfarePensionBonus(worksheets, exportData.getWelfarepensionInsuranceBonus());
+            worksheets.removeAt("sheetEmp");
+            worksheets.removeAt("sheetBonus");
+            worksheets.removeAt(0);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
+            /*reportContext.saveAsPdf(this.createNewFile(generatorContext,
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));*/
             reportContext.saveAsExcel(this.createNewFile(generatorContext,
-                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+                    FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -53,59 +55,85 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
 
     }
 
+    private void createTableEmp(WorksheetCollection worksheets,int pageMonth, int startDate, String companyName) throws Exception {
+        String sheetName = "sheetEmp";
+        worksheets.get(worksheets.addCopy(0)).setName(sheetName);
+        Worksheet worksheet = worksheets.get(sheetName);
+        worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
+        settingPage(worksheet, startDate, companyName);
+        for(int i = 0 ; i< pageMonth; i++) {
+            worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName+ i);
+        }
+    }
+
+    private void createTableBonus(WorksheetCollection worksheets,int pageBonus, int startDate, String companyName) throws Exception {
+        String sheetName = "sheetBonus";
+        worksheets.get(worksheets.addCopy(0)).setName(sheetName);
+        Worksheet worksheet = worksheets.get(sheetName);
+        worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
+        worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE );
+        settingPage(worksheet, startDate, companyName);
+        for(int i = 0 ; i< pageBonus; i++) {
+            worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName+ i);
+        }
+    }
+
     private String convertYearMonth(Integer startYearMonth){
          return startYearMonth.toString().substring(0,3) + "/" + startYearMonth.toString().substring(4,6);
     }
 
-    private void createTable(Worksheet worksheet,int pageMonth, int pageBonus){
-        Cells cells = worksheet.getCells();
-        int indexMonth = ROW_IN_PAGE - 1;
-        int indexBonus = (ROW_IN_PAGE - 1) * (pageMonth + 2);
-        try {
-            for (int i = 0; i < pageBonus; i++) {
-                cells.copyRows(cells, ROW_IN_PAGE - 1, indexBonus, ROW_IN_PAGE);
-                indexBonus = indexBonus + ROW_IN_PAGE;
-            }
-            if (pageBonus == 0 && pageMonth != 0) {
-                cells.copyRows(cells, ROW_IN_PAGE, indexBonus + 2, ROW_IN_PAGE);
-            }
-            if (pageMonth > 0) {
-                cells.deleteRows(ROW_IN_PAGE, ROW_IN_PAGE);
-            }
-            for (int i = 0; i < pageMonth; i++) {
-                cells.copyRows(cells, 0, indexMonth, ROW_IN_PAGE);
-                indexMonth = indexMonth + ROW_IN_PAGE - 1;
-            }
-        } catch (Exception e) {
-
-        }
+    private void settingPage(Worksheet worksheet, int startDate, String companyName){
+        worksheet.getCells().get(0,1).setValue("対象年月：　"+ convertYearMonth(startDate));
+        PageSetup pageSetup = worksheet.getPageSetup();
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
+        pageSetup.setHeader(1,"労働保険事業所の登録");
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+        String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
+        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+        pageSetup.setFitToPagesTall(1);
+        pageSetup.setFitToPagesWide(1);
     }
 
-    private void printDataWelfarePensionEmp(Worksheet worksheet, List<Object[]> data) {
-        Cells cells = worksheet.getCells();
-        int rowStart = 4;
+    private void printDataWelfarePensionEmp(WorksheetCollection worksheets, List<Object[]> data) {
         int numColumn = 17;
-        int columnStart = 1;
-        fillData(cells, data, numColumn, rowStart, columnStart);
+        String sheetName = "sheetEmp";
+        fillData(worksheets, data, numColumn, sheetName);
     }
 
-    private void printDataWelfarePensionBonus(Worksheet worksheet, List<Object[]> data, int rowStart) {
-        Cells cells = worksheet.getCells();
-        int numColumn = 17;
-        int columnStart = 1;
-        fillData(cells, data, numColumn, rowStart, columnStart);
+    private void printDataWelfarePensionBonus(WorksheetCollection worksheets, List<Object[]> data) {
+        int numColumn = 18;
+        String sheetName = "sheetBonus";
+        fillData(worksheets, data, numColumn, sheetName);
     }
 
-    private void fillData(Cells cells, List<Object[]> data, int numColumn, int startRow, int startColumn) {
+    private void fillData(WorksheetCollection worksheets, List<Object[]> data, int numColumn, String sheetName) {
         try {
+            int columnStart = 1;
+            int rowStart = 4;
+            Worksheet sheet = worksheets.get(sheetName);
+            Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
+                if(i % RECORD_IN_PAGE == 0) {
+                    sheet = worksheets.get(sheetName + i/RECORD_IN_PAGE);
+                    cells = sheet.getCells();
+                    rowStart = 4;
+                }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
-                    cells.get(i + startRow, j + startColumn).setValue(dataRow[j] != null ? dataRow[j] : "");
+                    if(j == 2) {
+                        cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null ? ((BigDecimal)dataRow[j]).intValue() == 1 ? TextResource.localize("QMM008_55") : TextResource.localize("QMM008_54") : "");
+                    }
+                    if(j == 9 || j == 16) {
+                        cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null
+                                ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), InsurancePremiumFractionClassification.class).nameId) : "");
+                    }
+                    if(j != 2 && j != 9 && j != 16) {
+                        cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null ? dataRow[j] : "");
+                    }
                 }
-                if((i + 1) % (RECORD_IN_PAGE) == 0 && i > 0) {
-                    startRow = startRow + INDEX_START;
-                }
+                rowStart++;
             }
 
         } catch (Exception e) {
