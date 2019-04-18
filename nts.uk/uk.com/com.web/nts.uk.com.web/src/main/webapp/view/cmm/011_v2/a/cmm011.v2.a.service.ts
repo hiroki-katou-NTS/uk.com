@@ -9,6 +9,7 @@ module nts.uk.com.view.cmm011.v2.a.service {
         getWkpDepInforById: "bs/employee/wkpdep/get-wkpdepinfo/{0}/{1}/{2}",
         getAllWkpDepInforTree: "bs/employee/wkpdep/get-wkpdepinfo-tree/{0}/{1}",
         checkTotalWkpDepInfor: "bs/employee/wkpdep/check-total-wkpdepinfo/{0}/{1}",
+        checkCode: "bs/employee/wkpdep/check-duplicate-wkpdepinfo/{0}/{1}/{2}",
         deleteWkpDepInfor: "bs/employee/wkpdep/delete-wkpdepinfo",
         regWkpDepInfor: "bs/employee/wkpdep/reg-wkpdepinfo"
     };
@@ -39,6 +40,11 @@ module nts.uk.com.view.cmm011.v2.a.service {
     
     export function checkTotalWkpDepInfor(initMode, histId): JQueryPromise<any> {
         let _path = format(servicePath.checkTotalWkpDepInfor, initMode, histId);
+        return ajax("com", _path);
+    }
+    
+    export function checkCode(initMode, historyId, code): JQueryPromise<any> {
+        let _path = format(servicePath.checkCode, initMode, historyId, code);
         return ajax("com", _path);
     }
     

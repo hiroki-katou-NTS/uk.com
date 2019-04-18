@@ -27,6 +27,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         isSynchronized: KnockoutObservable<boolean> = ko.observable(false);
         listHierarchyChange: Array<any> = [];
         needRegenerateHierarchyCode: boolean = false;
+        backupCode: string = null;
 
         constructor() {
             let self = this;
@@ -38,6 +39,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             self.selectedId = ko.observable(null);
             self.selectedId.subscribe(value => {
                 if (_.isEmpty(value)) {
+                    self.backupCode = null;
                     self.selectedCode(null);
                     self.selectedDispName(null);
                     self.selectedGenericName(null);
@@ -48,6 +50,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 } else {
                     block.invisible();
                     service.getWkpDepInforById(self.initMode, self.configuration().historyId, value).done(res => {
+                        self.backupCode = res.code;
                         self.selectedCode(res.code);
                         self.selectedDispName(res.dispName);
                         self.selectedGenericName(res.genericName);
@@ -73,6 +76,19 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.selectedGenericName(self.getGenericName(value));
                 }
                 $(".nts-input").trigger("validate");
+            });
+            self.selectedCode.subscribe(value => {
+                if (value && value != self.backupCode) {
+                    service.checkCode(self.initMode, self.configuration().historyId, value).done(checkResult => {
+                    
+                    }).fail(error => {
+                        alertError(error).then(() => {
+                            if (error.messageId == "Msg_3") {
+                                self.selectedCode(self.backupCode);
+                            }
+                        });
+                    });
+                }
             });
             service.getOperationRule().done(res => {
                 self.isSynchronized(res.synchWkpDep);

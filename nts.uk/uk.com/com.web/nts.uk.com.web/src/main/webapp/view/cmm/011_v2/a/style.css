@@ -11,3 +11,7 @@
 .panel.ntsPanel.direction-bottom {
     margin-bottom: 30px;
 }
+
+div.valign-center.control-group {
+	width: 750px;
+}
