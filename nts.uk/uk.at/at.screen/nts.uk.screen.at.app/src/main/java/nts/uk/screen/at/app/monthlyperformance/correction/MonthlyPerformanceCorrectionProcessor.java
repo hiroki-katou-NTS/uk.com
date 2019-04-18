@@ -695,8 +695,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 			throw new BusinessException("Msg_1450");
 		}
 		
-		List<MonthlyModifyResultDto> monthlyResults = results.stream().map(m -> new MonthlyModifyResultDto(m.getItems(), m.getYearMonth(), m.getEmployeeId(), m.getClosureId(), m.getClosureDate().toDomain(), m.getWorkDatePeriod())).collect(Collectors.toList());
-				
 		//[No.586]月の実績の確認状況を取得する
 		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, closureId, screenDto.getClosureDate().toDomain(), listEmployeeIds, YearMonth.of(yearMonth), monthlyResults);
 
@@ -943,6 +941,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			   
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
 					employeeId, "", identify, approve, dailyConfirm, "");
+			mpdata.setVersion(rowData.getVersion());
 			// lock check box1 identify
 //			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2 
 //					|| ((!StringUtil.isNullOrEmpty(lockStatus, true)) && (approvalProcessingUseSetting.getUseMonthApproverConfirm() && approve == true))) {
@@ -954,7 +953,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
-				mpdata.setVersion(rowData.getVersion());
+				//mpdata.setVersion(rowData.getVersion());
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
 						// Cell Data
