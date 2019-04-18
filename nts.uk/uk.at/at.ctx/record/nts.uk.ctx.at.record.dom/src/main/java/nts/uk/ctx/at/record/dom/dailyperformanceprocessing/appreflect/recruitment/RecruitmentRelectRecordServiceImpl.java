@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorkReflectProcess;
@@ -80,7 +79,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), 
 					justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
-			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData);
+			workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, daily);
 			daily.setAttendanceLeave(Optional.of(dailyPerformance));
 			
 		}		
@@ -121,8 +120,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		tranferTimeFrame.put(8, 0);
 		tranferTimeFrame.put(9, 0);
 		tranferTimeFrame.put(10, 0);
-		AttendanceTimeOfDailyPerformance dailyPerformance = workUpdate.updateTransferTimeFrame(employeeId, baseDate, tranferTimeFrame, daily.getAttendanceTimeOfDailyPerformance().get());
-		daily.setAttendanceTimeOfDailyPerformance(Optional.of(dailyPerformance));
+		workUpdate.updateTransferTimeFrame(employeeId, baseDate, tranferTimeFrame, daily);
+		
 		return daily;
 	}
 

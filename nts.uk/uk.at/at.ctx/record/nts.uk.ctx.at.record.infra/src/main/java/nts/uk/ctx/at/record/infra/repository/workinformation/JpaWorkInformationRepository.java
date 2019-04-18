@@ -251,50 +251,55 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					.orElseGet(() -> new KrcdtDaiPerWorkInfo(
 							new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd())));
 
-			if (domain.getRecordInfo() != null) {
-				data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null ? null
-						: domain.getRecordInfo().getWorkTimeCode().v();
-				data.recordWorkWorktypeCode = domain.getRecordInfo().getWorkTypeCode().v();
-			}
-			if (domain.getScheduleInfo() != null) {
-				data.scheduleWorkWorktimeCode = domain.getScheduleInfo().getWorkTimeCode() == null ? null
-						: domain.getScheduleInfo().getWorkTimeCode().v();
-				data.scheduleWorkWorktypeCode = domain.getScheduleInfo().getWorkTypeCode().v();
-			}
-			data.calculationState = domain.getCalculationState().value;
-			data.backStraightAttribute = domain.getBackStraightAtr().value;
-			data.goStraightAttribute = domain.getGoStraightAtr().value;
-			data.dayOfWeek = domain.getDayOfWeek().value;
-			data.version = domain.getVersion();
-			if(domain.getScheduleTimeSheets().isEmpty()){
-				data.scheduleTimes.forEach(c -> {
-					this.commandProxy().remove(getEntityManager().merge(c));
-				});
-				data.scheduleTimes = new ArrayList<>();
-//				this.getEntityManager().flush();
-			} else {
-				if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
-					data.scheduleTimes = domain.getScheduleTimeSheets().stream()
-							.map(c -> new KrcdtWorkScheduleTime(
-									new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
-											c.getWorkNo().v()),
-									c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
-							.collect(Collectors.toList());
-				} else {
-					data.scheduleTimes.stream().forEach(st -> {
-						domain.getScheduleTimeSheets().stream()
-								.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
-								.ifPresent(dst -> {
-									st.attendance = dst.getAttendance().valueAsMinutes();
-									st.leaveWork = dst.getLeaveWork().valueAsMinutes();
-								});
-					});
-					this.commandProxy().updateAll(data.scheduleTimes);
-				}
-			}
-
-			this.commandProxy().update(data);
+			internalUpdate(domain, data);
 		}
+	}
+
+	private void internalUpdate(WorkInfoOfDailyPerformance domain, KrcdtDaiPerWorkInfo data) {
+		if (domain.getRecordInfo() != null) {
+			data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null ? null
+					: domain.getRecordInfo().getWorkTimeCode().v();
+			data.recordWorkWorktypeCode = domain.getRecordInfo().getWorkTypeCode().v();
+		}
+		if (domain.getScheduleInfo() != null) {
+			data.scheduleWorkWorktimeCode = domain.getScheduleInfo().getWorkTimeCode() == null ? null
+					: domain.getScheduleInfo().getWorkTimeCode().v();
+			data.scheduleWorkWorktypeCode = domain.getScheduleInfo().getWorkTypeCode().v();
+		}
+		data.calculationState = domain.getCalculationState().value;
+		data.backStraightAttribute = domain.getBackStraightAtr().value;
+		data.goStraightAttribute = domain.getGoStraightAtr().value;
+		data.dayOfWeek = domain.getDayOfWeek().value;
+		data.version = domain.getVersion();
+		if(domain.getScheduleTimeSheets().isEmpty()){
+			data.scheduleTimes.forEach(c -> {
+				this.commandProxy().remove(getEntityManager().merge(c));
+			});
+			data.scheduleTimes = new ArrayList<>();
+//				this.getEntityManager().flush();
+		} else {
+			if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
+				data.scheduleTimes = domain.getScheduleTimeSheets().stream()
+						.map(c -> new KrcdtWorkScheduleTime(
+								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
+										c.getWorkNo().v()),
+								c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
+						.collect(Collectors.toList());
+			} else {
+				data.scheduleTimes.stream().forEach(st -> {
+					domain.getScheduleTimeSheets().stream()
+							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
+							.ifPresent(dst -> {
+								st.attendance = dst.getAttendance().valueAsMinutes();
+								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
+							});
+				});
+			}        
+			
+			this.commandProxy().updateAll(data.scheduleTimes);
+		}
+
+		this.commandProxy().update(data);
 	}
 
 	@SneakyThrows
@@ -495,16 +500,45 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		return resultList;
 	}
+	
+	@Override
+	@SneakyThrows
+	public long getVer(String employeeId, GeneralDate date) {
+		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
+				"select EXCLUS_VER from KRCDT_DAI_PER_WORK_INFO"
+				+ " where SID = ? and YMD = ?")) {
+			stmtFindById.setString(1, employeeId);
+			stmtFindById.setDate(2, Date.valueOf(date.toLocalDate()));
 
+			return new NtsResultSet(stmtFindById.executeQuery()).getSingle(rec -> {
+				return rec.getLong(1);
+			}).orElse(0L);
+		}
+	}
+
+	@Override
 	public void dirtying(String employeeId, GeneralDate date){
 		this.queryProxy().find(new KrcdtDaiPerWorkInfoPK(employeeId, date), KrcdtDaiPerWorkInfo.class).ifPresent(entity -> {
 			entity.dirtying();
+			this.commandProxy().update(entity);
+		});
+	}
+
+	@Override
+	public void dirtying(String employeeId, GeneralDate date, long version){
+		this.queryProxy().find(new KrcdtDaiPerWorkInfoPK(employeeId, date), KrcdtDaiPerWorkInfo.class).ifPresent(entity -> {
+			entity.dirtying();
+			entity.version = version;
+			this.commandProxy().update(entity);
 		});
 	}
 
 	@Override
 	public void dirtying(List<String> employeeId, List<GeneralDate> date) {
-		finds(employeeId, date).forEach(entity -> entity.dirtying());
+		finds(employeeId, date).forEach(entity -> { 
+			entity.dirtying();
+			this.commandProxy().update(entity);
+		});
 	}
 	
 	private List<KrcdtDaiPerWorkInfo> finds(List<String> employeeIds, List<GeneralDate> ymds) {

@@ -296,6 +296,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
+            $("#inputdate").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) { return; }
 //            if(self.requireTypicalReason()&&self.requiredReason()){
 //                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())&&nts.uk.util.isNullOrEmpty($('#inpReasonTextarea').val())){
 //                    $("#combo-box").ntsError('set', '定型理由を入力してください');   

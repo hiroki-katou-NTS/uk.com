@@ -297,6 +297,7 @@ public class DPLoadRowProcessor {
 					lockHist = process.lockHist(dpLock.getLockHist(), data);
 					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = lockDay || lockWork;
 					lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
 				} else {

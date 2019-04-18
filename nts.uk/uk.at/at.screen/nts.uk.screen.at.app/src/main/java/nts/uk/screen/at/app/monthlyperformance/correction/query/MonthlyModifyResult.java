@@ -9,9 +9,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 public class MonthlyModifyResult {
-	/** Attendance items*/
+	/** Attendance items */
 	private List<ItemValue> items;
-	
+
 	/** 年月: 年月 */
 	private Integer yearMonth;
 
@@ -32,27 +32,28 @@ public class MonthlyModifyResult {
 	public static MonthlyModifyResult builder(){
 		return new MonthlyModifyResult();
 	}
-	
-	public MonthlyModifyResult employeeId(String employeeId){
+
+	public MonthlyModifyResult employeeId(String employeeId) {
 		this.employeeId = employeeId;
 		return this;
 	}
-	
-	public MonthlyModifyResult items(List<ItemValue> items){
+
+	public MonthlyModifyResult items(List<ItemValue> items) {
 		this.items = items;
 		return this;
 	}
-	
-	public MonthlyModifyResult closureDate(ClosureDateDto closureDate){
+
+	public MonthlyModifyResult closureDate(ClosureDateDto closureDate) {
 		this.closureDate = closureDate;
 		return this;
 	}
-	public MonthlyModifyResult yearMonth(Integer yearMonth){
+
+	public MonthlyModifyResult yearMonth(Integer yearMonth) {
 		this.yearMonth = yearMonth;
 		return this;
 	}
-	
-	public MonthlyModifyResult closureId(Integer closureId){
+
+	public MonthlyModifyResult closureId(Integer closureId) {
 		this.closureId = closureId;
 		return this;
 	}

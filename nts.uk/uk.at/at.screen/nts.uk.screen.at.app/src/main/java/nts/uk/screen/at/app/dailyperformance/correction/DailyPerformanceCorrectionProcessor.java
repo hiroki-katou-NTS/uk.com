@@ -674,6 +674,7 @@ public class DailyPerformanceCorrectionProcessor {
 					lockHist = lockHist(dpLock.getLockHist(), data);
 					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = lockDay || lockWpl;
 					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
 				} else {
