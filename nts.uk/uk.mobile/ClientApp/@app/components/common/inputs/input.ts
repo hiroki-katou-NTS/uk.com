@@ -8,7 +8,11 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
     template: `<div class="form-group row">
         <template v-if="showTitle && showTitle !== 'false'">
             <div v-bind:class="columns.title">
-                <nts-label v-bind:constraint="constraints" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
+                <nts-label 
+                    v-bind:constraint="constraints"
+                    v-bind:show-constraint="showConstraint"
+                    v-bind:class="{ 'control-label-inline': inlineTitle && inlineTitle !== 'false' }"
+                    >{{ name | i18n }}</nts-label>
             </div>
         </template>
         <div v-bind:class="columns.input">
@@ -107,6 +111,9 @@ export class InputComponent extends Vue {
 
     @Prop({ default: () => true })
     readonly showTitle!: 'true' | 'false' | boolean;
+
+    @Prop({ default: () => true })
+    readonly showConstraint!: 'true' | 'fasle' | boolean;
 
     @Prop({ default: () => false })
     readonly inlineTitle!: boolean;

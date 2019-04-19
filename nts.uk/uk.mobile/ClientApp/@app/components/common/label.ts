@@ -15,10 +15,13 @@ class LabelComponent extends Vue {
     @Prop({ default: () => ({}) })
     readonly constraint!: IRule;
 
+    @Prop({ default: () => true })
+    readonly showConstraint!: 'true' | 'fasle' | boolean;
+
     get primitive(): string {
         let self = this;
-
-        if (!!Object.keys(self.constraint).filter(k => k != 'dirty').length) {
+        if ((self.showConstraint === true || self.showConstraint === 'true')
+            && !!Object.keys(self.constraint).filter(k => k != 'dirty').length) {
             let $const = constraint.html(obj.cloneObject(self.constraint));
 
             if ($const) {
