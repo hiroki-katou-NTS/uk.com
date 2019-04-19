@@ -45,7 +45,8 @@ const $dialog = () => ({
                                     option: IModalOptions = {
                                         title: $type,
                                         type: 'info',
-                                        animate: 'down'
+                                        animate: 'down',
+                                        style: (`modal-${style} type-${$type}`).trim()
                                     };
 
                                 if (typeof msg !== 'string') {

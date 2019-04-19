@@ -148,6 +148,10 @@ const modal = {
                                             classNames.push('modal-popup modal-info modal-dialog-centered');
                                         }
 
+                                        if (options.style) {
+                                            classNames.push(options.style);
+                                        }
+
                                         return classNames.join(' ');
                                     },
                                     animate() {
