@@ -82,7 +82,7 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
         worksheet.getCells().get(0,1).setValue("対象年月：　"+ convertYearMonth(startDate));
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
-        pageSetup.setHeader(1,"労働保険事業所の登録");
+        pageSetup.setHeader(1,"&16&\"MS ゴシック\"" + "厚生年金保険料率一覧");
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
