@@ -22,8 +22,8 @@ declare interface IRule {
     minLength?: number;
     maxLength?: number;
     constraint?: string;
-    charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric';
-    valueType?: 'String' | 'Decimal' | 'Integer' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
+    charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric' | 'Numeric';
+    valueType?: 'String' | 'Decimal' | 'Integer' | 'HalfInt' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
         test: RegExp | Function;
         message: string;

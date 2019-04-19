@@ -16,9 +16,7 @@ import { ccg007 } from "../common/common";
             },
             employeeCode: {
                 required: true,
-                maxLength: 12,
-                constraint: 'EmployeeCode',
-                anyHalf: true
+                constraint: 'EmployeeCode'
             },
             password: {
                 required: true
@@ -80,7 +78,9 @@ export class LoginComponent extends Vue {
         this.$http.post(servicePath.ver).then((response: { data: any }) => {
             self.model.ver = response.data.ver;
         });
+    }
 
+    mounted(){
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -135,12 +135,13 @@ export class LoginComponent extends Vue {
     login() {
         let self = this;
 
-        ccg007.login(this, {    companyCode : self.model.comp,
+        ccg007.login(ccg007.submitLogin, this, {    companyCode : self.model.comp,
                                 employeeCode: self.model.employeeCode,
                                 password: self.model.password,
                                 contractCode : self.contractCode,
                                 contractPassword : self.contractPass
-                            }, () => self.model.password = "", self.model.autoLogin[0]);
+                            }, () => self.model.password = "", 
+                            self.model.autoLogin[0]);
     }
 
     forgetPass(){

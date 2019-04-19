@@ -1,16 +1,7 @@
 import { obj } from '@app/utils';
 import { IRule } from "declarations";
 
-const regexp = {
-    allHalfNumeric: /^\d*$/,
-    allHalfAlphabet: /^[a-zA-Z]*$/,
-    allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
-    allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
-    allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
-    allHiragana: /^[ぁ-ん　ー ]*$/,
-    workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/,
-    employeeCode: /^[a-zA-Z0-9 ]*$/
-}, charTypes: {
+const charTypes: {
     [key: string]: {
         width: number;
         viewName: string;
@@ -66,7 +57,7 @@ export const constraint = {
             case 'String':
                 let char = charTypes[prmitive.charType] || charTypes.Any;
 
-                $content += `${char.viewName}${Math.floor(prmitive.maxLength / (char.width * 2))}文字`;
+                $content += `${char.viewName}${constraint.getCharLength(prmitive)}文字`;
                 break;
             case 'Date':
             case 'Time':
@@ -75,14 +66,22 @@ export const constraint = {
             case 'TimePoint':
             case 'Decimal':
             case 'Integer':
-                $content += $content.length > 0 ? "/" : "";
-                $content += `${prmitive.min}～${prmitive.max}`;
+                //$content += $content.length > 0 ? "/" : "";
+                $content += constraint.getMinMax(prmitive);
                 break;
             default:
                 break;
         }
 
         return $content;
+    },
+    getMinMax(prmitive: IRule): string {
+        return `${prmitive.min}～${prmitive.max}`;
+    },
+    getCharLength(prmitive: IRule): number {
+        let char = charTypes[prmitive.charType] || charTypes.Any;
+
+        return Math.floor(prmitive.maxLength / (char.width * 2));
     },
     charTypes: charTypes
 };

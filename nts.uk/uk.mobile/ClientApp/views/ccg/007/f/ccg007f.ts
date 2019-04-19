@@ -32,7 +32,9 @@ export class MailSentComponent extends Vue {
         this.contractCode = this.params.contractCode;
         this.compapyCode = this.params.companyCode;
         this.employeeCode = this.params.employeeCode;
-        
+    }
+
+    mounted(){
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;

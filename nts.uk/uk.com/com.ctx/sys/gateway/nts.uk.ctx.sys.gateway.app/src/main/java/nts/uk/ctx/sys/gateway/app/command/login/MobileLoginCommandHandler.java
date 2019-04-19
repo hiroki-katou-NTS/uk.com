@@ -75,7 +75,7 @@ public class MobileLoginCommandHandler extends LoginBaseCommandHandler<BasicLogi
 		
 		//アルゴリズム「ログイン記録」を実行する
 		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword());
-		if (passChecked.showChangePass){
+		if (passChecked.showChangePass && this.needShowChangePass()){
 			return passChecked;
 		}
 		
@@ -96,5 +96,8 @@ public class MobileLoginCommandHandler extends LoginBaseCommandHandler<BasicLogi
 		return checkChangePassDto;
 	}
 
+	protected boolean needShowChangePass(){
+		return true;
+	}
 	
 }

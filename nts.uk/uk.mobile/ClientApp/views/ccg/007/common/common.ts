@@ -3,7 +3,7 @@ import { _ } from '@app/provider';
 
 export module ccg007 {
 
-    export function login(self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean){
+    export function login(servicePath: string, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
 
         self.$validate();
         if (!self.$valid) {
@@ -11,7 +11,7 @@ export module ccg007 {
         }
         
         self.$mask("show");
-        self.$http.post(submitLogin, submitData).then((res: { data: CheckChangePass }) => {
+        self.$http.post(servicePath, submitData).then((res: { data: CheckChangePass }) => {
             if (res.data.showContract) {
                 authenticateContract(self);
             }
@@ -19,7 +19,10 @@ export module ccg007 {
                 //check MsgError
                 if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
                     if (res.data.showChangePass) {
-                        self.$goto({ name: 'changepass', params: _.merge({}, submitData, { mesId: res.data.msgErrorId, saveInfo: saveInfo }) });
+                        self.$goto({ name: 'changepass', params: _.merge({}, 
+                                    submitData, 
+                                    { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo: saveInfo }) 
+                                });
                     } else {
                         resetForm();
                         /** TODO: wait for dialog error method */
@@ -60,7 +63,7 @@ export module ccg007 {
         self.$goto({ name: 'contractAuthentication' });
     }
     
-    const submitLogin =  "ctx/sys/gateway/login/submit/mobile";
+    export const submitLogin =  "ctx/sys/gateway/login/submit/mobile";
 
     interface CheckChangePass {
         showChangePass: boolean;

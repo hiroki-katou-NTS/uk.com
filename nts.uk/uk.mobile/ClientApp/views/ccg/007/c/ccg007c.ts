@@ -77,7 +77,9 @@ export class ChangePassComponent extends Vue {
             self.policy.isUse  = policy.isUse;
             self.userId = user.userId;
         });
-        
+    }
+
+    mounted(){
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
@@ -105,7 +107,7 @@ export class ChangePassComponent extends Vue {
         
         //submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            ccg007.login(this, {    companyCode : self.params.companyCode,
+            ccg007.login(ccg007.submitLogin ,this, {    companyCode : self.params.companyCode,
                                     employeeCode: self.params.employeeCode,
                                     password: command.newPassword,
                                     contractCode : self.params.contractCode,
@@ -120,6 +122,20 @@ export class ChangePassComponent extends Vue {
             self.$mask("hide");
             self.showMessageError(res);
         });
+    }
+
+    loginOnly(){
+        let self = this;
+        ccg007.login(servicePath.loginWithNoChangePass ,this, {    companyCode : self.params.companyCode,
+                                                    employeeCode: self.params.employeeCode,
+                                                    password: self.params.oldPassword,
+                                                    contractCode : self.params.contractCode,
+                                                    contractPassword : self.params.contractPassword
+                                        }, () => {
+                                            self.model.currentPassword = "";
+                                            self.model.newPassword = "";
+                                            self.model.newPasswordConfirm = "";
+                                        }, self.params.saveInfo);
     }
 
     showMessageError(res: any) {
@@ -141,6 +157,7 @@ export class ChangePassComponent extends Vue {
 const servicePath = {
     getPasswordPolicy: "ctx/sys/gateway/changepassword/getPasswordPolicy/",
     changePass: "ctx/sys/gateway/changepassword/submitchangepass/mobile",
+    loginWithNoChangePass: "ctx/sys/gateway/login/submit/mobile/nochangepass",
     getUserName: "ctx/sys/gateway/changepassword/username/mobile"
 }
 

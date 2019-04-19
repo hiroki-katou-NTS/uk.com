@@ -36,7 +36,9 @@ export class ForgetPassComponent extends Vue {
         self.contractPass = self.params.contractPass;
         
         self.checkEmpCodeAndCompany();
+    }
 
+    mounted(){
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;

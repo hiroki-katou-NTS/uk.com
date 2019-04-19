@@ -346,12 +346,22 @@ const DIRTY = 'dirty',
 
             vue.component('v-errors', {
                 props: ['data', 'name'],
-                template: `<span class="invalid-feedback">{{ resource | i18n(name) }}</span>`,
+                template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
-                    resource: {
-                        get: function () {
-                            return $.isString(this.data) ? this.data : '';
+                    params() {
+                        let self = this,
+                            data = self.data;
+
+                        if (!$.isArray(data)) {
+                            return [self.name];
+                        } else {
+                            let $data = data.slice(1);
+
+                            return [self.name, ...$data];
                         }
+                    },
+                    resource() {
+                        return $.isString(this.data) ? this.data : ($.isArray(this.data) ? this.data[0] : '');
                     }
                 }
             });

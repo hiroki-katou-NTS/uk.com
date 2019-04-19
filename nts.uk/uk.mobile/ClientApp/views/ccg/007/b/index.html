@@ -8,17 +8,18 @@
                     v-model="model.comp"
                     v-bind:inline-title="true"
                     v-bind:disabled="false"
-                    v-bind:show-title="true"
+                    v-bind:show-title="false"
                     v-bind:columns="{ title: 'col-lg-4 col-sm-6', input: 'col-lg-8 col-sm-6' }">
-                    <option value="">--- Choose options ---</option>
+                    <option value="">--- {{ 'CCGS07_1' | i18n }} ---</option>
                     <option v-for="(comp,k) in companies" :value="comp.companyCode">
                         {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
                     </option>
                 </nts-dropdown>
                 
                 <nts-text-editor
-                    name='CCG007_8'
+                    name='CCGS07_2'
                     v-model="model.employeeCode"
+                    v-bind:show-constraint="false"
                     v-bind:inline-title="true"
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
@@ -26,8 +27,9 @@
                     @keyup.enter="login" />
 
                 <nts-input-password
-                    name='CCG007_2'
+                    name='CCGS07_3'
                     v-model="model.password"
+                    v-bind:show-constraint="false"
                     v-bind:inline-title="true"
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
@@ -38,18 +40,18 @@
                     v-model="model.autoLogin"
                     v-bind:value="true"
                     v-bind:disabled="false">
-                    {{ 'CCG007_5' | i18n }}
+                    {{ 'CCGS07_4' | i18n }}
                     </nts-checkbox>
 
                 <div class="mt-3">
-                    <button class="btn btn-primary btn-block" v-click:500="login"> {{'CCG007_3' | i18n}}</button>
+                    <button class="btn btn-primary btn-block" v-click:500="login"> {{'CCGS07_5' | i18n}}</button>
                     <div class="text-center mt-2">
-                        <button class="btn btn-link" @click="forgetPass"> {{ 'CCG007_6' | i18n }} </button>
+                        <button class="btn btn-link" @click="forgetPass"> {{ 'CCGS07_6' | i18n }} </button>
                     </div>
                 </div>
             </fieldset>
             <div class="text-right mt-3">
-                <label> {{ model.ver }} </label>
+                <label> {{ 'CCGS07_7' | i18n }} {{ model.ver }} </label>
             </div>
         </div>
     </div>
