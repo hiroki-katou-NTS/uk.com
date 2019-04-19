@@ -24,6 +24,10 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
@@ -41,10 +45,16 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 	//private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
+	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private InitMode initMode;
+	
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 
@@ -59,7 +69,10 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = appCommand.getApplicationID();
+		
+		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
+		if(output.getOutputMode()==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 					companyId, 
 					ApplicationType.WORK_CHANGE_APPLICATION.value).get();
@@ -71,16 +84,15 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				typicalReason += appCommand.getAppReasonID();
 			}
 			//màn B có cách lấy reason khác
-			if (isTextDisplay) {
+			if(isTextDisplay){
 				if(Strings.isNotBlank(typicalReason)){
 					displayReason += System.lineSeparator();
 				}
 				displayReason += appCommand.getApplicationReason();
 			}else{
 				if(Strings.isBlank(typicalReason)){
-					appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
+					displayReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 				}
-				
 			}
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 					.getApplicationSettingByComID(companyId);
@@ -88,12 +100,12 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
 				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
 				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-						&& Strings.isBlank(typicalReason + displayReason)) {
+						&& Strings.isBlank(typicalReason+displayReason)) {
 					throw new BusinessException("Msg_115");
 				}
 				appReason = typicalReason + displayReason;
 			}
-		
+		}
 		
 		// 申請
 		Application_New updateApp = new Application_New(
