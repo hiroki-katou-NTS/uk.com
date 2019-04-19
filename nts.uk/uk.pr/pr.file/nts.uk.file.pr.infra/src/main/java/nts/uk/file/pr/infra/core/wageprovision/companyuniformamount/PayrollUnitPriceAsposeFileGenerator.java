@@ -42,11 +42,11 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<Object[]> exportData, String companyName) {
-        try(AsposeCellsReportContext reportContext = this.createContext("report/QMM007会社一律金額の登録.xlsx")){
+        try(AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
             Worksheet ws = wsc.get(0);
-            ws.setName(TextResource.localize("QMM007_49"));
+
             this.writeFileExcel(ws,exportData,companyName);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
@@ -67,7 +67,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
         pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
 
         // Set header date
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss", Locale.JAPAN);
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
