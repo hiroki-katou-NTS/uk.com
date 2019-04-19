@@ -7,10 +7,11 @@ export const charType = function (value: string, type: 'Any' | 'Kana' | 'AnyHalf
     switch (type) {
         case "Any":
             break;
-        case "Kana":
-            if (!text.is.fullKatakanaReg(value)) {
-                return ["MsgB_7", cl];
+        case "AnyHalfWidth":
+            if (!text.is.halfAlphabet(value)) {
+                return ["MsgB_4", cl];
             }
+
             break;
         case "Numeric":
             if (!text.is.halfNumeric(value)) {
@@ -24,12 +25,13 @@ export const charType = function (value: string, type: 'Any' | 'Kana' | 'AnyHalf
             }
 
             break;
-        case "AnyHalfWidth":
-            if (!text.is.halfAlphabet(value)) {
-                return ["MsgB_4", cl];
+        case "Kana":
+            if (!text.is.fullKatakanaReg(value)) {
+                return ["MsgB_7", cl];
             }
+
             break;
     }
-    
+
     return null;
 }
