@@ -495,12 +495,14 @@ public class ProgramIdConsts {
 	public static final String CMM011A = "CMM011A";
 
 	public static final String CMM011B = "CMM011B";
+	
+	public static final String CMM011C = "CMM011C";
 
 	public static final String CMM011D = "CMM011D";
 
-	public static final String CMM011E = "CMM011E";
-
-	public static final String CMM011F = "CMM011F";
+//	public static final String CMM011E = "CMM011E";
+//
+//	public static final String CMM011F = "CMM011F";
 
 	public static final String CDL008 = "CDL008";
 
