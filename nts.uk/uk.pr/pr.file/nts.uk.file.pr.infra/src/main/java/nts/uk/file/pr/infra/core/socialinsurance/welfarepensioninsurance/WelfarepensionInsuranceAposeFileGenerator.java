@@ -24,9 +24,8 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_厚生年金保険料率一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_厚生年金保険料率一覧";
-    private static final int ROW_IN_PAGE = 61;
+    private static final int ROW_IN_PAGE = 60;
     private static final int RECORD_IN_PAGE = 55;
-    private static final int INDEX_START = 4;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WelfarepensionInsuranceExportData exportData) {
