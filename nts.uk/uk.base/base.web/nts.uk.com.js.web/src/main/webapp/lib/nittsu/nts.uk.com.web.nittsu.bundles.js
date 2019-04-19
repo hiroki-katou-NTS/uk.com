@@ -41903,6 +41903,9 @@ var nts;
                         }
                         else {
                             var value = $tree.igTree("selectedNode");
+                            if (_.isNil(value) || _.isNil(value.binding) || _.isNil(value.data)) {
+                                return null;
+                            }
                             if (!_.isNil(value)) {
                                 value["id"] = value.data[value.binding.valueKey];
                             }
@@ -41930,16 +41933,17 @@ var nts;
                         if (_.isNil(target)) {
                             return null;
                         }
+                        var binding = target.binding;
                         var parent = $tree.igTree("parentNode", $(target.element));
                         if (_.isNil(parent)) {
                             var source = $tree.igTree("option", "dataSource").__ds, parentIndex_1 = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
                             if (parentIndex_1 <= 0) {
                                 return null;
                             }
-                            var previous_1 = $tree.igTree("nodesByValue", source[parentIndex_1][target.binding.valueKey]);
+                            var previous_1 = $tree.igTree("nodesByValue", source[parentIndex_1 - 1][binding.valueKey]);
                             return $tree.igTree("nodeFromElement", previous_1);
                         }
-                        var binding = target.binding, parentData = $tree.igTree("nodeFromElement", parent).data;
+                        var parentData = $tree.igTree("nodeFromElement", parent).data;
                         var parentIndex = _.findIndex(parentData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
                         if (parentIndex <= 0) {
                             return null;
