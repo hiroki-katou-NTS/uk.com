@@ -39,7 +39,7 @@ public class WorkplaceQueryService {
 			Optional<DateHistoryItem> optWkpHistory = wkpConfig.items().stream()
 					.filter(i -> i.identifier().equals(historyId)).findFirst();
 			if (!optWkpHistory.isPresent())
-				return null;
+				return new WorkplacePastCodeCheckOutput(false, false, listDuplicatePast, listDuplicateFuture);
 			DateHistoryItem wkpHistory = optWkpHistory.get();
 			Optional<WorkplaceInformation> optDeletdWkp = wkpInforRepo.getDeletedWorkplaceByCode(companyId, historyId,
 					wkpCode);

@@ -78,7 +78,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 $(".nts-input").trigger("validate");
             });
             self.selectedCode.subscribe(value => {
-                if (value && value != self.backupCode) {
+                if (!_.isEmpty(self.configuration().historyId) && value && value != self.backupCode) {
                     service.checkCode(self.initMode, self.configuration().historyId, value).done(checkResult => {
                     
                     }).fail(error => {
@@ -163,7 +163,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         registerMaster() {
             let self = this;
             $(".nts-input").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) 
+            if (nts.uk.ui.errors.hasError() || _.isEmpty(self.configuration().historyId)) 
                 return;
             block.invisible();
             if (self.needRegenerateHierarchyCode) {

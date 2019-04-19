@@ -8,7 +8,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceCode
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceName
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceExternalCode
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceDisplayName
@@ -87,7 +86,7 @@
 				
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
+						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
 						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: selectedCode,

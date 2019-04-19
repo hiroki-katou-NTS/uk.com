@@ -39,7 +39,7 @@ public class DepartmentQueryService {
 			Optional<DateHistoryItem> optDepHistory = depConfig.items().stream()
 					.filter(i -> i.identifier().equals(historyId)).findFirst();
 			if (!optDepHistory.isPresent())
-				return null;
+				return new DepartmentPastCodeCheckOutput(false, false, listDuplicatePast, listDuplicateFuture);
 			DateHistoryItem depHistory = optDepHistory.get();
 			Optional<DepartmentInformation> optDeletedDep = depInforRepo.getDeletedDepartmentByCode(companyId,
 					historyId, depCode);
