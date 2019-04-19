@@ -40,12 +40,12 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
             " t2.START_YM, " +
             " t2.AMOUNT_OF_MONEY, " +
             " t2.TARGET_CLASS_ATR, " +
+            " t2.MONTH_SALARY_ATR, " +
             " t2.MONTH_SALARY_PER_DAY_ATR, " +
             " t2.A_DAY_PAYEE_ATR, " +
             " t2.HOURLY_PAY_ATR, " +
-            " t2.MONTH_SALARY_ATR, " +
             " t2.SET_CLASSIFICATION_ATR, " +
-            " ROW_NUMBER () OVER ( PARTITION BY t1.UNIT_PRICE_CD ORDER BY t1.UNIT_PRICE_CD, t1.UNIT_PRICE_NAME ) AS ROW_NUMBER  " +
+            " ROW_NUMBER () OVER ( PARTITION BY t1.UNIT_PRICE_CD ORDER BY t1.UNIT_PRICE_CD ASC, t2.START_YM DESC ) AS ROW_NUMBER  " +
             "FROM " +
             " QPBMT_PAY_UNIT_PRICE t1 " +
             " INNER JOIN QPBMT_PAY_UNIT_PRICE_HIS t2 ON t1.CID = t2.CID  " +
@@ -53,10 +53,8 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
             "WHERE " +
             " t1.CID = ?cid  " +
             " AND t2.CID = ?cid  " +
-            " ) temp " +
-            "ORDER BY " +
-            " temp.UNIT_PRICE_CD ASC , " +
-            " temp.START_YM DESC ";
+            " ) temp " ;
+
 
 
 
