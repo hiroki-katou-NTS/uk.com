@@ -101,10 +101,10 @@
 ```
 ##### Checkbox group
 <div class="btn-group btn-group-toggle mb-3">
-    <label class="btn btn-primary active">
-        <input type="checkbox" checked="" autocomplete="off"> Active
+    <label class="btn btn-primary">
+        <input type="checkbox" checked autocomplete="off"> Active
     </label>
-    <label class="btn btn-primary active">
+    <label class="btn btn-primary">
         <input type="checkbox" autocomplete="off"> Check
     </label>
     <label class="btn btn-primary" >
@@ -115,10 +115,10 @@
 ##### Code
 ```html
 <div class="btn-group btn-group-toggle">
-    <label class="btn btn-primary active" >
+    <label class="btn btn-primary" >
         <input type="checkbox" checked autocomplete="off" /> Active
     </label>
-    <label class="btn btn-primary active">
+    <label class="btn btn-primary">
         <input type="checkbox" autocomplete="off" /> Check
     </label>
     <label class="btn btn-primary">
@@ -129,7 +129,7 @@
 
 ##### Switch button
 <div class="btn-group btn-group-toggle mb-3">
-    <label class="btn btn-primary active">
+    <label class="btn btn-primary">
         <input type="radio" name="options" autocomplete="off" checked /> Active
     </label>
     <label class="btn btn-primary">
@@ -143,7 +143,7 @@
 ##### Code
 ```html
 <div class="btn-group btn-group-toggle mb-3">
-    <label class="btn btn-primary active">
+    <label class="btn btn-primary">
         <input type="radio" name="options" autocomplete="off" checked /> Active
     </label>
     <label class="btn btn-primary">
