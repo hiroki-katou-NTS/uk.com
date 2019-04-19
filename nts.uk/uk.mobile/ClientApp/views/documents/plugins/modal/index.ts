@@ -28,4 +28,32 @@ export class DocumentsPluginsModalComponent extends Vue {
                 alert(`You are choose: ${v}`);
             });
     }
+
+    showWarn() {
+        this.$modal.warn('Warning, this is warning message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showInfo() {
+        this.$modal.info('Info, this is info message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showError() {
+        this.$modal.error('Info, this is info message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showConfirm() {
+        this.$modal.confirm('Info, this is info message!', 'danger')
+            .then(v => {
+                alert('Clicked: ' + v);
+            });
+    }
 }

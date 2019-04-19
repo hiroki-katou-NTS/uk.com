@@ -14,22 +14,15 @@ const $dialog = () => ({
                 <!--<button class="btn btn-link" v-on:click="$close('cancel')">{{'cancel' | i18n}}</button>-->
             </template>
             <template v-else>
-                <button class="btn" v-bind:class="{
-                    'btn-link': normal,
-                    'btn-danger': danger,
-                    'btn-primary': primary
+                <button class="btn btn-link" v-bind:class="{
+                    'text-danger': danger,
+                    'text-primary': primary
                 }" v-on:click="$close('yes')">{{'yes' | i18n}}</button>
-                <button v-focus class="btn" v-bind:class="{
-                    'btn-link': normal,
-                    'btn-secondary': !normal
-                }" v-on:click="$close('no')">{{'no' | i18n}}</button>
+                <button v-focus class="btn btn-link" v-bind:class="{ 'text-secondary': danger || primary  }" v-on:click="$close('no')">{{'no' | i18n}}</button>
             </template>
         </div>
      </div>`,
     computed: {
-        normal() {
-            return this.params.style === 'normal';
-        },
         danger() {
             return this.params.style === 'danger';
         },
