@@ -78,7 +78,11 @@ const resources: {
             </div>
         </li>`,
     methods: {
-        change: language.change
+        change(lg: string) {
+            language.change(lg);
+
+            this.$emit('change', lg);
+        }
     },
     computed: {
         current: () => language.current,
