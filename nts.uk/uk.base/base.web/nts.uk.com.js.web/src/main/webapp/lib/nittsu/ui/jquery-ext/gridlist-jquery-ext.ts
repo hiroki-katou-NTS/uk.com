@@ -335,7 +335,7 @@ module nts.uk.ui.jqueryExtentions {
                     dragSelectRange = [];
                     $(window).unbind('pointermove.NtsGridListDragging');
                     if ($grid.data("selectUpdated") === true) {
-                        $grid.triggerHandler('selectionchanged');
+                        $grid.triggerHandler('selectionchanged', [true]);
                     }
                     //$grid.triggerHandler('selectionchanged');  
                     clearInterval(timerAutoScroll);
@@ -382,7 +382,7 @@ module nts.uk.ui.jqueryExtentions {
             $grid.bind('iggridselectioncellselectionchanging', () => {
             });
             $grid.bind('iggridselectionrowselectionchanged', () => {
-                $grid.triggerHandler('selectionchanged');
+                $grid.triggerHandler('selectionchanged', [true]);
             });
 
             //            $grid.on('mouseup', () => {
@@ -619,7 +619,7 @@ module nts.uk.ui.jqueryExtentions {
                             $grid.igGridSelection("selectRowById", iv);
                         });
                         
-                        $grid.trigger("selectionchanged");
+                        $grid.trigger("selectionchanged", [true]);
                     }, 0);
                 }
                 return true;
