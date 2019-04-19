@@ -1,0 +1,20 @@
+{
+    "jp": {
+        "login_title": "勤次郎",
+        "CCG007_8": "社員コード",
+        "CCG007_7": "会社選択",
+        "CCG007_2": "パスワード",
+        "CCG007_3": "ログイン",
+        "CCG007_5": "次回から自動でログインする",
+        "CCG007_6": "パスワードを忘れた場合"
+    },
+    "vi": {
+        "login_title": "UK Mobile",
+        "CCG007_8": "Tài khoản",
+        "CCG007_7": "công ty",
+        "CCG007_2": "Khoá bí mật",
+        "CCG007_3": "Đăng nhập",
+        "CCG007_5": "tự động đăng nhập từ lần sau",
+        "CCG007_6": "quên password"
+    }
+}
