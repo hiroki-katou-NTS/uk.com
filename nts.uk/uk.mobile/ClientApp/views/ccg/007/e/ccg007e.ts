@@ -78,7 +78,9 @@ export class ResetPassComponent extends Vue {
             self.policy.validPeriod = policy.validityPeriod;
             self.policy.isUse  = policy.isUse;
         });
+    }
 
+    mounted(){
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;

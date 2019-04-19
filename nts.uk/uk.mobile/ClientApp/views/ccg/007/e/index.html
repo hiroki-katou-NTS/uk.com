@@ -1,16 +1,14 @@
 <div id="reset-pass">
-        <div class="text-center page-title">{{ 'reset_pass_title' | i18n }}</div>
+        <div class="text-center page-title">{{ 'CCGS07_18' | i18n }}</div>
         <div class="text-left page-info alert-light alert">
-            <div>{{ model.userName }}　さん</div>
-            <div>{{ 'CCG007_29' | i18n }}<br/>
-                {{ 'CCG007_30' | i18n }}
-            </div>
+            <div>{{ 'CCGS07_18' | i18n(userName) }}</div>
+            <div>{{ 'CCGS07_19' | i18n }}</div>
         </div>
         <fieldset class="login-form">
             <nts-input-password
                 class="control-label-inline"
                 v-model="model.newPassword"
-                name='CCG007_16'
+                name='CCGS07_11'
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.newPassword"
@@ -20,7 +18,7 @@
             <nts-input-password
                 class="control-label-inline"
                 v-model="model.newPasswordConfirm"
-                name='CCG007_17'
+                name='CCGS07_12'
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.newPasswordConfirm"
@@ -31,28 +29,43 @@
                 <div class="card">
                     <div class="card-header">
                         <button class="btn btn-link" type="button">
-                            {{ 'CCG007_59' | i18n }}
+                            {{ 'CCGS07_13' | i18n }}
                         </button>
                     </div>
                     <div class="collapse">
                         <div class="card-body">
-                            <span>最低桁数：　{{ policy.lowestDigits }}文字</span>
+                            <span>{{ 'CCGS07_22' | i18n }} {{ 'CCGS07_23' | i18n(policy.lowestDigits) }}</span>
                             <span v-if="policy.alphabetDigit > 0 || policy.numberOfDigits > 0 || policy.symbolCharacters > 0">
                                 <br/>
-                                複数条件：<span v-if="policy.alphabetDigit > 0">　英字{{ policy.alphabetDigit }}桁</span> 
-                                            <span v-if="policy.numberOfDigits > 0">　数字{{ policy.numberOfDigits }}桁</span>
-                                            <span v-if="policy.symbolCharacters > 0">　記号{{ policy.symbolCharacters}}桁</span>
+                                {{ 'CCGS07_24' | i18n }}<span v-if="policy.alphabetDigit > 0">　
+                                                            {{ 'CCGS07_25' | i18n(policy.alphabetDigit) }}
+                                                        </span> 
+                                                        <span v-if="policy.alphabetDigit > 0 && (policy.numberOfDigits > 0 || policy.symbolCharacters > 0)">　
+                                                            、
+                                                        </span> 
+                                                        <span v-if="policy.numberOfDigits > 0">　
+                                                            {{ 'CCGS07_26' | i18n(policy.numberOfDigits) }}
+                                                        </span>
+                                                        <span v-if="policy.symbolCharacters > 0 && (policy.numberOfDigits > 0 || policy.alphabetDigit > 0)">　
+                                                            、
+                                                        </span> 
+                                                        <span v-if="policy.symbolCharacters > 0">　
+                                                            {{ 'CCGS07_27' | i18n(policy.symbolCharacters) }}
+                                                        </span>
                             </span><br/>
-                            <span v-if="policy.historyCount > 0">履歴回数：　1度使ったパスワードは<br/>
-                            　　　　　　過去{{ policy.historyCount }}回まで使用できません<br/></span>
-                            <span v-if="policy.validPeriod > 0">有効期間：　{{ policy.validPeriod}}日<br/></span>
+                            <span v-if="policy.historyCount > 0">
+                                {{ 'CCGS07_28' | i18n }}　{{ 'CCGS07_29' | i18n(policy.historyCount) }}
+                            </span>
+                            <span v-if="policy.validPeriod > 0">
+                                {{ 'CCGS07_30' | i18n }}　{{ 'CCGS07_31' | i18n(policy.validPeriod) }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
             <br/>
             <div class="mb-2">
-                <button class="btn btn-primary btn-block" v-click:500="changePass">変更してログインする</button>
+                <button class="btn btn-primary btn-lg btn-block" v-click:500="changePass">{{ 'CCGS07_38' | i18n }}</button>
             </div>
         </fieldset>
     </div>
