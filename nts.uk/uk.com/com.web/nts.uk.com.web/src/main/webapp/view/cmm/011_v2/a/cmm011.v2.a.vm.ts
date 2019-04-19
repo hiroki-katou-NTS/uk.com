@@ -194,7 +194,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         
         deleteMaster() {
             let self = this;
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: self.initMode == SCREEN_MODE.WORKPLACE ? "Msg_1505" : "Msg_1506" }).ifYes(() => {
                 block.invisible();
                 if (self.needRegenerateHierarchyCode) {
                     self.generateHierarchyCode(self.items(), "");
