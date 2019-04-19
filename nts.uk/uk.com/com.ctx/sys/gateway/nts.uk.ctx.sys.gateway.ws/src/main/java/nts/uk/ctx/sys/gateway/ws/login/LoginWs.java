@@ -22,6 +22,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginWithNoChangePassCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommand;
@@ -76,6 +77,9 @@ public class LoginWs extends WebService {
 	
 	@Inject
 	private MobileLoginCommandHandler mobileLoginHandler;
+	
+	@Inject
+	private MobileLoginWithNoChangePassCommandHandler mobileLoginNoChangePassHandler;
 
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
@@ -217,6 +221,14 @@ public class LoginWs extends WebService {
 		command.setSignOn(false);
 		command.setRequest(request);
 		return this.mobileLoginHandler.handle(command);
+	}
+	
+	@POST
+	@Path("submit/mobile/nochangepass")
+	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+		command.setSignOn(false);
+		command.setRequest(request);
+		return this.mobileLoginNoChangePassHandler.handle(command);
 	}
 	
 	/**
