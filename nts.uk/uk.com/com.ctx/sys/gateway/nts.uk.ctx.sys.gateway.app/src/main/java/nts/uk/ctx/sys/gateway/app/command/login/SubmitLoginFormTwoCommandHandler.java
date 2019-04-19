@@ -9,25 +9,21 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
+import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
@@ -47,7 +43,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 
 	/** The employee code setting adapter. */
 	@Inject
-	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	private LoginService employeeCodeSetting;
 
 	/** The employee adapter. */
 	@Inject
@@ -101,7 +97,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			}
 			
 			// Edit employee code
-			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
+			employeeCode = this.employeeCodeSetting.employeeCodeEdit(employeeCode, companyId);
 			
 			// Get domain 社員
 			em = this.getEmployee(companyId, employeeCode);
@@ -152,8 +148,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		}
 		
 		//アルゴリズム「ログイン記録」を実行する
-		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null,false);
+		CheckChangePassDto passChecked = this.checkAfterLogin(user, oldPassword);
+		if (passChecked.showChangePass){
+			return passChecked;
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -190,45 +187,6 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 //		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
 //			throw new BusinessException("Msg_310");
 //		}
-	}
-
-	/**
-	 * Employee code edit.
-	 *
-	 * @param employeeCode the employee code
-	 * @param companyId the company id
-	 * @return the string
-	 */
-	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSettingImport> findEmployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
-		if (findEmployeeCodeSetting.isPresent()) {
-			EmployeeCodeSettingImport employeeCodeSetting = findEmployeeCodeSetting.get();
-			EmployCodeEditType editType = employeeCodeSetting.getEditType();
-			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
-			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
-				// not edit employeeCode
-				return employeeCode;
-			}
-			// update employee code
-			switch (editType) {
-			case ZeroBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-				break;
-			case ZeroAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-				break;
-			case SpaceBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
-				break;
-			case SpaceAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
-				break;
-			default:
-				break;
-			}
-			return employeeCode;
-		}
-		return employeeCode;
 	}
 
 	/**
