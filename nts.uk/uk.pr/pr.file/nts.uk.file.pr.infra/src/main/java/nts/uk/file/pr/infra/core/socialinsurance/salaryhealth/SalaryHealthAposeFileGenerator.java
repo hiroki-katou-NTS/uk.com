@@ -23,17 +23,15 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_標準報酬月額表（厚生年金).xlsx";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（厚生年金)";
-
+    private static final int MAX_LINE = 62;
+    private static final double MAX_PAGE = 2;
     @Override
     public void generate(FileGeneratorContext generatorContext, SalaryHealthExportData exportData,List<CusWelfarePensionStandardDto> list, String socialInsuranceCode, String socialInsuranceName) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            Worksheet worksheet = worksheets.get(0);
-            Worksheet worksheet1 = worksheets.get(1);
 
-            worksheet.setName(TextResource.localize("QMM008_49"));
-            this.writeExcel(worksheet,worksheet1,exportData,list,socialInsuranceCode,socialInsuranceName);
+            this.writeExcel(worksheets, exportData,list,socialInsuranceCode,socialInsuranceName);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
@@ -43,25 +41,38 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
 
     }
 
-    private void writeExcel(Worksheet ws, Worksheet ws1,SalaryHealthExportData exportData, List<CusWelfarePensionStandardDto> list, String socialInsuranceCode, String socialInsuranceName){
+    private void writeExcel(WorksheetCollection wsc ,SalaryHealthExportData exportData, List<CusWelfarePensionStandardDto> list, String socialInsuranceCode, String socialInsuranceName){
+        Worksheet ws = wsc.get(0);
+        Worksheet ws1 = wsc.get(1);
+
 
         int rowIndex = 5;
         int tempRowIndex;
 
-        // Set print page
+        // Set print page 1
         PageSetup pageSetup = ws.getPageSetup();
         pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + exportData.getCompanyName());
 
         // Set header date
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
+        pageSetup.setHeader(2, "&10&\"MS ゴシック\"  " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
-        HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
+        // Set print page 1
+        PageSetup pageSetup1 = ws1.getPageSetup();
+        pageSetup1.setHeader(0, "&10&\"MS ゴシック\"" + exportData.getCompanyName());
+
+        // Set header date
+        pageSetup1.setHeader(2, "&10&\"MS ゴシック\"  " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+
         ws.getCells().get(0,3).putValue(socialInsuranceCode);
         ws.getCells().get(0,5).putValue(socialInsuranceName);
 
         ws1.getCells().get(0,3).putValue(socialInsuranceCode);
         ws1.getCells().get(0,5).putValue(socialInsuranceName);
+
+        if( Math.ceil((float)list.size()/(float)MAX_LINE) < MAX_PAGE){
+            wsc.removeAt(1);
+        }
 
         for (CusWelfarePensionDto cusWelfarePensions : exportData.getResponseWelfarePension().getCusWelfarePensions()) {
             if(rowIndex >= 67){
