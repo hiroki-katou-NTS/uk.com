@@ -115,7 +115,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
                         cells.get(startIndex + j, 11).setValue(Objects.toString(dataRow[22], ""));
                     }
                     if (j == 7) {
-                        cells.get(startIndex + j, 1).setValue(Objects.toString(formatString(dataRow[23].toString()), ""));
+                        cells.get(startIndex + j, 1).setValue(dataRow[23] != null ? formatString(dataRow[23].toString()) : "");
                     }
                 }
                 startIndex = startIndex + NUM_ROW;
