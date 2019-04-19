@@ -56,9 +56,6 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
             Cells cells = ws.getCells();
             //break page
-for(int i = 0 ; i <= 300 ; i++){
-    exportData.add(exportData.get(0));
-}
             int page =  (exportData.size() / 72);
             int pageThua = (exportData.size() % 72);
             int countElement = 0;
