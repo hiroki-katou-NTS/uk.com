@@ -115,7 +115,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
                         cells.get(startIndex + j, 11).setValue(Objects.toString(dataRow[22], ""));
                     }
                     if (j == 7) {
-                        cells.get(startIndex + j, 1).setValue(Objects.toString(dataRow[23], ""));
+                        cells.get(startIndex + j, 1).setValue(Objects.toString(formatString(dataRow[23].toString()), ""));
                     }
                 }
                 startIndex = startIndex + NUM_ROW;
@@ -123,6 +123,10 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String formatString(String s){
+        return s.replaceAll("\n", " ");
     }
 
     private String getOfficeNumber(String value1, String value2){
