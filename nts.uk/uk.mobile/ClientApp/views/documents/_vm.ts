@@ -10,8 +10,9 @@ import { component } from '@app/core/component';
         <h5>{{'important_document' | i18n}}</h5>
         <div class="mb-2">
             <router-link to="/documents/filters/i18n" class="mr-2">{{'i18n' | i18n}}</router-link>|
-            <router-link to="/documents/component/basic" class="ml-2 mr-2">{{'view_viewmodel' | i18n}}</router-link>
-            <router-link to="/documents/plugin/router">{{'RouterPluginDocument' | i18n}}</router-link>
+            <router-link to="/documents/component/basic" class="ml-2 mr-2">{{'view_viewmodel' | i18n}}</router-link> |
+            <router-link to="/documents/plugin/router" class="ml-2 mr-2">{{'RouterPluginDocument' | i18n}}</router-link> |
+            <a class="ml-2" target="_blank" href="https://getbootstrap.com/docs/4.2/getting-started/introduction/">Bootstrap</a>
             <hr />
         </div>
         <h2 class="mb-2">{{ pgName | i18n }}</h2>
