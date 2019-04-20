@@ -43,6 +43,10 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 self.items = params.items;
                 self.itemsCount(self.items.length);
             }
+            if (self.screenMode == SCREEN_MODE.DEPARTMENT) {
+                let currentScreen = nts.uk.ui.windows.getSelf();
+                currentScreen.setTitle(getText("CMM011_303"));
+            }
             self.itemList = ko.observableArray([
                 new BoxModel(CreationType.CREATE_ON_TOP,
                     self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_211') : getText('CMM011_311'),
@@ -59,7 +63,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             ]);
             self.createMethod = ko.observable(CreationType.CREATE_BELOW);
             self.code.subscribe(value => {
-                if (value)
+                if (value && !_.isEmpty(self.selectedHistoryId))
                     self.checkInputCode(value);
             });
             self.name.subscribe(value => {

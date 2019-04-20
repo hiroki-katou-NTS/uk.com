@@ -46,7 +46,7 @@ public class WorkplaceQueryService {
 			if (optDeletdWkp.isPresent()) {
 				listDuplicatePast.add(new WorkplacePastCodeOutput(optDeletdWkp.get().getWorkplaceId(),
 						optDeletdWkp.get().getWorkplaceCode().v(), optDeletdWkp.get().getWorkplaceName().v(),
-						wkpHistory.start(), optDeletdWkp.get().getWorkplaceHistoryId()));
+						wkpHistory.end(), optDeletdWkp.get().getWorkplaceHistoryId()));
 			}
 			int size = wkpConfig.items().size();
 			for (int i = 0; i < size; i++) {
@@ -56,7 +56,7 @@ public class WorkplaceQueryService {
 							tmpHist.identifier(), wkpCode);
 					if (optPastWkp.isPresent()) {
 						listDuplicatePast.add(new WorkplacePastCodeOutput(optPastWkp.get().getWorkplaceId(),
-								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), null,
+								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), tmpHist.end(),
 								optPastWkp.get().getWorkplaceHistoryId()));
 					}
 				}
@@ -65,7 +65,7 @@ public class WorkplaceQueryService {
 							tmpHist.identifier(), wkpCode);
 					if (optPastWkp.isPresent()) {
 						listDuplicateFuture.add(new WorkplacePastCodeOutput(optPastWkp.get().getWorkplaceId(),
-								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), null,
+								optPastWkp.get().getWorkplaceCode().v(), optPastWkp.get().getWorkplaceName().v(), tmpHist.end(),
 								optPastWkp.get().getWorkplaceHistoryId()));
 					}
 				}

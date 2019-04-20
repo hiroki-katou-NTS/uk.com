@@ -32,6 +32,10 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 self.initMode(params.initMode);
                 self.selectedHistoryId(params.historyId);
             }
+            if (self.initMode() == INIT_MODE.DEPARTMENT) {
+                let currentScreen = nts.uk.ui.windows.getSelf();
+                currentScreen.setTitle(getText("CMM011_302"));
+            }
             self.selectedHistoryId.subscribe(value => {
                 if (value) {
                     let history: HistoryItem = _.find(self.lstWpkHistory(), i => i.historyId == value);
