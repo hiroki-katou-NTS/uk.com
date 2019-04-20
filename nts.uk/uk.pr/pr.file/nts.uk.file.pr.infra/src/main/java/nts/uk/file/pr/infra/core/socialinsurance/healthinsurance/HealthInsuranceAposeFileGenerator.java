@@ -23,7 +23,7 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
-    private static final String FILE_NAME = "QMM008社会保険事業所の登録_健康保険料率一覧";
+    private static final String FILE_NAME = "QMM008社会保険事業所の登録_健康保険料率一覧_";
     private static final int ROW_IN_PAGE = 49;
     private static final int RECORD_IN_PAGE = 45;
 
