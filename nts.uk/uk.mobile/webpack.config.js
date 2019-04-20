@@ -1,5 +1,6 @@
 const path = require('path'),
     webpack = require('webpack'),
+    TSLintPlugin = require('tslint-webpack-plugin'),
     CopyWebpackPlugin = require('copy-webpack-plugin'),
     UglifyJsPlugin = require("uglifyjs-webpack-plugin"),
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
@@ -142,6 +143,7 @@ module.exports = (env) => {
                 // Point sourcemap entries to the original file locations on disk
                 moduleFilenameTemplate: path.relative(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist'), '[resourcePath]')
             }),
+            new TSLintPlugin({ files: ['./ClientApp/**/*.ts'] }),
             new PackageWarFile({ prod: env && env.prod })
         ],
         devServer: {

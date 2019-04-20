@@ -40,11 +40,14 @@
     "mini-css-extract-plugin": "^0.4.1",
     "node-sass": "^4.10.0",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "prettier": "1.17.0",
     "raw-loader": "^0.5.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.19.1",
     "ts-loader": "^4.4.2",
-    "typescript": "^3.2.4",
+    "tslint": "^5.16.0",
+    "tslint-webpack-plugin": "^2.0.4",
+    "typescript": "^3.4.4",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.2",
     "vue-loader": "^15.6.1",
@@ -57,6 +60,7 @@
     "zipzip": "0.0.2"
   },
   "scripts": {
+    "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
     "start:dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.js --open --mode development",
     "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
     "webpack:vendor": "./node_modules/.bin/webpack --config webpack.config.vendor.js",
