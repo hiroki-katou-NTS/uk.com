@@ -99,7 +99,7 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){
-                    ws1.getCells().get(tempRowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution());
+                    ws1.getCells().get(tempRowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : String.valueOf(Math.round(Double.valueOf(cusWelfarePensionStandardDto.get().getChildCareContribution()))));
                 }else{
                     ws1.getCells().get(tempRowIndex,14).putValue("");
                 }
@@ -124,7 +124,7 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){
-                    ws.getCells().get(rowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution());
+                    ws.getCells().get(rowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : String.valueOf(Math.round(Double.valueOf(cusWelfarePensionStandardDto.get().getChildCareContribution()))));
                 }else{
                     ws.getCells().get(rowIndex,14).putValue("");
                 }
