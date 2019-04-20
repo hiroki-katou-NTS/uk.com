@@ -66,7 +66,7 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
         String sheetName = "sheetBonus";
         worksheets.get(worksheets.addCopy(0)).setName(sheetName);
         Worksheet worksheet = worksheets.get(sheetName);
-        worksheet.getCells().deleteRows(0, ROW_IN_PAGE );
+        worksheet.getCells().deleteRows(0, ROW_IN_PAGE - 1);
         settingPage(worksheet, startDate, companyName);
         for(int i = 0 ; i< pageBonus; i++) {
             worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName+ i);
