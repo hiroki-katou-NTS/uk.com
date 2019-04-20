@@ -5,14 +5,15 @@ import { select, SelectBoxComponent } from './select';
 
 @select()
 class RadioBoxComponent extends SelectBoxComponent {
-    type: string = 'radio';
+    public type: string = 'radio';
 
     get checked() {
+        // tslint:disable-next-line: triple-equals
         return this.selected == this.value;
     }
 
     @Emit('input')
-    onClick() { return this.value; }
+    public onClick() { return this.value; }
 }
 
 Vue.component('nts-radio', RadioBoxComponent);

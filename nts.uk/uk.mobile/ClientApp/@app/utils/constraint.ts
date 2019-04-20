@@ -1,5 +1,5 @@
 import { obj } from '@app/utils';
-import { IRule } from "declarations";
+import { IRule } from 'declarations';
 
 const charTypes: {
     [key: string]: {
@@ -66,7 +66,7 @@ export const constraint = {
             case 'TimePoint':
             case 'Decimal':
             case 'Integer':
-                //$content += $content.length > 0 ? "/" : "";
+                // $content += $content.length > 0 ? "/" : "";
                 $content += constraint.getMinMax(prmitive);
                 break;
             default:
@@ -83,5 +83,5 @@ export const constraint = {
 
         return Math.floor(prmitive.maxLength / (char.width * 2));
     },
-    charTypes: charTypes
+    charTypes
 };

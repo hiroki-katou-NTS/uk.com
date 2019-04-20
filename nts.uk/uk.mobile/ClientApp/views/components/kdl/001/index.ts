@@ -10,27 +10,27 @@ import { worktypes } from './mockdata';
 })
 export class WorkTypeComponent extends Vue {
     @Prop({ default: {} })
-    readonly params: any;
+    public readonly params: any;
 
-    objsct: any = {};
+    public objsct: any = {};
 
-    mounted() {
+    public mounted() {
         this.objsct = obj.toJS(this.params);
     }
 
-    listItems: Array<any> = worktypes();
+    public listItems: Array<any> = worktypes();
 
-    selected(item: any) {
+    public selected(item: any) {
         return item.code === this.objsct.code ? 'selected' : '';
     }
 
-    choose(item: any) {
+    public choose(item: any) {
         this.objsct.code = item.code;
         this.objsct.name = item.name;
         this.objsct.remark = item.remark;
     }
 
-    pushData() {
+    public pushData() {
         this.$close(obj.toJS(this.objsct));
     }
 }

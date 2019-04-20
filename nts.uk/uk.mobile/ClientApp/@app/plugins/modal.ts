@@ -16,7 +16,7 @@ const modal = {
                 if (self && self.$router) {
                     obj.extend(self.$router, {
                         goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
-                            (<any>self.$router).push({
+                            ( self.$router as any).push({
                                 name: location.name,
                                 params: {
                                     params: location.params
@@ -56,20 +56,20 @@ const modal = {
 
             params = obj.toJS(params || {});
 
-            options = options || <IModalOptions>{
+            options = options ||  {
                 title: name,
                 size: 'md',
                 type: 'modal',
                 opacity: 0.5
-            };
+            } as IModalOptions;
 
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 if (typeof name === 'string' ? components : true) {
                     let component = typeof name === 'string' ? components[name] : name;
 
                     if (component) {
                         // remove old mixin methods
-                        [].slice.call(component.mixins || (component.mixins = [])).forEach(mixin => {
+                        [].slice.call(component.mixins || (component.mixins = [])).forEach((mixin) => {
                             if (obj.has(mixin, 'methods')) {
                                 let methods = mixin.methods;
 
@@ -87,7 +87,7 @@ const modal = {
                         // add new mixin methods
                         component.mixins.push({
                             methods: {
-                                $close: function (data?: any) {
+                                $close (data?: any) {
                                     this.$emit('callback', data);
 
                                     this.$destroy(true);
@@ -175,7 +175,7 @@ const modal = {
                                         this.$destroy(true);
                                     },
                                     preventScroll(evt: TouchEvent) {
-                                        //evt.preventDefault();
+                                        // evt.preventDefault();
                                         evt.stopPropagation();
                                         evt.stopImmediatePropagation();
                                     }
@@ -209,7 +209,7 @@ const modal = {
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
 
-                                    //restore all tabindex of item below modal-backdrop
+                                    // restore all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
 
                                     [].slice.call(inputs).forEach((element: HTMLElement) => {

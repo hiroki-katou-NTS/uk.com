@@ -11,7 +11,7 @@ import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 <div class="toast-body">
   Hello, world! This is a toast message.
 </div>
-</div>`
+</div>`;
 
 const toast = {
     install(vue: VueConstructor<Vue>) {
@@ -20,7 +20,7 @@ const toast = {
                 let self = this,
                     $toast: { [key: string]: any } = {};
 
-                ['warn', 'info', 'error'].forEach($type => {
+                ['warn', 'info', 'error'].forEach(($type) => {
 
                 });
             }

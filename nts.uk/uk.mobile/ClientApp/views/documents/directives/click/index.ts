@@ -15,9 +15,9 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsDirectivesClickComponent extends Vue {
-    results: string[] = [];
+    public results: string[] = [];
 
-    multiClick() {
+    public multiClick() {
         this.results.push('Click time: ' + new Date().toISOString());
     }
 }

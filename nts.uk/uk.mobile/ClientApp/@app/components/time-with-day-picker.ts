@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import {time, DAYS, TimeWithDayPoint } from '@app/utils/time'
+import {time, DAYS, TimeWithDayPoint } from '@app/utils/time';
 import * as _ from 'lodash';
 
 @component({
@@ -50,7 +50,7 @@ export class TimeWDPickerComponent extends Vue {
             maxValue: 1349
         }
     })
-    readonly params: {
+    public readonly params: {
         minValue: number;
         maxValue: number;
         value: number;
@@ -59,49 +59,49 @@ export class TimeWDPickerComponent extends Vue {
     private maxPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.maxValue);
     private minPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.minValue);
 
-    minutes: number = this.params.value;
-    dayValue: string = time.timewd.computeDay(this.params.value);
-    hourValue: number = time.timewd.computeHour(this.params.value);
-    minuteValue: number = time.timewd.computeMinute(this.params.value);
+    public minutes: number = this.params.value;
+    public dayValue: string = time.timewd.computeDay(this.params.value);
+    public hourValue: number = time.timewd.computeHour(this.params.value);
+    public minuteValue: number = time.timewd.computeMinute(this.params.value);
 
-    ok() {
+    public ok() {
         this.$close(this.minutes);
     }
 
-    cancel() {
+    public cancel() {
         this.$close();
     }
 
-    whenDayChange() {
-        let newDay = (<HTMLInputElement>this.$refs.day).value;
+    public whenDayChange() {
+        let newDay = ( this.$refs.day as HTMLInputElement).value;
         this.dayValue = newDay;
-        _.defer(()=> {
+        _.defer(() => {
             let tmp = this.hourValue;
             this.hourValue = undefined;
             this.hourValue = tmp;
             this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
-        })
+        });
     }
 
-    whenHourChange() {
-        let newHour = (<HTMLInputElement>this.$refs.hour).value;
+    public whenHourChange() {
+        let newHour = ( this.$refs.hour as HTMLInputElement).value;
         this.hourValue = Number(newHour);
-        _.defer(()=> {
+        _.defer(() => {
             let tmp = this.minuteValue;
             this.minuteValue = undefined;
             this.minuteValue = tmp;
             this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
-        })
+        });
     }
 
-    whenMinuteChange() {
-        let newMinute = (<HTMLInputElement>this.$refs.minute).value;
+    public whenMinuteChange() {
+        let newMinute = ( this.$refs.minute as HTMLInputElement).value;
         this.minuteValue = Number(newMinute);
         this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
     }
 
     get dayList(): Array<String> {
-        var dayList = new Array(DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater);
+        let dayList = new Array(DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater);
         switch (this.minPoint.day) {
             case DAYS.TheDayBefore:
                 // do nothing
@@ -113,19 +113,19 @@ export class TimeWDPickerComponent extends Vue {
                 this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today]);
                 break;
             case DAYS.TwoDaysLater:
-                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay])
+                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay]);
                 break;
         }
 
         switch (this.maxPoint.day) {
             case DAYS.TheDayBefore:
-                this.removeElement(dayList, [DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater])
+                this.removeElement(dayList, [DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater]);
                 break;
             case DAYS.Today:
-                this.removeElement(dayList, [DAYS.NextDay, DAYS.TwoDaysLater])
+                this.removeElement(dayList, [DAYS.NextDay, DAYS.TwoDaysLater]);
                 break;
             case DAYS.NextDay:
-                this.removeElement(dayList, [DAYS.TwoDaysLater])
+                this.removeElement(dayList, [DAYS.TwoDaysLater]);
                 break;
             case DAYS.TwoDaysLater:
                 // do nothing
@@ -135,11 +135,11 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     private removeElement(bigArray: Array<string>, smallArray: Array<string>) {
-        var newArray = new Array<string>();
-        for (var outElement in bigArray) {
-            for (var inElement in smallArray) {
+        let newArray = new Array<string>();
+        for (let outElement in bigArray) {
+            for (let inElement in smallArray) {
                 if (outElement == inElement) {
-                    var i = bigArray.indexOf(outElement);
+                    let i = bigArray.indexOf(outElement);
                     bigArray.splice(i, 1);
                 }
             }
@@ -148,8 +148,8 @@ export class TimeWDPickerComponent extends Vue {
 
     get hourList(): Array<number> {
 
-        var minHour = 0;
-        var maxHour = 23;
+        let minHour = 0;
+        let maxHour = 23;
         if (this.dayValue == this.minPoint.day) {
             minHour = this.minPoint.hour;
             if (this.hourValue < minHour) {
@@ -169,8 +169,8 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     get minuteList(): Array<number> {
-        var minMinute = 0;
-        var maxMinute = 59;
+        let minMinute = 0;
+        let maxMinute = 59;
 
         if (this.dayValue == this.minPoint.day && this.hourValue == this.minPoint.hour) {
             minMinute = this.minPoint.minute;
@@ -190,8 +190,8 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     private generateArray(min: number, max: number): Array<number> {
-        var minuteList = new Array<number>();
-        for (var m = min; m <= max; m++) {
+        let minuteList = new Array<number>();
+        for (let m = min; m <= max; m++) {
             minuteList.push(m);
         }
         return minuteList;

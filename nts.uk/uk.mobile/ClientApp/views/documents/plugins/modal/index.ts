@@ -18,42 +18,42 @@ import { ModalComponent } from './modal-component';
     }
 })
 export class DocumentsPluginsModalComponent extends Vue {
-    name: string = 'Nittsu System Viet Nam';
+    public name: string = 'Nittsu System Viet Nam';
 
-    showModal() {
+    public showModal() {
         let name = this.name;
 
         this.$modal('sample', { name })
-            .then(v => {
+            .then((v) => {
                 alert(`You are choose: ${v}`);
             });
     }
 
-    showWarn() {
+    public showWarn() {
         this.$modal.warn('Warning, this is warning message!')
             .then(() => {
-                alert('Clicked: close');
+                // alert('Clicked: close');
             });
     }
 
-    showInfo() {
+    public showInfo() {
         this.$modal.info('Info, this is info message!')
             .then(() => {
-                alert('Clicked: close');
+                // alert('Clicked: close');
             });
     }
 
-    showError() {
+    public showError() {
         this.$modal.error('Info, this is info message!')
             .then(() => {
-                alert('Clicked: close');
+                // alert('Clicked: close');
             });
     }
 
-    showConfirm() {
+    public showConfirm() {
         this.$modal.confirm('Info, this is info message!', 'danger')
-            .then(v => {
-                alert('Clicked: ' + v);
+            .then((v) => {
+                // alert('Clicked: ' + v);
             });
     }
 }

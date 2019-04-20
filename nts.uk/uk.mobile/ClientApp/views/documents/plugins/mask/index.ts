@@ -15,11 +15,11 @@ import { component, Watch } from '@app/core/component';
     }
 })
 export class DocumentsPluginsMaskComponent extends Vue {
-    messages: string[] = [];
+    public messages: string[] = [];
 
-    timeout: number = 0;
+    public timeout: number = 0;
 
-    showMask() {
+    public showMask() {
         let self = this;
 
         self.timeout = 5;
@@ -34,7 +34,7 @@ export class DocumentsPluginsMaskComponent extends Vue {
     }
 
     @Watch('timeout')
-    countdown(v: number) {
+    public countdown(v: number) {
         let self = this;
 
         if (v >= 1) {

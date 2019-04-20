@@ -37,7 +37,7 @@ const bstrp = {
             }
         });
 
-        document.addEventListener("click", function (e) {
+        document.addEventListener('click', function (e) {
             let clicked: HTMLElement | null = null;
 
             // dropdown menu
@@ -47,10 +47,10 @@ const bstrp = {
                         break;
                     }
 
-                    if (dom.getAttr(node, 'data-dismiss') == "false") {
+                    if (dom.getAttr(node, 'data-dismiss') == 'false') {
                         clicked = node;
                         break;
-                    } else if (dom.hasClass(node, 'dropdown') || dom.hasClass(node, 'dropdown-toggle') || dom.getAttr(node, 'data-toggle') == "dropdown") {
+                    } else if (dom.hasClass(node, 'dropdown') || dom.hasClass(node, 'dropdown-toggle') || dom.getAttr(node, 'data-toggle') == 'dropdown') {
                         clicked = node;
                         break;
                     }
@@ -144,7 +144,7 @@ const bstrp = {
 
             // other event
             // checkbox & radio
-            //btn-group-toggle
+            // btn-group-toggle
             ((evt: MouseEvent) => {
                 let input = evt.target as HTMLElement,
                     group = input.closest('.btn-group-toggle') as HTMLElement;
@@ -168,7 +168,7 @@ const bstrp = {
             })(e);
         }, false);
 
-        window.addEventListener('scroll', evt => {
+        window.addEventListener('scroll', (evt) => {
             // toggle dropdown/dropup menu
             [].slice.call(document.querySelectorAll('.dropdown-menu.show'))
                 .forEach((dropdown: HTMLElement) => {

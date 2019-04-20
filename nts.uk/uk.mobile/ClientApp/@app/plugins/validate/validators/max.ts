@@ -7,13 +7,13 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
 
     if (lgt) {
         switch (rule.valueType) {
-            case "Integer":
+            case 'Integer':
                 if (rule.min >= 0) {
                     return ['MsgB_10', `${rule.max}`];
                 } else {
                     return ['MsgB_8', `${rule.min}`, `${rule.max}`];
                 }
-            case "Decimal":
+            case 'Decimal':
                 let min = `${rule.min}`,
                     max = `${rule.max}`;
 
@@ -26,15 +26,15 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
                 } else {
                     return ['MsgB_10', `${rule.min}`, `${rule.mantissaMaxLength}`];
                 }
-            case "Date":
+            case 'Date':
                 return ['FND_E_INTEGER_MIN', constr];
-            case "Time":
+            case 'Time':
                 return ['FND_E_INTEGER_MIN', constr];
-            case "Clock":
+            case 'Clock':
                 return ['FND_E_INTEGER_MIN', constr];
-            case "TimePoint":
+            case 'TimePoint':
                 return ['FND_E_INTEGER_MIN', constr];
-            case "Duration":
+            case 'Duration':
                 return ['FND_E_INTEGER_MIN', constr];
         }
     }

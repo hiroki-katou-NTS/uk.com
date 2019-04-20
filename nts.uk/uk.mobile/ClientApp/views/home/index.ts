@@ -101,21 +101,21 @@ import { component, Watch } from '@app/core/component';
     ]
 })
 export class HomeComponent extends Vue {
-    show: boolean = false;
-    selecteds = {
+    public show: boolean = false;
+    public selecteds = {
         year: 2019,
         month: 1,
         day: 2
     };
 
-    dataSources = {
+    public dataSources = {
         year: [],
         month: [],
         day: []
     };
 
-    @Watch("show", { deep: true })
-    showWatcher(show: boolean) {
+    @Watch('show', { deep: true })
+    public showWatcher(show: boolean) {
         if (show) {
             document.body.classList.add('modal-open');
         } else {
@@ -123,32 +123,30 @@ export class HomeComponent extends Vue {
         }
     }
 
-    created() {
-        for (var i = 1900; i <= 2099; i++) {
+    public created() {
+        for (let i = 1900; i <= 2099; i++) {
             this.dataSources.year.push({ text: `${i}年`, value: i });
         }
 
-        for (var i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 12; i++) {
             this.dataSources.month.push({ text: `${i}`, value: i });
         }
 
-        for (var i = 1; i <= 31; i++) {
+        for (let i = 1; i <= 31; i++) {
             this.dataSources.day.push({ text: `${i}`, value: i });
         }
-
-        window['vm'] = this;
     }
 
-    showPicker() {
+    public showPicker() {
         let onSelect = function (selects: any, pkr: { dataSources: { day: any[] } }) {
             pkr.dataSources.day = [];
 
             if (selects.month === 2) {
-                for (var i = 1; i <= 28; i++) {
+                for (let i = 1; i <= 28; i++) {
                     pkr.dataSources.day.push({ text: `${i}`, value: i });
                 }
             } else {
-                for (var i = 1; i <= 31; i++) {
+                for (let i = 1; i <= 31; i++) {
                     pkr.dataSources.day.push({ text: `${i}`, value: i });
                 }
             }
@@ -159,6 +157,6 @@ export class HomeComponent extends Vue {
                 if (v !== undefined) {
                     this.selecteds = v;
                 }
-            })
+            });
     }
 }

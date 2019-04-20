@@ -94,7 +94,7 @@ const vm = Vue.extend({
                                 self.selects[key] = items[0][opts.value];
                             }
 
-                            for (var i = 0, len = items.length; i < len; i++) {
+                            for (let i = 0, len = items.length; i < len; i++) {
                                 if (defaultData[key] && items[i][opts.value] == defaultData[key]) {
                                     position = -(i * 2);
                                     break;
@@ -104,7 +104,7 @@ const vm = Vue.extend({
                             columns.style.transform = columns.style['-webkit-transform'] = 'translate3d(0,' + position + 'em,0)';
                             columns.setAttribute('top', position + 'em');
                         });
-                    })
+                    });
                 }
             }
         },
@@ -119,7 +119,7 @@ const vm = Vue.extend({
                 obj.objectForEach(dataSources, (key: string, items: any[]) => {
                     if (!self.selects[key]) {
                         self.selects[key] = self.value[key] || items[0][opts.value];
-                    } else if (!items.filter(f => f[opts.value] === self.selects[key]).length) {
+                    } else if (!items.filter((f) => f[opts.value] === self.selects[key]).length) {
                         let pos = refs[key][0].getAttribute('top'),
                             index = Math.abs(Number(pos ? pos : 2) / 2);
 
@@ -130,12 +130,12 @@ const vm = Vue.extend({
                         }
                     }
 
-                    let keys = items.map(m => m[opts.value]),
+                    let keys = items.map((m) => m[opts.value]),
                         index = keys.indexOf(self.selects[key]);
 
                     if (refs[key] && refs[key][0]) {
                         refs[key][0].setAttribute('top', -index * 2);
-                        refs[key][0].style["-webkit-transform"] = `translate3d(0, ${-index * 2}em, 0)`;
+                        refs[key][0].style['-webkit-transform'] = `translate3d(0, ${-index * 2}em, 0)`;
                     }
                 });
             }
@@ -183,13 +183,13 @@ const vm = Vue.extend({
 
             this.$nextTick(() => {
                 this.selects = {};
-            })
+            });
         },
         gearTouchStart(evt: TouchEvent) {
             evt.preventDefault();
             evt.stopPropagation();
 
-            var target = evt.target as HTMLElement;
+            let target = evt.target as HTMLElement;
 
             while (true) {
                 if (!target.classList.contains('gear')) {
@@ -217,20 +217,20 @@ const vm = Vue.extend({
             evt.preventDefault();
             evt.stopPropagation();
 
-            var target = evt.target as HTMLElement;
+            let target = evt.target as HTMLElement;
 
             while (true) {
                 if (!target.classList.contains('gear')) {
                     target = target.parentElement;
                 } else {
-                    break
+                    break;
                 }
             }
 
             target['new_' + target.id] = evt.targetTouches[0].screenY;
             target['n_t_' + target.id] = (new Date()).getTime();
 
-            var f = (target['new_' + target.id] - target['old_' + target.id]) * 30 / window.innerHeight;
+            let f = (target['new_' + target.id] - target['old_' + target.id]) * 30 / window.innerHeight;
 
             target['pos_' + target.id] = target['o_d_' + target.id] + f;
             target.style['-webkit-transform'] = 'translate3d(0,' + target['pos_' + target.id] + 'em,0)';
@@ -244,7 +244,7 @@ const vm = Vue.extend({
             evt.preventDefault();
             evt.stopPropagation();
 
-            var target = evt.target as HTMLElement;
+            let target = evt.target as HTMLElement;
 
             while (true) {
                 let cls: any = target.classList;
@@ -256,7 +256,7 @@ const vm = Vue.extend({
                 }
             }
 
-            var flag = (target['new_' + target.id] - target['old_' + target.id]) / (target['n_t_' + target.id] - target['o_t_' + target.id]);
+            let flag = (target['new_' + target.id] - target['old_' + target.id]) / (target['n_t_' + target.id] - target['o_t_' + target.id]);
 
             if (Math.abs(flag) <= 0.2) {
                 target['spd_' + target.id] = (flag < 0 ? -0.08 : 0.08);
@@ -275,7 +275,7 @@ const vm = Vue.extend({
             this.rollGear(target);
         },
         rollGear(target: HTMLElement) {
-            var d = 0,
+            let d = 0,
                 self = this,
                 stopGear = false;
 
@@ -287,7 +287,7 @@ const vm = Vue.extend({
             clearInterval(target['int_' + target.id]);
 
             target['int_' + target.id] = setInterval(function () {
-                var position = target['pos_' + target.id],
+                let position = target['pos_' + target.id],
                     speed = target['spd_' + target.id] * Math.exp(-0.03 * d),
                     minTop = -(self.dataSources[target.id].length - 1) * 2;
 
@@ -322,7 +322,7 @@ const vm = Vue.extend({
             }, 30);
         },
         setGear(key: string, index: number) {
-            var self = this,
+            let self = this,
                 opts = self.options,
                 items = self.dataSources[key],
                 selects = obj.cloneObject(self.selects);
@@ -344,8 +344,8 @@ const vm = Vue.extend({
 }), picker = {
     install(vue: VueConstructor<Vue>) {
         vue.prototype.$picker = function (value: string | number | Date | { [key: string]: string | number | Date },
-            dataSources: Array<string | number | Date> | { [key: string]: Array<string | number | Date> },
-            options: {
+                                          dataSources: Array<string | number | Date> | { [key: string]: Array<string | number | Date> },
+                                          options: {
                 text: string;
                 value: string;
                 required?: boolean;
@@ -356,7 +356,7 @@ const vm = Vue.extend({
 
             obj.merge(options, { text: 'text', value: 'value', required: false });
 
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 let Picker = new vm(),
                     pkr = dom.create('div');
 
@@ -377,6 +377,6 @@ const vm = Vue.extend({
             });
         };
     }
-}
+};
 
 export { picker };

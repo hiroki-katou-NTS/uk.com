@@ -42,26 +42,26 @@ const $date = {
             pad = function (val: String | number, len?: number) {
                 val = String(val);
                 len = len || 2;
-                while (val.length < len) val = "0" + val;
+                while (val.length < len) { val = '0' + val; }
                 return val;
             }, masks: {
                 [key: string]: string
             } = {
-                "default": "ddd mmm dd yyyy HH:MM:ss",
-                shortDate: "m/d/yy",
-                mediumDate: "mmm d, yyyy",
-                longDate: "mmmm d, yyyy",
-                fullDate: "dddd, mmmm d, yyyy",
-                shortTime: "h:MM TT",
-                mediumTime: "h:MM:ss TT",
-                longTime: "h:MM:ss TT Z",
-                isoDate: "yyyy-mm-dd",
-                isoTime: "HH:MM:ss",
-                isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
-                isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+                'default': 'ddd mmm dd yyyy HH:MM:ss',
+                shortDate: 'm/d/yy',
+                mediumDate: 'mmm d, yyyy',
+                longDate: 'mmmm d, yyyy',
+                fullDate: 'dddd, mmmm d, yyyy',
+                shortTime: 'h:MM TT',
+                mediumTime: 'h:MM:ss TT',
+                longTime: 'h:MM:ss TT Z',
+                isoDate: 'yyyy-mm-dd',
+                isoTime: 'HH:MM:ss',
+                isoDateTime: 'yyyy-mm-dd\'T\'HH:MM:ss',
+                isoUtcDateTime: 'UTC:yyyy-mm-dd\'T\'HH:MM:ss\'Z\''
             };
 
-        mask = String(masks[mask || ''] || mask || masks["default"]);
+        mask = String(masks[mask || ''] || mask || masks.default);
 
         // Allow setting the utc argument via the mask
         mask = mask.replace(/^(UTC:)/, () => { utc = true; return ''; });
@@ -78,7 +78,7 @@ const $date = {
             flags: {
                 [key: string]: any
             } = {
-                d: d,
+                d,
                 dd: pad(d),
                 ddd: $date.dayNames[D],
                 dddd: $date.dayNames[D + 7],
@@ -90,38 +90,38 @@ const $date = {
                 yyyy: y,
                 h: H % 12 || 12,
                 hh: pad(H % 12 || 12),
-                H: H,
+                H,
                 HH: pad(H),
-                M: M,
+                M,
                 MM: pad(M),
-                s: s,
+                s,
                 ss: pad(s),
                 l: pad(L, 3),
                 L: pad(L > 99 ? Math.round(L / 10) : L),
-                t: H < 12 ? "a" : "p",
-                tt: H < 12 ? "am" : "pm",
-                T: H < 12 ? "A" : "P",
-                TT: H < 12 ? "AM" : "PM",
-                Z: utc ? "UTC" : (String(date).match(timezone) || [""]).pop()!.replace(timezoneClip, ""),
-                o: (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-                S: ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : Number(d % 100 - d % 10 != 10) * d % 10]
+                t: H < 12 ? 'a' : 'p',
+                tt: H < 12 ? 'am' : 'pm',
+                T: H < 12 ? 'A' : 'P',
+                TT: H < 12 ? 'AM' : 'PM',
+                Z: utc ? 'UTC' : (String(date).match(timezone) || ['']).pop()!.replace(timezoneClip, ''),
+                o: (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+                S: ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : Number(d % 100 - d % 10 != 10) * d % 10]
             };
 
-        return mask.replace(token, $0 => $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1));
+        return mask.replace(token, ($0) => $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1));
     },
     from: (dateStr: string, format?: string, utc?: boolean) => {
         let gtc = utc ? $date.utc : $date.gmt,
             isInteger = function (val: string) {
-                for (var i = 0; i < val.length; i++) {
-                    if ("1234567890".indexOf(val.charAt(i)) == -1) {
+                for (let i = 0; i < val.length; i++) {
+                    if ('1234567890'.indexOf(val.charAt(i)) == -1) {
                         return false;
                     }
                 }
                 return true;
             },
             getInt = function (str: string, i: number, minlength: number, maxlength: number) {
-                for (var x = maxlength; x >= minlength; x--) {
-                    var token = str.substring(i, i + x);
+                for (let x = maxlength; x >= minlength; x--) {
+                    let token = str.substring(i, i + x);
                     if (token.length < minlength) {
                         return null;
                     }
@@ -133,33 +133,33 @@ const $date = {
             };
 
         // If no format is specified, try a few common formats
-        if (typeof (format) == "undefined" || format == null || format == "") {
+        if (typeof (format) == 'undefined' || format == null || format == '') {
             let preferAmericanFormat = true,
                 generalFormats = new Array('y-m-d', 'mmm d, y', 'mmm d,y', 'y-mmm-d', 'd-mmm-y', 'mmm d', 'mmm-d', 'd-mmm'),
                 monthFirst = new Array('m/d/y', 'm-d-y', 'm.d.y', 'm/d', 'm-d'),
                 dateFirst = new Array('d/m/y', 'd-m-y', 'd.m.y', 'd/m', 'd-m'),
                 checkList = new Array(generalFormats, preferAmericanFormat ? monthFirst : dateFirst, preferAmericanFormat ? dateFirst : monthFirst);
 
-            for (var i = 0; i < checkList.length; i++) {
-                var l = checkList[i];
-                for (var j = 0; j < l.length; j++) {
-                    var d = $date.from(dateStr, l[j]);
+            for (let i = 0; i < checkList.length; i++) {
+                let l = checkList[i];
+                for (let j = 0; j < l.length; j++) {
+                    let d = $date.from(dateStr, l[j]);
                     if (d != null) {
                         return d;
                     }
                 }
             }
             return null;
-        };
+        }
 
-        dateStr = dateStr + "";
-        format = format + "";
+        dateStr = dateStr + '';
+        format = format + '';
 
         let i_val = 0,
             i_format = 0,
-            c = "",
-            token = "",
-            token2 = "",
+            c = '',
+            token = '',
+            token2 = '',
             x = 0,
             y = 0,
             year: string | null = new Date().getFullYear().toString(),
@@ -168,24 +168,24 @@ const $date = {
             hh: string | null = '0',
             mm: string | null = '0',
             ss: string | null = '0',
-            ampm: string | null = "";
+            ampm: string | null = '';
 
         while (i_format < format.length) {
             // Get next token from format string
             c = format.charAt(i_format);
-            token = "";
+            token = '';
             while ((format.charAt(i_format) == c) && (i_format < format.length)) {
                 token += format.charAt(i_format++);
             }
             // Extract contents of value based on format token
-            if (token == "yyyy" || token == "yy" || token == "y") {
-                if (token == "yyyy") {
+            if (token == 'yyyy' || token == 'yy' || token == 'y') {
+                if (token == 'yyyy') {
                     x = 4; y = 4;
                 }
-                if (token == "yy") {
+                if (token == 'yy') {
                     x = 2; y = 2;
                 }
-                if (token == "y") {
+                if (token == 'y') {
                     x = 2; y = 4;
                 }
                 year = getInt(dateStr, i_val, x, y);
@@ -198,16 +198,14 @@ const $date = {
                 if (year.length == 2) {
                     if (Number(year) > 70) {
                         year = String(1900 + (Number(year) - 0));
-                    }
-                    else {
+                    } else {
                         year = String(2000 + (Number(year) - 0));
                     }
                 }
-            }
-            else if (token == "mmm" || token == "NNN") {
+            } else if (token == 'mmm' || token == 'NNN') {
                 month = '0';
-                for (var i = 0; i < 12; i++) {
-                    var month_name = $date.monthNames[i + (token == "mmm" ? 12 : 0)];
+                for (let i = 0; i < 12; i++) {
+                    let month_name = $date.monthNames[i + (token == 'mmm' ? 12 : 0)];
                     if (dateStr.substring(i_val, i_val + month_name.length).toLowerCase() == month_name.toLowerCase()) {
                         month = String((i % 12) + 1);
                         i_val += month_name.length;
@@ -217,91 +215,77 @@ const $date = {
                 if ((Number(month) < 1) || (Number(month) > 12)) {
                     return null;
                 }
-            }
-            else if (token == "EE" || token == "E") {
-                for (var i = 0; i < 7; i++) {
-                    var day_name = $date.dayNames[i + (token == "EE" ? 7 : 0)];
+            } else if (token == 'EE' || token == 'E') {
+                for (let i = 0; i < 7; i++) {
+                    let day_name = $date.dayNames[i + (token == 'EE' ? 7 : 0)];
                     if (dateStr.substring(i_val, i_val + day_name.length).toLowerCase() == day_name.toLowerCase()) {
                         i_val += day_name.length;
                         break;
                     }
                 }
-            }
-            else if (token == "mm" || token == "m") {
+            } else if (token == 'mm' || token == 'm') {
                 month = getInt(dateStr, i_val, token.length, 2);
                 if (month == null || (Number(month) < 1) || (Number(month) > 12)) {
                     return null;
                 }
                 i_val += month.length;
-            }
-            else if (token == "dd" || token == "d") {
+            } else if (token == 'dd' || token == 'd') {
                 date = getInt(dateStr, i_val, token.length, 2);
                 if (date == null || (Number(date) < 1) || (Number(date) > 31)) {
                     return null;
                 }
                 i_val += date.length;
-            }
-            else if (token == "hh" || token == "h") {
+            } else if (token == 'hh' || token == 'h') {
                 hh = getInt(dateStr, i_val, token.length, 2);
                 if (hh == null || (Number(hh) < 1) || (Number(hh) > 12)) {
                     return null;
                 }
                 i_val += hh.length;
-            }
-            else if (token == "HH" || token == "H") {
+            } else if (token == 'HH' || token == 'H') {
                 hh = getInt(dateStr, i_val, token.length, 2);
                 if (hh == null || (Number(hh) < 0) || (Number(hh) > 23)) {
                     return null;
                 }
                 i_val += hh.length;
-            }
-            else if (token == "KK" || token == "K") {
+            } else if (token == 'KK' || token == 'K') {
                 hh = getInt(dateStr, i_val, token.length, 2);
                 if (hh == null || (Number(hh) < 0) || (Number(hh) > 11)) {
                     return null;
                 }
                 i_val += hh.length;
                 hh = String(Number(hh) + 1);
-            }
-            else if (token == "kk" || token == "k") {
+            } else if (token == 'kk' || token == 'k') {
                 hh = getInt(dateStr, i_val, token.length, 2);
                 if (hh == null || (Number(hh) < 1) || (Number(hh) > 24)) {
                     return null;
                 }
                 i_val += hh.length;
                 hh = String(Number(hh) - 1);
-            }
-            else if (token == "MM" || token == "M") {
+            } else if (token == 'MM' || token == 'M') {
                 mm = getInt(dateStr, i_val, token.length, 2);
                 if (mm == null || (Number(mm) < 0) || (Number(mm) > 59)) {
                     return null;
                 }
                 i_val += mm.length;
-            }
-            else if (token == "ss" || token == "s") {
+            } else if (token == 'ss' || token == 's') {
                 ss = getInt(dateStr, i_val, token.length, 2);
                 if (ss == null || (Number(ss) < 0) || (Number(ss) > 59)) {
                     return null;
                 }
                 i_val += ss.length;
-            }
-            else if (token == "a") {
-                if (dateStr.substring(i_val, i_val + 2).toLowerCase() == "am") {
-                    ampm = "AM";
-                }
-                else if (dateStr.substring(i_val, i_val + 2).toLowerCase() == "pm") {
-                    ampm = "PM";
-                }
-                else {
+            } else if (token == 'a') {
+                if (dateStr.substring(i_val, i_val + 2).toLowerCase() == 'am') {
+                    ampm = 'AM';
+                } else if (dateStr.substring(i_val, i_val + 2).toLowerCase() == 'pm') {
+                    ampm = 'PM';
+                } else {
                     return null;
                 }
                 i_val += 2;
-            }
-            else {
+            } else {
                 if (dateStr.substring(i_val, i_val + token.length) != token) {
                     return null;
-                }
-                else {
+                } else {
                     i_val += token.length;
                 }
             }
@@ -317,8 +301,7 @@ const $date = {
                 if (Number(date) > 29) {
                     return null;
                 }
-            }
-            else {
+            } else {
                 if (Number(date) > 28) {
                     return null;
                 }
@@ -330,10 +313,9 @@ const $date = {
             }
         }
         // Correct hours value
-        if (Number(hh) < 12 && ampm == "PM") {
+        if (Number(hh) < 12 && ampm == 'PM') {
             hh = String(Number(hh) - 0 + 12);
-        }
-        else if (Number(hh) > 11 && ampm == "AM") {
+        } else if (Number(hh) > 11 && ampm == 'AM') {
             hh = String(Number(hh) - 12);
         }
 
@@ -351,14 +333,14 @@ const $date = {
     },
     get dayNames() {
         return [
-            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
+            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
         ];
     },
     get monthNames() {
         return [
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+            'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
         ];
     }
 };

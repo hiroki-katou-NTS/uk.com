@@ -1,4 +1,4 @@
-import { obj } from "@app/utils";
+import { obj } from '@app/utils';
 import { IModalOptions } from 'declarations';
 import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 
@@ -10,7 +10,7 @@ const $dialog = () => ({
         <div data-msg="No messageId" v-else></div>
         <div class="modal-footer text-right">
             <template v-if="['info', 'error', 'warn'].indexOf(params.type) > -1">
-                <button v-focus class="btn btn-link" v-on:click="$close('close')">{{'close' | i18n}}</button>
+                <button v-focus class="btn btn-link" v-ripple="'rgba(255, 0, 0, 0.35)'" v-on:click="$close('close')">{{'close' | i18n}}</button>
                 <!--<button class="btn btn-link" v-on:click="$close('cancel')">{{'cancel' | i18n}}</button>-->
             </template>
             <template v-else>
@@ -39,8 +39,8 @@ const $dialog = () => ({
                         $dlg: { [key: string]: any } = {};
 
                     ['warn', 'info', 'error', 'confirm']
-                        .forEach($type => {
-                            $dlg[$type] = function (msg: string | { messageId: string, messageParams: string[] | { [key: string]: string } }, style: 'normal' | 'process' | 'danger' = 'normal') { //'normal' | 'process' | 'danger'
+                        .forEach(($type) => {
+                            $dlg[$type] = function (msg: string | { messageId: string, messageParams: string[] | { [key: string]: string } }, style: 'normal' | 'process' | 'danger' = 'normal') { // 'normal' | 'process' | 'danger'
                                 let params: { [key: string]: any } = {},
                                     option: IModalOptions = {
                                         title: $type,
@@ -55,15 +55,15 @@ const $dialog = () => ({
                                     params.message = msg;
                                 }
 
-                                obj.extend(params, { type: $type, style: style });
+                                obj.extend(params, { type: $type, style });
 
-                                return (<Vue>this).$modal($dialog(), params, option);
+                                return ( this as Vue).$modal($dialog(), params, option);
                             }.bind(self);
                         });
 
                     obj.extend(self.$modal, $dlg);
                 }
-            })
+            });
         }
     };
 

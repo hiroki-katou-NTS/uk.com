@@ -8,7 +8,7 @@ function cssbeautify(style: string, opt: any = null) {
         // old Internet Explorer
         trimRight = function (s: string) {
             return s.replace(/\s+$/, '');
-        };;
+        };
 
     options = opt || {};
 
@@ -41,7 +41,7 @@ function cssbeautify(style: string, opt: any = null) {
     }
 
     function appendIndent() {
-        var i;
+        let i;
         for (i = depth; i > 0; i -= 1) {
             formatted += options.indent;
         }
@@ -63,7 +63,7 @@ function cssbeautify(style: string, opt: any = null) {
     }
 
     function closeBlock() {
-        var last;
+        let last;
         depth -= 1;
         formatted = trimRight(formatted);
 

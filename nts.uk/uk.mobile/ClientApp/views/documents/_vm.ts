@@ -45,15 +45,15 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentIndex extends Vue {
-    items: Array<any> = [];
+    public items: Array<any> = [];
 
-    mounted() {
+    public mounted() {
         this.items = SideMenu.items;
 
         SideMenu.items = menu.sample;
     }
 
-    destroyed() {
+    public destroyed() {
         SideMenu.items = this.items;
     }
 }

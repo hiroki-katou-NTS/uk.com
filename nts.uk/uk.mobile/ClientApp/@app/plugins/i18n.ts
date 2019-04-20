@@ -32,12 +32,12 @@ const resources: {
         }
     },
     methods: {
-        change: function (lang: string) {
+        change (lang: string) {
             this.current = lang;
 
             localStorage.setItem('lang', lang);
         },
-        watch: function (callback: Function) {
+        watch (callback: Function) {
             let self = this;
             self.watchers.push(self.$watch('current', (v: string) => {
                 callback(v);
@@ -138,7 +138,7 @@ const resources: {
             }) || resource).toString();
     }
 
-    return "";
+    return '';
 };
 
 export { i18n, Language, resources, LanguageBar };

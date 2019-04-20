@@ -4,15 +4,15 @@ import { input, InputComponent } from './input';
 
 @input()
 class StringComponent extends InputComponent {
-    type: string = 'text';
+    public type: string = 'text';
 
     get rawValue() {
         return (this.value || '');
     }
 
     @Emit()
-    input() {
-        return (<HTMLInputElement>this.$refs.input).value;
+    public input() {
+        return ( this.$refs.input as HTMLInputElement).value;
     }
 
 }
