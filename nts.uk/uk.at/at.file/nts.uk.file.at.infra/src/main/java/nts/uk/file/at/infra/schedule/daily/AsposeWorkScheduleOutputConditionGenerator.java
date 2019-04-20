@@ -2056,13 +2056,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                     }
                     rowPageTracker.resetRemainingRow();
                 }
-                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isGrossTotal()) {
+                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
                 String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
                 // A3_1
                 currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
                 departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
-                if(!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isWorkplaceTotal() && !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()&& !condition.getSettingDetailTotalOutput().isGrossTotal()){
+                if(!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isWorkplaceTotal() 
+                		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()&& !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()){
                 String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
                         + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
                         + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
@@ -2071,6 +2072,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
                 departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
+				if (condition.getSettingDetailTotalOutput().isPersonalTotal() || condition.getSettingDetailTotalOutput().isDetails()) {
+					String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　"
+							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
+					// A3_1
+					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+				}
                 rowPageTracker.useRemainingRow(2);
 
 				// A3_2
@@ -2141,7 +2148,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								currentRow = sheetInfo.getStartDataIndex();
 							}
 							rowPageTracker.resetRemainingRow();
-							 if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())) {
 					                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 					                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
 					                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
@@ -2153,7 +2159,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					                // A4_1
 					                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
 					                rowPageTracker.useRemainingRow(2);
-					                }
 						}
 						if (colorWhite) // White row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
