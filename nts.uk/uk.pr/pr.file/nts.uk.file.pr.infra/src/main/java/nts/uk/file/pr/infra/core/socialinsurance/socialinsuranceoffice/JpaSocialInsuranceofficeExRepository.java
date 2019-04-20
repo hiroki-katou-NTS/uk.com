@@ -20,7 +20,7 @@ public class JpaSocialInsuranceofficeExRepository extends JpaRepository implemen
         sql.append("   CODE,");
         sql.append("   ADDRESS_1,");
         sql.append("   NAME,");
-        sql.append("   ADDRESS_1,");
+        sql.append("   ADDRESS_2,");
         sql.append("   SHORT_NAME,");
         sql.append("   ADDRESS_KANA_1,");
         sql.append("   REPRESENTATIVE_NAME,");
