@@ -58,8 +58,6 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
 
             //break page
             HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-
-//           boolean isFirst = (page == 1 ) && page%39 == 0 ? true : false;
             Cells cells = ws.getCells();
             // fill data           
             int page = exportData.size() / 37;

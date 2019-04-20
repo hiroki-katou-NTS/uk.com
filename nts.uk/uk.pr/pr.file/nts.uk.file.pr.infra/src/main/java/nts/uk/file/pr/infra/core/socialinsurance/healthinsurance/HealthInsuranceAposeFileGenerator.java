@@ -83,7 +83,7 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
-        pageSetup.setHeader(1,"労働保険事業所の登録");
+        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 "+ "健康保険料率一覧");
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");

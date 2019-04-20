@@ -48,7 +48,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\""+"労働保険事業所の登録");
+        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 "+ "社会保険事業所の登録");
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/dd  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
@@ -115,7 +115,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
                         cells.get(startIndex + j, 11).setValue(Objects.toString(dataRow[22], ""));
                     }
                     if (j == 7) {
-                        cells.get(startIndex + j, 1).setValue(Objects.toString(formatString(dataRow[23].toString()), ""));
+                        cells.get(startIndex + j, 1).setValue(dataRow[23] != null ? formatString(dataRow[23].toString()) : "");
                     }
                 }
                 startIndex = startIndex + NUM_ROW;
