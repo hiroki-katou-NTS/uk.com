@@ -22,7 +22,7 @@ public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGe
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_社会保険事業所一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
-    private static final String FILE_NAME = "QMM008社会保険事業所の登録_社会保険事業所一覧";
+    private static final String FILE_NAME = "QMM008社会保険事業所の登録_社会保険事業所一覧_";
     private static final int NUM_ROW = 9;
 
     @Override

@@ -42,6 +42,9 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
     }
 
     private void writeExcel(WorksheetCollection wsc ,SalaryHealthExportData exportData, List<CusWelfarePensionStandardDto> list, String socialInsuranceCode, String socialInsuranceName){
+
+        Boolean flag = exportData.getResponseWelfarePension().getDisplay();
+
         Worksheet ws = wsc.get(0);
         Worksheet ws1 = wsc.get(1);
 
@@ -88,11 +91,11 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
                 ws1.getCells().get(tempRowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium());
                 ws1.getCells().get(tempRowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
 
-                ws1.getCells().get(tempRowIndex,10).putValue(cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
-                ws1.getCells().get(tempRowIndex,11).putValue(cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
+                ws1.getCells().get(tempRowIndex,10).putValue(flag == true ? "" : cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
+                ws1.getCells().get(tempRowIndex,11).putValue(flag == true ? "" : cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
 
-                ws1.getCells().get(tempRowIndex,12).putValue(cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmMaleExemptionInsurance());
-                ws1.getCells().get(tempRowIndex,13).putValue(cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
+                ws1.getCells().get(tempRowIndex,12).putValue(flag == true ? "" : cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmMaleExemptionInsurance());
+                ws1.getCells().get(tempRowIndex,13).putValue(flag == true ? "" : cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){
@@ -113,11 +116,11 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
                 ws.getCells().get(rowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium());
                 ws.getCells().get(rowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
 
-                ws.getCells().get(rowIndex,10).putValue(cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
-                ws.getCells().get(rowIndex,11).putValue(cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
+                ws.getCells().get(rowIndex,10).putValue(flag == true ? "" : cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
+                ws.getCells().get(rowIndex,11).putValue(flag == true ? "" : cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
 
-                ws.getCells().get(rowIndex,12).putValue(cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmMaleExemptionInsurance());
-                ws.getCells().get(rowIndex,13).putValue(cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
+                ws.getCells().get(rowIndex,12).putValue(flag == true ? "" : cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmMaleExemptionInsurance());
+                ws.getCells().get(rowIndex,13).putValue(flag == true ? "" : cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){

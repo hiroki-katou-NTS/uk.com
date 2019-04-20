@@ -23,7 +23,7 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
 
     private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_健康保険料率一覧.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
-    private static final String FILE_NAME = "QMM008社会保険事業所の登録_健康保険料率一覧";
+    private static final String FILE_NAME = "QMM008社会保険事業所の登録_健康保険料率一覧_";
     private static final int ROW_IN_PAGE = 49;
     private static final int RECORD_IN_PAGE = 45;
 
@@ -69,8 +69,8 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         String sheetName = "bonus";
         worksheets.get(worksheets.addCopy(0)).setName(sheetName);
         Worksheet worksheet = worksheets.get(sheetName);
-        worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
-        worksheet.getCells().deleteRows(ROW_IN_PAGE - 1, ROW_IN_PAGE);
+        //worksheet.getCells().copyRows(worksheet.getCells(),ROW_IN_PAGE - 1, 0, ROW_IN_PAGE);
+        worksheet.getCells().deleteRows(0, ROW_IN_PAGE);
         settingPage(worksheet, startDate, companyName);
         for(int i = 0 ; i< pageBonus; i++) {
             worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName + i);
