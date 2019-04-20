@@ -346,10 +346,10 @@ const vm = Vue.extend({
         vue.prototype.$picker = function (value: string | number | Date | { [key: string]: string | number | Date },
                                           dataSources: Array<string | number | Date> | { [key: string]: Array<string | number | Date> },
                                           options: {
-                text: string;
-                value: string;
-                required?: boolean;
-            } = { text: 'text', value: 'value', required: false }) {
+                                            text: string;
+                                            value: string;
+                                            required?: boolean;
+                                        } = { text: 'text', value: 'value', required: false }) {
             value = obj.cloneObject(value);
             options = obj.cloneObject(options);
             dataSources = obj.cloneObject(dataSources);

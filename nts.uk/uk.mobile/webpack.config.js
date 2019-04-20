@@ -94,17 +94,17 @@ module.exports = (env) => {
             },
             minimizer: [
                 //new UglifyJsPlugin({
-                    /*cache: true,
-                    parallel: true,
-                    uglifyOptions: {
-                        compress: true,
-                        ecma: 6,
-                        mangle: true,
-                        output: {
-                            comments: false
-                        }
-                    },
-                    sourceMap: false*/
+                /*cache: true,
+                parallel: true,
+                uglifyOptions: {
+                    compress: true,
+                    ecma: 6,
+                    mangle: true,
+                    output: {
+                        comments: false
+                    }
+                },
+                sourceMap: false*/
                 //}),
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: require("cssnano"),
@@ -143,7 +143,11 @@ module.exports = (env) => {
                 // Point sourcemap entries to the original file locations on disk
                 moduleFilenameTemplate: path.relative(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist'), '[resourcePath]')
             }),
-            new TSLintPlugin({ files: ['./ClientApp/**/*.ts'] }),
+            new TSLintPlugin({
+                waitForLinting: true,
+                warningsAsError: true,
+                files: ['./ClientApp/**/*.ts']
+            }),
             new PackageWarFile({ prod: env && env.prod })
         ],
         devServer: {
