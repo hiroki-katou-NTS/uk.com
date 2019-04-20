@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalstatusmonthly.ApprovalStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalstatusmonthly.ApprovalStatusResult;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.AvailabilityAtr;
-import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.AppEmpStatusImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,9 +50,6 @@ public class CheckTrackRecord {
 
 	@Inject
 	private ApprovalStatusMonthly approvalStatusMonthly;
-	
-	@Inject
-	private NarrowDownEmployee narrowDownEmployee;
 
 	public boolean checkTrackRecord(String companyId, String employeeId,
 			List<CheckTargetItemDto> listCheckTargetItemExport) {
