@@ -42,7 +42,7 @@ const _NavMenu = new Vue({
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <language-bar v-on:change="show = !show" />
+                    <language-bar v-on:change="show = false" />
                 </ul>
             </div>
         </transition>
