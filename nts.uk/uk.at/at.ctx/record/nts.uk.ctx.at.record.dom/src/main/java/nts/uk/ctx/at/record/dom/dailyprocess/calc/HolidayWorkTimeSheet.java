@@ -151,7 +151,7 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * 
 	 */
-	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
+	public static Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
 													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない
@@ -293,7 +293,7 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * 
 	 */
-	public List<HolidayWorkFrameTime> transProcess(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
+	public static List<HolidayWorkFrameTime> transProcess(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
@@ -319,7 +319,7 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet　会社別代休設定
 	 * @return　代休振替設定
 	 */
-	private Optional<SubHolTransferSet> getTransSet(Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+	private static Optional<SubHolTransferSet> getTransSet(Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 										  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		if(eachWorkTimeSet.isPresent() && eachWorkTimeSet.get().getSubHolTimeSet().isUseDivision()) {
 			return Optional.of(eachWorkTimeSet.get().getSubHolTimeSet());
@@ -342,7 +342,7 @@ public class HolidayWorkTimeSheet{
 	 * 一定時間の振替処理
 	 * @param 一定時間
 	 */
-	public List<HolidayWorkFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
+	public static List<HolidayWorkFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
 		/*振替可能時間の計算*/
 		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
@@ -359,7 +359,7 @@ public class HolidayWorkTimeSheet{
 	 * @param useTimeAtr 使用時間区分
 	 * @return 振替可能時間
 	 */
-	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
+	private static AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
 		int totalFrameTime =  useTimeAtr.isTime()
 								?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 								:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
@@ -372,7 +372,7 @@ public class HolidayWorkTimeSheet{
 	}
 
 	
-	public List<HolidayWorkFrameTime> trans(AttendanceTime restTransAbleTime, List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+	public static List<HolidayWorkFrameTime> trans(AttendanceTime restTransAbleTime, List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		List<HolidayWorkFrameTime> returnList = new ArrayList<>();
 		//振替時間
 		AttendanceTime transAbleTime = restTransAbleTime;
@@ -400,7 +400,7 @@ public class HolidayWorkTimeSheet{
 	 * @param transRestAbleTime
 	 * @return
 	 */
-	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
+	private static AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return holidayWorkFrameTime.getHolidayWorkTime().get().getTime().greaterThanOrEqualTo(transRestAbleTime)
 																		  ?transRestAbleTime
@@ -422,7 +422,7 @@ public class HolidayWorkTimeSheet{
 	 * @param transAbleTime　振替時間
 	 * @return 振替処理後の残業時間枠
 	 */
-	private HolidayWorkFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkTimeFrame,AttendanceTime holidayWorkTime, AttendanceTime transAbleTime){
+	private static HolidayWorkFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkTimeFrame,AttendanceTime holidayWorkTime, AttendanceTime transAbleTime){
 		if(useTimeAtr.isTime()) {
 			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTime , 
 																																  holidayWorkTimeFrame.getHolidayWorkTime().get().getCalcTime()));
@@ -442,7 +442,7 @@ public class HolidayWorkTimeSheet{
 	 * 指定時間の振替処理
 	 * @param prioritySet 優先設定
 	 */
-	public List<HolidayWorkFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
+	public static List<HolidayWorkFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
 		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
 		/*振り替える*/
@@ -455,7 +455,7 @@ public class HolidayWorkTimeSheet{
 	 * 指定合計時間の計算
 	 * @param 指定時間クラス 
 	 */
-	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+	private static AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		int totalFrameTime = useTimeAtr.isTime()
 										?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 										:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
