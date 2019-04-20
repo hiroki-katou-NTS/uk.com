@@ -27,7 +27,7 @@
 				<div class="fixed-flex-layout-left">
 					<div class="valign-center control-group" style="padding-top: 20px">
 						<button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
-						<button tabindex="2" data-bind="enable: screenMode() == 0, click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+						<button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
 						<button tabindex="3" class="danger" data-bind="enable: isLatestHistory() || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
 					</div>
 

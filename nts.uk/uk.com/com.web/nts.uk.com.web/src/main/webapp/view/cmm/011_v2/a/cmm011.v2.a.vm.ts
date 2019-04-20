@@ -179,7 +179,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 genericName: self.selectedGenericName(),
                 externalCode: self.selectedExternalCode(),
                 hierarchyCode: self.selectedHierarchyCode(), 
-                listHierarchyChange: self.listHierarchyChange
+                listHierarchyChange: self.listHierarchyChange,
+                updateMode: true
             };
             service.registerWkpDepInfor(command).done((id) => {
                 info({ messageId: "Msg_15" }).then(() => {
@@ -332,7 +333,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this, result = "";
             let currentHierarchyCode = self.selectedHierarchyCode();
             if (currentHierarchyCode) {
-                let level = currentHierarchyCode.length/3;
+                let level = Math.floor(currentHierarchyCode.length/3);
                 let items = self.items();
                 for (let i = 1; i < level; i++) {
                     let hCode = currentHierarchyCode.substring(0, 3*i);
@@ -341,7 +342,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     items = node.children;
                 }
             }
-            return _.isEmpty(result) ? value : result + " " + value;
+            return result + value;
         }
         
         generateHierarchyCode(items: Array<WkpDepNode>, parentHierarchyCode: string) {

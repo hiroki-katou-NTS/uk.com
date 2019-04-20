@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.department.master.service.AddDepartmentConfigParam;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentCommandService;
@@ -43,7 +44,7 @@ public class OperationRuleCommandService {
 		String companyId = AppContexts.user().companyId();
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(companyId);
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:
@@ -88,7 +89,7 @@ public class OperationRuleCommandService {
 		String companyId = AppContexts.user().companyId();
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(companyId);
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:
@@ -128,7 +129,7 @@ public class OperationRuleCommandService {
 	public void deleteWkpDepConfig(int initMode, String companyId, String historyId) {
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(companyId);
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:
@@ -159,7 +160,7 @@ public class OperationRuleCommandService {
 	public void deleteWkpDepInfor(DeleteWkpDepInforParam param) {
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(param.getCompanyId());
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:
@@ -190,23 +191,21 @@ public class OperationRuleCommandService {
 	public String registerWkpDepInformation(AddWkpDepInforParam param) {
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(param.getCompanyId());
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
-		boolean isUpdate = true;
-		if (param.getId() == null) {
+		if (param.getId() == null && !param.isUpdateMode()) {
 			param.setId(IdentifierUtil.randomUniqueId());
-			isUpdate = false;
 		}
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:
-			wkpCommandService.registerWorkplaceInformation(param, isUpdate);
-			depCommandService.registerDepartmentInformation(param, isUpdate);
+			wkpCommandService.registerWorkplaceInformation(param, param.isUpdateMode());
+			depCommandService.registerDepartmentInformation(param, param.isUpdateMode());
 			break;
 		case NOT_SYNCHRONIZED:
 			if (param.getInitMode() == DEPARTMENT_MODE) {
-				depCommandService.registerDepartmentInformation(param, isUpdate);
+				depCommandService.registerDepartmentInformation(param, param.isUpdateMode());
 			} else {
-				wkpCommandService.registerWorkplaceInformation(param, isUpdate);
+				wkpCommandService.registerWorkplaceInformation(param, param.isUpdateMode());
 			}
 			break;
 		default:
@@ -218,7 +217,7 @@ public class OperationRuleCommandService {
 	public void updateHierarchyCode(int initMode, String companyId, String historyId, Map<String, String> mapHierarchyChange) {
 		Optional<OperationRule> optOperationRule = operationRepo.getOperationRule(companyId);
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		OperationRule operationRule = optOperationRule.get();
 		switch (operationRule.getDepWkpSynchAtr()) {
 		case SYNCHRONIZED:

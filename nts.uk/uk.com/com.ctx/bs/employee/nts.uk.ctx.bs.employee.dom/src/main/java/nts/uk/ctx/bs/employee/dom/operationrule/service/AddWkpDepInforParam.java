@@ -20,5 +20,6 @@ public class AddWkpDepInforParam {
 	private String externalCode;
 	private String hierarchyCode;
 	private Map<String, String> mapHierarchyChange;
+	private boolean updateMode;
 	
 }

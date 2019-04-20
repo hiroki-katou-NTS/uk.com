@@ -24,7 +24,7 @@ public class RegisterWkpDepInforCommandHandler extends CommandHandlerWithResult<
 		AddWkpDepInforParam param = new AddWkpDepInforParam(command.getInitMode(), companyId, command.getHistoryId(),
 				command.getId(), command.getCode(), command.getName(), command.getDispName(), command.getGenericName(),
 				command.getExternalCode(), command.getHierarchyCode(), command.getListHierarchyChange().stream()
-						.collect(Collectors.toMap(i -> i.getId(), i -> i.getHierarchyCode())));
+						.collect(Collectors.toMap(i -> i.getId(), i -> i.getHierarchyCode())), command.isUpdateMode());
 		return operationCommandService.registerWkpDepInformation(param);
 	}
 

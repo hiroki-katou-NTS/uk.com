@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.employee.dom.operationrule.DepartmentWorkplaceSynchronizationAtr;
 import nts.uk.ctx.bs.employee.dom.operationrule.OperationRule;
 import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
@@ -21,7 +22,7 @@ public class OperationRuleFinder {
 		String companyId = AppContexts.user().companyId();
 		Optional<OperationRule> optOperationRule = operationRuleRepo.getOperationRule(companyId);
 		if (!optOperationRule.isPresent())
-			throw new BusinessException("OperationRule not found!");
+			throw new BusinessException(new RawErrorMessage("OperationRule not found!"));
 		return new OperationRuleDto(
 				optOperationRule.get().getDepWkpSynchAtr() == DepartmentWorkplaceSynchronizationAtr.SYNCHRONIZED);
 	}

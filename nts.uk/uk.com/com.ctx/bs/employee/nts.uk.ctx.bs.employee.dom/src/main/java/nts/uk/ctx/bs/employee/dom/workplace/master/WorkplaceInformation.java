@@ -81,7 +81,7 @@ public class WorkplaceInformation extends AggregateRoot {
 		this.workplaceGeneric = new WorkplaceGeneric(workplaceGeneric);
 		this.workplaceDisplayName = new WorkplaceDisplayName(workplaceDisplayName);
 		this.hierarchyCode = new WorkplaceHierarchyCode(hierarchyCode);
-		this.workplaceExternalCode = externalCode == null ? Optional.empty()
+		this.workplaceExternalCode = externalCode == null || externalCode.isEmpty() ? Optional.empty()
 				: Optional.of(new WorkplaceExternalCode(externalCode));
 	}
 	

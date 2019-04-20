@@ -32,6 +32,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
 
         constructor() {
             let self = this, params = nts.uk.ui.windows.getShared("CMM011AParams");
+            let currentScreen = nts.uk.ui.windows.getSelf();
             if (params) {
                 self.screenMode = params.initMode;
                 self.selectedCode(params.selectedCode);
@@ -43,8 +44,10 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 self.items = params.items;
                 self.itemsCount(self.items.length);
             }
+            if (self.itemsCount() == 0) {
+                currentScreen.setHeight(400);
+            }
             if (self.screenMode == SCREEN_MODE.DEPARTMENT) {
-                let currentScreen = nts.uk.ui.windows.getSelf();
                 currentScreen.setTitle(getText("CMM011_303"));
             }
             self.itemList = ko.observableArray([
@@ -84,7 +87,23 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 } else {
                     let currentHierarchyCode = self.selectedHierarchyCode();
                     if (self.createMethod() == CreationType.CREATE_TO_CHILD) {
-                        let newHCode = currentHierarchyCode + "001";
+                        for (let i = 1; i < self.hierarchyLevel; i++) {
+                            let hCode = currentHierarchyCode.substring(0, 3 * i);
+                            let node = _.find(items, i => i.hierarchyCode == hCode);
+                            items = node.children;
+                        }
+                        let currNode = _.find(items, i => i.hierarchyCode == currentHierarchyCode);
+                        let newHCode = currentHierarchyCode;
+                        if (_.isEmpty(currNode.children))
+                            newHCode = newHCode + "001";
+                        else {
+                            let childLevel = currNode.children[0].hierarchyCode.length / 3;
+                            let lastChildNumber = Number(currNode.children[currNode.children.length - 1].hierarchyCode.substring(3 * (childLevel - 1)));
+                            let newChildNumber = (lastChildNumber + 1) + "";
+                            if (newChildNumber.length == 1) newChildNumber = "00"+ newChildNumber;
+                            if (newChildNumber.length == 2) newChildNumber = "0"+ newChildNumber;
+                            newHCode = newHCode + newChildNumber;
+                        }
                         self.hierarchyCode(newHCode);
                     } else {
                         let parentCode = currentHierarchyCode.substring(0, (self.hierarchyLevel - 1) * 3);
@@ -193,7 +212,8 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 genericName: self.genericName(),
                 externalCode: self.externalCode(),
                 hierarchyCode: self.hierarchyCode(), 
-                listHierarchyChange: self.listHierarchyChange
+                listHierarchyChange: self.listHierarchyChange,
+                updateMode: false
             };
             service.registerWkpDepInfor(command).done((id) => {
                 info({ messageId: "Msg_15" }).then(() => {
@@ -231,7 +251,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             let self = this, result = "";
             let currentHierarchyCode = self.hierarchyCode();
             if (currentHierarchyCode) {
-                let level = currentHierarchyCode.length/3;
+                let level = Math.floor(currentHierarchyCode.length/3);
                 let items = _.cloneDeep(self.items);
                 for (let i = 1; i < level; i++) {
                     let hCode = currentHierarchyCode.substring(0, 3*i);
@@ -240,7 +260,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     items = node.children;
                 }
             }
-            return _.isEmpty(result) ? value : result + " " + value;
+            return result + value;
         }
         
     }
