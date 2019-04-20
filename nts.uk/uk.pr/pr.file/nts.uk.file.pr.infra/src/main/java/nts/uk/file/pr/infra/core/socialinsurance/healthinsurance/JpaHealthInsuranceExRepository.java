@@ -68,6 +68,7 @@ public class JpaHealthInsuranceExRepository extends JpaRepository implements Hea
         sql.append("    WHERE o.CID = ?cid");
         sql.append("    AND START_YEAR_MONTH <= ?startDate ");
         sql.append("    AND END_YEAR_MONTH >= ?startDate");
+        sql.append("    ORDER BY CODE");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString()).setParameter("cid", cid).setParameter("startDate", startDate)
                     .getResultList();
