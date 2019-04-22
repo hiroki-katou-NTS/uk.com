@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-//import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 

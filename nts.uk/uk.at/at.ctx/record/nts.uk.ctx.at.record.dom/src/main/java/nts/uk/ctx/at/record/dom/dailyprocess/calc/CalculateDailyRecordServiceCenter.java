@@ -2,13 +2,10 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
 import java.util.Optional;
-//import java.util.function.Consumer;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-//import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-//import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実績計算を呼び出す用のサービス

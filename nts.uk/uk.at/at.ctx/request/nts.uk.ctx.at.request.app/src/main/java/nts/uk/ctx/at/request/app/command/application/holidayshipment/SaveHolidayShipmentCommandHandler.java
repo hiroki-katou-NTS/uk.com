@@ -909,7 +909,7 @@ public class SaveHolidayShipmentCommandHandler
 
 		String typicalReason = getTypicalReason(command, appTypeSet);
 
-		String displayReason = getDisplayReason(typicalReason, command, appTypeSet);
+		String displayReason = getDisplayReason(typicalReason, command, appTypeSet, command.isScreenB());
 
 		String appReason = typicalReason + displayReason;
 
@@ -937,7 +937,7 @@ public class SaveHolidayShipmentCommandHandler
 	}
 
 	private String getDisplayReason(String typicalReason, SaveHolidayShipmentCommand command,
-			AppTypeDiscreteSetting appTypeSet) {
+			AppTypeDiscreteSetting appTypeSet, boolean isScreenB) {
 		String disPlayReason = Strings.EMPTY;
 		if (isReasonTextFieldDisplay(appTypeSet)) {
 
@@ -949,6 +949,10 @@ public class SaveHolidayShipmentCommandHandler
 
 			disPlayReason += command.getAppCmd().getApplicationReason();
 
+		}else{
+			if (isScreenB && Strings.isBlank(typicalReason)) {
+				disPlayReason = command.getAppCmd().getApplicationReason();
+			}
 		}
 		return disPlayReason;
 	}
