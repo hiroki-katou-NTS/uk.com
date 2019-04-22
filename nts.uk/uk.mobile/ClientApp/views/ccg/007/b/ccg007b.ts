@@ -7,7 +7,6 @@ import { ccg007 } from '../common/common';
 @component({
     route: '/ccg/007/b',
     style: require('./style.scss'),
-    resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
         model: {
@@ -49,6 +48,7 @@ export class LoginComponent extends Vue {
         if (!_.isNil(self.params.contractCode)) {
             self.contractCode = self.params.contractCode;
             self.contractPass = self.params.contractPass;
+            self.checkEmpCodeAndCompany();
         } else {
             characteristics.restore('contractInfo').then((value: any) => {
                 if (!_.isNil(value)) {
@@ -68,12 +68,12 @@ export class LoginComponent extends Vue {
                         ccg007.authenticateContract(self);
                     }
                 }
+            }).then(() => {
+                self.checkEmpCodeAndCompany();
             }).catch((res) => {
 
             });
         }
-        
-        self.checkEmpCodeAndCompany();
 
         this.$http.post(servicePath.ver).then((response: { data: any }) => {
             self.model.ver = response.data.ver;

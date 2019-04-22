@@ -6,7 +6,6 @@ import { SideMenu, NavMenu } from '@app/services';
 @component({
     route: '/ccg/007/d',
     style: require('./style.scss'),
-    resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
         companyCode: {
