@@ -164,8 +164,10 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         
         registerMaster() {
             let self = this;
+            if (_.isEmpty(self.configuration().historyId) || _.isEmpty(self.items()))
+                return;
             $(".nts-input").trigger("validate");
-            if (nts.uk.ui.errors.hasError() || _.isEmpty(self.configuration().historyId)) 
+            if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
 //            if (self.needRegenerateHierarchyCode) {

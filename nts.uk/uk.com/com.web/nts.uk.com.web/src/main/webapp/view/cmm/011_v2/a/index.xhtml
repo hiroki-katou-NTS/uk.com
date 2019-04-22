@@ -91,7 +91,7 @@
 							name: '#[CMM011_112]',
 							value: selectedCode,
 							constraint: 'DepartmentCode',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
@@ -99,7 +99,7 @@
 							name: '#[CMM011_113]',
 							value: selectedName,
 							constraint: 'DepartmentName',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
@@ -107,7 +107,7 @@
 							name: '#[CMM011_114]',
 							value: selectedDispName,
 							constraint: 'WorkplaceDisplayName',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
@@ -116,7 +116,7 @@
 							value: selectedGenericName,
 							constraint: 'WorkplaceGeneric',
 							option: { width: '512px' },
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
@@ -124,7 +124,7 @@
 							name: '#[CMM011_116]',
 							value: selectedExternalCode,
 							constraint: 'WorkplaceExternalCode',
-							required: false, enable: true}" />
+							required: false, enable: selectedId() != null }" />
 					</div>
 				</div>
 			</div>
