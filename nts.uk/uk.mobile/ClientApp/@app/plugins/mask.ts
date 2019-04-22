@@ -14,7 +14,7 @@ const vm = Vue.extend({
     methods: {
         onClick(evt: MouseEvent) {
             this.callback.click
-                .forEach(click => {
+                .forEach((click) => {
                     click();
                 });
 
@@ -54,7 +54,7 @@ const vm = Vue.extend({
         } | undefined;
 
         vue.prototype.$mask = function (act: 'hide' | 'show', opacity: number = 0.2) {
-            if (act === "hide") {
+            if (act === 'hide') {
                 if ($mask) {
                     $mask.show = false;
 
@@ -79,7 +79,7 @@ const vm = Vue.extend({
                 }
 
                 return {
-                    on: function (click: () => void, hide: () => void) {
+                    on (click: () => void, hide: () => void) {
                         if (obj.isFunction(hide)) {
                             $mask.callback.hide.push(hide);
                         }

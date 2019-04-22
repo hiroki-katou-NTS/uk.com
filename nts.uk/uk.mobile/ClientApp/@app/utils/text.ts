@@ -46,16 +46,3 @@ export const regexp = {
         }
     }
 };
-
-export class Text {
-    constructor(private value: string) { }
-
-    get is() {
-        let self = this;
-        return {
-            get halfNumeric() {
-                return
-            }
-        }
-    }
-}

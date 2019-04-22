@@ -14,7 +14,7 @@ export const time = {
             }
         },
         computeHour(value: number): number {
-            var minutesInDay = 0;
+            let minutesInDay = 0;
 
             if (value >= 0) {
                 minutesInDay = value % 1440;
@@ -25,17 +25,17 @@ export const time = {
             return Math.floor(minutesInDay / 60);
         },
         computeMinute(value: number): number {
-            var minutesInDay = 0;
+            let minutesInDay = 0;
             if (value >= 0) {
                 minutesInDay = value % 1440;
             } else {
                 minutesInDay = 1440 + value;
             }
-            var hour = Math.floor(minutesInDay / 60);
+            let hour = Math.floor(minutesInDay / 60);
             return minutesInDay - hour * 60;
         },
         computeValue(newDay: string, newHour: number, newMinute: number): number {
-            var newMinutes = 0;
+            let newMinutes = 0;
             switch (newDay) {
                 case DAYS.TheDayBefore:
                     newMinutes = (newHour * 60 + newMinute) - 1440;
@@ -53,32 +53,32 @@ export const time = {
             return newMinutes;
         },
         computeTimePoint(value: number): TimeWithDayPoint {
-            var day = time.timewd.computeDay(value);
-            var hour = time.timewd.computeHour(value);
-            var minute = time.timewd.computeMinute(value);
+            let day = time.timewd.computeDay(value);
+            let hour = time.timewd.computeHour(value);
+            let minute = time.timewd.computeMinute(value);
             return {
                 day, hour, minute
-            }
+            };
         },
         toString(value: number): string {
-            var timePoint = time.timewd.computeTimePoint(value);
+            let timePoint = time.timewd.computeTimePoint(value);
             return timePoint.day + ' ' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
     timedr: {
         computeHour(value: number): number {
             if (value >= 0) {
-                return Math.floor(value / 60)
+                return Math.floor(value / 60);
             } else {
                 return 0 - Math.floor(Math.abs(value) / 60);
             }
         },
         computeMinute(value: number): number {
             if (value > 0) {
-                var hour = Math.floor(value / 60)
+                let hour = Math.floor(value / 60);
                 return value - hour * 60;
             } else {
-                var hour = 0 - Math.floor(Math.abs(value) / 60);
+                let hour = 0 - Math.floor(Math.abs(value) / 60);
                 if (hour == 0) {
                     return value;
                 }
@@ -86,10 +86,10 @@ export const time = {
             }
         },
         computeTimePoint(value: number): TimeDurationPoint {
-            var hour = 0;
-            var minute = 0;
+            let hour = 0;
+            let minute = 0;
             if (value >= 0) {
-                hour = Math.floor(value / 60)
+                hour = Math.floor(value / 60);
                 minute = value - hour * 60;
             } else {
                 hour = 0 - Math.floor(Math.abs(value) / 60);
@@ -98,7 +98,7 @@ export const time = {
             return {
                 hour,
                 minute
-            }
+            };
         },
         computeValue(newHour: number, newMinute: number): number {
             if (newHour >= 0) {
@@ -108,7 +108,7 @@ export const time = {
             }
         },
         toString(value: number) {
-            var timePoint = time.timedr.computeTimePoint(value);
+            let timePoint = time.timedr.computeTimePoint(value);
 
             if (timePoint.hour == 0 && value < 0) {
                 return '-' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
@@ -127,20 +127,20 @@ export const time = {
             }
         },
         computeMinute(value: number): number {
-            var hour = 0;
+            let hour = 0;
             if (value >= 0) {
                 hour = Math.floor(value / 60);
                 return value - hour * 60;
             } else {
-                var minutesInDay = 1440 + value;
+                let minutesInDay = 1440 + value;
                 hour = Math.floor(minutesInDay / 60);
 
                 return minutesInDay - hour * 60;
             }
         },
         computeTimePoint(value: number): TimePoint {
-            var hour = 0;
-            var minute = 0;
+            let hour = 0;
+            let minute = 0;
 
             if (value >= 0) {
                 hour = Math.floor(value / 60);
@@ -148,7 +148,7 @@ export const time = {
 
                 return { hour, minute };
             } else {
-                var minutesInDay = 1440 + value;
+                let minutesInDay = 1440 + value;
 
                 hour = Math.floor(minutesInDay / 60);
                 minute = minutesInDay - hour * 60;
@@ -164,7 +164,7 @@ export const time = {
             }
         },
         toString(value: number) {
-            var timePoint = time.timept.computeTimePoint(value);
+            let timePoint = time.timept.computeTimePoint(value);
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
@@ -180,10 +180,10 @@ export const time = {
 };
 
 export enum DAYS {
-    TheDayBefore = "前日",
-    Today = "当日",
-    NextDay = "翌日",
-    TwoDaysLater = "翌々日",
+    TheDayBefore = '前日',
+    Today = '当日',
+    NextDay = '翌日',
+    TwoDaysLater = '翌々日',
 }
 
 export interface TimeWithDayPoint {
@@ -210,10 +210,10 @@ export enum TimeInputType {
 
 
 export class TimeWithDay {
-    value: number | undefined = undefined;
+    public value: number | undefined = undefined;
 
     constructor(value: string | number) {
-        if (typeof value === "number") {
+        if (typeof value === 'number') {
             this.value = value;
         } else {
             this.value = this.toNumber(value);
@@ -248,7 +248,7 @@ export class TimeWithDay {
         return TimeWithDay.from(value).minute;
     }
 
-    toNumber(value?: string): number {
+    public toNumber(value?: string): number {
         if (value === undefined) {
             return this.value;
         }
@@ -265,7 +265,7 @@ export class TimeWithDay {
         }
     }
 
-    toString(): string {
+    public toString(): string {
         let negative = this.isNegative,
             value = Math.abs(this.value + (negative ? 1440 : 0)),
             hour = Math.floor(value / 60).toString(),
@@ -274,7 +274,7 @@ export class TimeWithDay {
         return `${negative ? '-' : ''}${_.padStart(hour, 2, '0')}:${_.padStart(minute, 2, '0')}`;
     }
 
-    toLocalString() {
+    public toLocalString() {
         return `{${this.dayName}}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
@@ -341,10 +341,10 @@ export class TimeWithDay {
 
 
 export class TimeDuration {
-    value: number | undefined = undefined;
+    public value: number | undefined = undefined;
 
     constructor(value: string | number) {
-        if (typeof value === "number") {
+        if (typeof value === 'number') {
             this.value = value;
         } else {
             this.value = this.toNumber(value);
@@ -355,7 +355,7 @@ export class TimeDuration {
         return new TimeDuration(value);
     }
 
-    toNumber(value?: string) {
+    public toNumber(value?: string) {
         if (value) {
             let negative: boolean = value.indexOf('-') == 0,
                 rawNumber: number = Number(value.replace(/[\:\-]/g, '')),
@@ -372,11 +372,11 @@ export class TimeDuration {
         return this.value;
     }
 
-    toString() {
+    public toString() {
         return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
-    toLocalString() {
+    public toLocalString() {
         return this.toString();
     }
 
@@ -396,6 +396,3 @@ export class TimeDuration {
         return Math.abs(this.value);
     }
 }
-
-window['timewd'] = TimeWithDay;
-window['timedr'] = TimeDuration;

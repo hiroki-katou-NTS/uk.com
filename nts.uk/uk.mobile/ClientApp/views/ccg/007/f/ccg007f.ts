@@ -21,31 +21,31 @@ import { SideMenu, NavMenu } from '@app/services';
 export class MailSentComponent extends Vue {
     
     @Prop({ default: () => ({}) })
-    params!: any;
+    public params!: any;
     
-    contractCode: string = '';
-    compapyCode: string = '';
-    employeeCode: string = '';
+    public contractCode: string = '';
+    public compapyCode: string = '';
+    public employeeCode: string = '';
     
-    created() {
+    public created() {
         this.contractCode = this.params.contractCode;
         this.compapyCode = this.params.companyCode;
         this.employeeCode = this.params.employeeCode;
     }
 
-    mounted(){
+    public mounted() {
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
     }
 
-    destroyed() {
+    public destroyed() {
         // Show menu
         NavMenu.visible = true;
         SideMenu.visible = true;
     }
 
-    toLogin() {
+    public toLogin() {
         this.$goto({ name: 'login', params: { companyCode: this.compapyCode, 
                                                         employeeCode: this.employeeCode,
                                                         contractCode: this.contractCode

@@ -23,7 +23,7 @@ Vue.directive('float-action', {
             dom.addClass(ul, 'list-unstyled');
 
             [].slice.call(el.querySelectorAll('ul.list-unstyled>li'))
-                .forEach(element => {
+                .forEach((element) => {
                     dom.addClass(element, 'btn btn-floating');
                 });
 

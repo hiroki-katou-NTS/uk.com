@@ -5,33 +5,33 @@ export const charType = function (value: string, type: 'Any' | 'Kana' | 'AnyHalf
     let cl: string = `${constraint.getCharLength(rule)}`;
 
     switch (type) {
-        case "Any":
+        case 'Any':
             break;
-        case "AnyHalfWidth":
+        case 'AnyHalfWidth':
             if (!text.is.halfAlphabet(value)) {
-                return ["MsgB_4", cl];
+                return ['MsgB_4', cl];
             }
 
             break;
-        case "Numeric":
+        case 'Numeric':
             if (!text.is.halfNumeric(value)) {
-                return ["MsgB_5", cl];
+                return ['MsgB_5', cl];
             }
 
             break;
-        case "AlphaNumeric":
+        case 'AlphaNumeric':
             if (!text.is.halfAlphanumeric(value)) {
-                return ["MsgB_6", cl];
+                return ['MsgB_6', cl];
             }
 
             break;
-        case "Kana":
+        case 'Kana':
             if (!text.is.fullKatakanaReg(value)) {
-                return ["MsgB_7", cl];
+                return ['MsgB_7', cl];
             }
 
             break;
     }
 
     return null;
-}
+};

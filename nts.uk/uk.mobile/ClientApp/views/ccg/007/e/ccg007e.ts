@@ -11,7 +11,7 @@ import { SideMenu, NavMenu } from '@app/services';
             newPassword: {
                 required: true,
                 checkSame: {
-                    test(value){
+                    test(value) {
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
@@ -19,7 +19,7 @@ import { SideMenu, NavMenu } from '@app/services';
             newPasswordConfirm: {
                 required: true,
                 checkSame: {
-                    test(value){
+                    test(value) {
                         return this.model.newPasswordConfirm === this.model.newPassword;
                     }, message: 'Msg_961'
                 }
@@ -32,9 +32,9 @@ export class ResetPassComponent extends Vue {
 
     // @Prop({ default: '' })
     // id!: string;
-    id: string;
+    public id: string;
 
-    policy = {
+    public policy = {
         lowestDigits: 0,
         alphabetDigit: 0,
         numberOfDigits: 0,
@@ -42,18 +42,18 @@ export class ResetPassComponent extends Vue {
         historyCount: 0,
         validPeriod: 0,
         isUse: false
-    }
+    };
 
-    model = {
+    public model = {
         newPassword: '',
         newPasswordConfirm: '',
         userName: '',
         contractCode: '',
         loginId: '',
         userId: ''
-    }
+    };
 
-    created() {
+    public created() {
         let self = this;
         self.id = self.$route.query.id as string;
 
@@ -66,7 +66,7 @@ export class ResetPassComponent extends Vue {
             self.model.userId = user.userId;
             return user;
         }).then((user) => {
-            return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode)
+            return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);
         }).then((res: { data: PassWordPolicy}) => {
             let policy: PassWordPolicy = res.data;
             self.policy.lowestDigits = policy.lowestDigits;
@@ -79,19 +79,19 @@ export class ResetPassComponent extends Vue {
         });
     }
 
-    mounted(){
+    public mounted() {
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
     }
 
-    destroyed() {
+    public destroyed() {
         // Show menu
         NavMenu.visible = true;
         SideMenu.visible = true;
     }
 
-    changePass() {
+    public changePass() {
         this.$validate();
         if (!this.$valid) {
             return;                   
@@ -103,9 +103,9 @@ export class ResetPassComponent extends Vue {
                                                 confirmNewPassword: self.model.newPasswordConfirm,
                                                 userId: self.model.userId };
 
-        self.$mask("show");
+        self.$mask('show');
         
-        //submitChangePass
+        // submitChangePass
         self.$http.post(servicePath.changePass, command).then(() => {
             return {
                 loginId: _.padEnd(self.model.loginId, 12, ' '),
@@ -115,16 +115,16 @@ export class ResetPassComponent extends Vue {
             };
         }).then((loginData) => self.$http.post(servicePath.submitLogin, loginData))
         .then((messError: any) => {
-            //Remove LoginInfo
+            // Remove LoginInfo
             self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
         }).catch((res) => {
-            //Return Dialog Error
-            self.$mask("hide");
+            // Return Dialog Error
+            self.$mask('hide');
             self.showMessageError(res);
         });
     }
 
-    showMessageError(res: any) {
+    public showMessageError(res: any) {
         // check error business exception
         if (!res.businessException) {
             return;
@@ -132,20 +132,20 @@ export class ResetPassComponent extends Vue {
 
         /** TODO: show error message */
         if (Array.isArray(res.errors)) {
-            //nts.uk.ui.dialog.bundledErrors(res);
+            // nts.uk.ui.dialog.bundledErrors(res);
         } else {
-            //nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+            // nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
         }
         this.$modal.error(res.message);
     }
 }
 
 const servicePath = {
-    getPasswordPolicy: "ctx/sys/gateway/changepassword/getPasswordPolicy/",
-    changePass: "ctx/sys/gateway/changepassword/submitforgotpass",
-    getUserName: "ctx/sys/gateway/changepassword/getUserNameByURL/",
-    submitLogin: "ctx/sys/gateway/login/submit/form1"
-}
+    getPasswordPolicy: 'ctx/sys/gateway/changepassword/getPasswordPolicy/',
+    changePass: 'ctx/sys/gateway/changepassword/submitforgotpass',
+    getUserName: 'ctx/sys/gateway/changepassword/getUserNameByURL/',
+    submitLogin: 'ctx/sys/gateway/login/submit/form1'
+};
 
 interface LoginData {
     loginId: string;

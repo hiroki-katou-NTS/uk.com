@@ -3,6 +3,7 @@ import { dom, browser } from '@app/utils';
 import { LanguageBar } from '@app/plugins';
 import { component, Watch } from '@app/core/component';
 
+// tslint:disable-next-line: variable-name
 const _NavMenu = new Vue({
     data: {
         show: false,
@@ -42,7 +43,7 @@ const _NavMenu = new Vue({
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <language-bar />
+                    <language-bar v-on:change="show = false" />
                 </ul>
             </div>
         </transition>
@@ -73,10 +74,10 @@ const _NavMenu = new Vue({
     }
 })
 export class NavMenuBar extends Vue {
-    active: any = {};
+    public active: any = {};
 
     @Watch('show', { immediate: true })
-    toggleMaskLayer(show: boolean) {
+    public toggleMaskLayer(show: boolean) {
         let self = this;
 
         if (!show) {
@@ -91,21 +92,21 @@ export class NavMenuBar extends Vue {
         }
     }
 
-    created() {
+    public created() {
         dom.registerEventHandler(window, 'resize', resize);
     }
 
-    destroyed() {
+    public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);
     }
 
-    beforeEnter() {
+    public beforeEnter() {
         let nav = this.$refs.nav as HTMLElement;
 
         dom.addClass(nav, 'show');
     }
 
-    afterLeave() {
+    public afterLeave() {
         let nav = this.$refs.nav as HTMLElement;
 
         dom.removeClass(nav, 'show');

@@ -6,15 +6,15 @@ const maxLength = function (value: string, length: number, rule: IRule) {
         let cl: string = `${constraint.getCharLength(rule)}`;
 
         switch (rule.charType) {
-            case "Any":
+            case 'Any':
                 return ['MsgB_4', cl];
-            case "Kana":
+            case 'Kana':
                 return ['MsgB_7', cl];
-            case "Numeric":
+            case 'Numeric':
                 return ['MsgB_5', cl];
-            case "AlphaNumeric":
+            case 'AlphaNumeric':
                 return ['MsgB_6', cl];
-            case "AnyHalfWidth":
+            case 'AnyHalfWidth':
                 return ['MsgB_4', cl];
         }
     }

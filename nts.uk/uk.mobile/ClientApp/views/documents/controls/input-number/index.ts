@@ -15,5 +15,5 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputNumberComponent extends Vue {
-    number: number = 10;
+    public number: number = 10;
 }

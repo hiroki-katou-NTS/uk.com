@@ -1,11 +1,11 @@
-import { IRule } from "declarations";
+import { IRule } from 'declarations';
 
 export const valueType = function (value: string | number | Date, type: 'Decimal' | 'Integer' | 'HalfInt', rule: IRule) {
     let $value = `${value}`;
 
     if (value !== null && value !== undefined && value !== '') {
         switch (type) {
-            case "Decimal":
+            case 'Decimal':
                 if (!/\d+(\.\d{1,})?/.test($value)) {
                     let min = `${rule.min}`,
                         max = `${rule.max}`;
@@ -22,8 +22,8 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                     }
                 }
                 break;
-            case "HalfInt":
-            case "Integer":
+            case 'HalfInt':
+            case 'Integer':
                 if (!/^\d+$/.test($value)) {
                     if (rule.min >= 0) {
                         return ['MsgB_10', `${rule.max}`];
@@ -36,4 +36,4 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
     }
 
     return null;
-}
+};

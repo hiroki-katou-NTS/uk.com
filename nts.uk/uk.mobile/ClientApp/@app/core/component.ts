@@ -37,8 +37,8 @@ export function component(options: ComponentOptions<Vue>): any {
         });
 
         // render template 
-        if (typeof options.template === "object") {
-            const { render, staticRenderFns } = (<any>options.template).default;
+        if (typeof options.template === 'object') {
+            const { render, staticRenderFns } = (options.template as any).default;
 
             options.render = render;
             options.staticRenderFns = staticRenderFns;
@@ -63,7 +63,7 @@ export function component(options: ComponentOptions<Vue>): any {
             delete options.style;
 
             (options.mixins || (options.mixins = [])).push({
-                beforeCreate: function () {
+                beforeCreate() {
                     styles.push(options.name);
 
                     if (styles.indexOf(options.name) > -1
@@ -73,7 +73,7 @@ export function component(options: ComponentOptions<Vue>): any {
                         }
                     }
                 },
-                beforeDestroy: function () {
+                beforeDestroy() {
                     styles.splice(styles.indexOf(options.name), 1);
 
                     if (styles.indexOf(options.name) == -1) {
@@ -91,13 +91,13 @@ export function component(options: ComponentOptions<Vue>): any {
         // initial route for component
         if (options.route) {
             if (typeof options.route === 'string') {
-                let rt = $.find(routes, r => r.name === options.name);
+                let rt = $.find(routes, (r) => r.name === options.name);
 
                 if (!rt) {
                     routes.push({
                         name: options.name,
                         path: options.route,
-                        component: options, 
+                        component: options,
                         props: true
                     });
 
@@ -111,20 +111,20 @@ export function component(options: ComponentOptions<Vue>): any {
                 }
             } else {
                 if (options.route.parent) {
-                    let rt = routes.find(r => r.path === (<any>options.route).parent);
+                    let rt = routes.find((r) => r.path === (options.route as any).parent);
 
                     if (rt) {
                         (rt.children || (rt.children = [])).push({
                             name: options.name,
                             path: options.route.url.replace(/^\/+/, ''),
-                            component: options, 
+                            component: options,
                             props: true
                         });
                     } else {
                         routes.push({
                             name: options.name,
                             path: `${options.route.parent}/${options.route.url}`.replace(/\/+/g, '/'),
-                            component: options, 
+                            component: options,
                             props: true
                         });
                     }
@@ -141,7 +141,7 @@ export function component(options: ComponentOptions<Vue>): any {
         }
 
         return options;
-    }
-};
+    };
+}
 
 export { Prop, Watch, Model, Provide, Emit, Mixins, Inject };
