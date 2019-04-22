@@ -6,7 +6,6 @@ import { ccg007 } from "../common/common";
 @component({
     route: '/ccg/007/c',
     style: require('./style.scss'),
-    resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
         model: {
