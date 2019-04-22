@@ -29,6 +29,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
         hierarchyLevel: number = 10;
         items: Array<any> = [];
         listHierarchyChange: Array<any> = [];
+        updateMode = false;
 
         constructor() {
             let self = this, params = nts.uk.ui.windows.getShared("CMM011AParams");
@@ -66,6 +67,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             ]);
             self.createMethod = ko.observable(CreationType.CREATE_BELOW);
             self.code.subscribe(value => {
+                self.id(null);
                 if (value && !_.isEmpty(self.selectedHistoryId))
                     self.checkInputCode(value);
             });
@@ -162,7 +164,8 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                         let result = getShared("CMM011CParams");
                         if (result) {
                             if (result.targetId && result.historyId) {
-                                self.id(result.targetId)
+                                self.id(result.targetId);
+                                self.updateMode = true;
                                 block.invisible();
                                 service.getWkpDepInforById(self.screenMode, result.historyId, result.targetId).done(res => {
                                     self.displayName(res.dispName);
@@ -176,14 +179,15 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                                     block.clear();
                                 });
                             } else {
-                                // NEW MODE
+                                self.updateMode = false;
                             }
                         } else {
                             self.code(null);
+                            self.updateMode = false;
                         }
                     });
                 } else {
-                    // NEW MODE
+                    self.updateMode = false;
                 }
             }).fail(error => {
                 alertError(error).then(() => {
@@ -213,7 +217,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 externalCode: self.externalCode(),
                 hierarchyCode: self.hierarchyCode(), 
                 listHierarchyChange: self.listHierarchyChange,
-                updateMode: false
+                updateMode: self.updateMode
             };
             service.registerWkpDepInfor(command).done((id) => {
                 info({ messageId: "Msg_15" }).then(() => {

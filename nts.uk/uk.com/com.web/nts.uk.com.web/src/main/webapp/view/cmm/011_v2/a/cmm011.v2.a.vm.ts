@@ -90,30 +90,32 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     });
                 }
             });
-            service.getOperationRule().done(res => {
-                self.isSynchronized(res.synchWkpDep);
-            }).fail((error) => {
-                alertError(error);
-            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            service.getConfiguration(self.initMode).done((configuration) => {
-                if (configuration) {
-                    self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
-                    self.getAllWkpDepInfor().done(() => {
+            service.getOperationRule().done(res => {
+                self.isSynchronized(res.synchWkpDep);
+                service.getConfiguration(self.initMode).done((configuration) => {
+                    if (configuration) {
+                        self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
+                        self.getAllWkpDepInfor().done(() => {
+                            dfd.resolve();
+                        }).fail((error) => {
+                            dfd.reject();
+                        }).always(() => {
+                            block.clear()
+                        });
+                    } else {
                         dfd.resolve();
-                    }).fail((error) => {
-                        dfd.reject();
-                    }).always(() => {
-                        block.clear()
-                    });
-                } else {
-                    dfd.resolve();
-                    self.openConfigDialog();
-                }
+                        self.openConfigDialog();
+                    }
+                }).fail((error) => {
+                    dfd.reject();
+                    alertError(error);
+                    block.clear();
+                });
             }).fail((error) => {
                 dfd.reject();
                 alertError(error);
@@ -166,9 +168,9 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (nts.uk.ui.errors.hasError() || _.isEmpty(self.configuration().historyId)) 
                 return;
             block.invisible();
-            if (self.needRegenerateHierarchyCode) {
+//            if (self.needRegenerateHierarchyCode) {
                 self.generateHierarchyCode(self.items(), "");
-            }
+//            }
             let command = {
                 initMode: self.initMode,
                 historyId: self.configuration().historyId,
