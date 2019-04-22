@@ -2,12 +2,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-//import java.util.Collections;
-//import java.util.HashMap;
 import java.util.List;
-//import java.util.Map;
 import java.util.Optional;
-//import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -18,7 +14,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-//import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -36,17 +31,9 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-//import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-//import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-//import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
-//import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-//import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
-//import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -60,13 +47,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-//import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-//import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -175,9 +155,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private TargetPersonRepository targetPersonRepository;
 	
 	@Inject
+	/*並列処理*/
 	private ManagedParallelWithContext parallel;
 	
 	@Inject
+	/*暫定データ登録*/
 	private InterimRemainDataMngRegisterDateChange interimData;
 	
 	/**
@@ -327,7 +309,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
-		dailyTransaction.updated(empId, ymd);
 	}
 	
 	/**
