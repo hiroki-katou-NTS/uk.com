@@ -118,7 +118,7 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
                     if(j == 2) {
-                        cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null ? ((BigDecimal)dataRow[j]).intValue() == 1 ? TextResource.localize("QMM008_55") : TextResource.localize("QMM008_54") : "");
+                        cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null ? ((BigDecimal)dataRow[j]).intValue() == 1 ? TextResource.localize("QMM008_54") : TextResource.localize("QMM008_55") : "");
                     }
                     if(j == 9 || j == 16) {
                         cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null
@@ -126,6 +126,9 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
                     }
                     if(j != 2 && j != 9 && j != 16) {
                         cells.get(rowStart, j + columnStart).setValue(dataRow[j] != null ? dataRow[j] : "");
+                    }
+                    if(j == 4 || j == 5 || j == 7 || j == 8 || j == 11|| j == 12 || j == 14 || j == 15) {
+                        cells.get(rowStart, j + columnStart).setValue(dataRow[2] != null && ((BigDecimal)dataRow[2]).intValue() == 1 ? dataRow[j] : "-");
                     }
                 }
                 rowStart++;
