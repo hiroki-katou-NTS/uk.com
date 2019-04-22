@@ -8,10 +8,6 @@ import java.util.Optional;
 //import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 //import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
-//import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
-//import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-//import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 日別実績の仮計算(申請・スケからの窓口)

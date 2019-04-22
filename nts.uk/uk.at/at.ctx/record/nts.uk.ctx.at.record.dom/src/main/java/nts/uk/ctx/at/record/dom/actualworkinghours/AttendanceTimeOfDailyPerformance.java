@@ -376,7 +376,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					divergenceTimeList, calcResultIntegrationOfDaily.getCalAttr(),
 					recordReGetClass.getFixRestTimeSetting(),
 					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
-							.getActualWorkingTimeOfDaily().getTotalWorkingTime());
+							.getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+							recordReGetClass.getWorkTimeSetting(),
+							recordReGetClass.getWorkType());
 
 			val reCreateActual = ActualWorkingTimeOfDaily.of(
 					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()

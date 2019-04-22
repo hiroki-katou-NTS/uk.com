@@ -133,20 +133,33 @@ module nts.uk.at.view.kaf005.b {
             editable: KnockoutObservable<boolean> = ko.observable( true );
             enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
             appCur: any = null;
-            constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata, rebind?: boolean) {
                 super(listAppMetadata, currentApp);
                 var self = this;
                 self.appCur = currentApp;
                 self.startPage(self.appID()).done(function(){
-                    $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
-                    $("#fixed-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
-                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
-                    });
+                    if(nts.uk.util.isNullOrUndefined(rebind)){
+                        $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
+                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
+                        $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
+                        $("#fixed-table").ntsFixedTable({ height: 120 });
+                        $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
+                        $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
+                    } else {
+                        if(rebind==true){
+                            $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
+                            $("#fixed-break_time-table").ntsFixedTable({ height: 96 });
+                            $("#fixed-bonus_time-table").ntsFixedTable({ height: 96 });
+                            $("#fixed-table-indicate").ntsFixedTable({ height: 96 });
+                            $("#fixed-table").ntsFixedTable({ height: 96 });
+                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
+                            $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 96 });
+                            $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');        
+                        }    
+                    }
+                });
             }
             
             startPage(appID: string): JQueryPromise<any> {
@@ -533,17 +546,6 @@ module nts.uk.at.view.kaf005.b {
                     self.multilContent()
                 );
                 
-                /*
-                let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
-                if(appReasonError){
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
-                    return;    
-                }
-                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
-                    return;
-                }
-                */
-                
                 let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
                 let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
                 
@@ -551,16 +553,13 @@ module nts.uk.at.view.kaf005.b {
                     return;
                 }
                 
-                divergenceReason = self.getReason(
-                    self.displayDivergenceReasonForm(),
-                    self.selectedReason2(),
-                    self.reasonCombo2(),
-                    self.displayDivergenceReasonInput(),
-                    self.multilContent2()
-                );
-                if(!appcommon.CommonProcess.checklenghtReason(divergenceReason,"#divergenceReason")){
+                let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
+                let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
+                
+                if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
                     return;
                 }
+                
                 let overTimeShiftNightTmp: number = null;
                 let flexExessTimeTmp: number = null;
                 for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -592,10 +591,13 @@ module nts.uk.at.view.kaf005.b {
                     overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                     flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                     overtimeAtr: self.overtimeAtr(),
-                    divergenceReasonContent: divergenceReason,
+                    divergenceReasonContent: comboDivergenceReason,
                     sendMail: self.manualSendMailAtr(),
                     calculateFlag: self.calculateFlag(),
-                    appReasonID: comboBoxReason
+                    appReasonID: comboBoxReason,
+                    divergenceReasonArea: areaDivergenceReason,
+                    user: self.user,
+                    reflectPerState: self.reflectPerState
                 }
                 
                 service.checkBeforeUpdate(command).done((data) => {                
