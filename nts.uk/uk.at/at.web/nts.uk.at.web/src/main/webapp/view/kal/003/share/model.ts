@@ -17,7 +17,7 @@ module nts.uk.at.view.kal003.share.model {
             //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
             new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
             //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
-            //            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
+            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
             //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
@@ -63,6 +63,7 @@ module nts.uk.at.view.kal003.share.model {
         monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         //MinhVV add
         mulMonCheckCond: KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
+        annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
