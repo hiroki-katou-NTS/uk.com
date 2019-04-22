@@ -37,7 +37,7 @@ public class JpaSocialInsuranceofficeExRepository extends JpaRepository implemen
         sql.append("   PHONE_NUMBER,");
         sql.append("   WELFARE_PENSION_OFFICE_NUMBER_1,");
         sql.append("   WELFARE_PENSION_OFFICE_NUMBER_2,");
-        sql.append("   WELFARE_PENSION_PREFECTURE_NO,");
+        sql.append("   WELFARE_PENSION_OFFICE_NUMBER,");
         sql.append("   WELFARE_PENSION_CITY_CODE,");
         sql.append("   WELFARE_PENSION_OFFICE_CODE,");
         sql.append("   MEMO");
