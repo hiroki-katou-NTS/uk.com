@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                                     { code: '0', name: nts.uk.resource.getText('CCG008_14')},
                                                     { code: '1', name: nts.uk.resource.getText('CCG008_15')}
                                                 ]);
-            self.selectedSwitch = ko.observable(1);
+            self.selectedSwitch = ko.observable(0);
             self.switchVisible = ko.observable(true);
             self.selectedTab.subscribe(function(codeChange) {
                 let time = 0;
@@ -55,10 +55,20 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     }
                 }, time);
             });
-            
+            // ver4 current month or next month
             self.selectedSwitch.subscribe(function(value){
                 character.save('currentOrNextMonth', value);
                 nts.uk.ui.windows.setShared('currentOrNextMonth', value);
+                var transferData = __viewContext.transferred.value;
+                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    if(data.check == true || data.checkMyPage == false){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
+                });
             });
         }
         start(): JQueryPromise<any> {
@@ -106,10 +116,12 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         showToppage(data: model.LayoutForTopPageDto) {
             var self = this;
             self.buildLayout(data, model.TOPPAGE);
+            // ẩn hiện switch button
             let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                            || o.placementPartDto.topPageCode == "0004")
-                                                                            && o.placementPartDto.type === 0) 
-                                                                            || (o.placementPartDto.topPageCode == "0002" && o.placementPartDto.type === 1)});
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || (o.placementPartDto.topPageCode == "0002" 
+                                                                    && o.placementPartDto.type === 1)});
             if(switchButton.length == 0){
                 self.switchVisible(false);
             }else{
@@ -123,7 +135,8 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
                                                                             || o.placementPartDto.topPageCode == "0004")
                                                                             && o.placementPartDto.type === 0) 
-                                                                            || (o.placementPartDto.topPageCode == "0002" && o.placementPartDto.type === 1)});
+                                                                            || (o.placementPartDto.topPageCode == "0002" 
+                                                                            && o.placementPartDto.type === 1)});
             if(switchButton.length == 0){
                 self.switchVisible(false);
             }else{
