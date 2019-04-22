@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
