@@ -78,7 +78,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 $(".nts-input").trigger("validate");
             });
             self.selectedCode.subscribe(value => {
-                if (value && value != self.backupCode) {
+                if (!_.isEmpty(self.configuration().historyId) && value && value != self.backupCode) {
                     service.checkCode(self.initMode, self.configuration().historyId, value).done(checkResult => {
                     
                     }).fail(error => {
@@ -90,30 +90,32 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     });
                 }
             });
-            service.getOperationRule().done(res => {
-                self.isSynchronized(res.synchWkpDep);
-            }).fail((error) => {
-                alertError(error);
-            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            service.getConfiguration(self.initMode).done((configuration) => {
-                if (configuration) {
-                    self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
-                    self.getAllWkpDepInfor().done(() => {
+            service.getOperationRule().done(res => {
+                self.isSynchronized(res.synchWkpDep);
+                service.getConfiguration(self.initMode).done((configuration) => {
+                    if (configuration) {
+                        self.configuration(new WkpDepConfig(configuration.historyId, configuration.startDate, configuration.endDate));
+                        self.getAllWkpDepInfor().done(() => {
+                            dfd.resolve();
+                        }).fail((error) => {
+                            dfd.reject();
+                        }).always(() => {
+                            block.clear()
+                        });
+                    } else {
                         dfd.resolve();
-                    }).fail((error) => {
-                        dfd.reject();
-                    }).always(() => {
-                        block.clear()
-                    });
-                } else {
-                    dfd.resolve();
-                    self.openConfigDialog();
-                }
+                        self.openConfigDialog();
+                    }
+                }).fail((error) => {
+                    dfd.reject();
+                    alertError(error);
+                    block.clear();
+                });
             }).fail((error) => {
                 dfd.reject();
                 alertError(error);
@@ -162,13 +164,15 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         
         registerMaster() {
             let self = this;
+            if (_.isEmpty(self.configuration().historyId) || _.isEmpty(self.items()))
+                return;
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
-            if (self.needRegenerateHierarchyCode) {
+//            if (self.needRegenerateHierarchyCode) {
                 self.generateHierarchyCode(self.items(), "");
-            }
+//            }
             let command = {
                 initMode: self.initMode,
                 historyId: self.configuration().historyId,
@@ -179,7 +183,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 genericName: self.selectedGenericName(),
                 externalCode: self.selectedExternalCode(),
                 hierarchyCode: self.selectedHierarchyCode(), 
-                listHierarchyChange: self.listHierarchyChange
+                listHierarchyChange: self.listHierarchyChange,
+                updateMode: true
             };
             service.registerWkpDepInfor(command).done((id) => {
                 info({ messageId: "Msg_15" }).then(() => {
@@ -194,7 +199,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         
         deleteMaster() {
             let self = this;
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: self.initMode == SCREEN_MODE.WORKPLACE ? "Msg_1505" : "Msg_1506" }).ifYes(() => {
                 block.invisible();
                 if (self.needRegenerateHierarchyCode) {
                     self.generateHierarchyCode(self.items(), "");
@@ -332,7 +337,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this, result = "";
             let currentHierarchyCode = self.selectedHierarchyCode();
             if (currentHierarchyCode) {
-                let level = currentHierarchyCode.length/3;
+                let level = Math.floor(currentHierarchyCode.length/3);
                 let items = self.items();
                 for (let i = 1; i < level; i++) {
                     let hCode = currentHierarchyCode.substring(0, 3*i);
@@ -341,7 +346,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     items = node.children;
                 }
             }
-            return _.isEmpty(result) ? value : result + " " + value;
+            return result + value;
         }
         
         generateHierarchyCode(items: Array<WkpDepNode>, parentHierarchyCode: string) {

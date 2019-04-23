@@ -81,7 +81,7 @@ public class DepartmentInformation extends AggregateRoot {
 		this.departmentGeneric = new DepartmentGeneric(departmentGeneric);
 		this.departmentDisplayName = new DepartmentDisplayName(departmentDisplayName);
 		this.hierarchyCode = new DepartmentHierarchyCode(hierarchyCode);
-		this.departmentExternalCode = externalCode == null ? Optional.empty()
+		this.departmentExternalCode = externalCode == null || externalCode.isEmpty() ? Optional.empty()
 				: Optional.of(new DepartmentExternalCode(externalCode));
 	}
 

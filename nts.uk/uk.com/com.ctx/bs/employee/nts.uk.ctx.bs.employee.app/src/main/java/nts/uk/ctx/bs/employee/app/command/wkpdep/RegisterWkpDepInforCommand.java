@@ -19,5 +19,6 @@ public class RegisterWkpDepInforCommand {
 	private String externalCode;
 	private String hierarchyCode;
 	private List<ChangedHierarchyCommand> listHierarchyChange;
+	private boolean updateMode;
 	
 }

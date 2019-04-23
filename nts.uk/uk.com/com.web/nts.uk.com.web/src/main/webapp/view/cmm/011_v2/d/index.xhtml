@@ -47,10 +47,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="input-area">
+				<div class="input-area" style="padding-top: 15px">
                     <div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
-						<input id="A5_2" data-bind="ntsTextEditor: {
+						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
+						<input id="A5_2" tabindex="2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: code,
 							constraint: 'DepartmentCode',
@@ -58,7 +58,7 @@
 					</div>
 					<div class="item valign-center control-group">
 						<div id="A6_1" data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
-						<input id="A6_2" data-bind="ntsTextEditor: {
+						<input id="A6_2" tabindex="3" data-bind="ntsTextEditor: {
 							name: '#[CMM011_113]',
 							value: name,
 							constraint: 'DepartmentName',
@@ -66,7 +66,7 @@
 					</div>
 					<div class="item valign-center control-group">
 						<div id="A7_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
-						<input id="A7_2" data-bind="ntsTextEditor: {
+						<input id="A7_2" tabindex="4" data-bind="ntsTextEditor: {
 							name: '#[CMM011_114]',
 							value: displayName,
 							constraint: 'WorkplaceDisplayName',
@@ -74,7 +74,7 @@
 					</div>
 					<div class="item valign-center control-group">
 						<div id="A8_1" data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
-						<input id="A8_2" data-bind="ntsTextEditor: {
+						<input id="A8_2" tabindex="5" data-bind="ntsTextEditor: {
 							name: '#[CMM011_115]',
 							value: genericName,
 							constraint: 'WorkplaceGeneric',
@@ -83,7 +83,7 @@
 					</div>
 					<div class="item valign-center control-group">
 						<div id="A9_1" data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
-						<input id="A9_2" data-bind="ntsTextEditor: {
+						<input id="A9_2" tabindex="6" data-bind="ntsTextEditor: {
 							name: '#[CMM011_116]',
 							value: externalCode,
 							constraint: 'WorkplaceExternalCode',
@@ -92,8 +92,8 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="D3_2" tabindex="2" data-bind="enable: $root.errors.isEmpty, click: register" class="x-large proceed">#{i18n.getText('CMM011_102')}</button>
-            <button id="D3_3" tabindex="3" data-bind="click: cancel" class="large">#{i18n.getText('CMM011_128')}</button>
+            <button id="D3_2" tabindex="7" data-bind="enable: $root.errors.isEmpty, click: register" class="x-large proceed">#{i18n.getText('CMM011_102')}</button>
+            <button id="D3_3" tabindex="8" data-bind="click: cancel" class="large">#{i18n.getText('CMM011_128')}</button>
         </div>
     </ui:define>
 </ui:composition>

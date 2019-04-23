@@ -39,5 +39,6 @@ public class FilterConst {
 		webApps.put(WebAppId.COM, "nts.uk.com.web");
 		webApps.put(WebAppId.PR, "nts.uk.pr.web");
 		webApps.put(WebAppId.AT, "nts.uk.at.web");
+		webApps.put(WebAppId.MOBI, "nts.uk.mobile.web");
 	};
 }

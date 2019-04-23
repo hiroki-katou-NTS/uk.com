@@ -30,7 +30,15 @@ public class CompanyInformationFinder {
 	public List<CompanyInformationImport> findAll() {
 		return companyInformationAdapter.findAll();
 	}
-	
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<CompanyInformationImport> findAll(String contractCode) {
+		return companyInformationAdapter.findByContract(contractCode);
+	}
 	/**
 	 * Gets the company infor by code.
 	 *

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
@@ -137,16 +138,26 @@ public class DepartmentCommandService {
 	 * @param isUpdate
 	 */
 	public void registerDepartmentInformation(AddWkpDepInforParam param, boolean isUpdate) {
-		DepartmentInformation depInfor = new DepartmentInformation(param.getCompanyId(), false, param.getHistoryId(),
+		DepartmentInformation department = new DepartmentInformation(param.getCompanyId(), false, param.getHistoryId(),
 				param.getId(), param.getCode(), param.getName(), param.getGenericName(), param.getDispName(),
 				param.getHierarchyCode(), param.getExternalCode());
+		if (department.getDepartmentId() == null)
+			throw new BusinessException(new RawErrorMessage("Cannot register! Department does not exist"));
+		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(department.getCompanyId());
+		if (!optDepConfig.isPresent())
+			throw new BusinessException(new RawErrorMessage("Department Configuration not found!"));
+		DepartmentConfiguration depConfig = optDepConfig.get();
+		Optional<DateHistoryItem> optDepHistory = depConfig.items().stream()
+				.filter(i -> i.identifier().equals(department.getDepartmentHistoryId())).findFirst();
+		if (!optDepHistory.isPresent())
+			throw new BusinessException(new RawErrorMessage("Cannot register! History does not exist!"));
 		if (!isUpdate) { // add new
-			if (depInforRepo.getActiveDepartmentByCode(depInfor.getCompanyId(), depInfor.getDepartmentHistoryId(),
-					depInfor.getDepartmentCode().v()).isPresent())
+			if (depInforRepo.getActiveDepartmentByCode(department.getCompanyId(), department.getDepartmentHistoryId(),
+					department.getDepartmentCode().v()).isPresent())
 				throw new BusinessException("Msg_3");
-			depInforRepo.addDepartment(depInfor);
+			depInforRepo.addDepartment(department);
 		} else { // update
-			depInforRepo.updateDepartment(depInfor);
+			depInforRepo.updateDepartment(department);
 		}
 		this.updateHierarchyCode(param.getCompanyId(), param.getHistoryId(), param.getMapHierarchyChange());
 	}

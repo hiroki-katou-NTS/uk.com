@@ -39,7 +39,7 @@ public class DepartmentQueryService {
 			Optional<DateHistoryItem> optDepHistory = depConfig.items().stream()
 					.filter(i -> i.identifier().equals(historyId)).findFirst();
 			if (!optDepHistory.isPresent())
-				return null;
+				return new DepartmentPastCodeCheckOutput(false, false, listDuplicatePast, listDuplicateFuture);
 			DateHistoryItem depHistory = optDepHistory.get();
 			Optional<DepartmentInformation> optDeletedDep = depInforRepo.getDeletedDepartmentByCode(companyId,
 					historyId, depCode);
@@ -59,7 +59,7 @@ public class DepartmentQueryService {
 					if (optPastDep.isPresent()) {
 						listDuplicatePast.add(new DepartmentPastCodeOutput(optPastDep.get().getDepartmentId(),
 								optPastDep.get().getDepartmentCode().v(), optPastDep.get().getDepartmentName().v(),
-								null, optPastDep.get().getDepartmentHistoryId()));
+								tmpHist.start(), optPastDep.get().getDepartmentHistoryId()));
 					}
 				}
 				if (tmpHist.start().after(depHistory.start())) {
@@ -68,7 +68,7 @@ public class DepartmentQueryService {
 					if (optPastDep.isPresent()) {
 						listDuplicateFuture.add(new DepartmentPastCodeOutput(optPastDep.get().getDepartmentId(),
 								optPastDep.get().getDepartmentCode().v(), optPastDep.get().getDepartmentName().v(),
-								null, optPastDep.get().getDepartmentHistoryId()));
+								tmpHist.start(), optPastDep.get().getDepartmentHistoryId()));
 					}
 				}
 			}

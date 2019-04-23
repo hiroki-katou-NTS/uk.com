@@ -34,6 +34,19 @@ public class Program {
 	 */
 	private String pPath;
 
+	/**
+	 * Reference Program ID (Use for mobile)
+	 */
+	private String relativePid;
+	
+	public Program(WebAppId appId, String pId, String pName, String pPath) {
+		super();
+		this.appId = appId;
+		this.pId = pId;
+		this.pName = pName;
+		this.pPath = pPath;
+	}
+
 	@Override
 	public int hashCode() {
 		int result = 0;

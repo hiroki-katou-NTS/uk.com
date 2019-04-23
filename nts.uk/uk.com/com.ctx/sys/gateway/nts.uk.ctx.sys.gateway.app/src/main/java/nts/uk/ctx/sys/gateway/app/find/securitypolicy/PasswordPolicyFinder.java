@@ -17,7 +17,11 @@ public class PasswordPolicyFinder {
 	private PasswordPolicyRepository passwordPolicyRepository;
 
 	public PasswordPolicyDto getPasswordPolicy() {
-		String contractCode = AppContexts.user().contractCode();
+
+		return getPasswordPolicy(AppContexts.user().contractCode());
+	}
+	
+	public PasswordPolicyDto getPasswordPolicy(String contractCode) {
 		Optional<PasswordPolicy> passwordPolicyOptional = this.passwordPolicyRepository
 				.getPasswordPolicy(new ContractCode(contractCode));
 		if (passwordPolicyOptional.isPresent()) {

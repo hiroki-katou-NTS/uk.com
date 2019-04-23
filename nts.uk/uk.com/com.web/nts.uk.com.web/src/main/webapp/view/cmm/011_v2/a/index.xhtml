@@ -8,7 +8,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceCode
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceName
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceExternalCode
 				nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceDisplayName
@@ -32,8 +31,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A1_1" tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerMaster">#{i18n.getText('CMM011_102')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0, click: openWkpDepCreateDialog">#{i18n.getText('CMM011_204')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1, click: openWkpDepCreateDialog">#{i18n.getText('CMM011_304')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0, click: openWkpDepCreateDialog, enable: configuration().historyId != null">#{i18n.getText('CMM011_204')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1, click: openWkpDepCreateDialog, enable: configuration().historyId != null">#{i18n.getText('CMM011_304')}</button>
 				<button id="A1_3" tabindex="3" class="danger" data-bind="click: deleteMaster">#{i18n.getText('CMM011_103')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -70,29 +69,29 @@
 								font-family: 'DroidSansMono', 'Meiryo';">#{i18n.getText('COM008_44')}</div>
 					<div id="A4_1" tabindex="11" style="margin-bottom: 20px"
 						data-bind="ntsTreeDragAndDrop:{
-						width: 440,
-						rows: 20,
-						dataSource: items,
-						value: selectedId,
-						primaryKey: 'id',
-						childDataKey: 'children',
-						primaryText: 'nodeText',
-						multiple: false,
-						enable: true,
-						maxDeepLeaf: 0,
-						showCheckBox: false}">
+							width: 440,
+							rows: 20,
+							dataSource: items,
+							value: selectedId,
+							primaryKey: 'id',
+							childDataKey: 'children',
+							primaryText: 'nodeText',
+							multiple: false,
+							enable: true,
+							maxDeepLeaf: 0,
+							showCheckBox: false}">
 					</div>
 					
 				</div>
 				
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
+						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
 						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: selectedCode,
 							constraint: 'DepartmentCode',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentName' }">#{i18n.getText('CMM011_113')}</div>
@@ -100,7 +99,7 @@
 							name: '#[CMM011_113]',
 							value: selectedName,
 							constraint: 'DepartmentName',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceDisplayName' }">#{i18n.getText('CMM011_114')}</div>
@@ -108,7 +107,7 @@
 							name: '#[CMM011_114]',
 							value: selectedDispName,
 							constraint: 'WorkplaceDisplayName',
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'WorkplaceGeneric' }">#{i18n.getText('CMM011_115')}</div>
@@ -117,7 +116,7 @@
 							value: selectedGenericName,
 							constraint: 'WorkplaceGeneric',
 							option: { width: '512px' },
-							required: true, enable: true}" />
+							required: true, enable: selectedId() != null }" />
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: false, constraint: 'WorkplaceExternalCode' }">#{i18n.getText('CMM011_116')}</div>
@@ -125,7 +124,7 @@
 							name: '#[CMM011_116]',
 							value: selectedExternalCode,
 							constraint: 'WorkplaceExternalCode',
-							required: false, enable: true}" />
+							required: false, enable: selectedId() != null }" />
 					</div>
 				</div>
 			</div>

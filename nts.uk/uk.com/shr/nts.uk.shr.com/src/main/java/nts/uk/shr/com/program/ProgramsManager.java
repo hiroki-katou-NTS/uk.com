@@ -774,7 +774,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007. */
 	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A, "CCG007_51",
-			"/view/ccg/007/a/index.xhtml");
+			"/view/ccg/007/a/index.xhtml", ProgramIdConsts.CCGS07A);
 
 	/** The Constant CCG007B. */
 	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B, "CCG007_52",
@@ -786,24 +786,24 @@ public class ProgramsManager {
 
 	/** The Constant CCG007D. */
 	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D, "CCG007_54",
-			"/view/ccg/007/d/index.xhtml");
+			"/view/ccg/007/d/index.xhtml", ProgramIdConsts.CCGS07B);
 
 	/** The Constant CCG007E. */
 	public static final Program CCG007E = new Program(WebAppId.COM, ProgramIdConsts.CCG007E, "CCG007_55",
-			"/view/ccg/007/e/index.xhtml");
+			"/view/ccg/007/e/index.xhtml", ProgramIdConsts.CCGS07C);
 
 	/** The Constant CCG007F. */
 	public static final Program CCG007F = new Program(WebAppId.COM, ProgramIdConsts.CCG007F, "CCG007_56",
-			"/view/ccg/007/f/index.xhtml");
+			"/view/ccg/007/f/index.xhtml", ProgramIdConsts.CCGS07D);
 
 	/** The Constant CCG007G. */
 	public static final Program CCG007G = new Program(WebAppId.COM, ProgramIdConsts.CCG007G, "CCG007_57",
-			"/view/ccg/007/g/index.xhtml");
+			"/view/ccg/007/g/index.xhtml", ProgramIdConsts.CCGS07F);
 
 	/** The Constant CCG007H. */
 	public static final Program CCG007H = new Program(WebAppId.COM, ProgramIdConsts.CCG007H, "CCG007_58",
-			"/view/ccg/007/h/index.xhtml");
-
+			"/view/ccg/007/h/index.xhtml", ProgramIdConsts.CCGS07E);
+	
 	/** The Constant CCG007I. */
 	public static final Program CCG007I = new Program(WebAppId.COM, ProgramIdConsts.CCG007I, "CCG007_59",
 			"/view/ccg/007/i/index.xhtml");
@@ -1316,20 +1316,23 @@ public class ProgramsManager {
 	public static final Program CDL003 = new Program(WebAppId.COM, ProgramIdConsts.CDL003, "CDL003_4",
 			"/view/cdl/003/a/index.xhtml");
 
-	public static final Program CMM011A = new Program(WebAppId.COM, ProgramIdConsts.CMM011A, "CMM011_1",
-			"/view/cmm/011/a/index.xhtml");
+	public static final Program CMM011A = new Program(WebAppId.COM, ProgramIdConsts.CMM011A, "CMM011_201",
+			"/view/cmm/011_v2/a/index.xhtml");
 
-	public static final Program CMM011B = new Program(WebAppId.COM, ProgramIdConsts.CMM011B, "CMM011_2",
-			"/view/cmm/011/b/index.xhtml");
+	public static final Program CMM011B = new Program(WebAppId.COM, ProgramIdConsts.CMM011B, "CMM011_202",
+			"/view/cmm/011_v2/b/index.xhtml");
 
-	public static final Program CMM011D = new Program(WebAppId.COM, ProgramIdConsts.CMM011D, "CMM011_3",
-			"/view/cmm/011/d/index.xhtml");
+	public static final Program CMM011C = new Program(WebAppId.COM, ProgramIdConsts.CMM011C, "CMM011_101",
+			"/view/cmm/011_v2/c/index.xhtml");
+	
+	public static final Program CMM011D = new Program(WebAppId.COM, ProgramIdConsts.CMM011D, "CMM011_203",
+			"/view/cmm/011_v2/d/index.xhtml");
 
-	public static final Program CMM011E = new Program(WebAppId.COM, ProgramIdConsts.CMM011E, "CMM011_4",
-			"/view/cmm/011/e/index.xhtml");
-
-	public static final Program CMM011F = new Program(WebAppId.COM, ProgramIdConsts.CMM011F, "CMM011_5",
-			"/view/cmm/011/f/index.xhtml");
+//	public static final Program CMM011E = new Program(WebAppId.COM, ProgramIdConsts.CMM011E, "CMM011_4",
+//			"/view/cmm/011/e/index.xhtml");
+//
+//	public static final Program CMM011F = new Program(WebAppId.COM, ProgramIdConsts.CMM011F, "CMM011_5",
+//			"/view/cmm/011/f/index.xhtml");
 
 	public static final Program CDL008 = new Program(WebAppId.COM, ProgramIdConsts.CDL008, "CDL008_1",
 			"/view/cdl/008/a/index.xhtml");
@@ -2187,6 +2190,31 @@ public class ProgramsManager {
 			"/view/kdp/003/c/index.xhtml");
 	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
 			"/view/cmf/007/a/index.xhtml");
+
+	/** The Constant CCG007A. IN MOBILE */
+	public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07A, "CCG007_51",
+			"/ccg/007/a", ProgramIdConsts.CCG007A);
+	
+	/** The Constant CCG007D. IN MOBILE */
+	public static final Program CCGS07B = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07B, "CCG007_54",
+			"/ccg/007/b", ProgramIdConsts.CCG007D);
+
+	/** The Constant CCG007E. IN MOBILE */
+	public static final Program CCGS07C = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07C, "CCG007_55",
+			"/ccg/007/c", ProgramIdConsts.CCG007E);
+
+	/** The Constant CCG007F. IN MOBILE */
+	public static final Program CCGS07D = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07D, "CCG007_56",
+			"/ccg/007/d", ProgramIdConsts.CCG007F);
+//
+	/** The Constant CCG007G. IN MOBILE */
+	public static final Program CCGS07F = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07F, "CCG007_57",
+			"/ccg/007/f", ProgramIdConsts.CCG007G);
+
+	/** The Constant CCG007H. IN MOBILE */
+	public static final Program CCGS07E = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07E, "CCG007_58",
+			"/ccg/007/e", ProgramIdConsts.CCG007H);
+	
 	/**
 	 * All programs map.
 	 */

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.operationrule.service.AddWkpDepInforParam;
@@ -139,6 +140,16 @@ public class WorkplaceCommandService {
 		WorkplaceInformation workplace = new WorkplaceInformation(param.getCompanyId(), false, param.getHistoryId(),
 				param.getId(), param.getCode(), param.getName(), param.getGenericName(), param.getDispName(),
 				param.getHierarchyCode(), param.getExternalCode());
+		if (workplace.getWorkplaceId() == null)
+			throw new BusinessException(new RawErrorMessage("Cannot register! Workplace does not exist!"));
+		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(workplace.getCompanyId());
+		if (!optWkpConfig.isPresent())
+			throw new BusinessException(new RawErrorMessage("Workplace Configuration not found!"));
+		WorkplaceConfiguration wkpConfig = optWkpConfig.get();
+		Optional<DateHistoryItem> optWkpHistory = wkpConfig.items().stream()
+				.filter(i -> i.identifier().equals(workplace.getWorkplaceHistoryId())).findFirst();
+		if (!optWkpHistory.isPresent())
+			throw new BusinessException(new RawErrorMessage("Cannot register! History does not exist!"));
 		if (!isUpdate) { // add new
 			if (wkpInforRepo.getActiveWorkplaceByCode(workplace.getCompanyId(), workplace.getWorkplaceHistoryId(),
 					workplace.getWorkplaceCode().v()).isPresent())
