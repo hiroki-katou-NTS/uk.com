@@ -6,6 +6,7 @@
     </div>
     <fieldset class="login-form">
         <nts-input-password
+            tabindex='1'
             v-bind:inline-title="true"
             v-model="model.currentPassword"
             v-bind:show-constraint="false"
@@ -17,6 +18,7 @@
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
         <nts-input-password
+            tabindex='2'
             v-bind:inline-title="true"
             v-model="model.newPassword"
             v-bind:show-constraint="false"
@@ -28,6 +30,7 @@
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
         <nts-input-password
+            tabindex='3'
             v-bind:inline-title="true"
             v-model="model.newPasswordConfirm"
             v-bind:show-constraint="false"
@@ -36,7 +39,8 @@
             v-bind:show-title="true"
             v-bind:constraint="validations.model.newPasswordConfirm"
             v-bind:errors-always="$errors.model.newPasswordConfirm"
-            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+            v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
+            @keyup.enter="changePass" />
 
         <div class="accordion" v-nts-accordion v-if="policy.isUse">
             <div class="card">
