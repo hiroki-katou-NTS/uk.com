@@ -164,14 +164,14 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 			Double sumUnUsedDay = leaveMaDataMap.get(c.getEmployeeId());
 			Double sumRemain = comDayManaData.get(c.getEmployeeId());
 			Double result_1 = subTractObject(sumUnUsedDay, sumRemain);
-			dto.setRemainNumber(new BigDecimal(result_1));
+			dto.setRemainNumber(result_1 == null? null: new BigDecimal(result_1));
 			
 			// Item IS00366 --------------
 			// 取得した「休出管理データ」の未使用日数を合計
 			Double payoutData = payoutMangement.get(c.getEmployeeId());
 			Double subOfHdData  = subOfHDManagementData.get(c.getEmployeeId());
 			Double result_2 = subTractObject(payoutData, subOfHdData);
-			dto.setRemainsLeft(new BigDecimal(result_2));
+			dto.setRemainsLeft(result_2 == null? null: new BigDecimal(result_2));
 			
 			if (!exHolidayManagement.isEmpty()) {
 				dto.setExtraHours(

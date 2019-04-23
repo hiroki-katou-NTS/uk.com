@@ -248,7 +248,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		String UP_SQL = "UPDATE KRCMT_SPECIAL_LEAVE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USE_ATR = USE_ATR_VAL , APPLICATION_SET = APPLICATION_SET_VAL, GRANT_DATE = GRANT_DATE_VAL, "
 				+ " GRANTED_DAYS = GRANTED_DAYS_VAL, GRANT_TABLE = GRANT_TABLE_VAL"
-				+ " WHERE SID = SID_VAL AND AND SPECIAL_LEAVE_CD = SPECIAL_LEAVE_CD_VAL AND  CID = CID_VAL;";
+				+ " WHERE SID = SID_VAL AND SPECIAL_LEAVE_CD = SPECIAL_LEAVE_CD_VAL AND  CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();
