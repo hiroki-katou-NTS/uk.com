@@ -3,7 +3,7 @@ import { obj, dom } from '@app/utils';
 
 export const MobilePicker = {
     template: `<transition name="picker-fade" v-on:after-leave="destroyPicker">
-        <div class="picker-container" v-show="show" v-on:touchmove="preventScroll">
+        <div class="picker-container" v-if="show" v-on:touchmove="preventScroll" key="show">
             <div class="pk-btn-groups">
                 <button class="btn btn-link" ref="close" v-on:click="close">{{'cancel' | i18n}}</button>
                 <div>
@@ -37,6 +37,7 @@ export const MobilePicker = {
                 </div>
             </div>
         </div>
+        <div v-else key="hide" data-comment="Picker control"></div>
     </transition>`,
     props: {
         show: {
@@ -82,7 +83,7 @@ export const MobilePicker = {
                         self.$mask('show', 0.01);
                     }
 
-                    refs.close.focus();
+                    refs.close  && refs.close.focus();
 
                     dom.addClass(document.body, 'modal-open');
 

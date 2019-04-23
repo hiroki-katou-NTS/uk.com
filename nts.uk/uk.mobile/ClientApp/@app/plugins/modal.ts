@@ -230,20 +230,20 @@ const modal = {
                                     }
                                 },
                                 template: `<transition apear v-bind:name="animate" v-on:leave="leave" v-on:after-leave="afterLeave">
-                                    <div class="modal show" v-if="show" v-on:touchmove="preventScroll">
-                                            <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h4 class="modal-title">
-                                                            <span>{{title | i18n}}</span>
-                                                        </h4>
-                                                        <button tabindex="-1" type="button" v-on:click="show = false" class="close">&times;</button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
-                                                    </div>
+                                    <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
+                                        <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">
+                                                        <span>{{title | i18n}}</span>
+                                                    </h4>
+                                                    <button tabindex="-1" type="button" v-on:click="show = false" class="close">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
                                 </transition>`
                             });
