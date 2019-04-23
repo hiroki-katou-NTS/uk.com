@@ -298,6 +298,14 @@ input[type="checkbox"],
     &-inline {
         .form-check-input {
             margin-top: -5px;
+
+            &[type="checkbox"] {
+                &:checked {
+                    &:before {
+                        top: 8px;
+                    }
+                }
+            }
         }
     }
 
@@ -345,6 +353,18 @@ input[type="checkbox"],
 }
 
 @mixin radio($class, $color) {
+
+    .radio-#{$class} input[type="radio"],
+    .form-check-#{$class} input[type="radio"] {
+        &:not(:disabled) {
+            &:checked {
+                &:before {
+                    background-color: $color;
+                }
+            }
+        }
+
+    }
 
     .radio-#{$class} input[type="radio"],
     .checkbox-#{$class} input[type="checkbox"],

@@ -84,6 +84,25 @@
         </div>
       </div>
     </div>
+    <div class="form-group">
+      <nts-label>{{'Radio color' | i18n}}</nts-label>
+      <nts-radio
+        v-bind:name="'radiocolor'"
+        class="form-check-inline"
+        v-bind:class="'form-check-' +  color"
+        v-for="(color, k) in ['default','primary','secondary','success','info','warning', 'danger']"
+        v-bind:key="k"
+      >Check {{color}}</nts-radio>
+    </div>
+    <div class="form-group">
+      <nts-label>{{'Check color' | i18n}}</nts-label>
+      <nts-checkbox
+        class="form-check-inline"
+        v-bind:class="'form-check-' +  color"
+        v-for="(color, k) in ['default','primary','secondary','success','info','warning', 'danger']"
+        v-bind:key="k"
+      >Check {{color}}</nts-checkbox>
+    </div>
     <div>
       <nts-label v-bind:constraint="{}">{{ 'switch_button' | i18n }}</nts-label>
       <div>
