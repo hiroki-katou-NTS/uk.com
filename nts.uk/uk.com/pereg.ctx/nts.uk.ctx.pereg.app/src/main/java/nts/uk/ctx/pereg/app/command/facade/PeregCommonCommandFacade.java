@@ -169,10 +169,10 @@ public class PeregCommonCommandFacade {
 	}
 	
 	public Object registerHandler(List<PeregInputContainerCps003> inputContainerLst, int modeUpdate, GeneralDate baseDate) {
-		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, -33, () -> {
+//		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, -33, () -> {
 			
 			List<PersonCorrectionLogParameter> target  = new ArrayList<>();
-			Map<String, String> mapSidPid = inputContainerLst.parallelStream().collect(Collectors.toMap(PeregInputContainerCps003::getEmployeeId, PeregInputContainerCps003::getPersonId));
+			Map<String, String> mapSidPid = inputContainerLst.stream().filter(distinctByKey(PeregInputContainerCps003::getPersonId)).collect(Collectors.toMap(PeregInputContainerCps003::getEmployeeId, PeregInputContainerCps003::getPersonId));
 			Map<String, List<UserAuthDto>> userMaps = this.userFinder.getByListEmp(new ArrayList<>(mapSidPid.keySet())).stream().collect(Collectors.groupingBy(c -> c.getEmpID()));
 			userMaps.entrySet().parallelStream().forEach(c ->{
 				List<UserAuthDto> userLst = c.getValue();
@@ -188,9 +188,9 @@ public class PeregCommonCommandFacade {
 			
 			
 			return null;
-		});
+//		});
 		
-		return recId;
+//		return recId;
 	}
 	/**
 	 * hàm này viết cho cps001 Handles add commands.
@@ -218,13 +218,13 @@ public class PeregCommonCommandFacade {
 		}
 		
 		
-		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
-			if(modeUpdate == 1) {
-				updateInputForAdd(containerAdds);
-			}
-			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
-			
-		});
+//		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
+//			if(modeUpdate == 1) {
+//				updateInputForAdd(containerAdds);
+//			}
+//			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
+//			
+//		});
 		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 
 		// Get all items by category id
@@ -270,9 +270,9 @@ public class PeregCommonCommandFacade {
 		});
 		
 		// If there is missing item throw error
-		if (!itemExclude.isEmpty()) {
-			throw new BusinessException("Msg_1353");
-		}
+//		if (!itemExclude.isEmpty()) {
+//			throw new BusinessException("Msg_1353");
+//		}
 		
 		
 		// đoạn này viết log
@@ -313,9 +313,9 @@ public class PeregCommonCommandFacade {
 		if(containerAdds.size() > 0) {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			// đoạn này viết log
-			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER,() -> {
-				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
-			});
+//			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER,() -> {
+//				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
+//			});
 
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
 			updateInputCategoriesCps003(containerAdds , baseDate);
