@@ -9,6 +9,4 @@ public interface CSVReportGenerator {
 	void generate(FileGeneratorContext generatorContext, CSVFileData dataSource);
 	
 	CsvReportWriter generate(FileGeneratorContext generatorContext, String fileName, List<String> headers);
-	
-	CsvReportWriter generate(FileGeneratorContext generatorContext, String fileName, List<String> headers, String encode);
 }
