@@ -25,8 +25,12 @@ public class CsvReportWriter {
 	private BufferedWriter writer;
 
 	public CsvReportWriter(OutputStream os, List<String> headers) {
+		this(os, headers, DEFAULT_ENCODE);
+	}
+	
+	public CsvReportWriter(OutputStream os, List<String> headers, String encode) {
 		this.os = os;
-		this.writer = new BufferedWriter(new OutputStreamWriter(os, Charset.forName(DEFAULT_ENCODE)));
+		this.writer = new BufferedWriter(new OutputStreamWriter(os, Charset.forName(encode)));
 		processNewHeaders(headers);
 	}
 
