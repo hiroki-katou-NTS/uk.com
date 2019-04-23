@@ -32,8 +32,8 @@ public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReport
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            int pageHealthyData = exportData.getWelfarepensionInsuranceEmp().size() / RECORD_IN_PAGE + 1;
-            int pageBonusData = exportData.getWelfarepensionInsuranceBonus().size() / RECORD_IN_PAGE + 1;
+            int pageHealthyData = exportData.getWelfarepensionInsuranceEmp().size() == RECORD_IN_PAGE ? 1 :exportData.getWelfarepensionInsuranceEmp().size() / RECORD_IN_PAGE + 1;
+            int pageBonusData = exportData.getWelfarepensionInsuranceBonus().size() == RECORD_IN_PAGE ? 1 : exportData.getWelfarepensionInsuranceBonus().size() / RECORD_IN_PAGE + 1;
             createTableEmp(worksheets, pageHealthyData, exportData.getStartDate(), exportData.getCompanyName());
             createTableBonus(worksheets, pageBonusData, exportData.getStartDate(), exportData.getCompanyName());
             printDataWelfarePensionEmp(worksheets, exportData.getWelfarepensionInsuranceEmp());
