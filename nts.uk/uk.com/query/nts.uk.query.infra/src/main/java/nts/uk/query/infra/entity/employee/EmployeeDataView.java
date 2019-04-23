@@ -194,7 +194,7 @@ public class EmployeeDataView implements Serializable {
 
 	/** The department delete flag. */
 	@Column(name = "DEP_DELETE_FLAG")
-	private boolean depDeleteFlag;
+	private Boolean depDeleteFlag;
 
 	/** The department generic. */
 	@Column(name = "DEP_GENERIC")
@@ -250,7 +250,7 @@ public class EmployeeDataView implements Serializable {
 
 	/** The workplace delete flag. */
 	@Column(name = "WKP_DELETE_FLAG")
-	private boolean wkpDeleteFlag;
+	private Boolean wkpDeleteFlag;
 
 	/** The workplace generic. */
 	@Column(name = "WKP_GENERIC")

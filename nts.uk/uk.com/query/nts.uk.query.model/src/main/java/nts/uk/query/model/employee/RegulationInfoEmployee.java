@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -40,7 +41,7 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	// private Integer oderOfJobTitle; //職位の序列の並び順
 
 	/** The workplace id. */
-	private Optional<String> workplaceId; // 職場の階層コード
+	private Optional<String> workplaceId; // 職場ID
 
 	/** The workplace code. */
 	private Optional<String> workplaceCode; // 職場コード
@@ -48,25 +49,40 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	/** The workplace hierarchy code. */
 	private Optional<String> workplaceHierarchyCode; // 職場の階層コード
 
+	/** The department hierarchy code. */
+	private Optional<String> departmentHierarchyCode; // 部門の階層コード
+
 	/** The department code. */
-	private Optional<String> departmentCode; // 部門の階層コード
+	private Optional<String> departmentCode; // 部門コード
 
 	/** The department id. */
-	private Optional<String> departmentId;
+	private Optional<String> departmentId; // 部門ID
 
 	/** The department name. */
-	private Optional<String> departmentName;
+	private Optional<String> departmentName; // 部門氏名
 
 	/** The employment code. */
 	private Optional<String> employmentCode; // 雇用コード
 
 	/** The workplace name. */
-	private Optional<String> workplaceName;
+	private Optional<String> workplaceName; // 職場氏名
 
 	/** The department delete flag. */
-	private Optional<Boolean> depDeleteFlag;
+	private Optional<Boolean> depDeleteFlag; // 部門削除フラグ
 
 	/** The workplace delete flag. */
-	private Optional<Boolean> wkpDeleteFlag;
+	private Optional<Boolean> wkpDeleteFlag; // 職場削除フラグ
+
+	/** The department config start date. */
+	private Optional<GeneralDate> departmentConfStrDate;
+
+	/** The department config end date. */
+	private Optional<GeneralDate> departmentConfEndDate;
+
+	/** The workplace config start date. */
+	private Optional<GeneralDate> workplaceConfStrDate;
+
+	/** The workplace config end date. */
+	private Optional<GeneralDate> workplaceConfEndDate;
 
 }
