@@ -24,6 +24,7 @@ const vm = Vue
                     value: string;
                     required?: boolean;
                     onSelect?: Function;
+                    title?: string;
                 } = { text: 'text', value: 'value', required: false }) {
                 value = obj.cloneObject(value);
                 options = obj.cloneObject(options);
@@ -39,6 +40,7 @@ const vm = Vue
 
                     Picker.$mount(pkr);
 
+                    Picker.title = options.title;
                     Picker.value = obj.cloneObject(value);
                     Picker.options = obj.cloneObject(options);
                     Picker.dataSources = obj.cloneObject(dataSources);

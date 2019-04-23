@@ -11,8 +11,8 @@ export const MobilePicker = {
                     <button class="btn btn-link" v-on:click="finish">{{'accept' | i18n}}</button>
                 </div>
             </div>
-            <div v-if="options.title" class="picker_title p-1">
-                {{ (options.title || '') | i18n }}:
+            <div v-if="title" class="picker_title p-1">
+                {{ title | i18n }}:
             </div>
             <div v-else data-comment="Title of picker"></div>
             <div class="picker_mask" v-on:touchmove="preventScroll">
@@ -47,6 +47,9 @@ export const MobilePicker = {
         },
         dataSources: {
             default: () => ({})
+        },
+        title: {
+            default: () => ''
         },
         options: {
             default: () => ({
