@@ -17,16 +17,18 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         </template>
         <div v-bind:class="columns.input">
             <div class="input-group input-group-transparent">                
-                <template v-if="icons.before">
+                <template v-if="icons.before" key="show">
                     <div class="input-group-prepend">
                         <span class="input-group-text" v-bind:class="iconsClass.before">{{ !iconsClass.before ? icons.before : '' }}</span>
                     </div>
                 </template>
-                <template v-if="icons.after">
+                <template v-else key="hide"></template>
+                <template v-if="icons.after" key="show">
                     <div class="input-group-append">
                         <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
                     </div>
-                </template>                
+                </template>
+                <template v-else key="hide"></template>       
                 ${
         tagName === 'select' ?
             `<select class="form-control" 
@@ -52,6 +54,8 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:disabled="disabled"
                         v-bind:readonly="!editable"
                         v-bind:value="rawValue"
+                        v-bind:min="minValue"
+                        v-bind:max="maxValue"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
@@ -124,6 +128,20 @@ export class InputComponent extends Vue {
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     public readonly columns!: { title: string; input: string };
 
+    @Prop({ default: () => undefined })
+    public readonly min: string | number | Date | undefined;
+
+    @Prop({ default: () => undefined })
+    public readonly max: string | number | Date | undefined;
+
+    get minValue() {
+        return undefined;
+    }
+
+    get maxValue() {
+        return undefined;
+    }
+
     get iconsClass() {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
@@ -159,7 +177,7 @@ export class InputComponent extends Vue {
     @Watch('$parent.$errors', { deep: true })
     public wErrs(newErrs: any) {
         let self = this,
-            exprs = ((( self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'errors') &&
@@ -178,7 +196,7 @@ export class InputComponent extends Vue {
     @Watch('$parent.validations', { immediate: true, deep: true })
     public wConsts(newValidts: any) {
         let self = this,
-            exprs = ((( self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'constraint')) {
