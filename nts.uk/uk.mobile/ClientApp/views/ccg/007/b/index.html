@@ -5,6 +5,7 @@
             <fieldset class="login-form">
                 <nts-dropdown
                     name='CCG007_7'
+                    tabindex='1'
                     v-model="model.comp"
                     v-bind:inline-title="true"
                     v-bind:disabled="false"
@@ -18,16 +19,17 @@
                 
                 <nts-text-editor
                     name='CCGS07_2'
+                    tabindex='2'
                     v-model="model.employeeCode"
                     v-bind:show-constraint="false"
                     v-bind:inline-title="true"
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
-                    v-bind:columns="{ title: 'col-lg-4 col-sm-6', input: 'col-lg-8 col-sm-6' }"
-                    @keyup.enter="login" />
+                    v-bind:columns="{ title: 'col-lg-4 col-sm-6', input: 'col-lg-8 col-sm-6' }" />
 
                 <nts-input-password
                     name='CCGS07_3'
+                    tabindex='3'
                     v-model="model.password"
                     v-bind:show-constraint="false"
                     v-bind:inline-title="true"
