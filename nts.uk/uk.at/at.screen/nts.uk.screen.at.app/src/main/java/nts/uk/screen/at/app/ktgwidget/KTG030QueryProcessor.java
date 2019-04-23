@@ -26,7 +26,7 @@ public class KTG030QueryProcessor {
 	 *  月別実績確認すべきデータ有無取得
 	 * @author tutk
 	 */
-	public boolean checkDataMonPerConfirm(String employeeId) {
+	public boolean checkDataMonPerConfirm2(String employeeId) {
 		String CID = AppContexts.user().companyId();
 		
 		//基準日の会社の締めをすべて取得する
@@ -45,15 +45,15 @@ public class KTG030QueryProcessor {
 		return result;
 	}
 	
-	public boolean checkDataMonPerConfirmVer2(){
+	public boolean checkDataMonPerConfirm(int currentOrNextMonth){
 		String employeeID = AppContexts.user().employeeId();
 
 		//ユーザー固有情報「トップページ表示年月」を取得する
 		//Lấy thông tin  user " Month year hiển thị top page"
-		int yearmonth = 1;
+		
 		//月別実績確認すべきデータ有無取得
 		//Lấy tất cả data xác nhận kết quả các ngày có hay không có
-		boolean result = dataMonthlyResult(employeeID, yearmonth);
+		boolean result = dataMonthlyResult(employeeID, currentOrNextMonth);
 		return result;
 	}
 	public boolean dataMonthlyResult(String employeeID ,int yearmonth){

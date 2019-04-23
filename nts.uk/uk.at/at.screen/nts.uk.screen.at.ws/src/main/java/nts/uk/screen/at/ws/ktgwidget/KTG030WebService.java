@@ -17,8 +17,9 @@ public class KTG030WebService extends WebService {
 
 	@POST
 	@Path("checkDisplay")
-	public boolean checkDisplay() {
+	public boolean checkDisplay(String ym) {
 		String employeeId = AppContexts.user().employeeId();
-		return queryProcessor.checkDataMonPerConfirm(employeeId);
+		int currentOrNextMonth = Integer.parseInt(ym);
+		return queryProcessor.checkDataMonPerConfirm(currentOrNextMonth);
 	}
 }
