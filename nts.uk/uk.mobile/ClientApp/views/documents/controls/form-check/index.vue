@@ -92,7 +92,7 @@
         v-bind:class="'form-check-' +  color"
         v-for="(color, k) in ['default','primary','secondary','success','info','warning', 'danger']"
         v-bind:key="k"
-      >Check {{color}}</nts-radio>
+      >Radio {{color}}</nts-radio>
     </div>
     <div class="form-group">
       <nts-label>{{'Check color' | i18n}}</nts-label>
