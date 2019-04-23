@@ -35,7 +35,7 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 	protected void handle(CommandHandlerContext<List<UpdateStampCardCommand>> context) {
 		List<UpdateStampCardCommand> cmd = context.getCommand();
 		List<UpdateStampCardCommand> stampCardNotNull = cmd.parallelStream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
-		Map<String, String> cardQuery = stampCardNotNull.parallelStream().collect(Collectors.toMap(UpdateStampCardCommand::getEmployeeId, UpdateStampCardCommand::getStampNumber));
+		Map<String, String> cardQuery = stampCardNotNull.parallelStream().collect(Collectors.toMap(UpdateStampCardCommand::getStampNumber, UpdateStampCardCommand::getEmployeeId));
 		List<String> empErrors = new ArrayList<>();
 		// check duplicate cardNo trong cùng 1 contractCode
 		if(!stampCardNotNull.isEmpty()) {
