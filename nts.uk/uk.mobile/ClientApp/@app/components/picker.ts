@@ -82,7 +82,7 @@ export const MobilePicker = {
                         self.$mask('show', 0.01);
                     }
 
-                    refs.close  && refs.close.focus();
+                    refs.close && refs.close.focus();
 
                     dom.addClass(document.body, 'modal-open');
 
@@ -172,7 +172,9 @@ export const MobilePicker = {
         },
         remove() {
             this.show = false;
+            this.$emit('input', {});
             this.$emit('remove', {});
+            this.$emit('close');
 
             this.$nextTick(() => {
                 this.selects = {};
@@ -180,7 +182,9 @@ export const MobilePicker = {
         },
         finish() {
             this.show = false;
+            this.$emit('input', obj.cloneObject(this.selects));
             this.$emit('finish', obj.cloneObject(this.selects));
+            this.$emit('close');
 
             this.$nextTick(() => {
                 this.selects = {};
