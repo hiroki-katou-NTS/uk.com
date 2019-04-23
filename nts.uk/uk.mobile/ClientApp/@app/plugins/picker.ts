@@ -1,6 +1,6 @@
 import { obj, dom } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
-import { MobilePicker } from '@app/components/picker';
+import { MobilePicker } from '@app/components';
 
 const vm = Vue
     .extend(MobilePicker)

@@ -2,7 +2,7 @@ import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Watch } from '@app/core/component';
-import { DatePickerComponent, TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
+import { TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
@@ -56,6 +56,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:value="rawValue"
                         v-bind:min="minValue"
                         v-bind:max="maxValue"
+                        v-bind:max-length="maxLength"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
@@ -66,7 +67,6 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         </div>
     </div>`,
     components: {
-        'datepicker': DatePickerComponent,
         'time-point-picker': TimePointPickerComponent,
         'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
@@ -139,6 +139,10 @@ export class InputComponent extends Vue {
     }
 
     get maxValue() {
+        return undefined;
+    }
+
+    get maxLength() {
         return undefined;
     }
 
