@@ -1823,7 +1823,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return {
                         code: item.employeeCode,
                         name: item.employeeName,
-                        workplaceName: item.workplaceName
+                        affiliationName: item.affiliationName
                     };
                 });
             }

@@ -10,12 +10,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.department.DepartmentConfig;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -70,13 +68,13 @@ public class DepartmentExportSerivce {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.contains(baseDate)).findFirst();
 		if (!optDepHist.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DateHistoryItem depHist = optDepHist.get();
 		List<DepartmentInforParam> result = depInforRepo
@@ -111,21 +109,21 @@ public class DepartmentExportSerivce {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.identifier().equals(depHistId))
 				.findFirst();
 		if (!optDepHist.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DateHistoryItem depHist = optDepHist.get();
 		int currentIndex = depConfig.items().indexOf(depHist);
 		int size = depConfig.items().size();
 		List<DepartmentInforParam> result = new ArrayList<>();
 		for (int i = currentIndex + 1; i < size; i++) {
-			result.addAll(depInforRepo.getAllDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId)
+			result.addAll(depInforRepo.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId)
 					.stream()
 					.map(d -> new DepartmentInforParam(d.getDepartmentId(), d.getHierarchyCode().v(),
 							d.getDepartmentCode().v(), "マスタ未登録", "マスタ未登録", "マスタ未登録",
@@ -139,7 +137,7 @@ public class DepartmentExportSerivce {
 		}
 		if (!listDepartmentId.isEmpty()) {
 			result.addAll(listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList()));
 		}
 		result.sort((e1, e2) -> {
@@ -152,59 +150,33 @@ public class DepartmentExportSerivce {
 	 * [No.568]部門の下位部門を取得する
 	 * 
 	 * @param companyId
-	 * @param baseDate
+	 * @param historyId
 	 * @param parentDepartmentId
 	 * @return
 	 */
-	public List<String> getAllChildDepartmentId(String companyId, GeneralDate baseDate, String parentDepartmentId) {
-		Optional<String> optHistoryId = this.getDepHistByCidAndDate(companyId, baseDate);
-		if (!optHistoryId.isPresent()) {
+	public List<String> getAllChildDepartmentId(String companyId, String historyId, String parentDepartmentId) {
+		List<DepartmentInformation> listDep = depInforRepo.getAllActiveDepartmentByCompany(companyId, historyId);
+		Optional<DepartmentInformation> optParentDep = listDep.stream()
+				.filter(d -> d.getDepartmentId().equals(parentDepartmentId)).findFirst();
+		if (!optParentDep.isPresent())
 			return new ArrayList<>();
-		}
-		String historyId = optHistoryId.get();
-		return this.getAllChildDepartmentId(companyId, historyId, parentDepartmentId);
+		DepartmentInformation parentDep = optParentDep.get();
+		listDep.remove(parentDep);
+		return listDep.stream().filter(d -> d.getHierarchyCode().v().startsWith(parentDep.getHierarchyCode().v()))
+				.map(d -> d.getDepartmentId()).collect(Collectors.toList());
 	}
-
-    public List<String> getAllChildDepartmentId(String companyId, String historyId, String parentDepartmentId) {
-        List<DepartmentInformation> listDep = depInforRepo.getAllActiveDepartmentByCompany(companyId, historyId);
-        Optional<DepartmentInformation> optParentDep = listDep.stream()
-                .filter(d -> d.getDepartmentId().equals(parentDepartmentId)).findFirst();
-        if (!optParentDep.isPresent())
-            return new ArrayList<>();
-        DepartmentInformation parentDep = optParentDep.get();
-        listDep.remove(parentDep);
-        return listDep.stream().filter(d -> d.getHierarchyCode().v().startsWith(parentDep.getHierarchyCode().v()))
-                .map(d -> d.getDepartmentId()).collect(Collectors.toList());
-    }
 
 	/**
 	 * [No.574]部門の下位部門を基準部門を含めて取得する
 	 * 
 	 * @param companyId
-	 * @param baseDate
+	 * @param historyId
 	 * @param departmentId
 	 * @return
 	 */
-	public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId) {
-		List<String> result = this.getAllChildDepartmentId(companyId, baseDate, departmentId);
+	public List<String> getDepartmentIdAndChildren(String companyId, String historyId, String departmentId) {
+		List<String> result = this.getAllChildDepartmentId(companyId, historyId, departmentId);
 		result.add(departmentId);
 		return result;
-	}
-
-    public List<String> getDepartmentIdAndChildren(String companyId, String historyId, String departmentId) {
-        List<String> result = this.getAllChildDepartmentId(companyId, historyId, departmentId);
-        result.add(departmentId);
-        return result;
-    }
-
-	private Optional<String> getDepHistByCidAndDate(String companyId, GeneralDate baseDate) {
-		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
-		if (optDepConfig.isPresent()) {
-			Optional<DateHistoryItem> optDateHistItem = optDepConfig.get().items().stream().filter(item -> item.span().contains(baseDate)).findFirst();
-			if (optDateHistItem.isPresent()) {
-				return Optional.of(optDateHistItem.get().identifier());
-			}
-		}
-		return Optional.empty();
 	}
 }

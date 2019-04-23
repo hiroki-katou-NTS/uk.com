@@ -23,7 +23,7 @@ public interface WorkplaceAdapter {
      * @param baseDate
      * @return
      */
-    List<WorkplaceInfoImport> getWorkplaceInfoFromWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
+    List<WorkplaceInfoImport> getWorkplaceInfoByWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
 
     /**
      * [No.561]過去の職場の情報を取得する

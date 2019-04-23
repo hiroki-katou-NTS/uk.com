@@ -195,7 +195,7 @@ public class WkpDepFinder {
 				return;
 			}
 			for (WkpDepTreeDto item : lstReturn) {
-				if (!item.getCode().equals(dto.getCode())) {
+				if (!item.getId().equals(dto.getId())) {
 					lstReturn.add(dto);
 					break;
 				}
@@ -235,16 +235,7 @@ public class WkpDepFinder {
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
 							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate()).getListWorkplaceIds();
             		return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
-						.stream().map(
-							wkp -> new InformationDto(
-								wkp.getWorkplaceId(),
-								wkp.getWorkplaceCode(),
-								wkp.getWorkplaceName(),
-								wkp.getDisplayName(),
-								wkp.getGenericName(),
-								wkp.getHierarchyCode(),
-								wkp.getExternalCode()))
-						.collect(Collectors.toList());
+							.stream().map(InformationDto::new).collect(Collectors.toList());
 				} else {
 					return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate())
 							.stream().map(InformationDto::new).collect(Collectors.toList());
