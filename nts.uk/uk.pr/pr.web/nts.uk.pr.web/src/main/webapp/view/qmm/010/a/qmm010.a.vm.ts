@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
         isOnStartUp: boolean = true;
         laborInsuranceOfficeList: KnockoutObservableArray<model.ILaborInsuranceOffice> = ko.observableArray([]);
         selectedLaborOfficeCode: KnockoutObservable<string> = ko.observable(null);
+        enableExport: KnockoutObservable<boolean> = ko.observable(false);
         selectedLaborOffice: KnockoutObservable<model.LaborInsuranceOffice> = ko.observable(new model.LaborInsuranceOffice(null));
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
         constructor() {
@@ -37,6 +38,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
                         $('#A3_2').focus();
                     }, 100);
                 }
+                self.enableExport(self.enableExportPDF());
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -46,6 +48,10 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
             return dfd.promise();
         }
 
+        enableExportPDF(){
+            let self = this;
+            return self.laborInsuranceOfficeList().length > 0;
+        }
         showDataByOfficeCode (officeCode: string) {
             let self = this;
             block.invisible();
