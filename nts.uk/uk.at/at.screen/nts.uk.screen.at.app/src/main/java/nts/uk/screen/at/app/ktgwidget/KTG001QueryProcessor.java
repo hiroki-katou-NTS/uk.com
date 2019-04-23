@@ -24,7 +24,7 @@ public class KTG001QueryProcessor {
 	@Inject
 	private ClosureService closureService;
 
-	public boolean checkDataDayPerConfirm(String employeeId) {
+	public boolean checkDataDayPerConfirm3(String employeeId) {
 		String CID = AppContexts.user().companyId();
 
 		// 基準日の会社の締めをすべて取得する
@@ -44,15 +44,15 @@ public class KTG001QueryProcessor {
 		return result;
 	}
 
-	public boolean checkDataDayPerConfirmVer2() {
+	public boolean checkDataDayPerConfirm(int currentOrNextMonth) {
 		String employeeID = AppContexts.user().employeeId();
 		// ユーザー固有情報「トップページ表示年月」を取得する
 		// Lấy thong tin user " Month year hiển thị top page"
-		int yearmonth = 0;
+		
 
 		// 日別実績確認すべきデータ有無取得
 		// Lấy có không có tất cả data xác nhận kết quả các ngày
-		boolean result = dataDailyResults(employeeID, yearmonth);
+		boolean result = dataDailyResults(employeeID, currentOrNextMonth);
 
 		return result;
 
