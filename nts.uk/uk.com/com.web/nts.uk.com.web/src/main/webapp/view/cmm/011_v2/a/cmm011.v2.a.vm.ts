@@ -90,6 +90,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     });
                 }
             });
+            $(document).delegate("#A4_1", "igtreedragstop", function(evt, ui) {
+                let newDataSource = $("#A4_1").igTree('option', 'dataSource')._rootds._data;
+                self.items(_.map(newDataSource, i => { return new WkpDepNode(i); }));
+                self.needRegenerateHierarchyCode = true;
+            });
         }
 
         startPage(): JQueryPromise<any> {
