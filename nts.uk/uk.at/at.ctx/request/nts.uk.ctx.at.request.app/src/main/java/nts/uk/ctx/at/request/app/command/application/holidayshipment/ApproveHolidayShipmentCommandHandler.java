@@ -142,7 +142,7 @@ public class ApproveHolidayShipmentCommandHandler
 			String memo, String appReason, boolean isUpdateReason) {
 		// アルゴリズム「詳細画面登録前の処理」を実行する
 		detailBefUpdate.processBeforeDetailScreenRegistration(companyID, employeeID, GeneralDate.today(), 1, appID,
-				PrePostAtr.PREDICT, version,null,null);
+				PrePostAtr.PREDICT, version, null, null);
 		// アルゴリズム「申請個別のエラーチェック」を実行する không xử lý
 
 		// xử lý đồng thời
