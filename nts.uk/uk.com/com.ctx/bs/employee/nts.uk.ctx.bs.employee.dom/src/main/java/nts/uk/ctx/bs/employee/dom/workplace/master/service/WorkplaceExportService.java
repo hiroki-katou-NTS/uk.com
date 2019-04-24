@@ -68,12 +68,16 @@ public class WorkplaceExportService {
 			GeneralDate baseDate) {
 		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(companyId);
 		if (!optWkpConfig.isPresent())
-			return Collections.emptyList();
+			return listWorkplaceId.stream()
+					.map(w -> new WorkplaceInforParam(w, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.collect(Collectors.toList());
 		WorkplaceConfiguration wkpConfig = optWkpConfig.get();
 		Optional<DateHistoryItem> optWkpHistory = wkpConfig.items().stream().filter(i -> i.contains(baseDate))
 				.findFirst();
 		if (!optWkpHistory.isPresent())
-			return Collections.emptyList();
+			return listWorkplaceId.stream()
+					.map(w -> new WorkplaceInforParam(w, "", "", "コード削除済", "コード削除済", "コード削除済", null))
+					.collect(Collectors.toList());
 		DateHistoryItem wkpHistory = optWkpHistory.get();
 		List<WorkplaceInforParam> result = wkpInforRepo
 				.getActiveWorkplaceByWkpIds(companyId, wkpHistory.identifier(), listWorkplaceId).stream()
@@ -109,14 +113,14 @@ public class WorkplaceExportService {
 		Optional<WorkplaceConfiguration> optWkpConfig = wkpConfigRepo.getWkpConfig(companyId);
 		if (!optWkpConfig.isPresent())
 			return listWorkplaceId.stream()
-					.map(w -> new WorkplaceInforParam(w, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(w -> new WorkplaceInforParam(w, "", "", "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		WorkplaceConfiguration wkpConfig = optWkpConfig.get();
 		Optional<DateHistoryItem> optWkpHistory = wkpConfig.items().stream()
 				.filter(i -> i.identifier().equals(historyId)).findFirst();
 		if (!optWkpHistory.isPresent())
 			return listWorkplaceId.stream()
-					.map(w -> new WorkplaceInforParam(w, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(w -> new WorkplaceInforParam(w, "", "", "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DateHistoryItem wkpHistory = optWkpHistory.get();
 		int currentIndex = wkpConfig.items().indexOf(wkpHistory);
@@ -138,7 +142,7 @@ public class WorkplaceExportService {
 		}
 		if (!listWorkplaceId.isEmpty()) {
 			result.addAll(listWorkplaceId.stream()
-					.map(w -> new WorkplaceInforParam(w, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(w -> new WorkplaceInforParam(w, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList()));
 		}
 		result.sort((e1, e2) -> {

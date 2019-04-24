@@ -67,11 +67,15 @@ public class DepartmentExportSerivce {
 			GeneralDate baseDate) {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
-			return Collections.emptyList();
+			return listDepartmentId.stream()
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
+					.collect(Collectors.toList());
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.contains(baseDate)).findFirst();
 		if (!optDepHist.isPresent())
-			return Collections.emptyList();
+			return listDepartmentId.stream()
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
+					.collect(Collectors.toList());
 		DateHistoryItem depHist = optDepHist.get();
 		List<DepartmentInforParam> result = depInforRepo
 				.getActiveDepartmentByDepIds(companyId, depHist.identifier(), listDepartmentId).stream()
@@ -105,14 +109,14 @@ public class DepartmentExportSerivce {
 		Optional<DepartmentConfiguration> optDepConfig = depConfigRepo.getDepConfig(companyId);
 		if (!optDepConfig.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DepartmentConfiguration depConfig = optDepConfig.get();
 		Optional<DateHistoryItem> optDepHist = depConfig.items().stream().filter(i -> i.identifier().equals(depHistId))
 				.findFirst();
 		if (!optDepHist.isPresent())
 			return listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList());
 		DateHistoryItem depHist = optDepHist.get();
 		int currentIndex = depConfig.items().indexOf(depHist);
@@ -133,7 +137,7 @@ public class DepartmentExportSerivce {
 		}
 		if (!listDepartmentId.isEmpty()) {
 			result.addAll(listDepartmentId.stream()
-					.map(d -> new DepartmentInforParam(d, null, null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(d -> new DepartmentInforParam(d, "", null, "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList()));
 		}
 		result.sort((e1, e2) -> {

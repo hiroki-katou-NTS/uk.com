@@ -33,7 +33,7 @@ public class NewWorkplaceAdapterImpl implements WorkplaceAdapter {
     }
 
     @Override
-    public List<WorkplaceInfoImport> getWorkplaceInfoFromWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate) {
+    public List<WorkplaceInfoImport> getWorkplaceInfoByWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate) {
         return workplacePub.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate)
                 .stream()
                 .map(w -> new WorkplaceInfoImport(

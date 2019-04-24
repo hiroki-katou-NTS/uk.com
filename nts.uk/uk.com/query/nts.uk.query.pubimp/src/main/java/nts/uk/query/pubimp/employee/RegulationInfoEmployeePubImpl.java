@@ -123,7 +123,7 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	 */
 	@Override
 	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderDto> orders,
-			GeneralDateTime referenceDate) {
+			GeneralDateTime referenceDate, Integer systemType) {
 		return this.regInfEmpRepo.sortEmployees(comId, sIds, this.convertToQueryModel(orders), referenceDate);
 	}
 

@@ -50,5 +50,5 @@ public interface RegulationInfoEmployeePub {
 	 */
 	// <<Public>> 社員を並び替える(任意)
 	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderDto> orders,
-			GeneralDateTime referenceDate);
+			GeneralDateTime referenceDate, Integer systemType);
 }
