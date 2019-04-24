@@ -32,8 +32,8 @@ public class HealthInsuranceAposeFileGenerator extends AsposeCellsReportGenerato
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            int pageHealthyData = exportData.getHealthMonth().size() / RECORD_IN_PAGE + 1;
-            int pageBonusData = exportData.getBonusHealth().size() / RECORD_IN_PAGE + 1;
+            int pageHealthyData = exportData.getHealthMonth().size() == RECORD_IN_PAGE ? 1 : exportData.getHealthMonth().size() / RECORD_IN_PAGE + 1;
+            int pageBonusData = exportData.getBonusHealth().size() == RECORD_IN_PAGE ? 1 : exportData.getBonusHealth().size() / RECORD_IN_PAGE + 1;
             createTableHealthy(worksheets, pageHealthyData, exportData.getStartDate(), exportData.getCompanyName());
             createTableBonus(worksheets, pageBonusData, exportData.getStartDate(), exportData.getCompanyName());
             printDataHealthy(worksheets, exportData.getHealthMonth());
