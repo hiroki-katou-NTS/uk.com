@@ -682,6 +682,7 @@ public class DailyPerformanceCorrectionProcessor {
 							false, lockApprovalMonth, lockConfirmMonth);
 				}
                 
+				lockDaykWpl = lockDay || lockWpl;
 				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
@@ -1748,7 +1749,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) return employeeIds;
 			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
+					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate(), Arrays.asList(closureId)));
 			lstEmployeeId = regulationRs.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
 //			if (employeeIds.isEmpty()) {
 //				// List<RegulationInfoEmployeeQueryR> regulationRs=
@@ -1966,7 +1967,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, List<Integer> lstClosureId) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		//並び順NO
 		query.setSortOrderNo(1);
@@ -2011,7 +2012,8 @@ public class DailyPerformanceCorrectionProcessor {
 		query.setIncludeIncumbents(true);
 		//休職者を含める
 		query.setIncludeWorkersOnLeave(true);
-		query.setFilterByClosure(false);
+		query.setFilterByClosure(true);
+		query.setClosureIds(lstClosureId);
 		return query;
 	}
 	

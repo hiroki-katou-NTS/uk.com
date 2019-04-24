@@ -188,6 +188,7 @@ public class DPDisplayLockProcessor {
 						false, lockApprovalMonth, lockConfirmMonth);
 			}
 
+			lockDaykWpl = lockDay || lockWork;
 			DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 			dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
 			processCellData(result, dPControlDisplayItem, data, lockDaykWpl, dailyRecEditSetsMap);

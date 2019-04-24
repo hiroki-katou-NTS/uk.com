@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ktgwidget.KTG030QueryProcessor;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("screen/at/ktg030")
 @Produces("application/json")
@@ -16,7 +17,9 @@ public class KTG030WebService extends WebService {
 
 	@POST
 	@Path("checkDisplay")
-	public boolean checkDisplay() {
-		return queryProcessor.confirmMonthActual();
+	public boolean checkDisplay(String ym) {
+		String employeeId = AppContexts.user().employeeId();
+		int currentOrNextMonth = Integer.parseInt(ym);
+		return queryProcessor.checkDataMonPerConfirm(currentOrNextMonth);
 	}
 }
