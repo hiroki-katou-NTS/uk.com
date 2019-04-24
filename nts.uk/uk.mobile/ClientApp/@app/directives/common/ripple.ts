@@ -1,9 +1,9 @@
 import { Vue, DirectiveBinding } from '@app/provider';
 
-var Ripple = {
+let Ripple = {
     color: '',
     zIndex: '',
-    bind: function (el: HTMLElement, binding: DirectiveBinding) {
+    bind (el: HTMLElement, binding: DirectiveBinding) {
         // Default values.
         const props = {
             event: 'mousedown',
@@ -36,11 +36,11 @@ var Ripple = {
                     radius = Math.sqrt((maxX * maxX) + (maxY * maxY)),
                     border = (targetBorder > 0) ? targetBorder : 0,
                     // Create the ripple and its container
-                    ripple = document.createElement("div"),
-                    rippleContainer = document.createElement("div"),
+                    ripple = document.createElement('div'),
+                    rippleContainer = document.createElement('div'),
                     clearRipple = function () {
                         setTimeout(function () {
-                            ripple.style.backgroundColor = "rgba(0, 0, 0, 0)";
+                            ripple.style.backgroundColor = 'rgba(0, 0, 0, 0)';
                         }, 250);
 
                         // Timeout set to get a smooth removal of the ripple
@@ -54,8 +54,8 @@ var Ripple = {
                         // Timeout it's needed to avoid jerky effect of ripple jumping out parent target
                         setTimeout(function () {
 
-                            var clearPosition = true;
-                            for (var i = 0; i < target.childNodes.length; i++) {
+                            let clearPosition = true;
+                            for (let i = 0; i < target.childNodes.length; i++) {
                                 if (target.childNodes[i].className === 'ripple-container') {
                                     clearPosition = false;
                                 }
@@ -69,13 +69,13 @@ var Ripple = {
                                 }
                             }
 
-                        }, props.transition + 250)
-                    }
+                        }, props.transition + 250);
+                    };
 
                 ripple.className = 'ripple';
                 rippleContainer.className = 'ripple-container';
 
-                //Styles for ripple
+                // Styles for ripple
                 ripple.style.marginTop = '0px';
                 ripple.style.marginLeft = '0px';
                 ripple.style.width = '1px';
@@ -87,7 +87,7 @@ var Ripple = {
                 ripple.style.zIndex = zIndex;
                 ripple.style.backgroundColor = bg;
 
-                //Styles for rippleContainer
+                // Styles for rippleContainer
                 rippleContainer.style.position = 'absolute';
                 rippleContainer.style.left = 0 - border + 'px';
                 rippleContainer.style.top = 0 - border + 'px';
@@ -107,14 +107,14 @@ var Ripple = {
                 rippleContainer.appendChild(ripple);
                 target.appendChild(rippleContainer);
 
-                ripple.style.marginLeft = dx + "px";
-                ripple.style.marginTop = dy + "px";
+                ripple.style.marginLeft = dx + 'px';
+                ripple.style.marginTop = dy + 'px';
 
                 // No need to set positioning because ripple should be child of target and to it's relative position.
                 // rippleContainer.style.left    = left + (((window.pageXOffset || document.scrollLeft) - (document.clientLeft || 0)) || 0) + "px";
                 // rippleContainer.style.top     = top + (((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0) + "px";
-                rippleContainer.style.width = width + "px";
-                rippleContainer.style.height = height + "px";
+                rippleContainer.style.width = width + 'px';
+                rippleContainer.style.height = height + 'px';
                 rippleContainer.style.borderTopLeftRadius = style.borderTopLeftRadius;
                 rippleContainer.style.borderTopRightRadius = style.borderTopRightRadius;
                 rippleContainer.style.borderBottomLeftRadius = style.borderBottomLeftRadius;
@@ -123,10 +123,10 @@ var Ripple = {
                 rippleContainer.style.direction = 'ltr';
 
                 setTimeout(function () {
-                    ripple.style.width = radius * 2 + "px";
-                    ripple.style.height = radius * 2 + "px";
-                    ripple.style.marginLeft = dx - radius + "px";
-                    ripple.style.marginTop = dy - radius + "px";
+                    ripple.style.width = radius * 2 + 'px';
+                    ripple.style.height = radius * 2 + 'px';
+                    ripple.style.marginLeft = dx - radius + 'px';
+                    ripple.style.marginTop = dy - radius + 'px';
                 }, 0);
 
                 if (event.type === 'mousedown') {
@@ -140,10 +140,11 @@ var Ripple = {
 
 function setProps(modifiers, props) {
     modifiers.forEach(function (item) {
-        if (isNaN(Number(item)))
+        if (isNaN(Number(item))) {
             props.event = item;
-        else
+        } else {
             props.transition = item;
+        }
     });
 }
 

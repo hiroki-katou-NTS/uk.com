@@ -1,4 +1,4 @@
-export module viewcontext {
+export namespace viewcontext {
 
-    export var rootPath: String = '';
+    export let rootPath: String = '';
 }

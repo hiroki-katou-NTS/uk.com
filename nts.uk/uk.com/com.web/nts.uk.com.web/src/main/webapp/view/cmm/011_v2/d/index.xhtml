@@ -27,7 +27,7 @@
     <ui:define name="content">
         <div id="contents-area">
 				<div data-bind="visible: itemsCount() >= 1" style="padding-top: 15px">
-					<div class="valign-center control-group">
+					<div class="valign-center control-group" style="width: 580px;">
 						<div id="D1_1" data-bind="ntsFormLabel: { required: true }">
 							#{i18n.getText('CMM011_133')}</div>
 						<span data-bind="visible: screenMode == 0" id="D1_2" class="label">#{i18n.getText('CMM011_210')}</span> 
@@ -49,7 +49,7 @@
 				</div>
 				<div class="input-area" style="padding-top: 15px">
                     <div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
 						<input id="A5_2" tabindex="2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: code,

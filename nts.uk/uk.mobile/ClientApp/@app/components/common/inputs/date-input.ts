@@ -1,14 +1,14 @@
-import { $ } from "@app/utils";
+import { $ } from '@app/utils';
 import { Vue } from '@app/provider';
-import { input, InputComponent } from "./input";
+import { input, InputComponent } from './input';
 
 @input()
 class DateComponent extends InputComponent {
-    type: string = 'date';
+    public type: string = 'date';
 
-    editable: boolean = true;
+    public editable: boolean = true;
 
-    mounted() {
+    public mounted() {
         this.icons.after = 'far fa-calendar-alt';
     }
 
@@ -20,25 +20,25 @@ class DateComponent extends InputComponent {
     }
 
     private computeRawValue(value: Date): string {
-        var year: number = value.getFullYear();
-        var month: number = value.getMonth() + 1;
-        var date: number = value.getDate();
-        var monthText = month < 10 ? '0' + month : month;
-        var dateText = date < 10 ? '0' + date : date;
+        let year: number = value.getFullYear();
+        let month: number = value.getMonth() + 1;
+        let date: number = value.getDate();
+        let monthText = month < 10 ? '0' + month : month;
+        let dateText = date < 10 ? '0' + date : date;
         return year + '-' + monthText + '-' + dateText;
     }
 
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
+    public input() {
+        let value = ( this.$refs.input as HTMLInputElement).value;
 
         if (value) {
             let numb = new Date(value);
 
-            if(numb.getFullYear() < 1000) {
+            if (numb.getFullYear() < 1000) {
                 return;
             }
 
-            if(isNaN(numb.getTime())){
+            if (isNaN(numb.getTime())) {
                 return;
             }
 

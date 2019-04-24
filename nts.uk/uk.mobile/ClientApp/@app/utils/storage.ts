@@ -1,54 +1,54 @@
 import { _ } from '@app/provider';
 
 export class WebStorageWrapper {
-    nativeStorage: Storage;
+    public nativeStorage: Storage;
 
     constructor(storage: Storage) {
         this.nativeStorage = storage;
     }
 
-    setItem(key: string, value: string) {
+    public setItem(key: string, value: string) {
         if (value === undefined) {
             return;
         }
         this.nativeStorage.setItem(key, value);
     }
 
-    setItemAsJson(key: string, value: any) {
+    public setItemAsJson(key: string, value: any) {
         this.setItem(key, JSON.stringify(value));
     }
     
-    containsKey(key: string) {
+    public containsKey(key: string) {
         return this.getItem(key) !== null;
-    };
+    }
 
-    getItem(key: string): string {
-        var value: string = this.nativeStorage.getItem(key);
+    public getItem(key: string): string {
+        let value: string = this.nativeStorage.getItem(key);
         if (value === null || value === undefined || value === 'undefined') {
             return null;
         }
         return value;
     }
 
-    getItemAndRemove(key: string) {
-        var item = this.getItem(key);
+    public getItemAndRemove(key: string) {
+        let item = this.getItem(key);
         this.removeItem(key);
         return item;
     }
 
-    removeItem(key: string) {
+    public removeItem(key: string) {
         this.nativeStorage.removeItem(key);
     }
 
-    clear() {
+    public clear() {
         this.nativeStorage.clear();
     }
 }
 
-export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
-export var localStorage = new WebStorageWrapper(window.localStorage);
+export let sessionStorage = new WebStorageWrapper(window.sessionStorage);
+export let localStorage = new WebStorageWrapper(window.localStorage);
 
-export module characteristics {
+export namespace characteristics {
 
     /**
      * Now, "characteristic data" is saved in Local Storage.
@@ -57,22 +57,22 @@ export module characteristics {
      */
 
     let delayToEmulateAjax = 100;
-    function convertObjectToArray(key:any):string{
-        var result=[];
-        for(var p in key){
-            result.push([p,key[p]]);
+    function convertObjectToArray(key: any): string {
+        let result = [];
+        for (let p in key) {
+            result.push([p, key[p]]);
         }
-        result.sort(function(a,b){
+        result.sort(function(a, b) {
             return (a > b) ? 1 : (a < b) ? -1 : 0;    
         });
         return result.toString();
     }    
     
-    export function saveByObjectKey(key: any, value: any){
-        return save(convertObjectToArray(key),value);
+    export function saveByObjectKey(key: any, value: any) {
+        return save(convertObjectToArray(key), value);
     }
     
-    export function restoreByObjectKey(key:any): Promise<any>{
+    export function restoreByObjectKey(key: any): Promise<any> {
         return restore(convertObjectToArray(key));    
     }
     
@@ -91,7 +91,7 @@ export module characteristics {
         let dfd = new Promise((resolve, reject) => {
             setTimeout(() => {
                 let value = localStorage.getItem(createKey(key));
-                if(!_.isNil(value)){
+                if (!_.isNil(value)) {
                     resolve(JSON.parse(value));
                 }
                 resolve(undefined);
@@ -117,7 +117,7 @@ export module characteristics {
     }
 }
 
-export module cookie {
+export namespace cookie {
         
     export function get(name: string): string {
         let value = asMap()[name];
@@ -125,14 +125,14 @@ export module cookie {
     }
     
     export function remove(name: string, attr: any) {
-        document.cookie = name + "=; path=" + attr.path + "; max-age=0";
+        document.cookie = name + '=; path=' + attr.path + '; max-age=0';
     }
     
     export function asMap(): any {
         let map = {};
-        document.cookie.split(";")
-            .forEach(item => {
-                let positionOfDelimiter = item.indexOf("=");
+        document.cookie.split(';')
+            .forEach((item) => {
+                let positionOfDelimiter = item.indexOf('=');
                 let name = item.slice(0, positionOfDelimiter).trim();
                 map[name] = item.slice(positionOfDelimiter + 1);
             });

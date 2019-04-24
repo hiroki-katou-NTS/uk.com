@@ -28,6 +28,7 @@ export class ViewModel extends Vue {
 | --------------|------| -------- | ------|
 | name | string | '' | Tên hiển thị của item |
 | showTitle | boolean | true | Có hiển thị title cùng input hay không? |
+| showConstraint | boolean | true | Có hiển thị constraint cùng title hay không? |
 | inlineTitle | boolean | false | Constraint có hiển thị cùng một dòng mới title hay không? |
 | value | any | '' | Giá trị đầu vào của item |
 | disabled | boolean | false | Item có bị disable hay không? |

@@ -23,21 +23,21 @@ const WEB_APP_NAME = {
         const fetch = function (opt: IFetchOption, self?: Vue) {
             return new Promise(function (resolve, reject) {
                 if (!$.isObject(opt)) {
-                    reject('No required parameters - "url" and "method".')
+                    reject('No required parameters - "url" and "method".');
                     return;
                 }
 
                 if ($.isEmpty(opt.url)) {
-                    reject('Parameter "url" is required.')
+                    reject('Parameter "url" is required.');
                     return;
                 } else {
                     $.extend(opt, {
-                        url: (`${['localhost', '0.0.0.0'].indexOf(window.location.hostname) > -1 && window.location.port === '3000' ? "http://localhost:8080" : ""}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, "$1")
+                        url: (`${['localhost', '0.0.0.0'].indexOf(window.location.hostname) > -1 && window.location.port === '3000' ? 'http://localhost:8080' : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 
                 if ($.isEmpty(opt.method)) {
-                    reject('Parameter "method" is required.')
+                    reject('Parameter "method" is required.');
                     return;
                 }
 
@@ -68,32 +68,31 @@ const WEB_APP_NAME = {
                         });
                     }, isJSON = (json: string) => {
                         try {
-                            JSON.parse(json)
+                            JSON.parse(json);
                             return true;
-                        }
-                        catch (e) {
+                        } catch (e) {
                             return false;
                         }
                     }, parseHeaders = (xhr: XMLHttpRequest) => {
                         return function () {
-                            var raw = xhr.getAllResponseHeaders()
+                            let raw = xhr.getAllResponseHeaders();
 
-                            return headersParser(raw)
-                        }
+                            return headersParser(raw);
+                        };
                     }, headersParser = (rawHeaders: string) => {
-                        var headers: any = {};
+                        let headers: any = {};
 
                         if (!rawHeaders) {
                             return headers;
                         }
 
-                        var headerPairs = rawHeaders.split('\u000d\u000a');
+                        let headerPairs = rawHeaders.split('\u000d\u000a');
 
-                        for (var i = 0; i < headerPairs.length; i++) {
-                            var headerPair = headerPairs[i];
+                        for (let i = 0; i < headerPairs.length; i++) {
+                            let headerPair = headerPairs[i];
                             // Can't use split() here because it does the wrong thing
                             // if the header value has the string ": " in it.
-                            var index = headerPair.indexOf('\u003a\u0020');
+                            let index = headerPair.indexOf('\u003a\u0020');
 
                             if (index > 0) {
                                 let key = headerPair.substring(0, index),
@@ -148,13 +147,12 @@ const WEB_APP_NAME = {
                                 //             reject(response);
                                 //         });
                                 // } else {
-                                    reject(response);
+                                reject(response);
                                 // }
                             } else {
                                 resolve({ data: response, headers: parseHeaders(xhr) });
                             }
-                        }
-                        catch (e) {
+                        } catch (e) {
                             resolve({ data: xhr.response, headers: parseHeaders(xhr) });
                         }
 
@@ -185,14 +183,14 @@ const WEB_APP_NAME = {
 
                 obj.extend(self, {
                     $http: {
-                        get: function (pg: 'at' | 'com' | "pr" | string, url: string) {
+                        get: function (pg: 'at' | 'com' | 'pr' | string, url: string) {
                             if (pg === 'at' || pg === 'com' || pg === 'pr') {
                                 return fetch({ pg, url, method: 'get', prefixUrl }, self);
                             } else {
                                 return fetch({ pg: 'com', url: pg, method: 'get', prefixUrl }, self);
                             }
                         }.bind(self),
-                        post: function (pg: 'at' | 'com' | "pr" | string, url?: string | any, data?: any) {
+                        post: function (pg: 'at' | 'com' | 'pr' | string, url?: string | any, data?: any) {
                             if (pg === 'at' || pg === 'com' || pg === 'pr') {
                                 return fetch({ pg, url, data, method: 'post', prefixUrl }, self);
                             } else {
@@ -226,8 +224,8 @@ const WEB_APP_NAME = {
                                     url: `/shr/infra/file/storage/delete/${fileId}`
                                 }, self);
                             }.bind(self),
-                            upload: function (form: FormData) {
-                                ///nts.uk.com.web/webapi/ntscommons/arc/filegate/upload
+                            upload(form: FormData) {
+                                /// nts.uk.com.web/webapi/ntscommons/arc/filegate/upload
                             },
                             download: function (fileId: string) {
                                 return fetch({

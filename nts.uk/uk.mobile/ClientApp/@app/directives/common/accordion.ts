@@ -54,7 +54,7 @@ const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; previ
                     if (card) {
                         // kiểm tra trạng thái đang đóng hay mở
                         let showOrHide = dom.hasClass(card, 'show');
-                        debugger;
+                        
                         // đóng tất cả các body khác
                         [].slice.call(cards).forEach((element: HTMLElement) => {
                             dom.removeClass(element, 'show');

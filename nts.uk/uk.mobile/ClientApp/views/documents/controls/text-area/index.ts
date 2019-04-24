@@ -15,5 +15,5 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsTextAreaComponent extends Vue {
-    text: string = 'Init Value Area';
+    public text: string = 'Init Value Area';
 }

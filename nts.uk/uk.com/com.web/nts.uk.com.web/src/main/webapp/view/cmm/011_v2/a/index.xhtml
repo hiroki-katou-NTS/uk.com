@@ -30,10 +30,10 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_1" tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerMaster">#{i18n.getText('CMM011_102')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0, click: openWkpDepCreateDialog, enable: configuration().historyId != null">#{i18n.getText('CMM011_204')}</button>
-				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1, click: openWkpDepCreateDialog, enable: configuration().historyId != null">#{i18n.getText('CMM011_304')}</button>
-				<button id="A1_3" tabindex="3" class="danger" data-bind="click: deleteMaster">#{i18n.getText('CMM011_103')}</button>
+				<button id="A1_1" tabindex="1" class="proceed" data-bind="enable: items().length > 0 &amp;&amp; $root.errors.isEmpty, click: registerMaster">#{i18n.getText('CMM011_102')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 0, click: openWkpDepCreateDialog, enable: configuration().historyId() != null">#{i18n.getText('CMM011_204')}</button>
+				<button id="A1_2" tabindex="2" data-bind="visible: initMode == 1, click: openWkpDepCreateDialog, enable: configuration().historyId() != null">#{i18n.getText('CMM011_304')}</button>
+				<button id="A1_3" tabindex="3" class="danger" data-bind="enable: items().length > 0, click: deleteMaster">#{i18n.getText('CMM011_103')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
@@ -42,10 +42,10 @@
 							showIcon: false, direction: 'bottom'}">
 						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 0">#{i18n.getText('CMM011_202')}</div>
 						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 1">#{i18n.getText('CMM011_302')}</div>
-						<div data-bind="with: configuration" style="display: inline-block;">
-							<span id="A2_3" data-bind="text: startDate"></span> 
-							<span id="A2_4" style="margin-left: 8px; margin-right: 8px;">#{i18n.getText('CMM011_106')}</span>
-							<span id="A2_5" data-bind="text: endDate"></span>
+						<div data-bind="with: configuration" style="display: inline-block; width: 213px">
+							<div id="A2_3" style="width: 83px; display: inline-block;" data-bind="text: startDate"></div> 
+							<div id="A2_4" style="margin-left: 8px; margin-right: 8px; display: inline-block;">#{i18n.getText('CMM011_106')}</div>
+							<div id="A2_5" style="width: 83px; display: inline-block;" data-bind="text: endDate"></div>
 						</div>
 						<button id="A2_6" tabindex="6" data-bind="click: openConfigDialog" style="display: inline-block;">#{i18n.getText('CMM011_107')}</button>
 					</div>
@@ -78,7 +78,8 @@
 							primaryText: 'nodeText',
 							multiple: false,
 							enable: true,
-							maxDeepLeaf: 0,
+							maxDeepLeaf: 10,
+							maxChildInNode: 999,
 							showCheckBox: false}">
 					</div>
 					
@@ -86,7 +87,7 @@
 				
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
 						<input tabindex="12" id="A5_2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: selectedCode,

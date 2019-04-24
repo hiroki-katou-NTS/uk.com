@@ -1,11 +1,11 @@
 <template>
-  <div class="card">
+  <div class="card mb-5">
     <ul class="nav nav-tabs card-header">
       <li class="nav-item" v-for="(m, k) in ['background', 'text']" v-bind:key="k">
-        <a class="nav-link text-white" :href="'#' + m" :class="{ 'active': !k }">{{m}}</a>
+        <a class="nav-link" :href="'#' + m" :class="{ 'active': !k }">{{m}}</a>
       </li>
     </ul>
-    <div class="tab-content card-body">
+    <div class="tab-content">
       <div class="tab-pane" v-for="(m, k) in ['background', 'text']" v-bind:id="m" v-bind:key="k">
         <template v-if="m === 'background'">
           <div class="row">

@@ -49,7 +49,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 } else {
                     block.invisible();
-                    service.getWkpDepInforById(self.initMode, self.configuration().historyId, value).done(res => {
+                    service.getWkpDepInforById(self.initMode, self.configuration().historyId(), value).done(res => {
                         self.backupCode = res.code;
                         self.selectedCode(res.code);
                         self.selectedDispName(res.dispName);
@@ -78,8 +78,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 $(".nts-input").trigger("validate");
             });
             self.selectedCode.subscribe(value => {
-                if (!_.isEmpty(self.configuration().historyId) && value && value != self.backupCode) {
-                    service.checkCode(self.initMode, self.configuration().historyId, value).done(checkResult => {
+                if (!_.isEmpty(self.configuration().historyId()) && value && value != self.backupCode) {
+                    service.checkCode(self.initMode, self.configuration().historyId(), value).done(checkResult => {
                     
                     }).fail(error => {
                         alertError(error).then(() => {
@@ -89,6 +89,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                         });
                     });
                 }
+            });
+            $(document).delegate("#A4_1", "igtreedragstop", function(evt, ui) {
+                let newDataSource = $("#A4_1").igTree('option', 'dataSource')._rootds._data;
+                self.items(_.map(newDataSource, i => { return new WkpDepNode(i); }));
+                self.needRegenerateHierarchyCode = true;
             });
         }
 
@@ -128,7 +133,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this, dfd = $.Deferred();
             self.items([]);
             self.selectedId(null);
-            service.getAllWkpDepInforTree(self.initMode, self.configuration().historyId).done((data) => {
+            service.getAllWkpDepInforTree(self.initMode, self.configuration().historyId()).done((data) => {
                 if (_.isEmpty(data)) {
                     dfd.resolve();
                     if (self.initMode == SCREEN_MODE.WORKPLACE) {
@@ -164,7 +169,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         
         registerMaster() {
             let self = this;
-            if (_.isEmpty(self.configuration().historyId) || _.isEmpty(self.items()))
+            if (_.isEmpty(self.configuration().historyId()) || _.isEmpty(self.items()))
                 return;
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) 
@@ -175,7 +180,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 //            }
             let command = {
                 initMode: self.initMode,
-                historyId: self.configuration().historyId,
+                historyId: self.configuration().historyId(),
                 id: self.selectedId(),
                 code: self.selectedCode(),
                 name: self.selectedName(),
@@ -222,7 +227,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 self.generateHierarchyCode(newItems, parentCode);
                 let data = {
                     initMode: self.initMode,
-                    historyId: self.configuration().historyId,
+                    historyId: self.configuration().historyId(),
                     selectedWkpDepId: self.selectedId(),
                     listHierarchyChange: self.listHierarchyChange
                 };
@@ -248,13 +253,13 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             let self = this,
                 params = {
                     initMode: self.initMode,
-                    historyId: self.configuration() ? self.configuration().historyId : null
+                    historyId: self.configuration() ? self.configuration().historyId() : null
                 };
             setShared("CMM011AParams", params);
             modal("/view/cmm/011_v2/b/index.xhtml").onClosed(() => {
                 let params = getShared("CMM011BParams");
                 if (params) {
-                    self.configuration().historyId = params.historyId;
+                    self.configuration().historyId(params.historyId);
                     self.configuration().startDate(params.startDate);
                     self.configuration().endDate(params.endDate);
                     block.invisible();
@@ -270,7 +275,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         openWkpDepCreateDialog() {
             let self = this;
             block.invisible();
-            service.checkTotalWkpDepInfor(self.initMode, self.configuration().historyId).done(() => {
+            service.checkTotalWkpDepInfor(self.initMode, self.configuration().historyId()).done(() => {
                 if (self.needRegenerateHierarchyCode) {
                     self.generateHierarchyCode(self.items(), "");
                 }
@@ -279,8 +284,9 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     selectedCode: self.selectedCode(),
                     selectedName: self.selectedName(),
                     selectedHierarchyCode: self.selectedHierarchyCode(),
-                    history: self.configuration().historyId,
-                    items: self.items()
+                    history: self.configuration().historyId(),
+                    items: self.items(),
+                    listHierarchyChange: self.listHierarchyChange
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
@@ -402,12 +408,12 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
     }
 
     class WkpDepConfig {
-        historyId: string;
+        historyId: KnockoutObservable<string>;
         startDate: KnockoutObservable<string>;
         endDate: KnockoutObservable<string>;
 
         constructor(histId: string, startDate: string, endDate: string) {
-            this.historyId = histId;
+            this.historyId = ko.observable(histId);
             this.startDate = ko.observable(startDate);
             this.endDate = ko.observable(endDate);
         }

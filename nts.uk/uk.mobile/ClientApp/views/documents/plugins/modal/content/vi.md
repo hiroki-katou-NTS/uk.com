@@ -6,6 +6,21 @@
 - `$modal('componentName', propPrams, option)`
 - `$modal($componentOption, propParams, option)`
 
+> Ngoài ra, `$modal` còn có 4 phương thức con để hiển thị các thông báo (*hoặc xác nhận thao tác*) với cách dùng như dưới đây:
+
+- `$modal.info('Nội dung message')`
+- `$modal.warn('Nội dung message')`
+- `$modal.error('Nội dung message')`
+- `$modal.confirm('Nội dung message', 'normal' | 'dange' | 'primary')`
+
+> Hoặc hiển thị các thông báo (*xác nhận*) bằng cách truyền messageId, messageParams vào theo  mô tả dưới đây:
+
+- `$modal.info({messageId: string; messageParams: string[] | { [key: string]: string; } })`
+- `$modal.warn({messageId: string; messageParams: string[] | { [key: string]: string; } })`
+- `$modal.error({messageId: string; messageParams: string[] | { [key: string]: string; } })`
+- `$modal.confirm({messageId: string; messageParams: string[] | { [key: string]: string; } }, 'normal' | 'dange' | 'primary')`
+
+
 **Parent view:**
 ```typescript
 import { Vue } from '@app/provider';
@@ -42,6 +57,38 @@ export class ParentComponent extends Vue {
             // kết quả trả về
             alert(`You are choose: ${v}`);
         });
+    }
+
+    showWarn() {
+        // hiển thị một warning message
+        this.$modal.warn('Warning, this is warning message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showInfo() {
+        // hiển thị một info message
+        this.$modal.info('Info, this is info message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showError() {
+        // hiển thị một error message
+        this.$modal.error('Info, this is info message!')
+            .then(() => {
+                alert('Clicked: close');
+            });
+    }
+
+    showConfirm() {
+        // hiển thị một confirm message
+        this.$modal.confirm('Info, this is info message!', 'danger')
+            .then(v => {
+                alert('Clicked: ' + v);
+            });
     }
 }
 ```
