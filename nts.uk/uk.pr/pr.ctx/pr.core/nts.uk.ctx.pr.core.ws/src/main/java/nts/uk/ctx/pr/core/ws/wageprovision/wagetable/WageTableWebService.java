@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHis
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementItemNameDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementRangeSettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTable3DParams;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableContentCreater;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableContentDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
@@ -65,6 +68,12 @@ public class WageTableWebService {
 			@PathParam("wageTableCode") String wageTableCode) {
 		return finder.getWageTableContent(historyId, wageTableCode);
 	}
+	
+	@POST
+	@Path("/get-wagetable-content-by-third-dimension")
+	public WageTableContentDto getWageTableContentThirdDimension(WageTable3DParams wageTable3DParams) {
+		return finder.getWageTableContentByThirdDimension(wageTable3DParams);
+	}
 
 	@POST
 	@Path("/addWageTable")
@@ -99,42 +108,61 @@ public class WageTableWebService {
 	@POST
 	@Path("/create-1d-wage-table")
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
-		WageTableContentDto dto = contentCreater.createOneDimensionWageTable(params);
-		if (dto.getList1dElements().get(0).getMasterCode() == null && dto.getList1dElements().size() > 100) {
-			throw new BusinessException("MsgQ_250");
+		if (params.getFirstElementRange() != null) {
+			BigDecimal numberOfFrames = (params.getFirstElementRange().getRangeUpperLimit()
+					.subtract(params.getFirstElementRange().getRangeLowerLimit()))
+							.divide(params.getFirstElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_250");
 		}
-		return dto;
+		return contentCreater.createOneDimensionWageTable(params);
 	}
 
 	@POST
 	@Path("/create-2d-wage-table")
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
-		WageTableContentDto dto = contentCreater.createTwoDimensionWageTable(params);
-		if (dto.getList2dElements().get(0).getMasterCode() == null && dto.getList2dElements().size() > 100) {
-			throw new BusinessException("MsgQ_251");
+		if (params.getFirstElementRange() != null) {
+			BigDecimal numberOfFrames = (params.getFirstElementRange().getRangeUpperLimit()
+					.subtract(params.getFirstElementRange().getRangeLowerLimit()))
+							.divide(params.getFirstElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_251");
 		}
-		if (dto.getList2dElements().get(0).getListSecondDms().get(0).getMasterCode() == null
-				&& dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
-			throw new BusinessException("MsgQ_252");
+		if (params.getSecondElementRange() != null) {
+			BigDecimal numberOfFrames = (params.getSecondElementRange().getRangeUpperLimit()
+					.subtract(params.getSecondElementRange().getRangeLowerLimit()))
+							.divide(params.getSecondElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_252");
 		}
-		return dto;
+		return contentCreater.createTwoDimensionWageTable(params);
 	}
 
 	@POST
 	@Path("/create-3d-wage-table")
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
-		WageTableContentDto dto = contentCreater.createThreeDimensionWageTable(params);
-		if (dto.getList2dElements().get(0).getMasterCode() == null && dto.getList2dElements().size() > 100) {
-			throw new BusinessException("MsgQ_251");
+		if (params.getFirstElementRange() != null) {
+			BigDecimal numberOfFrames = (params.getFirstElementRange().getRangeUpperLimit()
+					.subtract(params.getFirstElementRange().getRangeLowerLimit()))
+							.divide(params.getFirstElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_251");
 		}
-		if (dto.getList2dElements().get(0).getListSecondDms().get(0).getMasterCode() == null
-				&& dto.getList2dElements().get(0).getListSecondDms().size() > 100) {
-			throw new BusinessException("MsgQ_252");
+		if (params.getSecondElementRange() != null) {
+			BigDecimal numberOfFrames = (params.getSecondElementRange().getRangeUpperLimit()
+					.subtract(params.getSecondElementRange().getRangeLowerLimit()))
+							.divide(params.getSecondElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_252");
 		}
-		if (dto.getList3dElements().get(0).getMasterCode() == null && dto.getList3dElements().size() > 100) {
-			throw new BusinessException("MsgQ_253");
+		if (params.getThirdElementRange() != null && params.getThirdElementRange().getStepIncrement() != null) {
+			BigDecimal numberOfFrames = (params.getThirdElementRange().getRangeUpperLimit()
+					.subtract(params.getThirdElementRange().getRangeLowerLimit()))
+							.divide(params.getThirdElementRange().getStepIncrement(), 0, RoundingMode.CEILING);
+			if (numberOfFrames.compareTo(new BigDecimal(100)) > 0)
+				throw new BusinessException("MsgQ_253");
 		}
-		return dto;
+		return contentCreater.createThreeDimensionWageTable(params);
 	}
 
 }

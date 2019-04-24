@@ -32,6 +32,8 @@ public class WageTableContentCommand {
 	private List<ThreeDmsElementItemCommand> threeDimensionPayment;
 	
 	private List<ThreeDmsElementItemCommand> workLevelPayment;
+	
+	private boolean brandNew;
 
 	/**
 	 * 資格グループ設定
@@ -44,17 +46,19 @@ public class WageTableContentCommand {
 		if (oneDimensionPayment != null) {
 			for (ElementItemCommand c : oneDimensionPayment) {
 				ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
-						IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), c.getMasterCode(), c.getFrameNumber(),
-						c.getFrameLowerLimit(), c.getFrameUpperLimit(), null, null, null, null, null, null, null, null);
+						IdentifierUtil.randomUniqueId(), c.getPaymentAmount() == null ? 0 : c.getPaymentAmount(),
+						c.getMasterCode(), c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), null,
+						null, null, null, null, null, null, null);
 				listPayments.add(payment);
 			}
 		} else if (twoDimensionPayment != null) {
 			for (TwoDmsElementItemCommand r : twoDimensionPayment) {
 				for (ElementItemCommand c : r.getListSecondDms()) {
 					ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
-							IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), r.getMasterCode(),
-							r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(), c.getMasterCode(),
-							c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), null, null, null, null);
+							IdentifierUtil.randomUniqueId(), c.getPaymentAmount() == null ? 0 : c.getPaymentAmount(),
+							r.getMasterCode(), r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(),
+							c.getMasterCode(), c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), null,
+							null, null, null);
 					listPayments.add(payment);
 				}
 			}
@@ -63,7 +67,8 @@ public class WageTableContentCommand {
 				for (TwoDmsElementItemCommand r : h.getListFirstDms()) {
 					for (ElementItemCommand c : r.getListSecondDms()) {
 						ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
-								IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), r.getMasterCode(),
+								IdentifierUtil.randomUniqueId(),
+								c.getPaymentAmount() == null ? 0 : c.getPaymentAmount(), r.getMasterCode(),
 								r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(), c.getMasterCode(),
 								c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), h.getMasterCode(),
 								h.getFrameNumber(), h.getFrameLowerLimit(), h.getFrameUpperLimit());
@@ -79,7 +84,8 @@ public class WageTableContentCommand {
 										eligible.getWageTablePaymentAmount(), eligible.getQualificationCode(), null,
 										null, null, null, null, null, null, null, null, null, null)));
 				qualificationGroupSettings.add(new QualificationGroupSettingContent(
-						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getQualificationGroupName(), wageTableQualification.getPaymentMethod(),
+						wageTableQualification.getQualificationGroupCode(),
+						wageTableQualification.getQualificationGroupName(), wageTableQualification.getPaymentMethod(),
 						wageTableQualification.getEligibleQualificationCode().stream()
 								.map(WageTableQualificationInfoDto::getQualificationCode)
 								.collect(Collectors.toList())));
@@ -89,7 +95,8 @@ public class WageTableContentCommand {
 				for (TwoDmsElementItemCommand r : h.getListFirstDms()) {
 					for (ElementItemCommand c : r.getListSecondDms()) {
 						ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
-								IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), r.getMasterCode(),
+								IdentifierUtil.randomUniqueId(),
+								c.getPaymentAmount() == null ? 0 : c.getPaymentAmount(), r.getMasterCode(),
 								r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(), c.getMasterCode(),
 								c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), h.getMasterCode(),
 								h.getFrameNumber(), h.getFrameLowerLimit(), h.getFrameUpperLimit());

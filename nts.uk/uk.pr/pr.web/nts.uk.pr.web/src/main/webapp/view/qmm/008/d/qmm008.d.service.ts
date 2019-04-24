@@ -6,8 +6,14 @@ module nts.uk.pr.view.qmm008.d.service {
         findByCode: "ctx/pr/core/socialinsurance/socialinsuranceoffice/findByCode/{0}",
         update: "ctx/pr/core/socialinsurance/socialinsuranceoffice/update",
         create: "ctx/pr/core/socialinsurance/socialinsuranceoffice/create",
-        deleteOffice: "ctx/pr/core/socialinsurance/socialinsuranceoffice/remove"
+        deleteOffice: "ctx/pr/core/socialinsurance/socialinsuranceoffice/remove",
+        exportExcel: "file/core/socialinsurance/socialinsuranceoffice/export"
     }
+
+    export function exportExcel(): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportExcel);
+    }
+
     export function defaultData(): JQueryPromise<any> {
         return ajax("pr",paths.defaultData);
     }

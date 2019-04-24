@@ -19,6 +19,49 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
     private static final String SELECT_BY_KEY_STRING_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.cid =:cid ORDER BY f.payUnitPricePk.code ASC";
     private static final String SELECT_PAYROLL_UNIT_PRICE_BY_YEAR_MONTH = "SELECT a FROM QpbmtPayUnitPrice a JOIN QpbmtPayUnitPriceHis b ON a.payUnitPricePk.cid = b.payUnitPriceHisPk.cid AND a.payUnitPricePk.code = b.payUnitPriceHisPk.code WHERE a.payUnitPricePk.cid =:cid AND b.startYearMonth <=:yearMonth AND b.endYearMonth >=:yearMonth ORDER BY a.payUnitPricePk.code ";
 
+    private static final String EXPORT_EXCEL = "SELECT  " +
+            "CASE " +
+            " WHEN " +
+            "  ROW_NUMBER = 1 THEN " +
+            "   temp.UNIT_PRICE_CD ELSE NULL  " +
+            "  END UNIT_PRICE_CD1, " +
+            "CASE " +
+            " WHEN ROW_NUMBER = 1 THEN " +
+            " temp.UNIT_PRICE_NAME ELSE NULL  " +
+            " END UNIT_PRICE_NAME1, " +
+            "  " +
+            " * " +
+            "  " +
+            " FROM  " +
+            " (  " +
+            " SELECT  " +
+            " t1.UNIT_PRICE_NAME, " +
+            " t1.UNIT_PRICE_CD, " +
+            " t2.START_YM, " +
+            " t2.AMOUNT_OF_MONEY, " +
+            " t2.TARGET_CLASS_ATR, " +
+            " t2.MONTH_SALARY_ATR, " +
+            " t2.MONTH_SALARY_PER_DAY_ATR, " +
+            " t2.A_DAY_PAYEE_ATR, " +
+            " t2.HOURLY_PAY_ATR, " +
+            " t2.SET_CLASSIFICATION_ATR, " +
+            " ROW_NUMBER () OVER ( PARTITION BY t1.UNIT_PRICE_CD ORDER BY t1.UNIT_PRICE_CD ASC, t2.START_YM DESC ) AS ROW_NUMBER  " +
+            "FROM " +
+            " QPBMT_PAY_UNIT_PRICE t1 " +
+            " INNER JOIN QPBMT_PAY_UNIT_PRICE_HIS t2 ON t1.CID = t2.CID  " +
+            " AND t1.UNIT_PRICE_CD = t2.UNIT_PRICE_CD  " +
+            "WHERE " +
+            " t1.CID = ?cid  " +
+            " AND t2.CID = ?cid  " +
+            " ) temp " ;
+
+
+
+
+    @Override
+    public List<Object[]> getAllPayrollUnitPriceSetByCID(String cid) {
+        return this.getEntityManager().createNativeQuery(EXPORT_EXCEL).setParameter("cid",cid).getResultList();
+    }
 
     @Override
     public List<PayrollUnitPrice> getAllPayrollUnitPriceByCID(String cid) {

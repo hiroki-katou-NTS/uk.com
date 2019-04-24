@@ -119,6 +119,15 @@ module nts.uk.pr.view.qmm008.d {
 
             }
 
+            exportExcel(): void {
+                service.exportExcel().done(function () {
+                }).fail(function (error) {
+                    nts.uk.ui.dialog.alertError({messageId: error.messageId});
+                }).always(function () {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
             /**
              * update
             */

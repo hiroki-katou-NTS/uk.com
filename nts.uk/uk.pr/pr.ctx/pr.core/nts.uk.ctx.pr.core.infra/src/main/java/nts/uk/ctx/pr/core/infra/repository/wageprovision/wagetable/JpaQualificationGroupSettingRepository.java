@@ -13,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSettingRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtQualificationGroupSetting;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtQualificationGroupSettingPk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,7 +22,6 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository
 
 	private static final String FIND_BY_COMPANY = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid ORDER BY a.pk.qualificationGroupCode";
 	private static final String FIND_BY_COMPANY_AND_CODE = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid AND a.pk.qualificationGroupCode =:qualificationGroupCode";
-	private static final String DELETE_BY_COMPANY_AND_CODE = "DELETE FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid AND a.pk.qualificationGroupCode =:qualificationGroupCode";
 
 	@Override
 	public List<QualificationGroupSetting> getQualificationGroupSettingByCompanyID() {
@@ -50,9 +50,8 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository
 
 	@Override
 	public void remove(String companyId, String code) {
-		this.getEntityManager().createQuery(DELETE_BY_COMPANY_AND_CODE, QpbmtQualificationGroupSetting.class)
-				.setParameter("cid", companyId)
-				.setParameter("qualificationGroupCode", code).executeUpdate();
+		this.commandProxy().remove(QpbmtQualificationGroupSetting.class,
+				new QpbmtQualificationGroupSettingPk(companyId, code));
 	}
 
 	@Override

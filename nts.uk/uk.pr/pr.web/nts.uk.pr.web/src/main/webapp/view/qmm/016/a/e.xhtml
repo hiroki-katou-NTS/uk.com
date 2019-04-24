@@ -2,7 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:com="http://xmlns.jcp.org/jsf/component">
-    <div style="width: 800px">
+    <div>
         <div class="flex valign-center tab-row">
             <div style="width: 110px;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
@@ -63,8 +63,8 @@
                 <colgroup>
                     <col width="130px"/>
                     <col width="150px"/>
-                    <col width="147px"/>
-                    <col width="370px"/>
+                    <col width="157px"/>
+                    <col width="383px"/>
                 </colgroup>
                 <thead>
                 <tr>
@@ -90,8 +90,9 @@
                                                     value: wageTablePaymentAmount,
                                                     constraint: 'WageTablePaymentAmount',
                                                     option: {
+                                                        width: '120px',
                                                         grouplength: 3,
-                                                        width: '120px'
+									                    currencyformat: 'JPY'
                                                     },
                                                     required: true}"/>
                         </td>

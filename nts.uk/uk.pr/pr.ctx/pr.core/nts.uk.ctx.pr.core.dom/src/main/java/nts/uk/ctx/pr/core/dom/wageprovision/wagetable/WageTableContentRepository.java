@@ -19,4 +19,9 @@ public interface WageTableContentRepository {
     List<WageTableQualification> getWageTableQualification(String historyId);
 
     List<WageTableQualification> getDefaultWageTableQualification();
+    
+    List<ElementsCombinationPaymentAmount> getWageTableContentByThirdDimension(String historyId, String companyId, String wageTableCode, String thirdMasterCode, Integer thirdFrameNumber);
+    
+    void updateListPayment(String historyId, String companyId, String wageTableCode, List<ElementsCombinationPaymentAmount> payments);
+    
 }

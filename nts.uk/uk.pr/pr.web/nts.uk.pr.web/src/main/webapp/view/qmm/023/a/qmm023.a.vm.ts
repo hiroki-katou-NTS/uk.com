@@ -4,8 +4,6 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -124,7 +122,22 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
         printPdf() {
         };
 
-        correctionLog() {
+        exportExcel() {
+            block.invisible();
+            service.exportExcel()
+                .done(function () {
+                    block.clear();
+
+                })
+                .fail(function (error) {
+                    dialog.alertError({messageId: error.messageId});
+                    block.clear();
+                })
+                .always(function () {
+                    block.clear();
+                });
+            ;
+
         };
 
         deleteTaxExe() {
@@ -173,13 +186,15 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                 block.clear();
             });
         };
+        correctionLog(){
 
+        }
         getAllData(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
             self.lstTaxExemptLimit.removeAll();
-            service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
+            nts.uk.pr.view.qmm023.a.service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"])
                     dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");

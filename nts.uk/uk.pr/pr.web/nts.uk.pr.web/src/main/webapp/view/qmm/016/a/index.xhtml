@@ -234,10 +234,13 @@
 	                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
 	                                            <!--A8_11 参照ボタン3-->
 	                                            <button tabindex="18" class="small" id="A8_11"
-	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
+	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode(), visible: elementSetting() == 2">#{i18n.getText('QMM016_23')}</button>
 	                                            <!--A8_12 選択要素3-->
-	                                            <div data-bind="with: elementInformation().threeDimensionElement">
-	                                                <div data-bind="text: elementName"></div>
+	                                            <div data-bind="if: elementSetting() == 2">
+	                                                <div data-bind="text: elementInformation().threeDimensionElement().elementName"></div>
+	                                            </div>
+	                                            <div data-bind="if: elementSetting() == 4">
+	                                                <div>#{i18n.getText('QMM016_53')}</div>
 	                                            </div>
 	                                        </td>
 	                                    </tr>

@@ -5,7 +5,12 @@ module nts.uk.pr.view.qmm008.c.service {
         findAllOffice: "ctx/core/socialinsurance/welfarepensioninsurance/getAll",
         findEmployeePensionByHistoryId: "ctx/core/socialinsurance/welfarepensioninsurance/getByHistoryId/{0}",
         registerEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/registerEmployeePension",
-        checkWelfarePensionInsuranceGradeFeeChange: "ctx/core/socialinsurance/welfarepensioninsurance/checkGradeFeeChange"
+        checkWelfarePensionInsuranceGradeFeeChange: "ctx/core/socialinsurance/welfarepensioninsurance/checkGradeFeeChange",
+        exportExcel: "file/core/socialinsurance/welfarepensioninsurance/export"
+    }
+
+    export function exportExcel(data: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportExcel, data);
     }
     /**
      * get all
