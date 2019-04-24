@@ -49,7 +49,7 @@
 				</div>
 				<div class="input-area" style="padding-top: 15px">
                     <div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM011_112')}</div>
+						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>
 						<input id="A5_2" tabindex="2" data-bind="ntsTextEditor: {
 							name: '#[CMM011_112]',
 							value: code,

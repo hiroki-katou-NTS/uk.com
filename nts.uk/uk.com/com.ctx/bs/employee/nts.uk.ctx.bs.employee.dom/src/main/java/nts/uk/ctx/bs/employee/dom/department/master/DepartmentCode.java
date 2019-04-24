@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department.master;
 
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
@@ -11,8 +13,9 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 /**
  * The Class DepartmentCode.
  */
-@StringRegEx("^[-_ a-zA-Z0-9]+$")
+@StringRegEx("^[-_a-zA-Z0-9]+$")
 @StringMaxLength(10)
+@StringCharType(CharType.ANY_HALF_WIDTH)
 // 部門コード
 public class DepartmentCode extends CodePrimitiveValue<DepartmentCode> {
 
