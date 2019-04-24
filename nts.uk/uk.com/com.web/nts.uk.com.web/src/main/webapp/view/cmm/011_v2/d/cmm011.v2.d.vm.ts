@@ -44,6 +44,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 self.selectedHistoryId = params.history;
                 self.items = params.items;
                 self.itemsCount(self.items.length);
+                self.listHierarchyChange = params.listHierarchyChange;
             }
             if (self.itemsCount() == 0) {
                 currentScreen.setHeight(400);

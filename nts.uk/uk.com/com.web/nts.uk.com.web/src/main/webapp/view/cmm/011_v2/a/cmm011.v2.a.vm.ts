@@ -280,7 +280,8 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     selectedName: self.selectedName(),
                     selectedHierarchyCode: self.selectedHierarchyCode(),
                     history: self.configuration().historyId(),
-                    items: self.items()
+                    items: self.items(),
+                    listHierarchyChange: self.listHierarchyChange
                 };
                 setShared("CMM011AParams", params);
                 modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
