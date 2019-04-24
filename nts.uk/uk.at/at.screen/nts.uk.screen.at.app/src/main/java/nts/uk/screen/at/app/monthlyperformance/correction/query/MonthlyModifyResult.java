@@ -23,13 +23,13 @@ public class MonthlyModifyResult {
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
-
-	/** 月別実績の勤怠時間 期間: 期間 */
+	
+		/** 月別実績の勤怠時間 期間: 期間  */
 	private DatePeriod workDatePeriod;
 
 	private long version;
 
-	public static MonthlyModifyResult builder() {
+	public static MonthlyModifyResult builder(){
 		return new MonthlyModifyResult();
 	}
 
@@ -62,13 +62,12 @@ public class MonthlyModifyResult {
 		this.workDatePeriod = period;
 		return this;
 	}
-
-	public MonthlyModifyResult version(long version) {
+	
+	public MonthlyModifyResult version(long version){
 		this.version = version;
 		return this;
-	}
-
-	public MonthlyModifyResult completed() {
+	}	
+	public MonthlyModifyResult completed(){
 		return this;
 	}
 }
