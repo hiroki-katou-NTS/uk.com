@@ -20,8 +20,8 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
     private static final String SELECT_PAYROLL_UNIT_PRICE_BY_YEAR_MONTH = "SELECT a FROM QpbmtPayUnitPrice a JOIN QpbmtPayUnitPriceHis b ON a.payUnitPricePk.cid = b.payUnitPriceHisPk.cid AND a.payUnitPricePk.code = b.payUnitPriceHisPk.code WHERE a.payUnitPricePk.cid =:cid AND b.startYearMonth <=:yearMonth AND b.endYearMonth >=:yearMonth ORDER BY a.payUnitPricePk.code ";
 
     private static final String EXPORT_EXCEL = "SELECT  " +
-            " t1.UNIT_PRICE_NAME, " +
             " t1.UNIT_PRICE_CD, " +
+            " t1.UNIT_PRICE_NAME, " +
             " t2.START_YM, " +
             " t2.AMOUNT_OF_MONEY, " +
             " t2.TARGET_CLASS_ATR, " +
