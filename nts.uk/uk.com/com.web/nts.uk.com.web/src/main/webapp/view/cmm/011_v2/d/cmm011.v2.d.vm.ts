@@ -29,6 +29,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
         hierarchyLevel: number = 10;
         items: Array<any> = [];
         listHierarchyChange: Array<any> = [];
+        listHierarchyChangeBak: Array<any> = [];
         updateMode = false;
 
         constructor() {
@@ -44,7 +45,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 self.selectedHistoryId = params.history;
                 self.items = params.items;
                 self.itemsCount(self.items.length);
-                self.listHierarchyChange = params.listHierarchyChange;
+                self.listHierarchyChangeBak = params.listHierarchyChange;
             }
             if (self.itemsCount() == 0) {
                 currentScreen.setHeight(400);
@@ -85,6 +86,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             });
             self.createMethod.subscribe(value => {
                 let items = _.cloneDeep(self.items);
+                self.listHierarchyChange = [];
                 if (items.length == 0) {
                     self.hierarchyCode("001");
                 } else {
@@ -207,6 +209,9 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
+            self.listHierarchyChange.forEach(i => {
+                self.listHierarchyChangeBak.push(i);
+            });
             let command = {
                 initMode: self.screenMode,
                 historyId: self.selectedHistoryId,
@@ -217,7 +222,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 genericName: self.genericName(),
                 externalCode: self.externalCode(),
                 hierarchyCode: self.hierarchyCode(), 
-                listHierarchyChange: self.listHierarchyChange,
+                listHierarchyChange: self.listHierarchyChangeBak,
                 updateMode: self.updateMode
             };
             service.registerWkpDepInfor(command).done((id) => {
