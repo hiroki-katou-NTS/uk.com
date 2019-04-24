@@ -338,6 +338,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 $("#recDatePicker").focus();
             });
         }
+        saveDone(data, checkBoxValue) {
+            dialog({ messageId: 'Msg_15' }).then(function() {
+                if (data.autoSendMail) {
+                    appcommon.CommonProcess.displayMailResult(data);
+                } else {
+                    if (checkBoxValue) {
+                        appcommon.CommonProcess.openDialogKDL030(data.appID);
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+        }
 
         showAppReason(): boolean {
             let self = this;
