@@ -75,7 +75,7 @@ export class DatePickerComponent extends Vue {
             required: true
         }
     })
-    readonly params: {
+    public readonly params: {
         value: number | undefined;
         required?: boolean;
     };
@@ -87,8 +87,7 @@ export class DatePickerComponent extends Vue {
     get value() {
         if (!isNaN(Number(this.params.value))) {
             return this.params.value;
-        }
-        else {
+        } else {
             return 0;
         }
     }
@@ -117,67 +116,67 @@ export class DatePickerComponent extends Vue {
         return this.value;
     }
 
-    upday() {
+    public upday() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value += 24 * 60;
 
-        (<HTMLInputElement>this.$refs.day).focus();
+        ( this.$refs.day as HTMLInputElement).focus();
     }
 
-    downday() {
+    public downday() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value -= 24 * 60;
 
-        (<HTMLInputElement>this.$refs.day).focus();
+        ( this.$refs.day as HTMLInputElement).focus();
     }
 
-    uphour() {
+    public uphour() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value += 60;
 
-        (<HTMLInputElement>this.$refs.hour).focus();
+        ( this.$refs.hour as HTMLInputElement).focus();
     }
 
-    downhour() {
+    public downhour() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value -= 60;
 
-        (<HTMLInputElement>this.$refs.hour).focus();
+        ( this.$refs.hour as HTMLInputElement).focus();
     }
 
-    upminute() {
+    public upminute() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value += 1;
 
-        (<HTMLInputElement>this.$refs.minute).focus();
+        ( this.$refs.minute as HTMLInputElement).focus();
     }
 
-    downminute() {
+    public downminute() {
         if (!this.valid) {
             this.value = 0;
         }
 
         this.value -= 1;
 
-        (<HTMLInputElement>this.$refs.minute).focus();
+        ( this.$refs.minute as HTMLInputElement).focus();
     }
 
-    close() {
+    public close() {
         this.$close(this.value);
     }
 }

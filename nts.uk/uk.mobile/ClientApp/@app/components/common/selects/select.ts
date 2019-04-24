@@ -17,14 +17,14 @@ export const select = () => component({
 
 export class SelectBoxComponent extends Vue {
     @Prop({ default: null })
-    value!: any;
+    public value!: any;
 
     @Model('input')
-    selected!: any;
+    public selected!: any;
 
     @Prop({ default: null })
-    name!: string;
+    public name!: string;
 
     @Prop({ default: false })
-    disabled!: 'true' | 'false' | boolean;
+    public disabled!: 'true' | 'false' | boolean;
 }

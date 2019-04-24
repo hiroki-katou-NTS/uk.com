@@ -1,12 +1,11 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
-import { ccg007 } from "../common/common";
+import { ccg007 } from '../common/common';
 
 @component({
     route: '/ccg/007/c',
     style: require('./style.scss'),
-    resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
         model: {
@@ -16,7 +15,7 @@ import { ccg007 } from "../common/common";
             newPassword: {
                 required: true,
                 checkSame: {
-                    test(value){
+                    test(value) {
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
@@ -24,7 +23,7 @@ import { ccg007 } from "../common/common";
             newPasswordConfirm: {
                 required: true,
                 checkSame: {
-                    test(value){
+                    test(value) {
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
@@ -36,12 +35,12 @@ import { ccg007 } from "../common/common";
 export class ChangePassComponent extends Vue {
 
     @Prop({ default: () => ({}) })
-    params!: any;
+    public params!: any;
 
-    mesId: string;
-    userId: string;
+    public mesId: string;
+    public userId: string;
 
-    policy = {
+    public policy = {
         lowestDigits: 0,
         alphabetDigit: 0,
         numberOfDigits: 0,
@@ -49,16 +48,16 @@ export class ChangePassComponent extends Vue {
         historyCount: 0,
         validPeriod: 0,
         isUse: false
-    }
+    };
 
-    model = {
+    public model = {
         currentPassword: '',
         newPassword: '',
         newPasswordConfirm: '',
         userName: ''
-    }
+    };
 
-    created() {
+    public created() {
         let self = this;
         self.mesId = self.$i18n(self.params.mesId);
         Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode), 
@@ -77,19 +76,21 @@ export class ChangePassComponent extends Vue {
             self.policy.isUse  = policy.isUse;
             self.userId = user.userId;
         });
-        
+    }
+
+    public mounted() {
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
     }
 
-    destroyed() {
+    public destroyed() {
         // Show menu
         NavMenu.visible = true;
         SideMenu.visible = true;
     }
 
-    changePass() {
+    public changePass() {
         this.$validate();
         if (!this.$valid) {
             return;                   
@@ -101,35 +102,49 @@ export class ChangePassComponent extends Vue {
                                                                         self.model.newPasswordConfirm,
                                                                         self.userId);
 
-        self.$mask("show");
+        self.$mask('show');
         
-        //submitChangePass
+        // submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            ccg007.login(this, {    companyCode : self.params.companyCode,
+            ccg007.login(ccg007.submitLogin , this, {    companyCode : self.params.companyCode,
                                     employeeCode: self.params.employeeCode,
                                     password: command.newPassword,
                                     contractCode : self.params.contractCode,
                                     contractPassword : self.params.contractPassword
             }, () => {
-                self.model.currentPassword = "";
-                self.model.newPassword = "";
-                self.model.newPasswordConfirm = "";
+                self.model.currentPassword = '';
+                self.model.newPassword = '';
+                self.model.newPasswordConfirm = '';
             }, self.params.saveInfo);
         }).catch((res) => {
-            //Return Dialog Error
-            self.$mask("hide");
+            // Return Dialog Error
+            self.$mask('hide');
             self.showMessageError(res);
         });
     }
 
-    showMessageError(res: any) {
+    public loginOnly() {
+        let self = this;
+        ccg007.login(servicePath.loginWithNoChangePass , this, {    companyCode : self.params.companyCode,
+                                                    employeeCode: self.params.employeeCode,
+                                                    password: self.params.oldPassword,
+                                                    contractCode : self.params.contractCode,
+                                                    contractPassword : self.params.contractPassword
+                                        }, () => {
+                                            self.model.currentPassword = '';
+                                            self.model.newPassword = '';
+                                            self.model.newPasswordConfirm = '';
+                                        }, self.params.saveInfo);
+    }
+
+    public showMessageError(res: any) {
         // check error business exception
         if (!res.businessException) {
             return;
         }
         /** TODO: show error message */
         if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
-            //nts.uk.ui.dialog.bundledErrors(res);
+            // nts.uk.ui.dialog.bundledErrors(res);
             /** TODO: show multi line message */
             this.$modal.error(res.message);
         } else {
@@ -139,16 +154,17 @@ export class ChangePassComponent extends Vue {
 }
 
 const servicePath = {
-    getPasswordPolicy: "ctx/sys/gateway/changepassword/getPasswordPolicy/",
-    changePass: "ctx/sys/gateway/changepassword/submitchangepass/mobile",
-    getUserName: "ctx/sys/gateway/changepassword/username/mobile"
-}
+    getPasswordPolicy: 'ctx/sys/gateway/changepassword/getPasswordPolicy/',
+    changePass: 'ctx/sys/gateway/changepassword/submitchangepass/mobile',
+    loginWithNoChangePass: 'ctx/sys/gateway/login/submit/mobile/nochangepass',
+    getUserName: 'ctx/sys/gateway/changepassword/username/mobile'
+};
 
 class ChangePasswordCommand {
-    oldPassword: string;
-    newPassword: string;
-    confirmNewPassword: string;
-    userId: string;
+    public oldPassword: string;
+    public newPassword: string;
+    public confirmNewPassword: string;
+    public userId: string;
     
     constructor(oldPassword: string, newPassword: string, confirmNewPassword: string, userId: string) {
         this.oldPassword = oldPassword;

@@ -15,14 +15,14 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputTimeComponent extends Vue {
-    time: number = 750;
+    public time: number = 750;
 
-    timeWithDay: object = {
+    public timeWithDay: object = {
         name: 'Time-With-Day',
         value: 750,
         disabled: false,
         errors: null,
         errorsAlways: null,
         showTitle: true
-    }
+    };
 }

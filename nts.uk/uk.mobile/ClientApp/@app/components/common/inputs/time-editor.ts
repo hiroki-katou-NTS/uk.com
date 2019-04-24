@@ -1,17 +1,17 @@
 import { Vue } from '@app/provider';
-import { TimeInputType, time } from "@app/utils";
-import { input, InputComponent } from "./input";
+import { TimeInputType, time } from '@app/utils';
+import { input, InputComponent } from './input';
 import { Prop, Emit } from '@app/core/component';
 @input()
 export class TimeComponent extends InputComponent {
-    type: string = 'string';
+    public type: string = 'string';
 
-    editable: boolean = false;
+    public editable: boolean = false;
 
     @Prop({
         default: TimeInputType.TimeDuration
     })
-    timeInputType: TimeInputType;
+    public timeInputType: TimeInputType;
 
     get rawValue() {
         if (this.value == null || this.value == undefined) {
@@ -28,13 +28,13 @@ export class TimeComponent extends InputComponent {
         }
     }
 
-    mounted() {
+    public mounted() {
         this.icons.after = 'far fa-clock';
     }
 
     @Emit()
-    input() {
-        let value = (<HTMLInputElement>this.$refs.input).value;
+    public input() {
+        let value = ( this.$refs.input as HTMLInputElement).value;
 
         if (value) {
             let numb = Number(value);
@@ -49,8 +49,8 @@ export class TimeComponent extends InputComponent {
         return null;
     }
 
-    click() {
-        var picker = 'time-with-day-picker';
+    public click() {
+        let picker = 'time-with-day-picker';
         switch (this.timeInputType) {
             case TimeInputType.TimeWithDay:
                 picker = 'time-with-day-picker';
@@ -69,11 +69,11 @@ export class TimeComponent extends InputComponent {
                 minValue: this.constraint.minValue,
                 maxValue: this.constraint.maxValue,
             }, {
-                    type: "popup",
+                    type: 'popup',
                     title: this.name,
                     animate: 'down'
                 })
-            .then(v => {
+            .then((v) => {
                 if (v !== undefined) {
                     this.$emit('input', v);
                 }

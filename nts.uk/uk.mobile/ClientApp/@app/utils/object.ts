@@ -5,7 +5,7 @@ const $ = {
         if (length === startOrLength) {
             return [...Array(length).keys()];
         } else {
-            return [...Array(length + 1).keys()].map(m => m + startOrLength);
+            return [...Array(length + 1).keys()].map((m) => m + startOrLength);
         }
     },
     size(object: Array<any> | string | any | Function): number {
@@ -75,7 +75,7 @@ const $ = {
             '<': '&lt;',
             '>': '&gt;',
             '"': '&quot;',
-            "'": '&#39;'
+            '\'': '&#39;'
         };
 
         return (string || '').replace(/[&<>"']/g, (chr: string) => htmlEscapes[chr]);
@@ -89,7 +89,7 @@ const $ = {
             '&lt;': '<',
             '&gt;': '>',
             '&quot;': '"',
-            '&#39;': "'"
+            '&#39;': '\''
         };
 
         return (string || '').replace(/&(?:amp|lt|gt|quot|#39);/g, (chr: string) => htmlUnescapes[chr]);
@@ -109,20 +109,20 @@ const $ = {
         return clone;
     },
     isArray(object: any): object is any[] {
-        return object && Array.isArray(object) && typeof object === 'object' && object.constructor === Array;;
+        return object && Array.isArray(object) && typeof object === 'object' && object.constructor === Array;
     },
     isDate(date: any): date is Date {
         return date instanceof Date && !isNaN(date.getTime()) ? true : false;
     },
     get(object: any | undefined, path: Array<string> | string, defaultVal?: any): any {
-        let _path = Array.isArray(path) ? path : (path || '').split('.').filter(i => i.length);
+        let _path = Array.isArray(path) ? path : (path || '').split('.').filter((i) => i.length);
 
         if (object === undefined) {
             return undefined;
         }
 
         if (!_path.length) {
-            return object === undefined ? defaultVal : object
+            return object === undefined ? defaultVal : object;
         }
 
         return $.get(object[_path.shift() || -1], _path, defaultVal);
@@ -132,7 +132,7 @@ const $ = {
     },
     omit(object: any, path: Array<string> | string): any {
         let _path = Array.isArray(path) ? path : (path || '')
-            .split('.').filter(i => i.length),
+            .split('.').filter((i) => i.length),
             child: string = _path.shift() || '';
 
         if (!$.isNull(object)) {
@@ -149,7 +149,7 @@ const $ = {
     },
     set(object: any, path: Array<string> | string, value: any): any {
         let _path = Array.isArray(path) ? path : (path || '')
-            .split('.').filter(i => i.length),
+            .split('.').filter((i) => i.length),
             child: string = _path.shift() || '';
 
         if (object !== null && object !== undefined) {
@@ -170,7 +170,7 @@ const $ = {
     },
     update(object: any, path: Array<string> | string, value: any): any {
         let _path = Array.isArray(path) ? path : (path || '')
-            .split('.').filter(i => i.length),
+            .split('.').filter((i) => i.length),
             child: string = _path.shift() || '';
 
         if (object !== null && object !== undefined) {
@@ -257,7 +257,7 @@ const $ = {
 
                         nodes.unshift({
                             obj: value,
-                            path: path
+                            path
                         });
                     }
                 });
@@ -279,7 +279,7 @@ const $ = {
             object = object.apply();
         }
 
-        return $.isObject(object) ? JSON.parse(JSON.stringify(object)) : (<any>Object).assign({}, object);
+        return $.isObject(object) ? JSON.parse(JSON.stringify(object)) : (Object as any).assign({}, object);
     },
     find(source: any, callback: (value: any, index: number) => any): any {
         return [].slice.call(source).filter(callback)[0];

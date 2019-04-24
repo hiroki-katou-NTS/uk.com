@@ -1,13 +1,12 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { characteristics } from "@app/utils/storage";
-import { NavMenu, SideMenu } from "@app/services";
-import { ccg007 } from "../common/common";
+import { characteristics } from '@app/utils/storage';
+import { NavMenu, SideMenu } from '@app/services';
+import { ccg007 } from '../common/common';
 
 @component({
     route: '/ccg/007/b',
     style: require('./style.scss'),
-    resource: require('./resources.json'),
     template: require('./index.html'),
     validations: {
         model: {
@@ -16,9 +15,7 @@ import { ccg007 } from "../common/common";
             },
             employeeCode: {
                 required: true,
-                maxLength: 12,
-                constraint: 'EmployeeCode',
-                anyHalf: true
+                constraint: 'EmployeeCode'
             },
             password: {
                 required: true
@@ -31,28 +28,29 @@ import { ccg007 } from "../common/common";
 export class LoginComponent extends Vue {
 
     @Prop({ default: () => ({}) })
-    params!: any;
+    public params!: any;
 
-    companies: Array<ICompany> = [];
-    contractCode: string = '';
-    defaultContractCode: string = '000000000000';
-    contractPass: string = '';
+    public companies: Array<ICompany> = [];
+    public contractCode: string = '';
+    public defaultContractCode: string = '000000000000';
+    public contractPass: string = '';
 
-    model = {
+    public model = {
         comp: '',
         employeeCode: '',
         password: '',
         autoLogin: [true],
         ver: ''
-    }
+    };
 
-    created() {
+    public created() {
         let self = this;
         if (!_.isNil(self.params.contractCode)) {
             self.contractCode = self.params.contractCode;
             self.contractPass = self.params.contractPass;
+            self.checkEmpCodeAndCompany();
         } else {
-            characteristics.restore("contractInfo").then((value: any) => {
+            characteristics.restore('contractInfo').then((value: any) => {
                 if (!_.isNil(value)) {
                     self.contractCode = value.contractCode;
                     self.contractPass = value.contractPassword;
@@ -63,30 +61,32 @@ export class LoginComponent extends Vue {
                 if (rel.data.onpre) {
                     self.contractCode = self.defaultContractCode;
                     self.contractPass = null;
-                    characteristics.remove("contractInfo")
-                        .then(() => characteristics.save("contractInfo", { contractCode: self.contractCode, contractPassword: self.contractPass }));
+                    characteristics.remove('contractInfo')
+                        .then(() => characteristics.save('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass }));
                 } else {
                     if (rel.data.showContract && !rel.data.onpre) {
                         ccg007.authenticateContract(self);
                     }
                 }
+            }).then(() => {
+                self.checkEmpCodeAndCompany();
             }).catch((res) => {
 
             });
         }
-        
-        self.checkEmpCodeAndCompany();
 
         this.$http.post(servicePath.ver).then((response: { data: any }) => {
             self.model.ver = response.data.ver;
         });
+    }
 
+    public mounted() {
         // Hide top & side menu
         NavMenu.visible = false;
         SideMenu.visible = false;
     }
 
-    checkEmpCodeAndCompany(){
+    public checkEmpCodeAndCompany() {
         let self = this, companyCode = '', employeeCode = '';
         Promise.resolve().then(() => {
             if (!_.isEmpty(self.params.companies)) {
@@ -96,54 +96,55 @@ export class LoginComponent extends Vue {
             }
         }).then((response: { data: Array<ICompany> }) => self.companies = response.data)
         .then(() => {
-            if(!_.isNil(self.params.employeeCode)){
+            if (!_.isNil(self.params.employeeCode)) {
                 return Promise.resolve(self.params.employeeCode);
             } else {
-                return characteristics.restore("employeeCode");
+                return characteristics.restore('employeeCode');
             }
         }).then((empCode: string) => {
             if (!_.isNil(empCode)) {
                 employeeCode = empCode;
             }
         }).then(() => {
-            if(!_.isNil(self.params.companyCode)){
+            if (!_.isNil(self.params.companyCode)) {
                 return Promise.resolve(self.params.companyCode);
             } else {
-                return characteristics.restore("companyCode");
+                return characteristics.restore('companyCode');
             }
         }).then((compCode: string) => {
             if (!_.isNil(compCode)) {
                 companyCode = compCode;
             }
         }).then(() => {
-            if(_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))){
+            if (_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))) {
                 self.model.comp = self.companies[0].companyCode;
                 self.model.employeeCode = '';
             } else {
                 self.model.comp = companyCode;
                 self.model.employeeCode = employeeCode;
             }
-        })
+        });
     }
 
-    destroyed() {
+    public destroyed() {
         // Show menu
         NavMenu.visible = true;
         SideMenu.visible = true;
     }
 
-    login() {
+    public login() {
         let self = this;
 
-        ccg007.login(this, {    companyCode : self.model.comp,
+        ccg007.login(ccg007.submitLogin, this, {    companyCode : self.model.comp,
                                 employeeCode: self.model.employeeCode,
                                 password: self.model.password,
                                 contractCode : self.contractCode,
                                 contractPassword : self.contractPass
-                            }, () => self.model.password = "", self.model.autoLogin[0]);
+                            }, () => self.model.password = '', 
+                            self.model.autoLogin[0]);
     }
 
-    forgetPass(){
+    public forgetPass() {
         this.$goto({ name: 'forgetPass', params: {
             contractCode: this.contractCode,
             contractPass: this.contractPass,
@@ -156,10 +157,10 @@ export class LoginComponent extends Vue {
 }
 
 const servicePath = {
-    checkContract: "ctx/sys/gateway/login/checkcontract",
-    getAllCompany: "ctx/sys/gateway/login/getcompany/",
-    ver: "ctx/sys/gateway/login/build_info_time"
-}
+    checkContract: 'ctx/sys/gateway/login/checkcontract',
+    getAllCompany: 'ctx/sys/gateway/login/getcompany/',
+    ver: 'ctx/sys/gateway/login/build_info_time'
+};
 
 interface ICompany {
     companyCode: string;

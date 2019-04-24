@@ -15,5 +15,5 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputStringComponent extends Vue {
-    text: string = 'Init Value';
+    public text: string = 'Init Value';
 }

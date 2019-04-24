@@ -8,7 +8,11 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
     template: `<div class="form-group row">
         <template v-if="showTitle && showTitle !== 'false'">
             <div v-bind:class="columns.title">
-                <nts-label v-bind:constraint="constraints" v-bind:class="{ 'control-label-inline': inlineTitle }">{{ name | i18n }}</nts-label>
+                <nts-label 
+                    v-bind:constraint="constraints"
+                    v-bind:show-constraint="showConstraint"
+                    v-bind:class="{ 'control-label-inline': inlineTitle && inlineTitle !== 'false' }"
+                    >{{ name | i18n }}</nts-label>
             </div>
         </template>
         <div v-bind:class="columns.input">
@@ -65,63 +69,66 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
     },
     resource: {
         vi: {
-            before_today: "Hôm qua",
-            today: "Hôm nay",
-            after_today: "Ngày mai",
-            next_after_tody: "Ngày kia"
+            before_today: 'Hôm qua',
+            today: 'Hôm nay',
+            after_today: 'Ngày mai',
+            next_after_tody: 'Ngày kia'
         },
         jp: {
-            before_today: "前日",
-            today: "当日",
-            after_today: "翌日",
-            next_after_tody: "翌々日"
+            before_today: '前日',
+            today: '当日',
+            after_today: '翌日',
+            next_after_tody: '翌々日'
         }
     }
 });
 
 export class InputComponent extends Vue {
-    click() { }
+    public click() { }
 
-    type: string = '';
-    rows: number | null = null;
+    public type: string = '';
+    public rows: number | null = null;
 
-    editable: boolean = true;
-
-    @Prop({ default: () => '' })
-    readonly name: string;
+    public editable: boolean = true;
 
     @Prop({ default: () => '' })
-    readonly value: any;
+    public readonly name: string;
+
+    @Prop({ default: () => '' })
+    public readonly value: any;
 
     @Prop({ default: () => false })
-    readonly disabled?: boolean;
+    public readonly disabled?: boolean;
 
     @Prop({ default: () => null })
-    readonly errors!: any;
+    public readonly errors!: any;
 
     @Prop({ default: () => null })
-    readonly errorsAlways!: any;
+    public readonly errorsAlways!: any;
 
     @Prop({ default: () => ({}) })
-    readonly constraint!: IRule;
+    public readonly constraint!: IRule;
 
     @Prop({ default: () => true })
-    readonly showTitle!: 'true' | 'false' | boolean;
+    public readonly showTitle!: 'true' | 'false' | boolean;
+
+    @Prop({ default: () => true })
+    public readonly showConstraint!: 'true' | 'fasle' | boolean;
 
     @Prop({ default: () => false })
-    readonly inlineTitle!: boolean;
+    public readonly inlineTitle!: boolean;
 
     @Prop({ default: () => ({ before: '', after: '' }) })
-    readonly icons!: { before: string; after: string }
+    public readonly icons!: { before: string; after: string };
 
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
-    readonly columns!: { title: string; input: string };
+    public readonly columns!: { title: string; input: string };
 
     get iconsClass() {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
             isClass = (icon: string) => {
-                return !!classess.filter(f => icon.indexOf(f) > -1).length;
+                return !!classess.filter((f) => icon.indexOf(f) > -1).length;
             };
 
         return {
@@ -130,18 +137,18 @@ export class InputComponent extends Vue {
         };
     }
 
-    readonly $errors: any = {};
-    readonly constraints: IRule = {};
+    public readonly $errors: any = {};
+    public readonly constraints: IRule = {};
 
     @Watch('errors', { deep: true })
-    wSErrs(newErrs: any) {
+    public wSErrs(newErrs: any) {
         let self = this;
 
         Vue.set(self, '$errors', newErrs);
     }
 
     @Watch('errorsAlways', { deep: true })
-    wSErrAs(newErrs: any) {
+    public wSErrAs(newErrs: any) {
         let self = this;
 
         if (!obj.isBoolean(newErrs)) {
@@ -150,9 +157,9 @@ export class InputComponent extends Vue {
     }
 
     @Watch('$parent.$errors', { deep: true })
-    wErrs(newErrs: any) {
+    public wErrs(newErrs: any) {
         let self = this,
-            exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            exprs = ((( self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'errors') &&
@@ -162,16 +169,16 @@ export class InputComponent extends Vue {
     }
 
     @Watch('constraint', { immediate: true, deep: true })
-    wSConsts(newValidts: any) {
+    public wSConsts(newValidts: any) {
         let self = this;
 
         Vue.set(self, 'constraints', newValidts);
     }
 
     @Watch('$parent.validations', { immediate: true, deep: true })
-    wConsts(newValidts: any) {
+    public wConsts(newValidts: any) {
         let self = this,
-            exprs = (((<any>self.$vnode.data) || { model: { expression: '' } }).model || { expression: '' }).expression,
+            exprs = ((( self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
             props = (self.$vnode.componentOptions.propsData);
 
         if (obj.has(self.$parent, exprs) && !obj.has(props, 'constraint')) {

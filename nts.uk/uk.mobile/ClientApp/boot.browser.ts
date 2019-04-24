@@ -1,8 +1,6 @@
 import '@app/index';
 import '@views/index';
 
-import '@app/utils/bootstrap';
-
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
 import { bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language } from '@app/plugins';

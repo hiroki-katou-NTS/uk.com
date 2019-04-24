@@ -43,30 +43,30 @@ export class TimeDurationPickerComponent extends Vue {
             maxValue: 1349
         }
     })
-    readonly params: {
+    public readonly params: {
         minValue: number;
         maxValue: number;
         value: number;
     };
     
-    readonly timeUtil = time.timedr;
+    public readonly timeUtil = time.timedr;
 
-    readonly minTimePoint = this.timeUtil.computeTimePoint(this.params.minValue);
-    readonly maxTimePoint = this.timeUtil.computeTimePoint(this.params.maxValue);
+    public readonly minTimePoint = this.timeUtil.computeTimePoint(this.params.minValue);
+    public readonly maxTimePoint = this.timeUtil.computeTimePoint(this.params.maxValue);
 
     get hourList(): Array<number> {
-        var minHour = this.minTimePoint.hour;
-        var maxHour = this.maxTimePoint.hour;
+        let minHour = this.minTimePoint.hour;
+        let maxHour = this.maxTimePoint.hour;
         return this.generateArray(minHour, maxHour);
     }
 
     get minuteList(): Array<number> {
-        var minMinute = 0;
-        var maxMinute = 59;
+        let minMinute = 0;
+        let maxMinute = 59;
 
-        if(this.hourValue == this.minTimePoint.hour) {
+        if (this.hourValue == this.minTimePoint.hour) {
             
-            if(this.minTimePoint.hour >= 0 ) {
+            if (this.minTimePoint.hour >= 0 ) {
                 minMinute = this.minTimePoint.minute;
                 if (this.minuteValue < minMinute) {
                     this.minuteValue = minMinute;
@@ -80,7 +80,7 @@ export class TimeDurationPickerComponent extends Vue {
             
         }
 
-        if(this.hourValue == this.maxTimePoint.hour) {
+        if (this.hourValue == this.maxTimePoint.hour) {
 
             if (this.maxTimePoint.hour >= 0) {
                 maxMinute = this.maxTimePoint.minute;
@@ -89,7 +89,7 @@ export class TimeDurationPickerComponent extends Vue {
                 }
             } else {
                 minMinute = this.maxTimePoint.minute;
-                if(this.minuteValue < minMinute) {
+                if (this.minuteValue < minMinute) {
                     this.minuteValue = minMinute;
                 }
             }
@@ -104,31 +104,31 @@ export class TimeDurationPickerComponent extends Vue {
         return this.generateArray(minMinute, maxMinute);       
     }
 
-    generateArray(min: number, max: number): Array<number> {
-        var minuteList = new Array<number>();
-        for (var m = min; m<= max; m++) {
+    public generateArray(min: number, max: number): Array<number> {
+        let minuteList = new Array<number>();
+        for (let m = min; m <= max; m++) {
             minuteList.push(m);
         }
         return minuteList;
     }
 
-    minutes: number = this.params.value;
-    hourValue: number = this.timeUtil.computeHour(this.params.value);
-    minuteValue: number = this.timeUtil.computeMinute(this.params.value);
+    public minutes: number = this.params.value;
+    public hourValue: number = this.timeUtil.computeHour(this.params.value);
+    public minuteValue: number = this.timeUtil.computeMinute(this.params.value);
 
-    ok() {
+    public ok() {
         this.$close(this.minutes);
     }
 
-    cancel() {
+    public cancel() {
         this.$close();
     }
 
-    whenHourChange() {
-        let newHour = (<HTMLInputElement>this.$refs.hour1).value;
+    public whenHourChange() {
+        let newHour = ( this.$refs.hour1 as HTMLInputElement).value;
         this.hourValue = Number(newHour);
         _.defer(() => {
-            var tmp = this.minuteValue;
+            let tmp = this.minuteValue;
             this.minuteValue = undefined;
             this.minuteValue = tmp;
             this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
@@ -136,8 +136,8 @@ export class TimeDurationPickerComponent extends Vue {
         
     }
 
-    whenMinuteChange() {
-        let newMinute = (<HTMLInputElement>this.$refs.minute1).value;
+    public whenMinuteChange() {
+        let newMinute = ( this.$refs.minute1 as HTMLInputElement).value;
         this.minuteValue = Number(newMinute);
         this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
     }

@@ -18,7 +18,7 @@ const DIRTY = 'dirty',
             const isRule = (rule: IRule) => {
                 rule = $.cloneObject(rule);
 
-                return !!$.values(rule).map(r => {
+                return !!$.values(rule).map((r) => {
                     if ($.isObject(r)) {
                         let keys = $.keys(r);
 
@@ -30,7 +30,7 @@ const DIRTY = 'dirty',
                     }
 
                     return true;
-                }).filter(m => !m).length;
+                }).filter((m) => !m).length;
             }, updateValidator = function (rule: IRule): any {
                 let validations: IRule = this;
 
@@ -51,10 +51,10 @@ const DIRTY = 'dirty',
                 return validations;
             }, paths = (model: any) => {
                 return $.pathsOfObject(model)
-                    .filter((path: string) => !(<any>path).endsWith(".test"))
-                    .filter(m => {
+                    .filter((path: string) => !(path as any).endsWith('.test'))
+                    .filter((m) => {
                         let rule: IRule = $.get(model, m),
-                            keysOfRule: Array<string> = $.keys(rule).filter(k => DIRTY !== k);
+                            keysOfRule: Array<string> = $.keys(rule).filter((k) => DIRTY !== k);
 
                         if (keysOfRule.length == 2) {
                             return (keysOfRule.indexOf('test') == -1 && keysOfRule.indexOf('message') == -1 && keysOfRule.indexOf('messageId') == -1);
@@ -62,17 +62,17 @@ const DIRTY = 'dirty',
 
                         return true;
                     })
-                    .filter(m => {
+                    .filter((m) => {
                         let rule: IRule = $.get(model, m);
 
                         return $.values(rule)
-                            .filter(c => {
+                            .filter((c) => {
                                 if (!$.isObject(c)) {
                                     return true;
                                 } else {
                                     let keys = $.keys(c);
 
-                                    if (keys.filter(k => ['test', 'message', 'messageId']
+                                    if (keys.filter((k) => ['test', 'message', 'messageId']
                                         .indexOf(k) > -1).length == keys.length) {
                                         return true;
                                     } else {
@@ -97,12 +97,12 @@ const DIRTY = 'dirty',
 
                     // valid flag for check all validate item in view model
                     Object.defineProperty(self, '$valid', {
-                        get: function () {
+                        get() {
                             let c = $.cloneObject,
                                 $errors = c(self.$errors),
                                 $isValid = (p: string) => !$.size($.get($errors, p));
 
-                            return !paths(self.validations).map($isValid).filter(f => !f).length;
+                            return !paths(self.validations).map($isValid).filter((f) => !f).length;
                         }
                     });
 
@@ -127,11 +127,11 @@ const DIRTY = 'dirty',
                                         let validation: IRule = $.get(validations, path, {});
 
                                         if (validation.constraint) {
-                                            let cstr: { [key: string]: any } = resp.data.filter(c => c.name === validation.constraint)[0];
+                                            let cstr: { [key: string]: any } = resp.data.filter((c) => c.name === validation.constraint)[0];
 
                                             if (cstr) {
                                                 ['path', 'name']
-                                                    .forEach(v => {
+                                                    .forEach((v) => {
                                                         cstr = $.omit(cstr, v);
                                                     });
 
@@ -151,7 +151,7 @@ const DIRTY = 'dirty',
                                                 }
 
                                                 ['min', 'max', 'minLength', 'maxLength', 'mantissaMaxLength']
-                                                    .forEach(v => {
+                                                    .forEach((v) => {
                                                         if ($.has(cstr, v)) {
                                                             if (['Decimal', 'Integer'].indexOf($.get(cstr, 'valueType')) > -1) {
                                                                 $.set(cstr, v, Number($.get(cstr, v)));
@@ -176,7 +176,7 @@ const DIRTY = 'dirty',
                     let self: Vue = this;
 
                     // clean error when change validation
-                    self.$watch(() => self.validations, validations => {
+                    self.$watch(() => self.validations, (validations) => {
                         validations = $.cloneObject(validations);
 
                         // update error object
@@ -188,7 +188,7 @@ const DIRTY = 'dirty',
                                     watch: (value: any) => void;
                                     unwatch: () => void;
                                 }
-                            } = (<any>self).$validators;
+                            } = (self as any).$validators;
 
                         $.objectForEach($validators, (k: string, validtor: {
                             path: string;
@@ -267,7 +267,7 @@ const DIRTY = 'dirty',
 
                                 // check custom validators of dev
                                 $.keys(rule)
-                                    .filter(f => $.keys(validators).indexOf(f) == -1)
+                                    .filter((f) => $.keys(validators).indexOf(f) == -1)
                                     .forEach((key: string) => {
                                         let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
 
@@ -307,15 +307,15 @@ const DIRTY = 'dirty',
 
                     vue.set(self, 'validations', $.cloneObject(self.validations));
 
-                    setTimeout(() => self.$validate("clear"), 100);
+                    setTimeout(() => self.$validate('clear'), 100);
                 }
             });
 
             vue.directive('validate', {
-                update: function (el, binding: any) {
+                update(el, binding: any) {
                     // if arg is always, skip all errors
                     if (!($.has(binding.value, 'always') && $.has(binding.value, 'errors'))) {
-                        if (binding.arg !== "always") {
+                        if (binding.arg !== 'always') {
                             if (el.getAttribute('disabled')) {
                                 vue.set(binding, 'value', {});
                             }
@@ -346,12 +346,22 @@ const DIRTY = 'dirty',
 
             vue.component('v-errors', {
                 props: ['data', 'name'],
-                template: `<span class="invalid-feedback">{{ resource | i18n(name) }}</span>`,
+                template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
-                    resource: {
-                        get: function () {
-                            return $.isString(this.data) ? this.data : '';
+                    params() {
+                        let self = this,
+                            data = self.data;
+
+                        if (!$.isArray(data)) {
+                            return [self.name];
+                        } else {
+                            let $data = data.slice(1);
+
+                            return [self.name, ...$data];
                         }
+                    },
+                    resource() {
+                        return $.isString(this.data) ? this.data : ($.isArray(this.data) ? this.data[0] : '');
                     }
                 }
             });
@@ -368,7 +378,7 @@ const DIRTY = 'dirty',
                             path: string;
                             watch: (value: any) => void;
                             unwatch: () => void;
-                        }> = (<any>self).$validators,
+                        }> = (self as any).$validators,
                             errors = {};
 
                         $.objectForEach($validators, (k: string, validator: {
@@ -394,7 +404,7 @@ const DIRTY = 'dirty',
                         path: string;
                         watch: (value: any) => void;
                         unwatch: () => void;
-                    }> = (<any>self).$validators;
+                    }> = (self as any).$validators;
 
                     $.objectForEach($validators, (k: string, validtor: {
                         path: string;
@@ -423,7 +433,7 @@ const DIRTY = 'dirty',
 
                     vue.set(self, 'validations', validations);
                 }
-            }
+            };
         }
     };
 

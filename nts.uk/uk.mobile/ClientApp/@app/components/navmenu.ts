@@ -3,6 +3,7 @@ import { dom, browser } from '@app/utils';
 import { LanguageBar } from '@app/plugins';
 import { component, Watch } from '@app/core/component';
 
+// tslint:disable-next-line: variable-name
 const _NavMenu = new Vue({
     data: {
         show: false,
@@ -32,8 +33,8 @@ const _NavMenu = new Vue({
     template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible && items && items.length">
         <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
-        <transition name="collapse-long">
-            <div class="collapse navbar-collapse show" v-show="show">
+        <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
+            <div ref="nav" class="collapse navbar-collapse" v-show="show">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" v-for="(t, i) in items">
                         <router-link :to="t.url" class="nav-link">
@@ -42,7 +43,7 @@ const _NavMenu = new Vue({
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <language-bar />
+                    <language-bar v-on:change="show = false" />
                 </ul>
             </div>
         </transition>
@@ -73,10 +74,10 @@ const _NavMenu = new Vue({
     }
 })
 export class NavMenuBar extends Vue {
-    active: any = {};
+    public active: any = {};
 
     @Watch('show', { immediate: true })
-    toggleMaskLayer(show: boolean) {
+    public toggleMaskLayer(show: boolean) {
         let self = this;
 
         if (!show) {
@@ -91,12 +92,24 @@ export class NavMenuBar extends Vue {
         }
     }
 
-    created() {
+    public created() {
         dom.registerEventHandler(window, 'resize', resize);
     }
 
-    destroyed() {
+    public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);
+    }
+
+    public beforeEnter() {
+        let nav = this.$refs.nav as HTMLElement;
+
+        dom.addClass(nav, 'show');
+    }
+
+    public afterLeave() {
+        let nav = this.$refs.nav as HTMLElement;
+
+        dom.removeClass(nav, 'show');
     }
 }
 

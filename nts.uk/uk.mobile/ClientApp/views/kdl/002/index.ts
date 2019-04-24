@@ -14,13 +14,13 @@ import { WorkTypeComponent, worktypes } from '../../components/kdl';
     }
 })
 export class KDL002Component extends Vue {
-    mounted() {
+    public mounted() {
         this.pgName = 'worktype';
     }
 
-    listItems: Array<IWorkType> = worktypes().filter((w: any, i: number) => i <= 11);
+    public listItems: Array<IWorkType> = worktypes().filter((w: any, i: number) => i <= 11);
 
-    chooseWorkType(item: IWorkType) {
+    public chooseWorkType(item: IWorkType) {
         if (item) {
             this.$modal('worktype', item)
                 .then((v: any) => {

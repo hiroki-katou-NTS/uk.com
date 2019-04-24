@@ -4,23 +4,23 @@ import { select, SelectBoxComponent } from './select';
 
 @select()
 class CheckBoxComponent extends SelectBoxComponent {
-    type: string = 'checkbox';
+    public type: string = 'checkbox';
 
     get checked() {
         return obj.isArray(this.selected) ? this.selected.indexOf(this.value) > -1 : this.selected === this.value;
     }
 
-    onClick() {
+    public onClick() {
         let self = this;
 
         if (obj.isArray(this.selected)) {
             if (self.selected.includes(self.value)) {
-                self.selected.splice(self.selected.indexOf(self.value), 1)
+                self.selected.splice(self.selected.indexOf(self.value), 1);
             } else {
-                self.selected.push(self.value)
+                self.selected.push(self.value);
             }
         } else {
-            if ((<HTMLInputElement>this.$refs.input).checked) {
+            if (( this.$refs.input as HTMLInputElement).checked) {
                 this.$emit('input', this.value);
             } else {
                 this.$emit('input', undefined);
