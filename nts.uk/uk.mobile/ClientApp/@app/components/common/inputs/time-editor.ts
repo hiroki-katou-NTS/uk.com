@@ -34,7 +34,7 @@ export class TimeComponent extends InputComponent {
 
     @Emit()
     public input() {
-        let value = ( this.$refs.input as HTMLInputElement).value;
+        let value = (this.$refs.input as HTMLInputElement).value;
 
         if (value) {
             let numb = Number(value);
@@ -49,35 +49,61 @@ export class TimeComponent extends InputComponent {
         return null;
     }
 
-    public click() {
-        let picker = 'time-with-day-picker';
-        switch (this.timeInputType) {
-            case TimeInputType.TimeWithDay:
-                picker = 'time-with-day-picker';
-                break;
-            case TimeInputType.TimePoint:
-                picker = 'time-point-picker';
-                break;
-            case TimeInputType.TimeDuration:
-                picker = 'time-duration-picker';
-                break;
-        }
+    public created() {
+        let self = this;
+        this.picker.has = true;
 
-        this
-            .$modal(picker, {
-                value: this.value,
-                minValue: this.constraint.minValue,
-                maxValue: this.constraint.maxValue,
+        this.picker.onSelect = function () {
+            Vue.set(self.picker, 'dataSources', {});
+        };
+    }
+
+    public click() {
+        this.picker.show = true;
+
+        this.picker.dataSources = {
+            h1: [{
+                text: '0',
+                value: 0
             }, {
-                    type: 'popup',
-                    title: this.name,
-                    animate: 'down'
-                })
-            .then((v) => {
-                if (v !== undefined) {
-                    this.$emit('input', v);
-                }
-            });
+                text: '1',
+                value: 1
+            }, {
+                text: '2',
+                value: 2
+            }],
+            h2: [{
+                text: '0',
+                value: 0
+            }, {
+                text: '1',
+                value: 1
+            }, {
+                text: '2',
+                value: 2
+            }],
+            m1: [{
+                text: '0',
+                value: 0
+            }, {
+                text: '1',
+                value: 1
+            }, {
+                text: '2',
+                value: 2
+            }],
+            m2: [{
+                text: '0',
+                value: 0
+            }, {
+                text: '1',
+                value: 1
+            }, {
+                text: '2',
+                value: 2
+            }]
+        };
+
     }
 }
 

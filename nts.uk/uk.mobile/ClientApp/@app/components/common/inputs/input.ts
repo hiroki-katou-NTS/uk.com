@@ -2,6 +2,7 @@ import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Watch } from '@app/core/component';
+import { MobilePicker } from '@app/components/picker';
 import { TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
@@ -64,9 +65,14 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         }
                 <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
+            <template v-if="picker.has" key="showpicker">
+                <picker v-model="picker.select" v-bind:title="name" v-bind:show="picker.show" v-bind:data-sources="picker.dataSources" v-on:close="picker.show = false" v-on:select="picker.onSelect" />
+            </template>
+            <template v-else key="hidepicker"></template>
         </div>
     </div>`,
     components: {
+        'picker': MobilePicker,
         'time-point-picker': TimePointPickerComponent,
         'time-duration-picker': TimeDurationPickerComponent,
         'time-with-day-picker': TimeWDPickerComponent
@@ -94,6 +100,20 @@ export class InputComponent extends Vue {
     public rows: number | null = null;
 
     public editable: boolean = true;
+
+    public readonly picker: {
+        has: boolean;
+        show: boolean;
+        select: {[key: string]: any};
+        dataSources: {[key: string]: any[]};
+        onSelect: (value: {[key: string]: any}) => void;
+    } = {
+        has: false,
+        show: false,
+        select: {},
+        dataSources: {},
+        onSelect(v) {}
+    };
 
     @Prop({ default: () => '' })
     public readonly name: string;

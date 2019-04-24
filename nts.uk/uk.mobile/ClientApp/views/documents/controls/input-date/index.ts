@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
+import { date } from '@app/utils';
 
 @component({
     name: 'documentscontrolsinput-date',
@@ -15,5 +16,5 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputDateComponent extends Vue {
-    public date: Date = new Date();
+    public date: Date = date.from('2019-02-28', 'yyyy-mm-dd', true);
 }
