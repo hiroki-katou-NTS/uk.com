@@ -80,7 +80,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             //var fromScreen = "login"; 
             self.topPageCode(code);
             character.restore('currentOrNextMonth').done((obj)=>{
-                self.selectedSwitch(obj);
+                if(!obj){
+                    self.selectedSwitch(0);   
+                }else{
+                    self.selectedSwitch(obj);                    
+                }
             })
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
@@ -198,8 +202,13 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    self.showMypage(self.dataSource().myPage);
-                    self.showToppage(self.dataSource().topPage);
+//                    self.showMypage(self.dataSource().myPage);
+//                    self.showToppage(self.dataSource().topPage);
+                    if(data.check == true || data.checkMyPage == false){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
                 });
             });
         }
