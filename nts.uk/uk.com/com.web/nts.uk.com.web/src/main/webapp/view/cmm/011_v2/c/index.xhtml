@@ -20,17 +20,17 @@
     <ui:define name="content">
         <div id="contents-area">
             <div class="valign-center control-group">
-                <div style="width: 480px" id="C1_1" class="label" data-bind="visible: screenMode == 0">
+                <div style="width: 463px" id="C1_1" class="label" data-bind="visible: screenMode == 0">
                     #{i18n.getText('CMM011_207')}
                 </div>
-                <div style="width: 480px" id="C1_1" class="label" data-bind="visible: screenMode == 1">
+                <div style="width: 463px" id="C1_1" class="label" data-bind="visible: screenMode == 1">
                     #{i18n.getText('CMM011_307')}
                 </div>
             </div>
             <div class="valign-center control-group" align="center">
             	<div id="C2_1" tabindex="1" style="width: 355px;"
             		data-bind="ntsRadioBoxGroup: {
-		                name: '#CMM011-0_',
+		                name: '作成方法',
 		                options: itemList,
 		                optionsValue: 'id',
 		                optionsText: 'name',
@@ -48,7 +48,7 @@
                           primaryKey: 'historyId',
                           multiple: false,
                           value: targetHistId,
-                          name:'#CMM011-0_29'}">
+                          name:'#CMM011_129'}">
                 </table>
             </div>
         </div>
