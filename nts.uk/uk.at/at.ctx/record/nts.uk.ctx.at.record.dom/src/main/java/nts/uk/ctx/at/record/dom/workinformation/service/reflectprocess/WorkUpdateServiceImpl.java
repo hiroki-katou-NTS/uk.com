@@ -24,9 +24,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
@@ -35,15 +33,14 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-//import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -54,18 +51,24 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class WorkUpdateServiceImpl implements WorkUpdateService{
-	@Inject
-	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Inject
@@ -76,7 +79,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private WorkTimeSettingService workTimeSetting;
     @Inject
     private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyRepo;
-
+	@Inject
+	private CompensLeaveComSetRepository comSetRepo;
+	@Inject
+	private WorkTypeRepository worktypeRepo;
+	@Inject
+	private GetCommonSet workTimeCommonSet;
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyInfo) {
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
@@ -419,84 +427,71 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
-		List<HolidayWorkFrameTime> lstHolidayWorkFrameTimeTmp = new ArrayList<>();		
 		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
-		if(isPre) {			
-			lstHolidayWorkFrameTime.stream().forEach(x -> {
-				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
-					AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(x.getHolidayFrameNo().v()));
-					x.setBeforeApplicationTime(Finally.of(worktimeTmp));
-				}
-			});	
-			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
-			for(int i = 1; i <= 10; i++) {
-				if(!worktimeFrame.containsKey(i)) {
-					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
-					lstWorktimeFrameTemp.remove(item);
-				} else {
-					if(lstHolidayWorkFrameTime.isEmpty()) {
-						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
-						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
-						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
-								Finally.of(timeCalculation),
-								Finally.of(timeCalculation),
-								Finally.of(worktimeTmp));
-						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
-					}
-				}
-			}	
+		String companyId = AppContexts.user().companyId();
+		CompensatoryLeaveComSetting comSetting = comSetRepo.find(companyId);
+		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = comSetting.getCompensatoryOccurrenceSetting().stream()
+				.filter(x -> x.getOccurrenceType() == CompensatoryOccurrenceDivision.WorkDayOffTime).collect(Collectors.toList());
+		Optional<CompensatoryOccurrenceSetting> optOccurenceSetting = eachCompanyTimeSet.isEmpty() ? Optional.empty() : Optional.of(eachCompanyTimeSet.get(0));
+		String workTimeCode = "";
+		if(isPre) {
+			workTimeCode = dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode().v();
 		} else {
-			lstHolidayWorkFrameTime.stream().forEach(x -> {
-				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
-					Finally<TimeDivergenceWithCalculation> holidayWorkTime = x.getHolidayWorkTime();
+			workTimeCode = dailyData.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+		}
+		Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, dailyData.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		if(!workTypeInfor.isPresent()) {
+			return;
+		}
+		List<WorkTimezoneOtherSubHolTimeSet> lstWorkTime = this.subhol(companyId, workTimeCode).stream()
+				.filter(x -> x.getOriginAtr() == nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision.WorkDayOffTime)
+				.collect(Collectors.toList());
+		Optional<WorkTimezoneOtherSubHolTimeSet> subHolSet = lstWorkTime.isEmpty() ? Optional.empty() : Optional.of(lstWorkTime.get(0));
+		if(isPre) {
+			lstHolidayWorkFrameTime.stream().forEach(a -> {
+				if(worktimeFrame.containsKey(a.getHolidayFrameNo().v())) {
+					AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(a.getHolidayFrameNo().v()));
+					a.setBeforeApplicationTime(Finally.of(worktimeTmp));
+				}
+			});			
+		} else {
+			lstHolidayWorkFrameTime.stream().forEach(a -> {
+				if(worktimeFrame.containsKey(a.getHolidayFrameNo().v())) {
+					Finally<TimeDivergenceWithCalculation> holidayWorkTime = a.getHolidayWorkTime();
 					if(holidayWorkTime.isPresent()) {
 						TimeDivergenceWithCalculation holidayWorkTimeData = holidayWorkTime.get();
-						holidayWorkTimeData.setTime(new AttendanceTime(worktimeFrame.get(x.getHolidayFrameNo().v())));
+						holidayWorkTimeData.setTime(new AttendanceTime(worktimeFrame.get(a.getHolidayFrameNo().v())));
 					}
 				}
 			});
-			lstWorktimeFrameTemp = this.lstAfterWorktimeFrameItem();
-			for(int i = 1; i <= 10; i++) {
-				if(!worktimeFrame.containsKey(i)) {					
-					Integer item = this.lstAfterWorktimeFrameItem().get(i - 1); 
-					lstWorktimeFrameTemp.remove(item);
-				} else {
-					AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
-					if(lstHolidayWorkFrameTime.isEmpty()) {
-						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
-						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
-								Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(worktimeTmp, new AttendanceTime(0))),
-								Finally.of(timeCalculation),
-								Finally.of(new AttendanceTime(0)));
-						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
-					} else {
-                        for (HolidayWorkFrameTime x : lstHolidayWorkFrameTime) {
-                            if(x.getHolidayFrameNo().v() == i) {
-                                Finally<TimeDivergenceWithCalculation> hwTime = x.getHolidayWorkTime();
-                                if(hwTime.isPresent()) {
-                                    hwTime.get().setTime(worktimeTmp);
-                                } else {
-                                    x.setHolidayWorkTime(Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(worktimeTmp, new AttendanceTime(0))));
-                                }
-                                break;
-                            }
-                        }
-					}
-				}
-			}	
 		}
-		if(!lstHolidayWorkFrameTimeTmp.isEmpty()) {
-			attendanceTimeData
+		List<HolidayWorkFrameTime> result = HolidayWorkTimeSheet.transProcess(workTypeInfor.get(), lstHolidayWorkFrameTime, 
+				subHolSet, optOccurenceSetting);
+		attendanceTimeData
 			.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-			.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().setHolidayWorkFrameTime(lstHolidayWorkFrameTimeTmp);
-			
-		}
+			.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().setHolidayWorkFrameTime(result);
 		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
+		
 		//↓ fix bug 103077
 		if(!isRec) {
+			if(isPre) {
+				lstWorktimeFrameTemp.addAll(this.lstPreWorktimeFrameItem());
+			} else {
+				lstWorktimeFrameTemp.addAll(this.lstAfterWorktimeFrameItem());
+				lstWorktimeFrameTemp.addAll(this.lstTranfertimeFrameItem());
+			}
 			this.updateEditStateOfDailyPerformance(employeeId, dateData, dailyData.getEditState(), lstWorktimeFrameTemp);	
 		}
 		//↑ fix bug 103077
+	}
+	private List<WorkTimezoneOtherSubHolTimeSet> subhol(String companyId, String workTimeCode){
+		Optional<WorkTimezoneCommonSet> optWorktimezone = workTimeCommonSet.get(companyId, workTimeCode);
+		if(!optWorktimezone.isPresent()) {
+			return new ArrayList<>();
+		}
+		WorkTimezoneCommonSet commonSet = optWorktimezone.get();
+		List<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = commonSet.getSubHolTimeSet();
+		return subHolTimeSet;
 	}
 	/**
 	 * 事前休日出勤時間の項目ID
@@ -1050,8 +1045,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
         }
         String sid = daily.getWorkInformation().getEmployeeId();
         GeneralDate ymd = daily.getWorkInformation().getYmd();
-        List<BreakTimeOfDailyPerformance> breakTime = daily.getBreakTime().stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
-                .collect(Collectors.toList());
+        List<BreakTimeOfDailyPerformance> breakTime = daily.getBreakTime();
         
         if(breakTime.isEmpty()) {
             List<BreakTimeSheet> lstBreakTime = new ArrayList<>();

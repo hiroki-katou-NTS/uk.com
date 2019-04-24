@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.monthly;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,11 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			"AND   a.krcdtMonMergePk.closureId =:closureId",
 			"AND   a.krcdtMonMergePk.closureDay =:closureDay",
 			"AND   a.krcdtMonMergePk.isLastDay =:isLastDay",
+			"ORDER BY a.krcdtMonMergePk.employeeId");
+	private static final String FIND_BY_EMPLOYEES_AND_CLOSURE = String.join(" ", SEL_NO_WHERE,
+			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
+			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
+			"AND   a.krcdtMonMergePk.closureId =:closureId",
 			"ORDER BY a.krcdtMonMergePk.employeeId");
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_NO_WHERE,
 			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
@@ -120,6 +126,23 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList(c -> toDomain(c)));
+		});
+		results.sort(Comparator.comparing(TimeOfMonthly::getEmployeeId));
+		return results;
+	}
+	
+	@Override
+	public List<TimeOfMonthly> findByEmployeesAndClorure(List<String> employeeIds, YearMonth yearMonth,
+			int closureId) {
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<TimeOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES_AND_CLOSURE, KrcdtMonMerge.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId)
 					.getList(c -> toDomain(c)));
 		});
 		results.sort(Comparator.comparing(TimeOfMonthly::getEmployeeId));

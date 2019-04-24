@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
@@ -28,8 +27,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
-//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -87,9 +84,11 @@ public class OverTimeSheet {
 														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 														   IntegrationOfDaily integrationOfDaily,
 														   List<OverTimeFrameNo> statutoryFrameNoList) {
+		
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
 		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
+
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
 			val forceAtr = autoCalcSet.decisionUseCalcSetting(overTimeFrameTime.getWithinStatutryAtr(), overTimeFrameTime.isGoEarly()).getCalAtr();
@@ -135,9 +134,6 @@ public class OverTimeSheet {
 			}
 			calcOverTimeWorkTimeList = reOrderList;
 		}
-		//staticがついていなので、4末緊急対応	
-		 
-		
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
 		//return afterCalcUpperTimeList; 
@@ -147,7 +143,6 @@ public class OverTimeSheet {
 											  eachWorkTimeSet,
 											  eachCompanyTimeSet);
 		return aftertransTimeList;
-		
 	}
 	
 
@@ -334,10 +329,12 @@ public class OverTimeSheet {
 	 * @return　自動計算設定
 	 */
 	private AutoCalSetting getCalcSetByAtr(AutoCalOvertimeSetting autoCalcSet,StatutoryAtr statutoryAtr, boolean goEarly) {
+		//法内である
 		if(statutoryAtr.isStatutory() ) {
 			return autoCalcSet.getLegalMidOtTime();
 		}
 		else {
+			//早出である
 			if(goEarly) {
 				return autoCalcSet.getEarlyMidOtTime();
 			}
@@ -364,8 +361,10 @@ public class OverTimeSheet {
 			return afterCalcUpperTimeList;
 		//代休振替設定判定
 		switch(useSettingAtr.get().getSubHolTransferSetAtr()) {
+			//一定時間を超えたら代休とする
 			case CERTAIN_TIME_EXC_SUB_HOL:
 				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList);
+			//指定した時間を代休とする
 			case SPECIFIED_TIME_SUB_HOL:
 				return transAllTime(useSettingAtr.get().getDesignatedTime().getOneDayTime(),
 								    useSettingAtr.get().getDesignatedTime().getHalfDayTime(),
