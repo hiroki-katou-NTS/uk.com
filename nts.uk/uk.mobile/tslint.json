@@ -1,0 +1,51 @@
+{
+    "defaultSeverity": "warning",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "node_modules/**",
+            "ClientApp/**/*.d.ts"
+        ]
+    },
+    "rules": {
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "indent": [
+            true,
+            "spaces",
+            2
+        ],
+        "interface-name": false,
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "no-consecutive-blank-lines": false,
+        "eofline": false,
+        "array-type": false,
+        "member-ordering": false,
+        "trailing-comma": false,
+        "object-literal-key-quotes": false,
+        "only-arrow-functions": false,
+        "max-line-length": false,
+        "prefer-const": false,
+        "no-trailing-whitespace": false,
+        "no-empty": false,
+        "callable-types": false,
+        "space-before-function-paren": false,
+        "triple-equals": false,
+        "no-console": false,
+        "no-shadowed-variable": false,
+        "forin": false,
+        "variable-name": false,
+        "prefer-for-of": false,
+        "radix": false,
+        "ban-types": false,
+        "no-namespace": false,
+        "no-unused-expression": false,
+        "max-classes-per-file": false,
+        "one-variable-per-declaration": false
+    }
+}

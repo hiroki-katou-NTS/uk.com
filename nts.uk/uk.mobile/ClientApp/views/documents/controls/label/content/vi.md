@@ -17,4 +17,11 @@
 ```html
 <nts-label v-bind:constraint="{required: true, min: 100, max: 1000}" class="control-label-inline">{{'sample_label' | i18n}}</nts-label>
 ```
-###### 2.4 Tài liệu khác
+
+###### 2.4 Không hiển thị ràng buộc
+> Để ẩn ràng buộc của một label (*cho một model*) ta có thể không sử dụng `constraint` hoặc chỉ sử dụng `constraint` có thuộc tính `required`.
+> <br/>Một cách khác là ta thêm bind: `v-bind:show-constraint="false"` hoặc dùng đơn giản hơn: `show-constraint="false"` để ẩn `constraint` trong label đi.
+
+> **Chú ý**: Nếu binding: `show-constraint` mang giá trị `false`, class: `control-label-inline` là không cần thiết.
+
+###### 2.5 Tài liệu khác

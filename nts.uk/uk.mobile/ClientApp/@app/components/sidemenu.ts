@@ -3,6 +3,7 @@ import { Language } from '@app/plugins';
 import { dom, browser } from '@app/utils';
 import { component, Watch } from '@app/core/component';
 
+// tslint:disable-next-line: variable-name
 const _SideMenu = new Vue({
     data: {
         show: false,
@@ -84,13 +85,13 @@ const _SideMenu = new Vue({
                 let kwo = this.filter.toLowerCase().trim(),
                     i18n = Language.i18n,
                     items = SideMenu.items
-                        .map(m => ({
+                        .map((m) => ({
                             url: m.url,
                             title: m.title,
-                            childs: i18n(m.title).toLowerCase().indexOf(kwo) > -1 ? (m.childs || []) : (m.childs || []).filter(c => i18n(c.title).toLowerCase().indexOf(kwo) > -1),
+                            childs: i18n(m.title).toLowerCase().indexOf(kwo) > -1 ? (m.childs || []) : (m.childs || []).filter((c) => i18n(c.title).toLowerCase().indexOf(kwo) > -1),
                             hasc: !!(m.childs || []).length
                         }))
-                        .filter(f => {
+                        .filter((f) => {
                             return i18n(f.title).toLowerCase().indexOf(kwo) > -1 || !!f.childs.length;
                         });
 
@@ -110,8 +111,8 @@ const _SideMenu = new Vue({
     }
 })
 export class SideMenuBar extends Vue {
-    active: any = {};
-    filter: string = '';
+    public active: any = {};
+    public filter: string = '';
 
     constructor() {
         super();
@@ -122,13 +123,13 @@ export class SideMenuBar extends Vue {
         }
     }
 
-    hideSideBar() {
+    public hideSideBar() {
         if (browser.width < 992) {
             SideMenu.show = false;
         }
     }
 
-    toggleDropdown(item: any) {
+    public toggleDropdown(item: any) {
         if (this.active === item) {
             this.active = {};
         } else {
@@ -136,14 +137,14 @@ export class SideMenuBar extends Vue {
         }
     }
 
-    preventScroll(evt: TouchEvent) {
-        //evt.preventDefault();
+    public preventScroll(evt: TouchEvent) {
+        // evt.preventDefault();
         evt.stopPropagation();
         evt.stopImmediatePropagation();
     }
 
     @Watch('show', { immediate: true })
-    toggleMaskLayer(show: boolean) {
+    public toggleMaskLayer(show: boolean) {
         let self = this;
 
         if (!show) {
@@ -162,11 +163,11 @@ export class SideMenuBar extends Vue {
         localStorage.setItem('__sidebar__', show ? 'show' : '');
     }
 
-    created() {
+    public created() {
         dom.registerEventHandler(window, 'resize', resize);
     }
 
-    destroyed() {
+    public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);
     }
 }

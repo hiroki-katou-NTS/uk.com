@@ -13,7 +13,7 @@ import { component, Prop } from '@app/core/component';
 })
 class SearchComponent extends Vue {
     @Prop({ default: '' })
-    readonly value!: string;
+    public readonly value!: string;
 }
 
 Vue.component('nts-search-box', SearchComponent);

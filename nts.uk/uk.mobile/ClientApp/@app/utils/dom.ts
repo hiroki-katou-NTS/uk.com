@@ -1,4 +1,4 @@
-import { obj } from "@app/utils";
+import { obj } from '@app/utils';
 
 const dom = {
     setHtml: (element: HTMLElement, html: string | number) => {
@@ -172,7 +172,7 @@ const dom = {
     },
     registerOnceClickOutEventHandler(element: HTMLElement, handler: () => any) {
         dom.registerOnceEventHandler(document, 'click', (evt: MouseEvent) => {
-            let clo = undefined,
+            let clo,
                 target = event.target as HTMLElement;
 
             while (target) {
@@ -191,7 +191,7 @@ const dom = {
     registerGlobalEventHandler(element: Document | HTMLElement, eventName: string, matcher: string, handler: (evt: any) => any) {
         dom.registerEventHandler(element, eventName, (event: any) => {
             [].slice.call(element.querySelectorAll(matcher))
-                .forEach(match => {
+                .forEach((match) => {
                     let target = event.target as HTMLElement;
 
                     while (target && target !== element) {
@@ -213,8 +213,8 @@ const dom = {
     registerGlobalClickOutEventHandler(element: Document | HTMLElement, matcher: string, handler: (evt: any) => any) {
         dom.registerEventHandler(element, 'click', (event: any) => {
             [].slice.call(element.querySelectorAll(matcher))
-                .forEach(match => {
-                    let clo = undefined,
+                .forEach((match) => {
+                    let clo,
                         target = event.target as HTMLElement;
 
                     while (target) {
@@ -236,21 +236,21 @@ const dom = {
         });
     },
     dispatchEvent(element: HTMLElement, event: Event, handler: (evt: Event) => any) {
-        //try {
+        // try {
         Object.defineProperty(event,
             'target', {
                 value: element,
                 writable: false
             });
-        //} catch {
-        //}
+        // } catch {
+        // }
 
         return handler.call(element, event);
     },
     data: (function () {
-        var dataStoreKeyExpandoPropertyName = "__nts__" + (new Date).getTime(),
+        let dataStoreKeyExpandoPropertyName = '__nts__' + (new Date()).getTime(),
             getDataForNode = function (node, createIfNotFound) {
-                var dataForNode = node[dataStoreKeyExpandoPropertyName];
+                let dataForNode = node[dataStoreKeyExpandoPropertyName];
                 if (!dataForNode && createIfNotFound) {
                     dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
                 }
@@ -265,20 +265,20 @@ const dom = {
             };
 
         return {
-            get: function (node: HTMLElement, key: string) {
-                var dataForNode = getDataForNode(node, false);
+            get (node: HTMLElement, key: string) {
+                let dataForNode = getDataForNode(node, false);
                 return dataForNode && dataForNode[key];
             },
-            set: function (node: HTMLElement, key: string, value: any) {
+            set (node: HTMLElement, key: string, value: any) {
                 // Make sure we don't actually create a new domData key if we are actually deleting a value
-                var dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
+                let dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
                 dataForNode && (dataForNode[key] = value);
             },
-            getOrSet: function (node: HTMLElement, key: string, value: any) {
-                var dataForNode = getDataForNode(node, true /* createIfNotFound */);
+            getOrSet (node: HTMLElement, key: string, value: any) {
+                let dataForNode = getDataForNode(node, true /* createIfNotFound */);
                 return dataForNode[key] || (dataForNode[key] = value);
             },
-            clear: clear
+            clear
         };
     })()
 };

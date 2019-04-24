@@ -12,13 +12,13 @@ import { component, Prop } from '@app/core/component';
 })
 export class ModalComponent extends Vue {
     @Prop({ default: () => ({ name: '' }) })
-    params!: { [key: string]: any };
+    public params!: { [key: string]: any };
 
-    acceptEvent() {
+    public acceptEvent() {
         this.$close('accept');
     }
 
-    cancelEvent() {
+    public cancelEvent() {
         this.$close('cancel');
     }
 }

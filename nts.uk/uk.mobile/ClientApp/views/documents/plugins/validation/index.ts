@@ -17,23 +17,42 @@ import { component } from '@app/core/component';
         model: {
             username: {
                 required: true,
-                custom_validator: {
-                    test: /\d{3,5}/,
-                    message: '{0} is number in range [100, 99999].'
-                }
+                constraint: 'SampleIntMinMax'
             },
             password: {
-                required: true
+                required: true,
+                constraint: 'SampleStringAnyHalf'
             }
         }
-    }
+    },
+    constraints: [
+        'nts.uk.shr.sample.primitive.decimals.SampleDecimalMinMax',
+        'nts.uk.shr.sample.primitive.decimals.SampleDecimalRange',
+        'nts.uk.shr.sample.primitive.halfints.SampleHalfIntMinMax',
+        'nts.uk.shr.sample.primitive.halfints.SampleHalfIntRange',
+        'nts.uk.shr.sample.primitive.ints.SampleIntMinMax',
+        'nts.uk.shr.sample.primitive.ints.SampleIntRange',
+        'nts.uk.shr.sample.primitive.longs.SampleLongMinMax',
+        'nts.uk.shr.sample.primitive.longs.SampleLongRange',
+
+        'nts.uk.shr.sample.primitive.strings.SampleStringAlphaNumeric',
+        'nts.uk.shr.sample.primitive.strings.SampleStringAny',
+        'nts.uk.shr.sample.primitive.strings.SampleStringAnyHalf',
+        'nts.uk.shr.sample.primitive.strings.SampleStringKana',
+        'nts.uk.shr.sample.primitive.strings.SampleStringNumeric',
+
+        'nts.uk.shr.sample.primitive.times.SampleClockMinMax',
+        'nts.uk.shr.sample.primitive.times.SampleClockRange',
+        'nts.uk.shr.sample.primitive.times.SampleDurationMinMax',
+        'nts.uk.shr.sample.primitive.times.SampleDurationRange'
+    ]
 })
 export class DocumentsPluginsValidationComponent extends Vue {
     public model: {
-        username: string;
+        username: number;
         password: string;
     } = {
-        username: 'username',
+        username: 500,
         password: 'password'
     };
 }

@@ -15,5 +15,5 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputDateComponent extends Vue {
-    date: Date = new Date();
+    public date: Date = new Date();
 }
