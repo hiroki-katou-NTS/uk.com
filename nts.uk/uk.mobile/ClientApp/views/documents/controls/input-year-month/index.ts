@@ -19,4 +19,6 @@ export class DocumentsControlsInputYearMonthComponent extends Vue {
     public yearMonth1: string = '201905';
 
     public yearMonth2: string = null;
+
+    public yearMonth3: string = null;
 }
