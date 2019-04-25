@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.pub.department;
+package nts.uk.ctx.bs.employee.pub.deparment.master;
 
 import lombok.Builder;
 import lombok.Getter;
