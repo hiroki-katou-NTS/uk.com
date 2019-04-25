@@ -103,7 +103,10 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 					loginName,//{7}　←　ログイン者．氏名
 					loginMail//{8}　←　ログイン者．メールアドレス
 			);
-			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail);
+			//EA3315
+			//hoatt 2019.04.19
+			//imported（申請承認）「社員名（ビジネスネーム）」を取得する  ※RequestList 228
+			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail, empName);
 		}
 		return null;
 	}

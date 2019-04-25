@@ -18,12 +18,14 @@ public class ApplicationSendDto {
 	public String applicantMail;
 	//ver6
 	private String sidLogin;
-	public static ApplicationSendDto fromDomain(ApplicationDto_New application_New, String mailTemplate, ApprovalRootOutput approvalRootContentImport, String loginerMail){
+	private String empName;
+	public static ApplicationSendDto fromDomain(ApplicationDto_New application_New, String mailTemplate, ApprovalRootOutput approvalRootContentImport, String loginerMail, String empName){
 			return new ApplicationSendDto(application_New, mailTemplate, 
 					approvalRootContentImport.getListApprovalPhaseState()
 						.stream().map(x -> ApproverPhaseStateSendDto.fromApprovalPhaseState(x))
 						.collect(Collectors.toList()),
 					loginerMail,
-					AppContexts.user().employeeId());
+					AppContexts.user().employeeId(),
+					empName);
 		}
 }
