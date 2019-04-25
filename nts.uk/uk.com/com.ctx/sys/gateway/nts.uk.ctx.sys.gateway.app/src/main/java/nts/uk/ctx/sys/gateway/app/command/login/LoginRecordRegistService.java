@@ -116,6 +116,7 @@ public class LoginRecordRegistService {
 	 * @param personalId the personal id
 	 * @return the user
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public UserImportNew getUser(String personalId, String companyId, String employeeCode) {
 		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
@@ -138,6 +139,7 @@ public class LoginRecordRegistService {
 	 * @param employeeCode the employee code
 	 * @return the employee
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public EmployeeImport getEmployee(String companyId, String employeeCode) {
 		Optional<EmployeeImport> em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
 		if (em.isPresent()) {
@@ -162,7 +164,8 @@ public class LoginRecordRegistService {
 		this.callLoginRecord(param);
 		return new CheckChangePassDto(false, msgErrorId, false);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SystemSuspendOutput checkSystemStop(BasicLoginCommand command) {
 		// アルゴリズム「システム利用停止の確認」を実行する
 		String programID = AppContexts.programId().substring(0, 6);
@@ -179,6 +182,7 @@ public class LoginRecordRegistService {
 	 *
 	 * @param user the user
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void checkLimitTime(UserImportNew user, String companyId, String employeeCode) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_316");
@@ -271,6 +275,7 @@ public class LoginRecordRegistService {
 	 *
 	 * @param command the command
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void checkInput(BasicLoginCommand command) {
 
 		// check input company code
