@@ -36,9 +36,10 @@
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
                     v-bind:columns="{ title: 'col-lg-4 col-sm-6', input: 'col-lg-8 col-sm-6' }"
-                    @keyup.enter="login" />
+                    @keydown.enter="login" />
 
                 <nts-checkbox 
+                    class="form-check-info"
                     v-model="model.autoLogin"
                     v-bind:value="true"
                     v-bind:disabled="false">

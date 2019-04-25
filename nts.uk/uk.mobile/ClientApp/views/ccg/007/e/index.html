@@ -26,7 +26,7 @@
                 v-bind:constraint="validations.model.newPasswordConfirm"
                 v-bind:errors-always="$errors.model.newPasswordConfirm"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
-                @keyup.enter="changePass" />
+                @keydown.enter="changePass" />
     
             <div class="accordion" v-nts-accordion v-if="policy.isUse">
                 <div class="card">

@@ -55,6 +55,7 @@ export namespace ccg007 {
     }
 
     export function toHomePage(self) {
+        self.$mask('hide');
         self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
     }
 
