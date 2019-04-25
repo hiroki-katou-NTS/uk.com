@@ -69,7 +69,7 @@ module nts.uk.com.view.cdl008.a {
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    selectedWorkplaceId: null,
+                    selectedId: null,
                     maxRows: 12,
                     tabindex: 1,
                     systemType: self.selectedSystemType,
@@ -77,10 +77,10 @@ module nts.uk.com.view.cdl008.a {
                     isShowNoSelectRow: self.isDisplayUnselect()
                 };
                 if (self.isMultipleSelect) {
-                    self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
+                    self.workplaces.selectedId = self.selectedMulWorkplace;
                 }
                 else {
-                    self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
+                    self.workplaces.selectedId = self.selectedSelWorkplace;
                 }
             }
 

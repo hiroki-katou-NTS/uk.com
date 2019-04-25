@@ -28,7 +28,7 @@ module nts.uk.com.view.ccg.share.dialog.ccg {
                     startMode: self.startMode,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    selectedId: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
                     isDialog: true
                 };
