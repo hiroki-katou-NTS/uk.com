@@ -19,8 +19,9 @@ export class YearMonthComponent extends InputComponent {
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
         for (let y = min; y <= max; y++) {
+            let text = y < 10 ? '0' + y : '' + y;
             result.push({
-                text: y + '',
+                text,
                 value: y
             });
         }
@@ -35,7 +36,10 @@ export class YearMonthComponent extends InputComponent {
         this.picker.has = true;
 
         this.picker.onFinish = () => {
-            self.$emit('input', this.picker.select.year + '' + this.picker.select.month);
+            let newValue = this.picker.select.month < 10 ? 
+                this.picker.select.year + '0' + this.picker.select.month :
+                this.picker.select.year + '' + this.picker.select.month;
+            self.$emit('input', newValue);
         };
 
         this.picker.onRemove = () => {
@@ -97,11 +101,12 @@ export class YearMonthComponent extends InputComponent {
     }
 
     private displayYearMonth(year: Number, month: Number) {
-        return year + '年' + month + '月';
+        let textMonth = month < 10 ? '0' + month : '' + month;
+        return year + '年' + textMonth + '月';
     }
 
     private displayEmpty() {
-        return '- - - -年- -月';
+        return '- - - - 年 - -月';
     }
 }
 
