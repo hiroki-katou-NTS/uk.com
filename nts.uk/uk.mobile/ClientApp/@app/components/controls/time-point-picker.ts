@@ -64,6 +64,7 @@ export class TimePointPickerComponent extends Vue {
         } else if (minHour < 0 && maxHour >= 0) {
             let negativeArray = this.generateNegativeArray(minHour, -23);
             let positiveArray = this.generateArray(0, maxHour);
+
             return negativeArray.concat(positiveArray);
         } else if (minHour >= 0 && maxHour >= 0) {
             return this.generateArray(minHour, maxHour);
@@ -109,6 +110,7 @@ export class TimePointPickerComponent extends Vue {
             }
 
         }
+
         return this.generateArray(minMinute, maxMinute);
     }
 
@@ -117,6 +119,7 @@ export class TimePointPickerComponent extends Vue {
         for (let m = min; m <= max; m++) {
             minuteList.push(m);
         }
+
         return minuteList;
     }
 
@@ -125,6 +128,7 @@ export class TimePointPickerComponent extends Vue {
         for (let m = min; m >= max; m--) {
             minuteList.push(m);
         }
+
         return minuteList;
     }
 

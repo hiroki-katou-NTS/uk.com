@@ -27,12 +27,14 @@ export class WebStorageWrapper {
         if (value === null || value === undefined || value === 'undefined') {
             return null;
         }
+
         return value;
     }
 
     public getItemAndRemove(key: string) {
         let item = this.getItem(key);
         this.removeItem(key);
+
         return item;
     }
 
@@ -65,6 +67,7 @@ export namespace characteristics {
         result.sort(function(a, b) {
             return (a > b) ? 1 : (a < b) ? -1 : 0;    
         });
+
         return result.toString();
     }    
     
@@ -121,6 +124,7 @@ export namespace cookie {
         
     export function get(name: string): string {
         let value = asMap()[name];
+
         return value;
     }
     

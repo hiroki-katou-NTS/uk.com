@@ -40,6 +40,7 @@ const dom = {
 
         if (parent) {
             parent.removeChild(element);
+
             return true;
         }
 
@@ -254,19 +255,23 @@ const dom = {
                 if (!dataForNode && createIfNotFound) {
                     dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
                 }
+
                 return dataForNode;
             },
             clear = function (node) {
                 if (node[dataStoreKeyExpandoPropertyName]) {
                     delete node[dataStoreKeyExpandoPropertyName];
+
                     return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
                 }
+
                 return false;
             };
 
         return {
             get (node: HTMLElement, key: string) {
                 let dataForNode = getDataForNode(node, false);
+
                 return dataForNode && dataForNode[key];
             },
             set (node: HTMLElement, key: string, value: any) {
@@ -276,6 +281,7 @@ const dom = {
             },
             getOrSet (node: HTMLElement, key: string, value: any) {
                 let dataForNode = getDataForNode(node, true /* createIfNotFound */);
+
                 return dataForNode[key] || (dataForNode[key] = value);
             },
             clear

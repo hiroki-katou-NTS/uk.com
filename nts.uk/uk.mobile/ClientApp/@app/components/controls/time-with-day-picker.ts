@@ -135,6 +135,7 @@ export class TimeWDPickerComponent extends Vue {
             default:
                 break;
         }
+
         return dayList;
     }
 
@@ -198,6 +199,7 @@ export class TimeWDPickerComponent extends Vue {
         for (let m = min; m <= max; m++) {
             minuteList.push(m);
         }
+
         return minuteList;
     }
 

@@ -64,6 +64,7 @@ export class ResetPassComponent extends Vue {
             self.model.contractCode = user.contractCode;
             self.model.loginId = user.loginId;
             self.model.userId = user.userId;
+
             return user;
         }).then((user) => {
             return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);

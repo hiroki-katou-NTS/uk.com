@@ -16,6 +16,7 @@ class DateComponent extends InputComponent {
        if ($.isNil(this.value)) {
            return '';
        }
+
        return this.computeRawValue(this.value);
     }
 
@@ -25,6 +26,7 @@ class DateComponent extends InputComponent {
         let date: number = value.getDate();
         let monthText = month < 10 ? '0' + month : month;
         let dateText = date < 10 ? '0' + date : date;
+
         return year + '-' + monthText + '-' + dateText;
     }
 

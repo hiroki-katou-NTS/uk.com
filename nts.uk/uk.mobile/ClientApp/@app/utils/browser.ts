@@ -15,6 +15,7 @@ export class browser {
                 check = true;
             }
         })(navigator.userAgent || navigator.vendor || ( window as any).opera);
+
         return check;
     }
 
@@ -25,6 +26,7 @@ export class browser {
                 check = true;
             }
         })(navigator.userAgent || navigator.vendor || ( window as any).opera);
+
         return check;
     }
 

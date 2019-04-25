@@ -175,7 +175,7 @@ export const MobilePicker = {
                 this.selects = {};
             });
         },
-        remove() {
+        remove() {            
             this.show = false;
             this.$emit('input', {});
             this.$emit('remove', {});
@@ -329,7 +329,7 @@ export const MobilePicker = {
                 target.setAttribute('top', position + 'em');
 
                 d++;
-            },                                       30);
+            }, 30);
         },
         setGear(key: string, index: number) {
             let self = this,

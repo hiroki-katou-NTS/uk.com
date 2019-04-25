@@ -24,6 +24,7 @@ export class YearMonthComponent extends InputComponent {
                 value: y
             });
         }
+
         return result;
     }
 
@@ -52,6 +53,7 @@ export class YearMonthComponent extends InputComponent {
         if (this.value == null || this.value == undefined) {
             if (this.constraint.required) {
                 let today = moment.utc();
+
                 return this.displayYearMonth(today.year(), today.month() + 1);
             } else {
                 return this.displayEmpty();

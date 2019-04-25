@@ -43,6 +43,7 @@ const $date = {
                 val = String(val);
                 len = len || 2;
                 while (val.length < len) { val = '0' + val; }
+
                 return val;
             }, masks: {
                 [key: string]: string
@@ -64,7 +65,11 @@ const $date = {
         mask = String(masks[mask || ''] || mask || masks.default);
 
         // Allow setting the utc argument via the mask
-        mask = mask.replace(/^(UTC:)/, () => { utc = true; return ''; });
+        mask = mask.replace(/^(UTC:)/, () => {
+            utc = true;
+
+            return '';
+        });
 
         let d: number = utc ? date.getUTCDate() : date.getDate(),
             D: number = utc ? date.getUTCDay() : date.getDay(),
@@ -117,6 +122,7 @@ const $date = {
                         return false;
                     }
                 }
+
                 return true;
             },
             getInt = function (str: string, i: number, minlength: number, maxlength: number) {
@@ -129,6 +135,7 @@ const $date = {
                         return String(token);
                     }
                 }
+
                 return null;
             };
 
@@ -149,6 +156,7 @@ const $date = {
                     }
                 }
             }
+
             return null;
         }
 

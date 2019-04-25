@@ -16,8 +16,7 @@
         ],
         "indent": [
             true,
-            "spaces",
-            2
+            "spaces"
         ],
         "align": [
             true,
@@ -53,6 +52,23 @@
             false,
             "always-prefix"
         ],
+        "whitespace": [
+            true,
+            "check-branch",
+            "check-operator",
+            "check-typecast"
+        ],
+        "no-this-assignment": [
+            false,
+            {
+                "allowed-names": [
+                    "^self$",
+                    "^that$",
+                    "^vm$"
+                ],
+                "allow-destructuring": true
+            }
+        ],
         "encoding": true,
         "ordered-imports": false,
         "object-literal-sort-keys": false,
@@ -85,6 +101,9 @@
         "one-variable-per-declaration": false,
         "no-unsafe-finally": true,
         "no-duplicate-imports": true,
-        "newline-per-chained-call": false
+        "newline-per-chained-call": false,
+        "newline-before-return": true,
+        "comment-format": true,
+        "no-use-before-declare": false
     }
 }

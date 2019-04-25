@@ -32,6 +32,7 @@ const DIRTY = 'dirty',
                     return true;
                 }).filter((m) => !m).length;
             }, updateValidator = function (rule: IRule): any {
+                // tslint:disable-next-line: no-this-assignment
                 let validations: IRule = this;
 
                 $.objectForEach(rule, (key: string, value: IRule) => {

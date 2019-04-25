@@ -24,11 +24,13 @@ const WEB_APP_NAME = {
             return new Promise(function (resolve, reject) {
                 if (!$.isObject(opt)) {
                     reject('No required parameters - "url" and "method".');
+
                     return;
                 }
 
                 if ($.isEmpty(opt.url)) {
                     reject('Parameter "url" is required.');
+
                     return;
                 } else {
                     $.extend(opt, {
@@ -38,6 +40,7 @@ const WEB_APP_NAME = {
 
                 if ($.isEmpty(opt.method)) {
                     reject('Parameter "method" is required.');
+
                     return;
                 }
 
@@ -51,12 +54,15 @@ const WEB_APP_NAME = {
                             switch (opt.type.toLowerCase()) {
                                 case 'form':
                                     setHeaders({ 'Content-Type': 'multipart/form-data' });
+
                                     return Object.prototype.toString.call(opt.data) === '[object FormData]' ? opt.data : new FormData(opt.data);
                                 case 'url':
                                     setHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
                                     return JSON.stringify(opt.data);
                                 case 'json':
                                     setHeaders({ 'Content-Type': 'application/json' });
+
                                     return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data);
                                 default:
                                     return opt.data;
@@ -69,6 +75,7 @@ const WEB_APP_NAME = {
                     }, isJSON = (json: string) => {
                         try {
                             JSON.parse(json);
+
                             return true;
                         } catch (e) {
                             return false;
@@ -101,6 +108,7 @@ const WEB_APP_NAME = {
                                 headers[key] = val;
                             }
                         }
+
                         return headers;
                     };
 

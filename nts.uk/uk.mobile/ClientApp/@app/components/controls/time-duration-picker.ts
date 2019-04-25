@@ -57,6 +57,7 @@ export class TimeDurationPickerComponent extends Vue {
     get hourList(): Array<number> {
         let minHour = this.minTimePoint.hour;
         let maxHour = this.maxTimePoint.hour;
+        
         return this.generateArray(minHour, maxHour);
     }
 
@@ -109,6 +110,7 @@ export class TimeDurationPickerComponent extends Vue {
         for (let m = min; m <= max; m++) {
             minuteList.push(m);
         }
+
         return minuteList;
     }
 

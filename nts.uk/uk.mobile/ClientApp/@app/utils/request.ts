@@ -80,6 +80,7 @@ export class QueryString {
                 instance.set(entryParts[0], entryParts[1]);
             }
         }
+
         return instance;
     }
 
@@ -119,6 +120,7 @@ export class QueryString {
         for (let key in this.items) {
             count++;
         }
+
         return count;
     }
 
@@ -163,11 +165,13 @@ export namespace login {
                                         .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
                                         .mergeRelativePath(arguments[1]);
                 keepUsedLoginPage.apply(null, [ loginLocator.serialize() ]);
+
                 return;
             }
             
             if (url === undefined) {
                 keepUsedLoginPage.apply(null, [ location.current.serialize() ]);
+
                 return;
             }
             
@@ -213,6 +217,7 @@ export namespace csrf {
         if (_.isNil(csrfToken)) {
             return 'FIXED_TOKEN';
         }
+
         return csrfToken;
     }
 }

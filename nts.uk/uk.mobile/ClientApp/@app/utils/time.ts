@@ -32,6 +32,7 @@ export const time = {
                 minutesInDay = 1440 + value;
             }
             let hour = Math.floor(minutesInDay / 60);
+
             return minutesInDay - hour * 60;
         },
         computeValue(newDay: string, newHour: number, newMinute: number): number {
@@ -52,18 +53,21 @@ export const time = {
                 default:
                     break;
             }
+
             return newMinutes;
         },
         computeTimePoint(value: number): TimeWithDayPoint {
             let day = time.timewd.computeDay(value);
             let hour = time.timewd.computeHour(value);
             let minute = time.timewd.computeMinute(value);
+
             return {
                 day, hour, minute
             };
         },
         toString(value: number): string {
             let timePoint = time.timewd.computeTimePoint(value);
+
             return timePoint.day + ' ' + time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
@@ -78,12 +82,14 @@ export const time = {
         computeMinute(value: number): number {
             if (value > 0) {
                 let hour = Math.floor(value / 60);
+
                 return value - hour * 60;
             } else {
                 let hour = 0 - Math.floor(Math.abs(value) / 60);
                 if (hour == 0) {
                     return value;
                 }
+
                 return Math.abs(value) + hour * 60;
             }
         },
@@ -97,6 +103,7 @@ export const time = {
                 hour = 0 - Math.floor(Math.abs(value) / 60);
                 minute = Math.abs(value) + hour * 60;
             }
+
             return {
                 hour,
                 minute
@@ -132,6 +139,7 @@ export const time = {
             let hour = 0;
             if (value >= 0) {
                 hour = Math.floor(value / 60);
+
                 return value - hour * 60;
             } else {
                 let minutesInDay = 1440 + value;
@@ -167,6 +175,7 @@ export const time = {
         },
         toString(value: number) {
             let timePoint = time.timept.computeTimePoint(value);
+
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
