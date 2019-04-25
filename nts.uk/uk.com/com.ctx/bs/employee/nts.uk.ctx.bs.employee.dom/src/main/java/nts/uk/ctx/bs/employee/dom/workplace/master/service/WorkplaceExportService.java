@@ -142,7 +142,7 @@ public class WorkplaceExportService {
 		}
 		if (!listWorkplaceId.isEmpty()) {
 			result.addAll(listWorkplaceId.stream()
-					.map(w -> new WorkplaceInforParam(w, "", null, "コード削除済", "コード削除済", "コード削除済", null))
+					.map(w -> new WorkplaceInforParam(w, "", "", "コード削除済", "コード削除済", "コード削除済", null))
 					.collect(Collectors.toList()));
 		}
 		result.sort((e1, e2) -> {

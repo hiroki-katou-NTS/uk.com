@@ -191,6 +191,8 @@ module kcp.share.tree {
         // 部門対応 #106784
         startMode: StartMode;
 
+        $inputId: KnockoutObservable<string>;
+
         constructor() {
             let self = this;
             self.searchBoxId = nts.uk.util.randomId();
@@ -223,15 +225,17 @@ module kcp.share.tree {
 
             // 部門対応 #106784
             self.startMode = StartMode.WORKPLACE;
+
+            self.$inputId = ko.observable("");
         }
 
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
             self.data = data;
-            self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;;
+            self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;
             self.$input = $input;
-
+            self.$inputId($input[0].id);
             // set parameter
             self.isFullView(_.isNil(data.isFullView) ? false : data.isFullView); // default = false
             if (data.isMultipleUse) {
@@ -317,7 +321,7 @@ module kcp.share.tree {
 
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
-                    $input.find('#multiple-tree-grid_tooltips_ruler').remove();
+                    $input.find('#multiple-tree-grid-' + self.$inputId() + '_tooltips_ruler').remove();
                     dfd.resolve();
                 });
                 
@@ -621,7 +625,7 @@ module kcp.share.tree {
                 let found;
                 const flat = function(wk) {
                     return [wk.id, _.flatMap(wk.children, flat)];
-                }
+                };
                 const selectableList = _.flatMapDeep(self.itemList(), flat);
                 if (self.isMultiSelect) {
                     found = _.filter(self.selectedWorkplaceIds(), id => _.includes(selectableList, id));
@@ -911,9 +915,9 @@ module kcp.share.tree {
          */
         private getComIdSearchBox(): string {
             if (this.isMultiSelect) {
-                return 'multiple-tree-grid';
+                return 'multiple-tree-grid-' + this.$inputId();
             }
-            return 'single-tree-grid';
+            return 'single-tree-grid-' + this.$inputId();
         }
 
         /**
@@ -1032,11 +1036,11 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         </div>
         <div class="cf"></div>
         <!-- ko if: !isMultiSelect -->
-            <table id="single-tree-grid" class="cf" data-bind="attr: {tabindex: tabindex}">
+            <table class="cf" data-bind="attr: {tabindex: tabindex, id: 'single-tree-grid-' + $inputId()}">
             </table>
         <!-- /ko -->
         <!-- ko if: isMultiSelect -->
-            <table id="multiple-tree-grid" class="cf" data-bind="attr: {tabindex: tabindex}">
+            <table class="cf" data-bind="attr: {tabindex: tabindex, id: 'multiple-tree-grid-' + $inputId()}">
             </table>
         <!-- /ko -->
     </div>`;

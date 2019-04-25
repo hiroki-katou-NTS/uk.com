@@ -463,7 +463,7 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	private List<RegulationInfoEmployeeDto> findEmployeesInfo(RegulationInfoEmpQueryDto queryDto) {
 		String companyId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.fromString(queryDto.getBaseDate(), "yyyy/MM/dd");
+		GeneralDate baseDate = GeneralDate.fromString(queryDto.getBaseDate(), "yyyy-MM-dd");
 
 		// return data
 		List<RegulationInfoEmployeeDto> empDtos;
@@ -475,10 +475,11 @@ public class RegulationInfoEmployeeFinder {
 		if (queryDto.getSystemType() == CCG001SystemType.SALARY.value) {
 			// filter present department config span by reference date
 			regulationInfoEmployees = regulationInfoEmployees.stream().
-					filter(e -> !e.getDepartmentConfEndDate().isPresent() ||
+					filter(e -> e.getDepartmentId().isPresent() &&
+								(!e.getDepartmentConfEndDate().isPresent() ||
 								!e.getDepartmentConfStrDate().isPresent() ||
 								(e.getDepartmentConfEndDate().get().afterOrEquals(baseDate) &&
-								 e.getDepartmentConfStrDate().get().beforeOrEquals(baseDate)))
+								 e.getDepartmentConfStrDate().get().beforeOrEquals(baseDate))))
 					.collect(Collectors.toList());
 
 			// get data for list department with no data
@@ -487,7 +488,7 @@ public class RegulationInfoEmployeeFinder {
 					.map(e -> e.getDepartmentId().get())
 					.distinct()
 					.collect(Collectors.toList());
-			// Request list 560
+			// Request list 563
 			Map<String, DepartmentInfoImport> depInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, noDataDepIds, baseDate)
 					.stream().collect(Collectors.toMap(DepartmentInfoImport::getDepartmentId, Function.identity()));
 
@@ -506,10 +507,11 @@ public class RegulationInfoEmployeeFinder {
 		} else {
 			// filter present workplace config span by reference date
 			regulationInfoEmployees = regulationInfoEmployees.stream().
-					filter(e -> !e.getWorkplaceConfEndDate().isPresent() ||
+					filter(e -> e.getWorkplaceId().isPresent() &&
+								(!e.getWorkplaceConfEndDate().isPresent() ||
 								!e.getWorkplaceConfStrDate().isPresent() ||
 								(e.getWorkplaceConfEndDate().get().afterOrEquals(baseDate) &&
-								e.getWorkplaceConfStrDate().get().beforeOrEquals(baseDate)))
+								e.getWorkplaceConfStrDate().get().beforeOrEquals(baseDate))))
 					.collect(Collectors.toList());
 
 			// get data for list department with no data
@@ -518,7 +520,7 @@ public class RegulationInfoEmployeeFinder {
 					.map(e -> e.getWorkplaceId().get())
 					.distinct()
 					.collect(Collectors.toList());
-            // Request list 562
+            // Request list 560
 			Map<String, WorkplaceInfoImport> wkpInfoImports = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, noDataWkpIds, baseDate)
 					.stream().collect(Collectors.toMap(WorkplaceInfoImport::getWorkplaceId, Function.identity()));
 

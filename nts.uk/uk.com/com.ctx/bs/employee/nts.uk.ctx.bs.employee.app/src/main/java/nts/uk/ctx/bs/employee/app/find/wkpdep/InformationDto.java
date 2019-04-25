@@ -24,7 +24,7 @@ public class InformationDto {
 
     public InformationDto(WorkplaceInformation wkpInfor) {
         this.id = wkpInfor.getWorkplaceId();
-        this.code = wkpInfor.getWorkplaceCode().v();
+        this.code = wkpInfor.getWorkplaceCode().v() == null ? "" : wkpInfor.getWorkplaceCode().v();
         this.name = wkpInfor.getWorkplaceName().v();
         this.dispName = wkpInfor.getWorkplaceDisplayName().v();
         this.genericName = wkpInfor.getWorkplaceGeneric().v();
@@ -37,7 +37,7 @@ public class InformationDto {
 
     public InformationDto(DepartmentInformation depInfor) {
         this.id = depInfor.getDepartmentId();
-        this.code = depInfor.getDepartmentCode().v();
+        this.code = depInfor.getDepartmentCode().v() == null ? "" : depInfor.getDepartmentCode().v();
         this.name = depInfor.getDepartmentName().v();
         this.dispName = depInfor.getDepartmentDisplayName().v();
         this.genericName = depInfor.getDepartmentGeneric().v();

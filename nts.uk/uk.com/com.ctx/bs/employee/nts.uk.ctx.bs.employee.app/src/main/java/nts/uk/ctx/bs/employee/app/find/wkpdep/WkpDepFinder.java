@@ -268,7 +268,21 @@ public class WkpDepFinder {
 
     public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
         List<InformationDto> listInfo = this.getDepWkpInfo(findObject);
-        return this.createTree(listInfo);
+        List<InformationDto> listInfoHasHierarchyCode = new ArrayList<>();
+		List<InformationDto> listInfoHasNoHierarchyCode = new ArrayList<>();
+		listInfo.forEach(e -> {
+			if (e.getHierarchyCode().isEmpty()) {
+				listInfoHasNoHierarchyCode.add(e);
+			} else {
+				listInfoHasHierarchyCode.add(e);
+			}
+		});
+		List<WkpDepTreeDto> result = this.createTree(listInfoHasHierarchyCode);
+		// convert list no hierarchy code to tree
+		List<WkpDepTreeDto> noHierarchyCodeTree = listInfoHasNoHierarchyCode.stream().map(WkpDepTreeDto::toTreeDto).collect(Collectors.toList());
+		// add list no hierarchy code to the end of the tree list
+		result.addAll(noHierarchyCodeTree);
+        return result;
     }
 
     private List<InformationDto> getDepWkpInfo(DepWkpInfoFindObject findObject) {
