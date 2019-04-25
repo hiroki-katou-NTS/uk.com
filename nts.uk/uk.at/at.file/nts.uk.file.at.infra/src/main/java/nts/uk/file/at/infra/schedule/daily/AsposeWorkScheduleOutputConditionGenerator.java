@@ -1359,6 +1359,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
 				}
+				if (valueTypeEnum.isString()) {
+					totalVal.setValue(totalVal.getValue());
+					totalVal.setValueType(val.getValueType());
+				}
 			});
 		});
 		
@@ -1417,6 +1421,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
+						if (valueTypeEnum.isString()) {
+							personalTotal.setValue(aVal.value());
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							totalVal.setValue(aVal.value());
+							totalGrossVal.setValue(aVal.value());
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+						}
 					});
 				});
 			});
@@ -1442,6 +1453,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						}
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+						}
+						if (valueTypeEnum.isString()) {
+							totalVal.setValue(totalVal.value());
 						}
 					}
 					else {
@@ -1498,6 +1512,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
 						}
+						if (valueTypeEnum.isString()) {
+							totalValue.setValue(totalValue.value());
+						}
 					}
 					else {
 						totalValue = new TotalValue();
@@ -1528,6 +1545,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						}
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
+						}
+						if (valueTypeEnum.isString()) {
+							totalValue.setValue(totalValue.value());
 						}
 					}
 					else {
@@ -1569,6 +1589,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 					if (valueTypeEnum.isDoubleCountable()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
+					}
+					if (valueTypeEnum.isString()) {
+						totalValue.setValue(totalValue.value());
 					}
 				}
 				else {
@@ -1620,14 +1643,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					if (valueTypeEnum.isDoubleCountable()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
 					}
+					if(valueTypeEnum.isString()){
+						totalValue.setValue(totalVal.getValue());
+					}
 				}
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(totalVal.getAttendanceId());
-					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
-					if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
-						totalValue.setValue(totalVal.getValue());
-					}
+					totalValue.setValue(totalVal.getValue());
 					totalValue.setValueType(totalVal.getValueType());
 					lstGrossTotal.add(totalValue);
 				}
@@ -3093,7 +3116,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
     	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
     		cell.putValue(value, true);
+    	}else {
+			cell.setValue(value);
     	}
+    	
     	setFontStyle(style);
     	cell.setStyle(style);
 	}
