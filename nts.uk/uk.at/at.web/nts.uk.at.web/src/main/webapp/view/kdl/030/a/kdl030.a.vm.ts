@@ -223,7 +223,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             this.id = id;
             this.dispApproverName = name;
             this.mail = mail;
-            this.isSend = sidLogin == id ? ko.observable(0) : ko.observable(1);
+            this.isSend = sidLogin == id ? ko.observable(0) : ko.observable(isSend);
             this.showButton = isSend == 0 ? false : true;
         }
     }
