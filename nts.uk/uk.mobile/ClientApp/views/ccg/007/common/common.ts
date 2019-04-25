@@ -74,7 +74,7 @@ export namespace ccg007 {
             if (!_.isEqual(res.message, 'can not found message id')) {
                 self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
             } else {
-                self.$modal.error({ messageId: res.messageId });
+                self.$modal.error(res.messageId);
             }
         });
     }
