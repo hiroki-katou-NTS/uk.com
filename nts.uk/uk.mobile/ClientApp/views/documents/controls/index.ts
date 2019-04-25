@@ -6,3 +6,4 @@ import './input-string';
 import './input-time';
 import './label';
 import './text-area';
+import './input-year-month';

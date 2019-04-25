@@ -14,3 +14,4 @@ import './inputs/number-editor';
 
 import './inputs/date-input';
 import './inputs/time-editor';
+import './inputs/year-month';

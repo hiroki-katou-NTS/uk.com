@@ -66,7 +66,15 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                 <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
             <template v-if="picker.has" key="showpicker">
-                <picker v-model="picker.select" v-bind:title="name" v-bind:show="picker.show" v-bind:data-sources="picker.dataSources" v-on:close="picker.show = false" v-on:select="picker.onSelect" />
+                <picker v-model="picker.select" 
+                        v-bind:title="name" 
+                        v-bind:show="picker.show" 
+                        v-bind:data-sources="picker.dataSources" 
+                        v-bind:options="picker.options"
+                        v-on:close="picker.show = false" 
+                        v-on:select="picker.onSelect"
+                        v-on:finish="picker.onFinish"
+                        v-on:remove="picker.onRemove" />
             </template>
             <template v-else key="hidepicker"></template>
         </div>
@@ -106,13 +114,19 @@ export class InputComponent extends Vue {
         show: boolean;
         select: {[key: string]: any};
         dataSources: {[key: string]: any[]};
+        options: {[key: string]: any};
         onSelect: (value: {[key: string]: any}) => void;
+        onFinish: () => void;
+        onRemove: () => void;
     } = {
         has: false,
         show: false,
         select: {},
         dataSources: {},
-        onSelect(v) {}
+        options: {},
+        onSelect(v) {},
+        onFinish() {},
+        onRemove() {}
     };
 
     @Prop({ default: () => '' })
