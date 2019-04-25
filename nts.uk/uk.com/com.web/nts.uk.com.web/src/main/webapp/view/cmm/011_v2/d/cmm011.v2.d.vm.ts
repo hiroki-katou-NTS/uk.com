@@ -33,6 +33,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
         updateMode = false;
 
         constructor() {
+            block.invisible();
             let self = this, params = nts.uk.ui.windows.getShared("CMM011AParams");
             let currentScreen = nts.uk.ui.windows.getSelf();
             if (params) {
@@ -143,6 +144,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 }
             });
             self.createMethod.valueHasMutated();
+            block.clear();
         }
 
         getSiblings(items: Array<any>, currentHierarchyCode: string, hierarchyLevel: number): Array<any> {
@@ -193,14 +195,14 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 } else {
                     self.updateMode = false;
                 }
+                block.clear();
             }).fail(error => {
+                block.clear();
                 alertError(error).then(() => {
                     if (error.messageId == "Msg_3") {
                         self.code(null);
                     }
                 });
-            }).always(() => {
-                block.clear();
             });
         }
         

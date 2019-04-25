@@ -301,8 +301,6 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 });
             }).fail((error) => {
                 alertError(error);
-            }).always(() => {
-                block.clear();
             });
         }
 
