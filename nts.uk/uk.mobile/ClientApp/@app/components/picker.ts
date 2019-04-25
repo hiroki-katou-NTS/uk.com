@@ -1,3 +1,7 @@
+/*!
+ * Copyright 2018
+ */
+
 import { Vue } from '@app/provider';
 import { obj, dom } from '@app/utils';
 
@@ -30,6 +34,7 @@ export const MobilePicker = {
                         class="tooth"
                         v-for="(item, index) in cols"
                         v-bind:key="index"
+                        v-bind:class="{ disabled: item.disabled }"
                     >{{item[textField] | i18n}}</div>
                     </div>
                     <div class="area_grid"></div>
@@ -138,7 +143,7 @@ export const MobilePicker = {
 
                     if (refs[key] && refs[key][0]) {
                         refs[key][0].setAttribute('top', -index * 2);
-                        refs[key][0].style['-webkit-transform'] = `translate3d(0, ${-index * 2}em, 0)`;
+
                     }
                 });
             }
@@ -324,7 +329,7 @@ export const MobilePicker = {
                 target.setAttribute('top', position + 'em');
 
                 d++;
-            }, 30);
+            },                                       30);
         },
         setGear(key: string, index: number) {
             let self = this,
@@ -343,5 +348,11 @@ export const MobilePicker = {
             evt.stopImmediatePropagation();
         },
         destroyPicker() { }
+    },
+    created() {
+        // tslint:disable-next-line: no-string-literal
+        window['vue'] = Vue;
+        // tslint:disable-next-line: no-string-literal
+        window['pkr'] = this;
     }
 };

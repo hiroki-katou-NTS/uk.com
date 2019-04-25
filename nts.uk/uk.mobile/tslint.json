@@ -19,13 +19,48 @@
             "spaces",
             2
         ],
-        "interface-name": false,
+        "align": [
+            true,
+            "parameters",
+            "statements"
+        ],
+        "member-ordering": [
+            false,
+            {
+                "order": [
+                    "public-static-field",
+                    "public-instance-field",
+                    "public-constructor",
+                    "private-static-field",
+                    "private-instance-field",
+                    "private-constructor",
+                    "public-instance-method",
+                    "protected-instance-method",
+                    "private-instance-method"
+                ]
+            }
+        ],
+        "file-header": [
+            false,
+            {
+                "match": "Copyright \\d{4}",
+                "allow-single-line-comments": true,
+                "default": "Copyright Nittsu System Viet Nam",
+                "enforce-trailing-newline": true
+            }
+        ],
+        "interface-name": [
+            false,
+            "always-prefix"
+        ],
+        "encoding": true,
         "ordered-imports": false,
         "object-literal-sort-keys": false,
         "no-consecutive-blank-lines": false,
+        "switch-default": true,
+        "no-switch-case-fall-through": true,
         "eofline": false,
         "array-type": false,
-        "member-ordering": false,
         "trailing-comma": false,
         "object-literal-key-quotes": false,
         "only-arrow-functions": false,
@@ -47,6 +82,9 @@
         "no-debugger": false,
         "no-unused-expression": false,
         "max-classes-per-file": false,
-        "one-variable-per-declaration": false
+        "one-variable-per-declaration": false,
+        "no-unsafe-finally": true,
+        "no-duplicate-imports": true,
+        "newline-per-chained-call": true
     }
 }

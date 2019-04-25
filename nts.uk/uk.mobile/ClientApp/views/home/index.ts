@@ -1,10 +1,17 @@
 import { Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
+
+import { MobilePicker } from '@app/components/picker';
+import { InfinityPickerComponent } from '@app/components';
 @component({
     route: '/',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
+    components: {
+        'mpkr': MobilePicker,
+        'ipkr': InfinityPickerComponent
+    },
     validations: {
         model: {
             numbers: {
@@ -119,7 +126,7 @@ export class HomeComponent extends Vue {
         if (show) {
             document.body.classList.add('modal-open');
         } else {
-            document.body.classList.remove('modal-open');
+        document.body.classList.remove('modal-open');
         }
     }
 
@@ -137,26 +144,101 @@ export class HomeComponent extends Vue {
         }
     }
 
+    public viewPortClicked(value: any) {
+        console.log(value);
+    }
+
+    /*public mounted() {
+        let transY = -200,
+            mtop = 0,
+            count = 0,
+            scr = this.$refs.scroll as HTMLElement,
+            emulate = () => {
+                scr.setAttribute('style', `transform: translateY(${transY}px); margin-top: ${mtop}px;`);
+
+                if (transY >= -440) {
+                    setTimeout(emulate, 200);
+                }
+
+                transY -= 1;
+                count += 1;
+
+                if (count == 40 || (count == 20 && transY >= -220)) {
+                    mtop += 40;
+                    count = 0;
+                }
+            };
+
+        scr.addEventListener('click', () => {
+            transY = -200;
+            mtop = 0;
+            count = 0;
+        });
+
+        emulate();
+    }*/
+
     public showPicker() {
-        let onSelect = function (selects: any, pkr: { dataSources: { day: any[] } }) {
-            pkr.dataSources.day = [];
 
-            if (selects.month === 2) {
-                for (let i = 1; i <= 28; i++) {
-                    pkr.dataSources.day.push({ text: `${i}`, value: i });
+        this.$picker({
+            h1: 0,
+            h2: 1,
+            m1: 0,
+            m2: 0
+        },
+            {
+                h1: [{
+                    text: '0',
+                    value: 0
+                },   {
+                    text: '1',
+                    value: 1
+                },   {
+                    text: '2',
+                    value: 2
+                }],
+                h2: [{
+                    text: '0',
+                    value: 0
+                },   {
+                    text: '1',
+                    value: 1
+                },   {
+                    text: '2',
+                    value: 2
+                }],
+                m1: [{
+                    text: '0',
+                    value: 0
+                },   {
+                    text: '1',
+                    value: 1
+                },   {
+                    text: '2',
+                    value: 2
+                }],
+                m2: [{
+                    text: '0',
+                    value: 0
+                },   {
+                    text: '1',
+                    value: 1
+                },   {
+                    text: '2',
+                    value: 2
+                }]
+            }, {
+                onSelect() {
+                    // sự kiện select ở đây
                 }
-            } else {
-                for (let i = 1; i <= 31; i++) {
-                    pkr.dataSources.day.push({ text: `${i}`, value: i });
-                }
-            }
-        };
-
-        this.$picker(this.selecteds, this.dataSources, { title: 'home', onSelect })
-            .then((v: any) => {
-                if (v !== undefined) {
-                    this.selecteds = v;
-                }
+            }).then((v) => {
+                console.log(v);
             });
+    }
+
+    public onPan(evt: TouchEvent) {
+        console.log(evt);
+
+        evt.preventDefault();
     }
 }
