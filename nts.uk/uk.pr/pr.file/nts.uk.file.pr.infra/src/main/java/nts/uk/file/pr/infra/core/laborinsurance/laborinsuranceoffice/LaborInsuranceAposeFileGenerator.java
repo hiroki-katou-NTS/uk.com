@@ -48,8 +48,10 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
     private String setPhoneOffice(Object[] obj){
         StringBuilder phone = new StringBuilder();
         phone.append(obj[12] != null ? obj[12].toString() : "");
-        phone.append(obj[13] != null ? "-" + obj[13].toString() : "");
-        phone.append(obj[14] != null ? "-" + obj[14].toString() : "");
+        phone.append("-");
+        phone.append(obj[13] != null ? obj[13].toString() : "");
+        phone.append("-");
+        phone.append(obj[14] != null ? obj[14].toString() : "");
         return phone.toString();
     }
 
