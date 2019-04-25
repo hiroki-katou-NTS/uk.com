@@ -102,6 +102,7 @@ export class YearMonthComponent extends InputComponent {
 
     private displayYearMonth(year: Number, month: Number) {
         let textMonth = month < 10 ? '0' + month : '' + month;
+        
         return year + '年' + textMonth + '月';
     }
 
