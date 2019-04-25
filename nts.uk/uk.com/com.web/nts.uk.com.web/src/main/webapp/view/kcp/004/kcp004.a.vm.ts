@@ -99,7 +99,7 @@ module kcp004.a.viewmodel {
                 isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 startMode: self.selectedStartMode(),
-                selectedWorkplaceId: self.getSelectedWorkplaceId(),
+                selectedId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),
@@ -232,8 +232,8 @@ module kcp004.a.viewmodel {
                 return;
             }
             let data = $('#tree-grid').getRowSelected();
-            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.workplaceId).join(", ") : '');
-            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.workplaceCode).join(", ") : '');
+            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.id).join(", ") : '');
+            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.code).join(", ") : '');
         }
 
         private setTreeData() {
@@ -243,7 +243,7 @@ module kcp004.a.viewmodel {
                 isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 startMode: self.selectedStartMode(),
-                selectedWorkplaceId: self.getSelectedWorkplaceId(),
+                selectedId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),

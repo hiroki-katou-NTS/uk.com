@@ -576,7 +576,6 @@ module nts.uk.com.view.ccg.share.ccg {
                             } else {
                                 dfd.resolve();
                             }
-                            nts.uk.ui.block.clear();
                         });
                     });
                 };
@@ -586,7 +585,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 } else {
                     initComponent();
                 }
-
                 return dfd.promise();
             }
 
@@ -2090,7 +2088,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     startMode: StartMode.DEPARTMENT,
                     selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeDepartment,
+                    selectedId: self.selectedCodeDepartment,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
@@ -2107,7 +2105,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     startMode: StartMode.WORKPLACE,
                     selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    selectedId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
@@ -2294,7 +2292,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartment -->
-                        <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                        <div id="ccg001-btn-same-department" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
@@ -2304,7 +2302,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartmentAndChild -->
-                        <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                        <div id="ccg001-btn-same-department-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
