@@ -15,32 +15,57 @@ export namespace ccg007 {
             if (res.data.showContract) {
                 authenticateContract(self);
             } else {
-                // check MsgError
-                if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
-                    if (res.data.showChangePass) {
-                        self.$goto({ name: 'changepass', params: _.merge({}, 
-                                    submitData, 
-                                    { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo }) 
-                                });
-                    } else {
-                        resetForm();
-                        /** TODO: wait for dialog error method */
-                        self.$modal.error({ messageId: res.data.msgErrorId });
-                    }
-                    self.$mask('hide');
+                if(!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517'){
+                    //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+                    self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays]}).then((code) => {
+                        if(code === 'yes'){
+                            self.$goto({ name: 'changepass', params: _.merge({}, 
+                                submitData, 
+                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523' }) 
+                            });
+                        } else {
+                            characteristics.remove('companyCode')
+                                            .then(() => characteristics.save('companyCode', submitData.companyCode))
+                                            .then(() => characteristics.remove('employeeCode'))
+                                            .then(() => {
+                                                if (!_.isEmpty(res.data.successMsg)) {
+                                                    return self.$modal.info({ messageId: res.data.successMsg });
+                                                }
+                                            }).then(() => {
+                                                if (saveInfo) {
+                                                    characteristics.save('employeeCode', submitData.employeeCode);
+                                                }
+                                            }).then(() => toHomePage(self));
+                        }
+                    });
                 } else {
-                    characteristics.remove('companyCode')
-                        .then(() => characteristics.save('companyCode', submitData.companyCode))
-                        .then(() => characteristics.remove('employeeCode'))
-                        .then(() => {
-                            if (!_.isEmpty(res.data.successMsg)) {
-                                return self.$modal.info({ messageId: res.data.successMsg });
-                            }
-                        }).then(() => {
-                            if (saveInfo) {
-                                characteristics.save('employeeCode', submitData.employeeCode);
-                            }
-                        }).then(() => toHomePage(self));
+                    // check MsgError
+                    if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
+                        if (res.data.showChangePass) {
+                            self.$goto({ name: 'changepass', params: _.merge({}, 
+                                        submitData, 
+                                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo }) 
+                                    });
+                        } else {
+                            resetForm();
+                            /** TODO: wait for dialog error method */
+                            self.$modal.error({ messageId: res.data.msgErrorId });
+                        }
+                        self.$mask('hide');
+                    } else {
+                        characteristics.remove('companyCode')
+                            .then(() => characteristics.save('companyCode', submitData.companyCode))
+                            .then(() => characteristics.remove('employeeCode'))
+                            .then(() => {
+                                if (!_.isEmpty(res.data.successMsg)) {
+                                    return self.$modal.info({ messageId: res.data.successMsg });
+                                }
+                            }).then(() => {
+                                if (saveInfo) {
+                                    characteristics.save('employeeCode', submitData.employeeCode);
+                                }
+                            }).then(() => toHomePage(self));
+                    }
                 }
             }
         }).catch((res: any) => {
@@ -70,6 +95,8 @@ export namespace ccg007 {
         msgErrorId: string;
         showContract: boolean;
         successMsg: string;
+        spanDays: number;
+        changePassReason: string;
     }
 
     interface LoginParam {

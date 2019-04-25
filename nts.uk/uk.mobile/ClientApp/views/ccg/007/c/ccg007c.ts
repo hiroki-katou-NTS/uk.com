@@ -39,6 +39,7 @@ export class ChangePassComponent extends Vue {
 
     public mesId: string;
     public userId: string;
+    public changeReason: string;
 
     public policy = {
         lowestDigits: 0,
@@ -59,7 +60,9 @@ export class ChangePassComponent extends Vue {
 
     public created() {
         let self = this;
-        self.mesId = self.$i18n(self.params.mesId);
+        self.mesId = (_.isEmpty(self.params.changePassReason) 
+                        ? self.$i18n(self.params.mesId) 
+                            : self.$i18n(self.params.changePassReason));
         Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode), 
                     this.$http.post(servicePath.getUserName, {  contractCode: self.params.contractCode, 
                                                                 employeeCode: self.params.employeeCode, 
