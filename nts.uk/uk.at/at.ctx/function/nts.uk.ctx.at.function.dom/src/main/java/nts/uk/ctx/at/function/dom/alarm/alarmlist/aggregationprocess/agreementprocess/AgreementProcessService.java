@@ -1,15 +1,24 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.SneakyThrows;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -26,6 +35,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
@@ -39,7 +49,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+/**
+ * 36協定の集計処理
+ * @author tutk
+ *
+ */
 @Stateless
 public class AgreementProcessService {
 	
@@ -60,7 +74,12 @@ public class AgreementProcessService {
 	
 	@Inject
 	private ClosureRepository closureRepository;
-
+	
+	@Inject
+	private ManagedParallelWithContext parallelManager;
+	
+	@Resource
+	private SessionContext scContext;
 	
 	public List<ValueExtractAlarm> agreementProcess(List<String> checkConditionCodes, List<PeriodByAlarmCategory> periodAlarms, List<EmployeeSearchDto> employees, Optional<AgreementOperationSettingImport> agreementSetObj){
 		
@@ -103,7 +122,7 @@ public class AgreementProcessService {
 		}
 		
 		
-		
+		//ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		// get List<カテゴリ別アラームチェック条件>
 		List<AlarmCheckConditionByCategory> listAlarmCheck= alarmCheckRepo.findByCategoryAndCode(comId, AlarmCategory.AGREEMENT.value	, checkConditionCodes);
 		
@@ -121,18 +140,19 @@ public class AgreementProcessService {
 				//ドメインモデル「36協定エラーアラームチェック名称」を取得する
 				Optional<AgreeNameError> optAgreeName = agreeNameRepo.findById(agreeConditionError.getPeriod().value,
 						agreeConditionError.getErrorAlarm().value);
-				Period periodCheck = agreeConditionError.getPeriod();
-				if (periodCheck == Period.One_Week || periodCheck == Period.Two_Week || periodCheck == Period.Four_Week) {
-					periodCheck = Period.One_Week;
-				}
+				
+				Period periodCheck = getPeriod(agreeConditionError);
+				
 				for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
 					if(periodAlarm.getPeriod36Agreement() == periodCheck.value){
 						DatePeriod period = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
+						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
 						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
 								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
-							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName));	
+							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
+									period.start()));	
 						}
 					}
 				}
@@ -169,8 +189,80 @@ public class AgreementProcessService {
 		}
 		return result;
 	}
+
+	@Inject
+	private AgreementCheckService checkService;
 	
-	private List<ValueExtractAlarm> generationValueExtractAlarm(Map<String, EmployeeSearchDto> mapEmployee, List<CheckedAgreementResult> checkAgreementsResult,AgreeConditionError agreeConditionError,Optional<AgreeNameError> optAgreeName){
+	@SneakyThrows
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<ValueExtractAlarm> agreementProcess(String comId, List<AlarmCheckConditionByCategory> agreementErAl, List<PeriodByAlarmCategory> periodAlarms, 
+			List<EmployeeSearchDto> employees, Optional<AgreementOperationSettingImport> agreementSetObj, Consumer<Integer> counter, Supplier<Boolean> shouldStop){
+
+//		Logger.getLogger(getClass()).info("Transaction Status 1: " + tsr.getTransactionStatus());
+		List<ValueExtractAlarm> result = Collections.synchronizedList(new ArrayList<>());
+		List<String> empIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
+		Map<String,Integer> empIdToClosureId = new HashMap<>();
+		Map<String,String> employmentCodeToEmpIds = new HashMap<>();
+		List<Closure> closureList = getClosure(comId, empIds, empIdToClosureId, employmentCodeToEmpIds);
+		
+		Map<String, EmployeeSearchDto> mapEmployee = employees.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x ->x));
+//		Logger.getLogger(getClass()).info("Transaction Status 2: " + tsr.getTransactionStatus());
+		/** TODO: parallel from here */
+		parallelManager.forEach(CollectionUtil.partitionBySize(empIds, 50), employeeIds -> {
+//		CollectionUtil.split(empIds, 25, employeeIds -> {
+			checkService.check(agreementErAl, periodAlarms, agreementSetObj, counter, shouldStop, result, empIds, empIdToClosureId,
+					closureList, mapEmployee, employeeIds);
+		});
+//		Logger.getLogger(getClass()).info("Transaction Status 10: " + tsr.getTransactionStatus());
+		return result;
+	}
+
+	
+
+	private Period getPeriod(AgreeConditionError agreeConditionError) {
+		if (agreeConditionError.getPeriod() == Period.One_Week 
+				|| agreeConditionError.getPeriod() == Period.Two_Week 
+				|| agreeConditionError.getPeriod() == Period.Four_Week) {
+			return Period.One_Week;
+		}
+		return agreeConditionError.getPeriod();
+	}
+	
+	private List<Closure> getClosure(String comId, List<String> empIds, Map<String,Integer> empIdToClosureId, Map<String,String> employmentCodeToEmpIds){
+
+		/**社員ID（List）と指定期間から社員の雇用履歴を取得 */
+		List<SharedSidPeriodDateEmploymentImport> employmentHistList = this.shareEmploymentAdapter.getEmpHistBySidAndPeriod(empIds, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		if (!CollectionUtil.isEmpty(employmentHistList)) {
+			for (SharedSidPeriodDateEmploymentImport objecCheck : employmentHistList) {
+				for (AffPeriodEmpCodeImport affPeriodEmpCodeImport : objecCheck.getAffPeriodEmpCodeExports()) {
+					if (!employmentCodeToEmpIds.containsKey(affPeriodEmpCodeImport.getEmploymentCode())) {
+						employmentCodeToEmpIds.put(affPeriodEmpCodeImport.getEmploymentCode(), objecCheck.getEmployeeId());
+					}
+				}
+					
+			}
+				
+			
+			/** ドメインモデル「雇用に紐づく就業締め」を取得する */
+			List<ClosureEmployment> closureEmploymentList = closureEmploymentRepo.findListEmployment(comId, new ArrayList<>(employmentCodeToEmpIds.keySet()));
+
+			if (!CollectionUtil.isEmpty(closureEmploymentList)) {
+				empIds.stream().forEach(empId -> {
+					closureEmploymentList.stream().filter(c -> employmentCodeToEmpIds.containsKey(c.getEmploymentCD())).findFirst().ifPresent(clo -> {
+						empIdToClosureId.put(empId, clo.getClosureId());
+					});
+				});
+				
+				/** ドメインモデル「締め」を取得する*/
+				return closureRepository.findByListId(comId, empIdToClosureId.values().stream().distinct().collect(Collectors.toList()));
+			}
+
+		}
+		
+		return new ArrayList<>();
+	}
+	
+	private List<ValueExtractAlarm> generationValueExtractAlarm(Map<String, EmployeeSearchDto> mapEmployee, List<CheckedAgreementResult> checkAgreementsResult,AgreeConditionError agreeConditionError,Optional<AgreeNameError> optAgreeName, Period periodCheck, GeneralDate startDate){
 		List<ValueExtractAlarm> lstReturn = new ArrayList<>();
 		for (CheckedAgreementResult checkedAgreementResult : checkAgreementsResult) {
 			if(checkedAgreementResult.isCheckResult()){
@@ -182,12 +274,44 @@ public class AgreementProcessService {
 				//alarm name
 				String alarmItem = optAgreeName.isPresent() ? optAgreeName.get().getName().v() : "" ;
 				//カテゴリ
-				String alarmContent = TextResource.localize("KAL010_203",alarmItem,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+				String alarmContent = "";
+				if(checkedAgreementResult.getErrorAlarm() == ErrorAlarm.Upper) {
+					if(periodCheck == Period.Months_Average) {
+						alarmContent =  alarmItemByMonth(startDate,checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth());
+						alarmContent = TextResource.localize("KAL010_203",alarmContent,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+					}else {
+						alarmContent = TextResource.localize("KAL010_203",TextResource.localize("KAL010_211"),formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+					}
+				}else {
+					alarmContent = TextResource.localize("KAL010_203",alarmItem,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+				}
+				//カテゴリ
 				lstReturn.add(new ValueExtractAlarm(workPlaceId,checkedAgreementResult.getEmpId(),alarmValueDate,
 						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v()));
 			}
 		}
 		return lstReturn;
+	}
+	
+	private String alarmItemByMonth(GeneralDate yearMonthDefault,YearMonth yearMonthError) {
+		String alarmItem = "";
+		int month = yearMonthDefault.yearMonth().month();
+		if(yearMonthDefault.yearMonth().year()>yearMonthError.year()) {
+			month = month + 12;
+		}
+		if((month-yearMonthError.month()) == 1) {
+			alarmItem = TextResource.localize("KAL010_212");
+		}else if((month-yearMonthError.month()) == 2) {
+			alarmItem = TextResource.localize("KAL010_213");
+		}else if((month-yearMonthError.month()) == 3) {
+			alarmItem = TextResource.localize("KAL010_214");
+		}else if((month-yearMonthError.month()) == 4) {
+			alarmItem = TextResource.localize("KAL010_215");
+		}else if((month-yearMonthError.month()) == 5) {
+			alarmItem = TextResource.localize("KAL010_216");
+		}
+		return alarmItem ;
+		
 	}
 	
 	private String yearmonthToString(YearMonth yearMonth){

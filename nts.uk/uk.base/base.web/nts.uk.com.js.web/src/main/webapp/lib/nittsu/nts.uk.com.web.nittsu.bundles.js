@@ -17854,6 +17854,29 @@ var nts;
                     function MultilineEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
                     }
+                    MultilineEditorProcessor.prototype.init = function ($input, data) {
+                        _super.prototype.init.call(this, $input, data);
+                        var self = this, immediateValidate = !_.isNil(data.immediateValidate) ? ko.unwrap(data.immediateValidate) : false;
+                        if (immediateValidate) {
+                            $input.on("keyup", function () {
+                                var formatter = self.getFormatter(data);
+                                var text = $input.val();
+                                var validator = self.getValidator(data);
+                                var result = validator.validate(text);
+                                if (result.isValid) {
+                                    $input.ntsError('clearKibanError');
+                                    $input.val(formatter.format(result.parsedValue));
+                                }
+                                else {
+                                    var error = $input.ntsError('getError');
+                                    if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
+                                        $input.ntsError('clearKibanError');
+                                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    }
+                                }
+                            });
+                        }
+                    };
                     MultilineEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var resizeable = this.editorOption.resizeable;
@@ -23003,6 +23026,8 @@ var nts;
                                 _redimension = true;
                             if (tn.isEnable(self.features, tn.COPY))
                                 _copie = true;
+                            _$grid.mGrid("option", "errOccurred", self.errorOccurred);
+                            _$grid.mGrid("option", "errResolved", self.errorResolved);
                         }
                     };
                     /**
@@ -25089,6 +25114,24 @@ var nts;
                             }
                             if (td.classList.contains(color.Lock)) {
                                 td.style.cssText += tdStyle;
+                                if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                                    dkn.getControl(controlDef.controlType)({
+                                        rowIdx: rowIdx,
+                                        rowId: id,
+                                        columnKey: key,
+                                        controlDef: controlDef,
+                                        update: function (v, i, r, p) {
+                                            su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                            if (_.isFunction(controlDef.onChange)) {
+                                                controlDef.onChange(id, key, v, rData);
+                                            }
+                                        },
+                                        deleteRow: su.deleteRow,
+                                        initValue: data,
+                                        rowObj: rData,
+                                        enable: !td.classList.contains(color.Disable)
+                                    });
+                                }
                                 return td;
                             }
                             if (column.ntsControl === dkn.LABEL) {
@@ -25393,6 +25436,24 @@ var nts;
                             }
                             if (td.classList.contains(color.Lock)) {
                                 td.style.cssText += tdStyle;
+                                if (controlDef && controlDef.controlType === dkn.COMBOBOX) {
+                                    dkn.getControl(controlDef.controlType)({
+                                        rowIdx: rowIdx,
+                                        rowId: id,
+                                        columnKey: key,
+                                        controlDef: controlDef,
+                                        update: function (v, i, r, p) {
+                                            su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
+                                            if (_.isFunction(controlDef.onChange)) {
+                                                controlDef.onChange(id, key, v, rData);
+                                            }
+                                        },
+                                        deleteRow: su.deleteRow,
+                                        initValue: data,
+                                        rowObj: rData,
+                                        enable: !td.classList.contains(color.Disable)
+                                    });
+                                }
                                 return td;
                             }
                             if (self.fails) {
@@ -28050,14 +28111,14 @@ var nts;
                             if (!control || !controlMap || !(controlDef = controlMap[key]))
                                 return null;
                             if (control === dkn.REFER_BUTTON) {
-                                return (controlDef.pattern || {})[(controlDef.list || {})[id]];
+                                return (controlDef.pattern || {})[(controlDef.list || {})[id]] || null;
                             }
                             else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
                                 if (control.optionsMap && !_.isNil(listType = control.optionsMap[id])) {
-                                    return control.optionsList[listType];
+                                    return control.optionsList[listType] || null;
                                 }
                                 else {
-                                    return control.options;
+                                    return control.options || null;
                                 }
                             }
                             return null;
@@ -28268,7 +28329,7 @@ var nts;
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
                         },
-                        validate: function () {
+                        validate: function (lock) {
                             var errors = [];
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef)
@@ -28276,7 +28337,8 @@ var nts;
                                 _.forEach(_mafollicle[k].dataSource, function (data, i) {
                                     _.forEach(_cstifle(), function (c) {
                                         var validator = _validators[c.key];
-                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; }))
+                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; })
+                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock; })))
                                             return;
                                         var res = validator.probe(data[c.key], data[_pk]);
                                         if (res && !res.isValid) {
@@ -28289,6 +28351,19 @@ var nts;
                             if (errors.length > 0) {
                                 this.setErrors(errors);
                             }
+                        },
+                        columnOrder: function () {
+                            var order = [];
+                            if (_vessel().desc) {
+                                var fixedLength_1 = 0;
+                                ["fixedColIdxes", "colIdxes"].forEach(function (col, ord) {
+                                    var idx = _vessel().desc[col];
+                                    _.forEach(_.keys(idx), function (i) { return order[idx[i] + fixedLength_1] = i; });
+                                    if (!ord)
+                                        fixedLength_1 = _.keys(idx).length;
+                                });
+                            }
+                            return order;
                         },
                         getCellValue: function (id, key) {
                             var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
@@ -28938,7 +29013,7 @@ var nts;
                                 var coord = ti.getCellCoord($tCell);
                                 var control = dkn.controlType[coord.columnKey];
                                 var cEditor = _mEditor;
-                                if (control === dkn.CHECKBOX && ti.isSpaceKey(evt)) {
+                                if (control === dkn.CHECKBOX && ti.isSpaceKey(evt) && !$tCell.classList.contains(color.Hide)) {
                                     var check = $tCell.querySelector("input[type='checkbox']");
                                     if (!check)
                                         return;
@@ -29056,6 +29131,9 @@ var nts;
                                 var spl = {}, column_1 = _columnsMap[editor.columnKey];
                                 if (!column_1)
                                     return;
+                                if (inputVal_1 === "") {
+                                    ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                                }
                                 var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1, editor.columnKey) ? "" : format(column_1[0], inputVal_1, spl));
                                 $bCell.textContent = formatted;
                                 var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : ((spl.padded || spl.toKana) ? formatted : formatSave(column_1[0], inputVal_1));
@@ -29142,6 +29220,9 @@ var nts;
                         }
                         else if (editor.type === dkn.DATE_PICKER) {
                             var date = void 0, picker = dkn.controlType[editor.columnKey], $editor = dkn.controlType[dkn.TEXTBOX].my, $input = $editor.querySelector("input.medit"), mDate = moment.utc($input.value, editor.format, true);
+                            if ($input.value === "") {
+                                ssk.trigger($input, ssk.MS_BEFORE_COMPL);
+                            }
                             if (mDate.isValid()) {
                                 date = editor.formatType === "ymd" ? mDate.toDate() : mDate.format(editor.format[0]);
                                 wedgeCell($grid, editor, date);
@@ -30037,6 +30118,7 @@ var nts;
                     ssk.KEY_UP = "keyup";
                     ssk.RENDERED = "mgridrowsrendered";
                     ssk.MS = "mgridms";
+                    ssk.MS_BEFORE_COMPL = "mgridmsbeforecompletion";
                     window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
                     window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
                     /**
@@ -30707,6 +30789,9 @@ var nts;
                             }
                         };
                         $editor.addXEventListener(ssk.KEY_UP, function (evt) {
+                            ms();
+                        });
+                        $editor.addXEventListener(ssk.MS_BEFORE_COMPL, function () {
                             ms();
                         });
                         $editor.addXEventListener(ssk.MS, function (evt) {
@@ -32047,7 +32132,7 @@ var nts;
                                         else {
                                             options = control_1.options;
                                         }
-                                        if (!_.find(options, function (opt) { return opt[control_1.optionsValue] === value; })) {
+                                        if (constraint.required && !_.find(options, function (opt) { return opt[control_1.optionsValue] === value; })) {
                                             result.fail(nts.uk.resource.getMessage("FND_E_REQ_SELECT", [this.name]), "FND_E_REQ_SELECT");
                                         }
                                         else
@@ -32347,6 +32432,10 @@ var nts;
                         }))
                             return;
                         errors.push(error);
+                        var occurred = _$grid.mGrid("option", "errOccurred");
+                        if (_.isFunction(occurred)) {
+                            occurred();
+                        }
                     }
                     khl.addCellError = addCellError;
                     /**
@@ -32354,9 +32443,15 @@ var nts;
                      */
                     function removeCellError(rowId, key, genre) {
                         var errors = genre ? genre.errors : _errors;
-                        _.remove(errors, function (e) {
+                        var removed = _.remove(errors, function (e) {
                             return rowId === e.rowId && key === e.columnKey;
                         });
+                        if (removed.length > 0 && errors.length === 0) {
+                            var resolved = _$grid.mGrid("option", "errResolved");
+                            if (_.isFunction(resolved)) {
+                                resolved();
+                            }
+                        }
                     }
                     khl.removeCellError = removeCellError;
                     /**
@@ -32659,6 +32754,7 @@ var nts;
                     color.Calculation = "mgrid-calc";
                     color.Disable = "mgrid-disable";
                     color.Lock = "mgrid-lock";
+                    color.Hide = "mgrid-hide";
                     color.HOVER = "ui-state-hover";
                     color.ALL = [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther, color.Reflect, color.Calculation, color.Disable];
                     /**
@@ -34297,7 +34393,10 @@ var nts;
                                 width += Number($(this).attr("width").replace(/px/gi, ''));
                             });
                             width++;
-                            if (nts.uk.util.isNullOrUndefined(viewWidth)) {
+                            if (options.autoResize) {
+                                viewWidth = Math.min(window.innerWidth - 60, width);
+                            }
+                            else if (nts.uk.util.isNullOrUndefined(viewWidth)) {
                                 viewWidth = width;
                             }
                             var $container = $("<div class='nts-fixed-table cf'/>");
@@ -34318,7 +34417,18 @@ var nts;
                             var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                             var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
                             var bodyHeight = "auto";
-                            if (setting.height !== "auto") {
+                            if (options.autoResize) {
+                                $bodyContainer.css("max-width", viewWidth);
+                                bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                                $(window).on("resize", function (evt) {
+                                    var tableWidth = Math.max(0, Math.min(width, window.innerWidth - 60));
+                                    $headerContainer.css("max-width", tableWidth);
+                                    $bodyContainer.css("max-width", tableWidth);
+                                    bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                                    $bodyWrapper.height(Math.max(0, bodyHeight));
+                                });
+                            }
+                            else if (setting.height !== "auto") {
                                 $bodyContainer.css("max-width", viewWidth);
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
@@ -41756,7 +41866,7 @@ var nts;
                 })(ntsTreeView || (ntsTreeView = {}));
                 var ntsTreeDrag;
                 (function (ntsTreeDrag) {
-                    $.fn.ntsTreeDrag = function (action, param) {
+                    $.fn.ntsTreeDrag = function (action, param, param2) {
                         var $tree = $(this);
                         switch (action) {
                             case 'getSelected':
@@ -41767,6 +41877,18 @@ var nts;
                                 return deselectAll($tree);
                             case 'isMulti':
                                 return isMultiple($tree);
+                            case 'getParent':
+                                return getParent($tree, param);
+                            case 'getPrevious':
+                                return getPrevious($tree, param);
+                            case 'moveNext':
+                                return moveNext($tree, param, param2);
+                            case 'moveInto':
+                                return moveInto($tree, param, param2);
+                            case 'moveUp':
+                                return moveUp($tree, param);
+                            case 'moveDown':
+                                return moveDown($tree, param);
                         }
                     };
                     function isMultiple($tree) {
@@ -41784,9 +41906,183 @@ var nts;
                         }
                         else {
                             var value = $tree.igTree("selectedNode");
-                            value["id"] = value.data[value.binding.valueKey];
+                            if (_.isNil(value) || _.isNil(value.binding) || _.isNil(value.data)) {
+                                return null;
+                            }
+                            if (!_.isNil(value)) {
+                                value["id"] = value.data[value.binding.valueKey];
+                            }
                             return value;
                         }
+                    }
+                    function getParent($tree, target) {
+                        target = getTarget($tree, target);
+                        if (_.isNil(target)) {
+                            return null;
+                        }
+                        var parent = $tree.igTree("parentNode", $(target.element));
+                        if (_.isNil(parent)) {
+                            return null;
+                        }
+                        return $tree.igTree("nodeFromElement", parent);
+                    }
+                    function getTarget($tree, target) {
+                        if (!_.isObjectLike(target)) {
+                            return $tree.igTree("nodeFromElement", $tree.igTree("nodesByValue", target));
+                        }
+                    }
+                    function getPrevious($tree, target) {
+                        target = getTarget($tree, target);
+                        if (_.isNil(target)) {
+                            return null;
+                        }
+                        var binding = target.binding;
+                        var parent = $tree.igTree("parentNode", $(target.element));
+                        if (_.isNil(parent)) {
+                            var source = $tree.igTree("option", "dataSource").__ds, parentIndex_1 = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (parentIndex_1 <= 0) {
+                                return null;
+                            }
+                            var previous_1 = $tree.igTree("nodesByValue", source[parentIndex_1 - 1][binding.valueKey]);
+                            return $tree.igTree("nodeFromElement", previous_1);
+                        }
+                        var parentData = $tree.igTree("nodeFromElement", parent).data;
+                        var parentIndex = _.findIndex(parentData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                        if (parentIndex <= 0) {
+                            return null;
+                        }
+                        var previous = $tree.igTree("nodesByValue", parentData[binding.childDataProperty][parentIndex - 1][binding.valueKey]);
+                        return $tree.igTree("nodeFromElement", previous);
+                    }
+                    function moveDown($tree, target) {
+                        target = getTarget($tree, target);
+                        if (_.isNil(target)) {
+                            return false;
+                        }
+                        var binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, parent = $tree.igTree("parentNode", $(target.element));
+                        if (_.isNil(parent)) {
+                            var firstIdx = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (firstIdx < 0) {
+                                return false;
+                            }
+                            var currentIndex = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (currentIndex < 0 || currentIndex >= source.length - 1) {
+                                return false;
+                            }
+                            source.splice(currentIndex, 1);
+                            source.splice(currentIndex + 1, 0, target.data);
+                        }
+                        else {
+                            var parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);
+                            var currentIndex = _.findIndex(parentClonedData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (currentIndex < 0 || currentIndex >= parentClonedData[binding.childDataProperty].length - 1) {
+                                return false;
+                            }
+                            parentClonedData[binding.childDataProperty].splice(currentIndex, 1);
+                            parentClonedData[binding.childDataProperty].splice(currentIndex + 1, 0, target.data);
+                            source = resetSource(source, parentClonedData, binding);
+                        }
+                        $tree.igTree("option", "dataSource", source);
+                        $tree.igTree("dataBind");
+                        $tree.trigger("sourcechanging");
+                    }
+                    function moveUp($tree, target) {
+                        target = getTarget($tree, target);
+                        if (_.isNil(target)) {
+                            return false;
+                        }
+                        var binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, parent = $tree.igTree("parentNode", $(target.element));
+                        if (_.isNil(parent)) {
+                            var firstIdx = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (firstIdx < 0) {
+                                return false;
+                            }
+                            var currentIndex = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (currentIndex <= 0) {
+                                return false;
+                            }
+                            source.splice(currentIndex, 1);
+                            source.splice(currentIndex - 1, 0, target.data);
+                        }
+                        else {
+                            var parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);
+                            var currentIndex = _.findIndex(parentClonedData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (currentIndex <= 0) {
+                                return false;
+                            }
+                            parentClonedData[binding.childDataProperty].splice(currentIndex, 1);
+                            parentClonedData[binding.childDataProperty].splice(currentIndex - 1, 0, target.data);
+                            source = resetSource(source, parentClonedData, binding);
+                        }
+                        $tree.igTree("option", "dataSource", source);
+                        $tree.igTree("dataBind");
+                        $tree.trigger("sourcechanging");
+                    }
+                    function moveInto($tree, nextParent, target) {
+                        target = getTarget($tree, target);
+                        nextParent = getTarget($tree, nextParent);
+                        if (_.isNil(target) || _.isNil(nextParent)) {
+                            return false;
+                        }
+                        var binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, parent = $tree.igTree("parentNode", $(target.element));
+                        if (_.isNil(parent)) {
+                            var firstIdx = _.findIndex(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            if (firstIdx < 0) {
+                                return false;
+                            }
+                            _.remove(source, function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                        }
+                        else {
+                            var parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);
+                            _.remove(parentClonedData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                            source = resetSource(source, parentClonedData, binding);
+                        }
+                        nextParent.data[binding.childDataProperty].push(target.data);
+                        source = resetSource(source, nextParent.data, binding);
+                        $tree.igTree("option", "dataSource", source);
+                        $tree.igTree("dataBind");
+                        $tree.trigger("sourcechanging");
+                    }
+                    function moveNext($tree, nextTo, target) {
+                        target = getTarget($tree, target);
+                        nextTo = getTarget($tree, nextTo);
+                        if (_.isNil(target) || _.isNil(nextTo)) {
+                            return false;
+                        }
+                        var binding = target.binding, source = $tree.igTree("option", "dataSource").__ds, parent = $tree.igTree("parentNode", $(target.element)), parentOfPrevious = $tree.igTree("parentNode", $(nextTo.element));
+                        if (_.isNil(parent)) {
+                            return false;
+                        }
+                        var parentClonedData = _.cloneDeep($tree.igTree("nodeFromElement", parent).data);
+                        _.remove(parentClonedData[binding.childDataProperty], function (v) { return v[binding.valueKey] === target.data[binding.valueKey]; });
+                        source = resetSource(source, parentClonedData, binding);
+                        if (_.isNil(parentOfPrevious)) {
+                            var parentIndex = _.findIndex(source, function (v) { return v[binding.valueKey] === nextTo.data[binding.valueKey]; });
+                            source.splice(parentIndex + 1, 0, target.data);
+                        }
+                        else {
+                            var parentPreviousData = _.cloneDeep($tree.igTree("nodeFromElement", parentOfPrevious).data);
+                            var parentIndex = _.findIndex(parentPreviousData[binding.childDataProperty], function (v) { return v[binding.valueKey] === nextTo.data[binding.valueKey]; });
+                            parentPreviousData[binding.childDataProperty].splice(parentIndex + 1, 0, target.data);
+                            source = resetSource(source, parentPreviousData, binding);
+                        }
+                        $tree.igTree("option", "dataSource", source);
+                        $tree.igTree("dataBind");
+                        $tree.trigger("sourcechanging");
+                    }
+                    function resetSource(source, target, binding) {
+                        for (var i = 0; i < source.length; i++) {
+                            if (source[i][binding.valueKey] === target[binding.valueKey]) {
+                                source[i] = target;
+                            }
+                            else {
+                                if (!_.isEmpty(source[i][binding.childDataProperty])) {
+                                    var sourceX = resetSource(source[i][binding.childDataProperty], target, binding);
+                                    source[i][binding.childDataProperty] = sourceX;
+                                }
+                            }
+                        }
+                        return source;
                     }
                     function setSelected($tree, selectedId) {
                         deselectAll($tree);
@@ -44607,6 +44903,15 @@ var nts;
                             $tree.data("mousePosition", pageCoords);
                         });
                         $tree.setupSearchScroll("igTree");
+                        $tree.bind("sourcechanging", function (evt) {
+                            var source = $tree.igTree("option", "dataSource").__ds;
+                            if (_.isNil(data.dataSource)) {
+                                data.options(source);
+                            }
+                            else {
+                                data.dataSource(source);
+                            }
+                        });
                     };
                     /**
                      * Update

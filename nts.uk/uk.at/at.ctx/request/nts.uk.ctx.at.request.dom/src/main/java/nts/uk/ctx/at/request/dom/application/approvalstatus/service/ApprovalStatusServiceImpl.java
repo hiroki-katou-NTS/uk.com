@@ -9,10 +9,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -50,10 +53,12 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPersonAndResult;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
@@ -171,6 +176,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private RequestSettingRepository requestSetRepo;
 	
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -271,9 +280,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
 			List<ApprovalStatusEmployeeOutput> listAppStatusEmp) {
 		List<ApprovalSttAppOutput> appSttAppliStateList = new ArrayList<>();
+		
+		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
+		
 		for (ApprovalStatusEmployeeOutput approvalStt : listAppStatusEmp) {
 			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt);
+			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt, mailDestCache);
 			// アルゴリズム「承認状況取得申請状態カウント」を実行する
 			ApprovalSttAppOutput appStt = this.getCountAppSttAppliState(wkpInfor, getAppSttAcquisitionAppl);
 			appSttAppliStateList.add(appStt);
@@ -307,7 +319,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * アルゴリズム「承認状況取得申請」を実行する
 	 */
-	private List<ApplicationApprContent> getAppSttAcquisitionAppl(ApprovalStatusEmployeeOutput approvalStt) {
+	private List<ApplicationApprContent> getAppSttAcquisitionAppl(ApprovalStatusEmployeeOutput approvalStt,
+			ApprovalRootStateAdapter.MailDestinationCache mailDestCache) {
 		List<ApplicationApprContent> listAppSttAcquisitionAppl = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		String sId = approvalStt.getSid();
@@ -318,7 +331,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			for (Application_New app : listApp) {
 				// 申請承認内容(リスト）
 				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(companyId,
-						app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false);
+						app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false, mailDestCache);
 				listAppSttAcquisitionAppl.add(new ApplicationApprContent(app, approvalRoot));
 			}
 		}
@@ -419,9 +432,24 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
+	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput,
 			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+		//メール送信内容(リスト)
 		List<String> listError = new ArrayList<>();
+		//社員の名称（ビジネスネーム）、社員コードを取得する RQ228
+		List<String> employeeIDs = listMailInput.stream().map(x-> x.getSId()).collect(Collectors.toList());
+		List<EmployeeInfoImport> lstEmpInfor = this.atEmployeeAdapter.getByListSID(employeeIDs);
+		//取得した「社員コード」を「メール送信内容リスト」に付与して、「社員コード順」に並べる
+		lstEmpInfor = lstEmpInfor.stream().sorted(Comparator.comparing(EmployeeInfoImport::getScd))
+				.collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
+		//map lại list sau khi sắp xếp
+		lstEmpInfor.forEach(x -> {
+			listMailInput.stream().filter(mail -> mail.getSId().equals(x.getSid())).findFirst().ifPresent(email -> {
+				listMailContent.add(email);
+			});
+		});
+		
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
 			if(mailTransmission.getMailAddr() == null){
 				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
@@ -555,9 +583,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private List<UnApprovalPerson> getUnapprovalForAppStt(List<ApprovalStatusEmployeeOutput> listEmpOutput) {
 		List<UnApprovalPerson> listUnAppPerson = new ArrayList<>();
+
+		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
+		
 		for (ApprovalStatusEmployeeOutput appEmp : listEmpOutput) {
 			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp);
+			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
 			GeneralDate startDate = appEmp.getStartDate();
 			GeneralDate endDate = appEmp.getEndDate();
 			for (ApplicationApprContent app : listAppContent) {
@@ -731,6 +762,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「承認状況取得社員」を実行する
 		List<ApprovalStatusEmployeeOutput> listAppSttEmp = this.getApprovalStatusEmployee(selectedWkpId, startDate,
 				endDate, listEmpCode);
+		
+		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
+		
 		// 社員ID(リスト)
 		for (ApprovalStatusEmployeeOutput appStt : listAppSttEmp) {
 			List<String> listEmpId = new ArrayList<>();
@@ -746,7 +780,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
 			}
 			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
+			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt, mailDestCache);
 			List<Application_New> listApprovalContent = new ArrayList<>();
 			for (ApplicationApprContent applicationContent : listAppSttAcquisitionAppl) {
 				Application_New app = applicationContent.getApplication();
@@ -826,10 +860,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp) {
 		List<ApplicationApprContent> listAppContents = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
+
+		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(companyId);
+		
 		// 期間（リスト）
 		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
 			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp);
+			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
 			listAppContents.addAll(listAppContent);
 		}
 		List<Application_New> listCompltLeaveSync = new ArrayList<>();

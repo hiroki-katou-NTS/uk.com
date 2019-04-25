@@ -49,6 +49,9 @@ h4 {
 						<note style="width:500px;"> <b>Update
 							2018/04/19</b> <br></br>
 						- Add optional properties: restrictionOfReferenceRange
+							<br/><br/>
+						<b>Update 2019/04/19</b> <br/>
+						- Add start mode (workplace or department)
 						</note>
 						<h2>Overview</h2>
 						<div style="margin: 20px 0px;">
@@ -57,6 +60,15 @@ h4 {
 							<button data-bind="click: remove">Remove</button>
 						</div>
 						<div>
+							<div>
+								<h4>Start mode:</h4>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: listStartMode,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedStartMode,
+									enable: true}"/>
+							</div>
 							<div>
 								<h4>Tree select grid type:</h4>
 								<div

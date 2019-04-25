@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -12,26 +14,20 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
- * @author HungTT - 年休付与時点残数履歴データ
- *
+ * @author phongtq
+ * 年休付与時点残数履歴データ
  */
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_ANNLEA_TIME_RM_HIST")
-public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity {
-
-	@Id
-	@Column(name = "ANNLEAV_ID")
-	public String annLeavID;
-
+public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializable{
+	
+	@EmbeddedId
+	public KrcdtAnnLeaTimeRemainHistPK  krcdtAnnLeaTimeRemainHistPK;  
+	
+	/** 会社ID */
 	@Column(name = "CID")
 	public String cid;
-
-	@Column(name = "SID")
-	public String sid;
-
-	@Column(name = "GRANT_DATE")
-	public GeneralDate grantDate;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -82,25 +78,21 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity {
 	@Basic(optional = true)
 	public Double workingDays;
 
-	// 付与処理日
-	@Column(name = "GRANT_PROC_DATE")
-	public GeneralDate grantProcessDate;
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected Object getKey() {
-		return annLeavID;
+		return krcdtAnnLeaTimeRemainHistPK;
 	}
 
-	public KrcdtAnnLeaTimeRemainHist(String annLeavID, String cid, String sid, GeneralDate grantDate,
+	public KrcdtAnnLeaTimeRemainHist(String cid, String sid,
+			GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainingDays, Integer remaningMinutes,
-			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays,
-			GeneralDate grantProcessDate) {
+			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		super();
-		this.annLeavID = annLeavID;
 		this.cid = cid;
-		this.sid = sid;
-		this.grantDate = grantDate;
+		this.krcdtAnnLeaTimeRemainHistPK = new KrcdtAnnLeaTimeRemainHistPK(sid, grantProcessDate, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;
 		this.registerType = registerType;
@@ -115,11 +107,12 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity {
 		this.prescribedDays = prescribedDays;
 		this.deductedDays = deductedDays;
 		this.workingDays = workingDays;
-		this.grantProcessDate = grantProcessDate;
+		
 	}
 
 	public static KrcdtAnnLeaTimeRemainHist fromDomain(AnnualLeaveTimeRemainingHistory domain) {
-		return new KrcdtAnnLeaTimeRemainHist(domain.getAnnLeavID(), domain.getCid(), domain.getEmployeeId(),
+		return new KrcdtAnnLeaTimeRemainHist(domain.getCid(), domain.getEmployeeId(),
+				domain.getGrantProcessDate(),
 				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
 				domain.getRegisterType().value, domain.getDetails().getGrantNumber().getDays().v(),
 				domain.getDetails().getGrantNumber().getMinutes().isPresent()
@@ -138,15 +131,14 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity {
 				domain.getAnnualLeaveConditionInfo().isPresent()
 						? domain.getAnnualLeaveConditionInfo().get().getDeductedDays().v() : null,
 				domain.getAnnualLeaveConditionInfo().isPresent()
-						? domain.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null,
-				domain.getGrantProcessDate());
+						? domain.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null);
 	}
 
 	public AnnualLeaveTimeRemainingHistory toDomain() {
-		return new AnnualLeaveTimeRemainingHistory(this.annLeavID, this.cid, this.sid, this.grantDate, this.deadline,
+		return new AnnualLeaveTimeRemainingHistory(this.cid, krcdtAnnLeaTimeRemainHistPK.sid, krcdtAnnLeaTimeRemainHistPK.grantProcessDate, krcdtAnnLeaTimeRemainHistPK.grantDate, this.deadline,
 				this.expStatus, this.registerType, this.grantDays, this.grantMinutes, this.usedDays, this.usedMinutes,
 				this.stowageDays, this.remainingDays, this.remaningMinutes, this.usedPercent, this.prescribedDays,
-				this.deductedDays, this.workingDays, this.grantProcessDate);
+				this.deductedDays, this.workingDays);
 	}
 
 }

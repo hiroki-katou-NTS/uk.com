@@ -28,6 +28,16 @@
 					<div>
 						<table>
 							<tr>
+								<td class="header-text">起動モード:</td>
+								<td class="content-sample"><div
+										data-bind="ntsRadioBoxGroup: {
+										 options: listStartMode,
+									     optionsValue: 'code',
+									     optionsText: 'name',
+									     value: selectedStartMode,
+									     enable: enable}"></div></td>
+							</tr>
+							<tr>
 								<td class="header-text">基準日</td>
 								<td class="content-sample">
 									<div
@@ -100,7 +110,8 @@
 				               selectedSystemType: self.selectedSystemType(),//システム区分
 				               isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,//参照範囲の絞込
 				               showNoSelection: self.isDisplayUnselect(),//Unselection Item
-				               isShowBaseDate: self.isShowBaseDate()//Show base date	
+				               isShowBaseDate: self.isShowBaseDate(),//Show base date
+				               startMode: self.selectedStartMode()//Start mode
 				           }, true);
 				
 				           nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {

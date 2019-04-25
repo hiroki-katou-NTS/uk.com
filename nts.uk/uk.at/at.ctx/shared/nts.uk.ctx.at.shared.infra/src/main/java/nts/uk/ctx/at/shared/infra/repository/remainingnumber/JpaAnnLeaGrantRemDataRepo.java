@@ -17,7 +17,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
@@ -25,6 +27,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	private static final String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId ORDER BY a.grantDate DESC";
 
 	private static final String CHECK_UNIQUE_SID_GRANTDATE_FOR_ADD = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate = :grantDate";
+	
+	private static final String CHECK_UNIQUE_SID_GRANTDATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate <= :grantDate";
 	
 	private static final String CHECK_UNIQUE_SID_GRANTDATE_FOR_UPDATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.annLeavID !=:annLeavID and a.grantDate = :grantDate";
 	
@@ -230,7 +234,13 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
-
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate) {
+		return this.queryProxy().query(CHECK_UNIQUE_SID_GRANTDATE, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));
+	}
+	
 	@Override
 	public Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
@@ -245,6 +255,23 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 					.getList(ent -> toDomain(ent)));
 		});
 		return result.stream().collect(Collectors.groupingBy(i -> i.getEmployeeId()));
+	}
+
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findByExpStatus(String sid, LeaveExpirationStatus expStatus,
+			DatePeriod datePeriod) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId"
+				+ " AND a.deadline >= :startDate"
+				+ " AND a.deadline <= :endDate"
+				+ " AND a.expStatus = :expStatus"
+				+ " ORDER BY a.grantDate ASC";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", sid)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.setParameter("expStatus", expStatus.value)
+				.getList(e -> toDomain(e));
 	}
 
 }

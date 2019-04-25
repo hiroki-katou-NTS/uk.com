@@ -36,6 +36,14 @@ public interface SyWorkplacePub {
 	List<SWkpHistExport> findBySId(List<String> sids );
 
 	/**
+	 * find by sids and base date
+	 * @param sids
+	 * @param baseDate
+	 * @return
+	 */
+	List<SWkpHistExport> findBySId(List<String> sids, GeneralDate baseDate);
+
+	/**
 	 * Find wpk ids by wkp code.
 	 *
 	 * @param companyId the company id
@@ -56,6 +64,8 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList65
 	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	
+	Map<GeneralDate, Map<String, List<String>>> findWpkIdsBySids(String companyId, List<String> employeeId, DatePeriod date);
 
 	/**
 	 * Find by wkp id.
@@ -226,4 +236,9 @@ public interface SyWorkplacePub {
 	 */
 	Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates);
+	
+	//RequestList590
+	//指定した基準日以降の所属職場履歴を取得する
+	// AffWorkplaceHistoryExport
+	List<AffWorkplaceHistoryExport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate);
 }

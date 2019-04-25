@@ -172,18 +172,22 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		} else if (this.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value) {
 			listExtractPerMonth.forEach(e -> {
 				if (e.pk.unit == 3)
+					
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
+			if(extractionPerUnit != null)
 			extractPeriodList.add(extractionPerUnit.toDomain());
 			
 		} else if(this.pk.alarmCategory == AlarmCategory.AGREEMENT.value) {
+			if(extractionPeriodDaily != null)
 			extractPeriodList.add(extractionPeriodDaily.toDomain());
 			
 			listExtractPerMonth.forEach(e -> {				
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 			
+			if(extractRangeYear != null)
 			extractPeriodList.add(extractRangeYear.toDomain());
 			if(alstPtnDeftmbsmon != null)
 			// Add アラームリストのパターン設定 既定期間(基準月) to extractPeriodList
@@ -244,23 +248,32 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			ExtractionPeriodDaily extractionPeriodDaily = null;
 			AYear extractYear = null ;
 			AverageMonth extractAverMonth = null;
+			int extractionRange = 0;
 			
 			for(ExtractionRangeBase extractBase : domain.getExtractPeriodList()) {
 				
 				if(extractBase instanceof ExtractionPeriodDaily) {
 					extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 					
+					
 				}else if(extractBase  instanceof ExtractionPeriodMonth) {
 					listMonth.add((ExtractionPeriodMonth) extractBase);					
 				}else if (extractBase  instanceof AYear){
-					extractYear = (AYear) extractBase;			
+					extractYear = (AYear) extractBase;
 				}else if (extractBase  instanceof AverageMonth){
 					extractAverMonth = (AverageMonth) extractBase;
 				}
 			}
+			if(domain.getAlarmCategory().value == 2 ){
+				extractionRange = 3;
+			} else if (domain.getAlarmCategory().value == 12 ){
+				extractionRange = 4;
+			} else {
+				extractionRange = 0;
+			}
 			return new KfnmtCheckCondition(
 					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
-					extractYear.getExtractionId(), extractYear.getExtractionRange().value,
+					extractYear.getExtractionId(), extractionRange,
 					domain.getCheckConditionList().stream().map( x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()), 
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily), 
 					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
@@ -285,6 +298,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value || entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
 			
+			if(this.extractionPeriodDaily != null)
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
 			
 		} else if (entity.pk.alarmCategory == AlarmCategory.MONTHLY.value || 
@@ -296,10 +310,12 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			});
 		} else if (entity.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
 			
+			if(this.extractionPerUnit != null)
 			this.extractionPerUnit.fromEntity(entity.extractionPerUnit);
 			
 		} else if(entity.pk.alarmCategory ==AlarmCategory.AGREEMENT.value) {
 			
+			if(this.extractionPeriodDaily != null)
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
 			
 			this.listExtractPerMonth= new ArrayList<KfnmtExtractPeriodMonth>();
@@ -307,8 +323,11 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 				this.listExtractPerMonth.add(item);
 			});
 			
+			if(this.extractRangeYear != null)
 			this.extractRangeYear.fromEntity(entity.extractRangeYear);
+			
 			// Convert from Entity of 複数月平均基準月
+			if(this.alstPtnDeftmbsmon != null)
 			this.alstPtnDeftmbsmon.fromEntity(entity.alstPtnDeftmbsmon);
 		}
 		

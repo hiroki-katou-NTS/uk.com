@@ -54,19 +54,16 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = calcNextAnnGrantDate.algorithm(cid, sid, Optional.empty());
 		List<NextAnnualLeaveGrant> lstAnnGrantDate = new ArrayList<>();
 		if(!lstAnnGrantNotDate.isEmpty()) {
-			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate());
+			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate().addYears(1));
 			//入社年月日～次回年休付与日までの年休付与日を全て取得
 			lstAnnGrantDate = calcNextAnnGrantDate.algorithm(cid, 
 					sid, 
-					Optional.of(period),
-					Optional.of(employeeInfor),
-					annualLeaveEmpBasicInfoOpt,
-					Optional.empty(),
-					Optional.empty());
+					Optional.of(period));
 		}
+		lstAnnGrantDate.addAll(lstAnnGrantNotDate);
 		if(lstAnnGrantDate.isEmpty()) {
 			return Optional.empty();
-		}
+		}		
 		//INPUT．指定年月日から一番近い付与日を取得
 		GeneralDate nextDay = GeneralDate.today();
 		int count = 0;

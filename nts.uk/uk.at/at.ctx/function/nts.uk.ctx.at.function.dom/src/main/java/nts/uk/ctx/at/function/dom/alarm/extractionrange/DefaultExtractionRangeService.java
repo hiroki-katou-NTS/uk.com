@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
@@ -77,7 +78,12 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				
 			} else if(c.isAgrrement()) {
 				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm)));
+			} else if(c.isAttHoliday()) {
+				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
+				attHoliday.setTabOrder(7);
+				result.add(attHoliday);
 			}
+			
 
 		});
 		
@@ -86,7 +92,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		return result;
 	}
 	
-	
+	//36協定の期間を算出する
 	private List<CheckConditionTimeDto> getAgreementTime(CheckCondition c, int closureId, YearMonth yearMonth){
 		List<CheckConditionTimeDto> result = new ArrayList<CheckConditionTimeDto>();
 		
@@ -98,7 +104,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth startMonth = yearMonth;
 		YearMonth endMonth = yearMonth;
 		int year = 0;
-		int checkMonth = 1;
+		//int checkMonth = 1;
 		for(ExtractionRangeBase extractBase : c.getExtractPeriodList()) {
 			
 			if(extractBase instanceof ExtractionPeriodDaily) {
@@ -129,14 +135,25 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				}
 				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
 				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
-				if (checkMonth == 1) {
+				if (extraction.getNumberOfMonth() == NumberOfMonth.ONE_MONTH) {
 					monthDto.setPeriod36Agreement(Period.One_Month.value);
-				} else if (checkMonth == 2) {
+				} else if (extraction.getNumberOfMonth() == NumberOfMonth.TWO_MONTH) {
 					monthDto.setPeriod36Agreement(Period.Two_Month.value);
-				} else if (checkMonth == 3) {
+				} else if (extraction.getNumberOfMonth() == NumberOfMonth.THREE_MONTH) {
 					monthDto.setPeriod36Agreement(Period.Three_Month.value);
 				}
-				checkMonth++;
+				//checkMonth++;
+				result.add(monthDto);
+			//基準月の期間を算出する
+			}else if(extractBase instanceof AverageMonth) {
+				AverageMonth extraction = (AverageMonth) extractBase;
+				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_120"), null, null, yearMonth.toString(), yearMonth.toString());
+				if(extraction.getStrMonth() != StandardMonth.CURRENT_MONTH ) {
+					monthDto.setStartMonth(yearMonth.addMonths(-extraction.getStrMonth().value).toString());
+					monthDto.setEndMonth(yearMonth.addMonths(-extraction.getStrMonth().value).toString());
+				}
+				monthDto.setTabOrder(6);
+				monthDto.setPeriod36Agreement(Period.Months_Average.value);
 				result.add(monthDto);
 				
 			}else if(extractBase instanceof AYear) {
@@ -196,7 +213,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		
 	}
 	
-
+	//日次単位の期間の算出する
 	public CheckConditionTimeDto getDailyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Date startDate = null;
@@ -213,7 +230,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				formatter.format(endDate), null, null);
 	}
 	
-	
+	//月次単位の期間を算出する
 	public CheckConditionTimeDto getMonthlyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
 		//DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		YearMonth startMonthly = yearMonth;
@@ -270,7 +287,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		return new CheckConditionPeriod(startDate, endDate);
 		
 	}
-
+	//周期単位の期間を算出する
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
 		LocalDate sDate = null;
 		LocalDate eDate = null;

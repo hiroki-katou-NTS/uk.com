@@ -10,12 +10,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
  *
  */
 public interface StartEndTimeOffReflect {
-	/**
-	 * 開始終了時刻の反映(事前申請)
-	 * @param param
-	 */
-	public void startEndTimeOffReflect(OvertimeParameter param, WorkInfoOfDailyPerformance workInfo);
-	public void startEndTimeOffReflect(OvertimeParameter param, IntegrationOfDaily workInfo);
+
 	/**
 	 * 自動打刻をクリアする
 	 * @param employeeId

@@ -3,6 +3,7 @@ package nts.uk.shr.infra.web.request;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
@@ -42,7 +43,9 @@ public class StartPageLogWriter implements Filter {
 		
 		Cookie cookie = new Cookie(FilterConst.JUMP_FROM_MENU, "");
         cookie.setMaxAge(0);
-        ((HttpServletResponse) response).addCookie(cookie);
+        HttpServletResponse httpResponse = (HttpServletResponse) response; 
+        httpResponse.addCookie(cookie);
+        httpResponse.setHeader(FilterConst.CONTENT_LANG, "ja-JP");
 
 		chain.doFilter(request, response);
 	}

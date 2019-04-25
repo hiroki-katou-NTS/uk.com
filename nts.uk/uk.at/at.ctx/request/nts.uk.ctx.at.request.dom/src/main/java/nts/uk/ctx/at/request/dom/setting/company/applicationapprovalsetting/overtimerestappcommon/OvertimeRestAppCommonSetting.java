@@ -85,7 +85,7 @@ public class OvertimeRestAppCommonSetting {
 	/**
 	 * 時間外超過区分
 	 */
-	private UseAtr extratimeExcessAtr;
+	private Time36AgreeCheckRegister extratimeExcessAtr;
 	/**
 	 * 申請日矛盾区分
 	 */
@@ -125,7 +125,7 @@ public class OvertimeRestAppCommonSetting {
 				EnumAdaptor.valueOf(performanceExcessAtr,AppDateContradictionAtr.class),
 				EnumAdaptor.valueOf(intructDisplayAtr,UseAtr.class),
 				EnumAdaptor.valueOf(extratimeDisplayAtr,UseAtr.class),
-				EnumAdaptor.valueOf(extratimeExcessAtr,UseAtr.class),
+				EnumAdaptor.valueOf(extratimeExcessAtr,Time36AgreeCheckRegister.class),
 				EnumAdaptor.valueOf(appDateContradictionAtr,AppDateContradictionAtr.class),
 				EnumAdaptor.valueOf(calculationOvertimeDisplayAtr,UseAtr.class));
 	}

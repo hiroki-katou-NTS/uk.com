@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,7 +47,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				}
 			});
 		});
-		return lstOutputData;
+		return lstOutputData.stream().sorted((a,b) -> a.getYmd().compareTo(b.getYmd()))
+				.collect(Collectors.toList());
 	}
 
 

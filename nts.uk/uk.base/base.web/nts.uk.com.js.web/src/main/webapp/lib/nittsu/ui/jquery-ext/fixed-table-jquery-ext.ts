@@ -37,7 +37,10 @@ module nts.uk.ui.jqueryExtentions {
                     width += Number($(this).attr("width").replace(/px/gi, ''));
                 });
                 width++;
-                if(nts.uk.util.isNullOrUndefined(viewWidth)){
+                
+                if (options.autoResize) {
+                    viewWidth = Math.min(window.innerWidth - 60, width);
+                } else if(nts.uk.util.isNullOrUndefined(viewWidth)){
                     viewWidth = width;
                 }
                 
@@ -65,7 +68,18 @@ module nts.uk.ui.jqueryExtentions {
                 let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>"); 
                 let $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
                 let bodyHeight: any = "auto";
-                if (setting.height !== "auto") {
+                if (options.autoResize) {
+                    $bodyContainer.css("max-width", viewWidth);
+                    bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                
+                    $(window).on("resize", evt => {
+                        let tableWidth = Math.max(0, Math.min(width, window.innerWidth - 60));
+                        $headerContainer.css("max-width", tableWidth);
+                        $bodyContainer.css("max-width", tableWidth);
+                        bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                        $bodyWrapper.height(Math.max(0, bodyHeight));
+                    });
+                } else if (setting.height !== "auto") {
                     $bodyContainer.css("max-width", viewWidth);
                     bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                 }

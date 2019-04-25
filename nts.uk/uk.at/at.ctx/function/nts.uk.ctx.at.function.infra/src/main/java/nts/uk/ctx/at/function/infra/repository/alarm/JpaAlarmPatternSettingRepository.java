@@ -10,8 +10,10 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;
+import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtAlstPtnDeftmbsmon;
 
 @Stateless
 public class JpaAlarmPatternSettingRepository extends JpaRepository implements AlarmPatternSettingRepository {
@@ -72,6 +74,18 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 		return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
 				.setParameter("companyId", companyId).setParameter("alarmPatternCode", alarmPatternCode)
 				.getSingle(c -> c.toCheckCondition()).get();
+	}
+
+	private static final String SELECT_AVER = "SELECT a FROM KfnmtAlstPtnDeftmbsmon a WHERE a.pk.extractionId = :extractionId";
+	@Override
+	public Optional<AverageMonth> findAverageMonth(String extractionId) {
+		return this.queryProxy().query(SELECT_AVER, KfnmtAlstPtnDeftmbsmon.class)
+				.setParameter("extractionId", extractionId).getSingle(c ->c.toDomain());
+	}
+	
+	@Override
+	public void createAver(AverageMonth domain) {		
+		this.commandProxy().insert(KfnmtAlstPtnDeftmbsmon.toEntity(domain));
 	}
 
 	

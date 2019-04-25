@@ -380,9 +380,11 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	}
         	
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
+        
+        	
         	HolidayCalculation holidayCalculation = commonSetting.isPresent()?commonSetting.get().getHolidayCalculation():new HolidayCalculation(nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.USE);
         	if(ableRangeTime.greaterThan(0) && autoCalculationSet.getLegalOtTime().getCalAtr().isCalculateEmbossing())
-        		//
+        	{
         		if(!workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime() || holidayCalculation.getIsCalculate().isNotUse()) {
             		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
 							    .filter(tc -> tc.getPayOrder().isPresent())
@@ -395,6 +397,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 							    overTimeHourSetList,
 							    holidayCalcMethodSet);        			
         		}
+        	}
         }
         return overTimeWorkFrameTimeSheetList;
     }

@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button id="A1_1" class="proceed" tabindex="1"
+				<button id="A1_1" class="proceed" tabindex="2"
 					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR001_25')}</button>
 			</div>
 
@@ -36,7 +36,7 @@
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
 						<div class="selectionHoliday">
-							<div tabindex="2" id="employeeSearch"></div>
+							<div tabindex="3" id="employeeSearch"></div>
 						</div>
 					</div>
 				</div>
@@ -53,7 +53,7 @@
 
 					<div class="div_line">
 						<!-- A3_2 -->
-						<div id="date_type_group" tabindex="2"
+						<div id="date_type_group" tabindex="4"
 							data-bind="ntsRadioBoxGroup: {
 								name:'#[KDR002_2]',
 								options: dateTypes ,
@@ -66,7 +66,7 @@
 					</div>
 					<div class="div_line">
 						<!-- A3_5 -->
-						<div id="ref_type_group" tabindex="2"
+						<div id="ref_type_group" tabindex="5"
 							data-bind="ntsRadioBoxGroup: {
 								name:'#[KDR002_5]',
 								options: referenceTypes ,
@@ -80,12 +80,13 @@
 							<!-- A3_8 -->
 							<label>#{i18n.getText('KDR002_8')}</label>
 							<!-- A3_9 -->
-							<div id="print_date_picker" tabindex="2"
+							<div id="print_date_picker" tabindex="6"
 								data-bind="ntsDatePicker: {
 										value: printDate , 
 										dateFormat: 'yearmonth',
 										name:'#[KDR002_8]',
-										enable:selectedDateType() == 1
+										enable:selectedDateType() == 1,
+										required:selectedDateType() == 1
 										}">
 							</div>
 						</div>
@@ -100,7 +101,7 @@
 						</div>
 
 						<!-- A4_2  -->
-						<div id="page_break_cbb" class="div_line_col_2" tabindex="2"
+						<div id="page_break_cbb" class="div_line_col_2" tabindex="7"
 							data-bind="ntsComboBox: {
 								name:'#[KDR002_9]',
 								required: true,

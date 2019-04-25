@@ -80,6 +80,12 @@ public class Kwr008WebService extends WebService {
 	public PeriodDto getList() {
 		return this.periodFinder.getPeriod();
 	}
+	
+	@POST
+	@Path("get/currentMonth")
+	public String currentMonth() {
+		return this.periodFinder.getCurentMonth().toString();
+	}
 
 	/**
 	 * KWR008 A
@@ -155,5 +161,11 @@ public class Kwr008WebService extends WebService {
 	@Path("get/listItemOutput/{setOutCd}")
 	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){
 		return this.listItemOut.getItemOutTblBookBySetOutCd(setOutCd);
+	}
+	
+	@POST
+	@Path("checkAverage/{setOutCd}")
+	public Boolean checkAverage(@PathParam("setOutCd") String setOutCd){
+		return outputItemSetting.checkAverage(setOutCd);
 	}
 }

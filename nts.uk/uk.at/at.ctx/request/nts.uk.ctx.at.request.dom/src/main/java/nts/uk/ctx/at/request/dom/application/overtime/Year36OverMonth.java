@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
@@ -10,6 +11,7 @@ import nts.arc.time.YearMonth;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class Year36OverMonth extends DomainObject {
 
 	/**
