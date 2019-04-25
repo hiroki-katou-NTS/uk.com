@@ -56,7 +56,30 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         
         remainDays: KnockoutObservable<number> = ko.observable(null);
         appCur: any = null;
-        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
+        kaf011ReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.editable() ? this.appTypeSet().displayAppReason() != 0 : false;
+            });
+        kaf011FixedReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.editable() ;
+            });
+        kdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.editable();
+            });
+        recTimeSwitchEnable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.editable();
+            });
+        recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.editable() ? this.drawalReqSet().permissionDivision() != 0 : false;
+        });
+        absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.editable() ? this.absWk().changeWorkHoursType() : false;
+        });
+        absTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.editable() ? this.absWk().enableWkTime() == true : false;
+        });
+        changeWorkHoursTypeEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.editable();
+        });
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -88,7 +111,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 }
             });
             
-            
         }
 
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
@@ -105,7 +127,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     appVersion: self.version,
                     remainDays: self.remainDays()
                 },
-                screenB: true
+                screenB: true,
+                isNotSelectYes: true
             }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
             if (selectedReason) {
@@ -264,10 +287,12 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     }
 
                 }
-                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
+                
                 
             }
             self.firstLoad(false);
+            self.recWk().wkTimeCD.valueHasMutated();
+            self.absWk().wkTimeCD.valueHasMutated();
         }
 
         setDataCommon(data) {

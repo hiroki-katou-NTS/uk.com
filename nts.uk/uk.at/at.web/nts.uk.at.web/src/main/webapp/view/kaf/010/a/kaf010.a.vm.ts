@@ -419,6 +419,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            $("#inputdate").trigger("validate");
             if(self.displayCaculationTime()){
                 if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
                     return;    

@@ -79,6 +79,17 @@ public class ApproveHolidayShipmentCommandHandler
 					displayReason += System.lineSeparator();
 				}
 				displayReason += context.getCommand().getTextAreaReason();
+			} else {
+				if(Strings.isBlank(typicalReason)){
+					boolean isApprovalRec = command.getRecAppID() != null;
+					boolean isApprovalAbs = command.getAbsAppID() != null;
+					if (isApprovalRec) {
+						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getAppReason().v();
+					}
+					if (isApprovalAbs) {
+						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getAppReason().v();
+					}
+				}
 			}
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
@@ -131,7 +142,7 @@ public class ApproveHolidayShipmentCommandHandler
 			String memo, String appReason, boolean isUpdateReason) {
 		// アルゴリズム「詳細画面登録前の処理」を実行する
 		detailBefUpdate.processBeforeDetailScreenRegistration(companyID, employeeID, GeneralDate.today(), 1, appID,
-				PrePostAtr.PREDICT, version);
+				PrePostAtr.PREDICT, version, null, null);
 		// アルゴリズム「申請個別のエラーチェック」を実行する không xử lý
 
 		// xử lý đồng thời
