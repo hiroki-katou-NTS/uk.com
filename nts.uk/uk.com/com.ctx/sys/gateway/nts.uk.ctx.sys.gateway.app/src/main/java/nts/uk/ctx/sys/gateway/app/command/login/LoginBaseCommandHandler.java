@@ -29,14 +29,14 @@ import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.StatusOfEmployment;
-import nts.uk.ctx.sys.gateway.dom.adapter.employment.SEmpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employment.GwSyEmploymentAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.employment.SEmpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusEmploymentAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusOfEmploymentImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syjobtitle.EmployeeJobHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syjobtitle.GwSyJobTitleAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.GwSyWorkplaceAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -78,6 +78,8 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.service.NotifyResult;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.service.PassWordPolicyAlgorithm;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
@@ -147,7 +149,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/** The Password policy repo. */
 	@Inject
-	private PasswordPolicyRepository PasswordPolicyRepo;
+	private PasswordPolicyRepository pwPolicyRepo;
 
 	/** The role adapter. */
 	@Inject
@@ -184,6 +186,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The sy employment adapter. */
 	@Inject
 	private GwSyEmploymentAdapter syEmploymentAdapter;
+	
+	@Inject
+	private PassWordPolicyAlgorithm pWPolicyAlg;
 	
 	private static final boolean IS_EMPLOYMENT = true;
 	private static final boolean IS_CLASSIFICATION = false;
@@ -398,28 +403,24 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		this.setRoleId(user.getUserId());
 	}
 	/**
-	 * Check after login.
-	 *
+	 * ログイン後チェック
 	 * @param user
-	 *            the user
 	 * @param oldPassword
-	 *            the old password
-	 * @return true, if successful
+	 * @return
 	 */
-	protected CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword) {
+	public CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword) {
 		if (user.getPassStatus() != PassStatus.Reset.value) {
 			// Get PasswordPolicy
-			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
-					.getPasswordPolicy(new ContractCode(user.getContractCode()));
+			Optional<PasswordPolicy> pwPoliOp = this.pwPolicyRepo.getPasswordPolicy(new ContractCode(user.getContractCode()));
 
-			if (passwordPolicyOpt.isPresent()) {
+			if (pwPoliOp.isPresent()) {
 				// Event Check
-				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
+				return this.checkEvent(pwPoliOp.get(), user, oldPassword);
 			}
 			return new CheckChangePassDto(false, null, false);
-		} else {
-			return new CheckChangePassDto(true, "Msg_283", false);
 		}
+			
+		return new CheckChangePassDto(true, "Msg_283", false);
 	}
 
 	/**
@@ -445,8 +446,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				}
 			}
 
-			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword,
-					user.getContractCode());
+			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword, user.getContractCode());
 
 			if (mess.isError()) {
 				if (passwordPolicy.isLoginCheck()) {
@@ -454,6 +454,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				}
 				return new CheckChangePassDto(false, null, false);
 			}
+			
+			//パスワードポリシーを満たす場合(Thỏa mãn PasswordPolicy)
+			//アルゴリズム「パスワードの期限切れチェック」を実行する (Thực hiện thuật toán 「Check hết hạn password」)
+			//エラーあり：パスワードの有効期限が切れた場合
+			if(pWPolicyAlg.checkExpiredPass(user.getUserId(), passwordPolicy.getValidityPeriod().v().intValue())){
+				return new CheckChangePassDto("Msg_1516");
+			}
+			//エラーなし
+			//アルゴリズム「パスワード変更通知チェック」を実行する (Thực hiện thuật toán 「Check thông báo thay đổi password」)
+			//通知しない(ko thông báo)
+			NotifyResult notifyResult = pWPolicyAlg.checkNotifyChangePass(user.getUserId(), passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getNotificationPasswordChange().v().intValue());
+			if(!notifyResult.isNotifyFlg()){
+				return new CheckChangePassDto(false, null, false);
+			}
+			//通知する(có  thông báo- có check vào mục thông báo)
+			//確認メッセージ（Msg_1517）を表示する {0}【残り何日】
+			return new CheckChangePassDto("Msg_1517", notifyResult.getSpanDays());
 		}
 		return new CheckChangePassDto(false, null, false);
 	}
@@ -721,7 +738,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
-			throw new BusinessException("Msg_1419");
+			throw new BusinessException("Msg_1527");
 		}
 
 		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();

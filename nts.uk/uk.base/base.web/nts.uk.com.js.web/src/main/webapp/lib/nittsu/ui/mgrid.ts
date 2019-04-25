@@ -4938,7 +4938,10 @@ module nts.uk.ui.mgrid {
                             self.disableNtsControlAt(id, key, $c);
                             disabled = true;
                             return;
+                        } else if (s === color.ManualEditTarget || s === color.ManualEditOther) {
+                            $.data($c, v.INIT_MAN_EDIT, s);
                         }
+                        
                         if (!$c.classList.contains(s))
                             $c.classList.add(s);
                     });
@@ -5306,9 +5309,8 @@ module nts.uk.ui.mgrid {
                 if (dkn.controlType[key] === dkn.TEXTBOX) {
                     let col = _columnsMap[key];
                     if (!col || col.length === 0) return;
-                    val = String(val);
                     let formatted = su.format(col[0], val);
-                    $cell.innerHTML = formatted;
+                    $cell.innerHTML = _.isNil(formatted) ? "" : formatted;
                     let disFormat = su.formatSave(col[0], val);
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                     $.data($cell, v.DATA, disFormat);
@@ -5644,6 +5646,11 @@ module nts.uk.ui.mgrid {
                     _.forEach(_mafollicle[k].dataSource, (d, i) => {
                         if (!condition(d[key], d)) return;
                         let setVal = value(d[key], d);
+                        let maf = _mafollicle[k][_currentSheet], r;
+                        if (maf && maf.desc && (r = maf.desc.rows[i])) {
+                            khl.clear({ id: d[_pk], columnKey: key, element: r[maf.desc.colIdxes[key]] }); 
+                        }
+                        
                         _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                     });
                 });
@@ -6282,32 +6289,39 @@ module nts.uk.ui.mgrid {
             $grid.addXEventListener(ssk.KEY_DOWN, evt => {
                 let $grid = evt.currentTarget, $tCell = evt.target;
                 if (!$grid) return;
-                if (ti.isEnterKey(evt)) {
-                    let direct = $.data($grid, "enterDirect");
-                    if (evt.shiftKey) {
-                        lch.selectPrev($grid, direct);
-                    } else {
-                        lch.selectNext($grid, direct);        
-                    }
-                } else if (ti.isTabKey(evt)) {
-                    evt.preventDefault();
-                    if (evt.shiftKey) {
+                if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) 
+                    && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
+                    ssk.KeyPressed[evt.keyCode] = true;
+                }
+                
+                if (!_(ssk.KeyPressed).keys().filter(k => k !== "13" && k !== "9").size()) {
+                    if (ti.isEnterKey(evt)) {
+                        let direct = $.data($grid, "enterDirect");
+                        if (evt.shiftKey) {
+                            lch.selectPrev($grid, direct);
+                        } else {
+                            lch.selectNext($grid, direct);        
+                        }
+                    } else if (ti.isTabKey(evt)) {
+                        evt.preventDefault();
+                        if (evt.shiftKey) {
+                            lch.selectPrev($grid);
+                        } else {
+                            lch.selectNext($grid);
+                        }
+                    } else if (ti.isArrowLeft(evt)) {
+                        evt.preventDefault();
                         lch.selectPrev($grid);
-                    } else {
+                    } else if (ti.isArrowRight(evt)) {
+                        evt.preventDefault();
                         lch.selectNext($grid);
+                    } else if (ti.isArrowUp(evt)) {
+                        evt.preventDefault();
+                        lch.selectPrev($grid, "below");
+                    } else if (ti.isArrowDown(evt)) {
+                        evt.preventDefault();
+                        lch.selectNext($grid, "below");
                     }
-                } else if (ti.isArrowLeft(evt)) {
-                    evt.preventDefault();
-                    lch.selectPrev($grid);
-                } else if (ti.isArrowRight(evt)) {
-                    evt.preventDefault();
-                    lch.selectNext($grid);
-                } else if (ti.isArrowUp(evt)) {
-                    evt.preventDefault();
-                    lch.selectPrev($grid, "below");
-                } else if (ti.isArrowDown(evt)) {
-                    evt.preventDefault();
-                    lch.selectNext($grid, "below");
                 }
                 
                 // Get input
@@ -6391,6 +6405,21 @@ module nts.uk.ui.mgrid {
                 } else if (evt.ctrlKey && evt.keyCode === 90) {
                     annuler();
                 }
+            });
+            
+            $grid.addXEventListener(ssk.KEY_UP, evt => {
+                delete ssk.KeyPressed[evt.keyCode];
+            });
+            
+            document.addXEventListener(ssk.KEY_DOWN, evt => {
+                if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) 
+                    && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
+                    ssk.KeyPressed[evt.keyCode] = true;
+                }
+            });
+            
+            document.addXEventListener(ssk.KEY_UP, evt => {
+                delete ssk.KeyPressed[evt.keyCode];
             });
             
             if (_copie) {
@@ -7406,6 +7435,7 @@ module nts.uk.ui.mgrid {
         export let RENDERED = "mgridrowsrendered";
         export let MS = "mgridms";
         export let MS_BEFORE_COMPL = "mgridmsbeforecompletion";
+        export let KeyPressed = {};
         
         window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
         window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
@@ -8059,23 +8089,27 @@ module nts.uk.ui.mgrid {
             controlType[TEXTBOX] = { my: $editContainer, type: TEXTBOX };
             $editor.addXEventListener(ssk.KEY_DOWN, evt => {
                 if (ti.isEnterKey(evt) || ti.isTabKey(evt)) {
-                    let d = ti.closest($editor, "td." + v.CELL_CLS);
-                    let coord = ti.getCellCoord(d), ctrl = controlType[coord.columnKey];
-                    if (!ctrl || ctrl.type !== DATE_PICKER) {
+                    if (!_(ssk.KeyPressed).keys().filter(k => k !== "13" && k !== "9").size()) {
+                        let d = ti.closest($editor, "td." + v.CELL_CLS);
+                        let coord = ti.getCellCoord(d), ctrl = controlType[coord.columnKey];
+                        if (!ctrl || ctrl.type !== DATE_PICKER) {
+                            su.endEdit(_$grid[0]);
+                            return;
+                        }
+                        
+                        let data = $.data(d, v.DATA);
+                        if (data instanceof Date) {
+                            data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
+                        }
+                        
+                        let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
+                        if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                            ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                        }
                         su.endEdit(_$grid[0]);
-                        return;
                     }
-                    
-                    let data = $.data(d, v.DATA);
-                    if (data instanceof Date) {
-                        data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
-                    }
-                    
-                    let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                    if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                        ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
-                    }
-                    su.endEdit(_$grid[0]);
+                } else if ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223)) {
+                    ssk.KeyPressed[evt.keyCode] = true;
                 }
                 
                 if (ti.isArrowLeft(evt) || ti.isArrowRight(evt) || ti.isArrowUp(evt) || ti.isArrowDown(evt)) {
@@ -8103,6 +8137,7 @@ module nts.uk.ui.mgrid {
             };
             
             $editor.addXEventListener(ssk.KEY_UP, evt => {
+                delete ssk.KeyPressed[evt.keyCode];
                 ms();
             });
             

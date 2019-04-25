@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-//import java.util.ArrayList;
-//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -119,9 +117,6 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			dataSetter.updateData("dailyCalculateCount", count);
 		}
 		
-		
-
-
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();

@@ -37,5 +37,8 @@ public class HolidayWorktimeAppPara {
 	private Integer startTime;
 	
 	private Integer endTime;
-
+	/**
+	 * 休憩時間
+	 */
+	private Map<Integer, BreakTimeAppPara> mapBreakTime;
 }

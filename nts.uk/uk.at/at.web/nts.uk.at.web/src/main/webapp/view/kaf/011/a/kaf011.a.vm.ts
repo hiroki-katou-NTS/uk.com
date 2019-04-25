@@ -250,7 +250,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         employeeID: self.employeeList()[0] ? self.employeeList()[0].sid : null,
                         appVersion: 0,
                         remainDays: self.remainDays()
-                    }
+                    },
+                    screenB: false
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             if (selectedReason) {
                 returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;

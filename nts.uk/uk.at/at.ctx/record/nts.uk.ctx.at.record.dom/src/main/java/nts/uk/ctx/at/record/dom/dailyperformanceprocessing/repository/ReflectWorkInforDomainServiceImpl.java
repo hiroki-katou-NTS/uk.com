@@ -307,9 +307,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	private SessionContext scContext;
 
 	private ReflectWorkInforDomainService self;
-	
-	@Inject
-	private ReflectStampDomainService reflectStampDomainService;
 
 	@PostConstruct
 	public void init() {
@@ -471,22 +468,26 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 							.find(employeeId, day).get();
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
+					
 					NewReflectStampOutput stampOutput = new NewReflectStampOutput();
 					stampOutput.setErrMesInfos(new ArrayList<>());
 					stampOutput.setReflectStampOutput(new ReflectStampOutput());
 					
-					if(workInfoOfDailyPerformance != null){
+					if(workInfoOfDailyPerformance != null) {
 						WorkStyle workStyle = basicScheduleService
 								.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 						
+						
 						if (workStyle != WorkStyle.ONE_DAY_REST) {
-							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyId, employeeId,
-									day, workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-									reCreateAttr, Optional.empty(),Optional.empty(), Optional.empty());
-						}else {
-							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
-									 employeeId, day, Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID, reCreateAttr,
-									 Optional.empty(),Optional.empty(), Optional.empty());
+							stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+								employeeId, day, workInfoOfDailyPerformance, null, empCalAndSumExecLogID, reCreateAttr,
+								Optional.empty(), Optional.empty(), Optional.empty());
+						} else {
+							stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(
+									companyId, employeeId, day,
+									Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID, reCreateAttr,
+									Optional.empty(), Optional.empty(), Optional.empty());
+							
 						}
 					}
 					// this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId,
@@ -503,6 +504,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							this.errMessageInfoRepository.add(action);
 						});
 					}
+					
 				}
 			}
 		}

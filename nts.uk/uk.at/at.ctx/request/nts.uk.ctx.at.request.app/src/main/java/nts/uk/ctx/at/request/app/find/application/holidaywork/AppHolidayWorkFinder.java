@@ -57,6 +57,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayPreP
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
@@ -264,7 +265,7 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,
+	public ColorConfirmResult calculationresultConfirm(List<CaculationTime> breakTime ,
 			int prePostAtr,
 			String appDate,
 			String siftCD,
@@ -280,7 +281,7 @@ public class AppHolidayWorkFinder {
 		}
 		String companyID = AppContexts.user().companyId();
 		String employeeIDOrapproverID = AppContexts.user().employeeId();
-		List<CaculationTime> result = new ArrayList<>();
+		ColorConfirmResult result = new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 		// 6.計算処理 : TODO
 		// 表示しない
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
@@ -309,6 +310,72 @@ public class AppHolidayWorkFinder {
 																endTimeRests);
 		if (!employeeIDOrapproverID.equals(employeeID)) {
 			//  06-01-a_色表示チェック（承認者）
+			result = this.holidaySixProcess.checkDisplayColorForApproverCF(breakTime,
+															dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
+															prePostAtr,
+															inputDate,
+															GeneralDate.fromString(appDate, DATE_FORMAT), 
+															ApplicationType.BREAK_TIME_APPLICATION.value,
+															employeeID,
+															companyID,
+															siftCD);
+		}else{
+			//06-01_色表示チェック
+			result = this.holidaySixProcess.checkDisplayColorCF(breakTime,
+					dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), prePostAtr, inputDate,
+					GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION.value,
+					employeeID, companyID, siftCD);
+		}
+		result.setDailyAttendanceTimeCaculationImport(dailyAttendanceTimeCaculationImport);
+		return result;
+	}
+	
+	/**
+	 * getCaculationValue
+	 * @param breakTime
+	 * @param bonusTimes
+	 * @param prePostAtr
+	 * @param appDate
+	 * @param siftCD
+	 * @return
+	 */
+	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,
+			int prePostAtr,
+			String appDate,
+			String siftCD,
+			String workTypeCode,
+			String employeeID,
+			GeneralDateTime inputDate,
+			Integer startTime,
+			Integer endTime,
+			List<Integer> startTimeRests,
+			List<Integer> endTimeRests,
+			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport){
+		if(inputDate == null){
+			inputDate = GeneralDateTime.now();
+		}
+		String companyID = AppContexts.user().companyId();
+		String employeeIDOrapproverID = AppContexts.user().employeeId();
+		List<CaculationTime> result = new ArrayList<>();
+		// 6.計算処理 : TODO
+		// 表示しない
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
+				employeeIDOrapproverID,
+				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), inputDate.toDate());
+		if (!isSettingDisplay(appCommonSettingOutput)) {
+			// 休憩時間帯を取得する
+			List<DeductionTimeDto> timeZones =  getBreakTimes(workTypeCode, siftCD); 
+
+			if (!CollectionUtil.isEmpty(timeZones)) {
+				startTimeRests = timeZones.stream().map(x -> x.getStart())
+						.collect(Collectors.toList());
+
+				endTimeRests = timeZones.stream().map(x -> x.getEnd())
+						.collect(Collectors.toList());
+			}
+		}
+		if (!employeeIDOrapproverID.equals(employeeID)) {
+			//  06-01-a_色表示チェック（承認者）
 			result = this.holidaySixProcess.checkDisplayColorForApprover(breakTime,
 															dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
 															prePostAtr,
@@ -325,7 +392,6 @@ public class AppHolidayWorkFinder {
 					GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION.value,
 					employeeID, companyID, siftCD);
 		}
-		
 		// 06-02_休出時間を取得
 		this.holidaySixProcess.getCaculationHolidayWork(companyID,
 				employeeID,
@@ -335,6 +401,7 @@ public class AppHolidayWorkFinder {
 				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
 	}
+	
 	/**
 	 * 休憩時間帯を取得する
 	 * @param workTypeCD

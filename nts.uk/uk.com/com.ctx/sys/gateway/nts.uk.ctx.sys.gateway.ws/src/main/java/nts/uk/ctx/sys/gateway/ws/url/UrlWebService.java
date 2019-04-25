@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
@@ -122,10 +123,8 @@ public class UrlWebService {
 		}
 		// アルゴリズム「埋込URL実行契約セット」を実行する
 		Contract contract = this.executionContractSet(contractCD);
-		
-		// アルゴリズム「埋込URL実行ログイン」を実行する
-		String succesMsg = this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
-		
+		//EA修正履歴3275 処理の順番を逆転
+		//hoatt 2019.03.28
 		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
 		loginRecordRegistService.loginRecord(
 				new LoginRecordInput(
@@ -138,7 +137,9 @@ public class UrlWebService {
 						TextResource.localize("Msg_1474"), 
 						null), 
 				urlExecInfoExport.getCid());
-		
+		// アルゴリズム「埋込URL実行ログイン」を実行する
+		CheckChangePassDto changePw = this.executionURLLogin(urlExecInfoExport.getScd(), 
+				urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
 			result.put(x.getTaskIncreKey(), x.getTaskIncreValue());
@@ -162,8 +163,8 @@ public class UrlWebService {
 			    urlExecInfoExport.getSid(),
 			    urlExecInfoExport.getScd(),
 				result,
-				succesMsg,
-				webAppID);
+				webAppID,
+				changePw);
 	}
 	
 	private Contract executionContractSet(String contractCD){
@@ -181,8 +182,16 @@ public class UrlWebService {
 		
 		return opContract.get();
 	}
-	
-	private String executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract, UrlExecInfo urlExecInfoExport){
+	/**
+	 * 埋込URL実行ログイン
+	 * @param employeeCD
+	 * @param loginID
+	 * @param companyID
+	 * @param contract
+	 * @param urlExecInfoExport
+	 * @return
+	 */
+	private CheckChangePassDto executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract, UrlExecInfo urlExecInfoExport){
 		// アルゴリズム「埋込URL実行ログインアカウント承認」を実行する
 		URLAccApprovalOutput urlAccApprovalOutput = this.executionURLAccApproval(employeeCD, companyID, loginID, contract, urlExecInfoExport);
 		
@@ -219,7 +228,10 @@ public class UrlWebService {
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
-		return systemSuspendOutput.getMsgID();
+		//アルゴリズム「ログイン後チェック」を実行する
+		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(),urlAccApprovalOutput.getUserImport().getPassword());
+		changPw.setSuccessMsg(systemSuspendOutput.getMsgContent());
+		return changPw;
 	}
 	
 	private URLAccApprovalOutput executionURLAccApproval(String employeeCD, String companyID, String loginID, Contract contract, UrlExecInfo urlExecInfoExport){

@@ -657,33 +657,24 @@ public class DailyPerformanceCorrectionProcessor {
 			// state check box sign
 			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
 			
-			if(dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : disableSignApp) : !dataSign.notDisableForConfirm())){
-				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-			}
 			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			//set checkbox approval
 			data.setApproval(dataApproval == null ? false : mode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
-			if(dataApproval == null || (mode == ScreenMode.NORMAL.value ? !dataApproval.notDisableNormal() : !dataApproval.notDisableApproval())) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
-			}
-			
-			if(dataApproval == null) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_ERROR);
-				lstCellHideControl.add(new DPHideControlCell(data.getId(), DPText.LOCK_APPROVAL));
-			}
 				
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
+			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
 				//set disable and lock
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, mode, data.isApproval(), data.isSign());
-				boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 				if (showLock == null || showLock) {
-					lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+					lockDay = checkLockDay(dpLock.getLockDayAndWpl(), data);
+					lockWpl = checkLockWork(dpLock.getLockDayAndWpl(), data);
 					lockHist = lockHist(dpLock.getLockHist(), data);
 					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = lockDay || lockWpl;
 					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
 				} else {
@@ -691,6 +682,7 @@ public class DailyPerformanceCorrectionProcessor {
 							false, lockApprovalMonth, lockConfirmMonth);
 				}
                 
+				lockDaykWpl = lockDay || lockWpl;
 				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
@@ -720,6 +712,19 @@ public class DailyPerformanceCorrectionProcessor {
 				if (optWorkInfoOfDailyPerformanceDto.isPresent()
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
+			}
+			
+			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : disableSignApp) : !dataSign.notDisableForConfirm())){
+				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
+			}
+			
+			if(lockDay || lockHist || dataApproval == null || (mode == ScreenMode.NORMAL.value ? !dataApproval.notDisableNormal() : !dataApproval.notDisableApproval())) {
+				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
+			}
+			
+			if(dataApproval == null) {
+				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_ERROR);
+				lstCellHideControl.add(new DPHideControlCell(data.getId(), DPText.LOCK_APPROVAL));
 			}
 		}
 		screenDto.setLstHideControl(lstCellHideControl);
@@ -880,29 +885,46 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate()) && screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value){
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate())){
 							boolean change31 = false;
 							boolean change34 = false;
-							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								//value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
-								if (!share.getInitClock().getGoOut().equals("")) {
-									//if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getGoOut())))
-										change31 = true;
+							if (!lock) {
+								if (screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value) {
+									if (item.getId() == 31
+											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
+											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
+										// value = share.getInitClock().getGoOut() != null ?
+										// share.getInitClock().getGoOut() : "";
+										if (!share.getInitClock().getGoOut().equals("")) {
+											// if (value.equals("") || (Integer.parseInt(value) !=
+											// Integer.parseInt(share.getInitClock().getGoOut())))
+											change31 = true;
+										}
+										ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share,
+												change31, false);
+										changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
+										screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
+									} else if (item.getId() == 34
+											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
+											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
+										if (!share.getInitClock().getLiveTime().equals("")) {
+											// if (value.equals("") || (Integer.parseInt(value) !=
+											// Integer.parseInt(share.getInitClock().getLiveTime())))
+											change34 = true;
+										}
+										ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share,
+												false, change34);
+										changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
+										screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
+									}
+									// insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
+									screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 								}
-								ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share, change31, false);
-								changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
-								screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
-							}else if(item.getId() == 34 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								if (!share.getInitClock().getLiveTime().equals("")) {
-									//if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getLiveTime())))
-										change34 = true;
-								}
-								ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share, false, change34);
-								changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
-								screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
+							} else {
+								ChangeSPR changeSpr = new ChangeSPR(change31, change34);
+								changeSpr.setMessageIdError("Msg_1531");
+								screenDto.setChangeSPR(changeSpr);
 							}
-							//insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
-							screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 						}
 						if (!value.isEmpty()) {
 							// convert HH:mm
@@ -963,29 +985,20 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	public boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
+	public boolean checkLockDay(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
 		boolean lock = false;
 		if (!employeeAndDateRange.isEmpty()) {
 			for (int i = 1; i <= 5; i++) {
 				String idxAsString = String.valueOf(i);
 				DatePeriod dateD = employeeAndDateRange
 						.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|", DPText.LOCK_EDIT_CELL_DAY));
-				DatePeriod dateM = employeeAndDateRange
-						.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|", DPText.LOCK_EDIT_CELL_MONTH));
-				DatePeriod dateC = employeeAndDateRange.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|",
-						data.getWorkplaceId(), "|", DPText.LOCK_EDIT_CELL_WORK));
-				String lockD = "", lockM = "", lockC = "";
+				String lockD = "";
 				if (dateD != null && inRange(data, dateD)) {
 					lockD = mergeString("|", DPText.LOCK_EDIT_CELL_DAY);
 				}
-				if (dateM != null && inRange(data, dateM)) {
-					lockM = mergeString("|", DPText.LOCK_EDIT_CELL_MONTH);
-				}
-				if (dateC != null && inRange(data, dateC)) {
-					lockC = mergeString("|", DPText.LOCK_EDIT_CELL_WORK);
-				}
-				if (!lockD.isEmpty() || !lockM.isEmpty() || !lockC.isEmpty()) {
-					data.setState(mergeString("lock", lockD, lockM, lockC));
+				
+				if (!lockD.isEmpty()) {
+					data.setState(mergeString("lock", lockD));
 					lock = true;
 				}
 			}
@@ -993,9 +1006,32 @@ public class DailyPerformanceCorrectionProcessor {
 		return lock;
 	}
 	
-	public boolean lockHist(Map<String, DatePeriod> empHist, DPDataDto data) {
-		   if(empHist.isEmpty()) return false;
-		   val datePeriod = empHist.get(data.getEmployeeId());
+	public boolean checkLockWork(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
+		boolean lock = false;
+		if (!employeeAndDateRange.isEmpty()) {
+			for (int i = 1; i <= 5; i++) {
+				String idxAsString = String.valueOf(i);
+				DatePeriod dateC = employeeAndDateRange.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|",
+						data.getWorkplaceId(), "|", DPText.LOCK_EDIT_CELL_WORK));
+				String lockC = "";
+				if (dateC != null && inRange(data, dateC)) {
+					lockC = mergeString("|", DPText.LOCK_EDIT_CELL_WORK);
+				}
+				if (!lockC.isEmpty()) {
+					data.setState(mergeString("lock", lockC));
+					lock = true;
+				}
+			}
+		}
+		return lock;
+	}
+	
+	public boolean lockHist(Pair<List<ClosureDto>, Map<Integer, DatePeriod>> empHist, DPDataDto data) {
+		Integer closureId = empHist.getLeft().stream()
+				.filter(x -> x.getSid().equals(data.getEmployeeId()) && inRange(data, x.getDatePeriod()))
+				.map(x -> x.getClosureId()).findFirst().orElse(null);
+		   if(closureId == null) return false;
+		   val datePeriod = empHist.getRight().get(closureId);
 		   if(datePeriod != null && data.getDate().after(datePeriod.end())) return false;
            if(datePeriod != null && (data.getDate().afterOrEquals(datePeriod.start()) && data.getDate().beforeOrEquals(datePeriod.end()))) return false;
            return true;
@@ -1713,7 +1749,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) return employeeIds;
 			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
+					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate(), Arrays.asList(closureId)));
 			lstEmployeeId = regulationRs.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
 //			if (employeeIds.isEmpty()) {
 //				// List<RegulationInfoEmployeeQueryR> regulationRs=
@@ -1931,7 +1967,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, List<Integer> lstClosureId) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		//並び順NO
 		query.setSortOrderNo(1);
@@ -1976,7 +2012,8 @@ public class DailyPerformanceCorrectionProcessor {
 		query.setIncludeIncumbents(true);
 		//休職者を含める
 		query.setIncludeWorkersOnLeave(true);
-		query.setFilterByClosure(false);
+		query.setFilterByClosure(true);
+		query.setClosureIds(lstClosureId);
 		return query;
 	}
 	

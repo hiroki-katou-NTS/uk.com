@@ -1,15 +1,14 @@
 package nts.uk.ctx.at.record.pubimp.dailyperform;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-//import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
-//import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
@@ -27,10 +26,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Gob
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
@@ -70,8 +69,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private PreGoBackReflectService preGobackReflect;
 	@Inject
 	private PreOvertimeReflectService preOvertimeReflect;
-	@Inject
-	private AfterOvertimeReflectService afterOvertimeReflect;
 	@Inject
 	private AbsenceReflectService absenceReflect;
 	@Inject
@@ -189,11 +186,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		return preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));		
 	}
 
-	@Override
-	public boolean afterOvertimeReflect(PreOvertimePubParameter param) {
-		return afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));		
-	}
-
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
 		OvertimeAppPubParameter overtimeInfor = param.getOvertimePara();
 		OvertimeAppParameter appOver = new OvertimeAppParameter(
@@ -227,12 +219,18 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param, boolean isPre) {
+		 Map<Integer, BreakTimeAppPara> mapBreakTimeFrame = new HashMap<>();
+		 param.getHolidayWorkPara().getMapBreakTime().forEach((a,b) -> {
+			 BreakTimeAppPara breakTime = new BreakTimeAppPara(b.getStartTime(), b.getEndTime());
+	            mapBreakTimeFrame.put(a, breakTime);
+	        });
 		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
 				param.getHolidayWorkPara().getWorkTimeCode(),
 				param.getHolidayWorkPara().getMapWorkTimeFrame(),
 				param.getHolidayWorkPara().getNightTime(),
 				param.getHolidayWorkPara().getStartTime(),
-				param.getHolidayWorkPara().getEndTime());
+				param.getHolidayWorkPara().getEndTime(),
+				mapBreakTimeFrame);
 		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
 				param.getBaseDate(),
 				param.isHolidayWorkReflectFlg(), 

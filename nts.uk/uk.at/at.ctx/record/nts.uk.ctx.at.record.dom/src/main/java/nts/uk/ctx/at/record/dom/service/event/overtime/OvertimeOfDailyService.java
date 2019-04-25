@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -29,13 +31,15 @@ public class OvertimeOfDailyService {
 	private WorkUpdateService recordUpdate;
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateDaily;
+	@Inject
+	private AttendanceTimeRepository attendanceTimeRepo;
 	/**
 	 * 申請された時間を補正する
 	 * @param working
 	 * @param cachedWorkType
 	 * @return
 	 */
-	public IntegrationOfDaily correct(IntegrationOfDaily working,Optional<WorkType> cachedWorkType){
+	public IntegrationOfDaily correct(IntegrationOfDaily working,Optional<WorkType> cachedWorkType, boolean isSaveDirect){
 		if(!cachedWorkType.isPresent() 
 				|| !working.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			return working;
@@ -57,12 +61,25 @@ public class OvertimeOfDailyService {
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
 			itemIdList.add(565); //事前所定外深夜時間
 			itemIdList.add(563); //所定外深夜時間
+            //休日出勤申請：休憩時間しか反映してない
+            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
+            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+            itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
+            itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
+            //替時間(休出)の反映、をクリアする
+    		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
 		} else {
 			itemIdList.addAll(recordUpdate.lstPreWorktimeFrameItem());
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
+			 //休日出勤申請：休憩時間しか反映してない
+            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
+            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+            itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
+            itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
+          //替時間(休出)の反映、をクリアする
+    		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
 		}
-		//替時間(休出)の反映、をクリアする
-		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
+		
 		//編集状態を取得する
 		List<EditStateOfDailyPerformance> editItemReflect = editStateDaily.findByEditState(working.getWorkInformation().getEmployeeId(),
 				working.getWorkInformation().getYmd(),
@@ -175,7 +192,24 @@ public class OvertimeOfDailyService {
 		//attendanceTimeRepo.updateFlush(working.getAttendanceTimeOfDailyPerformance().get());
 		//削除
 		//editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), itemIdList);
-		this.deleteItemEdit(working.getEditState(), itemIdList);
+
+		if(isSaveDirect){
+			this.deleteItemEdit(working.getEditState(), itemIdList);
+		}
+		//削除
+//		List<EditStateOfDailyPerformance> editState = new ArrayList<>(working.getEditState());
+//		itemIdList.stream().forEach(x -> {
+//			working.getEditState().stream().forEach(y -> {
+//				if(x == y.getAttendanceItemId()) {
+//					editState.remove(y);
+//				}
+//			});
+//		});
+//		working.setEditState(editState);
+//		if(isSaveDirect){
+//			attendanceTimeRepo.updateFlush(working.getAttendanceTimeOfDailyPerformance().get());
+//			editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), itemIdList);
+//		}
 		return working;
 	}
 	private void deleteItemEdit(List<EditStateOfDailyPerformance> editState, List<Integer> deleteItem) {

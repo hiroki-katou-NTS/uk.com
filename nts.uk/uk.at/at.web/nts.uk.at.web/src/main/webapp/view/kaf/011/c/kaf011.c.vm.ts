@@ -97,7 +97,8 @@ module nts.uk.at.view.kaf011.c.screenModel {
                         employeeID: self.employeeID(),
                         appVersion: self.version(),
                         remainDays: null
-                    }
+                    },
+                    screenB: false
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
             if (selectedReason) {
