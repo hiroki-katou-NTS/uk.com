@@ -139,12 +139,15 @@
 						<h2>Quick search properties:</h2>
 						<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show AllReferableEmployee (参照可能な社員すべて)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show Only me (自分だけ)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isEmployeeOfDepartment}">Show Employee of department (同じ部門の社員)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isEmployeeDepartmentFollow}">Show Employee of department follow (同じ部門とその配下の社員)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show Employee of workplace (同じ職場の社員)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show Employee of workplace follow (同じ職場とその配下の社員)</div><br/>
 						</div>
 						<div class="cell">
 						<h2>Advanced search properties:</h2>
 						<div data-bind="ntsCheckBox:{checked: showEmployment}">Show Employment (雇用条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showDepartment}">Show deaprtment (部門条件)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showWorkplace}">Show workplace (職場条件)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showClassification}">Show classification (分類条件)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showJobTitle}">Show jobtitle (職位条件)</div><br/>
@@ -163,7 +166,7 @@
 									<td><b>EmployeeId</b></td>
 									<td><b>EmployeeCode</b></td>
 									<td><b>EmployeeName</b></td>
-									<td><b>WorkplaceName</b></td>
+									<td><b>AffiliationName</b></td>
 								</tr>
 								<com:ko-foreach bind="selectedEmployee">
 									<tr>
