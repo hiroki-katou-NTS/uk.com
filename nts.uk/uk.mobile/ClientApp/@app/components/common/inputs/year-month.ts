@@ -18,12 +18,9 @@ export class YearMonthComponent extends InputComponent {
 
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
-        for (let y = min; y <= max; y++) {
-            let text = y < 10 ? '0' + y : '' + y;
-            result.push({
-                text,
-                value: y
-            });
+        for (let value = min; value <= max; value++) {
+            let text = value < 10 ? '0' + value : '' + value;
+            result.push({text, value});
         }
 
         return result;
@@ -102,7 +99,7 @@ export class YearMonthComponent extends InputComponent {
 
     private displayYearMonth(year: Number, month: Number) {
         let textMonth = month < 10 ? '0' + month : '' + month;
-        
+
         return year + '年' + textMonth + '月';
     }
 
