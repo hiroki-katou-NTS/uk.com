@@ -576,7 +576,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             } else {
                                 dfd.resolve();
                             }
-    
+                            nts.uk.ui.block.clear();
                         });
                     });
                 };
@@ -1381,7 +1381,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
                     selectedSystemType: self.systemType,
-                    selectedCodes: self.selectedCodeWorkplace(),
+                    selectedCodes: startMode == 0 ? self.selectedCodeWorkplace() : self.selectedCodeDepartment(),
                     isShowBaseDate: false,
                     startMode: startMode
                 };
@@ -1390,21 +1390,18 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                         return;
                     }
-                    // reload KCP004
-                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     // 部門対応
-                    switch (startMode) {
-                        case StartMode.WORKPLACE:
-                            $('#workplaceList').ntsTreeComponent(self.workplaces);
-                            break;
-                        case StartMode.DEPARTMENT:
-                            $('#departmentList').ntsTreeComponent(self.departments);
-                            break;
-                        default:
-                            $('#workplaceList').ntsTreeComponent(self.workplaces);
-                            break;
+                    if (startMode == StartMode.WORKPLACE) {
+                        // reload selected workplace
+                        self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
+                        self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                        $('#workplaceList').ntsTreeComponent(self.workplaces);
+                    } else {
+                        // reload selected department
+                        self.selectedCodeDepartment(nts.uk.ui.windows.getShared('outputCDL008'));
+                        self.departments.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                        $('#departmentList').ntsTreeComponent(self.departments);
                     }
-
                 });
             }
 
@@ -2093,7 +2090,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     startMode: StartMode.DEPARTMENT,
                     selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeDepartment,
+                    selectedId: self.selectedCodeDepartment,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
@@ -2110,7 +2107,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     startMode: StartMode.WORKPLACE,
                     selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    selectedId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
@@ -2425,7 +2422,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         </h3>
                                         <div class="contentkcpWorkplace">
                                             <div id="departmentList"></div><br/>
-                                            <button id="btnDetailWorkplace" class="small"
+                                            <button id="btnDetailDepartment" class="small"
                                                 data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+StartMode.DEPARTMENT+`)}">`+CCG001TextResource.CCG001_55+`</button>
                                         </div>
                                     </div>

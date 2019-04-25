@@ -8,7 +8,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentPastCodeCheckOutput;
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentQueryService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplacePastCodeCheckOutput;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceQueryService;
+
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -55,6 +60,12 @@ public class WkpDepFinder {
 
 	@Inject
 	private WorkplaceExportService wkpExportService;
+
+	@Inject
+	private WorkplaceQueryService wkpQueryService;
+
+	@Inject
+	private DepartmentQueryService depQueryService;
 
 	@Inject
 	private SyRoleAdapter syRoleWorkplaceAdapter;
@@ -128,7 +139,7 @@ public class WkpDepFinder {
 			return null;
 		}
 	}
-	
+
 	public InformationDto getWkpDepInfor(int mode, String historyId, String id) {
 		String companyId = AppContexts.user().companyId();
 		switch (mode) {
@@ -164,30 +175,31 @@ public class WkpDepFinder {
 		List<WkpDepTreeDto> result = this.createTree(listInfor);
 		return result;
 	}
-	
+
 	private List<WkpDepTreeDto> createTree(List<InformationDto> lstHWkpInfo) {
 		List<WkpDepTreeDto> lstReturn = new ArrayList<>();
-		if (lstHWkpInfo.isEmpty()) 
+		if (lstHWkpInfo.isEmpty())
 			return lstReturn;
 		// Higher hierarchyCode has shorter length
 		int highestHierarchy = lstHWkpInfo.stream()
-				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get()
-				.getHierarchyCode().length();
+				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get().getHierarchyCode()
+				.length();
 		Iterator<InformationDto> iteratorWkpHierarchy = lstHWkpInfo.iterator();
 		// while have workplace
 		while (iteratorWkpHierarchy.hasNext()) {
 			// pop 1 item
 			InformationDto wkpHierarchy = iteratorWkpHierarchy.next();
 			// convert
-			WkpDepTreeDto dto = new WkpDepTreeDto(wkpHierarchy.getId(), wkpHierarchy.getCode(), wkpHierarchy.getName(), wkpHierarchy.getHierarchyCode(), new ArrayList<>());
+			WkpDepTreeDto dto = new WkpDepTreeDto(wkpHierarchy.getId(), wkpHierarchy.getCode(), wkpHierarchy.getName(),
+					wkpHierarchy.getHierarchyCode(), new ArrayList<>());
 			// build List
 			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
 		}
 		return lstReturn;
 	}
 
-	private void pushToList(List<WkpDepTreeDto> lstReturn, WkpDepTreeDto dto, String hierarchyCode,
-			String preCode, int highestHierarchy) {
+	private void pushToList(List<WkpDepTreeDto> lstReturn, WkpDepTreeDto dto, String hierarchyCode, String preCode,
+			int highestHierarchy) {
 		if (hierarchyCode.length() == highestHierarchy) {
 			// check duplicate code
 			if (lstReturn.isEmpty()) {
@@ -214,9 +226,63 @@ public class WkpDepFinder {
 		}
 	}
 
+	public WkpDepCheckCodeDto checkWkpDepCodeInThePast(int initMode, String historyId, String code) {
+		String companyId = AppContexts.user().companyId();
+		switch (initMode) {
+		case WORKPLACE_MODE:
+			Optional<WorkplaceInformation> optWkpInfor = wkpInforRepo.getActiveWorkplaceByCode(companyId, historyId,
+					code);
+			if (optWkpInfor.isPresent())
+				throw new BusinessException("Msg_3");
+			WorkplacePastCodeCheckOutput outputWkp = wkpQueryService.checkWkpCodeUsedInThePast(companyId, historyId,
+					code);
+			return new WkpDepCheckCodeDto(outputWkp.isUsedInThePast(), outputWkp.isUsedInTheFuture(),
+					outputWkp.getListDuplicatePast().stream()
+							.map(i -> new WkpDepDuplicateCodeDto(i.getTargetId(), i.getTargetCode(), i.getTargetName(),
+									i.getDeleteDate(), i.getHistoryId()))
+							.collect(Collectors.toList()),
+					outputWkp.getListDuplicateFuture()
+							.stream().map(i -> new WkpDepDuplicateCodeDto(i.getTargetId(), i.getTargetCode(),
+									i.getTargetName(), i.getDeleteDate(), i.getHistoryId()))
+							.collect(Collectors.toList()));
+		case DEPARTMENT_MODE:
+			Optional<DepartmentInformation> optDepInfor = depInforRepo.getActiveDepartmentByCode(companyId, historyId,
+					code);
+			if (optDepInfor.isPresent())
+				throw new BusinessException("Msg_3");
+			DepartmentPastCodeCheckOutput outputDep = depQueryService.checkDepCodeUsedInThePast(companyId, historyId,
+					code);
+			return new WkpDepCheckCodeDto(outputDep.isUsedInThePast(), outputDep.isUsedInTheFuture(),
+					outputDep.getListDuplicatePast().stream()
+							.map(i -> new WkpDepDuplicateCodeDto(i.getTargetId(), i.getTargetCode(), i.getTargetName(),
+									i.getDeleteDate(), i.getHistoryId()))
+							.collect(Collectors.toList()),
+					outputDep.getListDuplicateFuture()
+							.stream().map(i -> new WkpDepDuplicateCodeDto(i.getTargetId(), i.getTargetCode(),
+									i.getTargetName(), i.getDeleteDate(), i.getHistoryId()))
+							.collect(Collectors.toList()));
+		default:
+			return null;
+		}
+	}
+
     public List<WkpDepTreeDto> getDepWkpInfoTree(DepWkpInfoFindObject findObject) {
         List<InformationDto> listInfo = this.getDepWkpInfo(findObject);
-        return this.createTree(listInfo);
+        List<InformationDto> listInfoHasHierarchyCode = new ArrayList<>();
+		List<InformationDto> listInfoHasNoHierarchyCode = new ArrayList<>();
+		listInfo.forEach(e -> {
+			if (e.getHierarchyCode().isEmpty()) {
+				listInfoHasNoHierarchyCode.add(e);
+			} else {
+				listInfoHasHierarchyCode.add(e);
+			}
+		});
+		List<WkpDepTreeDto> result = this.createTree(listInfoHasHierarchyCode);
+		// convert list no hierarchy code to tree
+		List<WkpDepTreeDto> noHierarchyCodeTree = listInfoHasNoHierarchyCode.stream().map(WkpDepTreeDto::toTreeDto).collect(Collectors.toList());
+		// add list no hierarchy code to the end of the tree list
+		result.addAll(noHierarchyCodeTree);
+        return result;
     }
 
     private List<InformationDto> getDepWkpInfo(DepWkpInfoFindObject findObject) {
@@ -229,7 +295,6 @@ public class WkpDepFinder {
         }
         // Check start mode (department or workplace)
         switch (findObject.getStartMode()) {
-
             case WORKPLACE_MODE:
             	if (findObject.getRestrictionOfReferenceRange()) {
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter

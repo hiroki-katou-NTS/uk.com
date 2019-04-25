@@ -267,7 +267,6 @@ module kcp.share.tree {
                 self.alreadySettingList = data.alreadySettingList;
             }
             if (!data.maxRows) {
-                data.maxRows = 12;
                 self.maxRows = 12;
             } else {
                 self.maxRows = data.maxRows;

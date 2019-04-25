@@ -9,7 +9,6 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -68,21 +67,9 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	private Optional<String> workplaceName; // 職場氏名
 
 	/** The department delete flag. */
-	private Optional<Boolean> depDeleteFlag; // 部門削除フラグ
+	private Optional<Boolean> departmentDeleteFlag; // 部門削除フラグ
 
 	/** The workplace delete flag. */
-	private Optional<Boolean> wkpDeleteFlag; // 職場削除フラグ
-
-	/** The department config start date. */
-	private Optional<GeneralDate> departmentConfStrDate;
-
-	/** The department config end date. */
-	private Optional<GeneralDate> departmentConfEndDate;
-
-	/** The workplace config start date. */
-	private Optional<GeneralDate> workplaceConfStrDate;
-
-	/** The workplace config end date. */
-	private Optional<GeneralDate> workplaceConfEndDate;
+	private Optional<Boolean> workplaceDeleteFlag; // 職場削除フラグ
 
 }

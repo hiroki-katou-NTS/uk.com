@@ -4,7 +4,11 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,10 +34,10 @@ import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
-import nts.uk.query.model.operationrule.OperationRuleAdapter;
 import nts.uk.query.model.operationrule.OperationRuleImport;
+import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
 import nts.uk.query.model.person.QueryPersonAdapter;
-import nts.uk.query.model.workplace.WorkplaceAdapter;
+import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -84,10 +88,10 @@ public class RegulationInfoEmployeeFinder {
 	private DepartmentAdapter departmentAdapter;
 
 	@Inject
-	private WorkplaceAdapter workplaceAdapter;
+	private QueryWorkplaceAdapter queryWorkplaceAdapter;
 
 	@Inject
-	private OperationRuleAdapter operationRuleAdapter;
+	private QueryOperationRuleAdapter operationRuleAdapter;
 
 
 	/**
@@ -104,22 +108,37 @@ public class RegulationInfoEmployeeFinder {
 		}
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
-		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF && queryDto.getSystemType() != CCG001SystemType.EMPLOYMENT.value) {
 			LoginEmployeeQuery query = new LoginEmployeeQuery(GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
 					RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.getSystemType());
 			return Arrays.asList(this.findCurrentLoginEmployeeInfo(query));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
-        if (role != null) {
-            this.changeWorkplaceListByRole(queryDto, role);
-            Optional<OperationRuleImport> optOperationRuleImport = operationRuleAdapter.getOperationRuleByCompanyId(AppContexts.user().companyId());
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
+			queryDto.setReferenceRange(EmployeeReferenceRange.ONLY_MYSELF.value);
+			this.changeListWorkplaces(queryDto);
+		} else if (role != null) {
+			this.changeWorkplaceListByRole(queryDto, role);
+			Optional<OperationRuleImport> optOperationRuleImport = operationRuleAdapter.getOperationRuleByCompanyId(AppContexts.user().companyId());
             // Default synchronization = true;
             if (optOperationRuleImport.isPresent() && !optOperationRuleImport.get().isSynchronization()) {
                 this.changeDepartmentListByRole(queryDto, role);
             }
-        }
-        return this.findEmployeesInfo(queryDto);
+		}
+		List<RegulationInfoEmployeeDto> result = this.findEmployeesInfo(queryDto);
+		
+		//ThanhPV hiện tại đoạn này đang được thêm vào. khi resole conflict 
+		// đang lấy theo đoạn 
+		if (queryDto.getSystemType() == CCG001SystemType.EMPLOYMENT.value) {
+			List<String> narrowedSids = empAuthAdapter.narrowEmpListByReferenceRange(
+											result.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), 3,
+											GeneralDate.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START, RegulationInfoEmpQueryDto.DATE_TIME_FORMAT));
+			
+			result.removeIf(c -> !narrowedSids.contains(c.getEmployeeId()));
+		}
+		
+		return result;
 	}
 
     private void changeDepartmentListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
@@ -142,8 +161,8 @@ public class RegulationInfoEmployeeFinder {
                 this.changeListDepartment(queryDto);
                 break;
             case AFFILIATION_AND_ALL_SUBORDINATES:
-                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                        || employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE ||
+					employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
                     // Get list String Department
                     this.changeListDepartment(queryDto);
                     break;
@@ -159,7 +178,19 @@ public class RegulationInfoEmployeeFinder {
     }
 
     private void changeListDepartment(RegulationInfoEmpQueryDto queryParam) {
-        // Processing is not prepared yet
+        // Get list department
+//        GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
+        List<String> depList = new ArrayList<>(); // Processing is not prepared yet
+
+        // Check param filterByDepartment
+        if (queryParam.getFilterByDepartment() != null && queryParam.getFilterByDepartment()) {
+            // Merge list department
+            queryParam.setDepartmentCodes(queryParam.getDepartmentCodes().stream().filter(depList::contains).collect(Collectors.toList()));
+        } else {
+            // Set list department
+            queryParam.setDepartmentCodes(depList);
+            queryParam.setFilterByDepartment(true);
+        }
     }
 
     /**
@@ -169,7 +200,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeCode(SearchEmployeeQuery query) {
-		List<String> sIds = searchByEmployeeCode(query.getCode(), query.getSystemType());
+		List<String> sIds = searchByEmployeeCode(query.getCode(), query.getSystemType(), query.getReferenceDate());
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
@@ -184,7 +215,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeName(SearchEmployeeQuery query) {
-		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType());
+		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType(), query.getReferenceDate());
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
@@ -199,7 +230,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeEntryDate(SearchEmployeeQuery query) {
-		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType());
+		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType(), query.getReferenceDate());
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
@@ -214,7 +245,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeRetirementDate(SearchEmployeeQuery query) {
-		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType());
+		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType(), query.getReferenceDate());
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
@@ -320,11 +351,11 @@ public class RegulationInfoEmployeeFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public List<String> searchByEmployeeCode(String sCd, Integer systemType) {
+	public List<String> searchByEmployeeCode(String sCd, Integer systemType, GeneralDate referenceDate) {
 		List<String> sIds = this.empDataMngInfoAdapter.findNotDeletedBySCode(AppContexts.user().companyId(),
 				sCd);
 
-		return this.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.narrowEmpListByReferenceRange(sIds, systemType, referenceDate);
 	}
 
 	/**
@@ -334,12 +365,12 @@ public class RegulationInfoEmployeeFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public List<String> searchByEmployeeName(String sName, Integer systemType) {
+	public List<String> searchByEmployeeName(String sName, Integer systemType, GeneralDate referenceDate) {
 		List<String> pIds = this.personAdapter.findPersonIdsByName(sName);
 
 		List<String> sIds = this.empDataMngInfoAdapter.findByListPersonId(AppContexts.user().companyId(), pIds);
 
-		return this.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.narrowEmpListByReferenceRange(sIds, systemType, referenceDate);
 	}
 
 	/**
@@ -349,10 +380,10 @@ public class RegulationInfoEmployeeFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public List<String> searchByEntryDate(DatePeriod period, Integer systemType) {
+	public List<String> searchByEntryDate(DatePeriod period, Integer systemType, GeneralDate referenceDate) {
 		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(AppContexts.user().companyId(), period);
 
-		return this.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.narrowEmpListByReferenceRange(sIds, systemType, referenceDate);
 	}
 
 	/**
@@ -362,10 +393,10 @@ public class RegulationInfoEmployeeFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType) {
+	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType, GeneralDate referenceDate) {
 		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(AppContexts.user().companyId(), period);
 
-		return this.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.narrowEmpListByReferenceRange(sIds, systemType, referenceDate);
 	}
 
 	/**
@@ -417,40 +448,30 @@ public class RegulationInfoEmployeeFinder {
 
 		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
 			case SALARY:
-				if (loginEmployee == null) {
+				if (loginEmployee == null || !loginEmployee.getDepartmentId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<DepartmentInfoImport> departmentInfoImports = new ArrayList<>();
-				if (!loginEmployee.getDepartmentCode().isPresent() ||
-					!loginEmployee.getDepDeleteFlag().isPresent() ||
-					loginEmployee.getDepDeleteFlag().get()) {
-					departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().orElse(null)), query.getBaseDate().toDate());
-				}
+				List<DepartmentInfoImport> departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 						.employeeCode(loginEmployee.getEmployeeCode())
 						.employeeId(loginEmployee.getEmployeeID())
 						.employeeName(loginEmployee.getName().orElse(""))
 						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
 						.affiliationCode(loginEmployee.getDepartmentCode().orElse(""))
-						.affiliationName(loginEmployee.getDepartmentName().orElse(departmentInfoImports.get(0).getDepartmentName()))
+						.affiliationName(departmentInfoImports.get(0).getDepartmentName())
 						.build();
 			default:
-				if (loginEmployee == null) {
+				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<WorkplaceInfoImport> workplaceInfoImports = new ArrayList<>();
-				if (!loginEmployee.getWorkplaceCode().isPresent() ||
-					!loginEmployee.getWkpDeleteFlag().isPresent() ||
-					loginEmployee.getWkpDeleteFlag().get()) {
-					workplaceInfoImports = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().orElse(null)), query.getBaseDate().toDate());
-				}
+				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
 					.employeeId(loginEmployee.getEmployeeID())
 					.employeeName(loginEmployee.getName().orElse(""))
 					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
 					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
-					.affiliationName(loginEmployee.getWorkplaceName().orElse(workplaceInfoImports.get(0).getWorkplaceName()))
+					.affiliationName(workplaceInfoImports.get(0).getWorkplaceName())
 					.build();
 		}
 	}
@@ -463,7 +484,7 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	private List<RegulationInfoEmployeeDto> findEmployeesInfo(RegulationInfoEmpQueryDto queryDto) {
 		String companyId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.fromString(queryDto.getBaseDate(), "yyyy/MM/dd");
+		GeneralDate baseDate = GeneralDate.fromString(queryDto.getBaseDate(), "yyyy-MM-dd");
 
 		// return data
 		List<RegulationInfoEmployeeDto> empDtos;
@@ -475,19 +496,16 @@ public class RegulationInfoEmployeeFinder {
 		if (queryDto.getSystemType() == CCG001SystemType.SALARY.value) {
 			// filter present department config span by reference date
 			regulationInfoEmployees = regulationInfoEmployees.stream().
-					filter(e -> !e.getDepartmentConfEndDate().isPresent() ||
-								!e.getDepartmentConfStrDate().isPresent() ||
-								(e.getDepartmentConfEndDate().get().afterOrEquals(baseDate) &&
-								 e.getDepartmentConfStrDate().get().beforeOrEquals(baseDate)))
+					filter(e -> e.getDepartmentId().isPresent())
 					.collect(Collectors.toList());
 
 			// get data for list department with no data
 			List<String> noDataDepIds = regulationInfoEmployees.stream()
-					.filter(e -> !e.getDepartmentCode().isPresent())
+					.filter(e -> !e.getDepartmentCode().isPresent() || !e.getDepartmentDeleteFlag().isPresent() || e.getDepartmentDeleteFlag().get())
 					.map(e -> e.getDepartmentId().get())
 					.distinct()
 					.collect(Collectors.toList());
-			// Request list 560
+			// Request list 563
 			Map<String, DepartmentInfoImport> depInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, noDataDepIds, baseDate)
 					.stream().collect(Collectors.toMap(DepartmentInfoImport::getDepartmentId, Function.identity()));
 
@@ -500,26 +518,23 @@ public class RegulationInfoEmployeeFinder {
                                 .employeeName(e.getName().orElse(""))
                                 .affiliationId(e.getDepartmentId().orElse(""))
                                 .affiliationCode(e.getDepartmentCode().orElse(""))
-                                .affiliationName(e.getDepartmentName().orElse(depInfoImports.get(e.getDepartmentId().get()).getDepartmentName()))
+                                .affiliationName(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : e.getDepartmentName().get())
                                 .build())
 						.collect(Collectors.toList());
 		} else {
 			// filter present workplace config span by reference date
 			regulationInfoEmployees = regulationInfoEmployees.stream().
-					filter(e -> !e.getWorkplaceConfEndDate().isPresent() ||
-								!e.getWorkplaceConfStrDate().isPresent() ||
-								(e.getWorkplaceConfEndDate().get().afterOrEquals(baseDate) &&
-								e.getWorkplaceConfStrDate().get().beforeOrEquals(baseDate)))
+					filter(e -> e.getWorkplaceId().isPresent())
 					.collect(Collectors.toList());
 
-			// get data for list department with no data
+			// get data for list workplace with no data
 			List<String> noDataWkpIds = regulationInfoEmployees.stream()
-					.filter(e -> !e.getWorkplaceCode().isPresent())
+					.filter(e -> !e.getWorkplaceCode().isPresent() || !e.getWorkplaceDeleteFlag().isPresent() || e.getWorkplaceDeleteFlag().get())
 					.map(e -> e.getWorkplaceId().get())
 					.distinct()
 					.collect(Collectors.toList());
-            // Request list 562
-			Map<String, WorkplaceInfoImport> wkpInfoImports = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, noDataWkpIds, baseDate)
+            // Request list 560
+			Map<String, WorkplaceInfoImport> wkpInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, noDataWkpIds, baseDate)
 					.stream().collect(Collectors.toMap(WorkplaceInfoImport::getWorkplaceId, Function.identity()));
 
 			// Set return data
@@ -531,7 +546,7 @@ public class RegulationInfoEmployeeFinder {
 							.employeeName(e.getName().orElse(""))
 							.affiliationId(e.getWorkplaceId().orElse(""))
 							.affiliationCode(e.getWorkplaceCode().orElse(""))
-							.affiliationName(e.getWorkplaceName().orElse(wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName()))
+							.affiliationName(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : e.getWorkplaceName().get())
 							.build())
 					.collect(Collectors.toList());
 		}
@@ -545,13 +560,13 @@ public class RegulationInfoEmployeeFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	private List<String> narrowEmpListByReferenceRange(List<String> sIds, Integer systemType) {
+	private List<String> narrowEmpListByReferenceRange(List<String> sIds, Integer systemType, GeneralDate referenceDate) {
 		// Do not narrowEmpListByReferenceRange when system type = admin
 		if (systemType == CCG001SystemType.ADMINISTRATOR.value) {
 			return sIds;
 		}
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds,
-				this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+				this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value, referenceDate);
 	}
 
 	// ・ロール種類：
