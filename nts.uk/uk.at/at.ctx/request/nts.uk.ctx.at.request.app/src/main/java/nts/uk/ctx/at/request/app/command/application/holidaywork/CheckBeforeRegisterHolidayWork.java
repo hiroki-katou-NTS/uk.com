@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorCo
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,6 +48,8 @@ public class CheckBeforeRegisterHolidayWork {
 	private HolidayThreeProcess holidayThreeProcess;
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
+	@Inject
+	private OvertimeService overtimeService;
 	
 	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -198,6 +201,8 @@ public class CheckBeforeRegisterHolidayWork {
 		String employeeId = AppContexts.user().employeeId();
 		int calculateFlg = command.getCalculateFlag();
 		// 登録前エラーチェック
+		//勤務種類、就業時間帯チェックのメッセージを表示
+				this.overtimeService.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
 		// 計算ボタン未クリックチェック
 		beforeCheck.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
 				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
