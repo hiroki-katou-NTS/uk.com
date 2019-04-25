@@ -25,10 +25,11 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
         selectedHierarchyCode: KnockoutObservable<string> = ko.observable(null);
         itemsCount: KnockoutObservable<number> = ko.observable(0);
         screenMode: number;
-        hierarchyNumber: number = 999;
+        hierarchySiblings: number = 999;
         hierarchyLevel: number = 10;
         items: Array<any> = [];
         listHierarchyChange: Array<any> = [];
+        listHierarchyChangeBak: Array<any> = [];
         updateMode = false;
 
         constructor() {
@@ -39,12 +40,12 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 self.selectedCode(params.selectedCode);
                 self.selectedName(params.selectedName);
                 self.selectedHierarchyCode(params.selectedHierarchyCode);
-                self.hierarchyLevel = params.selectedHierarchyCode.length / 3;
-                self.hierarchyNumber = Number(self.selectedHierarchyCode().substring(3 * (self.hierarchyLevel - 1)));
-                self.selectedHistoryId = params.history;
                 self.items = params.items;
                 self.itemsCount(self.items.length);
-                self.listHierarchyChange = params.listHierarchyChange;
+                self.hierarchyLevel = params.selectedHierarchyCode.length / 3;
+                self.hierarchySiblings = self.getSiblings(params.items, params.selectedHierarchyCode, self.hierarchyLevel).length;
+                self.selectedHistoryId = params.history;
+                self.listHierarchyChangeBak = params.listHierarchyChange;
             }
             if (self.itemsCount() == 0) {
                 currentScreen.setHeight(400);
@@ -55,18 +56,18 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             self.itemList = ko.observableArray([
                 new BoxModel(CreationType.CREATE_ON_TOP,
                     self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_211') : getText('CMM011_311'),
-                    self.hierarchyNumber < 999
+                    self.hierarchySiblings < 999
                 ),
                 new BoxModel(CreationType.CREATE_BELOW,
                     self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_212') : getText('CMM011_312'),
-                    self.hierarchyNumber < 999
+                    self.hierarchySiblings < 999
                 ),
                 new BoxModel(CreationType.CREATE_TO_CHILD,
                     self.screenMode == SCREEN_MODE.WORKPLACE ? getText('CMM011_213') : getText('CMM011_313'),
                     self.hierarchyLevel < 10
                 )
             ]);
-            self.createMethod = ko.observable(CreationType.CREATE_BELOW);
+            self.createMethod = ko.observable(self.hierarchySiblings < 999 ? CreationType.CREATE_BELOW : CreationType.CREATE_TO_CHILD);
             self.code.subscribe(value => {
                 self.id(null);
                 if (value && !_.isEmpty(self.selectedHistoryId))
@@ -85,16 +86,13 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             });
             self.createMethod.subscribe(value => {
                 let items = _.cloneDeep(self.items);
+                self.listHierarchyChange = [];
                 if (items.length == 0) {
                     self.hierarchyCode("001");
                 } else {
                     let currentHierarchyCode = self.selectedHierarchyCode();
                     if (self.createMethod() == CreationType.CREATE_TO_CHILD) {
-                        for (let i = 1; i < self.hierarchyLevel; i++) {
-                            let hCode = currentHierarchyCode.substring(0, 3 * i);
-                            let node = _.find(items, i => i.hierarchyCode == hCode);
-                            items = node.children;
-                        }
+                        items = self.getSiblings(items, currentHierarchyCode, self.hierarchyLevel);
                         let currNode = _.find(items, i => i.hierarchyCode == currentHierarchyCode);
                         let newHCode = currentHierarchyCode;
                         if (_.isEmpty(currNode.children))
@@ -111,11 +109,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     } else {
                         let parentCode = currentHierarchyCode.substring(0, (self.hierarchyLevel - 1) * 3);
                         let newItems = [];
-                        for (let i = 1; i < self.hierarchyLevel; i++) {
-                            let hCode = currentHierarchyCode.substring(0, 3 * i);
-                            let node = _.find(items, i => i.hierarchyCode == hCode);
-                            items = node.children;
-                        }
+                        items = self.getSiblings(items, currentHierarchyCode, self.hierarchyLevel);
                         let currIndex = _.findIndex(items, i => i.hierarchyCode == currentHierarchyCode);
                         switch (self.createMethod()) {
                             case CreationType.CREATE_ON_TOP:
@@ -151,6 +145,15 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             self.createMethod.valueHasMutated();
         }
 
+        getSiblings(items: Array<any>, currentHierarchyCode: string, hierarchyLevel: number): Array<any> {
+            for (let i = 1; i < hierarchyLevel; i++) {
+                let hCode = currentHierarchyCode.substring(0, 3 * i);
+                let node = _.find(items, i => i.hierarchyCode == hCode);
+                items = node.children;
+            }
+            return items;
+        }
+        
         checkInputCode(inputCode: string) {
             let self = this;
             block.invisible();
@@ -207,6 +210,9 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
+            self.listHierarchyChange.forEach(i => {
+                self.listHierarchyChangeBak.push(i);
+            });
             let command = {
                 initMode: self.screenMode,
                 historyId: self.selectedHistoryId,
@@ -217,7 +223,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 genericName: self.genericName(),
                 externalCode: self.externalCode(),
                 hierarchyCode: self.hierarchyCode(), 
-                listHierarchyChange: self.listHierarchyChange,
+                listHierarchyChange: self.listHierarchyChangeBak,
                 updateMode: self.updateMode
             };
             service.registerWkpDepInfor(command).done((id) => {

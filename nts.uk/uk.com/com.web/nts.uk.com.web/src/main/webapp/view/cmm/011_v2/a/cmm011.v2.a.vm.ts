@@ -279,10 +279,11 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 if (self.needRegenerateHierarchyCode) {
                     self.generateHierarchyCode(self.items(), "");
                 }
+                let node = $("#A4_1").ntsTreeDrag("getSelected");
                 let params = {
                     initMode: self.initMode,
-                    selectedCode: self.selectedCode(),
-                    selectedName: self.selectedName(),
+                    selectedCode: node ? node.data.code : self.selectedCode(),
+                    selectedName: node ? node.data.name : self.selectedName(),
                     selectedHierarchyCode: self.selectedHierarchyCode(),
                     history: self.configuration().historyId(),
                     items: self.items(),
