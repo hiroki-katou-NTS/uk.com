@@ -113,8 +113,8 @@ export class ForgetPassComponent extends Vue {
             self.$mask('hide');
             if (!_.isEqual(res.message, 'can not found message id')) {
                 /** TODO: wait for dialog error method */
-                // self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-                self.$modal.error(res.message);
+                self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                // self.$modal.error(res.message);
             } else {
                 self.$modal.error(res.message);
             }
