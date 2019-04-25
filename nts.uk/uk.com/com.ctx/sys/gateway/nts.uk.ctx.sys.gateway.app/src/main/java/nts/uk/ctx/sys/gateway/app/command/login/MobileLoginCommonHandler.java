@@ -84,9 +84,8 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
 		this.service.callLoginRecord(param);
 		
-		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
-		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
-		return checkChangePassDto;
+		passChecked.successMsg = systemSuspendOutput.getMsgID();
+		return passChecked;
 	}
 
 	protected abstract boolean needShowChangePass();
