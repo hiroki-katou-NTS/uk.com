@@ -3,10 +3,9 @@ import '@views/index';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language } from '@app/plugins';
+import { bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language, LanguageBar } from '@app/plugins';
 
 import { obj } from '@app/utils';
-import { LanguageBar } from '@app/plugins';
 import { SideMenuBar, NavMenuBar } from '@app/components';
 
 // use ajax request

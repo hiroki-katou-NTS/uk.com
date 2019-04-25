@@ -49,6 +49,8 @@ export const time = {
                 case DAYS.TwoDaysLater:
                     newMinutes = 2880 + newHour * 60 + newMinute;
                     break;
+                default:
+                    break;
             }
             return newMinutes;
         },
@@ -306,6 +308,8 @@ export class TimeWithDay {
                 return 'NextDay';
             case 2:
                 return 'TwoDaysLater';
+            default:
+                break;
         }
     }
 
@@ -332,6 +336,8 @@ export class TimeWithDay {
                 break;
             case 2:
                 value -= 2880;
+                break;
+            default:
                 break;
         }
 

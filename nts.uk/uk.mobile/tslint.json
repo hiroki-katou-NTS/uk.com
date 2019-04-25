@@ -85,6 +85,6 @@
         "one-variable-per-declaration": false,
         "no-unsafe-finally": true,
         "no-duplicate-imports": true,
-        "newline-per-chained-call": true
+        "newline-per-chained-call": false
     }
 }

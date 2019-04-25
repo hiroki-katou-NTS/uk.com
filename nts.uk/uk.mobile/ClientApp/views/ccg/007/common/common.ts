@@ -15,10 +15,10 @@ export namespace ccg007 {
             if (res.data.showContract) {
                 authenticateContract(self);
             } else {
-                if(!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517'){
-                    //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+                if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517') {
+                    // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
                     self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays]}).then((code) => {
-                        if(code === 'yes'){
+                        if (code === 'yes') {
                             self.$goto({ name: 'changepass', params: _.merge({}, 
                                 submitData, 
                                 { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523' }) 

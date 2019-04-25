@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import {time, DAYS, TimeWithDayPoint } from '@app/utils/time';
+import { time, DAYS, TimeWithDayPoint } from '@app/utils/time';
 import * as _ from 'lodash';
 
 @component({
@@ -42,7 +42,7 @@ import * as _ from 'lodash';
     `
 })
 export class TimeWDPickerComponent extends Vue {
-   
+
     @Prop({
         default: {
             value: 0,
@@ -73,7 +73,7 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     public whenDayChange() {
-        let newDay = ( this.$refs.day as HTMLInputElement).value;
+        let newDay = (this.$refs.day as HTMLInputElement).value;
         this.dayValue = newDay;
         _.defer(() => {
             let tmp = this.hourValue;
@@ -84,7 +84,7 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     public whenHourChange() {
-        let newHour = ( this.$refs.hour as HTMLInputElement).value;
+        let newHour = (this.$refs.hour as HTMLInputElement).value;
         this.hourValue = Number(newHour);
         _.defer(() => {
             let tmp = this.minuteValue;
@@ -95,7 +95,7 @@ export class TimeWDPickerComponent extends Vue {
     }
 
     public whenMinuteChange() {
-        let newMinute = ( this.$refs.minute as HTMLInputElement).value;
+        let newMinute = (this.$refs.minute as HTMLInputElement).value;
         this.minuteValue = Number(newMinute);
         this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
     }
@@ -115,6 +115,8 @@ export class TimeWDPickerComponent extends Vue {
             case DAYS.TwoDaysLater:
                 this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay]);
                 break;
+            default:
+                break;
         }
 
         switch (this.maxPoint.day) {
@@ -129,6 +131,8 @@ export class TimeWDPickerComponent extends Vue {
                 break;
             case DAYS.TwoDaysLater:
                 // do nothing
+                break;
+            default:
                 break;
         }
         return dayList;
@@ -164,7 +168,7 @@ export class TimeWDPickerComponent extends Vue {
             }
         }
 
-       
+
         return this.generateArray(minHour, maxHour);
     }
 

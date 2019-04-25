@@ -16,6 +16,8 @@ const maxLength = function (value: string, length: number, rule: IRule) {
                 return ['MsgB_6', cl];
             case 'AnyHalfWidth':
                 return ['MsgB_4', cl];
+            default:
+                break;
         }
     }
 

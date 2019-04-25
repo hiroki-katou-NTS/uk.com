@@ -31,6 +31,8 @@ export const charType = function (value: string, type: 'Any' | 'Kana' | 'AnyHalf
             }
 
             break;
+        default:
+            break;
     }
 
     return null;

@@ -191,6 +191,8 @@ Vue.directive('number', {
                                         return;
                                     }
                                     break;
+                                default:
+                                    break;
                             }
                         }
                     }

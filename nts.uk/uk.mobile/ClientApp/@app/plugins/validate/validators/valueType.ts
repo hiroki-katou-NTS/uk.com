@@ -32,6 +32,8 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                     }
                 }
                 break;
+            default:
+                break;
         }
     }
 

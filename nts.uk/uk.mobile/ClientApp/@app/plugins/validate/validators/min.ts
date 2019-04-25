@@ -32,6 +32,8 @@ const min = function (value: number | Date, min: number | Date, rule: IRule) {
                 return ['FND_E_INTEGER_MIN', constr];
             case 'Duration':
                 return ['FND_E_INTEGER_MIN', constr];
+            default:
+                break;
         }
     }
 

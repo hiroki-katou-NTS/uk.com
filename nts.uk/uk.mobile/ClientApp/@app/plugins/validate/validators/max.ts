@@ -36,6 +36,8 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
                 return ['FND_E_INTEGER_MIN', constr];
             case 'Duration':
                 return ['FND_E_INTEGER_MIN', constr];
+            default:
+                break;
         }
     }
 

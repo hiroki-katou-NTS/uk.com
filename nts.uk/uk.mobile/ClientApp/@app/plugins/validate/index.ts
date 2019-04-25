@@ -148,6 +148,8 @@ const DIRTY = 'dirty',
                                                     case 'WorkplaceCode':
                                                         cstr.charType = 'WorkplaceCode';
                                                         break;
+                                                    default:
+                                                        break;
                                                 }
 
                                                 ['min', 'max', 'minLength', 'maxLength', 'mantissaMaxLength']

@@ -25,6 +25,8 @@ export class TimeComponent extends InputComponent {
                 return time.timept.toString(this.value);
             case TimeInputType.TimeDuration:
                 return time.timedr.toString(this.value);
+            default:
+                break;
         }
     }
 
