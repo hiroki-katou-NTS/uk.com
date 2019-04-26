@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import util = nts.uk.util;
     import text = nts.uk.resource.getText;
+    import showError = nts.uk.at.view.kaf000.shr.model.CommonProcess.showError;
 
     export class ScreenModel {
         
@@ -723,8 +724,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             nts.uk.ui.block.clear();
                         });
                     } else {
-                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                            .then(function() { nts.uk.ui.block.clear(); });
+                        showError(res);
                     }
                 }
             });
