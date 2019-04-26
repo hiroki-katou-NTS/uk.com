@@ -300,6 +300,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     }
                 });
             }).fail((error) => {
+                block.clear();
                 alertError(error);
             });
         }
