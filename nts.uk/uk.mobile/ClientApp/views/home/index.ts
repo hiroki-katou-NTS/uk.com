@@ -115,6 +115,8 @@ export class HomeComponent extends Vue {
         day: 2
     };
 
+    public years = [];
+
     public dataSources = {
         year: [],
         month: [],
@@ -126,12 +128,13 @@ export class HomeComponent extends Vue {
         if (show) {
             document.body.classList.add('modal-open');
         } else {
-        document.body.classList.remove('modal-open');
+            document.body.classList.remove('modal-open');
         }
     }
 
     public created() {
         for (let i = 1900; i <= 2099; i++) {
+            this.years.push(i);
             this.dataSources.year.push({ text: `${i}年`, value: i });
         }
 
@@ -144,8 +147,11 @@ export class HomeComponent extends Vue {
         }
     }
 
+    public tets: number = 0;
     public viewPortClicked(value: any) {
-        console.log(value);
+        //console.log(value);
+
+        this.tets = value;
     }
 
     /*public mounted() {
@@ -190,40 +196,40 @@ export class HomeComponent extends Vue {
                 h1: [{
                     text: '0',
                     value: 0
-                },   {
+                }, {
                     text: '1',
                     value: 1
-                },   {
+                }, {
                     text: '2',
                     value: 2
                 }],
                 h2: [{
                     text: '0',
                     value: 0
-                },   {
+                }, {
                     text: '1',
                     value: 1
-                },   {
+                }, {
                     text: '2',
                     value: 2
                 }],
                 m1: [{
                     text: '0',
                     value: 0
-                },   {
+                }, {
                     text: '1',
                     value: 1
-                },   {
+                }, {
                     text: '2',
                     value: 2
                 }],
                 m2: [{
                     text: '0',
                     value: 0
-                },   {
+                }, {
                     text: '1',
                     value: 1
-                },   {
+                }, {
                     text: '2',
                     value: 2
                 }]

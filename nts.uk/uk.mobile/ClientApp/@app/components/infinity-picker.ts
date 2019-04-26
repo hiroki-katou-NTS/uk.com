@@ -1,9 +1,7 @@
-/*!
- * Copyright 2018
- */
-
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+
+import { browser } from '@app/utils';
 
 @component({
     template: `<div class="datepicker-col" v-on:touchmove="preventScroll">
@@ -23,8 +21,19 @@ import { component, Prop } from '@app/core/component';
     </div>`
 })
 export class InfinityPickerComponent extends Vue {
+    private up: boolean = false;
+
+    private timeout: number = 0;
+    private interval: number = 0;
+
     private move: number = 0;
     private start: number = 0;
+
+    private moveTime: number = 0;
+    private startTime: number = 0;
+
+    private start2: number = 0;
+    private startTime2: number = 0;
 
     @Prop({ default: () => undefined })
     private readonly value!: string | number;
@@ -143,21 +152,41 @@ export class InfinityPickerComponent extends Vue {
         return `translate3d(0px, ${this.move - this.start - 80}px, 0px)`;
     }
 
+    private resetScroll() {
+        this.move = 0;
+        this.start = 0;
+
+        this.timeout = 0;
+
+        this.moveTime = 0;
+        this.startTime = 0;
+
+        this.start2 = 0;
+        this.startTime2 = 0;
+    }
+
     public startScroll(evt: TouchEvent) {
         evt.preventDefault();
         evt.stopPropagation();
 
-        this.move = this.start = Math.floor(evt.changedTouches[0].clientY);
+        if (this.start === 0) {
+            this.startTime = new Date().getTime();
+            this.move = this.start = Math.floor(evt.changedTouches[0].clientY);
+        } else {
+            this.startTime2 = new Date().getTime();
+            this.start2 = Math.floor(evt.changedTouches[0].clientY);
+        }
     }
 
     public onScroll(evt: TouchEvent) {
         evt.preventDefault();
         evt.stopPropagation();
 
-        this.move = Math.floor(evt.changedTouches[0].clientY);
+        let onTime: number = new Date().getTime(),
+            moving: number = Math.floor(evt.changedTouches[0].clientY);
 
-        if (evt.changedTouches[0].clientY < 1) {
-            this.endScroll(evt);
+        if (this.timeout === 0 && onTime - this.startTime >= 200 && Math.abs(this.move - moving) > 2) {
+            this.move = moving;
         }
     }
 
@@ -165,18 +194,129 @@ export class InfinityPickerComponent extends Vue {
         evt.preventDefault();
         evt.stopPropagation();
 
-        console.log(evt.changedTouches[0].clientY);
+        let self = this,
+            move = Math.floor(evt.changedTouches[0].clientY);
 
-        this.$emit('input', this.dataSources[this.$nindex]);
+        self.moveTime = new Date().getTime();
 
-        this.$nextTick(() => {
-            this.move = 0;
-            this.start = 0;
-        });
+        if (self.timeout === 0) {
+            let gear = self.roleGear,
+                time = self.moveTime - self.startTime;
+
+            if (time > (browser.ios ? 70 : 100) && Math.abs(self.start - move) >= 40) {
+                if (time < 200) {
+                    gear(move);
+                } else {
+                    self.move = move;
+
+                    self.$emit('input', self.dataSources[self.$nindex]);
+                }
+            }
+        } else {
+            let range: number = move - self.start2,
+                times: number = new Date().getTime() - self.startTime2,
+                steps: number = Math.round(Math.abs(range / times) * 100) / 100;
+
+            if (range < 5 && times <= (browser.ios ? 70 : 100)) {
+                self.$emit('input', self.dataSources[self.$nindex]);
+            } else if (times > (browser.ios ? 70 : 100) && times < 200 && Math.abs(range) >= 40) {
+                self.up = range < 0;
+
+                if (steps > 4) {
+                    self.timeout += 3200;
+                } else if (steps > 3) {
+                    self.timeout += 2800;
+                } else if (steps > 2) {
+                    self.timeout += 2200;
+                } else if (steps > 1) {
+                    self.timeout += 1200;
+                } else {
+                    self.timeout += 600;
+                }
+            }
+        }
+    }
+
+    private roleGear(move: number) {
+        let self = this,
+            range: number = move - self.start,
+            times: number = self.moveTime - self.startTime,
+            steps: number = Math.round(Math.abs(range / times) * 100) / 100;
+
+        if (self.timeout == 0) {
+            self.up = range < 0;
+
+            clearInterval(self.interval);
+
+            if (steps > 4) {
+                self.timeout = 3200;
+            } else if (steps > 3) {
+                self.timeout = 2800;
+            } else if (steps > 2) {
+                self.timeout = 2200;
+            } else if (steps > 1) {
+                self.timeout = 1200;
+            } else {
+                self.timeout = 600;
+            }
+
+            self.interval = setInterval(() => {
+                if (self.timeout > 3200) {
+                    self.timeout = 3200;
+                }
+
+                if (self.timeout >= 800) {
+                    self.timeout -= 20;
+                    self.move += self.up ? -20 : 20;
+                } else if (self.timeout >= 680) {
+                    self.timeout -= 20;
+                    self.move += self.up ? -15 : 15;
+                } else if (self.timeout >= 500) {
+                    self.timeout -= 10;
+                    self.move += self.up ? -10 : 10;
+                } else if (self.timeout >= 460) {
+                    self.timeout -= 10;
+                    self.move += self.up ? -8 : 8;
+                } else if (self.timeout >= 300) {
+                    self.timeout -= 10;
+                    self.move += self.up ? -5 : 5;
+                } else if (self.timeout >= 120) {
+                    self.timeout -= 5;
+                    self.move += self.up ? -4 : 4;
+                } else {
+                    self.timeout -= 5;
+                    self.move += self.up ? -2 : 2;
+                }
+
+                if (self.timeout <= 0) {
+                    let index = self.$nindex;
+
+                    self.timeout = 0;
+                    clearInterval(self.interval);
+
+                    if (Math.abs(self.move - self.start) % 40 >= 20) {
+                        if (range < 0) {
+                            index = (index + 1) % self.dataSources.length;
+                        } else {
+                            index = (index - 1) % self.dataSources.length;
+                        }
+                    }
+
+                    self.$emit('input', self.dataSources[index]);
+                }
+            }, 30);
+        }
     }
 
     public preventScroll(evt: TouchEvent) {
         evt.preventDefault();
         evt.stopPropagation();
+    }
+
+    public created() {
+        let self = this;
+        self.$on('input', () => {
+            self.resetScroll.apply(self);
+        });
     }
 }
