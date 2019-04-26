@@ -58,6 +58,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:min="minValue"
                         v-bind:max="maxValue"
                         v-bind:max-length="maxLength"
+                        v-bind:tabindex="tabIndex"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
@@ -162,6 +163,9 @@ export class InputComponent extends Vue {
 
     @Prop({ default: () => false })
     public readonly inlineTitle!: boolean;
+
+    @Prop()
+    public readonly tabIndex: number;
 
     @Prop({ default: () => ({ before: '', after: '' }) })
     public readonly icons!: { before: string; after: string };
