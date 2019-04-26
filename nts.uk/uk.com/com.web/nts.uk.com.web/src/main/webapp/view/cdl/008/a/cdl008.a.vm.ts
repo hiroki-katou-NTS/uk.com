@@ -5,6 +5,7 @@ module nts.uk.com.view.cdl008.a {
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import StartMode = kcp.share.tree.StartMode;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
         /**
@@ -81,6 +82,10 @@ module nts.uk.com.view.cdl008.a {
                 }
                 else {
                     self.workplaces.selectedId = self.selectedSelWorkplace;
+                }
+
+                if (self.startMode == StartMode.DEPARTMENT) {
+                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
                 }
             }
 
