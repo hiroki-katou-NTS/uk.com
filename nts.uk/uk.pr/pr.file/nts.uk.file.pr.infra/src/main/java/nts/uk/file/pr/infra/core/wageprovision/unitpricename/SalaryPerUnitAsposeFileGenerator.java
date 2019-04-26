@@ -57,17 +57,16 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
             pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
 
             //break page
-            HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
             Cells cells = ws.getCells();
             // fill data           
             int page = exportData.size() / 37;
-            if(exportData.size() % 37 != 0){
-                page++;
-            }
-            for (int i = 0; i < exportData.size(); i++) {
-                if (i >= 1 && i <= page-1 && page != 1) {
+            int pageThua = (exportData.size() % 37);
+            for (int i = 1; i <= page; i++) {
+                if(pageThua != 0){
                     wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
                 }
+            }
+            for (int i = 0; i < exportData.size(); i++) {
                 if (i % 37 == 0 && i != 0) {
                     Worksheet sheet = wsc.get("sheetName" + i / 37);
                     cells = sheet.getCells();
