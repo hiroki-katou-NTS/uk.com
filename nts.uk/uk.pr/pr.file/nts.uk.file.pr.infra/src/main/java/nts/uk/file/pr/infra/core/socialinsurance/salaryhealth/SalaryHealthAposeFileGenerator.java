@@ -35,8 +35,6 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
-            //reportContext.saveAsExcel(this.createNewFile(generatorContext,
-              //      FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
