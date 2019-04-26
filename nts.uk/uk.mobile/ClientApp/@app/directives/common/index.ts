@@ -1,3 +1,4 @@
+import './go';
 import './init';
 import './out';
 import './click';
