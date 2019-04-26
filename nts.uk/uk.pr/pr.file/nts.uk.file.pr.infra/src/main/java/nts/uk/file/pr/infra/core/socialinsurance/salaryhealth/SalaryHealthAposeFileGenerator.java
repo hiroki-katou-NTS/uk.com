@@ -7,11 +7,11 @@ import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.CusWelfar
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.CusWelfarePensionStandardDto;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth.SalaryHealthExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.salaryhealth.SalaryHealthFileGenerator;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -80,57 +80,63 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
         for (CusWelfarePensionDto cusWelfarePensions : exportData.getResponseWelfarePension().getCusWelfarePensions()) {
             if(rowIndex >= 67){
                 tempRowIndex = rowIndex - 62;
-                ws1.getCells().get(tempRowIndex,2).putValue(cusWelfarePensions.getWelfarePensionGrade());
-                ws1.getCells().get(tempRowIndex,3).putValue(cusWelfarePensions.getStandardMonthlyFee());
-                ws1.getCells().get(tempRowIndex,4).putValue(cusWelfarePensions.getRewardMonthlyLowerLimit());
-                ws1.getCells().get(tempRowIndex,5).putValue(cusWelfarePensions.getRewardMonthlyUpperLimit());
+                ws1.getCells().get(tempRowIndex,2).putValue(new BigDecimal(cusWelfarePensions.getWelfarePensionGrade()));
+                ws1.getCells().get(tempRowIndex,3).putValue(new BigDecimal(cusWelfarePensions.getStandardMonthlyFee()));
+                ws1.getCells().get(tempRowIndex,4).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyLowerLimit()));
+                ws1.getCells().get(tempRowIndex,5).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyUpperLimit()));
 
-                ws1.getCells().get(tempRowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium());
-                ws1.getCells().get(tempRowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium());
+                ws1.getCells().get(tempRowIndex,6).putValue(new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,7).putValue(new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,8).putValue(new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,9).putValue(new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
 
-                ws1.getCells().get(tempRowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium());
-                ws1.getCells().get(tempRowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
-
-                ws1.getCells().get(tempRowIndex,10).putValue(flag == true ? "-" : cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
-                ws1.getCells().get(tempRowIndex,11).putValue(flag == true ? "-" : cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
-
-                ws1.getCells().get(tempRowIndex,12).putValue(flag == true ? "-" : cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "-" : cusWelfarePensions.getEmMaleExemptionInsurance());
-                ws1.getCells().get(tempRowIndex,13).putValue(flag == true ? "-" : cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
+                this.putValue(ws1,tempRowIndex,flag,cusWelfarePensions);
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){
-                    ws1.getCells().get(tempRowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : String.valueOf((int)Math.floor(Double.valueOf(cusWelfarePensionStandardDto.get().getChildCareContribution()))));
+                    ws1.getCells().get(tempRowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : new BigDecimal(cusWelfarePensionStandardDto.get().getChildCareContribution()));
                 }else{
                     ws1.getCells().get(tempRowIndex,14).putValue("");
                 }
 
             }else {
-                ws.getCells().get(rowIndex,2).putValue(cusWelfarePensions.getWelfarePensionGrade());
-                ws.getCells().get(rowIndex,3).putValue(cusWelfarePensions.getStandardMonthlyFee());
-                ws.getCells().get(rowIndex,4).putValue(cusWelfarePensions.getRewardMonthlyLowerLimit());
-                ws.getCells().get(rowIndex,5).putValue(cusWelfarePensions.getRewardMonthlyUpperLimit());
+                ws.getCells().get(rowIndex,2).putValue(new BigDecimal(cusWelfarePensions.getWelfarePensionGrade()));
+                ws.getCells().get(rowIndex,3).putValue(new BigDecimal(cusWelfarePensions.getStandardMonthlyFee()));
+                ws.getCells().get(rowIndex,4).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyLowerLimit()));
+                ws.getCells().get(rowIndex,5).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyUpperLimit()));
 
-                ws.getCells().get(rowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium());
-                ws.getCells().get(rowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium());
+                ws.getCells().get(rowIndex,6).putValue(new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
+                ws.getCells().get(rowIndex,7).putValue(new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
+                ws.getCells().get(rowIndex,8).putValue(new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
+                ws.getCells().get(rowIndex,9).putValue(new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
 
-                ws.getCells().get(rowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium());
-                ws.getCells().get(rowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium());
-
-                ws.getCells().get(rowIndex,10).putValue(flag == true ? "-" : cusWelfarePensions.getInMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInMaleExemptionInsurance());
-                ws.getCells().get(rowIndex,11).putValue(flag == true ? "-" : cusWelfarePensions.getInFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getInFemaleExemptionInsurance());
-
-                ws.getCells().get(rowIndex,12).putValue(flag == true ? "-" : cusWelfarePensions.getEmMaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmMaleExemptionInsurance());
-                ws.getCells().get(rowIndex,13).putValue(flag == true ? "-" : cusWelfarePensions.getEmFemaleExemptionInsurance() == null ? "－" : cusWelfarePensions.getEmFemaleExemptionInsurance());
+                this.putValue(ws,rowIndex,flag,cusWelfarePensions);
 
                 Optional<CusWelfarePensionStandardDto> cusWelfarePensionStandardDto  = list.stream().filter(x -> x.getWelfarePensionGrade() == cusWelfarePensions.getWelfarePensionGrade()).findFirst();
                 if(cusWelfarePensionStandardDto.isPresent()){
-                    ws.getCells().get(rowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : String.valueOf((int)Math.floor(Double.valueOf(cusWelfarePensionStandardDto.get().getChildCareContribution()))));
+                    ws.getCells().get(rowIndex,14).putValue(cusWelfarePensionStandardDto.get().getChildCareContribution() == null ? null : new BigDecimal(cusWelfarePensionStandardDto.get().getChildCareContribution()));
                 }else{
                     ws.getCells().get(rowIndex,14).putValue("");
                 }
             }
             rowIndex ++;
 
+        }
+    }
+
+    private void putValue(Worksheet ws, int rowIndex, boolean flag, CusWelfarePensionDto cusWelfarePensions){
+        if(flag == true || cusWelfarePensions.getInMaleExemptionInsurance() == null){
+            ws.getCells().get(rowIndex,10).putValue("-");
+            ws.getCells().get(rowIndex,11).putValue("-");
+
+            ws.getCells().get(rowIndex,12).putValue("-");
+            ws.getCells().get(rowIndex,13).putValue("-");
+        }else if(flag == false && cusWelfarePensions.getInMaleExemptionInsurance() != null){
+            ws.getCells().get(rowIndex,10).putValue(new BigDecimal(cusWelfarePensions.getInMaleExemptionInsurance()));
+            ws.getCells().get(rowIndex,11).putValue(new BigDecimal(cusWelfarePensions.getInFemaleExemptionInsurance()));
+
+            ws.getCells().get(rowIndex,12).putValue(new BigDecimal(cusWelfarePensions.getEmMaleExemptionInsurance()));
+            ws.getCells().get(rowIndex,13).putValue(new BigDecimal(cusWelfarePensions.getEmFemaleExemptionInsurance()));
         }
     }
 
