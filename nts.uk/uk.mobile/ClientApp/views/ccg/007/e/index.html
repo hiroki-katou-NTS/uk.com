@@ -16,17 +16,18 @@
                 v-bind:errors-always="$errors.model.newPassword"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
     
-            <nts-input-password
-                tabindex='2'
-                class="control-label-inline"
-                v-model="model.newPasswordConfirm"
-                name='CCGS07_12'
-                v-bind:disabled="disabled"
-                v-bind:show-title="true"
-                v-bind:constraint="validations.model.newPasswordConfirm"
-                v-bind:errors-always="$errors.model.newPasswordConfirm"
-                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
-                @keydown.enter="changePass" />
+            <form v-submit="changePass">
+                <nts-input-password
+                    tabindex='2'
+                    class="control-label-inline"
+                    v-model="model.newPasswordConfirm"
+                    name='CCGS07_12'
+                    v-bind:disabled="disabled"
+                    v-bind:show-title="true"
+                    v-bind:constraint="validations.model.newPasswordConfirm"
+                    v-bind:errors-always="$errors.model.newPasswordConfirm"
+                    v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+            </form>
     
             <div class="accordion" v-nts-accordion v-if="policy.isUse">
                 <div class="card">
