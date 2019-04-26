@@ -44,6 +44,13 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 }
             });
 
+            self.selectMode.subscribe(mode => {
+                if(mode && self.isDisplayUnselect()) {
+                    nts.uk.ui.dialog.alert("Displaying Unselect Item is not available for Multiple Selection!");
+                    self.selectMode(false);
+                }
+            });
+
             self.listStartMode = ko.observableArray([
                 {code : 0, name: 'Workplace'},
                 {code : 1, name: 'Department'}

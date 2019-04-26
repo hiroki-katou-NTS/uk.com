@@ -5,6 +5,7 @@ module nts.uk.com.view.cdl008.a {
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import StartMode = kcp.share.tree.StartMode;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
         /**
@@ -82,6 +83,10 @@ module nts.uk.com.view.cdl008.a {
                 else {
                     self.workplaces.selectedId = self.selectedSelWorkplace;
                 }
+
+                if (self.startMode == StartMode.DEPARTMENT) {
+                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
+                }
             }
 
             /**
@@ -91,12 +96,20 @@ module nts.uk.com.view.cdl008.a {
                 var self = this;
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 }

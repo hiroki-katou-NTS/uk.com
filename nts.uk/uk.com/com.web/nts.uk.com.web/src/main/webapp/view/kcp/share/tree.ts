@@ -999,7 +999,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
             <i class="icon icon-searchbox"></i>
         <!-- /ko -->
         <div data-bind="visible: !isMultipleUse">
-            <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
+            <div data-bind="ntsFormLabel: {required: true}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
                 style="margin-left: 17px; margin-right: 5px;"
                 data-bind="attr: {tabindex: tabindex},

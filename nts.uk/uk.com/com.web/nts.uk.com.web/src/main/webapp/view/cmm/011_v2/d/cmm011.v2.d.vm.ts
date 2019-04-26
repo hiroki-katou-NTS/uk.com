@@ -71,11 +71,11 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
             self.createMethod = ko.observable(self.hierarchySiblings < 999 ? CreationType.CREATE_BELOW : CreationType.CREATE_TO_CHILD);
             self.code.subscribe(value => {
                 self.id(null);
-                if (value && !_.isEmpty(self.selectedHistoryId))
+                if (value && !_.isEmpty(self.selectedHistoryId) && !$("#A5_2").ntsError("hasError"))
                     self.checkInputCode(value);
             });
             self.name.subscribe(value => {
-                if (_.isEmpty(value)) 
+                if (_.isEmpty(value) || $("#A6_2").ntsError("hasError")) 
                     return;
                 if (_.isEmpty(self.displayName())) {
                     self.displayName(value);
@@ -213,6 +213,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 return;
             block.invisible();
             self.listHierarchyChange.forEach(i => {
+                self.listHierarchyChangeBak = self.listHierarchyChangeBak.filter(b => b.id != i.id);
                 self.listHierarchyChangeBak.push(i);
             });
             let command = {

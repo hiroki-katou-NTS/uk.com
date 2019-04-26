@@ -11,8 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
 import nts.uk.ctx.bs.employee.pub.deparment.master.DepartmentExport;
-import nts.uk.ctx.bs.employee.pub.deparment.master.DepartmentInforExport;
-import nts.uk.ctx.bs.employee.pub.deparment.master.DepartmentPub;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 
 @Stateless
 public class DepartmentPubImpl implements DepartmentPub {
