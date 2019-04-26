@@ -13,6 +13,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -52,6 +54,7 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
             //
             Cells cells = ws.getCells();
             //break page
+
             int page =  exportData.getCusDataDtos().size() / 55;
             if(exportData.getCusDataDtos().size() % 55 != 0){
                 page++;
@@ -73,15 +76,15 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
                 cells.get(rowStart, COLUMN_START + 2).setValue(e.getRewardMonthlyLowerLimit());
                 cells.get(rowStart, COLUMN_START + 3).setValue(e.getRewardMonthlyUpperLimit());
                 //Insur
-                cells.get(rowStart, COLUMN_START + 4).setValue(e.getInHealthInsurancePremium());
-                cells.get(rowStart, COLUMN_START + 5).setValue(e.getInNursingCare());
-                cells.get(rowStart, COLUMN_START + 6).setValue(e.getInSpecInsurancePremium());
-                cells.get(rowStart, COLUMN_START + 7).setValue(e.getInBasicInsurancePremium());
+                cells.get(rowStart, COLUMN_START + 4).setValue(new BigDecimal(e.getInHealthInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 5).setValue(new BigDecimal(e.getInNursingCare()));
+                cells.get(rowStart, COLUMN_START + 6).setValue(new BigDecimal(e.getInSpecInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 7).setValue(new BigDecimal(e.getInBasicInsurancePremium()));
                 //Employee
-                cells.get(rowStart, COLUMN_START + 8).setValue(e.getEmHealthInsurancePremium());
-                cells.get(rowStart, COLUMN_START + 9).setValue(e.getEmNursingCare());
-                cells.get(rowStart, COLUMN_START + 10).setValue(e.getEmSpecInsurancePremium());
-                cells.get(rowStart, COLUMN_START + 11).setValue(e.getEmBasicInsurancePremium());
+                cells.get(rowStart, COLUMN_START + 8).setValue(new BigDecimal(e.getEmHealthInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 9).setValue(new BigDecimal(e.getEmNursingCare()));
+                cells.get(rowStart, COLUMN_START + 10).setValue(new BigDecimal(e.getEmSpecInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 11).setValue(new BigDecimal(e.getEmBasicInsurancePremium()));
 
                 rowStart++;
             }
@@ -91,25 +94,6 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
             throw new RuntimeException(e);
         }
     }
-    private void printSalaryHealthy(Worksheet worksheet, List<Object[]> data){
-        Cells cells = worksheet.getCells();
-        int numRow = 2;
-        int numColumn = 12;
-        int rowStart = 4;
-        int columnStart = 1;
-        fillData(cells, data, numRow, numColumn, rowStart, columnStart);
-    }
 
-    private void fillData(Cells cells, List<Object[]> data, int numRow, int numColumn, int startRow, int startColumn) {
-        try {
-            for (int i = 0; i < data.size(); i++) {
-                Object[] dataRow = data.get(i);
-                for (int j = 0; j < numColumn; j++) {
-                    cells.get(i + startRow, j + startColumn).setValue(dataRow[j] != null ? dataRow[j] : "");
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 }
