@@ -1,11 +1,10 @@
 import { routes } from '@app/core/routes';
 import { Vue, ComponentOptions } from '@app/provider';
 
-import { $, dom } from '@app/utils';
+import { $, browser } from '@app/utils';
 import { resources, Language } from '@app/plugins';
 import { cssbeautify } from '@app/utils/css';
 import classDecorator from 'vue-class-component';
-import { NavMenu } from '@app/services';
 import { Prop, Watch, Model, Provide, Emit, Mixins, Inject } from 'vue-property-decorator';
 
 declare type VueClass<V> = {
@@ -139,33 +138,35 @@ export function component(options: ComponentOptions<Vue>): any {
 
             delete options.route;
 
-            // use next on 
-            (options.mixins || (options.mixins = [])).push({
-                mounted() {
-                    let cont = this.$el as HTMLElement,
-                        types: string[] = ['text', 'number', 'tel', 'date', 'password'],
-                        inputs = cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`);
+            // use next on
+            if (!browser.ios && browser.mobile) {
+                (options.mixins || (options.mixins = [])).push({
+                    mounted() {
+                        let cont = this.$el as HTMLElement,
+                            types: string[] = ['text', 'number', 'tel', 'date', 'password'],
+                            inputs = cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`);
 
-                    [].slice.call(inputs)
-                        .forEach((element: HTMLElement, index: number) => {
-                            element.addEventListener('keydown', (evt: KeyboardEvent) => {
-                                if (evt.keyCode === 13 && !element.closest('form[action="#"]')) {
-                                    let nextItem = inputs[index + 1] as HTMLElement;
+                        [].slice.call(inputs)
+                            .forEach((element: HTMLElement, index: number) => {
+                                element.addEventListener('keydown', (evt: KeyboardEvent) => {
+                                    if (evt.keyCode === 13 && !element.closest('form[action="#"]')) {
+                                        let nextItem = inputs[index + 1] as HTMLElement;
 
-                                    if (nextItem) {
-                                        nextItem.focus();
-                                        
-                                        if (nextItem.closest('form[action="#"]')) {
-                                            evt.preventDefault();
-                                            evt.stopPropagation();
-                                            evt.stopImmediatePropagation();
+                                        if (nextItem) {
+                                            nextItem.focus();
+
+                                            if (nextItem.closest('form[action="#"]')) {
+                                                evt.preventDefault();
+                                                evt.stopPropagation();
+                                                evt.stopImmediatePropagation();
+                                            }
                                         }
                                     }
-                                }
+                                });
                             });
-                        });
-                }
-            });
+                    }
+                });
+            }
         }
 
         return options;
