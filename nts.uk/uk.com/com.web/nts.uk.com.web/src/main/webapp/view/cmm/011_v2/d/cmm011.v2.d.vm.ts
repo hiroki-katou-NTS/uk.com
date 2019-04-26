@@ -213,6 +213,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                 return;
             block.invisible();
             self.listHierarchyChange.forEach(i => {
+                self.listHierarchyChangeBak = self.listHierarchyChangeBak.filter(b => b.id != i.id);
                 self.listHierarchyChangeBak.push(i);
             });
             let command = {
