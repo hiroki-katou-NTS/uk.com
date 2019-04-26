@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.ac.employee.department;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.deparment.master.DepartmentPub;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentImport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.SysDepartmentAdapter;
 
