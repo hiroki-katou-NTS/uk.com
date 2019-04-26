@@ -1227,30 +1227,35 @@ module nts.uk.com.view.ccg.share.ccg {
             private reloadAdvanceSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                if (!self.tab2HasLoaded) {
-                    self.tab2HasLoaded = true;
-                }
-                // set advanced search param
-                self.queryParam.retireStart = self.retireStart();
-                self.queryParam.retireEnd = self.retireEnd();
+                if (self.showAdvancedSearchTab) {
+                    if (!self.tab2HasLoaded) {
+                        self.tab2HasLoaded = true;
+                    }
+                    // set advanced search param
+                    self.queryParam.retireStart = self.retireStart();
+                    self.queryParam.retireEnd = self.retireEnd();
 
-                // reload advanced search tab.
-                if (_.isEmpty($('.blockUI.blockOverlay'))) {
-                    nts.uk.ui.block.grayout();
-                }
+                    // reload advanced search tab.
+                    if (_.isEmpty($('.blockUI.blockOverlay'))) {
+                        nts.uk.ui.block.grayout();
+                    }
 
-                self.setComponentOptions();
-                $.when(self.loadEmploymentPart(),
-                    self.loadClassificationPart(),
-                    self.loadJobTitlePart(),
-                    self.loadDepartmentPart(),
-                    self.loadWorkplacePart(),
-                    self.loadWorktypePart()
-                ).done(() => {
-                    nts.uk.ui.block.clear();// clear block UI
-                    self.fixComponentWidth();
+                    self.setComponentOptions();
+                    $.when(self.loadEmploymentPart(),
+                        self.loadClassificationPart(),
+                        self.loadJobTitlePart(),
+                        self.loadDepartmentPart(),
+                        self.loadWorkplacePart(),
+                        self.loadWorktypePart()
+                    ).done(() => {
+                        nts.uk.ui.block.clear();// clear block UI
+                        self.fixComponentWidth();
+                        dfd.resolve();
+                    });
+                } else {
                     dfd.resolve();
-                });
+                }
+
                 return dfd.promise();
             }
 
