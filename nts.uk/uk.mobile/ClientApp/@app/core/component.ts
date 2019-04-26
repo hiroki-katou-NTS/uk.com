@@ -138,6 +138,34 @@ export function component(options: ComponentOptions<Vue>): any {
             }
 
             delete options.route;
+
+            // use next on 
+            (options.mixins || (options.mixins = [])).push({
+                mounted() {
+                    let cont = this.$el as HTMLElement,
+                        types: string[] = ['text', 'number', 'tel', 'date', 'password'],
+                        inputs = cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`);
+
+                    [].slice.call(inputs)
+                        .forEach((element: HTMLElement, index: number) => {
+                            element.addEventListener('keydown', (evt: KeyboardEvent) => {
+                                if (evt.keyCode === 13 && !element.closest('form[action="#"]')) {
+                                    let nextItem = inputs[index + 1] as HTMLElement;
+
+                                    if (nextItem) {
+                                        nextItem.focus();
+                                        
+                                        if (nextItem.closest('form[action="#"]')) {
+                                            evt.preventDefault();
+                                            evt.stopPropagation();
+                                            evt.stopImmediatePropagation();
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                }
+            });
         }
 
         return options;
