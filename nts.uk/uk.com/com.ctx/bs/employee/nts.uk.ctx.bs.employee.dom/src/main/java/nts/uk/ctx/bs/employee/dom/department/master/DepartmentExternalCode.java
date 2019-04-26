@@ -5,16 +5,13 @@
 package nts.uk.ctx.bs.employee.dom.department.master;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class DepartmentName.
  */
-@StringMaxLength(15)
-@StringCharType(CharType.ALPHA_NUMERIC)
-// 部門名称
+@StringMaxLength(20)
+// 部門外部コード
 public class DepartmentExternalCode extends StringPrimitiveValue<DepartmentExternalCode> {
 
 	/** The Constant serialVersionUID. */

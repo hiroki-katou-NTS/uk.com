@@ -67,7 +67,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 }
             });
             self.selectedName.subscribe(value => {
-                if (_.isEmpty(value)) 
+                if (_.isEmpty(value) || $("#A6_2").ntsError("hasError")) 
                     return;
                 if (_.isEmpty(self.selectedDispName())) {
                     self.selectedDispName(value);
@@ -76,9 +76,10 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.selectedGenericName(self.getGenericName(value));
                 }
                 $(".nts-input").trigger("validate");
+                $("#A5_2").trigger("keyup");
             });
             self.selectedCode.subscribe(value => {
-                if (!_.isEmpty(self.configuration().historyId()) && value && value != self.backupCode) {
+                if (!_.isEmpty(self.configuration().historyId()) && value && value != self.backupCode && !$("#A5_2").ntsError("hasError")) {
                     service.checkCode(self.initMode, self.configuration().historyId(), value).done(checkResult => {
                     
                     }).fail(error => {
@@ -172,6 +173,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (_.isEmpty(self.configuration().historyId()) || _.isEmpty(self.items()))
                 return;
             $(".nts-input").trigger("validate");
+            $("#A5_2").trigger("keyup");
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
@@ -400,7 +402,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                 this.id = param.id;
                 this.code = param.code;
                 this.name = param.name;
-                this.nodeText = param.code + ' ' + param.name;
+                this.nodeText = _.escape(param.code + ' ' + param.name);
                 this.hierarchyCode = param.hierarchyCode;
                 this.children = _.isEmpty(param.children) ? [] : _.map(param.children, i => {return new WkpDepNode(i)});
             }
