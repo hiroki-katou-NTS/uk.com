@@ -84,6 +84,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                     self.genericName(self.getGenericName(value));
                 }
                 $(".nts-input").trigger("validate");
+                $("#A5_2").trigger("keyup");
             });
             self.createMethod.subscribe(value => {
                 let items = _.cloneDeep(self.items);
@@ -209,6 +210,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
         register() {
             let self = this;
             $(".nts-input").trigger("validate");
+            $("#A5_2").trigger("keyup");
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
