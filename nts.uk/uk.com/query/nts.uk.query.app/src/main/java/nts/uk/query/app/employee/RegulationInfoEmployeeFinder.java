@@ -417,14 +417,14 @@ public class RegulationInfoEmployeeFinder {
 
 		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
 			case SALARY:
-				if (loginEmployee == null) {
+				if (loginEmployee == null || !loginEmployee.getDepartmentId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
 				List<DepartmentInfoImport> departmentInfoImports = new ArrayList<>();
 				if (!loginEmployee.getDepartmentCode().isPresent() ||
 					!loginEmployee.getDepDeleteFlag().isPresent() ||
 					loginEmployee.getDepDeleteFlag().get()) {
-					departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().orElse(null)), query.getBaseDate().toDate());
+					departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
 				}
 				return RegulationInfoEmployeeDto.builder()
 						.employeeCode(loginEmployee.getEmployeeCode())
@@ -435,14 +435,14 @@ public class RegulationInfoEmployeeFinder {
 						.affiliationName(loginEmployee.getDepartmentName().orElse(departmentInfoImports.get(0).getDepartmentName()))
 						.build();
 			default:
-				if (loginEmployee == null) {
+				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
 				List<WorkplaceInfoImport> workplaceInfoImports = new ArrayList<>();
 				if (!loginEmployee.getWorkplaceCode().isPresent() ||
 					!loginEmployee.getWkpDeleteFlag().isPresent() ||
 					loginEmployee.getWkpDeleteFlag().get()) {
-					workplaceInfoImports = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().orElse(null)), query.getBaseDate().toDate());
+					workplaceInfoImports = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
 				}
 				return RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
@@ -501,7 +501,7 @@ public class RegulationInfoEmployeeFinder {
                                 .employeeName(e.getName().orElse(""))
                                 .affiliationId(e.getDepartmentId().orElse(""))
                                 .affiliationCode(e.getDepartmentCode().orElse(""))
-                                .affiliationName(e.getDepartmentName().orElse(depInfoImports.get(e.getDepartmentId().get()).getDepartmentName()))
+                                .affiliationName(e.getDepartmentName().orElse(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : ""))
                                 .build())
 						.collect(Collectors.toList());
 		} else {
@@ -533,7 +533,7 @@ public class RegulationInfoEmployeeFinder {
 							.employeeName(e.getName().orElse(""))
 							.affiliationId(e.getWorkplaceId().orElse(""))
 							.affiliationCode(e.getWorkplaceCode().orElse(""))
-							.affiliationName(e.getWorkplaceName().orElse(wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName()))
+							.affiliationName(e.getWorkplaceName().orElse(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : ""))
 							.build())
 					.collect(Collectors.toList());
 		}

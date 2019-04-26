@@ -72,7 +72,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="7" data-bind="click: registerConfig, enable: $root.errors.isEmpty">#{i18n.getText('CMM011_127')}</button>
+				<button class="x-large proceed" tabindex="7" data-bind="click: registerConfig, enable: $root.errors.isEmpty &amp;&amp; selectedHistoryId()">#{i18n.getText('CMM011_127')}</button>
 				<button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('CMM011_128')}</button>
 			</div>
 		</ui:define>
