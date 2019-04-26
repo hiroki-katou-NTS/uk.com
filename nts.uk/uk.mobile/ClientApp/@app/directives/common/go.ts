@@ -1,6 +1,6 @@
 import { Vue, DirectiveBinding, VNode } from '@app/provider';
 
-Vue.directive('go', {
+Vue.directive('submit', {
     bind(el: HTMLElement, binding: DirectiveBinding, vnode: VNode) {
         if (el.tagName === 'FORM') {
             el.setAttribute('action', '#');
