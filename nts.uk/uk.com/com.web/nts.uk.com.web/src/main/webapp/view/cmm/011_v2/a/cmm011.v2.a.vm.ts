@@ -76,6 +76,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     self.selectedGenericName(self.getGenericName(value));
                 }
                 $(".nts-input").trigger("validate");
+                $("#A5_2").trigger("keyup");
             });
             self.selectedCode.subscribe(value => {
                 if (!_.isEmpty(self.configuration().historyId()) && value && value != self.backupCode && !$("#A5_2").ntsError("hasError")) {
@@ -172,6 +173,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (_.isEmpty(self.configuration().historyId()) || _.isEmpty(self.items()))
                 return;
             $(".nts-input").trigger("validate");
+            $("#A5_2").trigger("keyup");
             if (nts.uk.ui.errors.hasError()) 
                 return;
             block.invisible();
