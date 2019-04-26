@@ -61,6 +61,13 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
+                        v-on:keydown="evt => $emit('keydown', evt)"
+                        v-on:keypress="evt => $emit('keypress', evt)"
+                        v-on:keyup="evt => $emit('keyup', evt)"
+                        v-on:focus="evt => $emit('focus', evt)"
+                        v-on:blur="evt => $emit('blur', evt)"
+                        v-on:click="evt => $emit('click', evt)"
+                        v-on:dblclick="evt => $emit('dblclick', evt)"
                     />`
         }
                 <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
