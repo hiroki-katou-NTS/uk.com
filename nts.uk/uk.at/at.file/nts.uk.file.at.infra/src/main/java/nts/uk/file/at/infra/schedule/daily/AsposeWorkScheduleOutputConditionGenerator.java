@@ -104,6 +104,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentInfo;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
@@ -124,6 +126,7 @@ import nts.uk.file.at.app.export.dailyschedule.data.DailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyWorkplaceData;
 import nts.uk.file.at.app.export.dailyschedule.data.DetailedDailyPerformanceReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.EmployeeReportData;
+import nts.uk.file.at.app.export.dailyschedule.data.EmployeesStatusByDate;
 import nts.uk.file.at.app.export.dailyschedule.data.OutputItemSetting;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceDailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceReportData;
@@ -330,6 +333,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 	/** The Constant MAX_PAGE_PER_SHEET. */
 	private static final int MAX_PAGE_PER_SHEET = 1000;
+	
+	/** The Constant ATTENDANCE_ID_EMPLOYMENT. */
+	private static final int ATTENDANCE_ID_BUSSINESS_TYPE = 858;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
@@ -740,6 +746,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> lstEmployment = dataProcessor.getEmployment(companyId).getCodeNames();
 			queryData.setLstEmployment(lstEmployment);
 		}
+		//勤務種別を取得する
+		if (itemsId.stream().filter(x -> ATTENDANCE_ID_BUSSINESS_TYPE == x).count() > 0) {
+			List<CodeName> lstBusiness = dataProcessor.getBussinessType(companyId).getCodeNames();
+			queryData.setLstBusiness(lstBusiness);
+		}
 		
 		// Collect optional item from KMK002 if there is at least 1 attendance id fall into id 641 -> 740
 		List<Integer> lstOptionalAttendanceId = itemsId.stream()
@@ -829,13 +840,39 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			lstReportData.forEach(x -> {
 				analyzeInfoExportByDate(lstWorkplaceTemp, x.getLstWorkplaceData(), lstAddedCode);
 			});
+			List<EmployeesStatusByDate> empStatusList = new ArrayList<>();
 			//Imported(就業)「社員の在職状態」を取得する
-			this.empStatusPub.findListOfEmployee(lstEmployeeWithData, period).forEach(empStatus->{
-				//RQ433で取得した社員在職データを日付毎のデータに並び替える
-				List<EmploymentInfo> empInfos = empStatus.getEmploymentInfo().stream().sorted(Comparator.comparing(EmploymentInfo::getStandardDate)).collect(Collectors.toList());
+			List<EmploymentStatus> employmentStatus = this.empStatusPub.findListOfEmployee(lstEmployeeWithData,
+					period);
+			employmentStatus.forEach(empStatus -> {
+				// RQ433で取得した社員在職データを日付毎のデータに並び替える
+				List<EmploymentInfo> empInfos = empStatus.getEmploymentInfo().stream()
+						.filter(x -> x.getEmploymentState().equals(EmploymentState.INCUMBENT))
+						.collect(Collectors.toList());
 				empStatus.setEmploymentInfo(empInfos);
 			});
-			collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
+			for (int i = 0; i < period.datesBetween().size(); i++) {
+				GeneralDate targetDate = period.start().addDays(i);
+				List<String> employees = new ArrayList<>();
+				employmentStatus.forEach(emp -> {
+					Optional<EmploymentInfo> empInfoOpt = emp.getEmploymentInfo().stream()
+							.filter(x -> x.getStandardDate().equals(targetDate)).findFirst();
+					if (empInfoOpt.isPresent()) {
+						employees.add(emp.getEmployeeId());
+					}
+				});
+				empStatusList.add(new EmployeesStatusByDate(targetDate, employees));
+			}
+			empStatusList.forEach(empStatus->{
+				DateRange range = new DateRange(empStatus.getTargetDate(), empStatus.getTargetDate());
+				queryData.getQuery().setEmployeeId(empStatus.getEmployees());
+				queryData.setDatePeriod(range.toListDate());
+				//アルゴリズム「日付別の日別勤務表を作成する」を実行する
+				collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
+			});
+			
+			
+			
 			// Calculate workplace total
 			lstReportData.forEach(dailyData -> {
 				calculateTotalExportByDate(dailyData.getLstWorkplaceData());
@@ -2056,13 +2093,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                     }
                     rowPageTracker.resetRemainingRow();
                 }
-                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isGrossTotal()) {
+                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
                 String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
                 // A3_1
                 currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
                 departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
-                if(!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isWorkplaceTotal() && !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()&& !condition.getSettingDetailTotalOutput().isGrossTotal()){
+                if(!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isWorkplaceTotal() 
+                		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()&& !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()){
                 String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
                         + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
                         + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
@@ -2071,6 +2109,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
                 departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
+				if (condition.getSettingDetailTotalOutput().isPersonalTotal() || condition.getSettingDetailTotalOutput().isDetails()) {
+					String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　"
+							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
+					// A3_1
+					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+				}
                 rowPageTracker.useRemainingRow(2);
 
 				// A3_2
@@ -2141,7 +2185,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								currentRow = sheetInfo.getStartDataIndex();
 							}
 							rowPageTracker.resetRemainingRow();
-							 if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())) {
 					                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 					                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
 					                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
@@ -2153,7 +2196,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					                // A4_1
 					                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
 					                rowPageTracker.useRemainingRow(2);
-					                }
 						}
 						if (colorWhite) // White row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -2719,9 +2761,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                     cells = sheetInfo.getSheet().getCells();
                     currentRow = sheetInfo.getStartDataIndex();
                 }
-                currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
-                rowPageTracker.useRemainingRow(2);
+//                currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
+//                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+//                rowPageTracker.useRemainingRow(2);
             }
 			// B4_1
             currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
@@ -3361,11 +3403,24 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstClassification = queryData.getLstClassification();
 		List<CodeName> lstPosition = queryData.getLstPosition();
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
+		List<CodeName> lstBusiness = queryData.getLstBusiness();
 		
 		// Not set -> won't check master unregistered
 		if (StringUtils.isEmpty(code)) {
 			return "";
 		}
+		
+		if (attendanceId == ATTENDANCE_ID_BUSSINESS_TYPE) {
+			Optional<CodeName> optWorkplace = lstBusiness.stream()
+					.filter(workplace -> workplace.getCode().equalsIgnoreCase(code)).findFirst();
+			if (!optWorkplace.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName workplace = optWorkplace.get();
+			return workplace.getName();
+		}
+		
 		
 		if (IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(id -> id == attendanceId)) {
 			Optional<WorkType> optWorkType = lstWorkType.stream()

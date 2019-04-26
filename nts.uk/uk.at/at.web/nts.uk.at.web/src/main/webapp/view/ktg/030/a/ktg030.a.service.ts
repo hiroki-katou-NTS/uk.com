@@ -4,7 +4,7 @@ module nts.uk.at.view.ktg030.a.service {
     var paths: any = {
         getData: "screen/at/ktg030/checkDisplay"
     }
-    export function getData(): JQueryPromise<any> {
-        return ajax("at", paths.getData); 
+    export function getData(currentOrNextMonth: number): JQueryPromise<any> {
+        return ajax("at", paths.getData,currentOrNextMonth); 
     }
 }  

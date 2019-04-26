@@ -682,6 +682,7 @@ public class DailyPerformanceCorrectionProcessor {
 							false, lockApprovalMonth, lockConfirmMonth);
 				}
                 
+				lockDaykWpl = lockDay || lockWpl;
 				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
@@ -884,29 +885,46 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate()) && screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value){
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate())){
 							boolean change31 = false;
 							boolean change34 = false;
-							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								//value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
-								if (!share.getInitClock().getGoOut().equals("")) {
-									//if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getGoOut())))
-										change31 = true;
+							if (!lock) {
+								if (screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value) {
+									if (item.getId() == 31
+											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
+											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
+										// value = share.getInitClock().getGoOut() != null ?
+										// share.getInitClock().getGoOut() : "";
+										if (!share.getInitClock().getGoOut().equals("")) {
+											// if (value.equals("") || (Integer.parseInt(value) !=
+											// Integer.parseInt(share.getInitClock().getGoOut())))
+											change31 = true;
+										}
+										ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share,
+												change31, false);
+										changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
+										screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
+									} else if (item.getId() == 34
+											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
+											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
+										if (!share.getInitClock().getLiveTime().equals("")) {
+											// if (value.equals("") || (Integer.parseInt(value) !=
+											// Integer.parseInt(share.getInitClock().getLiveTime())))
+											change34 = true;
+										}
+										ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share,
+												false, change34);
+										changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
+										screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
+									}
+									// insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
+									screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 								}
-								ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share, change31, false);
-								changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
-								screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
-							}else if(item.getId() == 34 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								if (!share.getInitClock().getLiveTime().equals("")) {
-									//if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getLiveTime())))
-										change34 = true;
-								}
-								ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share, false, change34);
-								changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
-								screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
+							} else {
+								ChangeSPR changeSpr = new ChangeSPR(change31, change34);
+								changeSpr.setMessageIdError("Msg_1531");
+								screenDto.setChangeSPR(changeSpr);
 							}
-							//insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
-							screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 						}
 						if (!value.isEmpty()) {
 							// convert HH:mm
@@ -1731,7 +1749,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) return employeeIds;
 			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
+					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate(), Arrays.asList(closureId)));
 			lstEmployeeId = regulationRs.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
 //			if (employeeIds.isEmpty()) {
 //				// List<RegulationInfoEmployeeQueryR> regulationRs=
@@ -1949,7 +1967,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, List<Integer> lstClosureId) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		//並び順NO
 		query.setSortOrderNo(1);
@@ -1994,7 +2012,8 @@ public class DailyPerformanceCorrectionProcessor {
 		query.setIncludeIncumbents(true);
 		//休職者を含める
 		query.setIncludeWorkersOnLeave(true);
-		query.setFilterByClosure(false);
+		query.setFilterByClosure(true);
+		query.setClosureIds(lstClosureId);
 		return query;
 	}
 	

@@ -38,6 +38,8 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.OrderRefe
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyModifyResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -115,6 +117,12 @@ public class MonthlyPerformanceDisplay {
 	@Inject
 	private MonthlyPerformanceReload mpReload;
 	
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
+	
+	@Inject
+	private MonthlyPerformanceCorrectionProcessor correctionProcessor;
+	
 	private static final String KMW003_SELECT_FORMATCODE = "KMW003_SELECT_FORMATCODE";
 
 	/**
@@ -146,8 +154,13 @@ public class MonthlyPerformanceDisplay {
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param, screenDto);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
+		Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
 		if (CollectionUtil.isEmpty(param.getSheets())) {
-			throw new BusinessException("Msg_1261");
+			Optional<ApprovalProcessingUseSetting> optApprovalProcessingUseSetting = this.approvalProcessingUseSettingRepo.findByCompanyId(cId);
+			String mess = new String("Msg_1452");
+			correctionProcessor.createFixedHeader(screenDto, param.getYearMonth(), screenDto.getSelectedClosure(),
+					optApprovalProcessingUseSetting.get(), mess);
+			return;
 		}
 		param.getSheets().forEach(item -> {
 			kintaiIDList.addAll(item.getDisplayItems().stream().map(kintai -> {
@@ -161,7 +174,7 @@ public class MonthlyPerformanceDisplay {
 		// 取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
 		screenDto.setAuthDto(monthlyItemAuthDto);
-		Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
+		
 		List<PSheet> listSheet = new ArrayList<>();
 		if (monthlyItemAuthDto != null) {
 			for (PSheet sheet : param.getSheets()) {
@@ -561,8 +574,6 @@ public class MonthlyPerformanceDisplay {
 		
 		List<Identification> listIdentification = identificationRepository.findByListEmployeeID(empIds, closureTime.start(), closureTime.end());
 		
-		List<EmployeeDailyPerError> listEmployeeDailyPerError =  employeeDailyPerErrorRepo.finds(empIds, new DatePeriod(closureTime.start(), closureTime.end()));
-		
 		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cid);
 		
 		for (AffAtWorkplaceImport affWorkplaceImport : affWorkplaceLst) {
@@ -590,15 +601,15 @@ public class MonthlyPerformanceDisplay {
 				}
 			}
 			
+			List<EmployeeDailyPerError> listEmployeeDailyPerError =  employeeDailyPerErrorRepo.findsWithLeftJoin(Arrays.asList(affWorkplaceImport.getEmployeeId()), workDatePeriod);
 			boolean checkExistRecordErrorListDate = false;
-			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
-				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
-					//対応するドメインモデル「勤務実績のエラーアラーム」を取得する
-					List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
-							cid, Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
-					if(!errorAlarmWorkRecordLst.isEmpty()) {
-						checkExistRecordErrorListDate = true;	
-					}
+			for (EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
+				// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+				List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository
+						.getListErAlByListCodeError(cid,
+								Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
+				if (!errorAlarmWorkRecordLst.isEmpty()) {
+					checkExistRecordErrorListDate = true;
 					break;
 				}
 			}
