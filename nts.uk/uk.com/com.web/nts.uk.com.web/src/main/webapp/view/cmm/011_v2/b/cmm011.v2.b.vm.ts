@@ -61,7 +61,10 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             service.getAllConfiguration(self.initMode()).done(data => {
                 if (data) {
                     self.lstWpkHistory(_.map(data, i => new HistoryItem(i)));
-                    self.selectedHistoryId.valueHasMutated();
+                    if (self.selectedHistoryId() != null)
+                        self.selectedHistoryId.valueHasMutated();
+                    else
+                        self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                 }
                 dfd.resolve();
             }).fail((error) => {
@@ -173,7 +176,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                     break;
                 default:
                     block.clear();
-                    self.sendDataToParentScreen();
+                    if (self.selectedHistoryId())
+                        self.sendDataToParentScreen(); 
                     break;
             }
         }
