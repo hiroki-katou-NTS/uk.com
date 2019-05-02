@@ -15,6 +15,7 @@ interface IFetchOption {
 }
 
 declare interface IRule {
+    loop?: boolean;
     required?: boolean;
     min?: number | Date;
     max?: number | Date;
@@ -135,6 +136,7 @@ declare module "vue/types/vue" {
         validations: {
             [name: string]: IRule;
         };
+        toJS: (value: any) => any;
     }
 
     export interface VueConstructor<V extends Vue = Vue> {
@@ -142,6 +144,7 @@ declare module "vue/types/vue" {
             defineReactive: (obj: any, key: string, val: any) => void;
             extend: (to: any, from: any) => any;
         };
+        toJS: (value: any) => any;
     }
 }
 

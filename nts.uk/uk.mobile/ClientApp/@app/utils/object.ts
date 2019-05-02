@@ -98,15 +98,29 @@ const $ = {
         return object && typeof object === 'object' && object.constructor === Object;
     },
     cloneObject(obj: any): any {
-        let clone = {};
-
         if (!$.isNull(obj)) {
-            $.objectForEach(obj, (key: string, value: any) => {
-                $.set(clone, key, $.isObject(value) ? $.cloneObject(value) : value);
-            });
+            if ($.isArray(obj)) {
+                let clone = [];
+
+                obj.forEach((value: any, k: number) => {
+                    clone.push($.cloneObject(value));
+                });
+
+                return clone;
+            } else if ($.isObject(obj)) {
+                let clone = {};
+
+                $.objectForEach(obj, (key: string, value: any) => {
+                    $.set(clone, key, $.cloneObject(value));
+                });
+
+                return clone;
+            }
+        } else if ($.isObject(obj)) {
+            return {};
         }
 
-        return clone;
+        return obj;
     },
     isArray(object: any): object is any[] {
         return object && Array.isArray(object) && typeof object === 'object' && object.constructor === Array;

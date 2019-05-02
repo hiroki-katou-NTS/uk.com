@@ -1,5 +1,5 @@
 import { $, location, csrf, obj } from '@app/utils';
-import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
+import { Vue, VueConstructor } from '@app/provider';
 
 import { $dialog } from '@app/plugins';
 
@@ -33,8 +33,10 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
+                    let hostName: string = window.location.origin;
+
                     $.extend(opt, {
-                        url: (`${['localhost', '0.0.0.0'].indexOf(window.location.hostname) > -1 && window.location.port === '3000' ? 'http://localhost:8080' : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? hostName.replace(/:3000/, ':8080') : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 

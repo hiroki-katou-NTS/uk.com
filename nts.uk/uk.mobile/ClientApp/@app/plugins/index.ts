@@ -9,3 +9,4 @@ export * from '@app/plugins/modal';
 export * from '@app/plugins/dialog';
 export * from '@app/plugins/toast';
 export * from '@app/plugins/picker';
+export * from '@app/plugins/object';

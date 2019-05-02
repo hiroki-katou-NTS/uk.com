@@ -3,7 +3,7 @@ import '@views/index';
 
 import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
-import { bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language, LanguageBar } from '@app/plugins';
+import { tojs, bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language, LanguageBar } from '@app/plugins';
 
 import { obj } from '@app/utils';
 import { SideMenuBar, NavMenuBar } from '@app/components';
@@ -11,6 +11,7 @@ import { SideMenuBar, NavMenuBar } from '@app/components';
 // use ajax request
 Vue.use(ajax, 'webapi');
 
+Vue.use(tojs);
 Vue.use(bstrp);
 Vue.use(modal);
 Vue.use(dialog);
