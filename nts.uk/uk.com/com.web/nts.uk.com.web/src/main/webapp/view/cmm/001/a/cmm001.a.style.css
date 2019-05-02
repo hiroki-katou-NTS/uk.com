@@ -279,6 +279,7 @@ body>div:nth-child(4) {
 
 #checked2 .ntsCheckBox-label {
 	width: 175px;
+	vertical-align: middle;
 }
 
 #faxNo {
