@@ -16,17 +16,14 @@
 }
 .column1 > * {
 	display: block;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-top: 10px;
+	margin-bottom: 15px;
 }
 .column1 > div:FIRST-CHILD { margin-left: 35px; }
 .column1 span { font-size: large; }
 img {
 	position: absolute;
-    width: 200px;
-    height: 180px;
 }
-.column2 { width: 30px; }
 .column3 > * { 
 	display: block;
 	margin-top: 20px;
@@ -39,3 +36,7 @@ img {
 #contents-area {
 	padding: 0px !important;
 }
+.column1, .column2{
+	float: left;
+}
+
