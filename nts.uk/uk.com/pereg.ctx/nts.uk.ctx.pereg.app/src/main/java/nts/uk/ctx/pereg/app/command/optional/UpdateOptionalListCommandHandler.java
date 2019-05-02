@@ -111,7 +111,7 @@ implements PeregUserDefListUpdateCommandHandler{
 		
 		addLst.parallelStream().forEach(c -> {
 			c.getItems().parallelStream().forEach(item -> {
-				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(update -> update.getPerInfoDefId().equals(item.definitionId())).findFirst();
+				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(update -> update.getPerInfoDefId().equals(item.definitionId()) && update.getRecordId().equals(c.getRecordId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);

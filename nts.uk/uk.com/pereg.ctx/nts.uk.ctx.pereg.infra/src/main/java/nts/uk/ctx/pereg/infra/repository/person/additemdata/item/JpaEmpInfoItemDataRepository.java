@@ -292,7 +292,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 					stmt.setString( 1 + i, itemIds.get(i));
 				}
 				for (int i = 0 ; i < subList.size(); i++) {
-					stmt.setString( subList.size() + 1 + i, subList.get(i));
+					stmt.setString(itemIds.size() + 1 + i, subList.get(i));
 				}
 
 				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
@@ -369,8 +369,8 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	@Override
 	public void updateAll(List<EmpInfoItemData> domains) {
 		String UP_SQL = "UPDATE PPEMT_EMP_INFO_ITEM_DATA SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ "  RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL, STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL"
-				+ "  WHERE  RECORD_ID = RECORD_ID_VAL AND  PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL; ";
+				+ " SAVE_DATA_ATR = SAVE_DATA_ATR_VAL, STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL"
+				+ " WHERE  RECORD_ID = RECORD_ID_VAL AND  PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL; ";
     	GeneralDateTime insertTime = GeneralDateTime.now();
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
