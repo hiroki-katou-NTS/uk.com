@@ -187,9 +187,9 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 				+ " MEMO2, CONTACT_NAME_2, PHONE_NO_2)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " PID_VAL, CELL_PHONE_NO_VAL, MAIL_ADDRESS_VAL, MOBILE_MAIL_ADDRESS_VAL, "
-				+ " MEMO1_VAL, CONTACT_NAME_1_VAL, PHONE_NO_1_VAL,"
-				+ " MEMO2_VAL, CONTACT_NAME_2_VAL, PHONE_NO_2_VAL); ";
+				+ " PID_VAL, CELL_VAL, MAIL_VAL, MOBILE_VAL, "
+				+ " M1_VAL, CONTACT_1_VAL, PHONE_1_VAL,"
+				+ " M2_VAL, CONTACT_2_VAL, PHONE_2_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -211,32 +211,32 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() + "'");
-			sql = sql.replace("CELL_PHONE_NO_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
-			sql = sql.replace("MAIL_ADDRESS_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
-			sql = sql.replace("MOBILE_MAIL_ADDRESS_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
+			sql = sql.replace("CELL_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
+			sql = sql.replace("MAIL_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
+			sql = sql.replace("MOBILE_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
 			
 			Optional<EmergencyContact> emergencyContact1 = c.getEmergencyContact1();
 			
 			if(emergencyContact1.isPresent()) {
-				sql = sql.replace("MEMO1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_NAME_1", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_NO_1", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_1_VAL", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_1_VAL", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
-				sql = sql.replace("MEMO1_VAL", "null");
-				sql = sql.replace("MAIL_ADDRESS_VAL", "null");
-				sql = sql.replace("MOBILE_MAIL_ADDRESS_VAL", "null");
+				sql = sql.replace("M1_VAL", "null");
+				sql = sql.replace("CONTACT_1_VAL", "null");
+				sql = sql.replace("PHONE_1_VAL", "null");
 			}
 			
 			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
 			
 			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("MEMO2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_NAME_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_NO_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
-				sql = sql.replace("MEMO2_VAL", "null");
-				sql = sql.replace("CONTACT_NAME_2_VAL", "null");
-				sql = sql.replace("PHONE_NO_2_VAL", "null");
+				sql = sql.replace("M2_VAL", "null");
+				sql = sql.replace("CONTACT_2_VAL", "null");
+				sql = sql.replace("PHONE_2_VAL", "null");
 			}
 			
 			sb.append(sql);
@@ -250,9 +250,9 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 	@Override
 	public void updateAll(List<PersonContact> domains) {
 		String UP_SQL = "UPDATE BPSMT_PERSON_CONTACT SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " CELL_PHONE_NO = CELL_PHONE_NO_VAL , MAIL_ADDRESS = MAIL_ADDRESS_VAL, MOBILE_MAIL_ADDRESS = MOBILE_MAIL_ADDRESS_VAL, "
-				+ " MEMO1 = MEMO1_VAL, CONTACT_NAME_1 = CONTACT_NAME_1_VAL, PHONE_NO_1 = PHONE_NO_1_VAL,"
-				+ " MEMO2 = MEMO2_VAL, CONTACT_NAME_2 = CONTACT_NAME_2_VAL, PHONE_NO_2 = PHONE_NO_2_VAL"
+				+ " CELL_PHONE_NO = CELL_VAL , MAIL_ADDRESS = MAIL_VAL, MOBILE_MAIL_ADDRESS = MOBILE_VAL, "
+				+ " MEMO1 = M1_VAL, CONTACT_NAME_1 = CONTACT_1_VAL, PHONE_NO_1 = PHONE_1_VAL,"
+				+ " MEMO2 = M2_VAL, CONTACT_NAME_2 = CONTACT_2_VAL, PHONE_NO_2 = PHONE_2_VAL"
 				+ " WHERE PID = PID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -267,32 +267,32 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() + "'");
-			sql = sql.replace("CELL_PHONE_NO_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
-			sql = sql.replace("MAIL_ADDRESS_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
-			sql = sql.replace("MOBILE_MAIL_ADDRESS_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
+			sql = sql.replace("CELL_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
+			sql = sql.replace("MAIL_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
+			sql = sql.replace("MOBILE_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
 			
 			Optional<EmergencyContact> emergencyContact1 = c.getEmergencyContact1();
 			
 			if(emergencyContact1.isPresent()) {
-				sql = sql.replace("MEMO1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_NAME_1", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_NO_1", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_1_VAL", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_1_VAL", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
-				sql = sql.replace("MEMO1_VAL", "null");
-				sql = sql.replace("MAIL_ADDRESS_VAL", "null");
-				sql = sql.replace("MOBILE_MAIL_ADDRESS_VAL", "null");
+				sql = sql.replace("M1_VAL", "null");
+				sql = sql.replace("CONTACT_1_VAL", "null");
+				sql = sql.replace("PHONE_1_VAL", "null");
 			}
 			
 			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
 			
 			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("MEMO2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_NAME_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_NO_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
-				sql = sql.replace("MEMO2_VAL", "null");
-				sql = sql.replace("CONTACT_NAME_2_VAL", "null");
-				sql = sql.replace("PHONE_NO_2_VAL", "null");
+				sql = sql.replace("M2_VAL", "null");
+				sql = sql.replace("CONTACT_2_VAL", "null");
+				sql = sql.replace("PHONE_2_VAL", "null");
 			}
 			sb.append(sql);
 		});

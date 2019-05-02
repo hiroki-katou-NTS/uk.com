@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistoryInter;
@@ -19,9 +19,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.B
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateBusinessWorkTypeOfHistoryListCommandHandler extends CommandHandler<List<UpdateBusinessWorkTypeOfHistoryCommand>>
+public class UpdateBusinessWorkTypeOfHistoryListCommandHandler extends CommandHandlerWithResult<List<UpdateBusinessWorkTypeOfHistoryCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>{
 	@Inject
 	private BusinessTypeOfEmployeeRepository typeOfEmployeeRepos;
@@ -42,7 +43,7 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateBusinessWorkTypeOfHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateBusinessWorkTypeOfHistoryCommand>> context) {
 		List<UpdateBusinessWorkTypeOfHistoryCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		// Update history table
@@ -51,6 +52,7 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 		UpdateBusinessWorkTypeOfHistoryCommand updateFirst = cmd.get(0);
 		List<BusinessTypeOfEmployeeHistoryInter> bTypeOfEmployeeHistoryInterLst = new ArrayList<>();
 		List<BusinessTypeOfEmployee> histItems = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHistory = new ArrayList<>();
 		// sidsPidsMap
 		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
@@ -98,6 +100,10 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 			typeOfEmployeeRepos.updateAll(histItems);
 		}
 		
+		if(!errorLst.isEmpty()) {
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
+		}
+		return errorExceptionLst;
 	}
 
 }

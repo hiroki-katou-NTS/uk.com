@@ -8,21 +8,21 @@ import lombok.val;
 
 public interface PeregUpdateListCommandHandler <C> extends PeregCommandHandler<C>{
 	
-	void handle(List<C> command);
+	List<MyCustomizeException> handle(List<C> command);
 	
 	@SuppressWarnings("unchecked")
-	default void handlePeregListCommand(List<Object> peregCommand) {
+	default List<MyCustomizeException> handlePeregListCommand(List<Object> peregCommand) {
 		List<C> commandLst = peregCommand.parallelStream().map(c ->  (C)c).collect(Collectors.toList());
-		this.handle(commandLst);
+		return this.handle(commandLst);
 	}
 
-	default void handlePeregCommand(List<PeregInputContainerCps003> input) {
+	default List<MyCustomizeException> handlePeregCommand(List<PeregInputContainerCps003> input) {
 		val commandLst = new ArrayList<>();
 		input.parallelStream().forEach(c ->{
 			ItemsByCategory itemsByCategory = c.getInputs();
 			commandLst.add(itemsByCategory.createCommandForSystemDomain(
 					c.getPersonId(), c.getEmployeeId(), this.commandClass()));
 		});
-		this.handlePeregListCommand(commandLst);
+		return this.handlePeregListCommand(commandLst);
 	}
 }

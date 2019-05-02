@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
@@ -20,9 +20,10 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateTemporaryAbsenceListCommandHandler extends CommandHandler<List<UpdateTemporaryAbsenceCommand>>
+public class UpdateTemporaryAbsenceListCommandHandler extends CommandHandlerWithResult<List<UpdateTemporaryAbsenceCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 	@Inject
 	private TempAbsItemRepository temporaryAbsenceRepository;
@@ -43,9 +44,11 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateTemporaryAbsenceCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateTemporaryAbsenceCommand>> context) {
 		List<UpdateTemporaryAbsenceCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		List<String> sidErrorLst = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// Update history table
 		// In case of date period are exist in the screen
 		UpdateTemporaryAbsenceCommand updateFirst = cmd.get(0);
@@ -112,6 +115,11 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 		if(!histItems.isEmpty()) {
 			temporaryAbsenceRepository.updateAll(histItems);
 		}
+		
+		if(!sidErrorLst.isEmpty()) {
+			errorExceptionLst.add(new MyCustomizeException("invalid TempAbsenceHistory", sidErrorLst));
+		}
+		return null;
 	}
 
 }

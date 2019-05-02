@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryIntermediate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
@@ -21,9 +21,10 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateEmploymentHistoryListCommandHandler extends CommandHandler<List<UpdateEmploymentHistoryCommand>>
+public class UpdateEmploymentHistoryListCommandHandler extends CommandHandlerWithResult<List<UpdateEmploymentHistoryCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 
 	@Inject
@@ -44,9 +45,11 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateEmploymentHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateEmploymentHistoryCommand>> context) {
 		List<UpdateEmploymentHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		List<String> sidErrorLst = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<EmploymentHistoryIntermediate> domainIntermediates = new ArrayList<>();
@@ -62,7 +65,13 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 						if(itemToBeUpdate.isPresent()) {
 							existHistLst.get(0).changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  ConstantUtils.maxDate()));
 							domainIntermediates.add(new EmploymentHistoryIntermediate(existHistLst.get(0), itemToBeUpdate.get()));
+						}else {
+							sidErrorLst.add(c.getEmployeeId());
+							return;
 						}
+					}else {
+						sidErrorLst.add(c.getEmployeeId());
+						return;
 					}	
 				}
 				
@@ -80,6 +89,11 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 		if(!employmentHistoryItems.isEmpty()) {
 			employmentHistoryItemRepository.updateAll(employmentHistoryItems);
 		}
+		
+		if(!sidErrorLst.isEmpty()) {
+			errorExceptionLst.add(new MyCustomizeException("invalid employmentHistory", sidErrorLst));
+		}
+		return errorExceptionLst;
 	}
 
 }

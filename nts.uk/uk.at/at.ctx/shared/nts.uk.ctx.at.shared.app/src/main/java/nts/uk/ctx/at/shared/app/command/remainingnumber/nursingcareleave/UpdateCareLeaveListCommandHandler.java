@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareLeaveRemainingDataService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
@@ -22,10 +22,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
 @Transactional
-public class UpdateCareLeaveListCommandHandler extends CommandHandler<List<UpdateCareLeaveCommand>>
+public class UpdateCareLeaveListCommandHandler extends CommandHandlerWithResult<List<UpdateCareLeaveCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	@Inject
 	private ChildCareLeaveRemainingDataService  service;
@@ -53,7 +54,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateCareLeaveCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateCareLeaveCommand>> context) {
 		List<UpdateCareLeaveCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();		
 		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
@@ -71,7 +72,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 		service.addData(cid, childCareDataInsert, leaveCareDataInsert, childCareLeaveInfoInsert, leaveCareInfoInsert);
 		
 		service.updateData(cid, childCareDataUpdate, leaveCareDataUpdate, childCareLeaveInfoUpdate, leaveCareInfoUpdate);
-
+		 return new ArrayList<MyCustomizeException>();
 	}
 	
 	private void createData(List<UpdateCareLeaveCommand> cmd,

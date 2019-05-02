@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -18,9 +18,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateWorkingConditionListCommandHandler extends CommandHandler<List<UpdateWorkingConditionCommand>>
+public class UpdateWorkingConditionListCommandHandler extends CommandHandlerWithResult<List<UpdateWorkingConditionCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
@@ -42,7 +43,7 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateWorkingConditionCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateWorkingConditionCommand>> context) {
 		List<UpdateWorkingConditionCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		UpdateWorkingConditionCommand updateFirst = cmd.get(0);
@@ -52,6 +53,7 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 		List<WorkingCondition> listHistBySids = new ArrayList<>();
 		List<WorkingCondition> workingCondInserts = new ArrayList<>();
 		List<WorkingConditionItem> workingCondItems = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		if (updateFirst.getStartDate() != null){
 			List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
 			listHistBySids.addAll(listHistBySid);
@@ -82,6 +84,11 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 		if(!workingCondItems.isEmpty()) {
 			workingConditionItemRepository.updateAll(workingCondItems);
 		}
+		
+		if (errorLst.size() > 0) {
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
+		}
+		return errorExceptionLst;
 		
 	}
 

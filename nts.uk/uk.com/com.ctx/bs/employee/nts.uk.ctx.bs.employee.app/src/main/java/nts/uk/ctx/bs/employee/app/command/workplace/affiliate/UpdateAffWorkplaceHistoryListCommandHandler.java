@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryIntermediate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -22,9 +22,10 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateAffWorkplaceHistoryListCommandHandler extends CommandHandler<List<UpdateAffWorkplaceHistoryCommand>>
+public class UpdateAffWorkplaceHistoryListCommandHandler extends CommandHandlerWithResult<List<UpdateAffWorkplaceHistoryCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 	@Inject
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
@@ -46,10 +47,11 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateAffWorkplaceHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateAffWorkplaceHistoryCommand>> context) {
 		List<UpdateAffWorkplaceHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<String> sidErrors = new ArrayList<>();
+		List<String> sidErrorLst = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		List<AffWorkplaceHistoryItem> histItems = new ArrayList<>();
 		List<AffWorkplaceHistoryIntermediate> affWorkplaceHistories = new ArrayList<>();
 		Map<String, List<AffWorkplaceHistory>> existHistMap = new HashMap<>();
@@ -72,13 +74,17 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 					Optional<DateHistoryItem> itemToBeUpdate = affWorkplaceHistory.getHistoryItems().stream()
 							.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
 					if (!itemToBeUpdate.isPresent()) {
-						sidErrors.add(c.getEmployeeId());
+						sidErrorLst.add(c.getEmployeeId());
+						return;
 					} else {
 						affWorkplaceHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
 								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
 						affWorkplaceHistories
 								.add(new AffWorkplaceHistoryIntermediate(affWorkplaceHistory, itemToBeUpdate.get()));
 					}
+				}else {
+					sidErrorLst.add(c.getEmployeeId());
+					return;
 				}
 			}
 			AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(c.getHistoryId(),
@@ -92,6 +98,11 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 		if(!histItems.isEmpty()) {
 			affWorkplaceHistoryItemRepository.updateAll(histItems);
 		}
+		
+		if (sidErrorLst.size() > 0) {
+			errorExceptionLst.add(new MyCustomizeException("invalid AffWorkplaceHistory", sidErrorLst));
+		}
+		return errorExceptionLst;
 	}
 
 }

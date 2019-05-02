@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
@@ -20,9 +20,10 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateShortWorkTimeListCommandHandler extends CommandHandler<List<UpdateShortWorkTimeCommand>>
+public class UpdateShortWorkTimeListCommandHandler extends CommandHandlerWithResult<List<UpdateShortWorkTimeCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 	@Inject
 	private SWorkTimeHistoryRepository sWorkTimeHistoryRepository;
@@ -40,7 +41,7 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateShortWorkTimeCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateShortWorkTimeCommand>> context) {
 		List<UpdateShortWorkTimeCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		// sidsPidsMap
@@ -50,6 +51,7 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 		List<ShortWorkTimeHistoryItem> histItems = new ArrayList<>();
 		List<String> errorLst = new ArrayList<>();
 		Map<String, DateHistoryItem> dateHistItems = new HashMap<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		
 		if(updateFirst != null) {
 			List<ShortWorkTimeHistory> existHistMap = sWorkTimeHistoryRepository.getBySidsAndCid(cid, sids);
@@ -87,6 +89,10 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 		if(!histItems.isEmpty()) {
 			sWorkTimeHistItemRepository.updateAll(histItems);
 		}
+		if (errorLst.size() > 0) {
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
+		}
+		return errorExceptionLst;
 	}
 
 }

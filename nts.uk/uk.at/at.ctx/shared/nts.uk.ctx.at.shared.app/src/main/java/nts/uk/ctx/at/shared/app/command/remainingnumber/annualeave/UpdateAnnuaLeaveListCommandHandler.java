@@ -8,16 +8,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateAnnuaLeaveListCommandHandler extends CommandHandler<List<UpdateAnnuaLeaveCommand>>
+public class UpdateAnnuaLeaveListCommandHandler extends CommandHandlerWithResult<List<UpdateAnnuaLeaveCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>{
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
@@ -35,7 +36,7 @@ implements PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateAnnuaLeaveCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateAnnuaLeaveCommand>> context) {
 		String cid = AppContexts.user().companyId();
 		List<UpdateAnnuaLeaveCommand> cmd = context.getCommand();
 		List<AnnualLeaveMaxData>  insertMax = new ArrayList<>();
@@ -88,7 +89,7 @@ implements PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>{
 			maxDataRepo.updateAll(updateMax);
 		}
 		
-		
+		return new ArrayList<MyCustomizeException>();
 	}
 
 }

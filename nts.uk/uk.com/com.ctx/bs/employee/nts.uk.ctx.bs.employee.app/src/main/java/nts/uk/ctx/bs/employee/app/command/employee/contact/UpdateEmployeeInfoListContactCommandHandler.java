@@ -1,19 +1,21 @@
 package nts.uk.ctx.bs.employee.app.command.employee.contact;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateEmployeeInfoListContactCommandHandler  extends CommandHandler<List<UpdateEmployeeInfoContactCommand>>
+public class UpdateEmployeeInfoListContactCommandHandler  extends CommandHandlerWithResult<List<UpdateEmployeeInfoContactCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 	@Inject
 	private EmployeeInfoContactRepository employeeInfoContactRepository;
@@ -28,7 +30,7 @@ implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateEmployeeInfoContactCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateEmployeeInfoContactCommand>> context) {
 		List<UpdateEmployeeInfoContactCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		List<EmployeeInfoContact> domains = cmd.parallelStream().map(c ->{return new EmployeeInfoContact(cid, c.getSid(), c.getMailAddress(),
@@ -37,6 +39,8 @@ implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 		if(domains.isEmpty()) {
 			employeeInfoContactRepository.addAll(domains);
 		}
+		
+		return new ArrayList<MyCustomizeException>();
 	}
 
 }

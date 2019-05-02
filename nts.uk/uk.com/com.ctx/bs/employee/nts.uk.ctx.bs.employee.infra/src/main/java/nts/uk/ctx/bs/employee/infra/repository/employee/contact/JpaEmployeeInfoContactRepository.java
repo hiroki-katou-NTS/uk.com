@@ -152,8 +152,8 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 				+ " PHONE_MAIL_ADDRESS, SEAT_DIAL_IN, SEAT_EXTENSION_NO)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " SID_VAL, CID_VAL, CELL_PHONE_NO_VAL, "
-				+ " MAIL_ADDRESS_VAL, PHONE_MAIL_ADDRESS_VAL, SEAT_DIAL_IN_VAL, SEAT_EXTENSION_NO_VAL); ";
+				+ " SID_VAL, CID_VAL, CELL_VAL, "
+				+ " MAIL_VAL, PHONE_MAIL_VAL, SEAT_DIAL_VAL, SEAT_NO_VAL); ";	
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -176,12 +176,12 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 			
 			sql = sql.replace("SID_VAL", "'" + c.getSid() + "'");
 			sql = sql.replace("CID_VAL", "'"+ c.getCId() + "'");
-			sql = sql.replace("CELL_PHONE_NO_VAL",  c.getCellPhoneNo().isPresent() ? "'"+ c.getCellPhoneNo().get().v() + "'" : "null");
-			sql = sql.replace("MAIL_ADDRESS_VAL", c.getMailAddress().isPresent() ? "'" +c.getMailAddress().get().v()+"'" : "null");
+			sql = sql.replace("CELL_VAL",  c.getCellPhoneNo().isPresent() ? "'"+ c.getCellPhoneNo().get().v() + "'" : "null");
+			sql = sql.replace("MAIL_VAL", c.getMailAddress().isPresent() ? "'" +c.getMailAddress().get().v()+"'" : "null");
 
-			sql = sql.replace("PHONE_MAIL_ADDRESS_VAL", c.getPhoneMailAddress().isPresent() ? "'" + c.getPhoneMailAddress().get().v() +"'" : "null");
-			sql = sql.replace("SEAT_DIAL_IN_VAL", c.getSeatDialIn().isPresent() ? "'"+ c.getSeatDialIn().get().v()+ "'" : "null");
-			sql = sql.replace("SEAT_EXTENSION_NO_VAL", c.getSeatExtensionNo().isPresent() ? "'" + c.getSeatExtensionNo().get().v()+ "'" : "null");
+			sql = sql.replace("PHONE_MAIL_VAL", c.getPhoneMailAddress().isPresent() ? "'" + c.getPhoneMailAddress().get().v() +"'" : "null");
+			sql = sql.replace("SEAT_DIAL_VAL", c.getSeatDialIn().isPresent() ? "'"+ c.getSeatDialIn().get().v()+ "'" : "null");
+			sql = sql.replace("SEAT_NO_VAL", c.getSeatExtensionNo().isPresent() ? "'" + c.getSeatExtensionNo().get().v()+ "'" : "null");
 			
 			sb.append(sql);
 		});
@@ -194,8 +194,8 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	@Override
 	public void updateAll(List<EmployeeInfoContact> domains) {
 		String UP_SQL = "UPDATE BSYMT_EMP_INFO_CONTACT SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " CELL_PHONE_NO = CELL_PHONE_NO_VAL , MAIL_ADDRESS = MAIL_ADDRESS_VAL, PHONE_MAIL_ADDRESS = PHONE_MAIL_ADDRESS_VAL, "
-				+ " SEAT_DIAL_IN = SEAT_DIAL_IN_VAL, SEAT_EXTENSION_NO = SEAT_EXTENSION_NO_VAL"
+				+ " CELL_PHONE_NO = CELL_VAL , MAIL_ADDRESS = MAIL_VAL, PHONE_MAIL_ADDRESS = PHONE_MAIL_VAL, "
+				+ " SEAT_DIAL_IN = SEAT_DIAL_VAL, SEAT_EXTENSION_NO = SEAT_NO_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -211,12 +211,12 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 			
 			sql = sql.replace("SID_VAL", "'" + c.getSid() + "'");
 			sql = sql.replace("CID_VAL", "'"+ c.getCId() + "'");
-			sql = sql.replace("CELL_PHONE_NO_VAL",  c.getCellPhoneNo().isPresent() ? "'"+ c.getCellPhoneNo().get().v() + "'" : "null");
-			sql = sql.replace("MAIL_ADDRESS_VAL", c.getMailAddress().isPresent() ? "'" +c.getMailAddress().get().v()+"'" : "null");
+			sql = sql.replace("CELL_VAL",  c.getCellPhoneNo().isPresent() ? "'"+ c.getCellPhoneNo().get().v() + "'" : "null");
+			sql = sql.replace("MAIL_VAL", c.getMailAddress().isPresent() ? "'" +c.getMailAddress().get().v()+"'" : "null");
 
-			sql = sql.replace("PHONE_MAIL_ADDRESS_VAL", c.getPhoneMailAddress().isPresent() ? "'" + c.getPhoneMailAddress().get().v() +"'" : "null");
-			sql = sql.replace("SEAT_DIAL_IN_VAL", c.getSeatDialIn().isPresent() ? "'"+ c.getSeatDialIn().get().v()+ "'" : "null");
-			sql = sql.replace("SEAT_EXTENSION_NO_VAL", c.getSeatExtensionNo().isPresent() ? "'" + c.getSeatExtensionNo().get().v()+ "'" : "null");
+			sql = sql.replace("PHONE_MAIL_VAL", c.getPhoneMailAddress().isPresent() ? "'" + c.getPhoneMailAddress().get().v() +"'" : "null");
+			sql = sql.replace("SEAT_DIAL_VAL", c.getSeatDialIn().isPresent() ? "'"+ c.getSeatDialIn().get().v()+ "'" : "null");
+			sql = sql.replace("SEAT_NO_VAL", c.getSeatExtensionNo().isPresent() ? "'" + c.getSeatExtensionNo().get().v()+ "'" : "null");
 			
 			sb.append(sql);
 		});

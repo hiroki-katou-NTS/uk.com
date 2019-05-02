@@ -8,17 +8,18 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoInter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateOtherHolidayInfoListCommandHandler extends CommandHandler<List<UpdateOtherHolidayInfoCommand>>
+public class UpdateOtherHolidayInfoListCommandHandler extends CommandHandlerWithResult<List<UpdateOtherHolidayInfoCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>{
 	@Inject
 	private OtherHolidayInfoService otherHolidayInfoService;
@@ -33,7 +34,7 @@ implements PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateOtherHolidayInfoCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateOtherHolidayInfoCommand>> context) {
 		List<UpdateOtherHolidayInfoCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		 Map<String, OtherHolidayInfoInter> otherHolidayInfos = new HashMap<>();
@@ -53,6 +54,7 @@ implements PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>{
 		if(!otherHolidayInfos.isEmpty()) {
 			otherHolidayInfoService.updateOtherHolidayInfo(cid, otherHolidayInfos);
 		}
+		return new ArrayList<MyCustomizeException>();
 	}
 
 }

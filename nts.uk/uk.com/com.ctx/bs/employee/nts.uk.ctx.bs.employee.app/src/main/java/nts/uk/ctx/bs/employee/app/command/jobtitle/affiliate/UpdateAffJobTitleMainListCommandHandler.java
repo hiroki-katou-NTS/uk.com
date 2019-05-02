@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryImmediately;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
@@ -21,9 +21,10 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateAffJobTitleMainListCommandHandler extends CommandHandler<List<UpdateAffJobTitleMainCommand>>
+public class UpdateAffJobTitleMainListCommandHandler extends CommandHandlerWithResult<List<UpdateAffJobTitleMainCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 	@Inject
 	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
@@ -44,9 +45,11 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateAffJobTitleMainCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateAffJobTitleMainCommand>> context) {
 		List<UpdateAffJobTitleMainCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		List<String> sidErrorLst = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		List<AffJobTitleHistoryImmediately> immedidately = new ArrayList<>();
 		List<AffJobTitleHistoryItem> histItems = new ArrayList<>();
 		List<String> sids = command.parallelStream().map(c -> c.getSid()).collect(Collectors.toList());
@@ -64,7 +67,13 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 					if (itemToBeUpdate.isPresent()){
 						affJobTitleHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  ConstantUtils.maxDate()));
 						immedidately.add(new AffJobTitleHistoryImmediately(affJobTitleHistory, itemToBeUpdate.get()));
+					}else {
+						sidErrorLst.add(c.getSid());
+						return;
 					}
+				}else {
+					sidErrorLst.add(c.getSid());
+					return;
 				}
 			}
 			
@@ -79,8 +88,12 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 		if(!histItems.isEmpty()) {
 			affJobTitleHistoryItemRepository.updateAll(histItems);
 		}
-
 		
+		if(!sidErrorLst.isEmpty()){
+			errorExceptionLst.add(new MyCustomizeException("invalid AffJobHistory", sidErrorLst));
+		}
+
+		return errorExceptionLst;
 	}
 
 }

@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandler<List<UpdateEmployeeDataMngInfoCommand>>
+public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerWithResult<List<UpdateEmployeeDataMngInfoCommand>, List<MyCustomizeException>>
 		implements PeregUpdateListCommandHandler<UpdateEmployeeDataMngInfoCommand> {
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepository;
@@ -32,10 +33,11 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandler<
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateEmployeeDataMngInfoCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateEmployeeDataMngInfoCommand>> context) {
 		List<UpdateEmployeeDataMngInfoCommand> command = context.getCommand();
 		List<String> sidErrorLst = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// 同じ会社IDかつ、削除状況＝削除していないものは、社員コードは重複してはいけない （#Msg_345#）
 		// Map<employeeCode, List<EmployeeDataMngInfo>>
 		Map<String, List<EmployeeDataMngInfo>> employeeDataMap = employeeDataMngInfoRepository
@@ -60,17 +62,14 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandler<
 			}
 
 		});
-
-
 		
-		this.employeeDataMngInfoRepository.updateAll(domains);
+		if(!domains.isEmpty()) {
+			this.employeeDataMngInfoRepository.updateAll(domains);
+		}
 		
 		if (sidErrorLst.size() > 0) {
-			sidErrorLst.parallelStream().forEach(c ->{
-				System.out.println(c);
-			});
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst));
 		}
-
+		return errorExceptionLst;
 	}
-
 }

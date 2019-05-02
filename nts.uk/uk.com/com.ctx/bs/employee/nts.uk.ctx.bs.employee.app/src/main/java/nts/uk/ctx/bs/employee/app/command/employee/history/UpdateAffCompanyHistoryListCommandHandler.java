@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -21,9 +21,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
-public class UpdateAffCompanyHistoryListCommandHandler extends CommandHandler<List<UpdateAffCompanyHistoryCommand>>
+public class UpdateAffCompanyHistoryListCommandHandler extends CommandHandlerWithResult<List<UpdateAffCompanyHistoryCommand>, List<MyCustomizeException>>
 implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepository;
@@ -44,11 +45,14 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateAffCompanyHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateAffCompanyHistoryCommand>> context) {
 		List<UpdateAffCompanyHistoryCommand> command = context.getCommand();
+		List<String> sidErrorLst = new ArrayList<>();
 		List<AffCompanyInfo> affCompanyInfoLst = new ArrayList<>();
 		List<AffCompanyHistItem> affCompanyHistItems = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		Map<String, List<AffCompanyHist>> histLstMapResult = new HashMap<>();
+		
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getSId()).collect(Collectors.toList());
 		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
@@ -72,7 +76,8 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 							Optional<AffCompanyHistItem> itemToBeUpdated = itemToBeAdded.getLstAffCompanyHistoryItem()
 									.stream().filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
 							if (!itemToBeUpdated.isPresent()) {
-								throw new RuntimeException("Invalid AffCompanyHist");
+								sidErrorLst.add(c.getSId());
+								return;
 							}
 							itemToBeAdded.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(),
 									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
@@ -96,6 +101,11 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 		if(!affCompanyInfoLst.isEmpty()) {
 			affCompanyInfoRepository.updateAll(affCompanyInfoLst);
 		}
+		
+		if(!sidErrorLst.isEmpty()) {
+			errorExceptionLst.add(new MyCustomizeException("Invalid", sidErrorLst));
+		}
+		return errorExceptionLst;
 	}
 
 }

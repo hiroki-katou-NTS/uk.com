@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
@@ -22,10 +22,11 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 
 @Stateless
-public class UpdateAffListClassCommandHandler extends CommandHandler<List<UpdateAffClassificationCommand>>
+public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<List<UpdateAffClassificationCommand>, List<MyCustomizeException>>
 		implements PeregUpdateListCommandHandler<UpdateAffClassificationCommand> {
 	@Inject
 	private AffClassHistoryRepository affClassHistoryRepo;
@@ -44,16 +45,18 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 	@Override
 	public Class<?> commandClass() {
 		return UpdateAffClassificationCommand.class;
+		
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateAffClassificationCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateAffClassificationCommand>> context) {
 		List<UpdateAffClassificationCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		List<MidAffClass> histories = new ArrayList<>();
 		List<AffClassHistItem> items = new ArrayList<>();
 		Map<String, List<AffClassHistory>> affClassHisMaps = new HashMap<>();
 		List<String> errors = new ArrayList<>();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
@@ -80,14 +83,17 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 
 					} else {
 						errors.add(c.getEmployeeId());
+						return;
 					}
 
 				} else {
 					errors.add(c.getEmployeeId());
+					return;
 				}
 
 			} else {
 				errors.add(c.getEmployeeId());
+				return;
 			}
 				
 			// update history item
@@ -104,7 +110,10 @@ public class UpdateAffListClassCommandHandler extends CommandHandler<List<Update
 			if(!items.isEmpty()) {
 				affClassHistItemRepo.updateAll(items);
 			}
-		}
-	
-
+			
+			if(!errors.isEmpty()) {
+				errorExceptionLst.add(new MyCustomizeException("Invalid", errors));
+			}
+		return errorExceptionLst;
+	}
 }
