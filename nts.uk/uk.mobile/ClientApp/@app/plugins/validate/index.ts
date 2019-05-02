@@ -1,22 +1,15 @@
 import { IRule } from 'declarations';
-import { resources } from '@app/plugins/i18n';
-import { Vue, VueConstructor, VNode, DirectiveFunction } from '@app/provider';
+import { Vue, VueConstructor } from '@app/provider';
 
 import { $, dom, TimeDuration, TimeWithDay } from '@app/utils';
 import * as validators from '@app/plugins/validate/validators';
-
-$.merge(resources, {
-    vi: {
-        required: '#{field} là trường bắt buộc!'
-    }
-});
 
 const DIRTY = 'dirty',
     defReact = Vue.util.defineReactive,
     validate = {
         install(vue: VueConstructor<Vue>) {
             const isRule = (rule: IRule) => {
-                rule = $.cloneObject(rule);
+                rule = Vue.toJS(rule);
 
                 return !!$.values(rule).map((r) => {
                     if ($.isObject(r)) {
@@ -99,23 +92,12 @@ const DIRTY = 'dirty',
                     // valid flag for check all validate item in view model
                     Object.defineProperty(self, '$valid', {
                         get() {
-                            let c = $.cloneObject,
-                                $errors = c(self.$errors),
+                            let $errors = self.toJS(self.$errors),
                                 $isValid = (p: string) => !$.size($.get($errors, p));
 
                             return !paths(self.validations).map($isValid).filter((f) => !f).length;
                         }
                     });
-
-                    // define obser for validations
-                    let errors = {};
-
-                    paths(validations)
-                        .forEach((path: string) => {
-                            $.set(errors, path, {});
-                        });
-
-                    vue.set(self, '$errors', errors);
 
                     delete self.$options.validations;
 
@@ -180,11 +162,11 @@ const DIRTY = 'dirty',
 
                     // clean error when change validation
                     self.$watch(() => self.validations, (validations) => {
-                        validations = $.cloneObject(validations);
+                        validations = Vue.toJS(validations);
 
                         // update error object
                         let $paths = paths(validations),
-                            errors = $.cloneObject(self.$errors),
+                            errors = Vue.toJS(self.$errors),
                             $validators: {
                                 [key: number]: {
                                     path: string;
@@ -207,9 +189,9 @@ const DIRTY = 'dirty',
                             $.merge(errors, $.set({}, path, {}));
 
                             let watch = function (value: any) {
-                                let errors = $.cloneObject(self.$errors),
+                                let errors = Vue.toJS(self.$errors),
                                     models = $.get(errors, path),
-                                    rule = $.get($.cloneObject(self.validations), path, {}),
+                                    rule = $.get(Vue.toJS(self.validations), path, {}),
                                     msgkey = $.keys(models)[0];
 
                                 // re validate
@@ -304,11 +286,11 @@ const DIRTY = 'dirty',
                             };
                         });
 
-                        vue.set(self, '$errors', $.cloneObject(errors));
-                        vue.set(self, '$validators', $.cloneObject($validators));
+                        vue.set(self, '$errors', Vue.toJS(errors));
+                        vue.set(self, '$validators', Vue.toJS($validators));
                     }, { deep: true });
 
-                    vue.set(self, 'validations', $.cloneObject(self.validations));
+                    vue.set(self, 'validations', Vue.toJS(self.validations));
 
                     setTimeout(() => self.$validate('clear'), 100);
                 }
@@ -372,8 +354,8 @@ const DIRTY = 'dirty',
             // define $validate instance method
             vue.prototype.$validate = function (field?: string | 'clear') {
                 let self: Vue = this,
-                    errors = $.cloneObject(self.$errors),
-                    validations = $.cloneObject(self.validations);
+                    errors = Vue.toJS(self.$errors),
+                    validations = Vue.toJS(self.validations);
 
                 if (field) { // check match field name
                     if (field === 'clear') {
@@ -427,7 +409,7 @@ const DIRTY = 'dirty',
                 messageId: string;
             }) {
                 let self: Vue = this,
-                    validations = $.cloneObject(self.validations);
+                    validations = Vue.toJS(self.validations);
 
                 if (!$.isString(pathOrRule) && $.isObject(pathOrRule)) {
                     vue.set(self, 'validations', updateValidator.apply(validations, [pathOrRule]));
