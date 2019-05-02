@@ -1,3 +1,4 @@
+import { $ } from '@app/utils';
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
@@ -22,6 +23,16 @@ import { component } from '@app/core/component';
             password: {
                 required: true,
                 constraint: 'SampleStringAnyHalf'
+            },
+            items: {
+                name: {
+                    loop: true,
+                    required: true
+                },
+                age: {
+                    loop: true,
+                    required: true
+                }
             }
         }
     },
@@ -51,8 +62,25 @@ export class DocumentsPluginsValidationComponent extends Vue {
     public model: {
         username: number;
         password: string;
+        items: any[];
     } = {
-        username: 500,
-        password: 'password'
-    };
+            username: 500,
+            password: 'password',
+            items: [{
+                name: 'a'
+            }, {
+                name: 'b'
+            }, {
+                name: 'c'
+            }, {
+                name: 'd'
+            }, {
+                name: 'e'
+            }]
+        };
+
+    public created() {
+        $.set(window, '__', $);
+        $.set(window, 'vm', this);
+    }
 }

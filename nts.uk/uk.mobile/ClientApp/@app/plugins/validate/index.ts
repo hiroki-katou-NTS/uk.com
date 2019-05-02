@@ -80,7 +80,7 @@ const DIRTY = 'dirty',
             vue.mixin({
                 beforeCreate() {
                     let self: Vue = this,
-                        validations = self.$options.validations || {};
+                        validations = Vue.toJS(self.$options.validations || {});
 
                     // init errors & $valid obser
                     defReact(self, '$errors', {});
@@ -95,7 +95,7 @@ const DIRTY = 'dirty',
                             let $errors = self.toJS(self.$errors),
                                 $isValid = (p: string) => !$.size($.get($errors, p));
 
-                            return !paths(self.validations).map($isValid).filter((f) => !f).length;
+                            return !paths(Vue.toJS(self.validations)).map($isValid).filter((f) => !f).length;
                         }
                     });
 
@@ -154,6 +154,8 @@ const DIRTY = 'dirty',
                                             }
                                         }
                                     });
+
+                                delete self.$options.constraints;
                             });
                     }
                 },
@@ -185,105 +187,167 @@ const DIRTY = 'dirty',
 
                         $validators = {};
 
+                        // for loop model
+                        $paths.forEach((path: string) => {
+                            let rule = $.get(validations, path);
+
+                            if (rule.loop) {
+                                let lid = path.lastIndexOf('.'),
+                                    $lp = path.substring(0, lid),
+                                    $loopModel = $.get(self, $lp);
+
+                                if ($.isArray($loopModel)) {
+                                    let $watch = $.get($loopModel, '$watch');
+
+                                    if ($watch && $watch instanceof Function) {
+                                        $watch();
+                                    }
+
+                                    $.set($loopModel, '$watch', self.$watch($lp, () => {
+                                        Object.keys($loopModel)
+                                            .forEach((key: string) => {
+                                                if (key.match(/\$\d+/)) {
+                                                    delete $loopModel[key];
+                                                }
+                                            });
+
+                                        $loopModel.forEach((value: any, key: number) => {
+                                            $.set($loopModel, `$${key}`, value);
+
+                                            Object.defineProperty($loopModel, `$${key}`, {
+                                                get() {
+                                                    return $loopModel[key];
+                                                },
+                                                set(value: any) {
+                                                    $loopModel[key] = value;
+                                                }
+                                            });
+                                        });
+                                    }, { deep: true, immediate: true }));
+                                }
+                            }
+                        });
+
                         $paths.forEach((path: string, idx: number) => {
                             $.merge(errors, $.set({}, path, {}));
 
-                            let watch = function (value: any) {
-                                let errors = Vue.toJS(self.$errors),
-                                    models = $.get(errors, path),
-                                    rule = $.get(Vue.toJS(self.validations), path, {}),
-                                    msgkey = $.keys(models)[0];
+                            let $rule = $.get(Vue.toJS(self.validations), path, {}),
+                                $watch = (path: string) => {
 
-                                // re validate
-                                if (msgkey) {
-                                    $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
-                                        if (key == msgkey) {
-                                            let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                                message = vldtor.apply(self, [value, ...params, rule]);
+                                    let watch = function (value: any) {
+                                        let errors = Vue.toJS(self.$errors),
+                                            models = $.get(errors, path),
+                                            rule = $.get(Vue.toJS(self.validations), path, {}),
+                                            msgkey = $.keys(models)[0];
 
-                                            if (!message) {
-                                                $.omit(models, key);
-                                            } else {
-                                                if (!$.size(models)) {
-                                                    $.set(models, key, message);
+                                        // re validate
+                                        if (msgkey) {
+                                            $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
+                                                if (key == msgkey) {
+                                                    let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
+                                                        message = vldtor.apply(self, [value, ...params, rule]);
+
+                                                    if (!message) {
+                                                        $.omit(models, key);
+                                                    } else {
+                                                        if (!$.size(models)) {
+                                                            $.set(models, key, message);
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                            let vldtor: { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
+
+                                            if (vldtor) {
+                                                if ($.isFunction(vldtor.test)) {
+                                                    if (!vldtor.test.apply(self, [value])) {
+                                                        if (!$.size(models)) {
+                                                            $.set(models, msgkey, vldtor.message || vldtor.messageId);
+                                                        }
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
+                                                } else if ($.isRegExp(vldtor.test)) {
+                                                    if (value && !vldtor.test.test(value)) {
+                                                        if (!$.size(models)) {
+                                                            $.set(models, msgkey, vldtor.message || vldtor.messageId);
+                                                        }
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
                                                 }
                                             }
                                         }
+
+                                        // check fixed validators
+                                        $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
+                                            if ($.has(rule, key)) {
+                                                let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
+                                                    message = vldtor.apply(self, [value, ...params, rule]);
+
+                                                if (!message) {
+                                                    $.omit(models, key);
+                                                } else {
+                                                    if (!$.size(models)) {
+                                                        $.set(models, key, message);
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                        // check custom validators of dev
+                                        $.keys(rule)
+                                            .filter((f) => $.keys(validators).indexOf(f) == -1)
+                                            .forEach((key: string) => {
+                                                let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
+
+                                                if ($.isFunction(vldtor.test)) {
+                                                    if (!vldtor.test.apply(self, [value])) {
+                                                        if (!$.size(models)) {
+                                                            $.set(models, key, vldtor.message || vldtor.messageId);
+                                                        }
+                                                    } else {
+                                                        $.omit(models, key);
+                                                    }
+                                                } else if ($.isRegExp(vldtor.test)) {
+                                                    if (value && !vldtor.test.test(value)) {
+                                                        if (!$.size(models)) {
+                                                            $.set(models, key, vldtor.message || vldtor.messageId);
+                                                        }
+                                                    } else {
+                                                        $.omit(models, key);
+                                                    }
+                                                }
+                                            });
+
+                                        vue.set(self, '$errors', errors);
+                                    };
+
+                                    // add new watchers
+                                    $validators[idx] = {
+                                        path,
+                                        watch,
+                                        unwatch: self.$watch(path, watch)
+                                    };
+                                };
+
+                            if (!$rule.loop) {
+                                $watch(path);
+                            } else {
+                                // loop item
+
+                                let lid = path.lastIndexOf('.'),
+                                    $lp1 = path.substring(0, lid),
+                                    $lp2 = path.substring(lid + 1),
+                                    $loopModel = $.get(self, $lp1);
+
+                                if ($.isArray($loopModel)) {
+                                    $loopModel.forEach((v: any, k: number) => {
+                                        $watch(`${$lp1}.$${k}.${$lp2}`);
                                     });
-
-                                    let vldtor: { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
-
-                                    if (vldtor) {
-                                        if ($.isFunction(vldtor.test)) {
-                                            if (!vldtor.test.apply(self, [value])) {
-                                                if (!$.size(models)) {
-                                                    $.set(models, msgkey, vldtor.message || vldtor.messageId);
-                                                }
-                                            } else {
-                                                $.omit(models, msgkey);
-                                            }
-                                        } else if ($.isRegExp(vldtor.test)) {
-                                            if (value && !vldtor.test.test(value)) {
-                                                if (!$.size(models)) {
-                                                    $.set(models, msgkey, vldtor.message || vldtor.messageId);
-                                                }
-                                            } else {
-                                                $.omit(models, msgkey);
-                                            }
-                                        }
-                                    }
                                 }
-
-                                // check fixed validators
-                                $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
-                                    if ($.has(rule, key)) {
-                                        let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                            message = vldtor.apply(self, [value, ...params, rule]);
-
-                                        if (!message) {
-                                            $.omit(models, key);
-                                        } else {
-                                            if (!$.size(models)) {
-                                                $.set(models, key, message);
-                                            }
-                                        }
-                                    }
-                                });
-
-                                // check custom validators of dev
-                                $.keys(rule)
-                                    .filter((f) => $.keys(validators).indexOf(f) == -1)
-                                    .forEach((key: string) => {
-                                        let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
-
-                                        if ($.isFunction(vldtor.test)) {
-                                            if (!vldtor.test.apply(self, [value])) {
-                                                if (!$.size(models)) {
-                                                    $.set(models, key, vldtor.message || vldtor.messageId);
-                                                }
-                                            } else {
-                                                $.omit(models, key);
-                                            }
-                                        } else if ($.isRegExp(vldtor.test)) {
-                                            if (value && !vldtor.test.test(value)) {
-                                                if (!$.size(models)) {
-                                                    $.set(models, key, vldtor.message || vldtor.messageId);
-                                                }
-                                            } else {
-                                                $.omit(models, key);
-                                            }
-                                        }
-                                    });
-
-                                vue.set(self, '$errors', errors);
-                            };
-
-                            // add new watchers
-                            $validators[idx] = {
-                                path,
-                                watch,
-                                unwatch: self.$watch(path, watch)
-                            };
+                            }
                         });
 
                         vue.set(self, '$errors', Vue.toJS(errors));
