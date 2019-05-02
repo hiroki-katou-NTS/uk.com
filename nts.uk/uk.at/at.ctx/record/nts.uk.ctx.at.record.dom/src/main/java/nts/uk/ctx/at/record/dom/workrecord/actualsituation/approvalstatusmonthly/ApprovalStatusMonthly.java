@@ -181,6 +181,7 @@ public class ApprovalStatusMonthly {
 			//実施可否：実施できる
 			approvalStatusResult.setImplementaPropriety(AvailabilityAtr.CAN_RELEASE);
 		}
+			
 		//取得した「本人確認処理の利用設定．日の本人確認を利用する」をチェックする
 		if (!identityProcessUseSet.isPresent() || !identityProcessUseSet.get().isUseConfirmByYourself()) {
 			approvalStatusResult.setImplementaPropriety(AvailabilityAtr.CAN_RELEASE);

@@ -66,7 +66,8 @@ public class ApplicationFinder {
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
 		if (!Objects.isNull(appOutput)){
-			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(), appOutput.getApplicantMail());
+			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.getApplication()), appOutput.getMailTemplate(),
+					appOutput.getApprovalRoot(), appOutput.getApplicantMail(), appOutput.getEmpName());
 		}
 		return null;
 	}

@@ -66,7 +66,29 @@ module nts.uk.at.view.kaf011.a.screenModel {
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
         remainDays: KnockoutObservable<number> = ko.observable(null);
+        
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
+        
+        kaf011ReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.appTypeSet().displayAppReason() != 0;
+            });
+        kaf011FixedReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
+                return true;
+            });
+        kdl003BtnEnable: KnockoutObservable<boolean> = ko.observable(true);
+        recTimeSwitchEnable: KnockoutObservable<boolean> = ko.observable(true);
+        recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return true;
+        });
+        absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
+                return this.absWk().changeWorkHoursType();
+            });
+        absTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return this.absWk().enableWkTime() == true;
+        });
+        changeWorkHoursTypeEnable: KnockoutObservable<boolean> = ko.computed(() => {
+            return true;
+        });
         constructor() {
             let self = this;
 
@@ -251,7 +273,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appVersion: 0,
                         remainDays: self.remainDays()
                     },
-                    screenB: false
+                    screenB: false,
+                    isNotSelectYes: true
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             if (selectedReason) {
                 returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;
@@ -264,6 +287,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this,
                 saveCmd = self.genSaveCmd();
 
+            let isCheckLengthError: boolean = !appcommon.CommonProcess.checklenghtReason(self.getReason(), "#appReason");
+            if (isCheckLengthError) {
+                return;
+            }
+
             let isControlError = self.validateControl();
             if (isControlError) { return; }
 
@@ -272,22 +300,55 @@ module nts.uk.at.view.kaf011.a.screenModel {
             // if (isCheckReasonError) { return; }
             block.invisible();
             service.save(saveCmd).done((data) => {
-                dialog({ messageId: 'Msg_15' }).then(function() {
-                    if (data.autoSendMail) {
-                        appcommon.CommonProcess.displayMailResult(data);
+                self.saveDone(data, checkBoxValue);
+            }).fail((res) => {
+                if (res.messageId == "Msg_1518") {//confirm
+                    nts.uk.ui.dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                        saveCmd.checkOver1Year = false;
+                        service.save(saveCmd).done((data) => {
+                            self.saveDone(data, checkBoxValue);
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                .then(function() { nts.uk.ui.block.clear(); });
+                        });
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    if (res.messageId == "Msg_1520" || res.messageId == "Msg_1522") {
+                        nts.uk.ui.dialog.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).ifYes(() => {
+                            saveCmd.isNotSelectYes = false;
+                            service.save(saveCmd).done((data) => {
+                                self.saveDone(data, checkBoxValue);
+                            }).fail((res) => {
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                    .then(function() { nts.uk.ui.block.clear(); });
+                            });
+                        }).ifNo(() => {
+                            nts.uk.ui.block.clear();
+                        });;
                     } else {
-                        if (checkBoxValue) {
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);
-                        } else {
-                            location.reload();
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                            .then(function() { nts.uk.ui.block.clear(); });
                     }
-                });
-            }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                }
+
             }).always(() => {
                 block.clear();
                 $("#recDatePicker").focus();
+            });
+        }
+        saveDone(data, checkBoxValue) {
+            dialog({ messageId: 'Msg_15' }).then(function() {
+                if (data.autoSendMail) {
+                    appcommon.CommonProcess.displayMailResult(data);
+                } else {
+                    if (checkBoxValue) {
+                        appcommon.CommonProcess.openDialogKDL030(data.appID);
+                    } else {
+                        location.reload();
+                    }
+                }
             });
         }
 

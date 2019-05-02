@@ -31,4 +31,7 @@ public class SaveHolidayShipmentCommand {
 	private ApplicationCommand appCmd;
 	
 	private boolean screenB;
+	private boolean checkOver1Year;
+	
+	private Boolean isNotSelectYes;
 }

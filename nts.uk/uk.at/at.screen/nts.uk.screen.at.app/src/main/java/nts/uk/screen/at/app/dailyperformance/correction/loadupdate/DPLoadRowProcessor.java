@@ -305,6 +305,7 @@ public class DPLoadRowProcessor {
 							false, lockApprovalMonth, lockConfirmMonth);
 				}
 				
+				lockDaykWpl = lockDay || lockWork;
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getItemId()), "|",
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
