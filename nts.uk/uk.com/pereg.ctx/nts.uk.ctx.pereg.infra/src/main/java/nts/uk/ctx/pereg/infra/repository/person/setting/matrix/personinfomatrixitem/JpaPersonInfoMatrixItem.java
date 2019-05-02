@@ -34,18 +34,19 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	private static final String SELECT_DATA_INFO = String.join(" ",
 			"SELECT pii.PER_INFO_ITEM_DEFINITION_ID, pii.ITEM_CD, icm.ITEM_PARENT_CD, pii.ITEM_NAME, pim.REGULATION_ATR, pio.DISPORDER, pim.COLUMN_WIDTH, pii.REQUIRED_ATR",
 			"FROM [dbo].[PPEMT_PER_INFO_ITEM] pii",
-			"INNER JOIN [dbo].[PPEMT_PER_INFO_ITEM_CM] icm",
-			"ON icm.ITEM_CD = pii.ITEM_CD",
-			"LEFT JOIN [dbo].[PPEMT_PER_INFO_CTG] ctg", "ON pii.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID  AND icm.CATEGORY_CD = ctg.CATEGORY_CD",
-			"LEFT JOIN [dbo].[PPEMT_PER_INFO_CTG_CM] ctm",
+			"INNER JOIN [dbo].[PPEMT_PER_INFO_CTG] ctg", "ON pii.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID",
+			"INNER  JOIN [dbo].[PPEMT_PER_INFO_CTG_CM] ctm",
 			"ON ctg.CATEGORY_CD = ctm.CATEGORY_CD AND ctg.CID = ?",
+			"INNER JOIN [dbo].[PPEMT_PER_INFO_ITEM_CM] icm",
+			"ON icm.CATEGORY_CD = ctg.CATEGORY_CD AND icm.ITEM_CD = pii.ITEM_CD",
+			"INNER JOIN [dbo].[PPEMT_PER_INFO_ITEM_ORDER] pio",
+			"ON pio.PER_INFO_CTG_ID = pii.PER_INFO_CTG_ID",
+			"AND pio.PER_INFO_ITEM_DEFINITION_ID = pii.PER_INFO_ITEM_DEFINITION_ID",
 			"LEFT JOIN [dbo].[PPEST_PERSON_INFO_MATRIX] pim",
 			"ON pii.PER_INFO_ITEM_DEFINITION_ID = pim.PERSON_INFO_ITEM_ID",
 			"AND pii.PER_INFO_CTG_ID = pim.PERSON_INFO_CATEGORY_ID",
-			"LEFT JOIN [dbo].[PPEMT_PER_INFO_ITEM_ORDER] pio",
-			"ON pio.PER_INFO_CTG_ID = pii.PER_INFO_CTG_ID",
-			"AND pio.PER_INFO_ITEM_DEFINITION_ID = pii.PER_INFO_ITEM_DEFINITION_ID", "WHERE pii.PER_INFO_CTG_ID = ?",
-			"AND pii.ABOLITION_ATR = 0");
+			"WHERE pii.PER_INFO_CTG_ID = ?",
+			"AND pii.ABOLITION_ATR = 0");	
 
 	@Override
 	public Optional<PersonInfoMatrixItem> findbyKey(String pInfoCategoryID, String pInfoDefiID) {
