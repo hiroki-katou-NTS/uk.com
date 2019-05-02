@@ -17506,6 +17506,7 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
+                        var DATA_CHANGE_EVENT_STATUS = "change-event-status";
                         var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -17532,6 +17533,11 @@ var nts;
                             }
                         });
                         $input.on(valueUpdate, function (e) {
+                            if ($input.data(DATA_CHANGE_EVENT_STATUS) === "doing") {
+                                return;
+                            }
+                            $input.data(DATA_CHANGE_EVENT_STATUS, "doing");
+                            _.defer(function () { return $input.data(DATA_CHANGE_EVENT_STATUS, "done"); });
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
                             var result = validator.validate(newText);
@@ -17567,6 +17573,14 @@ var nts;
                                 if (result.isValid) {
                                     $input.ntsError('clearKibanError');
                                     $input.val(formatter.format(result.parsedValue));
+                                    /**
+                                     On window-8.1 with IE browser, the 'change' event is not called automatically.
+                                     So, we trigger it manually when the 'value' isn't equals the result.parsedValue.
+                                     See more information at 106538
+                                    */
+                                    if (value() != result.parsedValue) {
+                                        $input.trigger(valueUpdate);
+                                    }
                                 }
                                 else {
                                     var error = $input.ntsError('getError');
@@ -19160,8 +19174,20 @@ var nts;
                         });
                         if (!isEqual) {
                             var clickCheckBox = false;
-                            if (!nts.uk.util.isNullOrEmpty(data.value()) && data.value().length == sources.length) {
-                                if ($grid.igGridSelection('option', 'multipleSelection')) {
+                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
+                                var isSameSource_1 = true, sortedValue = _.sortBy(data.value()), sortedSource_1 = _.sortBy(sources, [optionsValue]);
+                                if (sortedValue.length === sortedSource_1.length) {
+                                    _.forEach(sortedValue, function (v, i) {
+                                        if (v !== sortedSource_1[i][optionsValue]) {
+                                            isSameSource_1 = false;
+                                            return false;
+                                        }
+                                    });
+                                }
+                                else {
+                                    isSameSource_1 = false;
+                                }
+                                if (isSameSource_1 && data.value().length == sources.length && $grid.igGridSelection('option', 'multipleSelection')) {
                                     var features = _.find($grid.igGrid("option", "features"), function (f) {
                                         return f.name === "RowSelectors";
                                     });
@@ -27566,6 +27592,9 @@ var nts;
                                         disabled = true;
                                         return;
                                     }
+                                    else if (s === color.ManualEditTarget || s === color.ManualEditOther) {
+                                        $.data($c, v.INIT_MAN_EDIT, s);
+                                    }
                                     if (!$c.classList.contains(s))
                                         $c.classList.add(s);
                                 });
@@ -34699,15 +34728,19 @@ var nts;
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             // for performance when select all
-                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.isEqual(selectedId, baseID)) {
+                            var baseID_1 = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                            if (_.isEqual(selectedId, baseID_1)) {
                                 var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
                                 if (chk.attr("data-chk") === "off") {
                                     chk.click();
                                 }
                             }
                             else {
-                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                                selectedId.forEach(function (id) {
+                                    if (_.includes(baseID_1, id)) {
+                                        $grid.igGridSelection('selectRowById', id);
+                                    }
+                                });
                             }
                         }
                         else {
@@ -35215,6 +35248,7 @@ var nts;
                         if (!value)
                             return;
                         var sources = $grid.igGrid("option", "dataSource");
+                        var optionsValue = $grid.igGrid("option", "primaryKey");
                         var multiple = $grid.igGridSelection('option', 'multipleSelection');
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, value, function (current, newVal) {
@@ -35223,8 +35257,19 @@ var nts;
                             }
                         });
                         if (!isEqual) {
-                            var clickCheckBox = false;
-                            if (value.length == sources.length) {
+                            var clickCheckBox = false, isSameSource_2 = true, sortedValue = _.sortBy(value), sortedSource_2 = _.sortBy(sources, [optionsValue]);
+                            if (sortedValue.length === sortedSource_2.length) {
+                                _.forEach(sortedValue, function (v, i) {
+                                    if (v !== sortedSource_2[i][optionsValue]) {
+                                        isSameSource_2 = false;
+                                        return false;
+                                    }
+                                });
+                            }
+                            else {
+                                isSameSource_2 = false;
+                            }
+                            if (isSameSource_2 && value.length == sources.length) {
                                 if (multiple) {
                                     var features = _.find($grid.igGrid("option", "features"), function (f) {
                                         return f.name === "RowSelectors";
@@ -44168,7 +44213,7 @@ var nts;
                                 optionsText: 'text',
                                 width: '60px',
                                 enable: data.enable,
-                                name: _.size(source) == 13 ? (ko.toJS(data.name) + "の月") : (ko.toJS(data.name) + "の日"),
+                                name: _.size(source) == 13 ? (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の月") : (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の日"),
                                 required: _.size(source) == 13 ? data.required : ko.computed(function () { return !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value); })
                             });
                         }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()), dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);

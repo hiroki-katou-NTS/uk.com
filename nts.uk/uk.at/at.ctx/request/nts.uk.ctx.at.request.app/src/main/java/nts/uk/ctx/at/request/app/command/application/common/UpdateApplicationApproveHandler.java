@@ -122,7 +122,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		}
 		// 4-1.詳細画面登録前の処理 lan nay deu bi hoan lai
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicantSID(),
-				GeneralDate.today(), 1,command.getApplicationID(), EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion());
+				GeneralDate.today(), 1,command.getApplicationID(), EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion(),null,null);
 		
 		//8-2.詳細画面承認後の処理
 		ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getApplicationID(), employeeID, memo, appReason, isUpdateReason);
