@@ -85,10 +85,10 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
                 ws1.getCells().get(tempRowIndex,4).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyLowerLimit()));
                 ws1.getCells().get(tempRowIndex,5).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyUpperLimit()));
 
-                ws1.getCells().get(tempRowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
-                ws1.getCells().get(tempRowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
-                ws1.getCells().get(tempRowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
-                ws1.getCells().get(tempRowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
+                ws1.getCells().get(tempRowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
 
                 this.putValue(ws1,tempRowIndex,flag,cusWelfarePensions);
 
@@ -105,10 +105,10 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
                 ws.getCells().get(rowIndex,4).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyLowerLimit()));
                 ws.getCells().get(rowIndex,5).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyUpperLimit()));
 
-                ws.getCells().get(rowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
-                ws.getCells().get(rowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
-                ws.getCells().get(rowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
-                ws.getCells().get(rowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium() == null ? "-" : new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
+                ws.getCells().get(rowIndex,6).putValue(cusWelfarePensions.getInMaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getInMaleInsurancePremium()));
+                ws.getCells().get(rowIndex,7).putValue(cusWelfarePensions.getInFemaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getInFemaleInsurancePremium()));
+                ws.getCells().get(rowIndex,8).putValue(cusWelfarePensions.getEmMaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getEmMaleInsurancePremium()));
+                ws.getCells().get(rowIndex,9).putValue(cusWelfarePensions.getEmFemaleInsurancePremium() == null ? null : new BigDecimal(cusWelfarePensions.getEmFemaleInsurancePremium()));
 
                 this.putValue(ws,rowIndex,flag,cusWelfarePensions);
 
@@ -125,13 +125,13 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
     }
 
     private void putValue(Worksheet ws, int rowIndex, boolean flag, CusWelfarePensionDto cusWelfarePensions){
-        if(flag == true || cusWelfarePensions.getInMaleExemptionInsurance() == null){
+        if(flag == true){
             ws.getCells().get(rowIndex,10).putValue("-");
             ws.getCells().get(rowIndex,11).putValue("-");
 
             ws.getCells().get(rowIndex,12).putValue("-");
             ws.getCells().get(rowIndex,13).putValue("-");
-        }else if(flag == false && cusWelfarePensions.getInMaleExemptionInsurance() != null){
+        }else {
             ws.getCells().get(rowIndex,10).putValue(cusWelfarePensions.getInMaleExemptionInsurance() == null ? null : new BigDecimal(cusWelfarePensions.getInMaleExemptionInsurance()));
             ws.getCells().get(rowIndex,11).putValue(cusWelfarePensions.getInFemaleExemptionInsurance() == null ? null : new BigDecimal(cusWelfarePensions.getInFemaleExemptionInsurance()));
 
