@@ -110,7 +110,7 @@ const DIRTY = 'dirty',
                                         let validation: IRule = $.get(validations, path, {});
 
                                         if (validation.constraint) {
-                                            let cstr: { [key: string]: any } = resp.data.filter((c) => c.name === validation.constraint)[0];
+                                            let cstr: { [key: string]: any } = self.toJS(resp.data.filter((c) => c.name === validation.constraint)[0]);
 
                                             if (cstr) {
                                                 ['path', 'name']

@@ -120,22 +120,22 @@ export class InputComponent extends Vue {
     public readonly picker: {
         has: boolean;
         show: boolean;
-        select: {[key: string]: any};
-        dataSources: {[key: string]: any[]};
-        options: {[key: string]: any};
-        onSelect: (value: {[key: string]: any}) => void;
+        select: { [key: string]: any };
+        dataSources: { [key: string]: any[] };
+        options: { [key: string]: any };
+        onSelect: (value: { [key: string]: any }) => void;
         onFinish: () => void;
         onRemove: () => void;
     } = {
-        has: false,
-        show: false,
-        select: {},
-        dataSources: {},
-        options: {},
-        onSelect(v) {},
-        onFinish() {},
-        onRemove() {}
-    };
+            has: false,
+            show: false,
+            select: {},
+            dataSources: {},
+            options: {},
+            onSelect(v) { },
+            onFinish() { },
+            onRemove() { }
+        };
 
     @Prop({ default: () => '' })
     public readonly name: string;
@@ -226,12 +226,15 @@ export class InputComponent extends Vue {
     @Watch('$parent.$errors', { deep: true })
     public wErrs(newErrs: any) {
         let self = this,
+            regex = new RegExp('\\[.+\\]\\.'),
+            props = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            props = (self.$vnode.componentOptions.propsData);
+            exprs2 = exprs.replace(regex, '.'),
+            exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
 
-        if (obj.has(self.$parent, exprs) && !obj.has(props, 'errors') &&
+        if (obj.has(self.$parent, exprs3) && !obj.has(props, 'errors') &&
             (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
-            Vue.set(self, '$errors', obj.get(newErrs, exprs));
+            Vue.set(self, '$errors', obj.get(newErrs, exprs2));
         }
     }
 
@@ -245,11 +248,14 @@ export class InputComponent extends Vue {
     @Watch('$parent.validations', { immediate: true, deep: true })
     public wConsts(newValidts: any) {
         let self = this,
+            regex = new RegExp('\\[.+\\]\\.'),
+            props = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            props = (self.$vnode.componentOptions.propsData);
+            exprs2 = exprs.replace(regex, '.'),
+            exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
 
-        if (obj.has(self.$parent, exprs) && !obj.has(props, 'constraint')) {
-            Vue.set(self, 'constraints', obj.get(newValidts, exprs));
+        if (obj.has(self.$parent, exprs3) && !obj.has(props, 'constraint')) {
+            Vue.set(self, 'constraints', obj.get(newValidts, exprs2));
         }
     }
 }

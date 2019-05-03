@@ -144,7 +144,7 @@ export function component(options: ComponentOptions<Vue>): any {
                     mounted() {
                         let cont = this.$el as HTMLElement,
                             types: string[] = ['text', 'number', 'tel', 'date', 'password'],
-                            inputs = cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`);
+                            inputs = cont.nodeType !== 8 ? cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`) : [];
 
                         [].slice.call(inputs)
                             .forEach((element: HTMLElement, index: number) => {
