@@ -23,7 +23,7 @@ import java.util.Locale;
 @Stateless
 public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenerator implements SalaryHealthInsurFileGenerator {
 
-    private static final String TEMPLATE_FILE_B = "report/TEMPLATE_QMM008_E.xlsx";
+    private static final String TEMPLATE_FILE_B = "QMM008_SMR_EHI.xlsx";
     private static final String REPORT_FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（健康保険）.pdf";
 
     @Inject

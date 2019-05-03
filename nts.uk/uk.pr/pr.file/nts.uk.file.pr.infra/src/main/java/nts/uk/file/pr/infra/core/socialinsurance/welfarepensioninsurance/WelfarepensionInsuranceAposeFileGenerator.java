@@ -21,7 +21,7 @@ import java.util.Locale;
 @Stateless
 public class WelfarepensionInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements WelfarepensionInsuranceFileGenerator {
 
-    private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_厚生年金保険料率一覧.xlsx";
+    private static final String TEMPLATE_FILE = "QMM008_EPI_RATE.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_厚生年金保険料率一覧_";
     private static final int ROW_IN_PAGE = 60;
