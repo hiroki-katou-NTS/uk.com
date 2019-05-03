@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Stateless
 public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator implements LaborInsuranceFileGenerator {
-    private static final String TEMPLATE_FILE = "QMM010.xlsx";
+    private static final String TEMPLATE_FILE = "report/QMM010.xlsx";
     private static final String FILE_NAME = "QMM010労働保険事業所の登録_";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final int NUM_ROW = 8;
