@@ -229,10 +229,9 @@ export class InputComponent extends Vue {
             regex = new RegExp('\\[.+\\]\\.'),
             props = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            exprs2 = exprs.replace(regex, '.'),
-            exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
+            exprs2 = exprs.replace(regex, `.$${self.$vnode.key}.`);
 
-        if (obj.has(self.$parent, exprs3) && !obj.has(props, 'errors') &&
+        if (obj.has(self.$parent, exprs2) && !obj.has(props, 'errors') &&
             (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
             Vue.set(self, '$errors', obj.get(newErrs, exprs2));
         }
