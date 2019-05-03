@@ -4,6 +4,7 @@ module nts.uk.pr.view.ccg007.d {
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
         import CheckChangePassDto = service.CheckChangePassDto;
+        import character = nts.uk.characteristics;
         export class ScreenModel {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -232,7 +233,17 @@ module nts.uk.pr.view.ccg007.d {
                             self.password("");
                         }
                     } else {
-                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
+                        if (self.isSignOn()) {
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml?signon=on");
+                        } else {
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
+                        }
+                        //set mode login
+                        character.remove("loginMode").done(function() {
+//                                loginMode: true - sign on
+//                                loginMode: false - normal
+                            character.save("loginMode", self.isSignOn());
+                        })
                         //Remove LoginInfo
                         nts.uk.characteristics.remove("form3LoginInfo").done(function() {
                             //check SaveLoginInfo
