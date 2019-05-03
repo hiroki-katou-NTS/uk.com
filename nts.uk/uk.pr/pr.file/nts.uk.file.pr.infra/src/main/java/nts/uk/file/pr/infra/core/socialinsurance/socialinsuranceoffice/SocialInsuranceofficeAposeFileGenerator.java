@@ -5,12 +5,10 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeFileGenerator;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.Objects;
 @Stateless
 public class SocialInsuranceofficeAposeFileGenerator extends AsposeCellsReportGenerator implements SocialInsuranceOfficeFileGenerator {
 
-    private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_社会保険事業所一覧.xlsx";
+    private static final String TEMPLATE_FILE = "report/QMM008_SOCIAL_INS_OFFICE.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_社会保険事業所一覧_";
     private static final int NUM_ROW = 9;

@@ -23,7 +23,7 @@ import java.util.Locale;
 @Stateless
 public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenerator implements SalaryHealthInsurFileGenerator {
 
-    private static final String TEMPLATE_FILE_B = "report/TEMPLATE_QMM008_E.xlsx";
+    private static final String TEMPLATE_FILE_B = "report/QMM008_SMR_EHI.xlsx";
     private static final String REPORT_FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（健康保険）.pdf";
 
     @Inject
@@ -76,15 +76,15 @@ public class SalaryHealthInsurAposeFileGenerator extends AsposeCellsReportGenera
                 cells.get(rowStart, COLUMN_START + 2).setValue(e.getRewardMonthlyLowerLimit());
                 cells.get(rowStart, COLUMN_START + 3).setValue(e.getRewardMonthlyUpperLimit());
                 //Insur
-                cells.get(rowStart, COLUMN_START + 4).setValue(new BigDecimal(e.getInHealthInsurancePremium()));
-                cells.get(rowStart, COLUMN_START + 5).setValue(new BigDecimal(e.getInNursingCare()));
-                cells.get(rowStart, COLUMN_START + 6).setValue(new BigDecimal(e.getInSpecInsurancePremium()));
-                cells.get(rowStart, COLUMN_START + 7).setValue(new BigDecimal(e.getInBasicInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 4).setValue(e.getInHealthInsurancePremium() == null ? "" : new BigDecimal(e.getInHealthInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 5).setValue(e.getInNursingCare()== null ? "": new BigDecimal(e.getInNursingCare()));
+                cells.get(rowStart, COLUMN_START + 6).setValue(e.getInSpecInsurancePremium()== null ? "" : new BigDecimal(e.getInSpecInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 7).setValue(e.getInBasicInsurancePremium()== null ? "" : new BigDecimal(e.getInBasicInsurancePremium()));
                 //Employee
-                cells.get(rowStart, COLUMN_START + 8).setValue(new BigDecimal(e.getEmHealthInsurancePremium()));
-                cells.get(rowStart, COLUMN_START + 9).setValue(new BigDecimal(e.getEmNursingCare()));
-                cells.get(rowStart, COLUMN_START + 10).setValue(new BigDecimal(e.getEmSpecInsurancePremium()));
-                cells.get(rowStart, COLUMN_START + 11).setValue(new BigDecimal(e.getEmBasicInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 8).setValue(e.getEmHealthInsurancePremium()== null ? "" : new BigDecimal(e.getEmHealthInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 9).setValue(e.getEmNursingCare()== null ? "" : new BigDecimal(e.getEmNursingCare()));
+                cells.get(rowStart, COLUMN_START + 10).setValue(e.getEmSpecInsurancePremium()== null? "" : new BigDecimal(e.getEmSpecInsurancePremium()));
+                cells.get(rowStart, COLUMN_START + 11).setValue(e.getEmBasicInsurancePremium()== null ? "" : new BigDecimal(e.getEmBasicInsurancePremium()));
 
                 rowStart++;
             }

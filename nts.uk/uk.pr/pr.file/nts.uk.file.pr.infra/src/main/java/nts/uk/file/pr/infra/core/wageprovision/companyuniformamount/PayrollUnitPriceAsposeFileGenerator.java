@@ -19,7 +19,7 @@ import java.util.Locale;
 public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenerator implements PayrollUnitPriceFileGenerator{
 
 
-    private static final String TEMPLATE_FILE = "report/QMM007会社一律金額の登録.xlsx";
+    private static final String TEMPLATE_FILE = "report/QMM007.xlsx";
 
     private static final String REPORT_FILE_NAME = "QMM007会社一律金額の登録.pdf";
 
