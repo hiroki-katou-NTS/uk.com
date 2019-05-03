@@ -4,12 +4,10 @@ import { dom, browser } from '@app/utils';
 import { component, Watch } from '@app/core/component';
 
 // tslint:disable-next-line: variable-name
-const _SideMenu = new Vue({
-    data: {
-        show: false,
-        items: [],
-        visible: true
-    }
+const _SideMenu = Vue.observable({
+    show: false,
+    items: [],
+    visible: true
 }), SideMenu = {
     get show() {
         return _SideMenu.show;

@@ -4,12 +4,10 @@ import { LanguageBar } from '@app/plugins';
 import { component, Watch } from '@app/core/component';
 
 // tslint:disable-next-line: variable-name
-const _NavMenu = new Vue({
-    data: {
-        show: false,
-        items: [],
-        visible: true
-    }
+const _NavMenu = Vue.observable({
+    show: false,
+    items: [],
+    visible: true
 }), NavMenu = {
     get show() {
         return _NavMenu.show;
