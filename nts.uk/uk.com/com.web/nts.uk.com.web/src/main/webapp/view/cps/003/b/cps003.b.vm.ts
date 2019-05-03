@@ -35,7 +35,8 @@ module cps003.b.vm {
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
-                alertError({ messageId: "Msg_722" });   
+                alertError({ messageId: "Msg_722" });  
+                return; 
             }
             block.invisible();
             service.checkColums(params).done(data =>{
