@@ -22,16 +22,18 @@ import { component } from '@app/core/component';
             },
             password: {
                 required: true,
-                constraint: 'SampleStringAnyHalf'
+                constraint: 'SampleStringKana'
             },
             items: {
                 name: {
                     loop: true,
-                    required: true
+                    required: true,
+                    constraint: 'SampleStringKana'
                 },
                 age: {
                     loop: true,
-                    required: true
+                    required: true,
+                    constraint: 'SampleStringAnyHalf'
                 }
             }
         }
@@ -67,15 +69,20 @@ export class DocumentsPluginsValidationComponent extends Vue {
             username: 500,
             password: 'password',
             items: [{
-                name: 'a'
+                name: 'a',
+                age: 100
             }, {
-                name: 'b'
+                name: 'b',
+                age: 100
             }, {
-                name: 'c'
+                name: 'c',
+                age: 100
             }, {
-                name: 'd'
+                name: 'd',
+                age: 100
             }, {
-                name: 'e'
+                name: 'e',
+                age: 100
             }]
         };
 

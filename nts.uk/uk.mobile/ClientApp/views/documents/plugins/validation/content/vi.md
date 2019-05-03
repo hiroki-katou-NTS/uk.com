@@ -90,3 +90,5 @@ Validator | type/params | Giải thích
 test | `Regex` \| `Function` | `Custom validator` xử lý `validate` được chỉ định bởi developer của `model`. Nếu kết quả `validator` trả về là `false` thì sẽ gắn `message` vào `model`.
 message | `string` | Message hoặc MessageId được gắn vào model khi có lỗi xảy ra (không thoả mãn yêu cầu `test`).
 
+##### 3.x Loop
+> **Chú ý**: Hệ thống hỗ trợ validate cho một mảng các đối tượng (mảng 1 chiều) để hỗ trợ validate cho mảng, ta thêm đặt: `loop: true` vào rule cần loop. Chi tiết xem sample.
