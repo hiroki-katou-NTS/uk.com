@@ -14,17 +14,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Stateless
 public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
         implements SalaryPerUnitFileGenerator {
 
-    private static final String TEMPLATE_FILE = "report/QMM013.xlsx";
+    private static final String TEMPLATE_FILE = "QMM013.xlsx";
 
     private static final String REPORT_FILE_NAME = "QMM013単価名の登録.pdf";
 

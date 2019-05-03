@@ -21,7 +21,7 @@ import java.util.Optional;
 @Stateless
 public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator implements SalaryHealthFileGenerator {
 
-    private static final String TEMPLATE_FILE = "report/QMM008社会保険事業所の登録_標準報酬月額表（厚生年金).xlsx";
+    private static final String TEMPLATE_FILE = "QMM008_SMR_EPI.xlsx";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（厚生年金)";
     private static final int MAX_LINE = 62;
     private static final double MAX_PAGE = 2;
