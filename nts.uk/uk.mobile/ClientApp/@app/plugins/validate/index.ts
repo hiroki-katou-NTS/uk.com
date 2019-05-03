@@ -163,12 +163,11 @@ const DIRTY = 'dirty',
                     let self: Vue = this;
 
                     // clean error when change validation
-                    self.$watch(() => self.validations, (validations) => {
+                    self.$watch('validations', (validations: any) => {
                         validations = Vue.toJS(validations);
 
                         // update error object
                         let $paths = paths(validations),
-                            errors = Vue.toJS(self.$errors),
                             $validators: {
                                 [key: number]: {
                                     path: string;
@@ -183,9 +182,9 @@ const DIRTY = 'dirty',
                             unwatch: () => void;
                         }) => {
                             validtor.unwatch();
-                        });
 
-                        $validators = {};
+                            delete $validators[k];
+                        });
 
                         // for loop model
                         $paths.forEach((path: string) => {
@@ -229,14 +228,11 @@ const DIRTY = 'dirty',
                         });
 
                         $paths.forEach((path: string, idx: number) => {
-                            $.merge(errors, $.set({}, path, {}));
-
                             let $rule = $.get(Vue.toJS(self.validations), path, {}),
-                                $watch = (path: string) => {
-
+                                $watch = (path: string, path2: string, idx: number) => {
                                     let watch = function (value: any) {
                                         let errors = Vue.toJS(self.$errors),
-                                            models = $.get(errors, path),
+                                            models = $.get(errors, path2),
                                             rule = $.get(Vue.toJS(self.validations), path, {}),
                                             msgkey = $.keys(models)[0];
 
@@ -326,17 +322,16 @@ const DIRTY = 'dirty',
 
                                     // add new watchers
                                     $validators[idx] = {
-                                        path,
                                         watch,
-                                        unwatch: self.$watch(path, watch)
+                                        path: path2,
+                                        unwatch: self.$watch(path2, watch)
                                     };
                                 };
 
                             if (!$rule.loop) {
-                                $watch(path);
+                                $watch(path, path, (idx + 1) * 100000000);
                             } else {
                                 // loop item
-
                                 let lid = path.lastIndexOf('.'),
                                     $lp1 = path.substring(0, lid),
                                     $lp2 = path.substring(lid + 1),
@@ -344,13 +339,12 @@ const DIRTY = 'dirty',
 
                                 if ($.isArray($loopModel)) {
                                     $loopModel.forEach((v: any, k: number) => {
-                                        $watch(`${$lp1}.$${k}.${$lp2}`);
+                                        $watch(path, `${$lp1}.$${k}.${$lp2}`, ((idx + 1) * 100000000) + k);
                                     });
                                 }
                             }
                         });
 
-                        vue.set(self, '$errors', Vue.toJS(errors));
                         vue.set(self, '$validators', Vue.toJS($validators));
                     }, { deep: true });
 
