@@ -239,7 +239,11 @@ const $ = {
             return [].slice.call(object).map((v: any, i: number) => Number(i));
         }
 
-        return Object.keys(object);
+        if ($.isObject(object)) {
+            return Object.keys(object);
+        }
+
+        return [];
     },
     values(object: Array<any> | string | any | Function): any[] {
         if (object instanceof Function) {
