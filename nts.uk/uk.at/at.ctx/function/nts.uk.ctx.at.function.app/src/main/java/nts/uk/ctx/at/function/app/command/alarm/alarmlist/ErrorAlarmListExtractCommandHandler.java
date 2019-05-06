@@ -189,6 +189,19 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 			return GeneralDate.today();
 			//return null;
 		}
+		String[] parts1 = date.split("～");
+		if(parts1.length == 2) {
+			String[] parts = parts1[0].split("/");
+			if (parts.length == 2) {
+				return GeneralDate.localDate(LocalDate.parse(parts1[0].trim(), new DateTimeFormatterBuilder()
+															                    .appendPattern(ErAlConstant.YM_FORMAT)
+															                    .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+															                    .toFormatter()));
+			} else if (parts.length == 3) {
+				return GeneralDate.fromString(parts1[0].trim(), ErAlConstant.DATE_FORMAT);
+			}
+			return null;
+		}
 		String[] parts = date.split("/");
 		if (parts.length == 2) {
 			return GeneralDate.localDate(LocalDate.parse(date.trim(), new DateTimeFormatterBuilder()
