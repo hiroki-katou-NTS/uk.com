@@ -92,10 +92,18 @@ const DIRTY = 'dirty',
                     // valid flag for check all validate item in view model
                     Object.defineProperty(self, '$valid', {
                         get() {
-                            let $errors = self.toJS(self.$errors),
+                            let rulePath = [],
+                                $errors = self.toJS(self.$errors),
+                                $erPaths = $.pathsOfObject($errors).sort(),
                                 $isValid = (p: string) => !$.size($.get($errors, p));
 
-                            return !paths(Vue.toJS(self.validations)).map($isValid).filter((f) => !f).length;
+                            $erPaths.forEach((p: string, i: number) => {
+                                if (!$erPaths[i + 1] || $erPaths[i + 1].indexOf(p) === -1) {
+                                    rulePath.push(p);
+                                }
+                            });
+
+                            return !rulePath.map($isValid).filter((f) => !f).length;
                         }
                     });
 
