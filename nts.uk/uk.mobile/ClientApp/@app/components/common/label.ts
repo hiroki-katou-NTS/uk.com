@@ -5,7 +5,7 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div class="control-label control-label-block mb-1"
-    v-bind:class="{ 'control-label-danger': constraint.required }">
+    v-bind:class="{ 'control-label-required': constraint.required }">
         <span><slot /></span>
         <template v-if="primitive"><span>{{primitive}}</span></template>
         <template v-else />
