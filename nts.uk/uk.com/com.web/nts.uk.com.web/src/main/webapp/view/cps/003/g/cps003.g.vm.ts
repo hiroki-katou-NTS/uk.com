@@ -50,9 +50,7 @@ module cps003.g.vm {
             _.each(dataGroup, c => {
                 let em = { employeeId: c[0].employeeId, employeeCd: c[0].empCd, employeeName: c[0].empName, order: c[0].no, errorLst: [] };
                 _.each(c, i => {
-
-                    
-                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType }:
+                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType };
                         em.errorLst.push(item);
                 });
                 result.push(em);
@@ -62,6 +60,8 @@ module cps003.g.vm {
             nts.uk.request.exportFile('com', '/person/matrix/report/print/error', itemErrorLst).done(data => { console.log(data); }).fail((mes) => {
             });
         }
+    
+    }
 
          export interface PersonMatrixErrorDataSource {
              isDisplayE1_006: boolean;
@@ -81,10 +81,5 @@ module cps003.g.vm {
              errorType: number;
              message: string;
          }
-    
-
-    
-    
-    }
 
 }
