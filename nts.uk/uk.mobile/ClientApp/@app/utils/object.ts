@@ -13,6 +13,10 @@ const $ = {
             object = object.apply();
         }
 
+        if (object === null || object === undefined) {
+            return 0;
+        }
+
         if (typeof object === 'string') {
             return object.length;
         }

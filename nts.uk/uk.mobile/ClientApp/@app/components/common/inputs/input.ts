@@ -253,7 +253,7 @@ export class InputComponent extends Vue {
             exprs2 = exprs.replace(regex, '.'),
             exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
 
-        if (obj.has(self.$parent, exprs3) && !obj.has(props, 'constraint')) {
+        if ((obj.has(self.$parent, exprs3) || (regex.test(exprs) && obj.get(newValidts, exprs2))) && !obj.has(props, 'constraint')) {
             Vue.set(self, 'constraints', obj.get(newValidts, exprs2));
         }
     }
