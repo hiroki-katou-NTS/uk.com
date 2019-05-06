@@ -122,7 +122,7 @@ declare module "vue/types/vue" {
             required?: boolean;
             onSelect?: (selects: { [key: string]: any }, pkr: { dataSources: { [key: string]: any[] } }) => void;
         }): Promise<{}>;
-        $valid: boolean;
+        readonly $valid: boolean;
         $errors: {
             [name: string]: {
                 [rule: string]: string;
