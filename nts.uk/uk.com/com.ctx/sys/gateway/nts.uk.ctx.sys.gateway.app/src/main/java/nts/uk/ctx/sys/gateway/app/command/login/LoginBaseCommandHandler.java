@@ -408,7 +408,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param oldPassword
 	 * @return
 	 */
-	public CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword) {
+	public CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword, boolean signon) {
+		if(signon){
+			return new CheckChangePassDto(false, null, false);
+		}
 		//ドメインモデル「ユーザ．パスワード状態」をチェックする
 		if(user.getPassStatus() == PassStatus.Reset.value){//「リセット」の場合(reset)
 			//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する

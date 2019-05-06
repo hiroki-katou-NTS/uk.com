@@ -240,7 +240,7 @@ public class UrlWebService {
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		//アルゴリズム「ログイン後チェック」を実行する
-		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(),urlAccApprovalOutput.getUserImport().getPassword());
+		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(), urlAccApprovalOutput.getUserImport().getPassword(), false);
 		changPw.setSuccessMsg(systemSuspendOutput.getMsgContent());
 		return changPw;
 	}
