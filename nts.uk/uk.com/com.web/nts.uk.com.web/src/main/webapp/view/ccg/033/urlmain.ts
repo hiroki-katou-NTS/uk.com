@@ -76,6 +76,8 @@ function openDialogCCG007E(success) {
 function routeData(success){
     switch(success.programID){
         case "ccg007": {
+            let path = window.location.href;
+            let urlID = _.split(path, '=')[1];
             // forgot password screen
             nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml?id="+urlID);
             break;
