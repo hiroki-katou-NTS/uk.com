@@ -121,7 +121,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				.getSaveProtection(Integer.valueOf(tableList.getCategoryId()), tableList.getTableNo());
 		boolean saveProtectionByEmpCode = false;
 		String couplePidItemName = "";
-		if (!listSaveProtetion.isEmpty()) {
+		if (tableList.getSurveyPreservation() == NotUseAtr.USE && !listSaveProtetion.isEmpty()) {
 			for (SaveProtetion saveProtetion : listSaveProtetion) {
 				String rePlaceCol = saveProtetion.getReplaceColumn().trim();
 				String pidCol     = saveProtetion.getCouplePidItemName().trim();
