@@ -9,8 +9,7 @@
             <div>{{item.remark}}</div>
         </li>
     </ul>
-    <div class="modal-footer text-center">
-        <button class="btn btn-primary" v-on:click="pushData()">{{ 'choose' | i18n }}</button>
-        <button class="btn btn-secondary btn-sm" v-on:click="$close()">{{ 'cancel' | i18n }}</button>
+    <div class="bg-primary fixed-bottom p-1 pl-3 pr-3 text-center">
+        <button class="btn btn-secondary btn-block" v-on:click="$close()">{{ '戻る' | i18n }}</button>
     </div>
 </div>

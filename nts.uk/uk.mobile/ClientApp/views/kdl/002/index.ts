@@ -2,7 +2,8 @@ import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
-import { WorkTypeComponent, worktypes } from '../../components/kdl';
+import { WorkTypeComponent} from '../../components/kdl';
+import { worktypes } from './mockdata';
 
 @component({
     route: '/kdl/002',
@@ -20,14 +21,23 @@ export class KDL002Component extends Vue {
 
     public listItems: Array<IWorkType> = worktypes().filter((w: any, i: number) => i <= 11);
 
+    public selectedWorkType = {};
+
+    public selectedWorkTime = {};
+
     public chooseWorkType(item: IWorkType) {
         if (item) {
-            this.$modal('worktype', item)
+
+            this.selectedWorkType = item;
+
+            this.$modal('worktype')
                 .then((v: any) => {
                     if (v) {
-                        item.code = v.code;
-                        item.name = v.name;
-                        item.remark = v.remark;
+                        this.selectedWorkTime = {
+                            code: v.code,
+                            name: v.name,
+                            remark: v.remark
+                        };
                     }
                 });
         }
@@ -35,6 +45,12 @@ export class KDL002Component extends Vue {
 }
 
 interface IWorkType {
+    code: string;
+    name: string;
+    remark?: string;
+}
+
+interface IWorkTime {
     code: string;
     name: string;
     remark?: string;

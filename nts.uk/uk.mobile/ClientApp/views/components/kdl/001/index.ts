@@ -28,9 +28,7 @@ export class WorkTypeComponent extends Vue {
         this.objsct.code = item.code;
         this.objsct.name = item.name;
         this.objsct.remark = item.remark;
-    }
-
-    public pushData() {
         this.$close(obj.toJS(this.objsct));
     }
+
 }
