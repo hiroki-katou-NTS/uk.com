@@ -24,7 +24,6 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
     private static final String TEMPLATE_FILE = "report/QMM008_SMR_EPI.xlsx";
     private static final String FILE_NAME = "QMM008社会保険事業所の登録_標準報酬月額表（厚生年金)";
     private static final int MAX_LINE = 62;
-    private static final double MAX_PAGE = 2;
     @Override
     public void generate(FileGeneratorContext generatorContext, SalaryHealthExportData exportData,List<CusWelfarePensionStandardDto> list, String socialInsuranceCode, String socialInsuranceName) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
@@ -73,13 +72,13 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
         ws1.getCells().get(0,3).putValue(socialInsuranceCode);
         ws1.getCells().get(0,5).putValue(socialInsuranceName);
 
-        if( Math.ceil((float)list.size()/(float)MAX_LINE) < MAX_PAGE){
+        if( list.size() < MAX_LINE){
             wsc.removeAt(1);
         }
 
         for (CusWelfarePensionDto cusWelfarePensions : exportData.getResponseWelfarePension().getCusWelfarePensions()) {
             if(rowIndex >= 67){
-                tempRowIndex = rowIndex - 62;
+                tempRowIndex = rowIndex - MAX_LINE;
                 ws1.getCells().get(tempRowIndex,2).putValue(new BigDecimal(cusWelfarePensions.getWelfarePensionGrade()));
                 ws1.getCells().get(tempRowIndex,3).putValue(new BigDecimal(cusWelfarePensions.getStandardMonthlyFee()));
                 ws1.getCells().get(tempRowIndex,4).putValue(new BigDecimal(cusWelfarePensions.getRewardMonthlyLowerLimit()));
