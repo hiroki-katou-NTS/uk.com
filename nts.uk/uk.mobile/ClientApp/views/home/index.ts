@@ -133,7 +133,7 @@ export class HomeComponent extends Vue {
     }
 
     public created() {
-        for (let i = 1900; i <= 2099; i++) {
+        for (let i = 1990; i <= 2099; i++) {
             this.years.push(i);
             this.dataSources.year.push({ text: `${i}年`, value: i });
         }

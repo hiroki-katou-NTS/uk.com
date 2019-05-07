@@ -7,13 +7,13 @@ interface IRange {
 }
 
 @component({
-    template: `<div class="datepicker-col" v-on:touchmove="preventScroll">
-        <div class="datepicker-viewport"
+    template: `<div class="ipkr-col" v-on:touchmove="preventScroll">
+        <div class="ipkr-viewport"
                 v-on:touchstart="gearTouchStart"
                 v-on:touchmove="gearTouchMove"
                 v-on:touchend="gearTouchEnd">
-            <div class="datepicker-wheel">
-                <ul class="datepicker-scroll" v-bind:style="{
+            <div class="ipkr-wheel">
+                <ul class="ipkr-scroll" v-bind:style="{
                     'transform': transform,
                     'margin-top': marginTop
                 }">
@@ -220,7 +220,8 @@ export class InfinityPickerComponent extends Vue {
     private roleGear(gear: number) {
         let self = this,
             d: number = 0,
-            range: IRange = self.range;
+            range: IRange = self.range,
+            position: IRange = self.position;
 
         clearInterval(self.interval);
 
@@ -229,7 +230,7 @@ export class InfinityPickerComponent extends Vue {
 
             range.new += speed;
 
-            if (speed > -1 && speed < 1) {
+            if (Math.abs(speed) < 1) {
                 clearInterval(self.interval);
 
                 let index = self.$nindex,
@@ -257,14 +258,20 @@ export class InfinityPickerComponent extends Vue {
 
     public created() {
         let self = this,
-            range: IRange = self.range;
-
-        console.log(self.optionValue, self.optionText);
+            time: IRange = self.time,
+            range: IRange = self.range,
+            position: IRange = self.position;
 
         // reset position of gear
         self.$on('input', () => {
+            time.new = 0;
+            time.old = 0;
+
             range.new = 0;
             range.old = 0;
+
+            position.new = 0;
+            position.old = 0;
         });
     }
 }

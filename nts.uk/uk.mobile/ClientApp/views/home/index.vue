@@ -12,17 +12,50 @@
       v-on:input="() => {}"
     />
 
-    <div class="datepicker ios">
-      <div class="datepicker-navbar">
-        <a class="datepicker-navbar-btn">完成</a>
-        <a class="datepicker-navbar-btn">取消</a>
+    <div class="infinity-picker android centered">
+      <div class="ipkr-caption">
+        <div class="ipkr-caption-item">{{'04:05'}}</div>
       </div>
-      <div class="datepicker-content">
+      <div class="ipkr-content">
         <ipkr
+          option-text="text"
+          option-value="value"
           v-model="selecteds.year"
-          v-bind:data-sources="years"
+          v-bind:data-sources="dataSources.year"
           v-on:test="viewPortClicked"
         />
+        <ipkr
+          option-text="text"
+          option-value="value"
+          v-model="selecteds.month"
+          v-bind:data-sources="dataSources.month"
+          v-on:test="viewPortClicked"
+        />
+        <ipkr
+          option-text="text"
+          option-value="value"
+          v-model="selecteds.day"
+          v-bind:data-sources="dataSources.day"
+          v-on:test="viewPortClicked"
+        />
+        <ipkr
+          option-text="text"
+          option-value="value"
+          v-model="selecteds.day"
+          v-bind:data-sources="dataSources.day"
+          v-on:test="viewPortClicked"
+        />
+        <ipkr
+          option-text="text"
+          option-value="value"
+          v-model="selecteds.day"
+          v-bind:data-sources="dataSources.day"
+          v-on:test="viewPortClicked"
+        />
+      </div>
+      <div class="ipkr-navbar">
+        <a class="ipkr-navbar-btn">Cancel</a>
+        <a class="ipkr-navbar-btn">Accept</a>
       </div>
     </div>
   </div>
