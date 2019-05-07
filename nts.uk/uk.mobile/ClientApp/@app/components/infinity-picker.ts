@@ -1,14 +1,12 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 
-import { browser } from '@app/utils';
-
 @component({
     template: `<div class="datepicker-col" v-on:touchmove="preventScroll">
         <div class="datepicker-viewport"
-                v-on:touchstart="startScroll"
-                v-on:touchmove="onScroll"
-                v-on:touchend="endScroll">
+                v-on:touchstart="gearTouchStart"
+                v-on:touchmove="gearTouchMove"
+                v-on:touchend="gearTouchEnd">
             <div class="datepicker-wheel">
                 <ul class="datepicker-scroll" v-bind:style="{
                     'transform': transform,
@@ -21,19 +19,27 @@ import { browser } from '@app/utils';
     </div>`
 })
 export class InfinityPickerComponent extends Vue {
-    private up: boolean = false;
-
-    private timeout: number = 0;
+    private speed: number = 0;
     private interval: number = 0;
+
+    private time: {
+        old: number;
+        new: number;
+    } = {
+            old: 0,
+            new: 0
+        };
+
+    private position: {
+        old: number;
+        new: number;
+    } = {
+            old: 0,
+            new: 0
+        };
 
     private move: number = 0;
     private start: number = 0;
-
-    private moveTime: number = 0;
-    private startTime: number = 0;
-
-    private start2: number = 0;
-    private startTime2: number = 0;
 
     @Prop({ default: () => undefined })
     private readonly value!: string | number;
@@ -152,160 +158,92 @@ export class InfinityPickerComponent extends Vue {
         return `translate3d(0px, ${this.move - this.start - 80}px, 0px)`;
     }
 
-    private resetScroll() {
-        this.move = 0;
-        this.start = 0;
+    public gearTouchStart(evt: TouchEvent) {
+        let self = this;
 
-        this.timeout = 0;
-
-        this.moveTime = 0;
-        this.startTime = 0;
-
-        this.start2 = 0;
-        this.startTime2 = 0;
-    }
-
-    public startScroll(evt: TouchEvent) {
         evt.preventDefault();
         evt.stopPropagation();
 
-        if (this.start === 0) {
-            this.startTime = new Date().getTime();
-            this.move = this.start = Math.floor(evt.changedTouches[0].clientY);
+        clearInterval(self.interval);
+
+        // if continue touch, emit current select item
+        if (self.value !== self.dataSources[self.$nindex]) {
+            self.$emit('input', self.dataSources[self.$nindex]);
+        }
+
+        self.time.old = new Date().getTime();
+        self.position.old = Math.floor(evt.changedTouches[0].clientY);
+
+        self.start = self.move = Math.floor(evt.changedTouches[0].clientY);
+    }
+
+    public gearTouchMove(evt: TouchEvent) {
+        let self = this;
+
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        self.time.new = new Date().getTime();
+        self.move = self.position.new = Math.floor(evt.changedTouches[0].clientY);
+
+        if (evt.targetTouches[0].screenY < 1) {
+            self.gearTouchEnd(evt);
+        }
+    }
+
+    public gearTouchEnd(evt: TouchEvent) {
+        let self = this;
+
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        let flag = (self.position.new - self.position.old) / (self.time.new - self.time.old);
+
+        if (Math.abs(flag) < 1) {
+            self.speed = 0;
+        } else if (Math.abs(flag) <= 2) {
+            self.speed = flag < 0 ? -20 : 20;
         } else {
-            this.startTime2 = new Date().getTime();
-            this.start2 = Math.floor(evt.changedTouches[0].clientY);
+            self.speed = flag < 0 ? -40 : 40;
         }
-    }
 
-    public onScroll(evt: TouchEvent) {
-        evt.preventDefault();
-        evt.stopPropagation();
-
-        let onTime: number = new Date().getTime(),
-            moving: number = Math.floor(evt.changedTouches[0].clientY);
-
-        if (this.timeout === 0 && onTime - this.startTime >= 200 && Math.abs(this.move - moving) > 2) {
-            this.move = moving;
-        }
-    }
-
-    public endScroll(evt: TouchEvent) {
-        evt.preventDefault();
-        evt.stopPropagation();
-
-        let self = this,
-            move = Math.floor(evt.changedTouches[0].clientY);
-
-        self.moveTime = new Date().getTime();
-
-        if (self.timeout === 0) {
-            let gear = self.roleGear,
-                time = self.moveTime - self.startTime;
-
-            if (time > (browser.ios ? 70 : 100) && Math.abs(self.start - move) >= 40) {
-                if (time < 200) {
-                    gear(move);
-                } else {
-                    self.move = move;
-
-                    self.$emit('input', self.dataSources[self.$nindex]);
-                }
-            }
+        if (self.dataSources.length >= 5) {
+            self.roleGear();
         } else {
-            let range: number = move - self.start2,
-                times: number = new Date().getTime() - self.startTime2,
-                steps: number = Math.round(Math.abs(range / times) * 100) / 100;
-
-            if (range < 5 && times <= (browser.ios ? 70 : 100)) {
-                self.$emit('input', self.dataSources[self.$nindex]);
-            } else if (times > (browser.ios ? 70 : 100) && times < 200 && Math.abs(range) >= 40) {
-                self.up = range < 0;
-
-                if (steps > 4) {
-                    self.timeout += 3200;
-                } else if (steps > 3) {
-                    self.timeout += 2800;
-                } else if (steps > 2) {
-                    self.timeout += 2200;
-                } else if (steps > 1) {
-                    self.timeout += 1200;
-                } else {
-                    self.timeout += 600;
-                }
-            }
+            self.$emit('input', self.dataSources[self.$nindex]);
         }
     }
 
-    private roleGear(move: number) {
+    private roleGear() {
         let self = this,
-            range: number = move - self.start,
-            times: number = self.moveTime - self.startTime,
-            steps: number = Math.round(Math.abs(range / times) * 100) / 100;
+            d: number = 0;
 
-        if (self.timeout == 0) {
-            self.up = range < 0;
+        clearInterval(self.interval);
 
-            clearInterval(self.interval);
+        self.interval = setInterval(() => {
+            let speed = Math.round(self.speed * Math.exp(-0.03 * d));
 
-            if (steps > 4) {
-                self.timeout = 3200;
-            } else if (steps > 3) {
-                self.timeout = 2800;
-            } else if (steps > 2) {
-                self.timeout = 2200;
-            } else if (steps > 1) {
-                self.timeout = 1200;
-            } else {
-                self.timeout = 600;
-            }
+            self.move += speed;
 
-            self.interval = setInterval(() => {
-                if (self.timeout > 3200) {
-                    self.timeout = 3200;
-                }
+            if (speed > -1 && speed < 1) {
+                clearInterval(self.interval);
 
-                if (self.timeout >= 800) {
-                    self.timeout -= 20;
-                    self.move += self.up ? -20 : 20;
-                } else if (self.timeout >= 680) {
-                    self.timeout -= 20;
-                    self.move += self.up ? -15 : 15;
-                } else if (self.timeout >= 500) {
-                    self.timeout -= 10;
-                    self.move += self.up ? -10 : 10;
-                } else if (self.timeout >= 460) {
-                    self.timeout -= 10;
-                    self.move += self.up ? -8 : 8;
-                } else if (self.timeout >= 300) {
-                    self.timeout -= 10;
-                    self.move += self.up ? -5 : 5;
-                } else if (self.timeout >= 120) {
-                    self.timeout -= 5;
-                    self.move += self.up ? -4 : 4;
-                } else {
-                    self.timeout -= 5;
-                    self.move += self.up ? -2 : 2;
-                }
+                let index = self.$nindex,
+                    steps = Math.abs(self.move - self.start) % 40;
 
-                if (self.timeout <= 0) {
-                    let index = self.$nindex;
-
-                    self.timeout = 0;
-                    clearInterval(self.interval);
-
-                    if (Math.abs(self.move - self.start) % 40 >= 20) {
-                        if (range < 0) {
-                            index = (index + 1) % self.dataSources.length;
-                        } else {
-                            index = (index - 1) % self.dataSources.length;
-                        }
+                if (steps >= 20) {
+                    if (self.move > self.start) {
+                        index--;
+                    } else {
+                        index++;
                     }
-
-                    self.$emit('input', self.dataSources[index]);
                 }
-            }, 30);
-        }
+
+                self.$emit('input', self.dataSources[index]);
+            }
+
+            d++;
+        }, 30);
     }
 
     public preventScroll(evt: TouchEvent) {
@@ -315,8 +253,11 @@ export class InfinityPickerComponent extends Vue {
 
     public created() {
         let self = this;
+
+        // reset position of gear
         self.$on('input', () => {
-            self.resetScroll.apply(self);
+            self.move = 0;
+            self.start = 0;
         });
     }
 }

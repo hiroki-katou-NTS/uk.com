@@ -175,7 +175,7 @@ export const MobilePicker = {
                 this.selects = {};
             });
         },
-        remove() {            
+        remove() {
             this.show = false;
             this.$emit('input', {});
             this.$emit('remove', {});
@@ -212,7 +212,7 @@ export const MobilePicker = {
             let top = target.getAttribute('top');
 
             clearInterval(target['int_' + target.id]);
-            target['o_t_' + target.id] = (new Date()).getTime();
+            target['o_t_' + target.id] = new Date().getTime();
             target['old_' + target.id] = evt.targetTouches[0].screenY;
 
             if (!top) {
@@ -220,8 +220,6 @@ export const MobilePicker = {
             } else {
                 target['o_d_' + target.id] = parseFloat(top.replace(/em/g, ''));
             }
-
-            target.style.webkitTransitionDuration = target.style.transitionDuration = '0ms';
         },
         gearTouchMove(evt: TouchEvent) {
             evt.preventDefault();
@@ -269,13 +267,11 @@ export const MobilePicker = {
             let flag = (target['new_' + target.id] - target['old_' + target.id]) / (target['n_t_' + target.id] - target['o_t_' + target.id]);
 
             if (Math.abs(flag) <= 0.2) {
-                target['spd_' + target.id] = (flag < 0 ? -0.08 : 0.08);
+                target['spd_' + target.id] = flag < 0 ? -0.08 : 0.08;
+            } else if (Math.abs(flag) <= 0.5) {
+                target['spd_' + target.id] = flag < 0 ? -0.16 : 0.16;
             } else {
-                if (Math.abs(flag) <= 0.5) {
-                    target['spd_' + target.id] = (flag < 0 ? -0.16 : 0.16);
-                } else {
-                    target['spd_' + target.id] = flag / 2;
-                }
+                target['spd_' + target.id] = flag / 2;
             }
 
             if (!target['pos_' + target.id]) {
@@ -289,11 +285,6 @@ export const MobilePicker = {
                 self = this,
                 stopGear = false;
 
-            function setDuration() {
-                stopGear = true;
-                target.style.webkitTransitionDuration = target.style.transitionDuration = '100ms';
-            }
-
             clearInterval(target['int_' + target.id]);
 
             target['int_' + target.id] = setInterval(function () {
@@ -304,18 +295,18 @@ export const MobilePicker = {
                 position += speed;
 
                 if (Math.abs(speed) <= 0.1) {
+                    stopGear = true;
                     position = Math.round(position / 2) * 2;
-                    setDuration();
                 }
 
                 if (position > 0) {
+                    stopGear = true;
                     position = 0;
-                    setDuration();
                 }
 
                 if (position < minTop) {
+                    stopGear = true;
                     position = minTop;
-                    setDuration();
                 }
 
                 if (stopGear) {
@@ -348,11 +339,5 @@ export const MobilePicker = {
             evt.stopImmediatePropagation();
         },
         destroyPicker() { }
-    },
-    created() {
-        // tslint:disable-next-line: no-string-literal
-        window['vue'] = Vue;
-        // tslint:disable-next-line: no-string-literal
-        window['pkr'] = this;
     }
 };
