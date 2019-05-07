@@ -43,7 +43,7 @@ public class SalaryPerUnitAsposeFileGenerator extends AsposeCellsReportGenerator
             // Company name
             String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
             PageSetup pageSetup = ws.getPageSetup();
-            pageSetup.setHeader(0, "&8&\"MS ゴシック\"" + companyName);
+            pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
 
             // Output item name
             pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "単価名の登録");
