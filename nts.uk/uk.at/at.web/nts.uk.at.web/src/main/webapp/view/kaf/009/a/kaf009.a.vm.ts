@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
@@ -296,6 +297,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
+            $("#inputdate").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) { return; }
 //            if(self.requireTypicalReason()&&self.requiredReason()){
 //                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())&&nts.uk.util.isNullOrEmpty($('#inpReasonTextarea').val())){
 //                    $("#combo-box").ntsError('set', '定型理由を入力してください');   
@@ -315,7 +318,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }
-            self.checkBeforeInsert();
+            self.confirmInconsistency();
 
         }
 
@@ -713,6 +716,29 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             } else {
                 return "";    
             }          
+        }
+        
+        confirmInconsistency(){
+            let self = this;
+            let command = self.getCommand();
+            service.confirmInconsistency(command).done((data1) => { 
+                if (!nts.uk.util.isNullOrEmpty(data1)) {
+                    dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {
+                        //登録処理を実行
+                        self.checkBeforeInsert();
+                    }).ifNo(() => {
+                        //終了状態：処理をキャンセル
+                        nts.uk.ui.block.clear();
+                        return;
+                    });
+                } else {
+                    //登録処理を実行
+                    self.checkBeforeInsert();
+                }   
+            }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });           
+            });    
         }
     }
 

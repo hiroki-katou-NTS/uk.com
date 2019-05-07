@@ -20,7 +20,7 @@ public interface ScheTimeReflect {
 	 * @return
 	 */
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
-			IntegrationOfDaily dailyInfor);
+			IntegrationOfDaily dailyInfor, boolean isPre);
 	
 	/**
 	 * 

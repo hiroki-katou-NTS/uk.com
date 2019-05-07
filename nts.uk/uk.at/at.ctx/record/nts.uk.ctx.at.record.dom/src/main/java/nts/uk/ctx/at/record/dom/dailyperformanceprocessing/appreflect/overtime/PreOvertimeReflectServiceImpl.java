@@ -95,9 +95,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
-			//申請理由の反映
-			updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
-					param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr());
+			
 			List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
@@ -200,7 +198,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(),
 					param.getOvertimePara().getFlexExessTime(), dailyInfor);
 		}
-		
+		//申請理由の反映
+		updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
+				param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr(), dailyInfor);
 		//日別実績の修正からの計算
 		//○日別実績を置き換える Replace daily performance	
 		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getDateInfo(), true);

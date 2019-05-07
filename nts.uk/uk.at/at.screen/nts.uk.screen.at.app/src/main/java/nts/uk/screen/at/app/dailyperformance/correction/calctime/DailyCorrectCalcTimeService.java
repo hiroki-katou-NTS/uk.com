@@ -48,7 +48,7 @@ public class DailyCorrectCalcTimeService {
 	private ValidatorDataDailyRes validatorDataDaily;
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits, Boolean changeSpr31,
-			Boolean changeSpr34) {
+			Boolean changeSpr34,  boolean notChangeCell) {
 
 		DCCalcTime calcTime = new DCCalcTime();
 
@@ -88,7 +88,7 @@ public class DailyCorrectCalcTimeService {
 		// ValueType.valueOf(itemEditCalc.getValueType()),
 		// itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
 
-		addEditState(dtoEdit, itemEdits);
+		if(!notChangeCell) addEditState(dtoEdit, itemEdits);
 
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
 				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
@@ -108,6 +108,7 @@ public class DailyCorrectCalcTimeService {
 
 		val dailyEditsResult = dailyEdits.stream().map(x -> {
 			if (equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)) {
+				resultBaseDto.getWorkInfo().setVersion(x.getWorkInfo().getVersion());
 				return resultBaseDto;
 			} else {
 				return x;

@@ -15,8 +15,6 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
-	private AfterScheTimeReflect afterScheTime;
-	@Inject
 	private CommonProcessCheckService commonService;
 	@Inject
 	private PreOvertimeReflectService preOvertime;
@@ -35,13 +33,8 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 		IntegrationOfDaily dailyInfor = preOvertime.calculateForAppReflect(para.getEmployeeId(), para.getDateData());
 		//予定勤種・就時の反映
 		boolean chkTimeTypeSche = timeTypeSche.reflectScheWorkTimeType(para, dailyInfor);
-		if(isPre) {
-			//予定時刻の反映
-			scheTimeReflect.reflectScheTime(para, chkTimeTypeSche, dailyInfor);
-		} else {
-			//予定時刻の反映
-			afterScheTime.reflectScheTime(para, chkTimeTypeSche, dailyInfor);
-		}
+		//予定時刻の反映
+		scheTimeReflect.reflectScheTime(para, chkTimeTypeSche, dailyInfor, isPre);
 		//勤種・就時の反映
 		boolean isRecord = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
 		//時刻の反映

@@ -6,7 +6,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
     export class ScreenModel {
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
-        switchDate: KnockoutObservable<boolean>;
+        switchDate: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
@@ -45,7 +45,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         constructor() {
             var self = this;
-            self.switchDate = ko.observable(true);      
+            self.switchDate = ko.observable(0);      
             self.currentMonth = ko.observable(new period("",""));
             self.nextMonth = ko.observable(new period("",""));
             self.txtDatePeriod = ko.observable("");
@@ -211,10 +211,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         private switchMonth():void{
             var self = this;
             var code = $(location).attr('search').split('=')[1];
+            self.switchDate(nts.uk.ui.windows.getShared('currentOrNextMonth'));
             if(isNaN(self.currentMonth().strMonth)){
                 return;    
             }
-            if(self.switchDate()){
+            if(self.switchDate()==0){
                 var strMonth = self.currentMonth().strMonth.getMonth()+1;
                 if(strMonth<10){
                      strMonth='0'+strMonth; 
@@ -222,7 +223,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 var strDay = self.currentMonth().strMonth.getDate();
                 if(strDay<10){
                      strDay='0'+strDay; 
-                } 
+                }
                 var endMonth = self.currentMonth().endMonth.getMonth()+1;
                 if(endMonth<10){
                      endMonth='0'+endMonth; 

@@ -280,7 +280,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			if(flexExessOtp.isPresent()){
 				targetFlex = true;
 			}
-			Time36AgreementTargetItem legalBreakTimes = new Time36AgreementTargetItem(new ArrayList<>(), breakFrNo, targetFlex);
+			List<Integer> uniqueLst = new ArrayList<>();
+			for(Integer legalBreakNo : breakFrNo){
+				if(targetItem.getBreakFrNo().isEmpty()||!targetItem.getBreakFrNo().contains(legalBreakNo)){
+					uniqueLst.add(legalBreakNo);
+				}
+			}
+			Time36AgreementTargetItem legalBreakTimes = new Time36AgreementTargetItem(new ArrayList<>(), uniqueLst, targetFlex);
 			statutoryInternalTime = this.calcBreakAppTime(appTimeItems, legalBreakTimes);
 		}
 		appUpperLimitTime = appTime + statutoryInternalTime;

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -53,14 +54,16 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	/*流動勤務設定*/
 	@Inject
 	private FlowWorkSettingRepository flowWorkSettingRepository;
+	@Inject
+	private CommonProcessCheckService commonService;
 	/*時差勤務設定*/
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
-			IntegrationOfDaily dailyInfor) {
+			IntegrationOfDaily dailyInfor, boolean isPre) {
 		//予定時刻反映できるかチェックする
-		if(!this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg())) {
+		if(!commonService.checkReflectScheWorkTimeType(para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg(), isPre, para.getGobackData().getWorkTimeCode())) {
 			return;
 		}
 		//(開始時刻)反映する時刻を求める
@@ -75,7 +78,13 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				ApplyTimeAtr.END, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
+		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(),
+				para.getDateData(),
+				startTimeReflect.getTimeOfDay(),
+				endTimeReflect.getTimeOfDay(),
+				1,
+				startTimeReflect.isReflectFlg(),
+				endTimeReflect.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1, dailyInfor);		
 		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 

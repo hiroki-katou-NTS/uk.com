@@ -122,7 +122,7 @@ public class TimeLeavingOfDailyService {
 						wts.getAttendanceTime() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
 						wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
 						wi.getYmd(), wi.getDayOfWeek(), wi.getScheduleTimeSheets()) ;
-				
+				clonedWI.setVersion(wi.getVersion());
 				correctedTlo = updateTimeLeave(companyId, clonedWI, tl, workCondition, wi.getEmployeeId(), wi.getYmd());
 			} else {
 				return EventHandleResult.withResult(EventHandleAction.ABORT, working);
@@ -175,8 +175,8 @@ public class TimeLeavingOfDailyService {
 		working.setAttendanceLeave(Optional.ofNullable(correctedTlo));
 
 		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(correctedTlo).convert(canbeCorrectedItem);
-		
-		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
+		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.getItemId()).collect(Collectors.toList());
+		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.getItemId()));
 		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		

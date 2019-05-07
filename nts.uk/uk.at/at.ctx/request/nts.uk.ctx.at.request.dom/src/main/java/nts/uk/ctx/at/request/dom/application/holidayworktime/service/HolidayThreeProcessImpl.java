@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -267,7 +270,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#preApplicationExceededCheck(java.lang.String, nts.arc.time.GeneralDate, nts.arc.time.GeneralDateTime, nts.uk.ctx.at.request.dom.application.PrePostAtr, int, java.util.List)
 	 */
 	@Override
-	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
+	public ColorConfirmResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
 			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs, String employeeID) {
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
@@ -277,14 +280,14 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		// チェック条件を確認
 		if (!this.confirmCheck(companyId, prePostAtr)) {
 			result.setErrorCode(0);
-			return result;
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate, inputDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			throw new BusinessException("Msg_1508",employeeName);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -292,7 +295,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			throw new BusinessException("Msg_1508",employeeName);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -303,8 +306,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				.filter(item -> item.getAttendanceType() == EnumAdaptor.valueOf(attendanceId, AttendanceType.class))
 				.collect(Collectors.toList());
 		if (beforeOvertimeInputs.isEmpty()) {
-			result.setErrorCode(0);
-			return result;
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 		}
 		// 残業時間１～１０、加給時間
 		// すべての残業枠をチェック
@@ -324,12 +326,12 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			if (afterTime.getApplicationTime()!= null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
 				Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyId), frameNo);
-				throw new BusinessException("Msg_424",employeeName, workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "",
-						"", String.valueOf(frameNo), String.valueOf(1));
+				return new ColorConfirmResult(true, 1, frameNo,
+						"Msg_424", Arrays.asList(employeeName, workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : ""), null);
 			}
 		}
 		result.setErrorCode(0);
-		return result;
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 	}
 	/**
 	 * チェック条件

@@ -59,6 +59,10 @@ module nts.uk.pr.view.ccg007.c {
             showChangePass: boolean;
             msgErrorId: string;
             showContract: boolean;
+            /**変更理由*/
+            changePassReason: string;
+            /**残り何日*/
+            spanDays: number;
         }
     }
 }

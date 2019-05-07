@@ -30,6 +30,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
 	private CommonProcessCheckService commonService;
+	
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
@@ -43,14 +44,17 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	}
 	@Override
 	public IntegrationOfDaily createIntegrationOfDailyStart(String employeeId, GeneralDate baseDate
-			, String workTimeCode, String workTypeCode, Integer startTime, Integer endTime) {
+			, String workTimeCode, String workTypeCode, Integer startTime, Integer endTime, boolean isPre) {
 		IntegrationOfDaily daily =overTimeService.calculateForAppReflect(employeeId, baseDate);
 		if(daily == null) {
 			return null;
 		}
-		AttendanceTimeOfDailyPerformance attendanceTime = AttendanceTimeOfDailyPerformance.allZeroValue(employeeId, baseDate);
-		daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime));
-		timeAndAnyItemUpService.addAndUpdate(daily);		
+        if(!daily.getAttendanceTimeOfDailyPerformance().isPresent()
+                || !daily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+			AttendanceTimeOfDailyPerformance attendanceTime = AttendanceTimeOfDailyPerformance.allZeroValue(employeeId, baseDate);
+			daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime));
+			timeAndAnyItemUpService.addAndUpdate(daily);
+		}				
 		return daily;
 	}
 	@Override
@@ -58,15 +62,17 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		IntegrationOfDaily daily = this.createIntegrationOfDailyStart(holidayWorkPara.getEmployeeId(), 
 				holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
 				holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), holidayWorkPara.getHolidayWorkPara().getStartTime(), 
-				holidayWorkPara.getHolidayWorkPara().getEndTime());
-		// 予定勤種・就時の反映
-		holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
-				holidayWorkPara.getBaseDate(), 
-				holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), 
-				holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-				holidayWorkPara.isScheReflectFlg(), isPre,
-				holidayWorkPara.getScheAndRecordSameChangeFlg(),
-				daily);
+				holidayWorkPara.getHolidayWorkPara().getEndTime(), isPre);
+		if(isPre) {
+			// 予定勤種・就時の反映
+			holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
+					holidayWorkPara.getBaseDate(), 
+					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), 
+					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
+					holidayWorkPara.isScheReflectFlg(), isPre,
+					holidayWorkPara.getScheAndRecordSameChangeFlg(),
+					daily);	
+		}		
 		//勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(holidayWorkPara.getEmployeeId(), 
 				holidayWorkPara.getBaseDate(), 
@@ -74,9 +80,6 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 				holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(),
 				false); 
 		workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, false, daily);
-		
-		//予定開始時刻の反映
-		//予定終了時刻の反映
 		TimeReflectPara timeData = new TimeReflectPara(holidayWorkPara.getEmployeeId(), 
 				holidayWorkPara.getBaseDate(), 
 				holidayWorkPara.getHolidayWorkPara().getStartTime(), 
@@ -84,22 +87,28 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 				1, 
 				true, 
 				true);
-		scheWork.updateScheStartEndTimeHoliday(timeData, daily);
+		if(isPre) {
+			//予定開始時刻の反映
+			//予定終了時刻の反映			
+			scheWork.updateScheStartEndTimeHoliday(timeData, daily);	
+		}		
 		//開始時刻と終了時刻の反映
 		if(holidayWorkPara.getHolidayWorkPara().getStartTime() != null
-				&& holidayWorkPara.getHolidayWorkPara().getEndTime() != null) {
+				&& holidayWorkPara.getHolidayWorkPara().getEndTime() != null
+				&& (isPre || (!isPre && holidayWorkPara.isRecordReflectTimeFlg()))) {
 			workUpdate.updateRecordStartEndTimeReflect(timeData, daily);
 		}
-		//事前休出時間の反映
-		holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), 
-				holidayWorkPara.getBaseDate(), 
-				holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame(),
-				daily);
+		//休出時間の反映
+		holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara, daily, isPre);
+		//休憩時間の反映
+		holidayWorkProcess.reflectBreakTimeFrame(holidayWorkPara, daily, isPre);
 		//事前所定外深夜時間の反映
-		workUpdate.updateTimeShiftNightHoliday(holidayWorkPara.getEmployeeId(),
-				holidayWorkPara.getBaseDate(), 
-				holidayWorkPara.getHolidayWorkPara().getNightTime(), 
-				true, daily);
+		if(isPre) {
+			workUpdate.updateTimeShiftNightHoliday(holidayWorkPara.getEmployeeId(),
+					holidayWorkPara.getBaseDate(), 
+					holidayWorkPara.getHolidayWorkPara().getNightTime(), 
+					true, daily);	
+		}		
 		List<IntegrationOfDaily> lstOutput =  commonService.lstIntegrationOfDaily(daily, holidayWorkPara.getEmployeeId(),
 				holidayWorkPara.getBaseDate(), false);
 		return lstOutput;

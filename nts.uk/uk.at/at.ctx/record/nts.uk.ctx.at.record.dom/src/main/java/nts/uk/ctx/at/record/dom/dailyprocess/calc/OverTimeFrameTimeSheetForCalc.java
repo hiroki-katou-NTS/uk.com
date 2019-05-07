@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,8 +29,6 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -41,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
@@ -51,7 +46,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
-//import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -65,7 +59,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-//import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -344,7 +338,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 																  commonSetting, 
 																  conditionItem, 
 																  predetermineTimeSetByPersonInfo, 
-																  Optional.of(new DeductLeaveEarly(0, 1)));
+																  Optional.of(new DeductLeaveEarly(0, 1)),
+																  NotUseAtr.NOT_USE);
 					
 		
         		}
@@ -374,23 +369,21 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 							  conditionItem,
 							  predetermineTimeSetByPersonInfo,coreTimeSetting
 							  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
-							  new DeductLeaveEarly(1, 0)
+							  new DeductLeaveEarly(1, 0),
+							  NotUseAtr.NOT_USE
 							).getWorkTime();
         		}
         	}
         	
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
         	
-        	/*ログ差し込み*/
-        	org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(OverTimeFrameTimeSheetForCalc.class);
-        	log.info("時間帯での法内への振替可能時間："+ ableRangeTime.valueAsMinutes()); 
-        	/*ログ差し込み*/
+
         	
         	HolidayCalculation holidayCalculation = commonSetting.isPresent()?commonSetting.get().getHolidayCalculation():new HolidayCalculation(nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.USE);
         	if(ableRangeTime.greaterThan(0) && autoCalculationSet.getLegalOtTime().getCalAtr().isCalculateEmbossing())
         	{
         		if(!workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime() || holidayCalculation.getIsCalculate().isNotUse()) {
-            		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
+        			List<OverTimeFrameTimeSheetForCalc> result = reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
 							    .filter(tc -> tc.getPayOrder().isPresent())
 							    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()
 							    																?second.getPayOrder().get()
@@ -399,7 +392,9 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 							    .collect(Collectors.toList()),
 							    autoCalculationSet,
 							    overTimeHourSetList,
-							    holidayCalcMethodSet);        			
+							    holidayCalcMethodSet);    
+            		
+            		return result;
         		}
         	}
         }
@@ -418,10 +413,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
+		
 		for(int number = 0; number < overTimeWorkFrameTimeSheetList.size(); number++) {
 			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(forceAtr),autoCalculationSet,DeductionAtr.Deduction);
-
-			//振替できる時間計算
+			
 			if(ableRangeTime.greaterThan(overTime)) {
 				transTime = overTime;
 			}
@@ -445,7 +440,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 			
 			/*ここで分割*/
 			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,overTimeHourSetList),overTimeWorkFrameTimeSheetList,number);
-			ableRangeTime = ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ; 
+			
+			ableRangeTime = ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ;
 		}
 		return overTimeWorkFrameTimeSheetList;
 	}
@@ -533,6 +529,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         }
         //分割
         else {
+        	/*法内へ振り替える側*/
         	//計上の控除時間帯
         	val beforeRec = this.getRecordedTimeSheet().stream()
         										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).isPresent())
@@ -571,6 +568,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,this.payOrder
                                                          ,Optional.of(new AttendanceTime(0))));
             
+            /*法外側*/
         	//計上の控除時間帯
         	val afterRec = this.getRecordedTimeSheet().stream()
         										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).isPresent())

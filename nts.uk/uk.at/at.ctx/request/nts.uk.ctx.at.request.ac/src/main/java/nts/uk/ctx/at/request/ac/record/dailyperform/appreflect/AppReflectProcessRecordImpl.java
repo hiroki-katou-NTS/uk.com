@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ac.record.dailyperform.appreflect;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.BreakTimePubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorktimeAppPubPara;
@@ -140,9 +143,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				overtimePara);
 		if(isPre) {
 			return recordPub.preOvertimeReflect(preOvertimePara);	
-		} else {
-			return recordPub.afterOvertimeReflect(preOvertimePara);
 		}
+		return true;
 	}
 
 	@Override
@@ -152,6 +154,12 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 
 	@Override
 	public boolean holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
+        Map<Integer, BreakTimePubPara> mapBreakTimeFrame = new HashMap<>();
+        para.getHolidayWorkPara().getMapBreakTime().forEach((a,b) -> {
+        	BreakTimePubPara breakTime = new BreakTimePubPara(b.getStartTime(), b.getEndTime());
+            mapBreakTimeFrame.put(a, breakTime);
+        });
+
 		HolidayWorktimeAppPubPara appPara = new HolidayWorktimeAppPubPara(para.getHolidayWorkPara().getWorkTypeCode(), 
 				para.getHolidayWorkPara().getWorkTimeCode(), 
 				para.getHolidayWorkPara().getMapWorkTimeFrame(), 
@@ -159,12 +167,15 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getHolidayWorkPara().getReflectedState().value, ReflectedStatePubRecord.class), 
 				para.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(para.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectDailyPubRecord.class),
 				para.getHolidayWorkPara().getStartTime(),
-				para.getHolidayWorkPara().getEndTime()); 
+				para.getHolidayWorkPara().getEndTime(),
+				mapBreakTimeFrame); 
 		HolidayWorkReflectPubPara pubPara = new HolidayWorkReflectPubPara(para.getEmployeeId(), 
 				para.getBaseDate(),
 				para.isHolidayWorkReflectFlg(),
 			 	EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class), 
 				para.isScheReflectFlg(), 
+				para.isHwRecordReflectTime(),
+				para.isHwRecordReflectBreak(),
 				appPara);
 		
 		return recordPub.holidayWorkReflect(pubPara, isPre);		

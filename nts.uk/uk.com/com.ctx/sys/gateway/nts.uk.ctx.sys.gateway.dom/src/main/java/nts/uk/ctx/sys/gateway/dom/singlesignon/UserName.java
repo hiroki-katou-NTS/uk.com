@@ -5,12 +5,18 @@
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class UserName.
+ * ユーザ名
+ * Windowsユーザ名
+ * 他システムユーザ名
  */
 @StringMaxLength(256)
+@StringCharType(CharType.ANY_HALF_WIDTH)
 public class UserName extends StringPrimitiveValue<UserName> {
 
 	/** The Constant serialVersionUID. */
