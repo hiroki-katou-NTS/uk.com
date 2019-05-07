@@ -682,7 +682,6 @@ public class DailyPerformanceCorrectionProcessor {
 							false, lockApprovalMonth, lockConfirmMonth);
 				}
                 
-				lockDaykWpl = lockDay || lockWpl;
 				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
