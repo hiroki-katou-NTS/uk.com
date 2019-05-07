@@ -1,6 +1,11 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 
+interface IRange {
+    old: number;
+    new: number;
+}
+
 @component({
     template: `<div class="datepicker-col" v-on:touchmove="preventScroll">
         <div class="datepicker-viewport"
@@ -12,45 +17,35 @@ import { component, Prop } from '@app/core/component';
                     'transform': transform,
                     'margin-top': marginTop
                 }">
-                    <li class v-for="(item, ik) in items" v-bind:key="ik">{{ item }}</li>
+                    <li class v-for="(item, ik) in items" v-bind:key="ik">{{ optionText ? item[optionText] : item }}</li>
                 </ul>
             </div>
         </div>
     </div>`
 })
 export class InfinityPickerComponent extends Vue {
-    private speed: number = 0;
     private interval: number = 0;
+    private time: IRange = { old: 0, new: 0 };
+    private range: IRange = { old: 0, new: 0 };
+    private position: IRange = { old: 0, new: 0 };
 
-    private time: {
-        old: number;
-        new: number;
-    } = {
-            old: 0,
-            new: 0
-        };
+    @Prop({ default: () => undefined })
+    private readonly optionValue!: string | undefined;
 
-    private position: {
-        old: number;
-        new: number;
-    } = {
-            old: 0,
-            new: 0
-        };
-
-    private move: number = 0;
-    private start: number = 0;
+    @Prop({ default: () => undefined })
+    private readonly optionText!: string | undefined;
 
     @Prop({ default: () => undefined })
     private readonly value!: string | number;
 
     @Prop({ default: () => [] })
-    private readonly dataSources!: Array<string | number>;
+    private readonly dataSources!: Array<string | number | { [key: string]: any; }>;
 
     public get $nindex() {
         let self = this,
             select = self.value,
-            dataSources = self.dataSources,
+            dataSources = self.dataSources
+                .map((option) => self.optionValue ? option[self.optionValue] : option),
             index = dataSources.indexOf(select),
             mgt = self.$mtNumber,
             move = Math.floor(mgt / 40),
@@ -126,9 +121,11 @@ export class InfinityPickerComponent extends Vue {
     }
 
     get $mtNumber() {
-        let mov: number = this.move - this.start,
+        let self = this,
+            rng = self.range,
+            mov: number = rng.new - rng.old,
             amo: number = Math.abs(mov),
-            mup: boolean = this.start > this.move,
+            mup: boolean = rng.old > rng.new,
             twt: boolean = (amo >= -60 && amo < -20) || (amo <= 60 && amo > 20);
 
         if (mov >= -20 && mov <= 20) {
@@ -155,7 +152,10 @@ export class InfinityPickerComponent extends Vue {
     }
 
     get transform() {
-        return `translate3d(0px, ${this.move - this.start - 80}px, 0px)`;
+        let self = this,
+            rng = self.range;
+
+        return `translate3d(0px, ${rng.new - rng.old - 80}px, 0px)`;
     }
 
     public gearTouchStart(evt: TouchEvent) {
@@ -168,13 +168,13 @@ export class InfinityPickerComponent extends Vue {
 
         // if continue touch, emit current select item
         if (self.value !== self.dataSources[self.$nindex]) {
-            self.$emit('input', self.dataSources[self.$nindex]);
+            self.$emit('input', self.optionValue ? self.dataSources[self.$nindex][self.optionValue] : self.dataSources[self.$nindex]);
         }
 
         self.time.old = new Date().getTime();
         self.position.old = Math.floor(evt.changedTouches[0].clientY);
 
-        self.start = self.move = Math.floor(evt.changedTouches[0].clientY);
+        self.range.old = self.range.new = Math.floor(evt.changedTouches[0].clientY);
     }
 
     public gearTouchMove(evt: TouchEvent) {
@@ -184,7 +184,7 @@ export class InfinityPickerComponent extends Vue {
         evt.stopPropagation();
 
         self.time.new = new Date().getTime();
-        self.move = self.position.new = Math.floor(evt.changedTouches[0].clientY);
+        self.range.new = self.position.new = Math.floor(evt.changedTouches[0].clientY);
 
         if (evt.targetTouches[0].screenY < 1) {
             self.gearTouchEnd(evt);
@@ -192,54 +192,58 @@ export class InfinityPickerComponent extends Vue {
     }
 
     public gearTouchEnd(evt: TouchEvent) {
-        let self = this;
+        let self = this,
+            time = self.time,
+            position = self.position;
 
         evt.preventDefault();
         evt.stopPropagation();
 
-        let flag = (self.position.new - self.position.old) / (self.time.new - self.time.old);
+        let gear: number = 0,
+            flag = (position.new - position.old) / (time.new - time.old);
 
         if (Math.abs(flag) < 1) {
-            self.speed = 0;
+            gear = 0;
         } else if (Math.abs(flag) <= 2) {
-            self.speed = flag < 0 ? -20 : 20;
+            gear = flag < 0 ? -20 : 20;
         } else {
-            self.speed = flag < 0 ? -40 : 40;
+            gear = flag < 0 ? -40 : 40;
         }
 
         if (self.dataSources.length >= 5) {
-            self.roleGear();
+            self.roleGear(gear);
         } else {
-            self.$emit('input', self.dataSources[self.$nindex]);
+            self.$emit('input', self.optionValue ? self.dataSources[self.$nindex][self.optionValue] : self.dataSources[self.$nindex]);
         }
     }
 
-    private roleGear() {
+    private roleGear(gear: number) {
         let self = this,
-            d: number = 0;
+            d: number = 0,
+            range: IRange = self.range;
 
         clearInterval(self.interval);
 
         self.interval = setInterval(() => {
-            let speed = Math.round(self.speed * Math.exp(-0.03 * d));
+            let speed = Math.round(gear * Math.exp(-0.03 * d));
 
-            self.move += speed;
+            range.new += speed;
 
             if (speed > -1 && speed < 1) {
                 clearInterval(self.interval);
 
                 let index = self.$nindex,
-                    steps = Math.abs(self.move - self.start) % 40;
+                    steps = Math.abs(range.new - range.old) % 40;
 
                 if (steps >= 20) {
-                    if (self.move > self.start) {
+                    if (range.new > range.old) {
                         index--;
                     } else {
                         index++;
                     }
                 }
 
-                self.$emit('input', self.dataSources[index]);
+                self.$emit('input', self.optionValue ? self.dataSources[index][self.optionValue] : self.dataSources[index]);
             }
 
             d++;
@@ -252,12 +256,15 @@ export class InfinityPickerComponent extends Vue {
     }
 
     public created() {
-        let self = this;
+        let self = this,
+            range: IRange = self.range;
+
+        console.log(self.optionValue, self.optionText);
 
         // reset position of gear
         self.$on('input', () => {
-            self.move = 0;
-            self.start = 0;
+            range.new = 0;
+            range.old = 0;
         });
     }
 }
