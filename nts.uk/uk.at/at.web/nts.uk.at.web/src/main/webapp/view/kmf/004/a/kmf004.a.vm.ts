@@ -10,6 +10,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         isDisable: KnockoutObservable<boolean> = ko.observable(true);
         editMode: KnockoutObservable<boolean> = ko.observable(false);
+        autoGrants: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText('KAF008_55') },
+                { code: 1, name: nts.uk.resource.getText('KAF008_54') }
+            ]);
+        autoGrant: KnockoutObservable<boolean> = ko.observable(1);
         specialHolidayName: KnockoutObservable<string> = ko.observable("");
         targetItemsName: KnockoutObservable<string> = ko.observable("");
         memo: KnockoutObservable<string> = ko.observable("");
@@ -92,6 +97,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         nts.uk.ui.block.clear();
                     });
                 }
+            });
+            
+            self.autoGrant.subscribe(function(value) {
+                
+                nts.uk.ui.errors.clearAll();
             });
 
             self.empLst.subscribe((newData) => {
@@ -331,6 +341,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.isDisable(false);
             self.specialHolidayCode(data.specialHolidayCode);
             self.specialHolidayName(data.specialHolidayName);
+            self.autoGrant(data.autoGrant);
             self.memo(data.memo);
             self.editMode(true);
             $("#input-name").focus();
@@ -643,6 +654,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 periodicCommand: grantPeriodic,
                 leaveResCommand: specialLeaveRestriction,
                 targetItemCommand: targetItem,
+                autoGrant: self.autoGrant(),
                 memo: self.memo()
             };
 
@@ -685,8 +697,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
             }
 
-
+            if (self.autoGrant() == 0) {
+                nts.uk.ui.errors.clearAll();
+            }
             if (nts.uk.ui.errors.hasError()) {
+                
                 nts.uk.ui.block.clear();
                 return;
             }
@@ -809,6 +824,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.isEnable(false);
             self.isDisable(true);
             self.specialHolidayName("");
+            self.autoGrant(1);
             self.targetItemsName("");
             self.memo("");
 
