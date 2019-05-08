@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         changeWorkHoursTypeEnable: KnockoutObservable<boolean> = ko.computed(() => {
             return this.editable();
         });
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -288,7 +289,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
                 }
                 
-                
+                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
             }
             self.firstLoad(false);
             self.recWk().wkTimeCD.valueHasMutated();

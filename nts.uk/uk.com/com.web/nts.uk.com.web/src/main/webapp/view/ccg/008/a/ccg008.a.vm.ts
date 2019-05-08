@@ -204,7 +204,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     self.dataSource(data);
 //                    self.showMypage(self.dataSource().myPage);
 //                    self.showToppage(self.dataSource().topPage);
-                    if(data.check == true || data.checkMyPage == false){
+                    if(self.selectedTab() == 'tab-1'){
                         self.showToppage(self.dataSource().topPage);                        
                     }else{
                         self.showMypage(self.dataSource().myPage);

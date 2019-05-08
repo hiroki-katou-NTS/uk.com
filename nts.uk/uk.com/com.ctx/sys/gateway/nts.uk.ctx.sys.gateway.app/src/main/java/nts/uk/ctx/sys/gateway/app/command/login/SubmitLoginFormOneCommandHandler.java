@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -119,7 +120,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				programID,
 				screenID);
 		if(systemSuspendOutput.isError()){
-			throw new BusinessException(systemSuspendOutput.getMsgContent());
+			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		//EA修正履歴3230
 		//hoatt 2019.03.27
@@ -129,7 +130,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		this.service.callLoginRecord(param);
 		
 		//アルゴリズム「ログイン後チェック」を実行する
-		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword);
+		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
 		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
 		return checkChangePass;
 	}
