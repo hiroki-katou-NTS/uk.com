@@ -675,33 +675,29 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             $(".period-date-inp").trigger("validate");
-            $("#ageBaseDate").trigger("validate");
-            $("#startDate").trigger("validate");
-            $("#endDate").trigger("validate");
-            $("#startAge").trigger("validate");
-            $("#endAge").trigger("validate");
             let dataItem = self.preData();
-
-            if (self.yearReq() && self.dayReq()) {
-                if (dataItem.regularCommand.grantTime.fixGrantDate.interval === "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays === "") {
-                    $("#years").ntsError("set", "付与周期を入力してください", "MsgB_1");
-                    $("#days").ntsError("set", "付与日数を入力してください", "MsgB_1");
-                }
-            }
-
             if (dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
             }
+            if (self.autoGrant() == 1) {
+                $("#ageBaseDate").trigger("validate");
+                $("#startDate").trigger("validate");
+                $("#endDate").trigger("validate");
+                $("#startAge").trigger("validate");
+                $("#endAge").trigger("validate");
 
-            if (self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
-                $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
+                if (self.yearReq() && self.dayReq()) {
+                    if (dataItem.regularCommand.grantTime.fixGrantDate.interval === "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays === "") {
+                        $("#years").ntsError("set", "付与周期を入力してください", "MsgB_1");
+                        $("#days").ntsError("set", "付与日数を入力してください", "MsgB_1");
+                    }
+                }
+                if (self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
+                    $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
+                }
             }
-
-            if (self.autoGrant() == 0) {
-                nts.uk.ui.errors.clearAll();
-            }
+            
             if (nts.uk.ui.errors.hasError()) {
-                
                 nts.uk.ui.block.clear();
                 return;
             }
