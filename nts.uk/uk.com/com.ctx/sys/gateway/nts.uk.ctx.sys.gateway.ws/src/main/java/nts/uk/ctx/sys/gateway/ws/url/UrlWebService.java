@@ -102,6 +102,8 @@ public class UrlWebService {
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
 			// record login
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -110,7 +112,7 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1095"), 
 							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
 			throw new BusinessException("Msg_1095");
@@ -174,6 +176,8 @@ public class UrlWebService {
 		// 契約期間切れチェックする
 		if(!opContract.isPresent() || 
 			(systemDate.before(opContract.get().getContractPeriod().start())|| systemDate.after(opContract.get().getContractPeriod().end()))){
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -182,7 +186,7 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1317"), 
 							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
 			// アルゴリズム「契約認証する_アクティビティ(基本)」を実行する
