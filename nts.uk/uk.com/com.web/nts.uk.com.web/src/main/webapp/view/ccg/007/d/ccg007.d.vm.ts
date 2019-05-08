@@ -112,8 +112,8 @@ module nts.uk.pr.view.ccg007.d {
                         if (isSubmit) {
                             self.getEmployeeLoginSetting(self.contractCode());
                         }
-                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
-                            //get list company from server 
+                        service.getAllCompany(self.contractCode()).done(function(data: Array<CompanyItemModel>) {
+                            //get list company from server
                             self.companyList(data);
                             if (data.length > 0) {
                                 self.selectedCompanyCode(self.companyList()[0].companyCode);
@@ -125,7 +125,6 @@ module nts.uk.pr.view.ccg007.d {
 
             private getEmployeeLoginSetting(contractCode: string): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<void>();
                 //get check signon
                 let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
                 let isSignOn = url.indexOf('signon=on') >= 0;
@@ -139,7 +138,7 @@ module nts.uk.pr.view.ccg007.d {
                             self.submitLogin(isSignOn);
                         }
                         else {
-                            service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
+                            service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
                                 //get list company from server 
                                 self.companyList(data);
                                 if (data.length > 0) {
@@ -152,13 +151,11 @@ module nts.uk.pr.view.ccg007.d {
                                         self.selectedCompanyCode(loginInfo.companyCode);
                                         self.employeeCode(loginInfo.employeeCode);
                                     }
-                                    dfd.resolve();
                                 });
                             });
                         }
                     }
                 });
-                return dfd.promise();
             }
 
             private submitLogin(isSignOn: boolean) {
