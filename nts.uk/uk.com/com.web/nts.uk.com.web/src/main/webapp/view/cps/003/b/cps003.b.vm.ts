@@ -147,6 +147,7 @@ module cps003.b.vm {
                 self.fileId(res[0].id);
                 self.imageSize("(" +format(text('CCG013_99'), res[0].originalSize)+")");
             }).fail(function(err) {
+                __viewContext.viewModel.currentFile().filename("");
                 alertError({ messageId: "Msg_1466" });
             });
         }

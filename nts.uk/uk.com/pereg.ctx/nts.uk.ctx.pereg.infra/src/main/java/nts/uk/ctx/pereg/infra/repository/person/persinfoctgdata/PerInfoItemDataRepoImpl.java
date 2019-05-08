@@ -332,7 +332,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
 			sql = sql.replace("INS_SCD_VAL", "'" + insScd +"'");
-			sql = sql.replace("UPD_PG_VAL", "'" + insPg +"'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg +"'");
 			
 			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
