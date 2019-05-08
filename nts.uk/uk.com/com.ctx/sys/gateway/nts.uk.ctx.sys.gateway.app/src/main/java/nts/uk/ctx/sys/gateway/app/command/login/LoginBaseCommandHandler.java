@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -65,7 +66,6 @@ import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockOutMessage;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
@@ -189,6 +189,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	
 	@Inject
 	private PassWordPolicyAlgorithm pWPolicyAlg;
+	@Inject
+	private LoginLogRepository loginLogRepo;
 	
 	private static final boolean IS_EMPLOYMENT = true;
 	private static final boolean IS_CLASSIFICATION = false;
@@ -283,7 +285,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 	
 	/**
-	 * Check employee del status.
+	 * 社員が削除されたかを取得
 	 *
 	 * @param sid
 	 *            the sid
@@ -747,7 +749,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Error check.
+	 * エラーチェック（形式１）
 	 *
 	 * @param userId
 	 *            the user id
@@ -756,7 +758,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractCode
 	 *            the contract code
 	 */
-	// アルゴリズム「エラーチェック（形式１）」を実行する
 	public void errorCheck(String loginId, String userId, Integer roleType, String contractCode, boolean isSignOn) {
 
 		GeneralDate date = GeneralDate.today();
@@ -993,15 +994,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Check accout lock.
-	 *
-	 * @param contractCode
-	 *            the contract code
-	 * @param userId
-	 *            the user id
+	 * アカウントロックチェック
+	 * @param 契約コード contractCode
+	 * @param ユーザID userId
+	 * @param ログインID loginId
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String loginId, String contractCode, String userId, String companyId, boolean isSignOn) {
+	protected void checkAccoutLock(String loginId, String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -1024,12 +1023,21 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					this.service.callLoginRecord(param);
 
 					// エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する
-					// (Display error message (domain model "Account lock
-					// policy. Lockout message"))
-					return accountLockPolicy.getLockOutMessage();
+					throw new BusinessException(new RawErrorMessage(accountLockPolicy.getLockOutMessage()));
 				}
 			}
 		}
-		return new LockOutMessage(null);
 	}
+	/**
+	 * ログインログを削除
+	 * @param ユーザID userId
+	 */
+	protected void deleteLoginLog(String userId){
+//		条件
+//		　・ユーザID＝INPUT.ユーザID
+//		　・成功失敗区分＝失敗
+//		　・操作区分＝ログイン
+		//ドメインモデル「ログインログ」を削除する
+		loginLogRepo.deleteLoginLog(userId, SuccessFailureClassification.Failure.value, OperationSection.Login.value);
+	};
 }

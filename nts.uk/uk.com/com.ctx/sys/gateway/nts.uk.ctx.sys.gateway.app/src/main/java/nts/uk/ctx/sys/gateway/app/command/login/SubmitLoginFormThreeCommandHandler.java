@@ -159,7 +159,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
-		
+		//hoatt 2019.05.06
+		//EA修正履歴No.3373
+		//アルゴリズム「ログイン後チェック」を実行する
+		this.deleteLoginLog(user.getUserId());
 		//アルゴリズム「ログイン後チェック」を実行する
 		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
 		checkChangePass.successMsg = systemSuspendOutput.getMsgID();

@@ -44,8 +44,8 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	@Inject
 	private SystemSuspendService systemSuspendService;
 	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/* 
+	 * ログイン（形式１）
 	 */
 	@Override
 	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
@@ -132,8 +132,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Success.value, null, null);
 		this.service.callLoginRecord(param);
-		
+		//hoatt 2019.05.06
+		//EA修正履歴No.3371
 		//アルゴリズム「ログイン後チェック」を実行する
+		this.deleteLoginLog(user.getUserId());
 		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
 		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
 		return checkChangePass;
