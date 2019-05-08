@@ -168,7 +168,7 @@ export class InfinityPickerComponent extends Vue {
 
         // if continue touch, emit current select item
         if (self.value !== self.dataSources[self.$nindex]) {
-            self.$emit('input', self.optionValue ? self.dataSources[self.$nindex][self.optionValue] : self.dataSources[self.$nindex]);
+            self.emitInput();
         }
 
         self.time.old = new Date().getTime();
@@ -213,42 +213,42 @@ export class InfinityPickerComponent extends Vue {
         if (self.dataSources.length >= 5) {
             self.roleGear(gear);
         } else {
-            self.$emit('input', self.optionValue ? self.dataSources[self.$nindex][self.optionValue] : self.dataSources[self.$nindex]);
+            self.emitInput();
         }
     }
 
     private roleGear(gear: number) {
         let self = this,
             d: number = 0,
-            range: IRange = self.range,
-            position: IRange = self.position;
+            range: IRange = self.range;
 
         clearInterval(self.interval);
 
         self.interval = setInterval(() => {
-            let speed = Math.round(gear * Math.exp(-0.03 * d));
+            let rng = range.new - range.old,
+                speed = gear * Math.exp(-0.03 * d);
 
-            range.new += speed;
+            if (gear !== 0) {
+                range.new += Math.abs(speed) < 1 ? (speed < 0 ? -1 : 1) : Math.floor(speed);
+            }
 
-            if (Math.abs(speed) < 1) {
+            if (Math.abs(speed) < 1 && (gear === 0 || Math.abs(rng) % 40 === 0)) {
+                self.emitInput();
+
                 clearInterval(self.interval);
-
-                let index = self.$nindex,
-                    steps = Math.abs(range.new - range.old) % 40;
-
-                if (steps >= 20) {
-                    if (range.new > range.old) {
-                        index--;
-                    } else {
-                        index++;
-                    }
-                }
-
-                self.$emit('input', self.optionValue ? self.dataSources[index][self.optionValue] : self.dataSources[index]);
             }
 
             d++;
         }, 30);
+    }
+
+    private emitInput() {
+        let self = this,
+            index = self.$nindex,
+            ov = self.optionValue,
+            opt = self.dataSources[index];
+
+        self.$emit('input', ov ? opt[ov] : opt);
     }
 
     public preventScroll(evt: TouchEvent) {
