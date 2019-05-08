@@ -51,18 +51,16 @@ export class InfinityPickerComponent extends Vue {
             move = Math.floor(mgt / 40),
             nidex = index + move;
 
-        if (dataSources.length >= 5) {
-            if (nidex < 0) {
-                nidex = Math.abs(dataSources.length + nidex);
-            } else if (nidex > dataSources.length - 1) {
-                nidex = Math.abs(dataSources.length - nidex);
-            }
-        } else {
+        nidex = Math.floor(nidex % dataSources.length);
+
+        if (dataSources.length < 5) {
             if (nidex < 0) {
                 nidex = 0;
             } else if (nidex > dataSources.length - 1) {
                 nidex = dataSources.length - 1;
             }
+        } else {
+            nidex = Math.abs(dataSources.length + nidex);
         }
 
         return Math.floor(nidex % dataSources.length);
@@ -205,9 +203,9 @@ export class InfinityPickerComponent extends Vue {
         if (Math.abs(flag) < 1) {
             gear = 0;
         } else if (Math.abs(flag) <= 2) {
-            gear = flag < 0 ? -20 : 20;
+            gear = 20;
         } else {
-            gear = flag < 0 ? -40 : 40;
+            gear = 40;
         }
 
         if (self.dataSources.length >= 5) {
@@ -220,16 +218,21 @@ export class InfinityPickerComponent extends Vue {
     private roleGear(gear: number) {
         let self = this,
             d: number = 0,
-            range: IRange = self.range;
+            range: IRange = self.range,
+            position: IRange = self.position;
 
         clearInterval(self.interval);
 
         self.interval = setInterval(() => {
             let rng = range.new - range.old,
-                speed = gear * Math.exp(-0.03 * d);
+                speed = Math.floor(Math.abs(gear * Math.exp(-0.03 * d)));
 
             if (gear !== 0) {
-                range.new += Math.abs(speed) < 1 ? (speed < 0 ? -1 : 1) : Math.floor(speed);
+                if (position.new > position.old) {
+                    range.new += speed < 1 ? 1 : speed;
+                } else {
+                    range.new -= speed < 1 ? 1 : speed;
+                }
             }
 
             if (Math.abs(speed) < 1 && (gear === 0 || Math.abs(rng) % 40 === 0)) {
