@@ -107,12 +107,15 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			// Get domain 社員
 			em = this.getEmployee(companyId, employeeCode);
 			
-			// Check del state
+			//アルゴリズム「社員が削除されたかを取得」を実行する
 			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 			
-			// Get User by PersonalId
+			//imported（ゲートウェイ）「ユーザ」を取得する
 			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
-			
+			//2019.04.23 sou add  #107445
+			//EA修正履歴No.3368
+			//アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+			this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId, command.isSignOn());
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){

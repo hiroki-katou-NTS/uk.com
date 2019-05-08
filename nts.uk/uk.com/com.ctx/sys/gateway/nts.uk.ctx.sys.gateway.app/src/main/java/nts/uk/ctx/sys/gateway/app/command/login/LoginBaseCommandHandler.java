@@ -775,22 +775,21 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_1527");
 		}
-
-		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();
-
-		if (!message.isEmpty()) {
-			// return messageError
-			throw new BusinessException(message);
-		}
+		//hoatt 2019.05.07  #107445
+		//EA修正履歴No.3365
+//		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();
+//		if (!message.isEmpty()) {
+//			// return messageError
+//			throw new BusinessException(message);
+//		}
 	}
 
 	/**
-	 * Error check 2.
+	 * エラーチェック（形式２・３）
 	 *
 	 * @param companyId
 	 *            the company id
 	 */
-	// ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon, String employeeId) {
 
 		// ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model
@@ -843,18 +842,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		}
 		//update EA修正履歴 No.3054
-		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);
-		
-		String loginId = "";
-		if (opUserImport.isPresent()) {
-			loginId = opUserImport.get().getLoginId();
-		}
-		String message = this.checkAccoutLock(loginId, contractCode, userId, companyId, isSignon).v();
-		
-		if (!message.isEmpty()) {
-			// return messageError
-			throw new BusinessException(message);
-		}
+//		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);
+//		String loginId = "";
+//		if (opUserImport.isPresent()) {
+//			loginId = opUserImport.get().getLoginId();
+//		}
+		//hoatt 2019.05.07 #107445
+		//EA修正履歴No.3366
+//		String message = this.checkAccoutLock(loginId, contractCode, userId, companyId, isSignon).v();
+//		if (!message.isEmpty()) {
+//			// return messageError
+//			throw new BusinessException(new RawErrorMessage(message));
+//		}
 		
 		List<String> lstEmployeeId = new ArrayList<>();
 //		DatePeriod periodEmployee = new DatePeriod(GeneralDate.today(), GeneralDate.today());

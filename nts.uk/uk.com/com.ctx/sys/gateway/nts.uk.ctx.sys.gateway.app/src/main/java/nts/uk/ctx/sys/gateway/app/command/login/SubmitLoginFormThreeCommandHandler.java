@@ -111,7 +111,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					
 			// Get User by PersonalId
 			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
-			
+			//hoatt 2019.05.07 #107445
+			//EA修正履歴No.3369
+			//アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+			this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId, command.isSignOn());
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){

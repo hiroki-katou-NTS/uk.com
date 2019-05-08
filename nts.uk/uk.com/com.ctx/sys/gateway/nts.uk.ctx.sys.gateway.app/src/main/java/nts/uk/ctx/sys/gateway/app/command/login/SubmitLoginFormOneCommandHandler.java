@@ -84,7 +84,11 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				
 				throw new BusinessException("Msg_301");
 			}
-			
+			//hoatt 2019.05.07 #107445
+			//EA修正履歴No.3367
+			user = userOp.get();
+			//アルゴリズム「アカウントロックチェック」を実行する (check account lock)
+			this.checkAccoutLock(loginId, command.getContractCode(), user.getUserId(), "", command.isSignOn());
 			// check password
 			String msgErrorId = this.compareHashPassword(userOp.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
