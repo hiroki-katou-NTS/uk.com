@@ -3,7 +3,7 @@
 ```html
 <nts-date-input
         v-model="date"
-        :name="'DateItem'"/>
+        name='DateItem'/>
 ```
 ## 3. Khai báo trong index.ts
 Khai báo một biến 'date' trong ViewModel để bind vào giá trị 'date' sử dụng ở v-model="date"

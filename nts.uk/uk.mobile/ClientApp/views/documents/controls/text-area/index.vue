@@ -4,7 +4,7 @@
 
     <nts-text-area
         v-model="text"
-        :name="'Textarea Item'"/>
+        name='Textarea Item'/>
 
     <markdown/>
 
