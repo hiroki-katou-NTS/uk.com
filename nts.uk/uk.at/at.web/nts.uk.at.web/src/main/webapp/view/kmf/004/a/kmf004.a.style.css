@@ -214,3 +214,6 @@ div.ageBaseDate {
 .ntsMonthDays_Container{
 	top: 0px;
 }
+#auto_grant .nts-switch-button {
+	width: 70px;
+}
