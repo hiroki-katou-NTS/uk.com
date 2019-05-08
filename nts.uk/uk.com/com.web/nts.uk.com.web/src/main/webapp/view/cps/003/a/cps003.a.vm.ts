@@ -117,6 +117,7 @@ module cps003.a.vm {
             let self = this;
             cps003.control.selectButton();
             cps003.control.relateButton();
+            cps003.control.validateDateRange();
             self.baseDate(moment().format("YYYY/MM/DD"));
 
             //fetch all category by login 
@@ -367,7 +368,7 @@ module cps003.a.vm {
                     }
                     
                     let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
-                    if (col) {
+                    if (col && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY_BUTTON && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
                         let val = item.value;
                         let text, defValue, defText, initData = _.find(self.initDs, initRec => initRec.id === item.rowId);
                         if (initData) {
@@ -452,7 +453,7 @@ module cps003.a.vm {
                 case ITEM_SINGLE_TYPE.TIME:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
-                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).value(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
                 case ITEM_SINGLE_TYPE.DATE:
                     if (value instanceof moment && !value.isValid()) {
                         return { value: null, text: null };    
@@ -770,6 +771,13 @@ module cps003.a.vm {
                             let combo = cps003.control.COMBOBOX[self.category.catCode() + "_" + d.itemCode]; 
                             if (combo) {
                                 control.inputProcess = combo;
+                            }
+                            
+                            if (control.controlType === "DatePicker") {
+                                let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];
+                                if (dp) {
+                                    control.inputProcess = dp.bind(null, d.required, control.format);
+                                }
                             }
                         }
                         

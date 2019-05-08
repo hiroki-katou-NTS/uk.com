@@ -336,7 +336,7 @@ module cps003 {
             check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
         };
         
-        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, 
+        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {},
         HALF_INT = { 
             CS00035_IS00366: true,
             CS00035_IS00368: true,
@@ -745,7 +745,82 @@ module cps003 {
                 dfd.resolve(result);
                 return dfd.promise();
             }
-        };
+        },
+        dateRange = [
+            {
+                ctgCode: "CS00004",
+                start: "IS00026",
+                end: "IS00027"            
+            }, {
+                ctgCode: "CS00005",
+                start: "IS00030", 
+                end: "IS00031"
+            }, {
+                ctgCode: "CS00006",
+                start: "IS00034",
+                end: "IS00035"
+            }, {
+                ctgCode: "CS00007",
+                start: "IS00038",
+                end: "IS00039"
+            }, {
+                ctgCode: "CS00008",
+                start: "IS00042",
+                end: "IS00043"
+            }, {
+                ctgCode: "CS00009",
+                start: "IS00046",
+                end: "IS00047"
+            }, {
+                ctgCode: "CS00010",
+                start: "IS00050",
+                end: "IS00051"
+            }, {
+                ctgCode: "CS00011",
+                start: "IS00054",
+                end: "IS00055"
+            }, {
+                ctgCode: "CS00012",
+                start: "IS00058",
+                end: "IS00059"
+            }, {
+                ctgCode: "CS00013",
+                start: "IS00062",
+                end: "IS00063"
+            }, {
+                ctgCode: "CS00014",
+                start: "IS00066",
+                end: "IS00067"
+            }, {
+                ctgCode: "CS00016",
+                start: "IS00077",
+                end: "IS00078"
+            }, {
+                ctgCode: "CS00017",
+                start: "IS00082",
+                end: "IS00083"
+            }, {
+                ctgCode: "CS00018",
+                start: "IS00087",
+                end: "IS00088"
+            }, { 
+                ctgCode: "CS00019",
+                start: "IS00102",
+                end: "IS00103"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00119",
+                end: "IS00120" 
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00781",
+                end: "IS00782"
+            }, {
+                ctgCode: "CS00021",
+                start: "IS00255",
+                end: "IS00256"
+            }
+        ];
         
         function timeNumber(i, k, v, o, firstCode, secondCode, resultCode) {
             let dt = __viewContext.viewModel.dataTypes[firstCode], result = [];
@@ -1114,6 +1189,60 @@ module cps003 {
                                 });
                         }
                     });
+                };
+            });
+        }
+        
+        export function validateDateRange() {
+            _.forEach(dateRange, range => {
+                DATE_RANGE[range.ctgCode + "_" + range.start] = (required, format, start, data) => {
+                    let formatStr;
+                    if (format === "ymd") {
+                        formatStr = "YYYY/MM/DD";
+                    } else if (format === "ym") {
+                        formatStr = "YYYY/MM";
+                    } else {
+                        formatStr = "YYYY";
+                    }
+                    
+                    let end = moment.utc(data[range.end], formatStr),
+                        $grid = $("#grid");
+                    if (!(start instanceof moment)) {
+                        start = moment.utc(start, formatStr);
+                    }
+                    
+                    if (end.isBefore(start)) {
+                        let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                            message = nts.uk.resource.getMessage("MsgB_21", ["期間"]);
+                        $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.start, message: message }]);
+                    } else {
+                        $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }, { id: data.id, columnKey: range.end }]);
+                    }
+                };
+                
+                DATE_RANGE[range.ctgCode + "_" + range.end] = (required, format, end, data) => {
+                    let formatStr;
+                    if (format === "ymd") {
+                        formatStr = "YYYY/MM/DD";
+                    } else if (format === "ym") {
+                        formatStr = "YYYY/MM";
+                    } else {
+                        formatStr = "YYYY";
+                    }
+                    
+                    let start = moment.utc(data[range.start], formatStr),
+                        $grid = $("#grid");
+                    if (!(end instanceof moment)) {
+                        end = moment.utc(end, formatStr);
+                    }
+                    
+                    if (end.isBefore(start)) {
+                        let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                            message = nts.uk.resource.getMessage("MsgB_21", ["期間"]);
+                        $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.end, message: message }]);
+                    } else {
+                        $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.end }, { id: data.id, columnKey: range.start }]);
+                    }
                 };
             });
         }
