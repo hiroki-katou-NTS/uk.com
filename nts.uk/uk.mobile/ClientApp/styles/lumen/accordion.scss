@@ -10,6 +10,11 @@
         right: 25px;
         transition: all 0.6s cubic-bezier(0.81, -0.33, 0.345, 1.375);
       }
+      .btn-link {
+        display: block;
+        width: 100%;
+        text-align: left;
+      }
     }
     .collapse {
       max-height: 0;
