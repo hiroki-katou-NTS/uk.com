@@ -166,6 +166,29 @@ const bstrp = {
                         });
                 }
             })(e);
+
+            // accordion
+            ((evt: MouseEvent) => {
+                let header = evt.target as HTMLElement;
+
+                if ((dom.hasClass(header, 'card-header') || dom.hasClass(header, 'btn-link')) && dom.parents(header, '.accordion')) {
+                    let accord = dom.parents(header, '.accordion'),
+                        card = dom.parents(header, '.card'),
+                        show = dom.hasClass(card, 'show'),
+                        cards = accord.querySelectorAll('.card');
+
+                    if (card && cards.length) {
+                        [].slice.call(cards)
+                            .forEach((element: HTMLElement) => {
+                                dom.removeClass(element, 'show');
+                            });
+
+                        if (!show) {
+                            dom.addClass(card, 'show');
+                        }
+                    }
+                }
+            })(e);
         }, false);
 
         window.addEventListener('scroll', (evt) => {

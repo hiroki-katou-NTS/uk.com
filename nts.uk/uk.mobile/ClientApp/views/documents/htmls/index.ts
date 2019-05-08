@@ -1,3 +1,4 @@
+import './accordion';
 import './buttons';
 import './clearfix';
 import './color';
