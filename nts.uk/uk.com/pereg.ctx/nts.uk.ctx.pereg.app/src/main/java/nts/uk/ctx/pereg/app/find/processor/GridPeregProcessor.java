@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -126,22 +127,25 @@ public class GridPeregProcessor {
 			if (!CollectionUtil.isEmpty(layouts)) {
 				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
-				parallel.forEach(layouts, pdt -> {
-					personDatas.stream().filter(p -> p.getEmployeeId().equals(pdt.getEmployeeId())).findFirst()
-							.ifPresent(dto -> {
-								GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
-										dto.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
-										dto.getEmployeeBirthday(),
-										new CodeName(dto.getDepartmentCode(), dto.getDepartmentName()),
-										new CodeName(dto.getWorkplaceCode(), dto.getWorkplaceName()),
-										new CodeName(dto.getPositionCode(), dto.getPositionName()),
-										new CodeName(dto.getEmploymentCode(), dto.getEmploymentName()),
-										new CodeName(dto.getClassificationCode(), dto.getClassificationName()),
-										pdt.getItems());
+				query.getLstEmployee().stream().forEach(c ->{
+					Optional<EmpMainCategoryDto> layoutOpt = layouts.parallelStream().filter(x -> x.getEmployeeId().equals(c)).findFirst();
+					if(layoutOpt.isPresent()) {
+						personDatas.stream().filter(p -> p.getEmployeeId().equals(layoutOpt.get().getEmployeeId())).findFirst()
+						.ifPresent(dto -> {
+							GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
+									dto.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
+									dto.getEmployeeBirthday(),
+									new CodeName(dto.getDepartmentCode(), dto.getDepartmentName()),
+									new CodeName(dto.getWorkplaceCode(), dto.getWorkplaceName()),
+									new CodeName(dto.getPositionCode(), dto.getPositionName()),
+									new CodeName(dto.getEmploymentCode(), dto.getEmploymentName()),
+									new CodeName(dto.getClassificationCode(), dto.getClassificationName()),
+									layoutOpt.get().getItems());
 
-								resultsSync.add(syncDto);
-							});
-				});
+							resultsSync.add(syncDto);
+						});
+					}
+				});	
 
 				geDto.setBodyDatas(new ArrayList<>(resultsSync));
 			}
