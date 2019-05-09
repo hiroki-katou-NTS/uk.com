@@ -63,7 +63,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    if(data.check == true || data.checkMyPage == false){
+                    if(self.selectedTab() == 'tab-1'){
                         self.showToppage(self.dataSource().topPage);                        
                     }else{
                         self.showMypage(self.dataSource().myPage);
