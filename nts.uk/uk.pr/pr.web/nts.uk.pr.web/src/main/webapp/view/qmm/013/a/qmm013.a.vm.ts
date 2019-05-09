@@ -2,10 +2,7 @@ module nts.uk.pr.view.qmm013.a {
 
     import model = qmm013.share.model;
     import getText = nts.uk.resource.getText;
-    import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
 
     export module viewModel {
@@ -82,7 +79,7 @@ module nts.uk.pr.view.qmm013.a {
                 let self = this;
                 block.invisible();
 
-                service.getUnitPriceData(cid, code).done(function(data: ISalaryPerUnitPriceData) {
+                nts.uk.pr.view.qmm013.a.service.getUnitPriceData(cid, code).done(function (data: ISalaryPerUnitPriceData) {
                     if(data) {
                         self.unitPriceDataSelected(new SalaryPerUnitPriceData(data));
                         self.checkCreate(false);
@@ -113,8 +110,8 @@ module nts.uk.pr.view.qmm013.a {
                 let self = this;
                 let deferred = $.Deferred();
                 block.invisible();
-                
-                service.getAllUnitPriceName(self.isdisplayAbolition()).done(function(data: Array<ISalaryPerUnitPriceName>) {
+
+                nts.uk.pr.view.qmm013.a.service.getAllUnitPriceName(self.isdisplayAbolition()).done(function (data: Array<ISalaryPerUnitPriceName>) {
                     self.unitPriceNameList(data);
                     
                     if(self.unitPriceNameList().length <= 0) {
@@ -193,6 +190,23 @@ module nts.uk.pr.view.qmm013.a {
                     });
                 }
             }
+
+            public exportExcel(): void {
+                block.invisible();
+                nts.uk.pr.view.qmm013.a.service.exportExcel()
+                    .done(function () {
+                        block.clear();
+
+                    })
+                    .fail(function (error) {
+                        dialog.alertError({messageId: error.messageId});
+                        block.clear();
+                    })
+                    .always(function () {
+                        block.clear();
+                    });
+                ;
+            }
             
             public deleteItem(): void {
                 let self = this;
@@ -202,7 +216,7 @@ module nts.uk.pr.view.qmm013.a {
                     let command = ko.toJS(self.unitPriceDataSelected);
                     
                     block.invisible();
-                    service.removeUnitPriceData(command).done(function() {
+                    service.removeUnitPriceData(command).done(function () {
                         block.clear();
                         
                         dialog.info({ messageId: "Msg_16" }).then(() => {

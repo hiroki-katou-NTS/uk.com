@@ -11,7 +11,8 @@ module nts.uk.pr.view.qmm007.a {
             getPayrollUnitPriceSettingById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceSettingById/{0}",
             getPayrollUnitPriceById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceById/{0}",
             getPayrollUnitPriceHisById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHisById/{0}/{1}",
-            getAllHistoryById: "core/wageprovision/companyuniformamount/getAllHistoryById"
+            getAllHistoryById: "core/wageprovision/companyuniformamount/getAllHistoryById",
+            exportExcel: "core/wageprovision/companyuniformamount/export"
         };
 
         export  function getAllHistoryById() : JQueryPromise<any> {
@@ -43,6 +44,10 @@ module nts.uk.pr.view.qmm007.a {
 
         export  function register(data: any) : JQueryPromise<any> {
             return nts.uk.request.ajax(path.register, data);
+        }
+
+        export function exportExcel(data: any): JQueryPromise<any>{
+            return nts.uk.request.exportFile(path.exportExcel, data);
         }
     }
 }

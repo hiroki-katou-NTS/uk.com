@@ -28,7 +28,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
     private static final String DELETE_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsuranceMonthlyFee a WHERE a.bonusHealthInsurancePk.historyId IN :historyId";
     private static final String DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId IN :historyId";
-    
+
     @Override
     public Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId) {
         val entity = this.queryProxy().query(GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID, QpbmtHealthInsuranceMonthlyFee.class).setParameter("historyId", historyId).getSingle();

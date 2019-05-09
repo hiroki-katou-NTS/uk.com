@@ -5,11 +5,17 @@ module nts.uk.pr.view.qmm008.b.service {
         findAllOffice: "ctx/core/socialinsurance/healthinsurance/getByCompanyId",
         findEmployeeHealthInsuranceByHistoryId: "ctx/core/socialinsurance/healthinsurance/getByHistoryId/{0}" ,
         registerEmployeeHealthInsurance: "ctx/core/socialinsurance/healthinsurance/register",
-        checkHealthInsuranceGradeFeeChange: "ctx/core/socialinsurance/healthinsurance/checkGradeFeeChange"
+        checkHealthInsuranceGradeFeeChange: "ctx/core/socialinsurance/healthinsurance/checkGradeFeeChange",
+        exportExcel: "file/core/socialinsurance/healthinsurance/export"
     }
     /**
      * get all
     */
+
+    export function exportExcel(data: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportExcel, data);
+    }
+
     export function findAllOffice(): JQueryPromise<any> {
         return ajax(paths.findAllOffice);
     }

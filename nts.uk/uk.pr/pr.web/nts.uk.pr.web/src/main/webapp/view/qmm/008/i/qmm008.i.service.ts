@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm008.i.service {
         addContributionRateHis: "ctx/core/socialinsurance/contributionrate/addContributionRateHistory",
         checkContributionRateHis: "ctx/core/socialinsurance/contributionrate/checkContributionRateHistory"
     }
+
     /**
      * get all
     */

@@ -27,7 +27,7 @@
             <button data-bind="click: saveTaxExe, enable: $root.errors.isEmpty"
                     tabindex="2" class="proceed">#{i18n.getText('QMM023_2')}</button>
             <!-- A1_3 -->
-            <button data-bind="click: printPdf, enable: false"
+            <button data-bind="click: exportExcel, enable: true"
                     tabindex="3">#{i18n.getText('QMM023_3')}</button>
             <!-- A1_4 -->
             <button data-bind="click: correctionLog, enable: false" tabindex="4">#{i18n.getText('QMM023_4')}</button>

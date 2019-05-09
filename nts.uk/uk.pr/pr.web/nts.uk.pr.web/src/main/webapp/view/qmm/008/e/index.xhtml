@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
 
 <body>
 
@@ -31,10 +31,10 @@
 					<button class="proceed" id="E1_1" tabindex="1"
 						data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 					<button id="E1_2" tabindex="2"
-						data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
+                            data-bind="click: exportExcel">#{i18n.getText('QMM008_2')}</button>
 					<button id="E1_3" class="danger" tabindex="3" data-bind="click: count">#{i18n.getText('QMM008_141')}</button>
 					<button id="E1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
-				</div>
+                </div>
 			</div>
 			<div id="contents-area" style="margin-left: 15px;">
 				<div style="min-width: 1100px;">

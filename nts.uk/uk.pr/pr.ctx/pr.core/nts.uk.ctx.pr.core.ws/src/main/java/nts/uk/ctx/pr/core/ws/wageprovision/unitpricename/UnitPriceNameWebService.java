@@ -10,10 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.AddSalaryPerUnitPriceCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.RemoveSalaryPerUnitPriceCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.SalaryPerUnitPriceDataCommand;
-import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.UpdateSalaryPerUnitPriceCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.SalaryPerUnitPriceDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.SalaryPerUnitPriceFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.SalaryPerUnitPriceNameDto;
@@ -74,4 +71,5 @@ public class UnitPriceNameWebService extends WebService {
 	public void removeStatementItemData(SalaryPerUnitPriceDataCommand command) {
 		this.removeUnitPriceCommandHandler.handle(command.getSalaryPerUnitPriceName());
 	}
+
 }

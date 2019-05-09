@@ -4,11 +4,13 @@ module nts.uk.pr.view.qmm013.a {
 
     export module service {
         
+        import exportFile = nts.uk.request.exportFile;
         let paths = {
             getUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/getUnitPriceData/{0}/{1}",
             getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}",
             registerUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/registerUnitPriceData",
-            removeUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/removeUnitPriceData"
+            removeUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/removeUnitPriceData",
+            exportExcel: "file/core/wageprovision/salaryperunit/exportExcel"
         }
 
         export function getUnitPriceData(cid: string, code: string): JQueryPromise<any> {
@@ -28,5 +30,10 @@ module nts.uk.pr.view.qmm013.a {
         export function removeUnitPriceData(command: any) : JQueryPromise<any> {
             return nts.uk.request.ajax('pr', paths.removeUnitPriceData, command);
         }
+        export function exportExcel(): JQueryPromise<any> {
+            let _path = format(paths.exportExcel);
+            return exportFile(_path);
+        }
+
     }
 }
