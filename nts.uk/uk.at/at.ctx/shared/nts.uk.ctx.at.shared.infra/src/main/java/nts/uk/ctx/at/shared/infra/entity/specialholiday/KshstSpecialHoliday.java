@@ -32,7 +32,7 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	public String specialHolidayName;
 	
 	/*自動付与区分*/
-	@Column(name = "AUTO_GRANT")
+	@Column(name = "SPHD_AUTO_GRANT")
 	public int autoGrant;
 	
 	/* メモ */
