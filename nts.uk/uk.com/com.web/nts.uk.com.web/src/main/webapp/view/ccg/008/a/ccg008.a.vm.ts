@@ -85,6 +85,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 }else{
                     self.selectedSwitch(obj);                    
                 }
+                nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
             })
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
