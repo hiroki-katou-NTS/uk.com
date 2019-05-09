@@ -449,11 +449,13 @@ const DIRTY = 'dirty',
 
                 if (field) { // check match field name
                     if (field === 'clear') {
-                        let $validators: Array<{
-                            path: string;
-                            watch: (value: any) => void;
-                            unwatch: () => void;
-                        }> = (self as any).$validators,
+                        let $validators: {
+                            [key: number]: {
+                                path: string;
+                                watch: (value: any) => void;
+                                unwatch: () => void;
+                            }
+                        } = (self as any).$validators,
                             errors = {};
 
                         $.objectForEach($validators, (k: string, validator: {
@@ -468,10 +470,26 @@ const DIRTY = 'dirty',
                             vue.set(self, '$errors', errors);
                         }, 100);
                     } else {
-                        let error = $.get(errors, field, null),
-                            validate = $.get(validations, field, null);
+                        let mdel = $.get(self, field, null),
+                            error = $.get(errors, field, null),
+                            $validators: {
+                                [key: number]: {
+                                    path: string;
+                                    watch: (value: any) => void;
+                                    unwatch: () => void;
+                                }
+                            } = (self as any).$validators;
 
-                        if (error && validate) {
+                        if ($.has(self, field) && error && $validators) {
+                            $.objectForEach($validators, (k: string, validator: {
+                                path: string;
+                                watch: (value: any) => void;
+                                unwatch: () => void;
+                            }) => {
+                                if (validator.path === field) {
+                                    validator.watch(mdel);
+                                }
+                            });
                         }
                     }
                 } else { // check all
