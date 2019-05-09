@@ -261,10 +261,17 @@ const DIRTY = 'dirty',
                                                 }
                                             });
 
-                                            let vldtor: { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
+                                            let vldtor: Function | { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
 
                                             if (vldtor) {
-                                                if ($.isFunction(vldtor.test)) {
+                                                if ($.isFunction(vldtor)) {
+                                                    let msgs = vldtor.apply(self, [value]);
+                                                    if (msgs) {
+                                                        $.set(models, msgkey, msgs);
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
+                                                } else if ($.isFunction(vldtor.test)) {
                                                     if (!vldtor.test.apply(self, [value])) {
                                                         if (!$.size(models)) {
                                                             $.set(models, msgkey, vldtor.message || vldtor.messageId);
@@ -304,9 +311,16 @@ const DIRTY = 'dirty',
                                         $.keys(rule)
                                             .filter((f) => $.keys(validators).indexOf(f) == -1)
                                             .forEach((key: string) => {
-                                                let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
+                                                let vldtor: Function | { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
 
-                                                if ($.isFunction(vldtor.test)) {
+                                                if ($.isFunction(vldtor)) {
+                                                    let msgs = vldtor.apply(self, [value]);
+                                                    if (msgs) {
+                                                        $.set(models, msgkey, msgs);
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
+                                                } else if ($.isFunction(vldtor.test)) {
                                                     if (!vldtor.test.apply(self, [value])) {
                                                         if (!$.size(models)) {
                                                             $.set(models, key, vldtor.message || vldtor.messageId);
