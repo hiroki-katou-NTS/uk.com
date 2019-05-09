@@ -379,6 +379,40 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 	
 	@Override
+	public List<WorkTypeInfor> getPossibleWorkTypeWithNoMasterAndOrder(String companyId, List<String> lstPossible) {
+		if(CollectionUtil.isEmpty(lstPossible)){
+			return Collections.emptyList();
+		}
+		List<WorkTypeInfor> resultList = new ArrayList<>();
+		
+		lstPossible.forEach(wkTypeCd -> {
+
+			WorkTypeInfor wkType;
+
+			Optional<WorkTypeInfor> optWkInfo = this.queryProxy().query(SELECT_WORKTYPE_WITH_NO_MASTER_AND_ORDER, WorkTypeInfor.class)
+					.setParameter("companyId", companyId).setParameter("wkTypeCd", wkTypeCd).getSingle();
+			if (optWkInfo.isPresent()) {
+
+				wkType = optWkInfo.get();
+			} else {
+				wkType = new WorkTypeInfor(wkTypeCd, TextResource.localize("KAL003_120"), "", "", 0, "", 0, 0, 0, 0, 0,
+						null, Collections.emptyList());
+			}
+
+			resultList.add(wkType);
+
+		});
+		List<WorkTypeInfor> lstOrder = resultList.stream().filter(c -> c.getDispOrder() != null).collect(Collectors.toList());
+		List<WorkTypeInfor> lstNotOrder = resultList.stream().filter(c -> c.getDispOrder() == null).collect(Collectors.toList());
+		Collections.sort(lstOrder, Comparator.comparing(WorkTypeInfor:: getDispOrder));
+		Collections.sort(lstNotOrder, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
+		List<WorkTypeInfor> lstSort = new ArrayList<>();
+		lstSort.addAll(lstOrder);
+		lstSort.addAll(lstNotOrder);
+		return lstSort;
+	}
+	
+	@Override
 	public List<WorkTypeInfor> findAllByOrder(String companyId) {
 		return this.queryProxy().query(SELECT_WORKTYPE_ALL_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId).getList();
 	}
