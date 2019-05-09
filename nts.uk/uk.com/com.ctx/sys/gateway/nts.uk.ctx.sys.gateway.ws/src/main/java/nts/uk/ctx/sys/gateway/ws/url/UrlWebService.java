@@ -102,6 +102,8 @@ public class UrlWebService {
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
 			// record login
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -110,8 +112,8 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
-							null), 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1095"), 
+							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
 			throw new BusinessException("Msg_1095");
 		}
@@ -122,7 +124,7 @@ public class UrlWebService {
 			contractCD = "000000000000";
 		}
 		// アルゴリズム「埋込URL実行契約セット」を実行する
-		Contract contract = this.executionContractSet(contractCD);
+		Contract contract = this.executionContractSet(contractCD, urlExecInfoExport);
 		//EA修正履歴3275 処理の順番を逆転
 		//hoatt 2019.03.28
 		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
@@ -167,13 +169,26 @@ public class UrlWebService {
 				changePw);
 	}
 	
-	private Contract executionContractSet(String contractCD){
+	private Contract executionContractSet(String contractCD, UrlExecInfo urlExecInfoExport){
 		GeneralDate systemDate = GeneralDate.today(); 
 		// ドメインモデル「契約」を取得する
 		Optional<Contract> opContract = contractRepository.getContract(contractCD);
 		// 契約期間切れチェックする
 		if(!opContract.isPresent() || 
 			(systemDate.before(opContract.get().getContractPeriod().start())|| systemDate.after(opContract.get().getContractPeriod().end()))){
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
+			loginRecordRegistService.loginRecord(
+					new LoginRecordInput(
+							urlExecInfoExport.getProgramId(), 
+							urlExecInfoExport.getScreenId(), 
+							"", 
+							1, 
+							2, 
+							"", 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1317"), 
+							urlExecInfoExport.getSid()), 
+					urlExecInfoExport.getCid());
 			// アルゴリズム「契約認証する_アクティビティ(基本)」を実行する
 			throw new BusinessException("Msg_1317");
 		}
@@ -229,7 +244,7 @@ public class UrlWebService {
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		//アルゴリズム「ログイン後チェック」を実行する
-		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(),urlAccApprovalOutput.getUserImport().getPassword());
+		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(), urlAccApprovalOutput.getUserImport().getPassword(), false);
 		changPw.setSuccessMsg(systemSuspendOutput.getMsgContent());
 		return changPw;
 	}

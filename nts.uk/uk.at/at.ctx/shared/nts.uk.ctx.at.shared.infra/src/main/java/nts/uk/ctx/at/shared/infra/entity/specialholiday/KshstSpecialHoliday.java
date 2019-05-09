@@ -31,6 +31,10 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	@Column(name = "SPHD_NAME")
 	public String specialHolidayName;
 	
+	/*自動付与区分*/
+	@Column(name = "SPHD_AUTO_GRANT")
+	public int autoGrant;
+	
 	/* メモ */
 	@Column(name = "MEMO")
 	public String memo;

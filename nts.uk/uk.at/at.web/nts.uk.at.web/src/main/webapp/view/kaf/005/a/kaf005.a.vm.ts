@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import util = nts.uk.util;
     import text = nts.uk.resource.getText;
+    import showError = nts.uk.at.view.kaf000.shr.model.CommonProcess.showError;
 
     export class ScreenModel {
         
@@ -46,6 +47,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
+        //申請理由が必須
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
@@ -335,6 +337,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
@@ -723,8 +726,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             nts.uk.ui.block.clear();
                         });
                     } else {
-                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                            .then(function() { nts.uk.ui.block.clear(); });
+                        showError(res);
                     }
                 }
             });

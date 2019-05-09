@@ -6,7 +6,9 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -45,4 +47,17 @@ public interface GetAgreementTime {
 	 * @return 36協定上限複数月平均時間
 	 */
 	Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId, YearMonth yearMonth, GeneralDate criteria);
+
+	/**
+	 * 36協定上限複数月平均時間と年間時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param averageMonth 指定年月　（複数月平均時間の基準年月）
+	 * @param yearPeriod 年月期間　（年間時間の年月期間）
+	 * @param criteria 基準日
+	 * @param scheRecAtr 予実区分
+	 * @return 36協定時間Output
+	 */
+	AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+			YearMonthPeriod yearPeriod, GeneralDate criteria, ScheRecAtr scheRecAtr);
 }

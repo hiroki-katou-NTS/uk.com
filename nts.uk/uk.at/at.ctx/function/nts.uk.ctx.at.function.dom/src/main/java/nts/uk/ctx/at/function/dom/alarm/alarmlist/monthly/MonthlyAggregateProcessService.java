@@ -286,7 +286,7 @@ public class MonthlyAggregateProcessService {
 			
 			BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, emp.getId(),
 					newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
-					Collections.emptyList(), Collections.emptyList());
+					Collections.emptyList(), Collections.emptyList(), Optional.empty());
 			BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 					.getBreakDayOffMngInPeriod(param);
 			List<BreakDayOffDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getLstDetailData();
@@ -1710,7 +1710,7 @@ public class MonthlyAggregateProcessService {
 		
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
 				newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
-				Collections.emptyList(), Collections.emptyList());
+				Collections.emptyList(), Collections.emptyList(), Optional.empty());
 		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 				.getBreakDayOffMngInPeriod(param);
 		List<BreakDayOffDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getLstDetailData();

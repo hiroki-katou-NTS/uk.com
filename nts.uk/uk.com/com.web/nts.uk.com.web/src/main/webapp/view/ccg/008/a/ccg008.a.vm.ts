@@ -63,7 +63,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    if(data.check == true || data.checkMyPage == false){
+                    if(self.selectedTab() == 'tab-1'){
                         self.showToppage(self.dataSource().topPage);                        
                     }else{
                         self.showMypage(self.dataSource().myPage);
@@ -85,6 +85,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 }else{
                     self.selectedSwitch(obj);                    
                 }
+                nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
             })
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
@@ -121,30 +122,37 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var self = this;
             self.buildLayout(data, model.TOPPAGE);
             // ẩn hiện switch button
-            let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
                                                                     || o.placementPartDto.topPageCode == "0004")
                                                                     && o.placementPartDto.type === 0) 
-                                                                    || (o.placementPartDto.topPageCode == "0002" 
-                                                                    && o.placementPartDto.type === 1)});
-            if(switchButton.length == 0){
-                self.switchVisible(false);
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
             }else{
-                self.switchVisible(true);
+                self.switchVisible(false);
             }
         }
         //display my page
         showMypage(data: model.LayoutForMyPageDto) {
             var self = this;
             self.buildLayout(data, model.MYPAGE);
-            let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                            || o.placementPartDto.topPageCode == "0004")
-                                                                            && o.placementPartDto.type === 0) 
-                                                                            || (o.placementPartDto.topPageCode == "0002" 
-                                                                            && o.placementPartDto.type === 1)});
-            if(switchButton.length == 0){
-                self.switchVisible(false);
+            // ẩn hiện switch button
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
             }else{
-                self.switchVisible(true);
+                self.switchVisible(false);
             }
         }
 
@@ -204,7 +212,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     self.dataSource(data);
 //                    self.showMypage(self.dataSource().myPage);
 //                    self.showToppage(self.dataSource().topPage);
-                    if(data.check == true || data.checkMyPage == false){
+                    if(self.selectedTab() == 'tab-1'){
                         self.showToppage(self.dataSource().topPage);                        
                     }else{
                         self.showMypage(self.dataSource().myPage);
