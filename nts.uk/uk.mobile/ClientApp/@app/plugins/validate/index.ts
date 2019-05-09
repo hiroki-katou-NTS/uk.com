@@ -107,6 +107,16 @@ const DIRTY = 'dirty',
                         }
                     });
 
+                    // define obser for validations
+                    let errors = {};
+
+                    paths(validations)
+                        .forEach((path: string) => {
+                            $.set(errors, path, {});
+                        });
+
+                    vue.set(self, '$errors', errors);
+
                     delete self.$options.validations;
 
                     if (self.$options.constraints && self.$options.constraints.length) {
