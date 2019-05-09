@@ -1,9 +1,5 @@
-##### 2. Explaint
-
-> Sample quote
-
-- First item list
-- Second item list
+   
+##### 2. Hướng dẫn
 
 **HTML Code:**
 
@@ -27,22 +23,11 @@
 </div>
 ```
 
-**Typescript code:**
+Để tạo accordion, bạn chỉ cần khai báo HTML theo form dưới đây.  
+Tạo 1 khối div có class="accordion" chứa các khối div có class="card"  
+Mỗi khối div có class="card" chứa 2 thành phần "card-header" và "collapse"  
 
-```typescript
-class ClassName {
-  constructor() {
-    // sample contructor
-  }
+Khối div "card-header" chứa tiêu đề. Bên trong nó nếu muốn thêm button thì cần gán cho button đó class="btn btn-link".  
+Trong div "collapse" chứa khối div có class="card-body". Bên trong "card-body" là nội dung cần hiển thị của 1 card.  
 
-  choose() {
-    // sample method
-  }
-}
-```
-
-##### 3. API
-
-| id  | name | content |
-| --- | ---- | ------- |
-| id  | name | content |
+Xem hình dưới đây để nhìn tổng quan hơn.

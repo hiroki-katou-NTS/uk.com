@@ -51,5 +51,43 @@
     </div>
 
     <markdown/>
+
+    <div class="img-accordion">
+
+        class="accordion"
+        <div class="img-card">
+            class="card <span style='color : red'>show</span>"
+            <div class="img-card-header">
+                class="card-header"
+                <div class="img-btn-link">
+                    class="btn btn-link"
+                </div>
+            </div>  
+            <div class="img-collapse">
+                class="collapse"
+                <div class="img-card-body">
+                    class="card-body"
+                </div>
+            </div>
+        </div>
+
+        <div class="img-card">
+            class="card"
+            <div class="img-card-header">
+                class="card-header"
+                <div class="img-btn-link">
+                    class="btn btn-link"
+                </div>
+            </div>  
+            <div class="img-collapse">
+                class="collapse"
+                <div class="img-card-body">
+                    class="card-body"
+                </div>
+            </div>
+        </div>
+
+    </div>
+
   </div>
 </template>

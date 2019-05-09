@@ -9,6 +9,7 @@ import { component } from '@app/core/component';
     },
     template: require('./index.vue'),
     resource: require('./resources.json'),
+    style: require('./style.scss'),
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
