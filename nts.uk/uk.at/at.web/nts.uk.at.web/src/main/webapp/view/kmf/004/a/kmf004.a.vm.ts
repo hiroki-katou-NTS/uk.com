@@ -696,8 +696,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
                 }
             }
-            
+
             if (nts.uk.ui.errors.hasError()) {
+                
                 nts.uk.ui.block.clear();
                 return;
             }
