@@ -2,6 +2,7 @@ import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
 import { ccg007 } from '../common/common';
+import { characteristics } from '@app/utils/storage';
 
 @component({
     route: '/ccg/007/c',
@@ -128,16 +129,24 @@ export class ChangePassComponent extends Vue {
 
     public loginOnly() {
         let self = this;
-        ccg007.login(servicePath.loginWithNoChangePass , this, {    companyCode : self.params.companyCode,
-                                                    employeeCode: self.params.employeeCode,
-                                                    password: self.params.oldPassword,
-                                                    contractCode : self.params.contractCode,
-                                                    contractPassword : self.params.contractPassword
-                                        }, () => {
-                                            self.model.currentPassword = '';
-                                            self.model.newPassword = '';
-                                            self.model.newPasswordConfirm = '';
-                                        }, self.params.saveInfo);
+        characteristics.remove('companyCode')
+                        .then(() => characteristics.save('companyCode', self.params.companyCode))
+                        .then(() => characteristics.remove('employeeCode'))
+                        .then(() => {
+                            if (self.params.saveInfo) {
+                                characteristics.save('employeeCode', self.params.employeeCode);
+                            }
+                        }).then(() => ccg007.toHomePage(self));
+        // ccg007.login(servicePath.loginWithNoChangePass , this, {    companyCode : self.params.companyCode,
+        //                                             employeeCode: self.params.employeeCode,
+        //                                             password: self.params.oldPassword,
+        //                                             contractCode : self.params.contractCode,
+        //                                             contractPassword : self.params.contractPassword
+        //                                 }, () => {
+        //                                     self.model.currentPassword = '';
+        //                                     self.model.newPassword = '';
+        //                                     self.model.newPasswordConfirm = '';
+        //                                 }, self.params.saveInfo);
     }
 
     public showMessageError(res: any) {
