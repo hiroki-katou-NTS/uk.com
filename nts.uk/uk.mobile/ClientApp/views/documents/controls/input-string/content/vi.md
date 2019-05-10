@@ -3,7 +3,7 @@
 ```html
 <nts-text-editor
     v-model="text"
-    :name="'Text Item'"/>
+    name='Text Item'/>
 ```
 
 ## 3. Khai báo trong index.ts

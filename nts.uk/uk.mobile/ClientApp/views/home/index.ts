@@ -2,15 +2,13 @@ import { Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 
 import { MobilePicker } from '@app/components/picker';
-import { InfinityPickerComponent } from '@app/components';
 @component({
     route: '/',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
     components: {
-        'mpkr': MobilePicker,
-        'ipkr': InfinityPickerComponent
+        'mpkr': MobilePicker
     },
     validations: {
         model: {
@@ -133,7 +131,7 @@ export class HomeComponent extends Vue {
     }
 
     public created() {
-        for (let i = 1990; i <= 2099; i++) {
+        for (let i = 2015; i <= 2020; i++) {
             this.years.push(i);
             this.dataSources.year.push({ text: `${i}年`, value: i });
         }
@@ -154,92 +152,12 @@ export class HomeComponent extends Vue {
         this.tets = value;
     }
 
-    /*public mounted() {
-        let transY = -200,
-            mtop = 0,
-            count = 0,
-            scr = this.$refs.scroll as HTMLElement,
-            emulate = () => {
-                scr.setAttribute('style', `transform: translateY(${transY}px); margin-top: ${mtop}px;`);
+    public title: string = '2019-01-02';
 
-                if (transY >= -440) {
-                    setTimeout(emulate, 200);
-                }
-
-                transY -= 1;
-                count += 1;
-
-                if (count == 40 || (count == 20 && transY >= -220)) {
-                    mtop += 40;
-                    count = 0;
-                }
-            };
-
-        scr.addEventListener('click', () => {
-            transY = -200;
-            mtop = 0;
-            count = 0;
-        });
-
-        emulate();
-    }*/
-
-    public showPicker() {
-
-        this.$picker({
-            h1: 0,
-            h2: 1,
-            m1: 0,
-            m2: 0
-        },
-            {
-                h1: [{
-                    text: '0',
-                    value: 0
-                }, {
-                    text: '1',
-                    value: 1
-                }, {
-                    text: '2',
-                    value: 2
-                }],
-                h2: [{
-                    text: '0',
-                    value: 0
-                }, {
-                    text: '1',
-                    value: 1
-                }, {
-                    text: '2',
-                    value: 2
-                }],
-                m1: [{
-                    text: '0',
-                    value: 0
-                }, {
-                    text: '1',
-                    value: 1
-                }, {
-                    text: '2',
-                    value: 2
-                }],
-                m2: [{
-                    text: '0',
-                    value: 0
-                }, {
-                    text: '1',
-                    value: 1
-                }, {
-                    text: '2',
-                    value: 2
-                }]
-            }, {
-                onSelect() {
-                    // sự kiện select ở đây
-                }
-            }).then((v) => {
-                console.log(v);
-            });
+    public onSelect(value: any) {
+        if (value) {
+            this.title = `${value.year}-${value.month}-${value.day}`;
+        }
     }
 
     public onPan(evt: TouchEvent) {

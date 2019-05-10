@@ -3,7 +3,7 @@
 ```html
 <nts-text-area
     v-model="text"
-    :name="'Textarea Item'"/>
+    name='Textarea Item'/>
 ```
 
 ## 3. Khai báo trong index.ts

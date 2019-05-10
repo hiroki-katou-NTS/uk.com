@@ -107,6 +107,16 @@ const DIRTY = 'dirty',
                         }
                     });
 
+                    // define obser for validations
+                    let errors = {};
+
+                    paths(validations)
+                        .forEach((path: string) => {
+                            $.set(errors, path, {});
+                        });
+
+                    vue.set(self, '$errors', errors);
+
                     delete self.$options.validations;
 
                     if (self.$options.constraints && self.$options.constraints.length) {
@@ -261,10 +271,17 @@ const DIRTY = 'dirty',
                                                 }
                                             });
 
-                                            let vldtor: { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
+                                            let vldtor: Function | { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
 
                                             if (vldtor) {
-                                                if ($.isFunction(vldtor.test)) {
+                                                if ($.isFunction(vldtor)) {
+                                                    let msgs = vldtor.apply(self, [value]);
+                                                    if (msgs) {
+                                                        $.set(models, msgkey, msgs);
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
+                                                } else if ($.isFunction(vldtor.test)) {
                                                     if (!vldtor.test.apply(self, [value])) {
                                                         if (!$.size(models)) {
                                                             $.set(models, msgkey, vldtor.message || vldtor.messageId);
@@ -304,9 +321,16 @@ const DIRTY = 'dirty',
                                         $.keys(rule)
                                             .filter((f) => $.keys(validators).indexOf(f) == -1)
                                             .forEach((key: string) => {
-                                                let vldtor: { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
+                                                let vldtor: Function | { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
 
-                                                if ($.isFunction(vldtor.test)) {
+                                                if ($.isFunction(vldtor)) {
+                                                    let msgs = vldtor.apply(self, [value]);
+                                                    if (msgs) {
+                                                        $.set(models, msgkey, msgs);
+                                                    } else {
+                                                        $.omit(models, msgkey);
+                                                    }
+                                                } else if ($.isFunction(vldtor.test)) {
                                                     if (!vldtor.test.apply(self, [value])) {
                                                         if (!$.size(models)) {
                                                             $.set(models, key, vldtor.message || vldtor.messageId);
@@ -425,11 +449,13 @@ const DIRTY = 'dirty',
 
                 if (field) { // check match field name
                     if (field === 'clear') {
-                        let $validators: Array<{
-                            path: string;
-                            watch: (value: any) => void;
-                            unwatch: () => void;
-                        }> = (self as any).$validators,
+                        let $validators: {
+                            [key: number]: {
+                                path: string;
+                                watch: (value: any) => void;
+                                unwatch: () => void;
+                            }
+                        } = (self as any).$validators,
                             errors = {};
 
                         $.objectForEach($validators, (k: string, validator: {
@@ -444,10 +470,26 @@ const DIRTY = 'dirty',
                             vue.set(self, '$errors', errors);
                         }, 100);
                     } else {
-                        let error = $.get(errors, field, null),
-                            validate = $.get(validations, field, null);
+                        let mdel = $.get(self, field, null),
+                            error = $.get(errors, field, null),
+                            $validators: {
+                                [key: number]: {
+                                    path: string;
+                                    watch: (value: any) => void;
+                                    unwatch: () => void;
+                                }
+                            } = (self as any).$validators;
 
-                        if (error && validate) {
+                        if ($.has(self, field) && error && $validators) {
+                            $.objectForEach($validators, (k: string, validator: {
+                                path: string;
+                                watch: (value: any) => void;
+                                unwatch: () => void;
+                            }) => {
+                                if (validator.path === field) {
+                                    validator.watch(mdel);
+                                }
+                            });
                         }
                     }
                 } else { // check all

@@ -1,0 +1,10 @@
+{
+    "jp": {
+        "sample" : "Sample (jp)",
+        "documentshtmlsaccordion": "Arcordion"
+    },
+    "vi": {
+        "sample" : "Ví dụ",
+        "documentshtmlsaccordion": "Accordion"
+    }
+}

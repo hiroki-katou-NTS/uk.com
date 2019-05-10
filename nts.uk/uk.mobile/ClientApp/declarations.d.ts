@@ -25,7 +25,7 @@ declare interface IRule {
     constraint?: string;
     charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric' | 'Numeric';
     valueType?: 'String' | 'Decimal' | 'Integer' | 'HalfInt' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
-    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | {
+    [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | Function | {
         test: RegExp | Function;
         message: string;
     } | {

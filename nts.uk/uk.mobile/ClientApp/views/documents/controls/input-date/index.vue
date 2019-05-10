@@ -7,7 +7,7 @@
         <b>Smartphone</b>
       </i>
     </label>
-    <nts-date-input v-model="date" :name="'Date Item'"/>
+    <nts-date-input v-model="date" name='Date Item'/>
     <markdown/>
 
     <markdown/>

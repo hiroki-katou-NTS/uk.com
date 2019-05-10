@@ -6,10 +6,11 @@
                 background-color: $primary;
             }
             &:after {
-                content: "›";
-                font-size: 32px;
+                content: "\f054";
+                font-weight: 600;
+                font-family: "Font Awesome 5 Free";
                 position: absolute;
-                top: calc(50% - 24px);
+                top: calc(50% - 10px);
                 right: 15px;
                 color: #aaa;
             }
@@ -17,9 +18,20 @@
     }
     &-single-select {
         .list-group-item {
+            &:after {
+                content: "\f111";
+                font-family: "Font Awesome 5 Free";
+                position: absolute;
+                top: calc(50% - 10px);
+                right: 15px;
+                color: #aaa;
+            }            
             &.selected {
                 color: #fff;
                 background-color: $primary;
+                &:after {
+                    content: "\f058";
+                }
             }
         }
     }

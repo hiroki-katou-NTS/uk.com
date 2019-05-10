@@ -3,7 +3,7 @@
     <h5>1. {{'sample' | i18n}}</h5>
     <nts-text-editor
         v-model="text"
-        :name="'Text Item'"/>
+        name='Text Item'/>
 
     <markdown/>
 
