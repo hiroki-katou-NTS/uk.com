@@ -86,6 +86,8 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstallationType;
@@ -366,6 +368,16 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
        //権限（ロール）情報を取得、設定する 
        this.setRoleId(user.getUserId());
    }
+   
+   public void initSessionC(UserImportNew user, EmployeeImport em, String companyCode, LoginUserRoles roles) {
+       //「ログインユーザコンテキスト」を新規作成、セッションに格納
+       manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
+               companyCode, em.getEmployeeId(), em.getEmployeeCode());
+       //権限（ロール）情報を取得、設定する 
+//       this.setRoleId(user.getUserId());
+       manager.roleSet(roles);
+   }
+   
    /**
 
 	/**
@@ -528,6 +540,54 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 
 		return new CheckChangePassDto(false, null, false);
+	}
+	
+	public LoginUserRoles checkRole(String userId) {
+		DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
+		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
+		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
+		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
+		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
+		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
+		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
+		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
+		// 就業
+		if (employmentRoleId != null) {
+			roles.setRoleIdForAttendance(employmentRoleId);
+		}
+		// 給与
+		if (salaryRoleId != null) {
+			roles.setRoleIdForPayroll(salaryRoleId);
+		}
+		// 人事
+		if (humanResourceRoleId != null) {
+			roles.setRoleIdForPersonnel(humanResourceRoleId);
+		}
+		// オフィスヘルパー
+		if (officeHelperRoleId != null) {
+			roles.setRoleIdforOfficeHelper(officeHelperRoleId);
+		}
+		// 会計
+		// マイナンバー
+		// グループ会社管理
+		if (groupCompanyManagerRoleId != null) {
+			roles.setRoleIdforGroupCompaniesAdmin(groupCompanyManagerRoleId);
+		}
+		// 会社管理者
+		if (companyManagerRoleId != null) {
+			roles.setRoleIdforCompanyAdmin(companyManagerRoleId);
+		}
+		// システム管理者
+		if (systemManagerRoleId != null) {
+			roles.setRoleIdforSystemAdmin(systemManagerRoleId);
+		}
+		// 個人情報
+		if (personalInfoRoleId != null) {
+			roles.setRoleIdforPersonalInfo(personalInfoRoleId);
+		}
+
+		return roles;
 	}
 
 	/**

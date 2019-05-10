@@ -177,6 +177,18 @@ public class LoginRecordRegistService {
 		return systemSuspendOutput;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public SystemSuspendOutput checkSystemStop(BasicLoginCommand command, LoginUserRoles loginUserRoles) {
+		// アルゴリズム「システム利用停止の確認」を実行する
+		String programID = AppContexts.programId().substring(0, 6);
+		String screenID = AppContexts.programId().substring(6);
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(command.getContractCode(),  command.getCompanyCode(), 0, programID, screenID);
+		if(systemSuspendOutput.isError()){
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
+		}
+		return systemSuspendOutput;
+	}
+
 	/**
 	 * Check limit time.
 	 *

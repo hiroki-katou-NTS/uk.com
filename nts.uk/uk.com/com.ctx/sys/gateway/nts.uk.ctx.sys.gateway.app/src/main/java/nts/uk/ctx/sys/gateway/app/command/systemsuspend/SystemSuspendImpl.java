@@ -41,12 +41,19 @@ public class SystemSuspendImpl implements SystemSuspendService {
 
 	@Override
 	public SystemSuspendOutput confirmSystemSuspend(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
+		LoginUserRoles loginUserRoles = AppContexts.user().roles();
+
+		return confirmSystemSuspend(contractCD, companyCD, loginMethod, programID, screenID, loginUserRoles);
+	}
+	
+	@Override
+	public SystemSuspendOutput confirmSystemSuspend(String contractCD, String companyCD, int loginMethod, String programID, String screenID, LoginUserRoles loginUserRoles) {
 		// 「利用停止するしない」をチェックする
 		UsageStopOutput usageStopOutput = this.checkUsageStop(contractCD, companyCD);
 		if(!usageStopOutput.isUsageStop()){
 			return new SystemSuspendOutput(false, "", "");
 		}
-		LoginUserRoles loginUserRoles = AppContexts.user().roles();
+		
 		// [利用停止モード]を判別
 		if(usageStopOutput.getStopMode()==StopModeType.ADMIN_MODE){
 			// システム管理者ロールの設定があるか判別

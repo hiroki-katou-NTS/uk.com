@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<BasicLoginCommand> {
@@ -52,6 +53,9 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 				
 		// Get User by PersonalId
 		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId,employeeCode);
+
+        LoginUserRoles roles = this.checkRole(user.getUserId());
+		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
 		
 		// check password
 		String msgErrorId = this.compareHashPassword(user, command.getPassword());
@@ -65,9 +69,11 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 		this.errorCheck2(companyId, command.getContractCode(), user.getUserId(), false, em.getEmployeeId());
+
 		
 		//アルゴリズム「ログイン記録」を実行する
 		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword());
+		
 		if (passChecked.showChangePass && this.needShowChangePass()){
 			return passChecked;
 		}
@@ -76,15 +82,13 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		command.getRequest().changeSessionId();
         
         //ログインセッション作成 (Create login session)
-        this.initSessionC(user, em, command.getCompanyCode());
-		
-		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command);
+        this.initSessionC(user, em, command.getCompanyCode(), roles);
+		passChecked.successMsg = systemSuspendOutput.getMsgID();
 		
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
 		this.service.callLoginRecord(param);
 		
-		passChecked.successMsg = systemSuspendOutput.getMsgID();
 		return passChecked;
 	}
 
