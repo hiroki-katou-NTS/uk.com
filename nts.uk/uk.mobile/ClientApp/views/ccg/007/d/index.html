@@ -16,7 +16,6 @@
                 v-bind:disabled="false"
                 v-bind:show-title="false"
                 v-bind:constraint="validations.companyCode"
-                v-bind:errors-always="$errors.companyCode"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
                 <option value="">--- Choose options ---</option>
                 <option v-for="(comp,k) in companies" :value="comp.companyCode">
@@ -34,7 +33,6 @@
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
                     v-bind:constraint="validations.employeeCode"
-                    v-bind:errors-always="$errors.employeeCode"
                     v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
             </form>
 

@@ -13,7 +13,6 @@
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.newPassword"
-                v-bind:errors-always="$errors.model.newPassword"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
     
             <form v-submit="changePass">
@@ -25,7 +24,6 @@
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
                     v-bind:constraint="validations.model.newPasswordConfirm"
-                    v-bind:errors-always="$errors.model.newPasswordConfirm"
                     v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
             </form>
     
