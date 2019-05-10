@@ -17,6 +17,9 @@ import { characteristics } from '@app/utils/storage';
                 required: true,
                 checkSame: {
                     test(value) {
+                        if(_.isEmpty(this.model.newPasswordConfirm)){
+                            return false;
+                        }
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
@@ -25,6 +28,9 @@ import { characteristics } from '@app/utils/storage';
                 required: true,
                 checkSame: {
                     test(value) {
+                        if(_.isEmpty(this.model.newPassword)){
+                            return false;
+                        }
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
