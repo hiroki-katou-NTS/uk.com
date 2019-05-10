@@ -14,7 +14,6 @@
             v-bind:disabled="disabled"
             v-bind:show-title="true"
             v-bind:constraint="validations.model.currentPassword"
-            v-bind:errors-always="$errors.model.currentPassword"
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
         <nts-input-password
@@ -26,7 +25,6 @@
             v-bind:disabled="disabled"
             v-bind:show-title="true"
             v-bind:constraint="validations.model.newPassword"
-            v-bind:errors-always="$errors.model.newPassword"
             v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
 
         <form v-submit="changePass">
@@ -39,7 +37,6 @@
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.newPasswordConfirm"
-                v-bind:errors-always="$errors.model.newPasswordConfirm"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
         </form>
 
@@ -83,10 +80,10 @@
         </div>
         <br/>
         <div class="mb-2">
-            <button class="btn btn-primary btn-lg btn-block" v-click:500="changePass">{{ '#CCGS07_38' | i18n }}</button>
+            <button class="btn btn-primary btn-lg btn-block" v-click:500="changePass">{{ 'CCGS07_38' | i18n }}</button>
         </div>
-        <div class="mb-2">
-            <button class="btn btn-secondary btn-block" v-click:500="loginOnly">{{ '#CCGS07_39' | i18n }}</button>
+        <div class="mb-2" v-if="params.spanDays > 0">
+            <button class="btn btn-secondary btn-block" v-click:500="loginOnly">{{ 'CCGS07_39' | i18n }}</button>
         </div>
     </fieldset>
 </div>
