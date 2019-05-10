@@ -324,7 +324,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2377,7 +2377,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6148,11 +6147,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -8908,7 +8905,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -15726,7 +15723,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -15757,7 +15753,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -15766,7 +15761,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -15786,7 +15780,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16085,7 +16078,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16098,7 +16090,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16118,7 +16109,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -18089,7 +18080,7 @@ var nts;
                                             }
                                         }
                                     }
-                                    else { // or else, check only decimal length
+                                    else {
                                         var dlen = rd.option.decimallength, mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
                                         if (dlen < mdlen) {
                                             evt.preventDefault();
@@ -18098,7 +18089,7 @@ var nts;
                                     }
                                 }
                             }
-                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) { // key backspace || delete
+                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) {
                                 var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                 // if value after delete out of range, preventDefault
                                 if (primitive) {
@@ -18784,7 +18775,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -25793,7 +25784,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -25826,7 +25817,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
+                                for (var i = 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -27929,7 +27920,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -27938,7 +27929,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -33367,7 +33358,7 @@ var nts;
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
-/// <reference path="ui/mgrid.ts"/>
+/// <reference path="ui/mgrid.ts"/> 
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -33427,6 +33418,134 @@ var nts;
                     });
                 })(content || (content = {}));
             })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var ajax = nts.uk.request.ajax;
+                var setShared = nts.uk.ui.windows.setShared;
+                var getShared = nts.uk.ui.windows.getShared;
+                var openModal = nts.uk.ui.windows.sub.modal;
+                ko.components.register("assy-com", {
+                    viewModel: function (params) {
+                        var self = this;
+                        self.height = observableOrDefault(params.height, "120px");
+                        self.width = observableOrDefault(params.width, "640px");
+                        self.labelDistance = observableOrDefault(params.labelDistance, "60px");
+                        self.screenMode = params.screenMode;
+                        self.histIdName = params.histIdName || "histId";
+                        self.isLatestHistSelected = ko.observable(false);
+                        self.masterId = params.masterId;
+                        self.histList = params.histList;
+                        self.selectedHistId = params.selectedHistId;
+                        self.selectedHistId.subscribe(function (id) {
+                            if (!_.findIndex(self.histList(), function (h) { return h.histId === id; })) {
+                                self.isLatestHistSelected(true);
+                            }
+                            else {
+                                self.isLatestHistSelected(false);
+                            }
+                        });
+                        self.pathGet = params.servicePath.get;
+                        self.pathAdd = params.servicePath.add;
+                        self.pathUpdate = params.servicePath.update;
+                        self.pathDelete = params.servicePath.delete;
+                        self.getQueryResult = params.getQueryResult;
+                        self.getSelectedStartDate = params.getSelectedStartDate;
+                        self.loadHist = function (rendered) {
+                            if (!_.isNil(self.masterId) && self.masterId !== "") {
+                                ajax(self.pathGet()).done(function (res) {
+                                    var queryResult = self.getQueryResult(res);
+                                    self.histList(queryResult);
+                                    if (!rendered && self.histList().length > 0) {
+                                        self.selectedHistId(self.histList()[0][self.histIdName]);
+                                    }
+                                    if (rendered && _.isFunction(params.afterRender)) {
+                                        _.defer(function () {
+                                            params.afterRender();
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                if (rendered && _.isFunction(params.afterRender)) {
+                                    params.afterRender();
+                                }
+                            }
+                        };
+                        self.afterRender = self.loadHist.bind(self, true);
+                        self.delVisible = params.delVisible;
+                        self.delChecked = params.delChecked;
+                        self.delEnable = ko.computed(function () {
+                            return self.histList().length > 0 && self.screenMode() === SCREEN_MODE.UPD && self.isLatestHistSelected();
+                        });
+                        self.openAddHistDialog = function () {
+                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId()));
+                            setShared("ASSY_COM_PARAM_CMD", params.commandAdd);
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.pathAdd(), data); });
+                            openModal("com", "/view/assy/addhist/index.xhtml").onClosed(function () {
+                                var done = getShared("HIST_ADD");
+                                if (done) {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterAdd)) {
+                                        params.afterAdd();
+                                    }
+                                }
+                            });
+                        }.bind(self);
+                        self.openUpdHistDialog = function () {
+                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId(), self.getSelectedStartDate()));
+                            setShared("ASSY_COM_PARAM_CMD", params.commandUpdate);
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.pathUpdate(), data); });
+                            openModal("com", "/view/assy/updhist/index.xhtml").onClosed(function () {
+                                var done = getShared("HIST_UPD");
+                                if (done) {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterUpdate)) {
+                                        params.afterUpdate();
+                                    }
+                                }
+                            });
+                        }.bind(self);
+                        self.deleteHist = function () {
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
+                                ajax(self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(function () {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterDelete)) {
+                                        params.afterDelete();
+                                    }
+                                }).fail(function (res) {
+                                    nts.uk.ui.dialog.bundledErrors(res);
+                                });
+                            });
+                        }.bind(self);
+                    },
+                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
+                });
+                function observableOrDefault(val, def) {
+                    return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
+                }
+                var AssyShared = /** @class */ (function () {
+                    function AssyShared(masterId, histId, startDate) {
+                        this.masterId = masterId;
+                        this.histId = histId;
+                        this.startDate = startDate;
+                    }
+                    return AssyShared;
+                }());
+                var SCREEN_MODE;
+                (function (SCREEN_MODE) {
+                    SCREEN_MODE[SCREEN_MODE["NEW"] = 0] = "NEW";
+                    SCREEN_MODE[SCREEN_MODE["UPD"] = 1] = "UPD";
+                })(SCREEN_MODE || (SCREEN_MODE = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -34864,7 +34983,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -40267,7 +40386,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -41027,7 +41146,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -44622,7 +44741,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -44650,7 +44768,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
