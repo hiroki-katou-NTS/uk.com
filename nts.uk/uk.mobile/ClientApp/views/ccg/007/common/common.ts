@@ -15,57 +15,12 @@ export namespace ccg007 {
             if (res.data.showContract) {
                 authenticateContract(self);
             } else {
-                if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517') {
-                    // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-                    self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays]}).then((code) => {
-                        if (code === 'yes') {
-                            self.$goto({ name: 'changepass', params: _.merge({}, 
-                                submitData, 
-                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523' }) 
-                            });
-                        } else {
-                            characteristics.remove('companyCode')
-                                            .then(() => characteristics.save('companyCode', submitData.companyCode))
-                                            .then(() => characteristics.remove('employeeCode'))
-                                            .then(() => {
-                                                if (!_.isEmpty(res.data.successMsg)) {
-                                                    return self.$modal.info({ messageId: res.data.successMsg });
-                                                }
-                                            }).then(() => {
-                                                if (saveInfo) {
-                                                    characteristics.save('employeeCode', submitData.employeeCode);
-                                                }
-                                            }).then(() => toHomePage(self));
-                        }
+                if (!_.isEmpty(res.data.successMsg)) {
+                    self.$modal.info({ messageId: res.data.successMsg }).then(() => {
+                        processAfterLogin(res, self, submitData, resetForm, saveInfo);
                     });
                 } else {
-                    // check MsgError
-                    if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
-                        if (res.data.showChangePass) {
-                            self.$goto({ name: 'changepass', params: _.merge({}, 
-                                        submitData, 
-                                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo }) 
-                                    });
-                        } else {
-                            resetForm();
-                            /** TODO: wait for dialog error method */
-                            self.$modal.error({ messageId: res.data.msgErrorId });
-                        }
-                        self.$mask('hide');
-                    } else {
-                        characteristics.remove('companyCode')
-                            .then(() => characteristics.save('companyCode', submitData.companyCode))
-                            .then(() => characteristics.remove('employeeCode'))
-                            .then(() => {
-                                if (!_.isEmpty(res.data.successMsg)) {
-                                    return self.$modal.info({ messageId: res.data.successMsg });
-                                }
-                            }).then(() => {
-                                if (saveInfo) {
-                                    characteristics.save('employeeCode', submitData.employeeCode);
-                                }
-                            }).then(() => toHomePage(self));
-                    }
+                    processAfterLogin(res, self, submitData, resetForm, saveInfo);
                 }
             }
         }).catch((res: any) => {
@@ -77,6 +32,54 @@ export namespace ccg007 {
                 self.$modal.error(res.messageId);
             }
         });
+    }
+
+    function processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean){
+        if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517') {
+            // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+            self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays.toString()]}).then((code) => {
+                if (code === 'yes') {
+                    self.$goto({ name: 'changepass', params: _.merge({}, 
+                        submitData, 
+                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523', spanDays: res.data.spanDays }) 
+                    });
+                } else {
+                    characteristics.remove('companyCode')
+                                    .then(() => characteristics.save('companyCode', submitData.companyCode))
+                                    .then(() => characteristics.remove('employeeCode'))
+                                    .then(() => {
+                                        if (saveInfo) {
+                                            characteristics.save('employeeCode', submitData.employeeCode);
+                                        }
+                                    }).then(() => toHomePage(self));
+                }
+            });
+        } else {
+            // check MsgError
+            if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
+                if (res.data.showChangePass) {
+                    self.$goto({ name: 'changepass', params: _.merge({}, 
+                                submitData, 
+                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, 
+                                    changePassReason: res.data.changePassReason }) 
+                            });
+                } else {
+                    resetForm();
+                    /** TODO: wait for dialog error method */
+                    self.$modal.error({ messageId: res.data.msgErrorId });
+                }
+                self.$mask('hide');
+            } else {
+                characteristics.remove('companyCode')
+                    .then(() => characteristics.save('companyCode', submitData.companyCode))
+                    .then(() => characteristics.remove('employeeCode'))
+                    .then(() => {
+                        if (saveInfo) {
+                            characteristics.save('employeeCode', submitData.employeeCode);
+                        }
+                    }).then(() => toHomePage(self));
+            }
+        }
     }
 
     export function toHomePage(self) {

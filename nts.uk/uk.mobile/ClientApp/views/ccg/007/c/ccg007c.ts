@@ -61,9 +61,9 @@ export class ChangePassComponent extends Vue {
 
     public created() {
         let self = this;
-        self.mesId = (_.isEmpty(self.params.changePassReason) 
-                        ? self.$i18n(self.params.mesId) 
-                            : self.$i18n(self.params.changePassReason));
+        self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) : 
+                        _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId) 
+                                                                : self.$i18n(self.params.changePassReason);
         Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode), 
                     this.$http.post(servicePath.getUserName, {  contractCode: self.params.contractCode, 
                                                                 employeeCode: self.params.employeeCode, 
