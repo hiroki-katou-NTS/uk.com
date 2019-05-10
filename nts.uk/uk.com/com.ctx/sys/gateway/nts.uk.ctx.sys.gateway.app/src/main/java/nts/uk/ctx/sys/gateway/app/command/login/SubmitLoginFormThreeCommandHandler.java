@@ -6,7 +6,9 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+import org.apache.commons.lang3.StringUtils;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
@@ -87,6 +89,11 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			// Get User by PersonalId
 			user = this.service.getUser(em.getPersonalId(), companyId,employeeCode);
 			
+			//hoatt 2019.05.07 #107445
+			//EA修正履歴No.3369
+			//アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+			this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId, command.isSignOn());
+			
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
@@ -107,8 +114,12 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
         //ログインセッション作成 (Create login session)
         this.initSessionC(user, em, companyCode);
 		
+		// アルゴリズム「システム利用停止の確認」を実行する
         SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command);
 		
+		if(systemSuspendOutput.isError()){
+			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
+		}
 		//EA修正履歴3120
 		//hoatt 2019.03.27
 		Integer loginMethod = command.isSignOn() ? LoginMethod.SINGLE_SIGN_ON.value : LoginMethod.NORMAL_LOGIN.value;
@@ -116,9 +127,12 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
-		
+		//hoatt 2019.05.06
+		//EA修正履歴No.3373
 		//アルゴリズム「ログイン後チェック」を実行する
-		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword);
+		this.deleteLoginLog(user.getUserId());
+		//アルゴリズム「ログイン後チェック」を実行する
+		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
 		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
 		return checkChangePass;
 	}

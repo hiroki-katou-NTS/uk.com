@@ -282,7 +282,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			}
 			List<Integer> uniqueLst = new ArrayList<>();
 			for(Integer legalBreakNo : breakFrNo){
-				if(!targetItem.getBreakFrNo().contains(legalBreakNo)){
+				if(targetItem.getBreakFrNo().isEmpty()||!targetItem.getBreakFrNo().contains(legalBreakNo)){
 					uniqueLst.add(legalBreakNo);
 				}
 			}

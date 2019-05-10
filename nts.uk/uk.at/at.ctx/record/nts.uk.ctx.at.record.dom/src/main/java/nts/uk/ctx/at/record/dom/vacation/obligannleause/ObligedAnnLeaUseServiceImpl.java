@@ -102,6 +102,9 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	public boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
+		// 期間按分使用区分を確認
+		if (distributeAtr == false) return false;
+		
 		// 付与期間と重複する付与期間を持つ残数履歴データを取得
 		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
 		
@@ -196,25 +199,26 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		// 月数を計算
 		double numMonth = 0.0;
 		{
-			// 期間を月数に変換する
-			Integer calcNumMon = period.yearMonthsBetween().size();	// 月数
-			Integer calcFracDays = 0;								// 端数日数
-			GeneralDate checkEnd = period.start().addMonths(calcNumMon-1);		// 計算基準日
-			if (period.end().afterOrEquals(checkEnd)) {
-				// 期間終了日が計算基準日以降なら、端数日数あり
-				DatePeriod fracPeriod = new DatePeriod(checkEnd, period.end());
-				calcFracDays = fracPeriod.datesBetween().size();
+			// 期間を月数に変換する　（期間は、期間開始日～期間終了日翌日にして算出）
+			DatePeriod checkPeriod = new DatePeriod(period.start(), period.end().addDays(1));
+			Integer calcNumMon = checkPeriod.yearMonthsBetween().size() - 1;	// 月数
+			Integer calcFracDays = 0;											// 端数日数
+			GeneralDate checkEnd = checkPeriod.start().addMonths(calcNumMon);	// 計算基準日
+			if (checkPeriod.end().after(checkEnd)) {
+				// 期間終了日翌日が計算基準日より後なら、端数日数あり
+				DatePeriod fracPeriod = new DatePeriod(checkEnd, checkPeriod.end());
+				calcFracDays = fracPeriod.datesBetween().size() - 1;
 			}
-			else if (period.end().addDays(-1).equals(checkEnd)) {
-				// 期間終了日が計算基準日前日なら、端数日数なし
+			else if (checkPeriod.end().equals(checkEnd)) {
+				// 期間終了日翌日が計算基準日と同じなら、端数日数なし
 				calcFracDays = 0;
 			}
 			else {
-				// 期間終了日が計算基準日前日以前なら、１か月減らした月数で端数計算
+				// 期間終了日翌日が計算基準日より前なら、１か月減らした月数で端数計算
 				calcNumMon--;
-				checkEnd = period.start().addMonths(calcNumMon-1);
-				DatePeriod fracPeriod = new DatePeriod(checkEnd, period.end());
-				calcFracDays = fracPeriod.datesBetween().size();
+				checkEnd = checkPeriod.start().addMonths(calcNumMon);
+				DatePeriod fracPeriod = new DatePeriod(checkEnd, checkPeriod.end());
+				calcFracDays = fracPeriod.datesBetween().size() - 1;
 			}
 			
 			// 端数分を月数に変換する　（最終月の暦日数を計算）

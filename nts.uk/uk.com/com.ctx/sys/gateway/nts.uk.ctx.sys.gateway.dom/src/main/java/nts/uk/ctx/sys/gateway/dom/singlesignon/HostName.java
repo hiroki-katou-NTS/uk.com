@@ -5,11 +5,16 @@
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class HostName.
+ * ホスト名
+ * Windowsホスト名
  */
+@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(256)
 public class HostName extends StringPrimitiveValue<HostName> {
 

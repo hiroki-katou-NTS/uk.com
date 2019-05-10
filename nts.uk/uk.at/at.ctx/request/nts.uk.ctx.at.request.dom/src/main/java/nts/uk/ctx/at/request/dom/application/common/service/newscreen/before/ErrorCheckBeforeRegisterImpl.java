@@ -210,27 +210,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 	}
 
-	/**
-	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-	 */
-	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
-		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr());
-	}
-
 	@Override
 	public Optional<AppOvertimeDetail> registerOvertimeCheck36TimeLimit(String companyId, String employeeId,
 			GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
@@ -253,17 +235,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> updateOvertimeCheck36TimeLimit(String companyId, String appId,
 			String enteredPersonId, String employeeId, GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
@@ -286,17 +257,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> registerHdWorkCheck36TimeLimit(String companyId, String employeeId,
 			GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
@@ -319,17 +279,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId,
 			String enteredPersonId, String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
@@ -450,6 +399,74 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		
 	}
 	
+	@Override
+	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType apptype) {
+		// ドメインモデル「残業休出申請共通設定」を取得
+		Optional<OvertimeRestAppCommonSetting> opOvertimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, apptype.value);
+		
+		if(!opOvertimeRestAppCommonSet.isPresent()){
+			return Collections.emptyList();
+		}
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = opOvertimeRestAppCommonSet.get();
+		AppDateContradictionAtr appDateContradictionAtr = overtimeRestAppCommonSet.getAppDateContradictionAtr();
+		//「申請対象の矛盾チェック」をチェックする
+		if(appDateContradictionAtr==AppDateContradictionAtr.NOTCHECK){
+			return Collections.emptyList();
+		}
+		//アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
+		WorkType workType = otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, employeeID, appDate);
+		//＜OUTPUT＞をチェックする
+		if(workType==null){
+			// 「申請日矛盾区分」をチェックする
+			if(appDateContradictionAtr==AppDateContradictionAtr.CHECKNOTREGISTER){
+				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
+			}
+			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd")); 
+		}
+		//03-08_01 残業申請の勤務種類矛盾チェック
+		boolean error = this.checkOverTime(workType);
+		if(!error){
+			return Collections.emptyList();
+		}
+		String name = workType.getName().v();
+		// 「申請日矛盾区分」をチェックする
+		if(appDateContradictionAtr==AppDateContradictionAtr.CHECKNOTREGISTER){
+			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
+		}
+		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ"); 
+		
+	}
+	
+	private boolean checkOverTime(WorkType workType) {
+		boolean error = false;
+		// INPUT.ドメインモデル「勤務種類.勤務の単位(WORK_ATR)」をチェックする
+		if (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon)) {
+			// INPUT.ドメインモデル「勤務種類.午前の勤務分類(MORNING_CLS)」をチェックする
+			int wkMorning = workType.getDailyWork().getMorning().value;
+			// INPUT.ドメインモデル「勤務種類.午後の勤務分類(AFTERNOON_CLS)」をチェックする
+			int wkAfternoon = workType.getDailyWork().getAfternoon().value;
+			List<Integer> holidayTypes = Arrays.asList(1, 2, 3, 4, 5, 6, 8, 9, 11);
+			boolean morningIsHoliday = holidayTypes.indexOf(wkMorning) != -1;
+			boolean afternoonIsHoliday = holidayTypes.indexOf(wkAfternoon) != -1;
+			if (morningIsHoliday && afternoonIsHoliday) {
+				error = true;
+			} else {
+				error = false;
+			}
+		} else {
+			// INPUT.ドメインモデル「勤務種類.1日勤務分類(ONE_DAY_CLS)」をチェックする
+			WorkTypeClassification workTypeClassification = workType.getDailyWork().getOneDay();
+			if (workTypeClassification.equals(WorkTypeClassification.Attendance)
+					|| workTypeClassification.equals(WorkTypeClassification.Shooting)) {
+				error = false;
+			} else {
+				error = true;
+			}
+		}
+		return error;
+	}
+
 	/**
 	 * 03-08_01 休日出勤の勤務種類矛盾チェック
 	 * @param workType

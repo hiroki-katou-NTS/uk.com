@@ -4,6 +4,7 @@ module nts.uk.pr.view.ccg007.c {
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
         import CheckChangePassDto = service.CheckChangePassDto;
+        import character = nts.uk.characteristics;
         export class ScreenModel {
             companyCode: KnockoutObservable<string>;
             companyName: KnockoutObservable<string>;
@@ -12,6 +13,8 @@ module nts.uk.pr.view.ccg007.c {
             isSaveLoginInfo: KnockoutObservable<boolean>;
             contractCode: KnockoutObservable<string>;
             contractPassword: KnockoutObservable<string>;
+            isSignOn: KnockoutObservable<boolean> = ko.observable(false);
+            displayLogin: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 self.companyCode = ko.observable('');
@@ -26,7 +29,14 @@ module nts.uk.pr.view.ccg007.c {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                
+                //get url
+                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                let isSignOn = url.indexOf('signon=on') >= 0 || url.indexOf('signon=oN') >= 0 || url.indexOf('signon=On') >= 0
+                || url.indexOf('signon=ON') >= 0;
+                self.isSignOn(isSignOn);
+                if(!isSignOn){
+                    self.displayLogin(true);
+                }
                 let defaultContractCode:string = "000000000000";
                 blockUI.invisible();
                 
@@ -159,12 +169,27 @@ module nts.uk.pr.view.ccg007.c {
                         self.doSuccessLogin(messError);    
                     }
                     blockUI.clear();
-                }).fail(function(res:any) {
-                    //Return Dialog Error
-                    if (!_.isEqual(res.message, "can not found message id")){
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    } else {
-                       nts.uk.ui.dialog.alertError(res.messageId);
+                }).fail(function(res: any) {
+                    if (self.isSignOn()) {//SIGNON
+                        blockUI.clear();
+                        if (!nts.uk.util.isNullOrEmpty(res.messageId)) {
+                            if (res.messageId == 'Msg_876') {//ActiveDirectory変換マスタが見つかりません
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+                                    nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': true, 'errMsg': res.message });
+                                });
+                            } else {
+                                nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': false, 'errMsg': res.message });
+                            }
+                        } else {
+                            nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': false, 'errMsg': res.message });
+                        }
+                    } else {//NORMAL
+                        //Return Dialog Error
+                        if (nts.uk.util.isNullOrEmpty(res.messageId)) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        }
                     }
                     blockUI.clear();
                 });
@@ -184,7 +209,12 @@ module nts.uk.pr.view.ccg007.c {
                             self.OpenDialogE(messError);
                         })
                         .ifNo(()=>{
-                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml");
+                            if (self.isSignOn()) {
+                                nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml?signon=on");
+                            } else {
+                                nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml");
+                            }
+
                             nts.uk.characteristics.save("form2LoginInfo", { companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
                                 nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                             });
@@ -199,7 +229,17 @@ module nts.uk.pr.view.ccg007.c {
                             self.password("");
                         }
                     } else {
-                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml");
+                        if (self.isSignOn()) {
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml?signon=on");
+                        } else {
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/c/index.xhtml");
+                        }
+                        //set mode login
+                        character.remove("loginMode").done(function() {
+//                                loginMode: true - sign on
+//                                loginMode: false - normal
+                            character.save("loginMode", self.isSignOn());
+                        })
                         //Remove LoginInfo
                         nts.uk.characteristics.remove("form2LoginInfo").done(function() {
                             //check SaveLoginInfo

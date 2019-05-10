@@ -25,14 +25,12 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
@@ -220,7 +218,6 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
 			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-			approvalPhaseState.setApprovalForm(ApprovalForm.EVERYONE_APPROVED);
 			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
 				ApprovalFrame approvalFrame = new ApprovalFrame();
@@ -753,7 +750,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", "承認者");
+					continue;
 				}
 				ApprovalRouteDetails approvalRouteDetails = agentRouteLst.stream().filter(x -> x.getAppRootInstance().getRootID().equals(appRootInstance.getRootID())).findAny().get();
 				// ループする日は代行期間内かチェックする
@@ -795,7 +792,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		agentRouteLst.forEach(route -> {
 			// output「ルート状況」に同じ日、同じ対象者は存在するかチェックする
 			Optional<RouteSituation> opRouteSituation = routeSituationLst.stream().filter(x -> 
-				(x.getEmployeeID()==route.getEmployeeID())&&(x.getDate().equals(route.getDate()))).findAny();
+				(x.getEmployeeID().equals(route.getEmployeeID()))&&(x.getDate().equals(route.getDate()))).findAny();
 			if(opRouteSituation.isPresent()){
 				RouteSituation routeSituation = opRouteSituation.get();
 				// ループ中の「ルート状況」．基準社員の承認アクションをチェックする
