@@ -60,7 +60,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "ORDER BY e.pk.specialHolidayCode ASC";
 	
-	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.AUTO_GRANT, sphd.MEMO,"
+	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
 			+ " gra.TYPE_TIME, gra.GRANT_DATE, gra.ALLOW_DISAPPEAR, gra.INTERVAL, gra.GRANTED_DAYS,"
 			+ " pe.TIME_CSL_METHOD, pe.START_DATE, pe.END_DATE, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
 			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
@@ -189,7 +189,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		String companyId = c.getString("CID");
 		int specialHolidayCode = c.getInt("SPHD_CD");
 		String specialHolidayName = c.getString("SPHD_NAME");
-		int autoGrant = c.getInt("AUTO_GRANT");
+		int autoGrant = c.getInt("SPHD_AUTO_GRANT");
 		String memo = c.getString("MEMO");
 		int typeTime = c.getInt("TYPE_TIME");
 		int grantDate = c.getInt("GRANT_DATE");
