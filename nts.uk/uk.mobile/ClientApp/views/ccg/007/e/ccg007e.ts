@@ -35,12 +35,12 @@ export class ResetPassComponent extends Vue {
     public id: string;
 
     public policy = {
-        lowestDigits: 0,
-        alphabetDigit: 0,
-        numberOfDigits: 0,
-        symbolCharacters: 0,
-        historyCount: 0,
-        validPeriod: 0,
+        lowestDigits: '0',
+        alphabetDigit: '0',
+        numberOfDigits: '0',
+        symbolCharacters: '0',
+        historyCount: '0',
+        validPeriod: '0',
         isUse: false
     };
 
@@ -70,12 +70,12 @@ export class ResetPassComponent extends Vue {
             return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);
         }).then((res: { data: PassWordPolicy}) => {
             let policy: PassWordPolicy = res.data;
-            self.policy.lowestDigits = policy.lowestDigits;
-            self.policy.alphabetDigit = policy.alphabetDigit;
-            self.policy.numberOfDigits = policy.numberOfDigits;
-            self.policy.symbolCharacters = policy.symbolCharacters;
-            self.policy.historyCount = policy.historyCount;
-            self.policy.validPeriod = policy.validityPeriod;
+            self.policy.lowestDigits = policy.lowestDigits.toString();
+            self.policy.alphabetDigit = policy.alphabetDigit.toString();
+            self.policy.numberOfDigits = policy.numberOfDigits.toString();
+            self.policy.symbolCharacters = policy.symbolCharacters.toString();
+            self.policy.historyCount = policy.historyCount.toString();
+            self.policy.validPeriod = policy.validityPeriod.toString();
             self.policy.isUse  = policy.isUse;
         });
     }
