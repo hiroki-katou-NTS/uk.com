@@ -268,11 +268,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	// 実行処理
 	@Override
 	public void handle(CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
-		System.out.println("Run batch service by auto run!");
-		// val asyncContext = context.asAsync();
 		ExecuteProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
+		
+		log.info("Run batch service by auto run! (" + execItemCd + "@" + companyId + ")");
+		
 		// String execId = command.getExecId();
 		// vi ExecuteProcessExecCommandHandler dang loi nen dung tam random execId
 		String execId = IdentifierUtil.randomUniqueId();
