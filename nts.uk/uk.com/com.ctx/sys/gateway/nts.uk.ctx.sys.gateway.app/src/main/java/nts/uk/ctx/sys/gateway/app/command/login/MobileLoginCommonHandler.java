@@ -72,7 +72,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 
 		
 		//アルゴリズム「ログイン記録」を実行する
-		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword());
+		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword(), false);
 		
 		if (passChecked.showChangePass && this.needShowChangePass()){
 			return passChecked;
