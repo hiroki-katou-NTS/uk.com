@@ -149,7 +149,7 @@ export class ChangePassComponent extends Vue {
         if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
             // nts.uk.ui.dialog.bundledErrors(res);
             /** TODO: show multi line message */
-            this.$modal.error(res.message);
+            this.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.errors[0].parameterIds });
         } else {
             this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         }
