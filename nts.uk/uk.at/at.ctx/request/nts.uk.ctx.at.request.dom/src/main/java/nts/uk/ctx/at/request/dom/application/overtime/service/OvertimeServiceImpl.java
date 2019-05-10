@@ -260,7 +260,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 						return workTimeRepository.findByCompanyId(companyID).get(0);
 					});
 			siftType.setSiftCode(workTime.getWorktimeCode().toString());
-			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+            siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeAbName().v());
 			workTypeAndSiftType.setSiftType(siftType);
 
 			

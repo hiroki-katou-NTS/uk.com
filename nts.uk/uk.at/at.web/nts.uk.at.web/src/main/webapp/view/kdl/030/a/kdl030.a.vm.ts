@@ -43,7 +43,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                             isMail = true;
                         }
                         self.applicantObj({empName: empName, isMail: isMail});
-                        self.isSendToApplicant(sidLogin == applicantID ? 0 : 1);
+                        self.isSendToApplicant(sidLogin != applicantID && self.applicantObj().isMail ? 1 : 0);
                         let listApprovalPhase = result.listApprovalPhaseStateDto
                         self.mailContent(result.mailTemplate);
                         self.applicant(ko.toJS({employeeID: result.application.applicantSID, smail: result.applicantMail}));
