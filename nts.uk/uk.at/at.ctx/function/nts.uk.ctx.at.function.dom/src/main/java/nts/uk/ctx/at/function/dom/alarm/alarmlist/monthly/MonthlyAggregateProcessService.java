@@ -732,11 +732,11 @@ public class MonthlyAggregateProcessService {
 			List<AttendanceItemName> listAttdNameSub =  listAttdNameAdds.stream().filter(c -> erAlAtdItemConAdapterDto.getCountableSubAtdItems().contains(c.getAttendanceItemId())).collect(Collectors.toList());
 			nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
 			
-			String nameItem = "";
+			String nameItem = extra.getNameAlarmExtraCon();
 			String alarmDescription = "";
 			switch(extra.getTypeCheckItem()) {
 			case 4 ://時間
-				nameItem = TextResource.localize("KAL010_47");
+				//nameItem = TextResource.localize("KAL010_47");
 				String startValueTime = this.timeToString(startValue.intValue());
 				String endValueTime = "";
 				if(compare<=5) {
@@ -763,7 +763,7 @@ public class MonthlyAggregateProcessService {
 				
 				break;
 				case 5 ://日数
-					nameItem = TextResource.localize("KAL010_113");
+					//nameItem = TextResource.localize("KAL010_113");
 					String startValueDays = String.valueOf(startValue.intValue());
 					String endValueDays = "";
 					if(compare<=5) {
@@ -789,7 +789,7 @@ public class MonthlyAggregateProcessService {
 					}
 					break;
 				case 6 ://回数
-					nameItem = TextResource.localize("KAL010_50");
+					//nameItem = TextResource.localize("KAL010_50");
 					String startValueTimes = String.valueOf(startValue.intValue());
 					String endValueTimes = "";
 					if(compare<=5) {
@@ -815,7 +815,7 @@ public class MonthlyAggregateProcessService {
 					}
 					break;
 				case 7 ://金額 money
-					nameItem = TextResource.localize("KAL010_51");
+					//nameItem = TextResource.localize("KAL010_51");
 					String startValueMoney = String.valueOf(startValue.intValue());
 					String endValueMoney = "";
 					if(compare<=5) {
@@ -898,9 +898,9 @@ public class MonthlyAggregateProcessService {
 					employee.getId(),
 					this.toYMString(yearMonth),
 					KAL010_100,
-					TextResource.localize("KAL010_60"),
+					extra.getNameAlarmExtraCon(),
 					alarmDescriptionValue,	
-					extra.getDisplayMessage(),null);
+					extra.getDisplayMessage(),TextResource.localize("KAL010_998"));
 			listValueExtractAlarm.add(resultMonthlyValue);
 		}
 
