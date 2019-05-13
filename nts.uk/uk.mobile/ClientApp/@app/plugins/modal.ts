@@ -16,7 +16,7 @@ const modal = {
                 if (self && self.$router) {
                     obj.extend(self.$router, {
                         goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
-                            ( self.$router as any).push({
+                            (self.$router as any).push({
                                 name: location.name,
                                 params: {
                                     params: location.params
@@ -56,7 +56,7 @@ const modal = {
 
             params = obj.toJS(params || {});
 
-            options = options ||  {
+            options = options || {
                 title: name,
                 size: 'md',
                 type: 'modal',
@@ -87,7 +87,7 @@ const modal = {
                         // add new mixin methods
                         component.mixins.push({
                             methods: {
-                                $close (data?: any) {
+                                $close(data?: any) {
                                     this.$emit('callback', data);
 
                                     this.$destroy(true);
@@ -97,6 +97,26 @@ const modal = {
                                 let el = this.$el as HTMLElement;
 
                                 if (el.nodeType !== 8) {
+                                    let header = el.querySelector('.modal-header') as HTMLElement;
+
+                                    if (!header) {
+                                        this.$emit('toggle-title', true);
+                                    } else {
+                                        this.$emit('toggle-title', false);
+
+                                        let mcontent = el.closest('.modal-content');
+
+                                        if (mcontent) {
+                                            let body = mcontent.querySelector('.modal-body') as HTMLElement;
+
+                                            if (body) {
+                                                mcontent.insertBefore(header, body);
+                                            } else {
+                                                mcontent.append(header);
+                                            }
+                                        }
+                                    }
+
                                     let footer = el.querySelector('.modal-footer') as HTMLElement;
 
                                     // move footer element from body to modal content
@@ -126,7 +146,7 @@ const modal = {
                                 components: {
                                     'nts-dialog': component
                                 },
-                                data: () => ({ name: 'nts-dialog', params, show: false }),
+                                data: () => ({ name: 'nts-dialog', params, show: false, hasTitle: true }),
                                 computed: {
                                     title() {
                                         return options.title || (typeof name === 'string' ? name : 'nts-dialog');
@@ -178,6 +198,9 @@ const modal = {
                                         // evt.preventDefault();
                                         evt.stopPropagation();
                                         evt.stopImmediatePropagation();
+                                    },
+                                    toggleTitle(hasTitle: boolean) {
+                                        this.hasTitle = hasTitle;
                                     }
                                 },
                                 mounted() {
@@ -233,14 +256,17 @@ const modal = {
                                     <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
                                         <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">
-                                                        <span>{{title | i18n}}</span>
-                                                    </h4>
-                                                    <button tabindex="-1" type="button" v-on:click="show = false" class="close">&times;</button>
-                                                </div>
+                                                <template v-if="hasTitle">
+                                                    <div class="modal-header" v-bind:key="hasTitle">
+                                                        <h4 class="modal-title">
+                                                            <span>{{title | i18n}}</span>
+                                                        </h4>
+                                                        <button tabindex="-1" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
+                                                    </div>
+                                                </template>
+                                                <template v-else></template>
                                                 <div class="modal-body">
-                                                    <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
+                                                    <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" v-on:toggle-title="toggleTitle" />
                                                 </div>
                                             </div>
                                         </div>

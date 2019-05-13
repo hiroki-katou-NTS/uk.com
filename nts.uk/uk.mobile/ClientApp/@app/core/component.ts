@@ -149,7 +149,7 @@ export function component(options: ComponentOptions<Vue>): any {
 
                         [].slice.call($modals).forEach((modal: HTMLElement) => {
 
-                            let $close = modal.querySelector('.modal-header .close') as HTMLElement;
+                            let $close = modal.querySelector('.modal-header .close, .modal-header .btn-close') as HTMLElement;
 
                             if ($close) {
                                 $close.click();
