@@ -11,6 +11,7 @@ module nts.uk.at.view.ktg001.a.viewmodel {
             let self = this;
             self.text = ko.observable("");
             self.visible = ko.observable(false);
+            self.selectedSwitch = ko.observable(0);
         }
 
         /**
@@ -19,22 +20,21 @@ module nts.uk.at.view.ktg001.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            self.selectedSwitch  = windows.getShared("currentOrNextMonth");
-            character.restore('currentOrNextMonth').done((obj) => {
-                service.getData(obj).done((data) => {
-                    console.log(data);
-                    if (data) {
-                        self.text = ko.observable(getText('KTG001_4'));
-                        self.visible = ko.observable(true);
-                    } else {
-                        self.text = ko.observable(getText('KTG001_5'));
-                        self.visible = ko.observable(false);
-                    }
-                    dfd.resolve();
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-            })
+            self.selectedSwitch(windows.getShared("currentOrNextMonth") == undefined ? 0 : windows.getShared("currentOrNextMonth"));
+            service.getData(self.selectedSwitch()).done((data) => {
+                console.log(data);
+                if (data) {
+                    self.text = ko.observable(getText('KTG001_4'));
+                    self.visible = ko.observable(true);
+                } else {
+                    self.text = ko.observable(getText('KTG001_5'));
+                    self.visible = ko.observable(false);
+                }
+                dfd.resolve();
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+
 
 
             return dfd.promise();
@@ -43,7 +43,7 @@ module nts.uk.at.view.ktg001.a.viewmodel {
         private reload() {
             let self = this;
             let dfd = $.Deferred();
-           // self.selectedSwitch = windows.getShared("currentOrNextMonth");
+            // self.selectedSwitch = windows.getShared("currentOrNextMonth");
             self.selectedSwitch.subscribe(function(value) {
                 character.save('currentOrNextMonth', value);
                 nts.uk.ui.windows.setShared('currentOrNextMonth', value);
@@ -65,8 +65,8 @@ module nts.uk.at.view.ktg001.a.viewmodel {
             });
 
         }
-        
-        
+
+
         dailyPerformanceConfirm() {
             window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
         }
