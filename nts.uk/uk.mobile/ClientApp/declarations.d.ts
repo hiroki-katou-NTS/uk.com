@@ -35,7 +35,7 @@ declare interface IRule {
 }
 
 declare interface IModalOptions {
-    type?: 'modal' | 'popup' | 'info';
+    type?: 'modal' | 'popup' | 'info' | 'dropback';
     size?: 'lg' | 'md' | 'sm' | 'xs';
     title?: string;
     style?: string;

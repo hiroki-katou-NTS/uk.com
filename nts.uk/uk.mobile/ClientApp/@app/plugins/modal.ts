@@ -160,7 +160,11 @@ const modal = {
                                             classNames.push(`modal-${options.size}`);
                                         }
 
-                                        if (options.type === 'modal' || options.type === undefined) {
+                                        if (options.type === 'modal' || options.type === 'dropback' || options.type === undefined) {
+                                            if (options.type === 'dropback') {
+                                                classNames.push(options.type);
+                                            }
+
                                             classNames.push('modal-dialog-scrollable');
                                         } else if (options.type === 'popup') {
                                             classNames.push('modal-popup modal-dialog-centered');
@@ -227,10 +231,14 @@ const modal = {
                                     });
                                 },
                                 destroyed() {
-                                    this.$mask('hide');
-
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
+
+                                    let $modals = document.querySelectorAll('.modal.show');
+                                    
+                                    if ($modals.length === 0) {
+                                        this.$mask('hide');
+                                    }
 
                                     // restore all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
@@ -265,9 +273,7 @@ const modal = {
                                                     </div>
                                                 </template>
                                                 <template v-else></template>
-                                                <div class="modal-body">
-                                                    <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" v-on:toggle-title="toggleTitle" />
-                                                </div>
+                                                <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" v-on:toggle-title="toggleTitle" class="modal-body" />
                                             </div>
                                         </div>
                                     </div>
