@@ -5,7 +5,7 @@ import { router } from '@app/core/router';
 import { Vue, Vuex, VueRouter } from '@app/provider';
 import { tojs, bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language, LanguageBar } from '@app/plugins';
 
-import { obj } from '@app/utils';
+import { obj, browser } from '@app/utils';
 import { SideMenuBar, NavMenuBar } from '@app/components';
 
 // use ajax request
@@ -47,6 +47,13 @@ new Vue({
     beforeCreate() {
         const self = this,
             rapi = '/i18n/resources/mobile/get';
+
+        browser.private
+            .then((prid: boolean) => {
+                if (browser.ios && prid) {
+                    alert('Private mode on ios');
+                }
+            });
 
         self.$http.get(rapi)
             .then((resp: { data: any }) => {
