@@ -22,8 +22,8 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id = "ver4">
-					<div style="width: 220px;height:30px ">
-						<div data-bind="visible: switchVisible">
+					<div style="width: 220px; height:30px; float: right ">
+						<div data-bind="if: switchVisible">
 							<div style="position: relative;" data-bind="ntsSwitchButton: {
 																			name: '#[CCG008_13]',
 																			options: dateSwitch,

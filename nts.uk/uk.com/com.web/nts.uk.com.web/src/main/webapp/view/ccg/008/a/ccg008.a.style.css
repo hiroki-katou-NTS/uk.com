@@ -40,13 +40,14 @@
 
 #ver4{
     z-index: 1;
-    margin-left: 1500px;
+    margin-left: calc(100vw - 300px);
     position: absolute;
 }
 
 #setting{
-	margin-top: 10px;
-    margin-right: -165px;
+	margin-top: 40px;
+    margin-right: -250px;
+    float: right;
 }
 
 

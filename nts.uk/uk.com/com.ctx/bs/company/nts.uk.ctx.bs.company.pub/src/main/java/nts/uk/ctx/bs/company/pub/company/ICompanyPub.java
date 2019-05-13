@@ -45,4 +45,11 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	CompanyExport getCompany(String cid);
+	/**
+	 * get list company
+	 * @param 廃止区分 isAbolition
+	 * @param 契約CD contractCd
+	 * @return
+	 */
+	List<CompanyExport> getLstComByContractAbo(String contractCd, int isAbolition);
 }
