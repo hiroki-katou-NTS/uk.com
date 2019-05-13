@@ -43,7 +43,7 @@
                 <button tabindex="2" data-bind="click: saveLifeInsurance, enable: $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM031_5')}</button>
                 <!-- A1_3 -->
-                <button tabindex="3" data-bind="click: pdf, enable: false">#{i18n.getText('QMM031_6')}</button>
+                <button tabindex="3" data-bind="click: exportLifeIns, enable: true">#{i18n.getText('QMM031_6')}</button>
                 <!-- A1_4 -->
                 <button tabindex="4" data-bind="click: earthquakeInsurance">#{i18n.getText('QMM031_3')}</button>
                 <!-- A1_5 -->
@@ -64,9 +64,9 @@
                 <button tabindex="2" data-bind="click: saveEarthquakeInsurance, enable: $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM031_5')}</button>
                 <!-- A1_3 -->
-                <button tabindex="3" data-bind="click: pdf, enable: false">#{i18n.getText('QMM031_6')}</button>
+                <button tabindex="3" data-bind="click: exportEarthQuakeIns, enable: true">#{i18n.getText('QMM031_6')}</button>
                 <!-- A1_5 -->
-                <button tabindex="4" data-bind="click: correctionLog, enable: false">#{i18n.getText('QMM031_7')}</button>
+                <button tabindex="4" data-bind="click: correctionLog, enable: true">#{i18n.getText('QMM031_7')}</button>
                 <!-- A1_6 -->
                 <button tabindex="5" data-bind="click: deleteEarthquakeInsurance, enable: !isNewMode2()"
                         class="danger">#{i18n.getText('QMM031_8')}</button>

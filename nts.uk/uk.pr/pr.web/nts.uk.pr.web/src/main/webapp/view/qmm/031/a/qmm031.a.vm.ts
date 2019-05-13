@@ -461,7 +461,25 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
 
         };
 
-        pdf(){};
+        exportLifeIns(){
+            nts.uk.ui.block.grayout();
+            service.exportLifeIns().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        };
+
+        exportEarthQuakeIns(){
+            nts.uk.ui.block.grayout();
+            service.exportEarthQuakeIns().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        };
 
         correctionLog() {
         };
