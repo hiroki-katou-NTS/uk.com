@@ -25,7 +25,7 @@ public class JpaBankExportRepository extends JpaRepository implements BankExport
             " ROW_NUMBER () OVER ( PARTITION BY b.CD ORDER BY b.CD, bb.CD) AS ROW_NUMBER  " +
             "FROM " +
             " QBTMT_BANK b " +
-            " INNER JOIN QBTMT_BANK_BRANCH bb ON b.CID = bb.CID " +
+            " LEFT JOIN QBTMT_BANK_BRANCH bb ON b.CID = bb.CID " +
             " AND b.CD = bb.BANK_CD " +
             "WHERE b.CID = ?cid) temp ";
 

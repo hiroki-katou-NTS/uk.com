@@ -22,6 +22,7 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
 
 
     private static final int MAX_LINE = 37;
+    private static final int FIRST_ROW_FILL = 3;
 
     private static final int CD_BANK = 1;
     private static final int NAME_BANK = 2;
@@ -37,8 +38,12 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
         try(AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
-            Worksheet ws = wsc.get(0);
-            this.writeFileExcel(ws,exportData,companyName);
+
+            for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
+                wsc.addCopy(0);
+            }
+
+            this.writeFileExcel(wsc,exportData,companyName);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
         }catch (Exception e) {
@@ -46,41 +51,25 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
         }
     }
 
-    private void writeFileExcel(Worksheet ws, List<Object[]> exportData, String companyName){
-        int rowIndex = 3;
+    private void writeFileExcel(WorksheetCollection wsc, List<Object[]> exportData, String companyName){
+        int rowIndex = FIRST_ROW_FILL;
         int count = 0;
-        int numberRow = 38;
-        int sourceRowIndex = 0;
-        int destinationRowIndex = 38;
-
-        // Set print page
-        PageSetup pageSetup = ws.getPageSetup();
-        pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
-
-        // Set header date
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
-        pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
-        HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-
-        for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
-            try {
-                ws.getCells().copyRows(ws.getCells(),0,39,39);
-            }catch (Exception e){
-
-            }
-            //numberRow  = numberRow + 37;
-            //sourceRowIndex = sourceRowIndex + 37;
-            //destinationRowIndex = destinationRowIndex + 37;
-        }
+        int sheetIndex = 0;
+        Worksheet ws = wsc.get(sheetIndex);
+        this.settingHeader(ws,companyName);
 
         for(Object[] entity : exportData){
             if(count == MAX_LINE) {
-                pageBreaks.add(rowIndex - 2);
+
+                sheetIndex ++;
+                ws = wsc.get(sheetIndex);
+                this.settingHeader(ws,companyName);
+                rowIndex = FIRST_ROW_FILL;
                 count = 0;
                 ws.getCells().get(rowIndex,CD_BANK).putValue(entity[0]);
                 ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[1]);
                 ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[2]);
-                rowIndex = rowIndex + 3;
+
             }else{
                 ws.getCells().get(rowIndex,CD_BANK).putValue(entity[8].toString().equals("1") ? entity[0] : null);
                 ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[8].toString().equals("1")  ? entity[1] : null);
@@ -93,5 +82,17 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
             rowIndex ++;
             count ++;
         }
+    }
+
+    private void settingHeader(Worksheet ws, String companyName){
+
+        // Set print page
+        PageSetup pageSetup = ws.getPageSetup();
+        pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
+
+        // Set header date
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
+        pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+
     }
 }
