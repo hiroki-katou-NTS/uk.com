@@ -88,6 +88,8 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			EmployeeImportNew emp = signonData.employeeImportNew;
 			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
 			companyCode = com.getCompanyCode();
+			employeeId = em.getEmployeeId();
+			companyId = contractCode + "-" + companyCode;
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
@@ -131,7 +133,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			this.checkLimitTime(user, companyId,employeeCode);
 			employeeId = em.getEmployeeId();
 		}
-		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 		this.errorCheck2(companyId, contractCode, user.getUserId(), command.isSignOn(), employeeId);
 		
