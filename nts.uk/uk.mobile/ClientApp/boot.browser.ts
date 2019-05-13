@@ -51,7 +51,7 @@ new Vue({
         browser.private
             .then((prid: boolean) => {
                 if (browser.ios && prid) {
-                    alert('Private mode on ios');
+                    self.$modal.warn('Msg_1533');
                 }
             });
 
