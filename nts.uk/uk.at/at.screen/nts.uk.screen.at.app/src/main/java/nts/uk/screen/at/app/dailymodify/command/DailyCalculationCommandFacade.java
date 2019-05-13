@@ -312,7 +312,7 @@ public class DailyCalculationCommandFacade {
 				Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId,
 						employeeId, data.getYearMonth(), data.getClosureId(), data.getClosureDate(), data.getPeriod(),
 						Optional.empty(), domainDailyNew, domainMonthOpt);
-				if (monthDomainOpt.isPresent())
+				if (monthDomainOpt.isPresent()) {
 					monthDomainOpt.get().getAffiliationInfo().ifPresent(d -> {
 						d.setVersion(monthlyParam.getVersion());
 					});
@@ -320,6 +320,7 @@ public class DailyCalculationCommandFacade {
 						d.setVersion(monthlyParam.getVersion());
 					});
 					result.add(monthDomainOpt.get());
+				}
 			});
 		}
 		return result;
