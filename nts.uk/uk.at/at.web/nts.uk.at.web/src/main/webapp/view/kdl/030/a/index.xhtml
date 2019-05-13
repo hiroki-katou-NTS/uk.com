@@ -32,20 +32,13 @@
 					</div>
 					<div id = "A2_2">
 						<table id="table-phase">
-						<colgroup>
-							<col width="72px"/>
-							<col width="100px"/>
-							<col width="250px"/>
-							<col width="70px"/>
-							<col width="170px"/>
-						</colgroup>
 						<thead>
 							<tr style = "background-color: #E0F59E !important ">
 								<th class="phase-app">#{i18n.getText('KDL030_10')}</th>
 								<th class="order-app">#{i18n.getText('KDL030_11')}</th>
 								<th class="name-app">#{i18n.getText('KDL030_12')}</th>
 								<th class="status-app">#{i18n.getText('KDL030_13')}</th>
-								<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
+								<th class="isMail-appr">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: approvalRootState">
@@ -54,20 +47,20 @@
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
-											style="width: 111px;"  class="bg-green"></td>
+											class="bg-green phase-app"></td>
 									</com:ko>
 									<!-- 承認者 -->
-									<td data-bind="text: '承認者'+$data.frameOrder" class="bg-green" ></td>
+									<td data-bind="text: '承認者'+$data.frameOrder" class="order-app bg-green" ></td>
 									<!-- 社員名 -->
-									<td data-bind="foreach: $data.listApprover">
+									<td class = "name-app" data-bind="foreach: $data.listApprover">
 										<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
 											<div data-bind="text: $data.dispApproverName"></div>
 										</div>
 									</td>
 									<!-- 状況 -->
-									<td data-bind="text: approvalAtrName" ></td>
+									<td class = "status-app" data-bind="text: approvalAtrName" ></td>
  									<!-- メール送信 -->
- 									<td data-bind="foreach: $data.listApprover">
+ 									<td class = "isMail-appr" data-bind="foreach: $data.listApprover">
  										<div data-bind = "if: $data.showButton,
  												css: {rowBorder: ($parent.listApprover.length - $index()) > 1 &amp; showButton, rowPer: showButton}">
 	 										<div data-bind="ntsSwitchButton: { 
@@ -96,11 +89,6 @@
 					</div>
 					<div id="A3_2">
 						<table id="table-applicant">
-							<colgroup>
-								<col width="170px" />
-								<col width="320px" />
-								<col width="170px" />
-							</colgroup>
 							<thead>
 								<tr class="bg-green">
 									<th class="applicant">#{i18n.getText('KDL030_33')}</th>
@@ -112,11 +100,11 @@
 							<tbody>
 								<tr data-bind="with: applicantObj">
 									<!-- A3_2_4 申請者（ラベル） -->
-									<td class="bg-green">#{i18n.getText('KDL030_34')}</td>
+									<td class="applicant bg-green">#{i18n.getText('KDL030_34')}</td>
 									<!-- A3_2_5 社員名 -->
-									<td data-bind="text: empName"></td>
+									<td class = "name-emp" data-bind="text: empName"></td>
 									<!-- メール送信 -->
-									<td>
+									<td class = "isMail-app">
 										<div data-bind = "if: isMail">
 											<div data-bind="ntsSwitchButton: { 
 			   										name: '#{i18n.getText('KAF030_25')}',   
