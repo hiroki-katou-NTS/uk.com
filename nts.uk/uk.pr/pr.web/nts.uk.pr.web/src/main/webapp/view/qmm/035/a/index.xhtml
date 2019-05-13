@@ -44,7 +44,7 @@
         <div id="functions-area" >
             <button id="A1_1" tabindex="1" style="margin-left: 40px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
             <button class="proceed"  id="A1_2" data-bind="click: update ,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('QMM035_3')}</button>
-            <button id="A1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM035_4')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: exportExcel" >#{i18n.getText('QMM035_4')}</button>
             <button  id="A1_4" tabindex="4" data-bind="enable: $vm.isEnableBtnPdf() " >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
