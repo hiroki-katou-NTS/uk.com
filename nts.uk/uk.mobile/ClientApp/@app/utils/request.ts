@@ -139,8 +139,8 @@ export class QueryString {
 }
 
 export namespace location {
-    export let current = new Locator(window.location.href);
-    export let appRoot = current.mergeRelativePath(viewcontext.rootPath);
+    // export let current = new Locator(window.location.href);
+    export let appRoot = current().mergeRelativePath(viewcontext.rootPath);
     export let siteRoot = appRoot.mergeRelativePath('../');
     export let ajaxRootDir = 'webapi/';
 
@@ -151,6 +151,10 @@ export namespace location {
             currentAppId =  id as WebAppId;
             break;
         }
+    }
+
+    export function current(): Locator{
+        return new Locator(window.location.href);
     }
 }
 
@@ -170,7 +174,7 @@ export namespace login {
             }
             
             if (url === undefined) {
-                keepUsedLoginPage.apply(null, [ location.current.serialize() ]);
+                keepUsedLoginPage.apply(null, [ location.current().serialize() ]);
 
                 return;
             }
