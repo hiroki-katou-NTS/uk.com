@@ -21,6 +21,8 @@ public interface DepartmentInformationRepository {
 	public Optional<DepartmentInformation> getActiveDepartmentByCode(String companyId, String depHistId, String depCode);
 	
 	public List<DepartmentInformation> getActiveDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
+
+	List<DepartmentInformation> getAllDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId);
 	
 	public void addDepartment(DepartmentInformation department);
 	

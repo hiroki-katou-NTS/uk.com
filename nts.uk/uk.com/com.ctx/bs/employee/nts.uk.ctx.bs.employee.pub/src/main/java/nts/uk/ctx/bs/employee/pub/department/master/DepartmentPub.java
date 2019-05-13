@@ -37,4 +37,24 @@ public interface DepartmentPub {
 	public List<DepartmentInforExport> getPastDepartmentInfor(String companyId, String depHistId,
 			List<String> listDepartmentId);
 
+
+    /**
+     * [No.568]部門の下位部門を取得する
+     *
+     * @param companyId
+     * @param baseDate
+     * @param parentDepartmentId
+     * @return
+     */
+    public List<String> getAllChildDepartmentId(String companyId, GeneralDate baseDate, String parentDepartmentId);
+
+    /**
+     * [No.574]部門の下位部門を基準部門を含めて取得する
+     *
+     * @param companyId
+     * @param baseDate
+     * @param departmentId
+     * @return
+     */
+    public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
 }

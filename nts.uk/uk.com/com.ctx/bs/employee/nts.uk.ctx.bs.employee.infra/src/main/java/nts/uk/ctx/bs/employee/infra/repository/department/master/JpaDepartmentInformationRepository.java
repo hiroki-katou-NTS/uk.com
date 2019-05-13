@@ -88,6 +88,21 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 	}
 
 	@Override
+	public List<DepartmentInformation> getAllDepartmentByDepIds(String companyId, String depHistId, List<String> listDepartmentId) {
+		if (listDepartmentId.isEmpty())
+			return Collections.emptyList();
+		String query = "SELECT i FROM BsymtDepartmentInfor i WHERE i.pk.companyId = :companyId "
+				+ "AND i.pk.departmentHistoryId = :depHistId AND i.pk.departmentId IN :listDepId";
+		List<DepartmentInformation> result = new ArrayList<>();
+		CollectionUtil.split(listDepartmentId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListId -> {
+			result.addAll(this.queryProxy().query(query, BsymtDepartmentInfor.class)
+					.setParameter("companyId", companyId).setParameter("depHistId", depHistId)
+					.setParameter("listDepId", subListId).getList(i -> i.toDomain()));
+		});
+		return result;
+	}
+
+	@Override
 	public Optional<DepartmentInformation> getDepartmentByKey(String companyId, String depHistId, String depId) {
 		return this.queryProxy()
 				.find(new BsymtDepartmentInforPk(companyId, depHistId, depId), BsymtDepartmentInfor.class)

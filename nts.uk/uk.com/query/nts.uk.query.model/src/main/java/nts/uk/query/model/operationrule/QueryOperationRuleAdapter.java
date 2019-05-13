@@ -2,7 +2,7 @@ package nts.uk.query.model.operationrule;
 
 import java.util.Optional;
 
-public interface OperationRuleAdapter {
+public interface QueryOperationRuleAdapter {
 
     Optional<OperationRuleImport> getOperationRuleByCompanyId(String companyId);
 }
