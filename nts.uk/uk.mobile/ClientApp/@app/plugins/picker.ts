@@ -1,4 +1,4 @@
-import { obj, dom } from '@app/utils';
+import { obj, dom, $ } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 import { MobilePicker } from '@app/components/picker';
 
@@ -12,12 +12,19 @@ const vm = Vue
         },
         destroyed() {
             document.body.removeChild(this.$el);
+        },
+        computed: {
+            className() {
+                return 'plugin';
+            }
         }
     }), picker = {
         install(vue: VueConstructor<Vue>) {
             vue.prototype.$picker = function (value: string | number | Date | { [key: string]: string | number | Date },
                 // tslint:disable-next-line: align
                 dataSources: Array<string | number | Date> | { [key: string]: Array<string | number | Date> },
+                // tslint:disable-next-line: align
+                onSelect: Function,
                 // tslint:disable-next-line: align
                 options: {
                     text: string;
@@ -26,9 +33,15 @@ const vm = Vue
                     onSelect?: Function;
                     title?: string;
                 } = { text: 'text', value: 'value', required: false }) {
+                let self = this;
+
                 value = obj.cloneObject(value);
                 options = obj.cloneObject(options);
                 dataSources = obj.cloneObject(dataSources);
+
+                if (!$.isFunction(onSelect) && $.isObject(onSelect)) {
+                    options = onSelect;
+                }
 
                 obj.merge(options, { text: 'text', value: 'value', required: false });
 
@@ -49,8 +62,10 @@ const vm = Vue
 
                     Picker
                         .$on('select', (value) => {
-                            if (obj.isFunction(options.onSelect)) {
-                                options.onSelect.apply(null, [obj.cloneObject(value), Picker]);
+                            if ($.isFunction(onSelect)) {
+                                onSelect.apply(self, [obj.cloneObject(value), Picker]);
+                            } else if (obj.isFunction(options.onSelect)) {
+                                options.onSelect.apply(self, [obj.cloneObject(value), Picker]);
                             }
                         })
                         .$on('close', () => resolve())

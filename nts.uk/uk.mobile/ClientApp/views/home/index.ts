@@ -1,15 +1,11 @@
 import { Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 
-import { MobilePicker } from '@app/components/picker';
 @component({
     route: '/',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    components: {
-        'mpkr': MobilePicker
-    },
     validations: {
         model: {
             numbers: {
@@ -106,14 +102,11 @@ import { MobilePicker } from '@app/components/picker';
     ]
 })
 export class HomeComponent extends Vue {
-    public show: boolean = false;
     public selecteds = {
         year: 2019,
         month: 1,
         day: 2
     };
-
-    public years = [];
 
     public dataSources = {
         year: [],
@@ -121,18 +114,8 @@ export class HomeComponent extends Vue {
         day: []
     };
 
-    @Watch('show', { deep: true })
-    public showWatcher(show: boolean) {
-        if (show) {
-            document.body.classList.add('modal-open');
-        } else {
-            document.body.classList.remove('modal-open');
-        }
-    }
-
     public created() {
         for (let i = 2015; i <= 2020; i++) {
-            this.years.push(i);
             this.dataSources.year.push({ text: `${i}年`, value: i });
         }
 
@@ -145,24 +128,20 @@ export class HomeComponent extends Vue {
         }
     }
 
-    public tets: number = 0;
-    public viewPortClicked(value: any) {
-        //console.log(value);
-
-        this.tets = value;
+    public showPicker() {
+        this.$picker(this.selecteds,
+            this.dataSources,
+            this.onSelect, {
+                title: `${this.selecteds.year}-${this.selecteds.month}-${this.selecteds.day}`
+            })
+            .then((value: any) => {
+                this.selecteds = value;
+            });
     }
 
-    public title: string = '2019-01-02';
-
-    public onSelect(value: any) {
+    public onSelect(value: any, pkr: { title: string, dataSources: any }) {
         if (value) {
-            this.title = `${value.year}-${value.month}-${value.day}`;
+            pkr.title = `${value.year}-${value.month}-${value.day}`;
         }
-    }
-
-    public onPan(evt: TouchEvent) {
-        console.log(evt);
-
-        evt.preventDefault();
     }
 }

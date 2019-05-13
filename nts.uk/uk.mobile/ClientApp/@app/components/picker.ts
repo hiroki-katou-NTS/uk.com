@@ -8,7 +8,7 @@ export const MobilePicker = {
         'ipkr': InfinityPicker
     },
     template: `<transition name="picker-fade" v-on:after-leave="destroyPicker">
-        <div class="infinity-picker android centered" v-show="show" v-on:touchmove="preventScroll">
+        <div class="infinity-picker android centered" v-bind:class="className" v-show="show" v-on:touchmove="preventScroll">
         <div class="ipkr-caption" v-if="title">
             <div class="ipkr-caption-item">{{title}}</div>
         </div>
@@ -109,6 +109,9 @@ export const MobilePicker = {
     computed: {
         deleteAble() {
             return !this.options.required && !!obj.keys(obj.cloneObject(this.value)).length;
+        },
+        className() {
+            return '';
         }
     },
     methods: {

@@ -111,17 +111,26 @@ declare module "vue/types/vue" {
             confirm(msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
             confirm(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
         };
-        $picker(value: {
-            [key: string]: any
-        }, dataSources: {
-            [key: string]: any[]
-        }, options?: {
-            text?: string;
-            value?: string;
-            title?: string;
-            required?: boolean;
-            onSelect?: (selects: { [key: string]: any }, pkr: { dataSources: { [key: string]: any[] } }) => void;
-        }): Promise<{}>;
+        $picker: {
+            (value: { [key: string]: any },
+                dataSources: { [key: string]: any[] },
+                options?: {
+                    text?: string;
+                    value?: string;
+                    title?: string;
+                    required?: boolean;
+                    onSelect?: (selects: { [key: string]: any }, pkr: { title: string; dataSources: { [key: string]: any[] } }) => void;
+                }): Promise<{}>;
+            (value: { [key: string]: any },
+                dataSources: { [key: string]: any[] },
+                onSelect: (selects: { [key: string]: any }, pkr: { title: string; dataSources: { [key: string]: any[] } }) => void,
+                options?: {
+                    text?: string;
+                    value?: string;
+                    title?: string;
+                    required?: boolean;
+                }): Promise<{}>;
+        };
         readonly $valid: boolean;
         $errors: {
             [name: string]: {
