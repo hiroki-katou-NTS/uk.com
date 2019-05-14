@@ -35,6 +35,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
+import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
+import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.ExeStateOfCalAndSumImportFn;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogAdapterFn;
@@ -240,6 +242,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
 	
+	@Inject
+	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
+	
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	/**
@@ -359,7 +364,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
 		// アルゴリズム「自動実行登録処理」を実行する
-		this.updateDomains(execItemCd, execType, companyId, execId, execSetting, procExecLog, lastExecDateTime,
+		this.updateDomains(execItemCd, execType, companyId, execId,
+				execSetting, procExecLog, lastExecDateTime,
 				processExecutionLogManage);
 	}
 
@@ -440,8 +446,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (execSetting != null) {
 			// execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-			execSetting.setNextExecDateTime(nextFireTime);
+			if(execSetting.isRepeat()) {
+				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
+				execSetting.setNextExecDateTime(nextFireTime);
+			}
 			this.execSettingRepo.update(execSetting);
 		}
 
@@ -908,6 +916,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				
 				try {
 					handle = this.scheduleExecution.handle(scheduleCommand);
+					if(checkStop(execId)) {
+						return false;
+					}
 					runSchedule = true;
 				} catch (Exception e) {
 					//再実行の場合にExceptionが発生したかどうかを確認する。
@@ -944,7 +955,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
 											calculateSchedulePeriod, temporaryEmployeeList);
+							if(checkStop(execId)) {
+								return false;
+							}
 							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+							if(checkStop(execId)) {
+								return false;
+							}
 							runSchedule = true;
 						} catch (Exception e) {
 							//再実行の場合にExceptionが発生したかどうかを確認する。
@@ -967,6 +984,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 								.setPeriod(new DatePeriod(periodDate.start(), endDate));
 						try {
 							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+							if(checkStop(execId)) {
+								return false;
+							}
 							runSchedule = true;
 						} catch (Exception e) {
 							//再実行の場合にExceptionが発生したかどうかを確認する。
@@ -1133,6 +1153,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //		}
 		
 		return true;
+	}
+	
+	private boolean checkStop(String execId) {
+		Optional<ExeStateOfCalAndSumImportFn> exeStateOfCalAndSumImportFn = dailyMonthlyprocessAdapterFn.executionStatus(execId);
+		if(exeStateOfCalAndSumImportFn.isPresent())
+			if(exeStateOfCalAndSumImportFn.get() == ExeStateOfCalAndSumImportFn.START_INTERRUPTION) {
+				return true;
+			}
+		return false;
 	}
 
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionAllEmp(String execId, ProcessExecution procExec,
@@ -2750,8 +2779,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		boolean isHasException = false;
 		//boolean endStatusIsInterrupt = false;
-		List<Boolean> listCheck = new ArrayList<>();
 		// 就業担当者の社員ID（List）を取得する : RQ526
+		List<Boolean> listCheck = new ArrayList<>();
 		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
 		try {
 			int sizeClosure = lstClosure.size();
@@ -3286,12 +3315,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							
 						}else {
 							if(employeeDatePeriod != null) {
-							boolean executionDaily = this.executionDaily(companyId, context, processExecution, empId,
+								boolean executionDaily = this.executionDaily(companyId, context, processExecution, empId,
 									empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
-							if (executionDaily) {
-								listIsInterrupt.add(true);
-								return;
-							}
+								if (executionDaily) {
+									listIsInterrupt.add(true);
+									return;
+								}
 							}
 						}
 					} catch (CreateDailyException ex) {
@@ -3388,8 +3417,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 		} else {
 			try {
-				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(asyContext, employeeId,
-						period, Optional.empty());
+				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId,
+						period, Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -3525,8 +3554,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		try {
 			// 社員の日別実績を計算
-			ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(asyncContext, empId, period,
-					Optional.empty());
+			ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(empId, period,
+					Optional.empty(),empCalAndSumExeLogId);
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

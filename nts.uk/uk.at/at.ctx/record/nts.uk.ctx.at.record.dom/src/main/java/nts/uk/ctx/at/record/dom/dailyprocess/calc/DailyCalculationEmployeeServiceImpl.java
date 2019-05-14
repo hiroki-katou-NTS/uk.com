@@ -41,6 +41,8 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -154,6 +156,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 	
+	/** リポジトリ：就業計算と集計実行ログ */
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	
 	@Inject
 	/*並列処理*/
 	private ManagedParallelWithContext parallel;
@@ -174,18 +180,29 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@SuppressWarnings("rawtypes")
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
+	public void calculate(List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		
 		String cid = AppContexts.user().companyId();
 		
 		this.parallel.forEach(employeeIds, employeeId -> {
 			
-			// 中断処理　（中断依頼が出されているかチェックする）
-			if (asyncContext.hasBeenRequestedToCancel()) {
+//			// 中断処理　（中断依頼が出されているかチェックする）
+//			if (asyncContext.hasBeenRequestedToCancel()) {
+//				counter.accept(ProcessState.INTERRUPTION);
+//				return;
+//			}
+			Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+			if(!log.isPresent()) {
 				counter.accept(ProcessState.INTERRUPTION);
 				return;
 			}
-			
+			else {
+				val executionStatus = log.get().getExecutionStatus();
+				if(executionStatus.isPresent() && executionStatus.get().isStartInterruption()) {
+					counter.accept(ProcessState.INTERRUPTION);
+					return;
+				}
+			}
 			//日別実績(WORK取得)
 			List<IntegrationOfDaily> createList = createIntegrationOfDaily(employeeId,datePeriod);
 			
@@ -201,7 +218,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
 			} else {
 				//計算処理を呼ぶ
-				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),closureList,reCalcAtr);
+				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList,closureList,reCalcAtr,empCalAndSumExecLogID);
 				//１：日別計算(ENUM)
 				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
@@ -255,7 +272,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	}
 
 	@SuppressWarnings("rawtypes")
-	public ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter) {
+	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId) {
 		//実績取得
 		List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),datePeriod);
 		//実績が無かった時用のカウントアップ
@@ -267,7 +284,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
 		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
 		
 		
 		for(ManageCalcStateAndResult value:afterCalcRecord.getLst()) {
