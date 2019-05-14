@@ -1,5 +1,6 @@
 import { Vue, moment } from '@app/provider';
 import { input, InputComponent } from './input';
+import { time } from '@app/utils';
 
 @input()
 export class YearMonthComponent extends InputComponent {
@@ -19,8 +20,10 @@ export class YearMonthComponent extends InputComponent {
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
         for (let value = min; value <= max; value++) {
-            let text = value < 10 ? '0' + value : '' + value;
-            result.push({text, value});
+            result.push({
+                text : time.leftpad(value), 
+                value
+            });
         }
 
         return result;
@@ -33,9 +36,7 @@ export class YearMonthComponent extends InputComponent {
         this.picker.has = true;
 
         this.picker.onFinish = () => {
-            let newValue = this.picker.select.month < 10 ? 
-                this.picker.select.year + '0' + this.picker.select.month :
-                this.picker.select.year + '' + this.picker.select.month;
+            let newValue = this.picker.select.year + time.leftpad(this.picker.select.month);
             self.$emit('input', newValue);
         };
 
@@ -98,9 +99,7 @@ export class YearMonthComponent extends InputComponent {
     }
 
     private displayYearMonth(year: Number, month: Number) {
-        let textMonth = month < 10 ? '0' + month : '' + month;
-
-        return year + '年' + textMonth + '月';
+        return year + '年' + time.leftpad(month) + '月';
     }
 
     private displayEmpty() {

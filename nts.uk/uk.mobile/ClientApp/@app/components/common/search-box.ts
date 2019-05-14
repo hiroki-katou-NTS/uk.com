@@ -107,7 +107,7 @@ class TimeWithDayPicker {
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
         for (let value = min; value <= max; value++) {
-            let text = value < 10 ? '0' + value : '' + value;
+            let text = time.leftpad(value);
             result.push({text, value});
         }
 
@@ -149,16 +149,16 @@ class TimeWithDayPicker {
 
     public onSelect(value: any, pkr: { title: string, dataSources: any }) {
         if (value) {
-            let hour = value.hour < 10 ? '0' + value.hour : '' + value.hour;
-            let minute = value.minute < 10 ? '0' + value.minute : '' + value.minute;
+            let hour = time.leftpad(value.hour);
+            let minute = time.leftpad(value.minute);
 
             pkr.title = `${value.date}  ${hour}:${minute}`;
         }
     }
 
     public getTitle(value) {
-        let hour = value.hour < 10 ? '0' + value.hour : '' + value.hour;
-        let minute = value.minute < 10 ? '0' + value.minute : '' + value.minute;
+        let hour = time.leftpad(value.hour);
+        let minute = time.leftpad(value.minute);
 
         return `${value.date}  ${hour}:${minute}`;
     }

@@ -179,11 +179,11 @@ export const time = {
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
-    leftpad(value: number): string {
+    leftpad(value: number | Number): string {
         if (value >= 0 && value < 10) {
             return '0' + value;
         } else if (value < 0 && value > -10) {
-            return '-0' + (0 - value);
+            return '-0' + (0 - (value as number));
         }
 
         return '' + value;
