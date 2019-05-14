@@ -39,6 +39,7 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
+            //pagination
             for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
                 wsc.addCopy(0);
             }
@@ -71,9 +72,9 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
                 ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[2]);
 
             }else{
-                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[8].toString().equals("1") ? entity[0] : null);
-                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[8].toString().equals("1")  ? entity[1] : null);
-                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[8].toString().equals("1") ? entity[2] : null);
+                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[6].toString().equals("1") ? entity[0] : null);
+                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[6].toString().equals("1")  ? entity[1] : null);
+                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[6].toString().equals("1") ? entity[2] : null);
             }
 
             ws.getCells().get(rowIndex,CD_BRANCH).putValue(entity[3]);
