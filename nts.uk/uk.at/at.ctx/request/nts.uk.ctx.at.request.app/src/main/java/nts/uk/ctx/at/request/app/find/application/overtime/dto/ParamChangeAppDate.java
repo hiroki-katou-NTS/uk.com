@@ -30,6 +30,11 @@ public class ParamChangeAppDate {
 	private Integer endTime;
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
+<<<<<<< HEAD
+=======
+	private String changeEmployee;
+	
+>>>>>>> 6d2ff7de89a... fix bug
 	
 	private int overtimeAtr;
 	
