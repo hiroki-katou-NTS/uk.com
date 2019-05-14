@@ -118,6 +118,7 @@ module cps003.a.vm {
             cps003.control.selectButton();
             cps003.control.relateButton();
             cps003.control.validateDateRange();
+            cps003.control.extendTimeRange();
             self.baseDate(moment().format("YYYY/MM/DD"));
 
             //fetch all category by login 
@@ -1363,6 +1364,8 @@ module cps003.a.vm {
                     item.columnCssClass = "halign-right";
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
+                    let timeRange = cps003.control.TIME_RANGE[self.category.catCode() + "_" + item.key];
+                    if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     sort.type = "Time";

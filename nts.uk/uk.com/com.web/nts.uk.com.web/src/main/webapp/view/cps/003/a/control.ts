@@ -336,7 +336,7 @@ module cps003 {
             check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
         };
         
-        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {},
+        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {}, TIME_RANGE = {},
         HALF_INT = { 
             CS00035_IS00366: true,
             CS00035_IS00368: true,
@@ -748,6 +748,10 @@ module cps003 {
         },
         dateRange = [
             {
+                ctgCode: "CS00003",
+                start: "IS00020",
+                end: "IS00021" 
+            }, {
                 ctgCode: "CS00004",
                 start: "IS00026",
                 end: "IS00027"            
@@ -819,6 +823,121 @@ module cps003 {
                 ctgCode: "CS00021",
                 start: "IS00255",
                 end: "IS00256"
+            }
+        ],
+        timeRange = [
+            {
+                ctgCode: "CS00019",
+                start: "IS00106",
+                end: "IS00107"
+            }, {
+                ctgCode: "CS00019",
+                start: "IS00109",
+                end: "IS00110"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00133",
+                end: "IS00134"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00136",
+                end: "IS00137"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00142",
+                end: "IS00143"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00145",
+                end: "IS00146"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00151",
+                end: "IS00152"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00154",
+                end: "IS00155"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00160",
+                end: "IS00161"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00163",
+                end: "IS00164"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00169",
+                end: "IS00170"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00172",
+                end: "IS00173"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00178",
+                end: "IS00179"
+            }, {
+                ctgCode: "CS00020",
+                start: "IS00181",
+                end: "IS00182"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00196",
+                end: "IS00197"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00199",
+                end: "IS00200"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00205",
+                end: "IS00206"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00208",
+                end: "IS00209"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00214",
+                end: "IS00215"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00217",
+                end: "IS00218"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00223",
+                end: "IS00224"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00226",
+                end: "IS00227"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00232",
+                end: "IS00233"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00235",
+                end: "IS00236"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00241", 
+                end: "IS00242"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00244",
+                end: "IS00245"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00187",
+                end: "IS00188"
+            }, {
+                ctgCode: "CS00070",
+                start: "IS00190",
+                end: "IS00191"
             }
         ];
         
@@ -1216,7 +1335,10 @@ module cps003 {
                             message = nts.uk.resource.getMessage("MsgB_21", ["期間"]);
                         $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.start, message: message }]);
                     } else {
-                        $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }, { id: data.id, columnKey: range.end }]);
+                        $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.end }]);
+                        if (!required || (!_.isNil(start._i) && start._i !== "")) {
+                            $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }]);
+                        }
                     }
                 };
                 
@@ -1241,8 +1363,94 @@ module cps003 {
                             message = nts.uk.resource.getMessage("MsgB_21", ["期間"]);
                         $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.end, message: message }]);
                     } else {
-                        $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.end }, { id: data.id, columnKey: range.start }]);
+                        if (!_.isNil(start._i) && start._i !== "") {
+                            $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }]);
+                        }
+                        
+                        if (!required || (!_.isNil(end._i) && end._i !== "")) {
+                            $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.end }]);
+                        }
                     }
+                };
+            });
+        }
+        
+        export function extendTimeRange() {
+            _.forEach(timeRange, range => {
+                TIME_RANGE[range.ctgCode + "_" + range.start] = (required, itemId, name, id, key, val, data) => {
+                    let dfd = $.Deferred();
+                    if (_.isNil(itemId)) {
+                        dfd.reject();
+                        return dfd.promise();
+                    }
+                    let endId = itemId.substring(0, itemId.length - 5) + nts.uk.text.padLeft(String(Number(itemId.slice(-5)) + 1), '0', 5),
+                        pv = __viewContext.primitiveValueConstraints[itemId];
+//                    if (pv) {
+//                        let minTime = nts.uk.time.minutesBased.clock.dayattr.parseString(arguments[4][range.start]).asMinutes,
+//                            formatter = new nts.uk.text.TimeWithDayFormatter({});
+//                        try {
+//                            pv.min = formatter.format(minTime + 1);
+//                        } catch (e) {}
+//                    }
+                    
+                    let max = nts.uk.time.minutesBased.clock.dayattr.parseString(data[range.end] || ""),
+                        value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
+                        $grid = $("#grid");
+                    if (max.success && value.success) {
+                        if (max.asMinutes < value.asMinutes) {
+                            let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                                maxVal = nts.uk.time.minutesBased.clock.dayattr.create(max.asMinutes - 1),
+                                minVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.min).asMinutes),
+                                message = nts.uk.resource.getMessage("MsgB_16", [ name, minVal.fullText, maxVal.fullText ]);
+                            $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: range.start, message: message }]);
+                        } else {
+                            $grid.mGrid("clearErrors", [{ id: id, columnKey: range.start }]);
+                            if (!_.isNil(data[range.end]) && data[range.end] !== "") {
+                                $grid.mGrid("clearErrors", [{ id: id, columnKey: range.end }]);
+                            }
+                        }
+                    }
+                    
+                    dfd.reject();
+                    return dfd.promise();
+                };
+            
+                TIME_RANGE[range.ctgCode + "_" + range.end] = (required, itemId, name, id, key, val, data) => {
+                    let dfd = $.Deferred();
+                    if (_.isNil(itemId)) {
+                        dfd.reject();
+                        return dfd.promise();
+                    }
+                    let startId = itemId.substring(0, itemId.length - 5) + nts.uk.text.padLeft(String(Number(itemId.slice(-5)) - 1), '0', 5),
+                        pv = __viewContext.primitiveValueConstraints[itemId];
+//                    if (pv) {
+//                        let maxTime = nts.uk.time.minutesBased.clock.dayattr.parseString(arguments[4][range.end]).asMinutes,
+//                            formatter = new nts.uk.text.TimeWithDayFormatter({});
+//                        try {
+//                            pv.max = formatter.format(maxTime - 1);
+//                        } catch (e) {}   
+//                    }
+                    
+                    let min = nts.uk.time.minutesBased.clock.dayattr.parseString(data[range.start] || ""),
+                        value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
+                        $grid = $("#grid");
+                    if (min.success) {
+                        if (min.asMinutes > value.asMinutes) {
+                            let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                                minVal = nts.uk.time.minutesBased.clock.dayattr.create(min.asMinutes + 1),
+                                maxVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.max).asMinutes),
+                                message = nts.uk.resource.getMessage("MsgB_16", [ name, minVal.fullText, maxVal.fullText ]);
+                            $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: range.end, message: message }]);
+                        } else {
+                            $grid.mGrid("clearErrors", [{ id: id, columnKey: range.end }]);
+                            if (!_.isNil(data[range.start]) && data[range.start] !== "") { 
+                                $grid.mGrid("clearErrors", [{ id: id, columnKey: range.start }]);
+                            }
+                        }
+                    }
+                    
+                    dfd.reject();
+                    return dfd.promise();
                 };
             });
         }
