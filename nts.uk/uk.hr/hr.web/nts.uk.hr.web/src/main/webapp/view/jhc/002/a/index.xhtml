@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="jhc002.a.style.css" />
+			<com:scriptfile path="jhc002.a.vm.js" />
+			<com:scriptfile path="jhc002.a.service.js" />
+			<com:scriptfile path="jhc002.a.start.js" />
+			<com:scriptfile path="service.js" />
+				<com:scriptfile path="start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" tabindex="2" data-bind="">#{i18n.getText('JHC002_A1_1')}</button>
+				<button tabindex="1" data-bind="">#{i18n.getText('JHC002_A1_2')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="main-area">
+					<div id="main-center-area">
+						<div class="container cf">
+							<div style="height: 300px;">
+							<assy-com params="screenMode: screenMode, masterId: masterId, 
+								histList: histList, selectedHistId: selectedHistId,
+							 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
+							 	getQueryResult: getQueryResult,
+							 	getSelectedStartDate: getSelectedStartDate,
+							 	commandAdd: commandAdd,
+							 	commandUpdate: commandUpdate,
+							 	commandDelete: commandDelete,
+							 	delVisible: delVisible,
+							 	delChecked: delChecked,
+							 	afterRender: afterRender,
+							 	afterAdd: afterAdd,
+							 	afterUpdate: afterUpdate,
+							 	afterDelete: afterDelete"></assy-com>
+							<button data-bind="click: loadHist"></button>
+							<label data-bind="text: selectedHistId"></label>
+						</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_A222_9')}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

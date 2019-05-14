@@ -4,12 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Integer_0_99;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearRequirement;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearStandardNumber;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearType;
 
 /**職務*/
 @AllArgsConstructor
