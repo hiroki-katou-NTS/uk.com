@@ -99,6 +99,22 @@ module nts.uk.pr.view.qmm035.a {
 
             }
 
+            exportExcel(){
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let data = {
+
+                };
+                service.exportExcel().done(()=>{
+
+                }).fail((err)=>{
+                    if (err)
+                        dialog.alertError(err);
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                });
+            }
+
             /**
              * update
              */

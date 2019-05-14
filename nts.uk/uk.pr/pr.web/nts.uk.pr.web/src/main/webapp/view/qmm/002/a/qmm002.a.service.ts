@@ -9,8 +9,13 @@ module nts.uk.pr.view.qmm002.a.service {
         registerBank: "ctx/pr/transfer/bank/reg-bank",
         registerBranch: "ctx/pr/transfer/bank/reg-bank-branch",
         checkBeforeDeleteBranch: "ctx/pr/transfer/bank/check-before-delete-branch/{0}",
-        deleteBranch: "ctx/pr/transfer/bank/delete-branch/{0}"
+        deleteBranch: "ctx/pr/transfer/bank/delete-branch/{0}",
+        exportFile: "ctx/pr/transfer/bank/export",
     }
+
+    export function exportFile(): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.exportFile);
+    };
 
     export function getAllBank(): JQueryPromise<any> {
         return ajax("pr", paths.getAllBank);
