@@ -40,7 +40,12 @@ public final class AppContexts {
 			return account;
 		}
 	}	
+	
 	public static SystemConfiguration system() {
 		return CDI.current().select(SystemConfiguration.class).get();
+	}
+	
+	public static DeviceInfo deviceInfo() {
+		return RequestContextProvider.get().get(AppContextsConfig.DEVICE_INFO);
 	}
 }

@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,7 +51,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author hungnm
  *
  */
-@RequestScoped
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 
 //	@Inject
@@ -61,8 +64,9 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	private SprAppRootStatePub sprPub;
 	@Override
 	public List<ApproveRootStatusForEmpImport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
-			String employeeID, String companyID, Integer rootType) {
-		return intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, new DatePeriod(startDate, endDate), rootType)
+			List<String> employeeIDs, String companyID, Integer rootType) {
+		
+		return intermediateDataPub.getAppRootStatusByEmpsPeriod(employeeIDs, new DatePeriod(startDate, endDate), rootType)
 				.stream()
 				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
 						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
@@ -217,7 +221,7 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 		List<AppRootSttMonthExport> exportResult = new ArrayList<>();
 		try{
-			exportResult = intermediateDataPub.getAppRootStatusByEmpsMonth(listParam);
+			exportResult = intermediateDataPub.getAppRootStatusByEmpsMonth(listParam).getAppRootSttMonthExportLst();
 		}
 		catch(BusinessException ex){
 			throw new BusinessException("Msg_1430", "承認者");

@@ -12,17 +12,29 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
+import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordInfor;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.NullLoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
@@ -35,6 +47,10 @@ import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 @Stateless
 public class LoginRecordRegistService {
 
+	/** The user repository. */
+	@Inject
+	private UserAdapter userAdapter;
+	
 	/** The user info adaptor for log. */
 	@Inject
 	private UserInfoAdaptorForLog userInfoAdaptorForLog;
@@ -46,6 +62,13 @@ public class LoginRecordRegistService {
 	/** The login record adapter. */
 	@Inject
 	private LoginRecordAdapter loginRecordAdapter;
+
+	/** The employee adapter. */
+	@Inject
+	private SysEmployeeAdapter employeeAdapter;
+	
+	@Inject
+	private SystemSuspendService systemSuspendService;
 
 	/**
 	 * Call login record.
@@ -85,6 +108,87 @@ public class LoginRecordRegistService {
 
 		// アルゴリズム「ログイン記録」を実行する１
 		this.loginRecord(infor, param.companyId);
+	}
+	
+	/**
+	 * Gets the user.
+	 *
+	 * @param personalId the personal id
+	 * @return the user
+	 */
+	public UserImportNew getUser(String personalId, String companyId, String employeeCode) {
+		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
+		if (user.isPresent()) {
+			return user.get();
+		} else {
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.callLoginRecord(param);
+			throw new BusinessException("Msg_301");
+		}
+	}
+
+	/**
+	 * Gets the employee.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @return the employee
+	 */
+	public EmployeeImport getEmployee(String companyId, String employeeCode) {
+		Optional<EmployeeImport> em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
+		if (em.isPresent()) {
+			return em.get();
+		} else {
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.callLoginRecord(param);
+			throw new BusinessException("Msg_301");
+		}
+	}
+
+	public CheckChangePassDto writeLogForCheckPassError(EmployeeImport em, String msgErrorId) {
+		String remarkText = em.getCompanyId() + " " + em.getEmployeeCode() + " " + TextResource.localize(msgErrorId);
+		ParamLoginRecord param = new ParamLoginRecord(em.getCompanyId(), LoginMethod.NORMAL_LOGIN.value,
+				LoginStatus.Fail.value, remarkText, em.getEmployeeId());
+		
+		// アルゴリズム「ログイン記録」を実行する１
+		this.callLoginRecord(param);
+		return new CheckChangePassDto(false, msgErrorId, false);
+	}
+	
+	public SystemSuspendOutput checkSystemStop(BasicLoginCommand command) {
+		// アルゴリズム「システム利用停止の確認」を実行する
+		String programID = AppContexts.programId().substring(0, 6);
+		String screenID = AppContexts.programId().substring(6);
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(command.getContractCode(),  command.getCompanyCode(), 0, programID, screenID);
+		if(systemSuspendOutput.isError()){
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
+		}
+		return systemSuspendOutput;
+	}
+
+	/**
+	 * Check limit time.
+	 *
+	 * @param user the user
+	 */
+	public void checkLimitTime(UserImportNew user, String companyId, String employeeCode) {
+		if (user.getExpirationDate().before(GeneralDate.today())) {
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_316");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.callLoginRecord(param);
+			throw new BusinessException("Msg_316");
+		}
 	}
 
 	/**
@@ -161,4 +265,25 @@ public class LoginRecordRegistService {
 		this.loginRecordAdapter.addLoginRecord(loginRecord);
 	}
 
+
+	/**
+	 * Check input.
+	 *
+	 * @param command the command
+	 */
+	public void checkInput(BasicLoginCommand command) {
+
+		// check input company code
+		if (StringUtil.isNullOrEmpty(command.getCompanyCode(), true)) {
+			throw new BusinessException("Msg_318");
+		}
+		// check input employee code
+		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
+			throw new BusinessException("Msg_312");
+		}
+//		// check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
+	}
 }
