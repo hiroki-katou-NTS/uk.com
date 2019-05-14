@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm003.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
 
     let paths = {
         getAllResidentTaxPayee: "ctx/pr/transfer/rsdttaxpayee/get-all-resident-tax-payee",
@@ -8,7 +9,8 @@ module nts.uk.pr.view.qmm003.a.service {
         getResidentTaxPayeeZero :"ctx/pr/transfer/rsdttaxpayee/get-resident-tax-payee-company-zero/{0}",
         register: "ctx/pr/transfer/rsdttaxpayee/reg-resident-tax-payee",
         checkBeforeDelete: "ctx/pr/transfer/rsdttaxpayee/check-before-delete",
-        remove: "ctx/pr/transfer/rsdttaxpayee/delete-resident-tax-payee/{0}"
+        remove: "ctx/pr/transfer/rsdttaxpayee/delete-resident-tax-payee/{0}",
+        exportFilePdf : "file/core/laborInsurance/residentTaxPayeeExport/export"
     };
 
     export function getAllResidentTaxPayee(): JQueryPromise<any> {
@@ -35,4 +37,8 @@ module nts.uk.pr.view.qmm003.a.service {
         return ajax('pr', format(paths.remove, code));
     }
 
+    export function exportFilePdf(): JQueryPromise<any> {
+        let _path = format(paths.exportFilePdf);
+        return exportFile(_path);
+    }
 }
