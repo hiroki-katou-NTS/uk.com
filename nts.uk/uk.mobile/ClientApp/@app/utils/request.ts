@@ -94,7 +94,7 @@ export class QueryString {
         return instance;
     }
 
-    public get(key: string): any { 
+    public get(key: string): any {
         return this.items[key];
     }
 
@@ -159,8 +159,7 @@ export namespace location {
             }
         }
     }
-    
-    export function current(): Locator{
+    export function current(): Locator {
         return new Locator(window.location.href);
     }
 }
@@ -168,60 +167,60 @@ export namespace location {
 export namespace login {
     let STORAGE_KEY_USED_LOGIN_PAGE = 'nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE';
     let STORAGE_KEY_SERIALIZED_SESSION = 'nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION';
-        
+
     export function keepUsedLoginPage(webAppId: WebAppId, path: string);
     export function keepUsedLoginPage(url?: string) {
-            if (arguments.length === 2) {
-                let loginLocator = location.siteRoot()
-                                        .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
-                                        .mergeRelativePath(arguments[1]);
-                keepUsedLoginPage.apply(null, [ loginLocator.serialize() ]);
+        if (arguments.length === 2) {
+            let loginLocator = location.siteRoot()
+                .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
+                .mergeRelativePath(arguments[1]);
+            keepUsedLoginPage.apply(null, [loginLocator.serialize()]);
 
-                return;
-            }
-            
-            if (url === undefined) {
-                keepUsedLoginPage.apply(null, [ location.current().serialize() ]);
-
-                return;
-            }
-            
-            sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
+            return;
         }
-        
+
+        if (url === undefined) {
+            keepUsedLoginPage.apply(null, [location.current().serialize()]);
+
+            return;
+        }
+
+        sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
+    }
+
     export function jumpToUsedLoginPage() {
-            // sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
-            //     window.location.href = path;
-            // }).ifEmpty(() => {
-                this.$router.push({ name: 'login' });
-            // });
-        }
-        
+        // sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
+        //     window.location.href = path;
+        // }).ifEmpty(() => {
+        this.$router.push({ name: 'login' });
+        // });
+    }
+
     export function keepSerializedSession(): Promise<any> {
-//            request.ajax("/shr/web/session/serialize").done(res => {
-//                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
-//                dfd.resolve();
-//            });
-//            
-            return new Promise((resolve, reject) => { resolve(); });
-        }
-        
+        //            request.ajax("/shr/web/session/serialize").done(res => {
+        //                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+        //                dfd.resolve();
+        //            });
+        //            
+        return new Promise((resolve, reject) => { resolve(); });
+    }
+
     export function restoreSessionTo(webAppId: WebAppId): Promise<any> {
-            return new Promise((resolve, reject) => { resolve(); });
-            
-//            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-//            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
-        }
+        return new Promise((resolve, reject) => { resolve(); });
+
+        //            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+        //            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
+    }
 }
 
 export namespace csrf {
     let STORAGE_KEY_CSRF_TOKEN = 'nts.uk.request.csrf.STORAGE_KEY_CSRF_TOKEN';
-    
+
     let csrfToken = cookie.get('nts.arc.CSRF_TOKEN');
     if (!_.isEmpty(csrfToken)) {
         sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
     }
-    
+
     export function getToken() {
         /** TODO: now, write token in client logic is not correct, and have not time for fix. */
         let csrfToken = sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN);

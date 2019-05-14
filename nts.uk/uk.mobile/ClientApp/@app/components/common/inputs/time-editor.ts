@@ -24,9 +24,8 @@ export class TimeComponent extends InputComponent {
             case TimeInputType.TimePoint:
                 return time.timept.toString(this.value);
             case TimeInputType.TimeDuration:
+            default: 
                 return time.timedr.toString(this.value);
-            default:
-                break;
         }
     }
 
@@ -36,7 +35,7 @@ export class TimeComponent extends InputComponent {
 
     @Emit()
     public input() {
-        let value = (this.$refs.input as HTMLInputElement).value;
+        let value = ( this.$refs.input as HTMLInputElement).value;
 
         if (value) {
             let numb = Number(value);
@@ -51,61 +50,36 @@ export class TimeComponent extends InputComponent {
         return null;
     }
 
-    public created() {
-        let self = this;
-        this.picker.has = true;
-
-        this.picker.onSelect = function () {
-            Vue.set(self.picker, 'dataSources', {});
-        };
-    }
-
     public click() {
-        this.picker.show = true;
+        let picker = 'time-with-day-picker';
+        switch (this.timeInputType) {
+            case TimeInputType.TimeWithDay:
+                picker = 'time-with-day-picker';
+                break;
+            case TimeInputType.TimePoint:
+                picker = 'time-point-picker';
+                break;
+            case TimeInputType.TimeDuration:
+            default: 
+                picker = 'time-duration-picker';
+                break;
+        }
 
-        this.picker.dataSources = {
-            h1: [{
-                text: '0',
-                value: 0
+        this
+            .$modal(picker, {
+                value: this.value,
+                minValue: this.constraint.minValue,
+                maxValue: this.constraint.maxValue,
             }, {
-                text: '1',
-                value: 1
-            }, {
-                text: '2',
-                value: 2
-            }],
-            h2: [{
-                text: '0',
-                value: 0
-            }, {
-                text: '1',
-                value: 1
-            }, {
-                text: '2',
-                value: 2
-            }],
-            m1: [{
-                text: '0',
-                value: 0
-            }, {
-                text: '1',
-                value: 1
-            }, {
-                text: '2',
-                value: 2
-            }],
-            m2: [{
-                text: '0',
-                value: 0
-            }, {
-                text: '1',
-                value: 1
-            }, {
-                text: '2',
-                value: 2
-            }]
-        };
-
+                    type: 'popup',
+                    title: this.name,
+                    animate: 'down'
+                })
+            .then((v) => {
+                if (v !== undefined) {
+                    this.$emit('input', v);
+                }
+            });
     }
 }
 

@@ -35,7 +35,7 @@ declare interface IRule {
 }
 
 declare interface IModalOptions {
-    type?: 'modal' | 'popup' | 'info';
+    type?: 'modal' | 'popup' | 'info' | 'dropback';
     size?: 'lg' | 'md' | 'sm' | 'xs';
     title?: string;
     style?: string;
@@ -101,6 +101,7 @@ declare module "vue/types/vue" {
         $goto(location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
         $modal: {
             (name: string, params?: any, options?: IModalOptions): Promise<{}>;
+            (component: VueConstructor<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
             (component: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
             warn(msg: string): Promise<{}>;
             warn(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
