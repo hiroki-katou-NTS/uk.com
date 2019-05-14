@@ -140,19 +140,25 @@ export class QueryString {
 
 export namespace location {
     // export let current = new Locator(window.location.href);
-    export let appRoot = current().mergeRelativePath(viewcontext.rootPath);
-    export let siteRoot = appRoot.mergeRelativePath('../');
+    export function appRoot() { 
+        return current().mergeRelativePath(viewcontext.rootPath); 
+    }
+    
+    export function siteRoot() {
+        return appRoot().mergeRelativePath('../');
+    } 
+    
     export let ajaxRootDir = 'webapi/';
 
-    let currentAppName = _.takeRight(appRoot.serialize().split('/'), 2)[0];
-    export let currentAppId: WebAppId;
-    for (let id in WEB_APP_NAME) {
-        if (currentAppName === WEB_APP_NAME[id]) {
-            currentAppId = id as WebAppId;
-            break;
+    export function currentAppId(): WebAppId {
+        let currentAppName = _.takeRight(appRoot().serialize().split('/'), 2)[0];
+
+        for (let id in WEB_APP_NAME) {
+            if (currentAppName === WEB_APP_NAME[id]) {
+                return  id as WebAppId;
+            }
         }
     }
-
     export function current(): Locator {
         return new Locator(window.location.href);
     }
@@ -165,7 +171,7 @@ export namespace login {
     export function keepUsedLoginPage(webAppId: WebAppId, path: string);
     export function keepUsedLoginPage(url?: string) {
         if (arguments.length === 2) {
-            let loginLocator = location.siteRoot
+            let loginLocator = location.siteRoot()
                 .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
                 .mergeRelativePath(arguments[1]);
             keepUsedLoginPage.apply(null, [loginLocator.serialize()]);
