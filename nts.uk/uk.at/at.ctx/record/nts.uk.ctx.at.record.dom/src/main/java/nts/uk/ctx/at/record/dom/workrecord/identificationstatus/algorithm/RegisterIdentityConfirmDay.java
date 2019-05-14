@@ -2,16 +2,16 @@ package nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -36,30 +36,28 @@ public class RegisterIdentityConfirmDay {
 	@Inject
 	private IdentificationRepository identificationRepository;
 
-	@Inject
-	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+//	@Inject
+//	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
-	
-	@Inject
-	private DailyRecordTransactionService workInfo;
 	
 	// code old 
 //	@Inject
 //	private OpOfDailyPerformance opOfDailyPerformance;
 
-	public boolean registerIdentity(ParamIdentityConfirmDay param) {
+	public boolean registerIdentity(ParamIdentityConfirmDay param, List<EmployeeDailyPerError> employeeDailyPerErrors, Set<Pair<String, GeneralDate>> updated) {
 		String companyId = AppContexts.user().companyId();
 		Optional<IdentityProcessUseSet> identityProcessOpt = identityProcessUseSetRepository.findByKey(companyId);
 		if (identityProcessOpt.isPresent()) {
 			checkIdentityVerification.check(identityProcessOpt.get()).ifPresent(canRegist -> {
-				registIdentification(param, companyId, canRegist);
+				registIdentification(param, companyId, canRegist, employeeDailyPerErrors);
 			});
 			
 			if(identityProcessOpt.get().isUseConfirmByYourself()){
 				param.getSelfConfirmDay().stream().forEach(cd -> {
-					workInfo.updated(param.getEmployeeId(), cd.getDate());
+					updated.add(Pair.of(param.getEmployeeId(), cd.getDate()));
+//					workInfo.updated(param.getEmployeeId(), cd.getDate());
 				});
 				return true;
 			}
@@ -68,7 +66,7 @@ public class RegisterIdentityConfirmDay {
 		return false;
 	}
 
-	private void registIdentification(ParamIdentityConfirmDay param, String companyId, SelfConfirmError canRegist) {
+	private void registIdentification(ParamIdentityConfirmDay param, String companyId, SelfConfirmError canRegist, List<EmployeeDailyPerError> errors) {
 		GeneralDate processingYmd = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
 		param.getSelfConfirmDay().forEach(data -> {
@@ -79,8 +77,11 @@ public class RegisterIdentityConfirmDay {
 					identificationRepository.remove(companyId, employeeId, data.getDate());
 				}
 			} else {
-				List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-						.find(employeeId, data.getDate()).stream().filter(x -> !x.getErrorAlarmWorkRecordCode().v().startsWith("D")).collect(Collectors.toList());
+				List<EmployeeDailyPerError> employeeDailyPerErrors = errors.stream()
+						.filter(x -> x.getEmployeeID().equals(employeeId) && 
+									x.getDate().equals(data.getDate()) &&
+									!x.getErrorAlarmWorkRecordCode().v().startsWith("D"))
+						.collect(Collectors.toList());
 				if (!employeeDailyPerErrors.isEmpty()) {
 					List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 							.getListErAlByListCodeError(companyId,

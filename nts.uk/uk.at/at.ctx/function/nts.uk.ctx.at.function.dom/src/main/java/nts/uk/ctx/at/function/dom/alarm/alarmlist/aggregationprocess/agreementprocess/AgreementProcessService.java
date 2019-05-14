@@ -182,7 +182,7 @@ public class AgreementProcessService {
 								check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
 								TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202",
 										check.getNo() + "", ot36, check.getExcessNum().v() + ""),
-								check.getMessageDisp().v()));
+								check.getMessageDisp().v(),null));
 					}
 				}
 			}
@@ -287,7 +287,7 @@ public class AgreementProcessService {
 				}
 				//カテゴリ
 				lstReturn.add(new ValueExtractAlarm(workPlaceId,checkedAgreementResult.getEmpId(),alarmValueDate,
-						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v()));
+						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v(),null));
 			}
 		}
 		return lstReturn;

@@ -26,7 +26,11 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog
 @Stateless
 @Transactional
 public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepository {
-
+	//hoatt
+	private static final String DELETE_LOG = "DELETE FROM SgwmtLoginLog c"
+			 + " WHERE c.userId = :userId"
+			 + " AND c.successOrFailure = :successOrFail"
+			 + " AND c.operationSection = :operation";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,5 +81,14 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 		SgwmtLoginLog entity = new SgwmtLoginLog();
 		loginLog.saveToMemento(new JpaLoginLogSetMemento(entity));
 		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void deleteLoginLog(String userId, int successOrFail, int operation) {
+		this.getEntityManager().createQuery(DELETE_LOG)
+				.setParameter("userId", userId)
+				.setParameter("successOrFail", successOrFail)
+				.setParameter("operation", operation)
+				.executeUpdate();
 	}
 }

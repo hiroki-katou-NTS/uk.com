@@ -117,6 +117,9 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 				}
 				appRootConfirmRepository.update(appRootConfirm);
 			}
+			if(!phaseComplete){
+				break;
+			}
 		}
 	}
 
@@ -132,7 +135,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		for(AppPhaseInstance appPhaseInstance : appPhaseInstanceLst){
 			// (中間データ版)承認フェーズ中間データ毎の承認者を取得する
 			List<String> approverLst = this.getApproverFromPhase(appPhaseInstance);
-			if(!approverLst.contains(approverID)){
+			if(approverLst.isEmpty()){
 				// ループ終了フラグをチェックする
 				if(loopCompleteFlg){
 					break;
@@ -176,6 +179,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			if(CollectionUtil.isEmpty(appPhaseConfirm.getListAppFrame())){
 				// ループする順の「承認済フェーズ」を削除する	
 				appRootConfirm.getListAppPhase().remove(appPhaseConfirm);
+				// loopCompleteFlg = true;
 			} else {
 				// ループする順の「承認済フェーズ」．承認区分=未承認
 				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.UNAPPROVED);
