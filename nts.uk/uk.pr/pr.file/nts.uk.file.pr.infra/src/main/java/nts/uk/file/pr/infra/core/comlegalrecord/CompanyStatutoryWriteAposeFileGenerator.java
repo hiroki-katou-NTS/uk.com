@@ -20,8 +20,6 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
 
     private static final String REPORT_FILE_NAME = "QMM035法定調書用会社の登録.xlsx";
 
-    private static final int MAX_LINE = 218;
-
     private static final int FIRST_ROW_FILL = 3;
 
     private static final int CODE = 1;
@@ -58,11 +56,6 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
         try(AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
-            Worksheet ws = wsc.get(0);
-
-            for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
-                ws.getCells().copyRows(ws.getCells(),0,221,222);
-            }
             this.writeFileExcel(wsc,exportData,companyName);
             reportContext.processDesigner();
             reportContext.saveAsExcel(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
@@ -73,22 +66,9 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
 
     private void writeFileExcel(WorksheetCollection wsc, List<CompanyStatutoryWriteExportData> exportData, String companyName){
         int rowIndex = FIRST_ROW_FILL;
-        int count = 0;
-        int sheetIndex = 0;
-        Worksheet ws = wsc.get(sheetIndex);
+        Worksheet ws = wsc.get(0);
         this.settingHeader(ws,companyName);
-
         for(CompanyStatutoryWriteExportData entity : exportData){
-            if(count == MAX_LINE) {
-                //sheetIndex ++;
-                //ws = wsc.get(sheetIndex);
-                this.settingHeader(ws,companyName);
-
-                //HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-                //pageBreaks.add(222);
-                rowIndex = rowIndex + FIRST_ROW_FILL;
-                count = 0;
-            }
 
             ws.getCells().get(rowIndex,CODE).putValue(entity.getCode());
             ws.getCells().get(rowIndex,NAME).putValue(entity.getName());
@@ -119,7 +99,6 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
             ws.getCells().get(rowIndex,VIBLOCAFININS).putValue(entity.getVibrantLocationFinancialInstitutions());
 
             rowIndex ++;
-            count ++;
         }
     }
 
