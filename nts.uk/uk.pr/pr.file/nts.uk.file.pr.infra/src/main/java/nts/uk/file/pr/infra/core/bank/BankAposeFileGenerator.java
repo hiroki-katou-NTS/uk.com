@@ -24,12 +24,12 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
     private static final int MAX_LINE = 37;
     private static final int FIRST_ROW_FILL = 3;
 
-    private static final int CD_BANK = 1;
-    private static final int NAME_BANK = 2;
-    private static final int KANA_NAME_BANK = 3;
-    private static final int CD_BRANCH = 4;
-    private static final int NAME_BRANCH = 5;
-    private static final int KANA_BRANCH = 6;
+    private static final int CD_BANK = 3;
+    private static final int NAME_BANK = 4;
+    private static final int KANA_NAME_BANK = 5;
+    private static final int CD_BRANCH = 6;
+    private static final int NAME_BRANCH = 7;
+    private static final int KANA_BRANCH = 8;
 
 
 
