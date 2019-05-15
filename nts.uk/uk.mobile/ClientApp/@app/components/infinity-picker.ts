@@ -47,7 +47,7 @@ export const InfinityPicker = {
                 index = dataSources.indexOf(select),
                 mgt = self.$mtNumber,
                 move = Math.floor(mgt / 40),
-                nidex = index + move;
+                nidex = move === 0 && index === -1 ? 0 : index + move;
 
             nidex = Math.floor(nidex % dataSources.length);
 
