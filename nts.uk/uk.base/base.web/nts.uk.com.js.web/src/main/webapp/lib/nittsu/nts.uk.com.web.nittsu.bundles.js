@@ -28380,6 +28380,36 @@ var nts;
                                 z--;
                             }
                         },
+                        clearErrors: function (errs, s) {
+                            if (!errs)
+                                return;
+                            s = !_.isNil(s) ? s : _currentSheet;
+                            _.forEach(errs, function (e) {
+                                _.forEach(_.keys(_mafollicle), function (p) {
+                                    if (p === SheetDef)
+                                        return;
+                                    var maf = _mafollicle[p][s];
+                                    if (maf && maf.desc) {
+                                        var y = _.findIndex(_mafollicle[p].dataSource, function (d) { return d[_pk] === e.id; }), i = maf.desc.fixedColIdxes[e.columnKey];
+                                        if (_.isNil(i)) {
+                                            i = maf.desc.colIdxes[e.columnKey];
+                                            if (!_.isNil(maf.desc.rows[y])) {
+                                                e.element = maf.desc.rows[y][i];
+                                            }
+                                        }
+                                        else if (!_.isNil(maf.desc.fixedRows[y])) {
+                                            e.element = maf.desc.fixedRows[y][i];
+                                        }
+                                        if (e.element) {
+                                            khl.clear(e);
+                                        }
+                                    }
+                                    else {
+                                        _.remove(maf && maf.checkedErrors, function (ce) { return ce.columnKey === e.columnKey && ce.id === e.id; });
+                                    }
+                                });
+                            });
+                        },
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
                         },
@@ -29015,7 +29045,7 @@ var nts;
                                 return;
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                             }
                         });
                         $grid.addXEventListener(ssk.KEY_DOWN, function (evt) {
@@ -29190,7 +29220,7 @@ var nts;
                     /**
                      * EndEdit.
                      */
-                    function endEdit($grid) {
+                    function endEdit($grid, fromDoc) {
                         var editor = _mEditor;
                         if (!editor)
                             return;
@@ -29306,6 +29336,9 @@ var nts;
                                 wedgeCell($grid, editor, date);
                                 $bCell.textContent = mDate._i;
                                 $.data($bCell, v.DATA, date);
+                            }
+                            if (fromDoc && picker && _.isFunction(picker.inputProcess)) {
+                                picker.inputProcess(mDate, _dataSource[parseFloat(editor.rowIdx)]);
                             }
                             $input.value = "";
                             dkn.closeDD(dkn._ramass[editor.formatType], true);
@@ -29446,10 +29479,14 @@ var nts;
                                     else {
                                         colour = color.ManualEditOther;
                                     }
-                                    if (main)
+                                    if (main) {
+                                        color.popState(id, coord.columnKey, [color.ManualEditTarget, color.ManualEditOther]);
                                         color.pushState(id, coord.columnKey, [colour], true);
+                                    }
                                     if (!$cell_1)
                                         return { colour: colour };
+                                    $cell_1.classList.remove(color.ManualEditTarget);
+                                    $cell_1.classList.remove(color.ManualEditOther);
                                     $cell_1.classList.add(colour);
                                     return { c: calcCell, colour: colour };
                                 }
