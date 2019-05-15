@@ -1090,7 +1090,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.employeeName(overtimeDto.employeeName);
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
-                self.siftName(overtimeDto.siftType.siftName|| text("KAL003_120"));
+                self.siftName(self.getName(overtimeDto.siftType.siftCode,overtimeDto.siftType.siftName));
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
