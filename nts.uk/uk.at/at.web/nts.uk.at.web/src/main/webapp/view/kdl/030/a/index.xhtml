@@ -126,7 +126,7 @@
 			  										value: $parent.isSendToApplicant}">
 											</div>
 										</div>
-										<div data-bind = "ifnot : isMail">#{i18n.getText('KDL030_31')}</div>
+										<div data-bind = "ifnot : isMail, css:{rowPer1: isMail == false}">#{i18n.getText('KDL030_31')}</div>
 									</td>
 								</tr>
 							</tbody>

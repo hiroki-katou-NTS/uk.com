@@ -118,7 +118,8 @@ public class TotalProcessAnnualHoliday {
 					TextResource.localize("KAL010_402",
 							ligedAnnLeaUseService.get().v().toString(),
 							ligedUseDays.get().v().toString()),	
-					annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v()
+					annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
+					null
 					);
 			listValueExtractAlarm.add(resultCheckRemain);
 		}
@@ -191,7 +192,8 @@ public class TotalProcessAnnualHoliday {
 						TextResource.localize("KAL010_402",
 								ligedAnnLeaUseService.get().v().toString(),
 								ligedUseDays.get().v().toString()),	
-						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v()
+						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
+						null
 						);
 				listValueExtractAlarm.add(resultCheckRemain);
 			}

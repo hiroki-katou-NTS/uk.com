@@ -102,6 +102,9 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	public boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
+		// 期間按分使用区分を確認
+		if (distributeAtr == false) return false;
+		
 		// 付与期間と重複する付与期間を持つ残数履歴データを取得
 		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
 		

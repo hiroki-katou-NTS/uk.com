@@ -469,7 +469,7 @@ public class LayoutFinder {
 			}
 
 			// set value
-			valueItem.setValue(value);
+			valueItem.setValue(value == null ? itemDef.getInitValue(): value);
 
 			// set recordId
 			valueItem.setRecordId(peregDto.getDomainDto().getRecordId());

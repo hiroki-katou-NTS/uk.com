@@ -111,7 +111,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					
 			// Get User by PersonalId
 			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
-			
+			//hoatt 2019.05.07 #107445
+			//EA修正履歴No.3369
+			//アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+			this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId, command.isSignOn());
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
@@ -156,7 +159,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
-		
+		//hoatt 2019.05.06
+		//EA修正履歴No.3373
+		//アルゴリズム「ログイン後チェック」を実行する
+		this.deleteLoginLog(user.getUserId());
 		//アルゴリズム「ログイン後チェック」を実行する
 		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
 		checkChangePass.successMsg = systemSuspendOutput.getMsgID();

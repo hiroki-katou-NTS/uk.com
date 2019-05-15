@@ -6,10 +6,12 @@ module nts.uk.at.view.ktg030.a.viewmodel {
     export class ScreenModel {
         text: KnockoutObservable<string>;
         visible: KnockoutObservable<boolean>;
+        selectedSwitch : KnockoutObservable<any>;
         constructor() {
             let self = this;
             self.text = ko.observable("");
             self.visible = ko.observable(false);
+            self.selectedSwitch =ko.observable(0);
         }
 
         /**
@@ -19,9 +21,8 @@ module nts.uk.at.view.ktg030.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            self.selectedSwitch  = windows.getShared("currentOrNextMonth");
-              character.restore('currentOrNextMonth').done((obj) => {
-                service.getData(obj).done((data) => {
+           self.selectedSwitch(windows.getShared("currentOrNextMonth") == undefined ? 0 : windows.getShared("currentOrNextMonth"));
+                service.getData(self.selectedSwitch()).done((data) => {
                     //console.log(data);
                     if (data) {
                         self.text = ko.observable(getText('KTG030_4'));
@@ -34,8 +35,7 @@ module nts.uk.at.view.ktg030.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
-            })
-
+           
             return dfd.promise();
         }
 
