@@ -475,7 +475,6 @@ public class PerInfoItemDefFinder {
 			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
 			other.setRowId(item);
 			other.setColumnKey("otherAuth");
-			other.setState(toList("ntsgrid-alarm1"));
 
 			itemRequiredLst.add(itemNameRequired);
 			itemRequiredLst.add(setting);
@@ -510,7 +509,6 @@ public class PerInfoItemDefFinder {
 			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
 			other.setRowId(item);
 			other.setColumnKey("otherAuth");
-			other.setState(toList("ntsgrid-alarm1"));
 
 			itemRequiredLst.add(itemNameRequired);
 			itemRequiredLst.add(setting);
