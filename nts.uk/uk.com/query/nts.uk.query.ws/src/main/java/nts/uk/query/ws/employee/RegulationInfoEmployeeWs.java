@@ -90,7 +90,7 @@ public class RegulationInfoEmployeeWs {
 	/**
 	 * Find current login employee.
 	 *
-	 * @param baseDate the base date
+	 * @param query the login employee query
 	 * @return the regulation info employee dto
 	 */
 	@POST

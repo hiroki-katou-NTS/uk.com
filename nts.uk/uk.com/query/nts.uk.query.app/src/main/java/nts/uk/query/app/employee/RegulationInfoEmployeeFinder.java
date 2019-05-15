@@ -142,8 +142,8 @@ public class RegulationInfoEmployeeFinder {
                 this.changeListDepartment(queryDto);
                 break;
             case AFFILIATION_AND_ALL_SUBORDINATES:
-                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                        || employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE ||
+					employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
                     // Get list String Department
                     this.changeListDepartment(queryDto);
                     break;
@@ -425,44 +425,34 @@ public class RegulationInfoEmployeeFinder {
 	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(LoginEmployeeQuery query) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate(), query.getSystemType());
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate());
 
 		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
 			case SALARY:
 				if (loginEmployee == null || !loginEmployee.getDepartmentId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<DepartmentInfoImport> departmentInfoImports = new ArrayList<>();
-				if (!loginEmployee.getDepartmentCode().isPresent() ||
-					!loginEmployee.getDepartmentDeleteFlag().isPresent() ||
-					loginEmployee.getDepartmentDeleteFlag().get()) {
-					departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
-				}
+				List<DepartmentInfoImport> departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 						.employeeCode(loginEmployee.getEmployeeCode())
 						.employeeId(loginEmployee.getEmployeeID())
 						.employeeName(loginEmployee.getName().orElse(""))
 						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
 						.affiliationCode(loginEmployee.getDepartmentCode().orElse(""))
-						.affiliationName(loginEmployee.getDepartmentName().orElse(departmentInfoImports.get(0).getDepartmentName()))
+						.affiliationName(departmentInfoImports.get(0).getDepartmentName())
 						.build();
 			default:
 				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<WorkplaceInfoImport> workplaceInfoImports = new ArrayList<>();
-				if (!loginEmployee.getWorkplaceCode().isPresent() ||
-					!loginEmployee.getWorkplaceDeleteFlag().isPresent() ||
-					loginEmployee.getWorkplaceDeleteFlag().get()) {
-					workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
-				}
+				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
 					.employeeId(loginEmployee.getEmployeeID())
 					.employeeName(loginEmployee.getName().orElse(""))
 					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
 					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
-					.affiliationName(loginEmployee.getWorkplaceName().orElse(workplaceInfoImports.get(0).getWorkplaceName()))
+					.affiliationName(workplaceInfoImports.get(0).getWorkplaceName())
 					.build();
 		}
 	}

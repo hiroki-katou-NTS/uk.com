@@ -147,8 +147,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
         // department condition
         Predicate depCondition = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate),
                 cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate),
-				cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depConfEndDate), baseDate.toDate()),
-				cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depConfStrDate), baseDate.toDate()));
+				cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depConfEndDate), baseDate.toDate()), cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depConfStrDate), baseDate.toDate())),
+                      cb.isNull(root.get(EmployeeDataView_.depConfStrDate))));
         if (paramQuery.getFilterByDepartment()) {
             // return empty list if condition code list is empty
             if (departmentCodes.isEmpty()) {
@@ -157,17 +157,17 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
             // update query conditions
             conditions.add(depCondition);
-            countParameter += 2;
+            countParameter += 5;
         } else {
             conditions.add(cb.or(cb.isNull(root.get(EmployeeDataView_.depStrDate)), depCondition));
-            countParameter += 3;
+            countParameter += 6;
         }
 
         // workplace condition
         Predicate wplCondition = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate),
                 cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate),
-				cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), baseDate.toDate()),
-				cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), baseDate.toDate()));
+                cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), baseDate.toDate()), cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), baseDate.toDate())),
+                      cb.isNull(root.get(EmployeeDataView_.wkpConfStrDate))));
         if (paramQuery.getFilterByWorkplace()) {
             // return empty list if condition code list is empty
             if (workplaceCodes.isEmpty()) {
@@ -176,11 +176,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
             // update query conditions
             conditions.add(wplCondition);
-            countParameter += 2;
+            countParameter += 5;
         } else {
-            conditions.add(cb.or(cb.isNull(root.get(EmployeeDataView_.wkpStrDate)),
-					cb.isNull(root.get(EmployeeDataView_.wkpConfStrDate)),wplCondition));
-            countParameter += 3;
+            conditions.add(cb.or(cb.isNull(root.get(EmployeeDataView_.wkpStrDate)), wplCondition));
+            countParameter += 6;
         }
 
 
@@ -335,7 +334,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
             CollectionUtil.split(jobTitleCodes, ELEMENT_300, splitJobTitleCodes -> {
                 // classification condition
                 CollectionUtil.split(classificationCodes, ELEMENT_300, splitClassificationCodes -> {
-                    // workplacet condition
+                    // workplace condition
                     CollectionUtil.split(workplaceCodes, ELEMENT_300, splitWorkplaceCodes -> {
                         // departmen condition
                         CollectionUtil.split(departmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() + splitWorkplaceCodes.size() - countParameterFinal), splitDepartmentCodes ->
@@ -588,7 +587,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * #findBySid(java.lang.String, java.lang.String, nts.arc.time.GeneralDateTime)
 	 */
 	@Override
-	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate, int systemType) {
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate) {
 		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
@@ -605,16 +604,14 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// Where SID.
 		conditions.add(cb.equal(root.get(EmployeeDataView_.sid), sid));
 
-		if (systemType == CCG001SystemType.SALARY.value) {
-            // Department.
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
-		} else {
-            // Workplace.
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
-		}
-		
+		// Department.
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
+
+		// Workplace.
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
+
 		// Find fist.
 		cq.where(conditions.toArray(new Predicate[] {}));
 		List<EmployeeDataView> res = this.getEntityManager().createQuery(cq).getResultList();

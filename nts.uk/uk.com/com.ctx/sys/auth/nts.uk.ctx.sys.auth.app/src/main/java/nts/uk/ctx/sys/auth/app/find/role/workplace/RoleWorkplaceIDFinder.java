@@ -119,6 +119,11 @@ public class RoleWorkplaceIDFinder {
 			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
 		}
 
+        // check workplace id != null
+        if (workplaceId != null) {
+            listWkpId.add(workplaceId);
+        }
+
 		// [No.567] 職場の下位職場を取得する
 		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD && !workplaceId.isEmpty()) {
 			List<String> wkpIds = sysAuthWorkplaceAdapter.getAllChildrenOfWorkplaceId(companyId, referenceDate, workplaceId);
@@ -172,6 +177,11 @@ public class RoleWorkplaceIDFinder {
 		if (optAffWorkplaceHistImport.isPresent()) {
 			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
 		}
+
+        // check workplace id != null
+        if (workplaceId != null) {
+            listWkpId.add(workplaceId);
+        }
 
 		// [No.567] 職場の下位職場を取得する
 		if (param.getReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value && !workplaceId.isEmpty()) {
