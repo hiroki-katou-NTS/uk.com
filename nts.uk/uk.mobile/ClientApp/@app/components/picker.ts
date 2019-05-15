@@ -91,7 +91,7 @@ export const MobilePicker = {
 
                 obj.objectForEach(dataSources, (key: string, items: any[]) => {
                     if (!self.selects[key]) {
-                        self.selects[key] = self.value[key] || items[0][opts.value];
+                        self.selects[key] = self.value[key] || (items[0] && items[0][opts.value]);
                     }
                 });
             }
