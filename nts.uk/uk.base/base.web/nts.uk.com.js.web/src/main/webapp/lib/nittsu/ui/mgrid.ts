@@ -6748,8 +6748,13 @@ module nts.uk.ui.mgrid {
                             colour = color.ManualEditOther;
                         }
                         
-                        if (main) color.pushState(id, coord.columnKey, [ colour ], true);
+                        if (main) {
+                            color.popState(id, coord.columnKey, [ color.ManualEditTarget, color.ManualEditOther ]);
+                            color.pushState(id, coord.columnKey, [ colour ], true);
+                        }
                         if (!$cell) return { colour: colour };
+                        $cell.classList.remove(color.ManualEditTarget);
+                        $cell.classList.remove(color.ManualEditOther);
                         $cell.classList.add(colour);
                         return { c: calcCell, colour: colour };
                     }
