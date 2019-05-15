@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.extern.slf4j.Slf4j;
 //import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -32,6 +33,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
+import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
+import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.ExeStateOfCalAndSumImportFn;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogAdapterFn;
@@ -140,6 +143,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@Slf4j
 public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandler<ExecuteProcessExecutionCommand> {
 
 	@Inject
@@ -232,6 +236,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
+	@Inject
+	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -1129,6 +1135,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// }
 
 		return true;
+	}
+	private boolean checkStop(String execId) {
+		Optional<ExeStateOfCalAndSumImportFn> exeStateOfCalAndSumImportFn = dailyMonthlyprocessAdapterFn.executionStatus(execId);
+		if(exeStateOfCalAndSumImportFn.isPresent())
+			if(exeStateOfCalAndSumImportFn.get() == ExeStateOfCalAndSumImportFn.START_INTERRUPTION) {
+				return true;
+			}
+		return false;
 	}
 
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionAllEmp(String execId, ProcessExecution procExec,
