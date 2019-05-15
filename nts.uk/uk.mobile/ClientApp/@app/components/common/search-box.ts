@@ -5,17 +5,20 @@ import { TimeWithDay, DAYS } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
 @component({
     template: `
-    <div class="form-control">
-        <span v-on:click="selectStartTime">
-            {{displayStartTime}}
-        </span> ～   
-        <span v-on:click="selectEndTime">
-            {{ displayEndTime }}
-        </span>   
+    <div class="time-range-search-box">
+        <div class="form-control">
+            <span class="start time-input" v-on:click="selectStartTime">
+                {{displayStartTime}}
+            </span> 
+            <span class="connect-letter">～</span>
+            <span class="end time-input"v-on:click="selectEndTime">
+                {{ displayEndTime }}
+            </span>   
 
-        <span class="fas fa-search" v-on:click="emitSearch">
-        </span>
+            <span class="search-button fas fa-search" v-on:click="emitSearch">
+            </span>
 
+        </div>
     </div>
     `,
     components: {
