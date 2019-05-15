@@ -16,13 +16,6 @@
 			<com:scriptfile path="jhc002.a.vm.js" />
 			<com:scriptfile path="jhc002.a.service.js" />
 			<com:scriptfile path="jhc002.a.start.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="gridlist.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>	
-			<!-- <com:scriptfile path="/view/sample/iggridlab/functionext/start.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web"/> -->
 		</ui:define>
 
 		<ui:define name="content">
@@ -36,21 +29,19 @@
 						<div class="container cf">
 							<!-- <div style="height: 300px;">
 								<assy-com params="screenMode: screenMode, masterId: masterId, 
-									histList: histList, selectedHistId: selectedHistId,
-								 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
-								 	getQueryResult: getQueryResult,
-								 	getSelectedStartDate: getSelectedStartDate,
-								 	commandAdd: commandAdd,
-								 	commandUpdate: commandUpdate,
-								 	commandDelete: commandDelete,
-								 	delVisible: delVisible,
-								 	delChecked: delChecked,
-								 	afterRender: afterRender,
-								 	afterAdd: afterAdd,
-								 	afterUpdate: afterUpdate,
-								 	afterDelete: afterDelete"></assy-com>
-								<button data-bind="click: loadHist"></button>
-								<label data-bind="text: selectedHistId"></label>
+								histList: histList, selectedHistId: selectedHistId,
+							 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
+							 	getQueryResult: getQueryResult,
+							 	getSelectedStartDate: getSelectedStartDate,
+							 	commandAdd: commandAdd,
+							 	commandUpdate: commandUpdate,
+							 	commandDelete: commandDelete,
+							 	delVisible: delVisible,
+							 	delChecked: delChecked,
+							 	afterRender: afterRender,
+							 	afterAdd: afterAdd,
+							 	afterUpdate: afterUpdate,
+							 	afterDelete: afterDelete"></assy-com>
 							</div> -->
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_A222_9')}</div>
 							<div class="compact-grid">
