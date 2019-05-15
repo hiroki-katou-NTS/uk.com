@@ -265,6 +265,22 @@ export class TimeWithDay {
         return TimeWithDay.from(value).toString();
     }
 
+    public static toObject(value: number) {
+
+        if ( value === null || value === undefined) {
+
+            return null;
+        }
+
+        let timeWithDay = TimeWithDay.from(value);
+        
+        return {
+            day: timeWithDay.day,
+            hour: timeWithDay.hour,
+            minute: timeWithDay.minute
+        };
+    }
+
     public static getDayOffset(value: string | number): number {
         return TimeWithDay.from(value).day;
     }
