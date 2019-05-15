@@ -1,28 +1,23 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { TimeWDPickerComponent } from '@app/components';
-import { time, DAYS, date } from '@app/utils';
+import { TimeWithDay, DAYS } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
 @component({
     template: `
-    <div class="container form-control">
-        <div class="row" >
-            <div class="col-4"v-on:click="selectStartTime">
-                {{displayStartTime}}
-            </div>        
-            <div class="col-2">
-            ～
-            </div>
-            <div class="col-4" v-on:click="selectEndTime">
-                {{ displayEndTime }}
-            </div>   
+    <div class="form-control">
+        <span v-on:click="selectStartTime">
+            {{displayStartTime}}
+        </span> ～   
+        <span v-on:click="selectEndTime">
+            {{ displayEndTime }}
+        </span>   
 
-            <div class="col-2 fas fa-search" v-on:click="emitSearch">
-            </div>
+        <span class="fas fa-search" v-on:click="emitSearch">
+        </span>
 
-        </div>
-
-    </div>`,
+    </div>
+    `,
     components: {
         'picker': MobilePicker,
         'time-with-day-picker': TimeWDPickerComponent
@@ -37,44 +32,46 @@ export class TimeRangeSearchBoxComponent extends Vue {
     public defaultEndTime: number;
 
     //========================================= data and computed ====================================================
-    private startTime: number = this.defaultStartTime || 0;
+    private startTime: number = this.defaultStartTime || 3360;
 
     get displayStartTime() {
-        return time.timewd.toString(this.startTime);
+        return TimeWithDay.toString(this.startTime);
     }
 
-    private endTime: number = this.defaultEndTime || 480;
+    private endTime: number = this.defaultEndTime || 3361;
 
     get displayEndTime() {
-        return time.timewd.toString(this.endTime);
+        return TimeWithDay.toString(this.endTime);
     }
 
-    private picker = new TimeWithDayPicker();
+    
 
     // ====================================== method =========================================================
 
     public selectStartTime() {
 
-        let selecteds = this.picker.computeSelecteds(this.startTime);
+        let selecteds = TimeWithDayPicker.computeSelecteds(this.startTime);
 
         this.$picker(selecteds,
-            this.picker.dataSources, 
-            this.picker.onSelect, 
-            {title: this.picker.getTitle(selecteds)})
+            TimeWithDayPicker.getDataSource(), 
+            TimeWithDayPicker.onSelect, 
+            {title: '開始'})
             .then((value: any) => {
                 if (value !== undefined) {
-                    this.startTime = this.picker.computeNewValue(value);
+                    this.startTime = TimeWithDayPicker.computeNewValue(value);
                 }
                 
             });
     }
 
     public selectEndTime() {
-        this.$picker(this.picker.computeSelecteds(this.endTime),
-            this.picker.dataSources)
+        this.$picker(TimeWithDayPicker.computeSelecteds(this.endTime),
+            TimeWithDayPicker.getDataSource(), {
+                title: '終了'
+            })
             .then((value: any) => {
                 if (value !== undefined) {
-                    this.endTime = this.picker.computeNewValue(value);
+                    this.endTime = TimeWithDayPicker.computeNewValue(value);
                 }
             });
     }   
@@ -86,81 +83,64 @@ export class TimeRangeSearchBoxComponent extends Vue {
 
 class TimeWithDayPicker {  
 
-    private date = this.generateDates();
+    public static getDataSource() {
+        let day = this.generateDays();
+        let hour: Array<Object> = this.generateArray(0, 23);
+        let minute: Array<Object> = this.generateArray(0, 59);
 
-    private hour: Array<Object> = this.generateArray(0, 23);
+        return {
+            day, hour, minute
+        };
+    }
 
-    private minute: Array<Object> = this.generateArray(0, 59);
+    public static computeNewValue(newValue: any): number {
 
-    public dataSources = {
-        date : this.date, 
-        hour : this.hour, 
-        minute: this.minute
-    };
-
-    public computeNewValue(newValue): number {
-
-        return time.timewd.computeValue(DAYS.Today, newValue.hour, newValue.minute);
+        return TimeWithDay.fromObject(newValue).value;
         
     }
 
-    private generateArray(min: number, max: number): Array<Object> {
-        let result = [];
-        for (let value = min; value <= max; value++) {
-            let text = time.leftpad(value);
-            result.push({text, value});
-        }
+    public static generateArray(min: number, max: number): Array<Object> {
 
-        return result;
+        return _.range(min, max).map((m: number) => ({ text: _.padStart(`${m}`, 2, '0'), value: m }));
+
     }
 
-    private generateDates() {
-        let date = [];
-        date.push({
+    private static generateDays() {
+        let days = [];
+        days.push({
             text: DAYS.TheDayBefore,
             value: -1
         });
 
-        date.push({
+        days.push({
             text: DAYS.Today,
             value: 0
         });
-        date.push({
+        days.push({
             text: DAYS.NextDay,
             value: 1
         });
-        date.push({
+        days.push({
             text: DAYS.TwoDaysLater,
             value: 2
         });
 
-        return date;
+        return days;
     }
 
-    public computeSelecteds(value: number): Object {
-        let date = time.timewd.computeDay(value);
-        let hour = time.timewd.computeHour(value);     
-        let minute = time.timewd.computeMinute(value);
-
+    public static computeSelecteds(value: number): Object {
         return {
-            date, hour, minute
+            day : TimeWithDay.getDayNumber(value), 
+            hour : TimeWithDay.getHour(value), 
+            minute : TimeWithDay.getMinute(value)
         };
     }
 
-    public onSelect(value: any, pkr: { title: string, dataSources: any }) {
-        if (value) {
-            let hour = time.leftpad(value.hour);
-            let minute = time.leftpad(value.minute);
-
-            pkr.title = `${value.date}  ${hour}:${minute}`;
+    public static onSelect(value: any, picker: { title: string, dataSources: any, value: any }) {
+        if (value.day === -1) {
+            // dang loi cho nay
+            picker.dataSources.hour = TimeWithDayPicker.generateArray(12, 23);
         }
-    }
-
-    public getTitle(value) {
-        let hour = time.leftpad(value.hour);
-        let minute = time.leftpad(value.minute);
-
-        return `${value.date}  ${hour}:${minute}`;
     }
 }
 
