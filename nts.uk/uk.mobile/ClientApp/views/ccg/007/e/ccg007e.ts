@@ -12,9 +12,10 @@ import { SideMenu, NavMenu } from '@app/services';
                 required: true,
                 checkSame: {
                     test(value) {
-                        if(_.isEmpty(this.model.newPasswordConfirm)){
+                        if (_.isEmpty(this.model.newPasswordConfirm)) {
                             return false;
                         }
+                        
                         return this.model.newPassword === this.model.newPasswordConfirm;
                     }, message: 'Msg_961'
                 }
@@ -23,9 +24,10 @@ import { SideMenu, NavMenu } from '@app/services';
                 required: true,
                 checkSame: {
                     test(value) {
-                        if(_.isEmpty(this.model.newPassword)){
+                        if (_.isEmpty(this.model.newPassword)) {
                             return false;
                         }
+
                         return this.model.newPasswordConfirm === this.model.newPassword;
                     }, message: 'Msg_961'
                 }
