@@ -663,13 +663,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Compare account.
+	 * アカウント照合
 	 *
 	 * @param context
 	 *            the context
 	 * @return the windows account
 	 */
-	// アルゴリズム「アカウント照合」を実行する
 	protected WindowsAccount compareAccount(HttpServletRequest context) {
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
@@ -716,8 +715,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Gets the user and check limit time.
-	 *
+	 * ドメインモデル「ユーザ」を取得する
+	 * ユーザーの有効期限チェック
 	 * @param windowAccount
 	 *            the window account
 	 * @return the user and check limit time
@@ -732,7 +731,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// get user
 		Optional<UserImportNew> optUserImport = this.userAdapter.findUserByEmployeeId(windowAccount.getEmployeeId());
 
-		// Validate limit time
+		//ユーザーの有効期限チェック(User expiration check)
 		if (optUserImport.isPresent()) {
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				String remarkText = hostname + " " + username + " " + TextResource.localize("Msg_316");

@@ -340,6 +340,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name || text("KAL003_120")).join(" ＋ "));
                     self.stash.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name || text("KAL003_120")).join(" ＋ "));
                 } else {
+                    
+                    lstWorkTypeCd = _.filter(lstWorkTypeCd, cd => { return cd; });
                     let cdLst = _.map(lstWorkTypeCd, cd => { return cd + " " + text("KAL003_120") });
                     self.itemTotalTimesDetail.workTypeInfo(cdLst.join(" ＋ "));
                     self.stash.workTypeInfo(cdLst.join(" ＋ "));
