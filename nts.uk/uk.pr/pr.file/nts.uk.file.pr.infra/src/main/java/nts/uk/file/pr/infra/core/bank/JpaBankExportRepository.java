@@ -17,11 +17,9 @@ public class JpaBankExportRepository extends JpaRepository implements BankExport
             " b.CD, " +
             " b.NAME, " +
             " b.KANA_NAME, " +
-            " b.MEMO, " +
             " bb.CD AS CD_BRANCH, " +
             " bb.NAME AS NAME_BRANCH, " +
             " bb.KANA_NAME AS KANA_BRANCH, " +
-            " bb.MEMO AS MEMO_BRANCH, " +
             " ROW_NUMBER () OVER ( PARTITION BY b.CD ORDER BY b.CD, bb.CD) AS ROW_NUMBER  " +
             "FROM " +
             " QBTMT_BANK b " +
