@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.standardtime;
 
 import java.util.Optional;
 
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
@@ -129,7 +132,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	 * @return 集計期間
 	 */
 	// 2018.3.25 ADD shuichi_ishida
-	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth, Closure closure){
+	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth, ClosureId closure){
 
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
 		aggrPeriod.setYearMonth(yearMonth);
@@ -278,5 +281,24 @@ public class AgreementOperationSetting extends AggregateRoot {
 		
 		// 指定年月日が計算当年度より後なら、次年度期間を返す
 		return this.getYearMonthPeriod(new Year(year + 1));
+	}
+	 * 日から36協定の集計年月を取得
+	 * @return 年月
+	 */
+	public YearMonth getAgreementYMBytargetDay(GeneralDate targetTime) {
+		if(this.getClosingDateType().isLastDay()) {
+			return targetTime.yearMonth();
+		}
+		else {
+			//*this.getClosingDateType.valueは1日が０で始まっている。
+			//日と日の比較を行うために、「あえて　＋１」　する
+			if(targetTime.day() > (this.getClosingDateType().value + 1) ) {
+				return targetTime.yearMonth();
+			}
+			else {
+				GeneralDate afterOneMonth = targetTime.addMonths(1);
+				return afterOneMonth.yearMonth();
+			}
+		}
 	}
 }

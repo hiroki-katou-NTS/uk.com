@@ -18,7 +18,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeYearImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
@@ -45,8 +44,10 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.outsideot.service.MonthlyItems;
 import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.outsideot.service.Time36AgreementTargetItem;
@@ -220,13 +221,27 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				closurePeriodOpt.get().getYearMonth(), closureSystem.getClosureId());
 		AgreementTimeImport agreementTime = agreementTimeList.get(0);
 		
+		// 36協定上限複数月平均時間と36協定年間時間の取得
+		AgreementTimeOutput agreementTimeOutput = this.getTime36YearAndAverage(companyID, employeeID, closurePeriodOpt.get().getYearMonth(), appDate, ScheRecAtr.SCHEDULE);
+		
 		// 36協定時間の作成
-		this.createTime36Agree(appOvertimeDetail, agreementTime.getConfirmed(), employeeID, appDate);
+		this.createTime36Agree(appOvertimeDetail, agreementTime.getConfirmed(), employeeID, appDate, agreementTimeOutput.getAgreementTimeYear());
 		
 		// 36協定上限時間の作成
-		this.createTime36AgreeUpperLimit(appOvertimeDetail, agreementTime.getConfirmedMax(), employeeID, appDate);
+		this.createTime36AgreeUpperLimit(appOvertimeDetail, agreementTime.getConfirmedMax(), employeeID, appDate, agreementTimeOutput.getAgreMaxAverageTimeMulti());
 		
 		return appOvertimeDetail;
+	}
+	
+	// 36協定上限複数月平均時間と36協定年間時間の取得
+	private AgreementTimeOutput getTime36YearAndAverage(String companyID, String employeeID, YearMonth yearMonth, GeneralDate appDate, ScheRecAtr scheRecAtr){
+		
+		// [NO.579]指定日を含む年期間を取得
+		YearMonthPeriod period = agreementTimeAdapter.containsDate(companyID, appDate).get();
+	
+		// [NO.599]36協定上限複数月平均時間と年間時間の取得
+		return agreementTimeAdapter.getAverageAndYear(companyID, employeeID, yearMonth, period, appDate, scheRecAtr);
+		
 	}
 	
 	// 残業休出申請の時間外時間の詳細をセット
@@ -295,11 +310,12 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 36協定時間の作成
-	private void createTime36Agree(AppOvertimeDetail appOvertimeDetail, Optional<AgreeTimeOfMonthExport> confirmed, String employeeID, GeneralDate appDate){
+	private void createTime36Agree(AppOvertimeDetail appOvertimeDetail, Optional<AgreeTimeOfMonthExport> confirmed, 
+			String employeeID, GeneralDate appDate, Optional<AgreementTimeYear> opAgreementTimeYear){
 		// 月間時間の作成
 		this.createMonthly(appOvertimeDetail, confirmed, employeeID);
 		// 年間時間の作成
-		this.createAnnual(appOvertimeDetail, employeeID, appDate);
+		this.createAnnual(appOvertimeDetail, employeeID, appDate, opAgreementTimeYear);
 	}
 	
 	// 月間時間の作成
@@ -319,22 +335,18 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 年間時間の作成
-	private void createAnnual(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate){
-		String companyID = appOvertimeDetail.getCid();
-		// 指定日を含む年期間を取得(requestlist 579)
-		YearMonthPeriod period = agreementTimeAdapter.containsDate(companyID, appDate).get();
-		// 36協定年間時間の取得
-		Optional<AgreeTimeYearImport> opAgreeTimeYearImport = agreementTimeAdapter.getYear(companyID, employeeID, period, appDate);
-		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setActualTime(opAgreeTimeYearImport.get().getRecordTime());
-		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreeTimeYearImport.get().getLimitTime());
+	private void createAnnual(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate, Optional<AgreementTimeYear> opAgreementTimeYear){
+		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setActualTime(opAgreementTimeYear.get().getRecordTime());
+		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreementTimeYear.get().getLimitTime());
 	}
 	
 	// 36協定上限時間の作成
-	private void createTime36AgreeUpperLimit(AppOvertimeDetail appOvertimeDetail, Optional<AgreMaxTimeOfMonthExport> confirmedMax, String employeeID, GeneralDate appDate){
+	private void createTime36AgreeUpperLimit(AppOvertimeDetail appOvertimeDetail, Optional<AgreMaxTimeOfMonthExport> confirmedMax, 
+			String employeeID, GeneralDate appDate, Optional<AgreMaxAverageTimeMulti> opAgreMaxAverageTimeMulti){
 		// 月間時間の作成
 		this.createMonthlyUpperLimit(appOvertimeDetail, confirmedMax);
 		// 複数月平均時間の作成
-		this.createMonthlyAverage(appOvertimeDetail, employeeID, appDate);
+		this.createMonthlyAverage(appOvertimeDetail, employeeID, appDate, opAgreMaxAverageTimeMulti);
 	}
 	
 	// 月間時間の作成
@@ -345,11 +357,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 複数月平均時間の作成
-	private void createMonthlyAverage(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate referenceDate){
-		String companyID = appOvertimeDetail.getCid();
-		YearMonth  yearMonth = appOvertimeDetail.getYearMonth();
-		// [NO.541]36協定上限複数月平均時間の取得
-		Optional<AgreMaxAverageTimeMulti> opAgreMaxAverageTimeMulti = agreementTimeAdapter.getMaxAverageMulti(companyID, employeeID, yearMonth, referenceDate);
+	private void createMonthlyAverage(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate referenceDate, Optional<AgreMaxAverageTimeMulti> opAgreMaxAverageTimeMulti){
 		AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = opAgreMaxAverageTimeMulti.get();
 		// 上限時間の項目移送
 		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().setUpperLimitTime(agreMaxAverageTimeMulti.getMaxTime());

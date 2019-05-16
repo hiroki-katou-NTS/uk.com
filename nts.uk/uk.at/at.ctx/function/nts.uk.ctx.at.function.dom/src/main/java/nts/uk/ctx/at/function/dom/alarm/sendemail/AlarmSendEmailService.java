@@ -243,7 +243,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					if(useAuthentication) {
 						mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
 					}else {
-						if(senderAddress.isPresent()) {
+						if(senderAddress.isPresent() && !senderAddress.get().equals("")) {
 							mailSender.send(mailContent, companyID, mailSendOptions);
 						}else {
 							mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);

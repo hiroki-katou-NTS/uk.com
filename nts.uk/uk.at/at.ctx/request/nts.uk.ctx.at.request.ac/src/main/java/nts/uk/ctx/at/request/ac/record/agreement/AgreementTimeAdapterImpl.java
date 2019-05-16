@@ -23,7 +23,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -105,6 +107,12 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 	@Override
 	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria) {
 		return getAgreementPeriodPub.containsDate(companyID, criteria, Optional.empty());
+	}
+
+	@Override
+	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+			YearMonthPeriod yearPeriod, GeneralDate criteria, ScheRecAtr scheRecAtr) {
+		return getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, yearPeriod, criteria, scheRecAtr);
 	}
 
 }
