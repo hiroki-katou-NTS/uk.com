@@ -2,17 +2,12 @@ package nts.uk.ctx.pr.file.app.core.rsdttaxpayee;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.file.app.core.laborinsurance.laborinsuranceoffice.LaborInsuranceExportQuery;
-import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayee;
-import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeRepository;
-import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 public class ResidentTexPayeeExportService extends ExportService<ResidentTexPayeeExportQuery> {
