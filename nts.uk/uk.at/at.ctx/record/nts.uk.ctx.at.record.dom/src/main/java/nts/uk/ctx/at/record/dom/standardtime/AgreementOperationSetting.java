@@ -282,6 +282,8 @@ public class AgreementOperationSetting extends AggregateRoot {
 		// 指定年月日が計算当年度より後なら、次年度期間を返す
 		return this.getYearMonthPeriod(new Year(year + 1));
 	}
+	
+	 /*
 	 * 日から36協定の集計年月を取得
 	 * @return 年月
 	 */
