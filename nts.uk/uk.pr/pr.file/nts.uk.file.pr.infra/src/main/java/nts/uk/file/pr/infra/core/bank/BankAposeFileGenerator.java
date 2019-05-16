@@ -24,12 +24,12 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
     private static final int MAX_LINE = 37;
     private static final int FIRST_ROW_FILL = 3;
 
-    private static final int CD_BANK = 1;
-    private static final int NAME_BANK = 2;
-    private static final int KANA_NAME_BANK = 3;
-    private static final int CD_BRANCH = 4;
-    private static final int NAME_BRANCH = 5;
-    private static final int KANA_BRANCH = 6;
+    private static final int CD_BANK = 3;
+    private static final int NAME_BANK = 4;
+    private static final int KANA_NAME_BANK = 5;
+    private static final int CD_BRANCH = 6;
+    private static final int NAME_BRANCH = 7;
+    private static final int KANA_BRANCH = 8;
 
 
 
@@ -39,6 +39,7 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
+            //pagination
             for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
                 wsc.addCopy(0);
             }
@@ -71,9 +72,9 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
                 ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[2]);
 
             }else{
-                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[8].toString().equals("1") ? entity[0] : null);
-                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[8].toString().equals("1")  ? entity[1] : null);
-                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[8].toString().equals("1") ? entity[2] : null);
+                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[6].toString().equals("1") ? entity[0] : null);
+                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[6].toString().equals("1")  ? entity[1] : null);
+                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[6].toString().equals("1") ? entity[2] : null);
             }
 
             ws.getCells().get(rowIndex,CD_BRANCH).putValue(entity[3]);
