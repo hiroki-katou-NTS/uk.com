@@ -128,7 +128,6 @@ import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 
 /**
  * 残数系以外
@@ -143,8 +142,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	
-	public static final JpaEntityMapper<KrcdtMonMerge> MAPPER = new JpaEntityMapper<>(KrcdtMonMerge.class);
 
 	@EmbeddedId
 	public KrcdtMonMergePk krcdtMonMergePk;
