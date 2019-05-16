@@ -89,6 +89,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			EmployeeImportNew emp = signonData.employeeImportNew;
 			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
 			companyCode = com.getCompanyCode();
+			employeeId = em.getEmployeeId();
+			companyId = contractCode + "-" + companyCode;
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
