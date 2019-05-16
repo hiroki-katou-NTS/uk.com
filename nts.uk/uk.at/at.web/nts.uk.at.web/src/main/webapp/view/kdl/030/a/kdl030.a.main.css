@@ -69,6 +69,30 @@
 #table-phase thead{
 	background-color: #E0F59E;
 }
-#table-phase{
-	width: 662px !important;
+
+/* list approver */
+.phase-app{
+	width: 70px !important;
+}
+.order-app{
+	width: 100px !important;
+}
+.name-app{
+	width: 250px !important;
+}
+.status-app{
+	width: 70px !important;
+}
+.isMail-appr{
+	width: 170px !important;
+}
+/* list applicant */
+.applicant{
+	width: 173px !important;
+}
+.name-emp{
+	width: 323px !important;
+}
+.isMail-app{
+	width: 170px !important;
 }

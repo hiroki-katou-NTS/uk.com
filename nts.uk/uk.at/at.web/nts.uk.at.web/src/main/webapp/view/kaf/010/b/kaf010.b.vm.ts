@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf010.b {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import util = nts.uk.util;
+    import text = nts.uk.resource.getText;
 
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
@@ -198,14 +199,21 @@ module nts.uk.at.view.kaf010.b {
                 return dfd.promise();
             }
             
-            isShowReason(){
-            let self =this;
-            if(self.screenModeNew()){
+            isShowReason() {
+                let self = this;
+                if (self.screenModeNew()) {
                     return self.displayAppReasonContentFlg();
-                }else{
+                } else {
                     return self.typicalReasonDisplayFlg() || self.displayAppReasonContentFlg();
+                }
             }
-        }
+            getName(code, name) {
+                let result = "";
+                if (code) {
+                    result = name || text("KAL003_120");
+                }
+                return result;
+            }
             
             initData(data: any) {
                 var self = this;
@@ -228,11 +236,15 @@ module nts.uk.at.view.kaf010.b {
                 self.inputDate(data.application.inputDate);
                 if (data.workTime != null) {
                     self.siftCD(data.workTime.siftCode);
-                    self.siftName(data.workTime.siftName);
+                    if (data.workTime.siftCode) {
+                        self.siftName(self.getName(data.workTime.siftCode, data.workTime.siftName));
+                    }
                 }
                 if (data.workType != null) {
                     self.workTypeCd(data.workType.workTypeCode);
-                    self.workTypeName(data.workType.workTypeName);
+                    if (data.workType.workTypeCode) {
+                        self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
+                    }
                 }
                 
                 self.workTypecodes(data.workTypes);

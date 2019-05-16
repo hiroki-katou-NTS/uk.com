@@ -57,6 +57,13 @@ public class ErAlExtractResultFinder {
 		Map<String, List<ExtractEmployeeInfo>> empMap = result.getEmpInfos().stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.toList()));
 		
 		return result.getEmpEralData().stream().map(eral -> {
+			if(eral.getCategoryName().equals("年休")) {
+				ExtractEmployeeInfo employee1 = empMap.get(eral.getEmployeeId()).get(0);
+				if(employee1 == null) return null;
+				return new ValueExtractAlarmDto(eral.getRecordId(), employee1.getWorkplaceId(), employee1.getHierarchyCode(), employee1.getWorkplaceName(),
+						employee1.getEmployeeId(), employee1.getEmployeeCode(), employee1.getEmployeeName(), eral.getAlarmTime(),
+						eral.getCategoryCode(), eral.getCategoryName(), eral.getAlarmItem(), eral.getAlarmMes(), eral.getComment(),eral.getCheckedValue());
+			}
 			DatePeriod period = getPeriod(eral.getAlarmTime());
 			ExtractEmployeeInfo employee = empMap.get(eral.getEmployeeId()).stream().filter(emp -> {
 				return (new DatePeriod(emp.getWpWorkStartDate(), emp.getWpWorkEndDate())).contains(period);
@@ -66,7 +73,7 @@ public class ErAlExtractResultFinder {
 			
 			return new ValueExtractAlarmDto(eral.getRecordId(), employee.getWorkplaceId(), employee.getHierarchyCode(), employee.getWorkplaceName(),
 					employee.getEmployeeId(), employee.getEmployeeCode(), employee.getEmployeeName(), eral.getAlarmTime(),
-					eral.getCategoryCode(), eral.getCategoryName(), eral.getAlarmItem(), eral.getAlarmMes(), eral.getComment());
+					eral.getCategoryCode(), eral.getCategoryName(), eral.getAlarmItem(), eral.getAlarmMes(), eral.getComment(),eral.getCheckedValue());
 			
 		}).sorted((v1, v2) -> {
 			int compare1 = v1.getHierarchyCd().compareTo(v2.getHierarchyCd());

@@ -102,6 +102,8 @@ public class UrlWebService {
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
 			// record login
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -110,7 +112,7 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1095"), 
 							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
 			throw new BusinessException("Msg_1095");
@@ -123,20 +125,6 @@ public class UrlWebService {
 		}
 		// アルゴリズム「埋込URL実行契約セット」を実行する
 		Contract contract = this.executionContractSet(contractCD, urlExecInfoExport);
-		//EA修正履歴3275 処理の順番を逆転
-		//hoatt 2019.03.28
-		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
-		loginRecordRegistService.loginRecord(
-				new LoginRecordInput(
-						urlExecInfoExport.getProgramId(), 
-						urlExecInfoExport.getScreenId(), 
-						"", 
-						0, 
-						2, 
-						"", 
-						TextResource.localize("Msg_1474"), 
-						null), 
-				urlExecInfoExport.getCid());
 		// アルゴリズム「埋込URL実行ログイン」を実行する
 		CheckChangePassDto changePw = this.executionURLLogin(urlExecInfoExport.getScd(), 
 				urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
@@ -174,6 +162,8 @@ public class UrlWebService {
 		// 契約期間切れチェックする
 		if(!opContract.isPresent() || 
 			(systemDate.before(opContract.get().getContractPeriod().start())|| systemDate.after(opContract.get().getContractPeriod().end()))){
+			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
+			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -182,7 +172,7 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1317"), 
 							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
 			// アルゴリズム「契約認証する_アクティビティ(基本)」を実行する
@@ -239,6 +229,18 @@ public class UrlWebService {
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
+		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
+		loginRecordRegistService.loginRecord(
+				new LoginRecordInput(
+						urlExecInfoExport.getProgramId(), 
+						urlExecInfoExport.getScreenId(), 
+						"", 
+						0, 
+						2, 
+						"", 
+						TextResource.localize("Msg_1474"), 
+						null), 
+				"");
 		//アルゴリズム「ログイン後チェック」を実行する
 		CheckChangePassDto changPw = submitLoginFormOneCommandHandler.checkAfterLogin(urlAccApprovalOutput.getUserImport(), urlAccApprovalOutput.getUserImport().getPassword(), false);
 		changPw.setSuccessMsg(systemSuspendOutput.getMsgContent());

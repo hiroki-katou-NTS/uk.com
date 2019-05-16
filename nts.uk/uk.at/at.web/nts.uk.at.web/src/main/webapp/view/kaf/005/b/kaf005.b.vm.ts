@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf005.b {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import util = nts.uk.util;
+    import text = nts.uk.resource.getText;
 
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
@@ -203,14 +204,23 @@ module nts.uk.at.view.kaf005.b {
                 return dfd.promise();
             }
             
-            isShowReason(){
-            let self =this;
-            if(self.screenModeNew()){
+            isShowReason() {
+                let self = this;
+                if (self.screenModeNew()) {
                     return self.displayAppReasonContentFlg();
-                }else{
+                } else {
                     return self.displayAppReasonContentFlg() || self.typicalReasonDisplayFlg();
+                }
             }
-        }
+            
+            getName(code, name) {
+                let result = "";
+                if (code) {
+                    result = name || text("KAL003_120");
+                }
+                return result;
+            }
+
             
             initData(data: any) {
                 var self = this;
@@ -231,11 +241,11 @@ module nts.uk.at.view.kaf005.b {
                 self.employeeID(data.application.applicantSID);
                 if (data.siftType != null) {
                     self.siftCD(data.siftType.siftCode);
-                    self.siftName(data.siftType.siftName);
+                    self.siftName(self.getName(data.siftType.siftCode,data.siftType.siftName));
                 }
                 if (data.workType != null) {
                     self.workTypeCd(data.workType.workTypeCode);
-                    self.workTypeName(data.workType.workTypeName);
+                    self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
                 }
                 
                 self.workTypecodes(data.workTypes);

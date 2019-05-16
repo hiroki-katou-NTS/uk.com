@@ -27,6 +27,9 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -49,8 +52,7 @@ public class AggregateMonthlyRecordValue {
 	@Setter
 	private List<AnyItemOfMonthly> anyItemList;
 	/** 管理時間の36協定時間 */
-	@Setter
-	private Optional<AgreementTimeOfManagePeriod> agreementTime;
+	private List<AgreementTimeOfManagePeriod> agreementTimeList;
 	/** 年休月別残数データ */
 	private List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonthList;
 	/** 積立年休月別残数データ */
@@ -69,6 +71,14 @@ public class AggregateMonthlyRecordValue {
 	/** 年休積立年休の集計結果 */
 	@Setter
 	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
+	/** 振休振出の集計結果 */
+	@Setter
+	private Optional<AbsRecRemainMngOfInPeriod> absRecRemainMngOfInPeriodOpt;
+	/** 代休の集計結果 */
+	@Setter
+	private Optional<BreakDayOffRemainMngOfInPeriod> breakDayOffRemainMngOfInPeriodOpt;
+	/** 特別休暇の集計結果 */
+	private Map<Integer, InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInforMap;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
 	/** 社員の月別実績エラー一覧 */
@@ -86,7 +96,7 @@ public class AggregateMonthlyRecordValue {
 		this.attendanceTimeWeeks = new ArrayList<>();
 		this.affiliationInfo = Optional.empty();
 		this.anyItemList = new ArrayList<>();
-		this.agreementTime = Optional.empty();
+		this.agreementTimeList = new ArrayList<>();
 		this.annLeaRemNumEachMonthList = new ArrayList<>();
 		this.rsvLeaRemNumEachMonthList = new ArrayList<>();
 		this.absenceLeaveRemainList = new ArrayList<>();
@@ -96,6 +106,9 @@ public class AggregateMonthlyRecordValue {
 		this.monChildHdRemain = Optional.empty();
 		
 		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
+		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
+		this.breakDayOffRemainMngOfInPeriodOpt = Optional.empty();
+		this.inPeriodOfSpecialLeaveResultInforMap = new HashMap<>();
 		this.errorInfos = new HashMap<>();
 		this.perErrors = new ArrayList<>();
 		this.interruption = false;
@@ -214,7 +227,7 @@ public class AggregateMonthlyRecordValue {
 		result.setAttendanceTime(this.attendanceTime);
 		result.setAffiliationInfo(this.affiliationInfo);
 		result.getAnyItemList().addAll(this.anyItemList);
-		result.setAgreementTime(this.agreementTime);
+		result.getAgreementTimeList().addAll(this.agreementTimeList);
 		AnnLeaRemNumEachMonth annualLeaveRemain = null;
 		if (this.annLeaRemNumEachMonthList.size() > 0) annualLeaveRemain = this.annLeaRemNumEachMonthList.get(0);
 		result.setAnnualLeaveRemain(Optional.ofNullable(annualLeaveRemain));

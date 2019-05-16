@@ -261,10 +261,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     //Setting data works
                     //勤務種類
                     self.workTypeCd(settingData.dataWorkDto.selectedWorkTypeCd);
-                    self.workTypeName(settingData.dataWorkDto.selectedWorkTypeName);
+                    self.workTypeName(self.getName(settingData.dataWorkDto.selectedWorkTypeCd, settingData.dataWorkDto.selectedWorkTypeName));
                     //勤務種類
                     self.siftCD(settingData.dataWorkDto.selectedWorkTimeCd);
-                    self.siftName(settingData.dataWorkDto.selectedWorkTimeName);
+                    self.siftName(self.getName(settingData.dataWorkDto.selectedWorkTimeCd, settingData.dataWorkDto.selectedWorkTimeName));
                     //dataWorkDto
                     self.workTypeCodes = settingData.dataWorkDto.workTypeCodes;
                     self.workTimeCodes = settingData.dataWorkDto.workTimeCodes;
@@ -291,6 +291,14 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        getName(code, name) {
+            let result = "";
+            if (code) {
+                result = name || text("KAL003_120");
+            }
+            return result;
         }
         /**
          * insert//登録ボタンをクリックする

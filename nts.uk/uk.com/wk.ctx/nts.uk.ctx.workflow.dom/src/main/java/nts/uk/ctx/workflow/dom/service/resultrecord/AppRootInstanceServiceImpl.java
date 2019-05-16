@@ -25,7 +25,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -219,7 +218,6 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
 			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-			approvalPhaseState.setApprovalForm(ApprovalForm.EVERYONE_APPROVED);
 			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
 				ApprovalFrame approvalFrame = new ApprovalFrame();
@@ -353,7 +351,8 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalPersonInstance.getApproverRoute().add(approvalRouteDetails);
 		});
 		// ドメインモデル「代行承認」を取得する
-		List<AgentInfoOutput> agentInfoOutputLst = agentRepository.findAgentByPeriod(companyID, Arrays.asList(approverID), period.start(), period.end(), 1);
+		GeneralDate systemDate = GeneralDate.today();
+		List<AgentInfoOutput> agentInfoOutputLst = agentRepository.findAgentByPeriod(companyID, Arrays.asList(approverID), systemDate, systemDate, 1);
 		// 取得した「代行承認」先頭から最後へループ
 		agentInfoOutputLst.forEach(agentInfor -> {
 			// 承認者と期間から承認ルート中間データを取得する

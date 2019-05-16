@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
@@ -46,17 +44,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktype.CalculateMethod;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 @Stateless
@@ -221,27 +210,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 	}
 
-	/**
-	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-	 */
-	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
-		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr());
-	}
-
 	@Override
 	public Optional<AppOvertimeDetail> registerOvertimeCheck36TimeLimit(String companyId, String employeeId,
 			GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
@@ -264,17 +235,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> updateOvertimeCheck36TimeLimit(String companyId, String appId,
 			String enteredPersonId, String employeeId, GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
@@ -297,17 +257,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> registerHdWorkCheck36TimeLimit(String companyId, String employeeId,
 			GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
@@ -330,17 +279,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	@Override
 	public Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId,
 			String enteredPersonId, String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
