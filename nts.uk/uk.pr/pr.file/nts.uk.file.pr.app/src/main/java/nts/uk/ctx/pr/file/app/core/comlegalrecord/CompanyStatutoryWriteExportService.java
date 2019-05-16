@@ -2,8 +2,6 @@ package nts.uk.ctx.pr.file.app.core.comlegalrecord;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.report.app.find.printdata.comlegalrecord.CompanyStatutoryWriteDto;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.CompanyStatutoryWrite;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,5 +32,6 @@ public class CompanyStatutoryWriteExportService extends ExportService {
         String cid = AppContexts.user().companyId();
         List<CompanyStatutoryWriteExportData> exportData = repo.getByCid(cid).stream().map(CompanyStatutoryWriteExportData::fromDomain).collect(Collectors.toList());
         generator.generate(exportServiceContext.getGeneratorContext(),exportData,companyName);
+
     }
 }
