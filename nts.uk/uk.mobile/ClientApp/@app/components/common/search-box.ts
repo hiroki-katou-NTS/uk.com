@@ -52,7 +52,7 @@ export class TimeRangeSearchBoxComponent extends Vue {
     private displayTime(value: number) {
         if (value === null) {
 
-            return 'ーーー --:--';
+            return '--- --:--';
         }
 
         return TimeWithDay.toString(value);
@@ -141,12 +141,21 @@ class TimeWithDayPicker {
 
     public static onSelect(value: any, picker: { title: string, dataSources: any, selects: any }) {
         if (value.day === -1) {
-            picker.dataSources.hour = TimeWithDayPicker.HoursFrom12;
+
+            if (picker.dataSources.hour.length !== 12) {
+                picker.dataSources.hour = TimeWithDayPicker.HoursFrom12;
+            }
+
             if (value.hour < 12) {
                 picker.selects.hour = 12;
             }
+
         } else {
-            picker.dataSources.hour = TimeWithDayPicker.HoursFrom0;
+
+            if (picker.dataSources.hour.length !== 24) {
+                picker.dataSources.hour = TimeWithDayPicker.HoursFrom0;
+            }
+            
         }
     }
 }
