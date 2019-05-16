@@ -104,8 +104,17 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                         case 6:
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterType(dataRow));
                             break;
-                        case 9:
+                        case 8:
                             cells.get(rowStart, j+ startColumn).setValue(dataRow[4] != null && ((BigDecimal)dataRow[4]).intValue() ==1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
+                            break;
+                        case 9:
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[9] != null ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId) : "");
+                            break;
+                        case 10:
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[10] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : "");
+                            break;
+                        case 12:
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[10] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), NestedUseCls.class).nameId : "");
                             break;
                         default:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? j > 9 ? dataRow[j - 1] : dataRow[j] : "");
