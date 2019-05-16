@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { time, DAYS, TimeWithDayPoint } from '@app/utils/time';
+import { time, DAYS } from '@app/utils/time';
 import * as _ from 'lodash';
 
 @component({
@@ -45,24 +45,40 @@ export class TimeWDPickerComponent extends Vue {
 
     @Prop({
         default: {
-            value: 0,
-            minValue: 0,
-            maxValue: 1349
+            value: 0
         }
     })
     public readonly params: {
-        minValue: number;
-        maxValue: number;
         value: number;
     };
-
-    private maxPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.maxValue);
-    private minPoint: TimeWithDayPoint = time.timewd.computeTimePoint(this.params.minValue);
 
     public minutes: number = this.params.value;
     public dayValue: string = time.timewd.computeDay(this.params.value);
     public hourValue: number = time.timewd.computeHour(this.params.value);
     public minuteValue: number = time.timewd.computeMinute(this.params.value);
+
+    get dayList(): Array<String> {
+
+        return new Array(DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater);
+    }
+
+    get hourList(): Array<number> {
+        
+        if (this.dayValue == DAYS.TheDayBefore) {
+            if (this.hourValue < 12) {
+                this.hourValue = 12;
+            }
+
+            return _.range(12, 24);
+        }
+
+        return _.range(0, 24);
+    }
+
+    get minuteList(): Array<number> {
+        
+        return _.range(0, 59);
+    }
 
     public ok() {
         this.$close(this.minutes);
@@ -100,108 +116,7 @@ export class TimeWDPickerComponent extends Vue {
         this.minutes = time.timewd.computeValue(this.dayValue, this.hourValue, this.minuteValue);
     }
 
-    get dayList(): Array<String> {
-        let dayList = new Array(DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater);
-        switch (this.minPoint.day) {
-            case DAYS.TheDayBefore:
-                // do nothing
-                break;
-            case DAYS.Today:
-                this.removeElement(dayList, [DAYS.TheDayBefore]);
-                break;
-            case DAYS.NextDay:
-                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today]);
-                break;
-            case DAYS.TwoDaysLater:
-                this.removeElement(dayList, [DAYS.TheDayBefore, DAYS.Today, DAYS.NextDay]);
-                break;
-            default:
-                break;
-        }
-
-        switch (this.maxPoint.day) {
-            case DAYS.TheDayBefore:
-                this.removeElement(dayList, [DAYS.Today, DAYS.NextDay, DAYS.TwoDaysLater]);
-                break;
-            case DAYS.Today:
-                this.removeElement(dayList, [DAYS.NextDay, DAYS.TwoDaysLater]);
-                break;
-            case DAYS.NextDay:
-                this.removeElement(dayList, [DAYS.TwoDaysLater]);
-                break;
-            case DAYS.TwoDaysLater:
-                // do nothing
-                break;
-            default:
-                break;
-        }
-
-        return dayList;
-    }
-
-    private removeElement(bigArray: Array<string>, smallArray: Array<string>) {
-        let newArray = new Array<string>();
-        for (let outElement in bigArray) {
-            for (let inElement in smallArray) {
-                if (outElement == inElement) {
-                    let i = bigArray.indexOf(outElement);
-                    bigArray.splice(i, 1);
-                }
-            }
-        }
-    }
-
-    get hourList(): Array<number> {
-
-        let minHour = 0;
-        let maxHour = 23;
-        if (this.dayValue == this.minPoint.day) {
-            minHour = this.minPoint.hour;
-            if (this.hourValue < minHour) {
-                this.hourValue = minHour;
-            }
-        }
-
-        if (this.dayValue == this.maxPoint.day) {
-            maxHour = this.maxPoint.hour;
-            if (this.hourValue > maxHour) {
-                this.hourValue = maxHour;
-            }
-        }
-
-
-        return this.generateArray(minHour, maxHour);
-    }
-
-    get minuteList(): Array<number> {
-        let minMinute = 0;
-        let maxMinute = 59;
-
-        if (this.dayValue == this.minPoint.day && this.hourValue == this.minPoint.hour) {
-            minMinute = this.minPoint.minute;
-            if (this.minuteValue < minMinute) {
-                this.minuteValue = minMinute;
-            }
-        }
-
-        if (this.dayValue == this.maxPoint.day && this.hourValue == this.maxPoint.hour) {
-            maxMinute = this.maxPoint.minute;
-            if (this.minuteValue > maxMinute) {
-                this.minuteValue = maxMinute;
-            }
-        }
-
-        return this.generateArray(minMinute, maxMinute);
-    }
-
-    private generateArray(min: number, max: number): Array<number> {
-        let minuteList = new Array<number>();
-        for (let m = min; m <= max; m++) {
-            minuteList.push(m);
-        }
-
-        return minuteList;
-    }
+    
 
 }
 

@@ -1,7 +1,6 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { time, TimeInputType } from '@app/utils';
-import * as _ from 'lodash';
+import { time } from '@app/utils';
 
 @component({
     template: `
@@ -38,85 +37,31 @@ export class TimeDurationPickerComponent extends Vue {
 
     @Prop({
         default: {
-            value: 0,
-            minValue: 0,
-            maxValue: 1349
+            value: 0
         }
     })
     public readonly params: {
-        minValue: number;
-        maxValue: number;
         value: number;
     };
-    
-    public readonly timeUtil = time.timedr;
 
-    public readonly minTimePoint = this.timeUtil.computeTimePoint(this.params.minValue);
-    public readonly maxTimePoint = this.timeUtil.computeTimePoint(this.params.maxValue);
-
-    get hourList(): Array<number> {
-        let minHour = this.minTimePoint.hour;
-        let maxHour = this.maxTimePoint.hour;
-        
-        return this.generateArray(minHour, maxHour);
+    get hourList(): Array<number> {  
+              
+        return _.range(-12, 72);
     }
 
     get minuteList(): Array<number> {
-        let minMinute = 0;
-        let maxMinute = 59;
-
-        if (this.hourValue == this.minTimePoint.hour) {
-            
-            if (this.minTimePoint.hour >= 0 ) {
-                minMinute = this.minTimePoint.minute;
-                if (this.minuteValue < minMinute) {
-                    this.minuteValue = minMinute;
-                }
-            } else {
-                maxMinute = this.minTimePoint.minute;
-                if (this.minuteValue > maxMinute) {
-                    this.minuteValue = minMinute;
-                }
-            }
-            
-        }
-
-        if (this.hourValue == this.maxTimePoint.hour) {
-
-            if (this.maxTimePoint.hour >= 0) {
-                maxMinute = this.maxTimePoint.minute;
-                if (this.minuteValue > maxMinute) {
-                    this.minuteValue = maxMinute;
-                }
-            } else {
-                minMinute = this.maxTimePoint.minute;
-                if (this.minuteValue < minMinute) {
-                    this.minuteValue = minMinute;
-                }
-            }
-            
-        }
 
         if (this.hourValue == 0) {
-            minMinute = -59;
-            maxMinute = 59;
+            
+            return _.range(-59, 59); 
         }
-
-        return this.generateArray(minMinute, maxMinute);       
-    }
-
-    public generateArray(min: number, max: number): Array<number> {
-        let minuteList = new Array<number>();
-        for (let m = min; m <= max; m++) {
-            minuteList.push(m);
-        }
-
-        return minuteList;
+        
+        return _.range(0, 59);       
     }
 
     public minutes: number = this.params.value;
-    public hourValue: number = this.timeUtil.computeHour(this.params.value);
-    public minuteValue: number = this.timeUtil.computeMinute(this.params.value);
+    public hourValue: number = time.timedr.computeHour(this.params.value);
+    public minuteValue: number = time.timedr.computeMinute(this.params.value);
 
     public ok() {
         this.$close(this.minutes);
@@ -133,15 +78,14 @@ export class TimeDurationPickerComponent extends Vue {
             let tmp = this.minuteValue;
             this.minuteValue = undefined;
             this.minuteValue = tmp;
-            this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
+            this.minutes = time.timedr.computeValue(this.hourValue, this.minuteValue);
         });
-        
     }
 
     public whenMinuteChange() {
         let newMinute = ( this.$refs.minute1 as HTMLInputElement).value;
         this.minuteValue = Number(newMinute);
-        this.minutes = this.timeUtil.computeValue(this.hourValue, this.minuteValue);
+        this.minutes = time.timedr.computeValue(this.hourValue, this.minuteValue);
     }
     
 }
