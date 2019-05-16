@@ -132,15 +132,15 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		}
 		AppOvertimeDetail appOvertimeDetail = appOvertimeDetailOpt.get();
 		
+		// 画面から36協定対象時間を取得
+		this.getTime36FromScreen(appOvertimeDetail, appType, appTimeItems);
+		
 		// 登録不可３６協定チェック区分を取得
 		Time36AgreeCheckRegister time36AgreeCheckRegister = this.getTime36AgreeCheckRegister(companyID, appType);
 		
 		if(time36AgreeCheckRegister==Time36AgreeCheckRegister.NOT_CHECK){
 			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 		}
-		
-		// 画面から36協定対象時間を取得
-		this.getTime36FromScreen(appOvertimeDetail, appType, appTimeItems);
 		
 		// 36協定時間のエラーチェック処理
 		errorFlg.addAll(this.agree36CheckError(time36AgreeCheckRegister, appOvertimeDetail.getTime36Agree(), appOvertimeDetail.getYearMonth()));
