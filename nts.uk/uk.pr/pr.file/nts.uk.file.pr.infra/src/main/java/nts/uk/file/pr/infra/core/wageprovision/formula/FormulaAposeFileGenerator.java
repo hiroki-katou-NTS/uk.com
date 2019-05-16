@@ -26,23 +26,25 @@ import java.util.Locale;
 public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implements FormulaFileGenerator {
 
     private static final String TEMPLATE_FILE = "report/QMM017.xlsx";
-    private static final String REPORT_FILE_EXTENSION = ".pdf";
+    private static final String REPORT_FILE_EXTENSION = ".xlsx";
     private static final String FILE_NAME = "QMM017計算式の登録";
     private static final String TITLE = "計算式の登録 ";
     private static final int RECORD_IN_PAGE = 71;
+    private static final int LINE_IN_PAGE = 74;
+    private static final String SHEET_NAME = "マスタリスト";
 
     @Override
     public void generate(FileGeneratorContext generatorContext, FormulaExportData exportData) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            int page = exportData.getFormulas().size() == RECORD_IN_PAGE ? 1 : exportData.getFormulas().size() / RECORD_IN_PAGE + 1;
+            worksheets.get(0).setName(SHEET_NAME);
+            int page = exportData.getFormulas().size() == RECORD_IN_PAGE ? 0 : exportData.getFormulas().size() / RECORD_IN_PAGE;
             createTable(worksheets, page, exportData.getCompanyName());
             printData(worksheets, exportData.getFormulas(), exportData.getFormulas(), exportData.getTargetItems());
-            worksheets.removeAt(0);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            reportContext.saveAsPdf(this.createNewFile(generatorContext,
+            reportContext.saveAsExcel(this.createNewFile(generatorContext,
                     FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,11 +52,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private void createTable(WorksheetCollection worksheets,int pageMonth, String companyName) throws Exception {
-        String sheetName = "formula";
         Worksheet worksheet = worksheets.get(0);
-        settingPage(worksheet, companyName);
+        //settingPage(worksheet, companyName);
         for(int i = 0 ; i< pageMonth; i++) {
-            worksheets.get(worksheets.addCopy(sheetName)).setName(sheetName + i);
+            worksheet.getCells().copyRows(worksheet.getCells(), 0, LINE_IN_PAGE * (i+1), LINE_IN_PAGE + 1 );
         }
     }
 
@@ -67,28 +68,25 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
-        pageSetup.setFitToPagesTall(1);
-        pageSetup.setFitToPagesWide(1);
+        /*pageSetup.setFitToPagesTall(1);
+        pageSetup.setFitToPagesWide(1);*/
     }
 
     private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
-        String sheetName = "formula";
         int numColumn = 14;
         int columnStart = 1;
-        fillData(worksheets, data, fornula, targetItem, numColumn, columnStart, sheetName);
+        fillData(worksheets, data, fornula, targetItem, numColumn, columnStart);
     }
 
     private void fillData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> formula,
-                          List<Object[]> targetItem, int numColumn, int startColumn, String sheetName) {
+                          List<Object[]> targetItem, int numColumn, int startColumn) {
         try {
-            int rowStart = 3;
-            Worksheet sheet = worksheets.get(sheetName);
+            int rowStart = 0;
+            Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
                 if(i % RECORD_IN_PAGE == 0) {
-                    sheet = worksheets.get(sheetName + i/RECORD_IN_PAGE);
-                    cells = sheet.getCells();
-                    rowStart = 3;
+                    rowStart += 3;
                 }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
@@ -98,23 +96,37 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                                     ? TextResource.localize("Enum_MasterBranchUse_NOT_USE") : TextResource.localize("Enum_MasterBranchUse_USE"));
                             break;
                         case 5:
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[5] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), NestedUseCls.class).nameId : "");
+                            break;
+                        case 6:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null
                                     ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), MasterBranchUse.class).nameId) : "");
                             break;
-                        case 6:
+                        case 7:
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterType(dataRow));
                             break;
                         case 8:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[4] != null && ((BigDecimal)dataRow[4]).intValue() ==1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
+                            cells.get(rowStart, j+ startColumn).setValue(getUsageMasterCd(dataRow));
                             break;
                         case 9:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[9] != null ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId) : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[10] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[10] != null ? ((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId
+                                    : EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId : "");
+                            break;
+                        case 11:
+                            cells.get(rowStart, j+ startColumn).setValue(getValueRounding(dataRow));
                             break;
                         case 12:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[10] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), NestedUseCls.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue((dataRow[12]) != null ? ((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : EnumAdaptor.valueOf(0, RoundingPosition.class).nameId : "");
+                            break;
+                        case 13:
+                            cells.get(rowStart, j+ startColumn).setValue((dataRow[13]) != null ? ((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), Rounding.class).nameId : EnumAdaptor.valueOf(0, RoundingResult.class).nameId : "");
+                            break;
+                        case 14:
+                            cells.get(rowStart, j+ startColumn).setValue((dataRow[14]) != null ? ((BigDecimal)dataRow[4]).intValue() == 1 ?
+                                    EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), AdjustmentClassification.class).nameId : EnumAdaptor.valueOf(0, AdjustmentClassification.class).nameId: "");
                             break;
                         default:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? j > 9 ? dataRow[j - 1] : dataRow[j] : "");
@@ -127,12 +139,19 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
     }
 
+    private String getValueRounding(Object[] obj){
+        if(((BigDecimal)obj[4]).intValue() == 1 || ((BigDecimal)obj[15]).intValue() == 1) {
+            return "なし";
+        }
+        return obj[11] != null ? EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingMethod.class).nameId : "";
+    }
+
     private String getBaseTargetItem(List<Object[]> baseTarget, String formulaCode, BigDecimal amountCls){
         StringBuilder temp = new StringBuilder();
         baseTarget.forEach(i ->{
             if(i[0].toString().equals(formulaCode) && amountCls.equals(i[3])) {
                 temp.append( i[2] != null);
-                temp.append("+");
+                temp.append("＋");
             }
         });
         return temp.length() > 0 ? temp.deleteCharAt(temp.length() - 1).toString() : "";
@@ -172,20 +191,30 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             e.append(TextResource.localize((EnumAdaptor.valueOf(((BigDecimal)obj[19]).intValue(), CoefficientClassification.class).nameId)));
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
-            temp.append(a).append(" x ").append(e);
+            temp.append(a).append("×").append(e);
         }
 
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append(" x ").append(c).append(" x ").append(e);
+            temp.append(a).append("×").append(c).append("×").append(e);
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
-            temp.append(a).append("/").append(b).append(" x ").append(c).append(" x ").append(e);
+            temp.append(a).append("÷").append(b).append("×").append(c).append("×").append(e);
         }
 
         return temp.toString();
     }
 
     private String getUsageMasterType(Object[] data){
+        if(((BigDecimal)data[4]).intValue() == 0 || ((BigDecimal)data[5]).intValue() == 0) {
+            return "なし";
+        }
+        return data[6] != null ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) data[6]).intValue(), MasterUse.class).nameId) : "" ;
+    }
+
+    private String getUsageMasterCd(Object[] data){
+        if(((BigDecimal)data[4]).intValue() == 0 || ((BigDecimal)data[5]).intValue() == 0) {
+            return "なし";
+        }
         return data[6] != null ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) data[6]).intValue(), MasterUse.class).nameId) : "" ;
     }
 }
