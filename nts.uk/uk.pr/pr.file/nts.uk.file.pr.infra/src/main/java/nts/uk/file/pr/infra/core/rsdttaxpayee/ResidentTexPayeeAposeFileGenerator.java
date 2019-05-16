@@ -19,13 +19,13 @@ import java.util.Locale;
 
 @Stateless
 public class ResidentTexPayeeAposeFileGenerator extends AsposeCellsReportGenerator implements ResidentTexPayeeFileGenerator {
-    private static final String TEMPLATE_FILE = "report/QMM003住民税納付先の登録.xlsx";
+    private static final String TEMPLATE_FILE = "report/QMM003.xlsx";
 
     private static final String REPORT_FILE_NAME = "QMM003住民税納付先の登録.pdf";
 
     private static final int COLUMN_START = 1;
 
-    private static final int MAX_ROWS = 37;
+    private static final int MAX_ROWS = 49;
 
 
     @Inject
@@ -38,7 +38,7 @@ public class ResidentTexPayeeAposeFileGenerator extends AsposeCellsReportGenerat
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
             Worksheet ws = wsc.get(0);
-            ws.setName(TextResource.localize("#QMM003_39"));
+            ws.setName(TextResource.localize("QMM003_39"));
             //set headler
             // Company name
             String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
