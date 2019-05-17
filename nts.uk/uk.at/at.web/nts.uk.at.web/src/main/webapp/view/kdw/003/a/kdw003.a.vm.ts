@@ -1695,9 +1695,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                                 checkBoxResult = _.find(self.mapApprovalCheck, (value) => { return value.employeeId == findRow.employeeId && findRow.dateDetail._i == value.date });
 
-                            if (!lstDataChange.includes({ employeeId: findRow.employeeId, date: findRow.dateDetail })) {
-                                lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
-                            }
+//                            if (!lstDataChange.includes({ employeeId: findRow.employeeId, date: findRow.dateDetail })) {
+//                                lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
+//                            }
                             if (!checkBoxAppChange) {
                                 // da check va bo check
                                 _.forEach(findRow, (value2, key2) => {
@@ -1749,7 +1749,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         let findRow: any = _.find(dataSource, temp2 => {
                             return temp.rowId == temp2.id;
                         });
-                        if (!lstDataChange.includes({ employeeId: findRow.employeeId, date: findRow.dateDetail })) {
+                        if (!_.includes(lstDataChange, lstTemp => {return lstTemp.employeeId == findRow.employeeId && lstTemp.date == findRow.dateDetail })) {
                             lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
                         }
                     })
@@ -1757,7 +1757,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         let findRow: any = _.find(dataSource, temp2 => {
                             return temp.rowId == temp2.id;
                         });
-                        if (!lstDataChange.includes({ employeeId: findRow.employeeId, date: findRow.dateDetail })) {
+                        if (!_.includes(lstDataChange, lstTemp => {return lstTemp.employeeId == findRow.employeeId && lstTemp.date == findRow.dateDetail })) {
                             lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
                         }
                     })
