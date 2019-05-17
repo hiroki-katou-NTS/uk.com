@@ -7,5 +7,4 @@ import './touch';
 import './ripple';
 import './float';
 import './toolbar';
-import './accordion';
 import './number';
