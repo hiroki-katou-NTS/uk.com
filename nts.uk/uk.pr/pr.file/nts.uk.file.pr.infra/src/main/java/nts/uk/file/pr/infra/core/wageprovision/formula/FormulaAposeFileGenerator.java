@@ -73,7 +73,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
-        int numColumn = 14;
+        int numColumn = 15;
         int columnStart = 1;
         fillData(worksheets, data, fornula, targetItem, numColumn, columnStart);
     }
@@ -140,7 +140,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getValueRounding(Object[] obj){
-        if(((BigDecimal)obj[4]).intValue() == 1 || ((BigDecimal)obj[15]).intValue() == 1) {
+        if(((BigDecimal)obj[4]).intValue() == 1 || (obj[15] != null && ((BigDecimal)obj[15]).intValue() == 1)) {
             return "なし";
         }
         return obj[11] != null ? EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingMethod.class).nameId : "";
