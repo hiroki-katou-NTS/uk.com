@@ -27,7 +27,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
 
     private static final String TEMPLATE_FILE = "report/QMM017.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".xlsx";
-    private static final String FILE_NAME = "QMM017計算式の登録";
+    private static final String FILE_NAME = "QMM017計算式の登録_";
     private static final String TITLE = "計算式の登録 ";
     private static final int RECORD_IN_PAGE = 71;
     private static final int LINE_IN_PAGE = 74;
@@ -53,7 +53,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
 
     private void createTable(WorksheetCollection worksheets,int pageMonth, String companyName) throws Exception {
         Worksheet worksheet = worksheets.get(0);
-        //settingPage(worksheet, companyName);
+        settingPage(worksheet, companyName);
         for(int i = 0 ; i< pageMonth; i++) {
             worksheet.getCells().copyRows(worksheet.getCells(), 0, LINE_IN_PAGE * (i+1), LINE_IN_PAGE + 1 );
         }
@@ -68,14 +68,18 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
-        /*pageSetup.setFitToPagesTall(1);
-        pageSetup.setFitToPagesWide(1);*/
+        pageSetup.setFitToPagesTall(1);
+        pageSetup.setFitToPagesWide(1);
     }
 
     private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
         int numColumn = 15;
         int columnStart = 1;
         fillData(worksheets, data, fornula, targetItem, numColumn, columnStart);
+    }
+
+    private String convertYearMonth(Object startYearMonth){
+        return startYearMonth.toString().substring(0,4) + "/" + startYearMonth.toString().substring(4,6);
     }
 
     private void fillData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> formula,
@@ -91,16 +95,19 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
                     switch (j) {
+                        case 2: case 3:
+                            cells.get(rowStart, j + startColumn).setValue(convertYearMonth(dataRow[j]));
+                            break;
                         case 4:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null && ((BigDecimal) dataRow[j]).intValue() == 0
-                                    ? TextResource.localize("Enum_MasterBranchUse_NOT_USE") : TextResource.localize("Enum_MasterBranchUse_USE"));
+                                    ? TextResource.localize("Enum_FormulaSettingMethod_DETAIL_SETTING") : TextResource.localize("Enum_FormulaSettingMethod_BASIC_SETTING"));
                             break;
                         case 5:
                             cells.get(rowStart, j+ startColumn).setValue(dataRow[5] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), NestedUseCls.class).nameId : "");
                             break;
                         case 6:
-                            cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null
-                                    ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), MasterBranchUse.class).nameId) : "");
+                            cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null && ((BigDecimal) dataRow[j]).intValue() == 0 ?
+                                    TextResource.localize("Enum_MasterBranchUse_NOT_USE") : TextResource.localize("Enum_MasterBranchUse_USE"));
                             break;
                         case 7:
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterType(dataRow));
