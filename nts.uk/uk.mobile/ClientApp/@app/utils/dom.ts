@@ -64,6 +64,14 @@ const dom = {
     removeAttr: (element: HTMLElement, key: string) => {
         element && element.removeAttribute && element.removeAttribute(key);
     },
+    cloneAttrs: (target: HTMLElement, destination: HTMLElement) => {
+        [].slice.call(target.attributes)
+            .forEach((attr: Node) => {
+                if (attr.nodeValue) {
+                    dom.setAttr(destination, attr.nodeName, attr.nodeValue);
+                }
+            });
+    },
     hasClass: (element: HTMLElement, classCss: string) => {
         return element && element.className && element.classList.contains(classCss.trim());
     },
@@ -225,7 +233,7 @@ const dom = {
 
                         target = target.parentNode as HTMLElement;
                     }
-                    
+
                     if (!clo) {
                         if (event.target != match) {
                             return dom.dispatchEvent(match, event, handler);
@@ -269,17 +277,17 @@ const dom = {
             };
 
         return {
-            get (node: HTMLElement, key: string) {
+            get(node: HTMLElement, key: string) {
                 let dataForNode = getDataForNode(node, false);
 
                 return dataForNode && dataForNode[key];
             },
-            set (node: HTMLElement, key: string, value: any) {
+            set(node: HTMLElement, key: string, value: any) {
                 // Make sure we don't actually create a new domData key if we are actually deleting a value
                 let dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
                 dataForNode && (dataForNode[key] = value);
             },
-            getOrSet (node: HTMLElement, key: string, value: any) {
+            getOrSet(node: HTMLElement, key: string, value: any) {
                 let dataForNode = getDataForNode(node, true /* createIfNotFound */);
 
                 return dataForNode[key] || (dataForNode[key] = value);
