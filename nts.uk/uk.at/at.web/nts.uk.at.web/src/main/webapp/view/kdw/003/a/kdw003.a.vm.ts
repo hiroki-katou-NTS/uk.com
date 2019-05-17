@@ -2693,7 +2693,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
                      _.forEach(dataUpdate, (valueUpdate) => {
-                        $("#dpGrid").mGrid("updateCell", valueUpdate.rowId, valueUpdate.columnKey, valueUpdate.value);
+                        $("#dpGrid").mGrid("updateCell", valueUpdate.rowId, valueUpdate.columnKey, valueUpdate.value, false, true);
                     })
                     nts.uk.ui.block.clear();
                 }, 1000);
