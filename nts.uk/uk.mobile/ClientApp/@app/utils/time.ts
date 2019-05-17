@@ -179,11 +179,11 @@ export const time = {
             return time.leftpad(timePoint.hour) + ' : ' + time.leftpad(timePoint.minute);
         }
     },
-    leftpad(value: number): string {
+    leftpad(value: number | Number): string {
         if (value >= 0 && value < 10) {
             return '0' + value;
         } else if (value < 0 && value > -10) {
-            return '-0' + (0 - value);
+            return '-0' + (0 - (value as number));
         }
 
         return '' + value;
@@ -235,6 +235,28 @@ export class TimeWithDay {
         return new TimeWithDay(value);
     }
 
+    public static fromObject(value: { day: number, hour: number, minute: number }) {
+        let newMinutes = 0;
+        switch (value.day) {
+            case -1:
+                newMinutes = (value.hour * 60 + value.minute) - 1440;
+                break;
+            case 0:
+                newMinutes = value.hour * 60 + value.minute;
+                break;
+            case 1:
+                newMinutes = 1440 + value.hour * 60 + value.minute;
+                break;
+            case 2:
+                newMinutes = 2880 + value.hour * 60 + value.minute;
+                break;
+            default:
+                break;
+        }
+
+        return new TimeWithDay(newMinutes);
+    }
+
     public static toNumber(value: string): number {
         return TimeWithDay.from(value).value;
     }
@@ -243,7 +265,27 @@ export class TimeWithDay {
         return TimeWithDay.from(value).toString();
     }
 
+    public static toObject(value: number) {
+
+        if ( value === null || value === undefined) {
+
+            return null;
+        }
+
+        let timeWithDay = TimeWithDay.from(value);
+        
+        return {
+            day: timeWithDay.day,
+            hour: timeWithDay.hour,
+            minute: timeWithDay.minute
+        };
+    }
+
     public static getDayOffset(value: string | number): number {
+        return TimeWithDay.from(value).day;
+    }
+
+    public static getDayNumber(value: string | number): number {
         return TimeWithDay.from(value).day;
     }
 
@@ -277,16 +319,11 @@ export class TimeWithDay {
     }
 
     public toString(): string {
-        let negative = this.isNegative,
-            value = Math.abs(this.value + (negative ? 1440 : 0)),
-            hour = Math.floor(value / 60).toString(),
-            minute = Math.floor(value % 60).toString();
-
-        return `${negative ? '-' : ''}${_.padStart(hour, 2, '0')}:${_.padStart(minute, 2, '0')}`;
+        return `${this.dayName} ${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
-    public toLocalString() {
-        return `{${this.dayName}}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    public static leftpad(value: number | Number) {
+        return _.padStart(value.toString(), 2, '0');
     }
 
     get isNegative(): boolean {
@@ -310,13 +347,13 @@ export class TimeWithDay {
     get dayName(): string {
         switch (this.day) {
             case -1:
-                return 'BeforeToday';
+                return '前日';
             case 0:
-                return 'Today';
+                return '当日';
             case 1:
-                return 'NextDay';
+                return '翌日';
             case 2:
-                return 'TwoDaysLater';
+                return '翌々日';
             default:
                 break;
         }

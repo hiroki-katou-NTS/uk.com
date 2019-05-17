@@ -34,7 +34,7 @@ export namespace ccg007 {
         });
     }
 
-    function processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean){
+    function processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
         if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517') {
             // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
             self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays.toString()]}).then((code) => {

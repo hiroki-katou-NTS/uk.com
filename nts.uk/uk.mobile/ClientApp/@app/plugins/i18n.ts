@@ -108,7 +108,7 @@ const resources: {
             }
         });
     }
-}, getText: any = (resource: string, params?: string | string[] | { [key: string]: string }) => {
+}, getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
     let lng = Language.current,
         i18lang = resources[lng],
         groups: { [key: string]: string } = {};
@@ -117,12 +117,15 @@ const resources: {
         if (!obj.isString(params)) {
             obj.extend(groups, params);
         } else {
-            obj.extend(groups, { '0': params });
+            obj.extend(groups, { '0': params.toString() });
         }
     }
 
+    // accept numbet raw
+    resource = resource.toString();
+
     if (resource) {
-        [].slice.call(resource.match(/(#{.+})|({#.+})|({\d+})/g) || [])
+        [].slice.call(resource.match(/(#.+)|(#{.+})|({#.+})|({\d+})/g) || [])
             .map((match: string) => match.replace(/[\#\{\}]/g, ''))
             .forEach((key: string) => {
                 if (!obj.has(groups, key)) {
@@ -131,7 +134,7 @@ const resources: {
             });
 
         return ((i18lang[resource] || resource)
-            .replace(/(#{.+})|({#.+})|({\d+})/g, (match: string) => {
+            .replace(/(#.+)|(#{.+})|({#.+})|({\d+})/g, (match: string) => {
                 let key = match.replace(/[\#\{\}]/g, '');
 
                 return getText((groups[key] || key), groups);

@@ -84,14 +84,13 @@ export const MobilePicker = {
         },
         dataSources: {
             deep: true,
-            immediate: true,
             handler(dataSources: any[]) {
                 let self = this,
                     opts = self.options;
 
                 obj.objectForEach(dataSources, (key: string, items: any[]) => {
-                    if (!self.selects[key]) {
-                        self.selects[key] = self.value[key] || items[0][opts.value];
+                    if (!obj.has(self.selects, key)) {
+                        self.selects[key] = obj.has(self.value, key) ? self.value[key] : (items[0] && items[0][opts.value]);
                     }
                 });
             }
