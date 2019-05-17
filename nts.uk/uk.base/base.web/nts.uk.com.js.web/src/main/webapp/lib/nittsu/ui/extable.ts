@@ -7442,11 +7442,16 @@ module nts.uk.ui.exTable {
          */
         export function isEqual(one: any, two: any, fields?: Array<any>) {
             if (_.isObject(one) && _.isObject(two)) {
-                return (fields && fields.length > 0) 
-                        ? _.isEqual(_.omitBy(one, (d, p) => fields.every(f => f !== p)),
-                                    _.omitBy(two, (d, p) => fields.every(f => f !== p)))
-                        : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                if (fields && fields.length > 0) {
+                    let oFields = _.cloneDeep(fields);
+                    _(fields).filter(f => f.slice(-4) === "Name").forEach(f => oFields.push(f.substr(0, f.length - 4) + "Code")); 
+                    return _.isEqual(_.omitBy(one, (d, p) => oFields.every(f => f !== p)),
+                                    _.omitBy(two, (d, p) => oFields.every(f => f !== p)));
+                }
+                
+                return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
             }
+            
             return _.isEqual(one, two);
         }
         
