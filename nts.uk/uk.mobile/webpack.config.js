@@ -9,6 +9,7 @@ const path = require('path'),
 
 module.exports = (env) => {
     return [{
+        devtool: "source-map",
         mode: env && env.prod ? 'production' : 'development',
         stats: {
             modules: false
@@ -93,7 +94,7 @@ module.exports = (env) => {
                 }
             },
             minimizer: [
-                //new UglifyJsPlugin({
+                new UglifyJsPlugin({
                 /*cache: true,
                 parallel: true,
                 uglifyOptions: {
@@ -105,7 +106,7 @@ module.exports = (env) => {
                     }
                 },
                 sourceMap: false*/
-                //}),
+                }),
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: require("cssnano"),
                     cssProcessorOptions: {
@@ -137,16 +138,16 @@ module.exports = (env) => {
                 manifest: require(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist', 'vendor-manifest.json'))
             }),
             // Plugins that apply in development builds only
-            new webpack.SourceMapDevToolPlugin({
+            /*new webpack.SourceMapDevToolPlugin({
                 // Remove this line if you prefer inline source maps
                 filename: '[file].map',
                 // Point sourcemap entries to the original file locations on disk
                 moduleFilenameTemplate: path.relative(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist'), '[resourcePath]')
-            }),
+            }),*/
             new TSLintPlugin({
                 waitForLinting: true,
                 warningsAsError: true,
-                files: ['./ClientApp/**/*.ts']
+                files: ['./ClientApp/*.ts', './ClientApp/**/*.ts']
             }),
             new PackageWarFile({ prod: env && env.prod })
         ],
@@ -160,7 +161,7 @@ module.exports = (env) => {
                 poll: true
             },
             watchContentBase: true,
-            index: './index.htm',
+            index: './index.html',
             historyApiFallback: true,
             openPage: './nts.uk.mobile.web/ccg/007/b'
         },
