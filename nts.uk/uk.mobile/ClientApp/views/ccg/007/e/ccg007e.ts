@@ -9,26 +9,10 @@ import { SideMenu, NavMenu } from '@app/services';
     validations: {
         model: {
             newPassword: {
-                required: true,
-                checkSame: {
-                    test(value) {
-                        if(_.isEmpty(this.model.newPasswordConfirm)){
-                            return false;
-                        }
-                        return this.model.newPassword === this.model.newPasswordConfirm;
-                    }, message: 'Msg_961'
-                }
+                required: true
             },
             newPasswordConfirm: {
-                required: true,
-                checkSame: {
-                    test(value) {
-                        if(_.isEmpty(this.model.newPassword)){
-                            return false;
-                        }
-                        return this.model.newPasswordConfirm === this.model.newPassword;
-                    }, message: 'Msg_961'
-                }
+                required: true
             }
         }
     }, 
