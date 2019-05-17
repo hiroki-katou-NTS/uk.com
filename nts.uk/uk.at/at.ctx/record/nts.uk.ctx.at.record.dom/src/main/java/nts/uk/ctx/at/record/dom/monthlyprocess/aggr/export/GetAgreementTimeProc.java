@@ -163,7 +163,7 @@ public class GetAgreementTimeProc {
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
 		// 年月から集計期間を取得
-		val aggrPeriodOpt = agreementOperationSet.getAggregatePeriodByYearMonth(this.yearMonth, closure);
+		val aggrPeriodOpt = agreementOperationSet.getAggregatePeriodByYearMonth(this.yearMonth, closure.getClosureId());
 		if (!aggrPeriodOpt.isPresent()) return null;
 		
 		// 集計期間を返す

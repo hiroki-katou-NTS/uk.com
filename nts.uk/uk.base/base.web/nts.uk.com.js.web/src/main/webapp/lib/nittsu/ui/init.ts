@@ -131,11 +131,26 @@ module nts.uk.ui {
                 || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
         };
         
+        let getEmployeeSetting = function() {
+            let dfd = $.Deferred(),
+                es = nts.uk.sessionStorage.getItem("nts.uk.session.EMPLOYEE_SETTING");
+            if (es.isPresent()) {
+                dfd.resolve(JSON.parse(es.get()));
+            } else {
+                request.ajax("com", "/bs/employee/setting/code/find").done(constraints => {
+                    nts.uk.sessionStorage.setItemAsJson("nts.uk.session.EMPLOYEE_SETTING", constraints);
+                    dfd.resolve(constraints);
+                });
+            }
+            
+            return dfd.promise();
+        };
+        
         let loadEmployeeCodeConstraints = function() {
             let self = this,
                 dfd = $.Deferred();
         
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
+            getEmployeeSetting().done(res => {
                 
                 let formatOption: any = {
                     autofill: true

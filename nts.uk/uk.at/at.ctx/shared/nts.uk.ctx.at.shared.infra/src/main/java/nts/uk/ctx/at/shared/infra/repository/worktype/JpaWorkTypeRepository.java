@@ -21,6 +21,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -391,15 +392,17 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 			Optional<WorkTypeInfor> optWkInfo = this.queryProxy().query(SELECT_WORKTYPE_WITH_NO_MASTER_AND_ORDER, WorkTypeInfor.class)
 					.setParameter("companyId", companyId).setParameter("wkTypeCd", wkTypeCd).getSingle();
-			if (optWkInfo.isPresent()) {
+			if (!StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+				if (optWkInfo.isPresent()) {
 
-				wkType = optWkInfo.get();
-			} else {
-				wkType = new WorkTypeInfor(wkTypeCd, TextResource.localize("KAL003_120"), "", "", 0, "", 0, 0, 0, 0, 0,
-						null, Collections.emptyList());
+					wkType = optWkInfo.get();
+				} else {
+					wkType = new WorkTypeInfor(wkTypeCd, TextResource.localize("KAL003_120"), "", "", 0, "", 0, 0, 0, 0,
+							0, null, Collections.emptyList());
+				}
+
+				resultList.add(wkType);
 			}
-
-			resultList.add(wkType);
 
 		});
 		List<WorkTypeInfor> lstOrder = resultList.stream().filter(c -> c.getDispOrder() != null).collect(Collectors.toList());

@@ -2676,6 +2676,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.lock(param).done((data) => {
                 nts.uk.ui.block.clear();
                 self.indentityMonth(data.indentityMonthResult);
+                let dataUpdate = $("#dpGrid").mGrid("updatedCells");
                 let dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpdate) => {
                     $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true, true)
@@ -2691,6 +2692,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
+                     _.forEach(dataUpdate, (valueUpdate) => {
+                        $("#dpGrid").mGrid("updateCell", valueUpdate.rowId, valueUpdate.columnKey, valueUpdate.value);
+                    })
                     nts.uk.ui.block.clear();
                 }, 1000);
                 dfd.resolve();
