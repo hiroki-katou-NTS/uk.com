@@ -4,11 +4,8 @@ import com.aspose.cells.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.InsurancePremiumFractionClassification;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaType;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceExportData;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance.HealthInsuranceFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.formula.FormulaExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.formula.FormulaFileGenerator;
 import nts.uk.shr.com.i18n.TextResource;
@@ -41,7 +38,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             worksheets.get(0).setName(SHEET_NAME);
             int page = exportData.getFormulas().size() == RECORD_IN_PAGE ? 0 : exportData.getFormulas().size() / RECORD_IN_PAGE;
             createTable(worksheets, page, exportData.getCompanyName());
-            printData(worksheets, exportData.getFormulas(), exportData.getFormulas(), exportData.getTargetItems());
+            printData(worksheets, exportData.getFormulas(), exportData.getFormulaDetails(), exportData.getTargetItems());
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsExcel(this.createNewFile(generatorContext,
@@ -198,14 +195,14 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             e.append(TextResource.localize((EnumAdaptor.valueOf(((BigDecimal)obj[19]).intValue(), CoefficientClassification.class).nameId)));
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
-            temp.append(a).append("×").append(e);
+            temp.append(a).append(a.length() > 0 ? "×" : "").append(e);
         }
 
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append("×").append(c).append("×").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "").append(c).append(c.length()> 0 ? "×": "").append(e);
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
-            temp.append(a).append("÷").append(b).append("×").append(c).append("×").append(e);
+            temp.append(a).append(a.length() > 0 ? "÷" : "").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "×": "").append(e);
         }
 
         return temp.toString();
