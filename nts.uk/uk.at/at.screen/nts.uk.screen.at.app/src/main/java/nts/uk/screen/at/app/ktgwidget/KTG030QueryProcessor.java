@@ -63,7 +63,7 @@ public class KTG030QueryProcessor {
 		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
 		List<CheckTargetItem> listCheckTargetItem = new ArrayList<>();
 		for (ClosureInfo closure : listClosure) {
-			if(closure.getCurrentMonth().equals(yearmonth)){
+			if(yearmonth == 0){
 				listCheckTargetItem.add(new CheckTargetItem(closure.getClosureId().value,closure.getCurrentMonth()));
 				
 			}
