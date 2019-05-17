@@ -117,6 +117,8 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
 
         register() {
             let self = this;
+            if (self.updateMode() && self.selectedCode().length < 5)
+                return;
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
