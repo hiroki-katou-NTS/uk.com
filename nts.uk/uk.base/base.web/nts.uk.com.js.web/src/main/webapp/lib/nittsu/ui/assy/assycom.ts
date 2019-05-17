@@ -10,6 +10,7 @@ module nts.uk.ui.koExtentions {
             self.width = observableOrDefault(params.width, "640px");
             self.labelDistance = observableOrDefault(params.labelDistance, "60px");
             self.screenMode = params.screenMode;
+            self.webAppId = params.webAppId || nts.uk.request.location.currentAppId;
             self.histIdName = params.histIdName || "histId";
             self.isLatestHistSelected = ko.observable(false); 
             self.masterId = params.masterId;
@@ -31,7 +32,7 @@ module nts.uk.ui.koExtentions {
             self.getSelectedStartDate = params.getSelectedStartDate;
             self.loadHist = (rendered) => {
                 if (!_.isNil(self.masterId) && self.masterId !== "") {
-                    ajax(self.pathGet()).done(res => {
+                    ajax(self.webAppId, self.pathGet()).done(res => {
                         let queryResult = self.getQueryResult(res);
                         self.histList(queryResult);
                         if (!rendered && self.histList().length > 0) {
@@ -61,7 +62,7 @@ module nts.uk.ui.koExtentions {
             self.openAddHistDialog = function() {
                 setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId()));
                 setShared("ASSY_COM_PARAM_CMD", params.commandAdd);
-                setShared("ASSY_COM_PARAM_AJAX", (data) => ajax(self.pathAdd(), data));
+                setShared("ASSY_COM_PARAM_AJAX", (data) => ajax(self.webAppId, self.pathAdd(), data));
                 openModal("com", "/view/assy/addhist/index.xhtml").onClosed(() => {
                     let done = getShared("HIST_ADD");
                     if (done) {
@@ -76,7 +77,7 @@ module nts.uk.ui.koExtentions {
             self.openUpdHistDialog = function() {
                 setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId(), self.getSelectedStartDate()));
                 setShared("ASSY_COM_PARAM_CMD", params.commandUpdate);
-                setShared("ASSY_COM_PARAM_AJAX", (data) => ajax(self.pathUpdate(), data));
+                setShared("ASSY_COM_PARAM_AJAX", (data) => ajax(self.webAppId, self.pathUpdate(), data));
                 openModal("com", "/view/assy/updhist/index.xhtml").onClosed(() => {
                     let done = getShared("HIST_UPD"); 
                     if (done) {
@@ -90,7 +91,7 @@ module nts.uk.ui.koExtentions {
             
             self.deleteHist = function() {
                  nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                    ajax(self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(() => {
+                    ajax(self.webAppId, self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(() => {
                         self.loadHist();
                         if (_.isFunction(params.afterDelete)) {
                             params.afterDelete();
