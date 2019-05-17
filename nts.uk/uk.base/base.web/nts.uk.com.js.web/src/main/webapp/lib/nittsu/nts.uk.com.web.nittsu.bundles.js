@@ -3345,7 +3345,8 @@ var nts;
                 comjs: 'nts.uk.com.js.web',
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
-                at: 'nts.uk.at.web'
+                at: 'nts.uk.at.web',
+                hr: 'nts.uk.hr.web'
             };
             var QueryString = /** @class */ (function () {
                 function QueryString() {
@@ -33440,6 +33441,7 @@ var nts;
                         self.width = observableOrDefault(params.width, "640px");
                         self.labelDistance = observableOrDefault(params.labelDistance, "60px");
                         self.screenMode = params.screenMode;
+                        self.webAppId = params.webAppId || nts.uk.request.location.currentAppId;
                         self.histIdName = params.histIdName || "histId";
                         self.isLatestHistSelected = ko.observable(false);
                         self.masterId = params.masterId;
@@ -33461,7 +33463,7 @@ var nts;
                         self.getSelectedStartDate = params.getSelectedStartDate;
                         self.loadHist = function (rendered) {
                             if (!_.isNil(self.masterId) && self.masterId !== "") {
-                                ajax(self.pathGet()).done(function (res) {
+                                ajax(self.webAppId, self.pathGet()).done(function (res) {
                                     var queryResult = self.getQueryResult(res);
                                     self.histList(queryResult);
                                     if (!rendered && self.histList().length > 0) {
@@ -33489,7 +33491,7 @@ var nts;
                         self.openAddHistDialog = function () {
                             setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId()));
                             setShared("ASSY_COM_PARAM_CMD", params.commandAdd);
-                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.pathAdd(), data); });
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathAdd(), data); });
                             openModal("com", "/view/assy/addhist/index.xhtml").onClosed(function () {
                                 var done = getShared("HIST_ADD");
                                 if (done) {
@@ -33503,7 +33505,7 @@ var nts;
                         self.openUpdHistDialog = function () {
                             setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId(), self.getSelectedStartDate()));
                             setShared("ASSY_COM_PARAM_CMD", params.commandUpdate);
-                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.pathUpdate(), data); });
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathUpdate(), data); });
                             openModal("com", "/view/assy/updhist/index.xhtml").onClosed(function () {
                                 var done = getShared("HIST_UPD");
                                 if (done) {
@@ -33516,7 +33518,7 @@ var nts;
                         }.bind(self);
                         self.deleteHist = function () {
                             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                                ajax(self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(function () {
+                                ajax(self.webAppId, self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(function () {
                                     self.loadHist();
                                     if (_.isFunction(params.afterDelete)) {
                                         params.afterDelete();
