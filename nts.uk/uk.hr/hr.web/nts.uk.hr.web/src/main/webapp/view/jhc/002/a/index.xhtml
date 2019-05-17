@@ -27,11 +27,12 @@
 				<div id="main-area">
 					<div id="main-center-area">
 						<div class="container cf">
-							<!-- <div style="height: 300px;">
+							<div style="height: 300px;">
 								<assy-com params="screenMode: screenMode, masterId: masterId, 
 								histList: histList, selectedHistId: selectedHistId,
 							 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
 							 	getQueryResult: getQueryResult,
+							 	webAppId: 'hr',
 							 	getSelectedStartDate: getSelectedStartDate,
 							 	commandAdd: commandAdd,
 							 	commandUpdate: commandUpdate,
@@ -41,11 +42,184 @@
 							 	afterRender: afterRender,
 							 	afterAdd: afterAdd,
 							 	afterUpdate: afterUpdate,
-							 	afterDelete: afterDelete"></assy-com>
-							</div> -->
+							 	afterDelete: afterDelete"
+							 	
+							 	></assy-com>
+							</div>
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_A222_9')}</div>
-							<div class="compact-grid">
-								<table id="grid2"></table>
+							<div class="contentTable">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable">
+										<colgroup>
+											<col width="100px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" colspan="1">first column</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td><span data-bind="">Thanh1</span>
+													<button class="small">Small</button></td>
+											</tr>
+											<tr>
+												<td><span data-bind="">Thanh2</span>
+													<button class="small">Small</button></td>
+											</tr>
+											<tr>
+												<td><span data-bind="">Thanh3</span>
+													<button class="small">Small</button></td>
+											</tr>
+											<tr>
+												<td><span data-bind="">Thanh4</span>
+													<button class="small">Small</button></td>
+											</tr>
+											<tr>
+												<td><span data-bind="">Thanh5</span>
+													<button class="small">Small</button></td>
+											</tr>
+											<tr>
+												<td><span data-bind="">Thanh6</span>
+													<button class="small">Small</button></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table">
+									<table id="fixed-table">
+										<colgroup>
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+											<col width="100px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header lever1" colspan="1">lever1</th>
+												<th class="ui-widget-header lever2" colspan="1">lever2</th>
+												<th class="ui-widget-header lever3" colspan="1">lever3</th>
+												<th class="ui-widget-header lever4" colspan="1">lever4</th>
+												<th class="ui-widget-header lever5" colspan="1">lever5</th>
+												<th class="ui-widget-header lever6" colspan="1">lever6</th>
+												<th class="ui-widget-header lever7" colspan="1">lever7</th>
+												<th class="ui-widget-header lever8" colspan="1">lever8</th>
+												<th class="ui-widget-header lever9" colspan="1">lever9</th>
+												<th class="ui-widget-header lever10" colspan="1">lever10</th>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: itemList">
+											<tr>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val1,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val2,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val3,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val4,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val5,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val6,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val7,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val8,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val9,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+												<td><div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: comBoList,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: val10,
+														optionsText: 'name',
+														width: 96,
+														columns: [ { prop: 'name', length: 4 },]}">
+													</div></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>

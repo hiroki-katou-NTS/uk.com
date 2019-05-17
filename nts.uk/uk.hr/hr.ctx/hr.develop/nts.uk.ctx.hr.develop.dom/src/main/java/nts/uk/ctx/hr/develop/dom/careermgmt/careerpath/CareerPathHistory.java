@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -11,6 +13,6 @@ public class CareerPathHistory extends AggregateRoot {
 
 	private String companyId;
 	
-	private DateHistoryItem careerPathHistory;
+	private List<DateHistoryItem> careerPathHistory;
 	
 }
