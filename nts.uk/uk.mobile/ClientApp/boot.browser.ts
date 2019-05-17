@@ -50,8 +50,8 @@ new Vue({
 
         browser.private
             .then((prid: boolean) => {
-                if (browser.ios && prid) {
-                    self.$modal.warn('Msg_1533');
+                if (browser.version === 'Safari 10' && prid) {
+                    self.$modal.warn({ messageId: 'Msg_1533' });
                 }
             });
 
