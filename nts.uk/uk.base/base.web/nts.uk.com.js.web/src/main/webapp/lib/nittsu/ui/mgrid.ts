@@ -4816,112 +4816,140 @@ module nts.uk.ui.mgrid {
                 return res;
             },
             disableNtsControlAt: function(id, key, $cell, hidden) {
+                let dc = [];
                 if (!$cell) {
                     let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                     if (_.isNil(idx)) return;
-                    $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
-                }
+                    _.forEach(_.keys(_mafollicle), k => {
+                        if (k === SheetDef) return;
+                        _.forEach(_.keys(_mafollicle[SheetDef]), d => {
+                            let f = _mafollicle[k][d], c;
+                            if (f) {
+                                c = lch.cellAt(_$grid[0], idx, key, f.desc, hidden);
+                                if (c) dc.push(c);
+                            }
+                        });
+                        
+                        if (dc.length > 0) return false;
+                    });
+                } else dc.push($cell);
                 
-                if (_.isNil($cell)) {
-                    if (_.find(_cstifle(), c => c.key === key)) {
+                if (dc.length === 0) {
+//                    if (_.find(_cstifle(), c => c.key === key)) {
                         color.pushState(id, key, color.Disable);
-                    }
+//                    }
                     return;
                 }
                 
-                if ($cell.classList.contains(color.Disable)) return;
-                $cell.classList.add(color.Disable);
-                switch (dkn.controlType[key]) {
-                    case dkn.LABEL:
-                        $cell.innerHTML = "";
-                        break;
-                    case dkn.LINK_LABEL:
-                        let link = $cell.querySelector(".mlink-button");
-                        if (link) {
-                            link.removeXEventListener(ssk.CLICK_EVT);
-                            link.style.color = "#333";
-                            link.style.cursor = "default";
-                        }
-                        break;
-                    case dkn.BUTTON:
-                    case dkn.DELETE_BUTTON:
-                    case dkn.REFER_BUTTON:
-                        let btn = $cell.querySelector(".mbutton");
-                        if (btn) btn.disabled = true;
-                        break;
-                    case dkn.FLEX_IMAGE:
-                        let img = $cell.querySelector("span");
-                        if (img) {
-                            img.removeXEventListener(ssk.CLICK_EVT);
-                            img.style.cursor = "default";
-                        }
-                        break;
-                    case dkn.CHECKBOX:
-                        let check = $cell.querySelector("input");
-                        if (check) {
-                            check.setAttribute("disabled", "disabled");
-                        }
-                        break;
-                }
+                dc.forEach($cell => {
+                    if ($cell.classList.contains(color.Disable)) return;
+                    $cell.classList.add(color.Disable);
+                    switch (dkn.controlType[key]) {
+                        case dkn.LABEL:
+                            $cell.innerHTML = "";
+                            break;
+                        case dkn.LINK_LABEL:
+                            let link = $cell.querySelector(".mlink-button");
+                            if (link) {
+                                link.removeXEventListener(ssk.CLICK_EVT);
+                                link.style.color = "#333";
+                                link.style.cursor = "default";
+                            }
+                            break;
+                        case dkn.BUTTON:
+                        case dkn.DELETE_BUTTON:
+                        case dkn.REFER_BUTTON:
+                            let btn = $cell.querySelector(".mbutton");
+                            if (btn) btn.disabled = true;
+                            break;
+                        case dkn.FLEX_IMAGE:
+                            let img = $cell.querySelector("span");
+                            if (img) {
+                                img.removeXEventListener(ssk.CLICK_EVT);
+                                img.style.cursor = "default";
+                            }
+                            break;
+                        case dkn.CHECKBOX:
+                            let check = $cell.querySelector("input");
+                            if (check) {
+                                check.setAttribute("disabled", "disabled");
+                            }
+                            break;
+                    }
+                });
                 
                 color.pushState(id, key, color.Disable);
             },
             enableNtsControlAt: function(id, key, $cell, hidden) {
+                let dc = [];
                 if (!$cell) {
                     let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                     if (_.isNil(idx)) return;
-                    $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
-                }
+                    _.forEach(_.keys(_mafollicle), k => {
+                        if (k === SheetDef) return;
+                        _.forEach(_.keys(_mafollicle[SheetDef]), d => {
+                            let f = _mafollicle[k][d], c;
+                            if (f) {
+                                c = lch.cellAt(_$grid[0], idx, key, f.desc, hidden);
+                                if (c) dc.push(c);
+                            }
+                        });
+                        
+                        if (dc.length > 0) return false;
+                    });
+                } else dc.push($cell);
                 
-                if (_.isNil($cell)) {
-                    if (_.find(_cstifle(), c => c.key === key)) {
+                if (dc.length === 0) {
+//                    if (_.find(_cstifle(), c => c.key === key)) {
                         color.popState(id, key, color.Disable);
-                    }    
+//                    }    
                     return;
                 }
                 
-                if (!$cell.classList.contains(color.Disable)) return;
-                $cell.classList.remove(color.Disable);
-                switch (dkn.controlType[key]) {
-                    case dkn.LABEL:
-                        let label = $.data($cell, v.DATA);
-                        $cell.innerHTML = _.isNil(label) ? "" : label;
-                        break;
-                    case dkn.LINK_LABEL:
-                        let link = $cell.querySelector(".mlink-button");
-                        if (link) {
-                            link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
-                            link.style.color = "#0066CC";
-                            link.style.cursor = "pointer";
-                        }
-                        break;
-                    case dkn.BUTTON:
-                    case dkn.DELETE_BUTTON:
-                    case dkn.REFER_BUTTON:
-                        let btn = $cell.querySelector(".mbutton");
-                        if (btn) {
-                            btn.disabled = false;
-                            let hdl = $.data(btn, ssk.CLICK_EVT);
-                            if (hdl) {
-                                btn.removeXEventListener(ssk.CLICK_EVT);
-                                btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                dc.forEach($cell => {
+                    if (!$cell.classList.contains(color.Disable)) return;
+                    $cell.classList.remove(color.Disable);
+                    switch (dkn.controlType[key]) {
+                        case dkn.LABEL:
+                            let label = $.data($cell, v.DATA);
+                            $cell.innerHTML = _.isNil(label) ? "" : label;
+                            break;
+                        case dkn.LINK_LABEL:
+                            let link = $cell.querySelector(".mlink-button");
+                            if (link) {
+                                link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
+                                link.style.color = "#0066CC";
+                                link.style.cursor = "pointer";
                             }
-                        }
-                        break;
-                    case dkn.FLEX_IMAGE:
-                        let img = $cell.querySelector("span");
-                        if (img) {
-                            img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
-                            img.style.cursor = "pointer";
-                        }
-                        break;
-                    case dkn.CHECKBOX:
-                        let check = $cell.querySelector("input");
-                        if (check) {
-                            check.removeAttribute("disabled");
-                        }
-                        break;
-                }
+                            break;
+                        case dkn.BUTTON:
+                        case dkn.DELETE_BUTTON:
+                        case dkn.REFER_BUTTON:
+                            let btn = $cell.querySelector(".mbutton");
+                            if (btn) {
+                                btn.disabled = false;
+                                let hdl = $.data(btn, ssk.CLICK_EVT);
+                                if (hdl) {
+                                    btn.removeXEventListener(ssk.CLICK_EVT);
+                                    btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                                }
+                            }
+                            break;
+                        case dkn.FLEX_IMAGE:
+                            let img = $cell.querySelector("span");
+                            if (img) {
+                                img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
+                                img.style.cursor = "pointer";
+                            }
+                            break;
+                        case dkn.CHECKBOX:
+                            let check = $cell.querySelector("input");
+                            if (check) {
+                                check.removeAttribute("disabled");
+                            }
+                            break;
+                    }
+                });
                 
                 color.popState(id, key, color.Disable);
             },
@@ -5700,6 +5728,34 @@ module nts.uk.ui.mgrid {
                     z--;
                 }
             },
+            clearErrors: function(errs: any, s: any) { 
+                if (!errs) return;
+                s = !_.isNil(s) ? s : _currentSheet;
+                _.forEach(errs, e => {
+                    _.forEach(_.keys(_mafollicle), p => {
+                        if (p === SheetDef) return;
+                        let maf = _mafollicle[p][s];
+                        if (maf && maf.desc) {
+                            let y = _.findIndex(_mafollicle[p].dataSource, d => d[_pk] === e.id),
+                                i = maf.desc.fixedColIdxes[e.columnKey];
+                            if (_.isNil(i)) {
+                                i = maf.desc.colIdxes[e.columnKey];
+                                if (!_.isNil(maf.desc.rows[y])) {
+                                    e.element = maf.desc.rows[y][i];
+                                }
+                            } else if (!_.isNil(maf.desc.fixedRows[y])) {
+                                e.element = maf.desc.fixedRows[y][i];
+                            }
+                            
+                            if (e.element) {
+                                khl.clear(e);
+                            }
+                        } else {
+                            _.remove(maf && maf.checkedErrors, ce => ce.columnKey === e.columnKey && ce.id === e.id);
+                        } 
+                    });
+                });
+            },
             removeInsertions: function() {
                 v.eliminRows(_.cloneDeep(v._encarRows).sort((a, b) => b - a));
             },
@@ -6282,7 +6338,7 @@ module nts.uk.ui.mgrid {
                 if (!evt.target) return;
                 if (!selector.is(evt.target, "input.medit")
                     && !selector.is(evt.target, "div[class*='mcombo']")) {
-                    endEdit($grid);
+                    endEdit($grid, true);
                 }
             });
             
@@ -6454,7 +6510,7 @@ module nts.uk.ui.mgrid {
         /**
          * EndEdit.
          */
-        export function endEdit($grid: HTMLElement) {
+        export function endEdit($grid: HTMLElement, fromDoc?: any) {
             let editor = _mEditor;
             if (!editor) return;
             let $bCell = lch.cellAt($grid, editor.rowIdx, editor.columnKey);
@@ -6570,6 +6626,11 @@ module nts.uk.ui.mgrid {
                     $bCell.textContent = mDate._i;
                     $.data($bCell, v.DATA, date);
                 }
+                
+                if (fromDoc && picker && _.isFunction(picker.inputProcess)) {
+                    picker.inputProcess(mDate, _dataSource[parseFloat(editor.rowIdx)]);
+                }
+                
                 $input.value = "";
                 dkn.closeDD(dkn._ramass[editor.formatType], true);
             }
@@ -6718,8 +6779,13 @@ module nts.uk.ui.mgrid {
                             colour = color.ManualEditOther;
                         }
                         
-                        if (main) color.pushState(id, coord.columnKey, [ colour ], true);
+                        if (main) {
+                            color.popState(id, coord.columnKey, [ color.ManualEditTarget, color.ManualEditOther ]);
+                            color.pushState(id, coord.columnKey, [ colour ], true);
+                        }
                         if (!$cell) return { colour: colour };
+                        $cell.classList.remove(color.ManualEditTarget);
+                        $cell.classList.remove(color.ManualEditOther);
                         $cell.classList.add(colour);
                         return { c: calcCell, colour: colour };
                     }

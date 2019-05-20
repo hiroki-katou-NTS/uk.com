@@ -123,8 +123,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsDates(List<String> employeeIDLst,
 			List<GeneralDate> dateLst, Integer rootType) {
 		List<AppRootStateStatusSprExport> result = new ArrayList<>();
-		dateLst.forEach(date -> {
-			DatePeriod period = new DatePeriod(date, date);
+		List<DatePeriod> periods = DatePeriod.create(dateLst);
+		periods.forEach(period -> {
 			result.addAll(appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class)).getAppRootStatusLst()
 			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList()));
 		});
@@ -315,14 +315,17 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	@Override
 	public AppEmpStatusExport getApprovalEmpStatus(String employeeID, DatePeriod period, Integer rootType) {
 		ApprovalEmpStatus approvalEmpStatus = appRootInstanceService.getApprovalEmpStatus(employeeID, period, EnumAdaptor.valueOf(rootType, RecordRootType.class));
-		return new AppEmpStatusExport(
-				approvalEmpStatus.getEmployeeID(), 
-				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationExport(
-						x.getDate(), 
-						x.getEmployeeID(), 
-						x.getApproverEmpState().value, 
-						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
-				.collect(Collectors.toList()));
+		return convertToPub(approvalEmpStatus);
+	}
+	
+	@Override
+	public AppEmpStatusExport getDailyApprovalStatus(
+			String approverId, List<String> targetEmployeeIds, DatePeriod period) {
+		
+		ApprovalEmpStatus approvalEmpStatus = appRootInstanceService.getDailyApprovalStatus(
+				AppContexts.user().companyId(), approverId, targetEmployeeIds, period);
+		
+		return convertToPub(approvalEmpStatus);
 	}
 
 	@Override
@@ -552,7 +555,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		List<AppRootInstance> approverInstLst = appRootInstanceRepository.findByApproverDateCID(companyID, approverID, date, RecordRootType.CONFIRM_WORK_BY_DAY);
 		appRootInstanceLst.addAll(approverInstLst);
 		// ドメインモデル「代行承認」を取得する
-		List<Agent> agentInfoOutputs = agentRepository.findByApproverAndDate(companyID, approverID, date, date);
+		GeneralDate systemDate = GeneralDate.today();
+		List<Agent> agentInfoOutputs = agentRepository.findByApproverAndDate(companyID, approverID, systemDate, systemDate);
 		agentInfoOutputs.forEach(agent -> {
 			// ドメインモデル「承認ルート中間データ」を取得する
 			List<AppRootInstance> agentInstLst = appRootInstanceRepository.findByApproverDateCID(companyID, agent.getEmployeeId(), date, RecordRootType.CONFIRM_WORK_BY_DAY);
@@ -615,5 +619,16 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				approverToApprove.getAuthorList().stream().map(x -> new ApproverEmpExport(x.getEmployeeID(), x.getEmployeeCD(), x.getEmployeeName()))
 				.collect(Collectors.toList()));
 	}
-	
+
+
+	private static AppEmpStatusExport convertToPub(ApprovalEmpStatus approvalEmpStatus) {
+		return new AppEmpStatusExport(
+				approvalEmpStatus.getEmployeeID(), 
+				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationExport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getApproverEmpState().value, 
+						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
+				.collect(Collectors.toList()));
+	}
 }

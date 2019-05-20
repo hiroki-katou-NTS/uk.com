@@ -23,6 +23,7 @@
 .line_col_2_sel {
 	width: 350px;
 	float: left;
+	margin-left: 30px;
 }
 
 #content-left {
