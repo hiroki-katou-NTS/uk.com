@@ -27,7 +27,11 @@ export namespace ccg007 {
             // Return Dialog Error
             self.$mask('hide');
             if (!_.isEqual(res.message, 'can not found message id')) {
-                self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                if (_.isEmpty(res.messageId)) {
+                    self.$modal.error(res.message);
+                } else {
+                    self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             } else {
                 self.$modal.error(res.messageId);
             }
