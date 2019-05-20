@@ -79,17 +79,17 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[10] != null ? e[10].toString() : "",
                         e[11] != null ? e[11].toString() : "",
                         e[12] != null ? e[12].toString() : "",
-                        e[13] != null ? e[12].toString() : "",
-                        e[14] != null ? e[12].toString() : "",
-                        e[15] != null ? e[12].toString() : "",
-                        e[16] != null ? e[12].toString() : "",
-                        e[17] != null ? e[12].toString() : "",
-                        e[18] != null ? e[12].toString() : "",
-                        e[19] != null ? e[12].toString() : "",
-                        e[20] != null ? e[12].toString() : "",
-                        e[21] != null ? e[12].toString() : "",
-                        e[22] != null ? e[12].toString() : "",
-                        e[23] != null ? e[12].toString() : ""
+                        e[13] != null ? e[13].toString() : "",
+                        e[14] != null ? e[14].toString() : "",
+                        e[15] != null ? e[15].toString() : "",
+                        e[16] != null ? e[16].toString() : "",
+                        e[17] != null ? e[17].toString() : "",
+                        e[18] != null ? e[18].toString() : "",
+                        e[19] != null ? e[19].toString() : "",
+                        e[20] != null ? e[20].toString() : "",
+                        e[21] != null ? e[21].toString() : "",
+                        e[22] != null ? e[22].toString() : "",
+                        e[23] != null ? e[23].toString() : ""
                 ));
             }
         } catch (NoResultException e) {
