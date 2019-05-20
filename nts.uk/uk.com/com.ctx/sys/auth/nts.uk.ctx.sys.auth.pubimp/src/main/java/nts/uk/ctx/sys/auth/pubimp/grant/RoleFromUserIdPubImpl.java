@@ -25,7 +25,11 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
 	
 	@Override
 	public String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate) {
-		String companyId = AppContexts.user().companyId();
+		return getRoleFromUserId(userId, roleType, baseDate, AppContexts.user().companyId());
+	}
+
+	@Override
+	public String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate, String companyId) {
 		if (roleType == RoleType.SYSTEM_MANAGER.value || roleType == RoleType.GROUP_COMAPNY_MANAGER.value)
 			companyId = "000000000000-0000";
 		
@@ -38,5 +42,4 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
 		
 		return roleIndOpt.get().getRoleId();
 	}
-
 }

@@ -54,7 +54,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 		// Get User by PersonalId
 		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId, employeeCode);
 
-        LoginUserRoles roles = this.checkRole(user.getUserId());
+        LoginUserRoles roles = this.checkRole(user.getUserId(), companyId);
 		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
 
 		this.checkAccoutLock(user.getLoginId(), command.getContractCode(), user.getUserId(), companyId, command.isSignOn());

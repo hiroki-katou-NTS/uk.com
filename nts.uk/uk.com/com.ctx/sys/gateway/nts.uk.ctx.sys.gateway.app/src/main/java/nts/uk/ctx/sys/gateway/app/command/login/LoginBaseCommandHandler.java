@@ -549,16 +549,16 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		return new CheckChangePassDto(false, null, false);
 	}
 	
-	public LoginUserRoles checkRole(String userId) {
+	public LoginUserRoles checkRole(String userId, String comId) {
 		DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
-		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
-		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
-		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
-		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
-		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
-		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
-		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
-		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
+		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE, comId);
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT, comId);
+		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY, comId);
+		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER, comId);
+		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER, comId);
+		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER, comId);
+		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO, comId);
+		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER, comId);
 		// 就業
 		if (employmentRoleId != null) {
 			roles.setRoleIdForAttendance(employmentRoleId);
@@ -613,6 +613,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		return roleId;
 	}
+
+	protected String getRoleId(String userId, RoleType roleType, String comId) {
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today(), comId);
+		if (roleId == null || roleId.isEmpty()) {
+			return null;
+		}
+		return roleId;
+	}
+	
 	/**
 	 * Compare hash password.
 	 *
