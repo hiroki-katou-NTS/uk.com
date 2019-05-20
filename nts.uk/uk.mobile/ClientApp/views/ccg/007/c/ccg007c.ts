@@ -39,7 +39,8 @@ export class ChangePassComponent extends Vue {
         symbolCharacters: "0",
         historyCount: "0",
         validPeriod: "0",
-        isUse: false
+        isUse: false,
+        complex: ''
     };
 
     public model = {
@@ -59,7 +60,7 @@ export class ChangePassComponent extends Vue {
                                                                 employeeCode: self.params.employeeCode, 
                                                                 companyCode: self.params.companyCode })])
                 .then((values: Array<any>) => {
-            let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data;
+            let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data, complex = [];
             self.model.userName = user.userName;
             self.policy.lowestDigits = policy.lowestDigits.toString();
             self.policy.alphabetDigit = policy.alphabetDigit.toString();
@@ -69,6 +70,16 @@ export class ChangePassComponent extends Vue {
             self.policy.validPeriod = policy.validityPeriod.toString();
             self.policy.isUse  = policy.isUse;
             self.userId = user.userId;
+            if(policy.alphabetDigit > 0) {
+                complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
+            }
+            if(policy.numberOfDigits > 0) {
+                complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
+            }
+            if(policy.symbolCharacters > 0) {
+                complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
+            }
+            self.policy.complex = complex.join("、");
         });
     }
 

@@ -56,14 +56,8 @@
                                     <td><span> {{ 'CCGS07_23' | i18n(policy.lowestDigits) }}</span></td>
                                 </tr>
                                 <tr v-if="policy.alphabetDigit > 0 || policy.numberOfDigits > 0 || policy.symbolCharacters > 0">
-                                    <td><span >{{ 'CCGS07_24' | i18n }}</span></td>
-                                    <td>
-                                        <span v-if="policy.alphabetDigit > 0">{{ 'CCGS07_25' | i18n(policy.alphabetDigit) }}</span> 
-                                        <span v-if="policy.alphabetDigit > 0 && (policy.numberOfDigits > 0 || policy.symbolCharacters > 0)">、</span> 
-                                        <span v-if="policy.numberOfDigits > 0">{{ 'CCGS07_26' | i18n(policy.numberOfDigits) }}</span>
-                                        <span v-if="policy.symbolCharacters > 0 && (policy.numberOfDigits > 0 || policy.alphabetDigit > 0)">、</span> 
-                                        <span v-if="policy.symbolCharacters > 0">{{ 'CCGS07_27' | i18n(policy.symbolCharacters) }}</span>
-                                    </td>
+                                    <td><span>{{ 'CCGS07_24' | i18n }}</span></td>
+                                    <td><span>{{ policy.complex }}</span></td>
                                 </tr>
                                 <tr v-if="policy.historyCount > 0">
                                     <td><span>{{ 'CCGS07_28' | i18n }}</span></td>
