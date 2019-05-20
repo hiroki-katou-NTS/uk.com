@@ -3900,6 +3900,14 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function jumpToUsedSSOLoginPage() {
+                    uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
+                        window.location.href = path;
+                    }).ifEmpty(function () {
+                        request.jump('com', '/view/ccg/007/d/index.xhtml?signon=on');
+                    });
+                }
+                login.jumpToUsedSSOLoginPage = jumpToUsedSSOLoginPage;
                 function keepSerializedSession() {
                     var dfd = $.Deferred();
                     dfd.resolve();
@@ -4401,16 +4409,23 @@ var nts;
                                         });
                                         return;
                                     }
-                                    $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to login screen and request logout to server
-                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                            nts.uk.sessionStorage.removeItem(MENU_SET_KEY);
-                                            nts.uk.sessionStorage.removeItem(PROGRAM_KEY);
-                                            nts.uk.sessionStorage.removeItem(COMPANY_KEY);
-                                            nts.uk.sessionStorage.removeItem("nts.uk.session.EMPLOYEE_SETTING");
-                                            nts.uk.request.login.jumpToUsedLoginPage();
-                                        });
+                                    nts.uk.characteristics.restore("loginMode").done(function (mode) {
+                                        if (mode) {
+                                            $li.remove();
+                                        }
+                                        else {
+                                            $li.on(constants.CLICK, function () {
+                                                // TODO: Jump to login screen and request logout to server
+                                                nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                                    nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                                    nts.uk.sessionStorage.removeItem(MENU_SET_KEY);
+                                                    nts.uk.sessionStorage.removeItem(PROGRAM_KEY);
+                                                    nts.uk.sessionStorage.removeItem(COMPANY_KEY);
+                                                    nts.uk.sessionStorage.removeItem("nts.uk.session.EMPLOYEE_SETTING");
+                                                    nts.uk.request.login.jumpToUsedLoginPage();
+                                                });
+                                            });
+                                        }
                                     });
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
@@ -14750,9 +14765,12 @@ var nts;
                      */
                     function isEqual(one, two, fields) {
                         if (_.isObject(one) && _.isObject(two)) {
-                            return (fields && fields.length > 0)
-                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
-                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                            if (fields && fields.length > 0) {
+                                var oFields_1 = _.cloneDeep(fields);
+                                _(fields).filter(function (f) { return f.slice(-4) === "Name"; }).forEach(function (f) { return oFields_1.push(f.substr(0, f.length - 4) + "Code"); });
+                                return _.isEqual(_.omitBy(one, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }));
+                            }
+                            return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
                         }
                         return _.isEqual(one, two);
                     }
