@@ -57,6 +57,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
         LoginUserRoles roles = this.checkRole(user.getUserId());
 		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
 
+		this.checkAccoutLock(user.getLoginId(), command.getContractCode(), user.getUserId(), companyId, command.isSignOn());
 		
 		// check password
 		String msgErrorId = this.compareHashPassword(user, command.getPassword());
