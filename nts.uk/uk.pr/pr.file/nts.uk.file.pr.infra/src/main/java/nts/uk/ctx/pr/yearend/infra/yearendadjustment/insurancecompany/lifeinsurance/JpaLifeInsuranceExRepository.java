@@ -25,7 +25,7 @@ public class JpaLifeInsuranceExRepository extends JpaRepository implements LifeI
         sql.append("    FROM QETMT_INSURANCE_LIFE l LEFT JOIN QETMT_INSURANCE_TYPE t ");
         sql.append("    ON l.INSURANCE_LIFE_CD = t.INSURANCE_LIFE_CD AND t.CID = l.CID");
         sql.append("    WHERE l.CID = ?cid");
-        sql.append("    ORDER BY l.INSURANCE_LIFE_CD");
+        sql.append("    ORDER BY l.INSURANCE_LIFE_CD, INSURANCE_TYPE_ATR, INSURANCE_TYPE_CD");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString()).setParameter("cid", cid)
                     .getResultList();
