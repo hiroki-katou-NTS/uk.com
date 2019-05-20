@@ -23,9 +23,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.histList = ko.observableArray([]);
             self.selectedHistId = ko.observable();
             self.pathGet = ko.observable(`careermgmt/careerpath/getDateHistoryItem`);
-            self.pathAdd = ko.observable(`bs/employee/workplace/history/save`);
-            self.pathUpdate = ko.observable(`bs/employee/workplace/history/save`);
-            self.pathDelete = ko.observable(`bs/employee/workplace/history/remove`);
+            self.pathAdd = ko.observable(`careermgmt/careerpath/saveDateHistoryItem`);
+            self.pathUpdate = ko.observable(`careermgmt/careerpath/updateDateHistoryItem`);
+            self.pathDelete = ko.observable(`careermgmt/careerpath/removeDateHistoryItem`);
             self.getQueryResult = (res) => {
                 return _.map(res, h => {
                     return { histId: h.historyId, startDate: h.startDate, endDate: h.endDate, displayText: `${h.startDate} ～ ${h.endDate}` };
@@ -36,34 +36,16 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 if (selectedHist) return selectedHist.startDate;
             };
             self.commandAdd = (masterId, histId, startDate, endDate) => {
-                return {
-                    isAddMode: true,
-                    workplaceId: masterId,
-                    workplaceHistory: {
-                        historyId: '',
-                        period: {
-                            startDate: startDate,
-                            endDate: new Date(endDate)
-                        }
-                    }
-                }
+                return {startDate: moment(startDate).format("YYYY/MM/DD")}
             };
             self.commandUpdate = (masterId, histId, startDate, endDate) => {
                 return {
-                    isAddMode: false,
-                    workplaceId: masterId,
-                    workplaceHistory: {
-                        historyId: histId,
-                        period: {
-                            startDate: startDate,
-                            endDate: new Date(endDate)
-                        }
-                    }
+                    historyId: histId,
+                    startDate: moment(startDate).format("YYYY/MM/DD")
                 }
             };
             self.commandDelete = (masterId, histId) => {
                 return {
-                    workplaceId: masterId,
                     historyId: histId
                 };
             };

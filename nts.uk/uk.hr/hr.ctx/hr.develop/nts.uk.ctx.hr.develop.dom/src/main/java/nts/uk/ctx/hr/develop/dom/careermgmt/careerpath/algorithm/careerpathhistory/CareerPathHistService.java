@@ -29,23 +29,70 @@ public class CareerPathHistService {
 		if(!his.isPresent()) {
 			return new ArrayList<>();
 		}
-		return his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())).collect(Collectors.toList());
+		return his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())*(-1)).collect(Collectors.toList());
 	}
 	
 	//キャリアパスの履歴の追加
 	public String addCareerPathHist(GeneralDate startDate) {
-		String hisId = IdentifierUtil.randomUniqueId(); 
-		careerPathHistoryRepo.addCareerPathHist(new CareerPathHistory(AppContexts.user().companyId(), new ArrayList<DateHistoryItem>(Arrays.asList(new DateHistoryItem(hisId, new DatePeriod(startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")))))));
-		return hisId;
+		String cId = AppContexts.user().companyId();
+		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);
+		String newHistoryId = IdentifierUtil.randomUniqueId(); 
+		DatePeriod period = new DatePeriod(startDate, GeneralDate.max());
+		DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistoryId, period);
+		if(his.isPresent()) {
+			//UpdateEndDateItemBefore
+			DateHistoryItem itemUpdateBefore = his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())*(-1)).collect(Collectors.toList()).get(0);
+			//checks validate
+			his.get().add(dateHistoryItem);
+			careerPathHistoryRepo.update(new CareerPathHistory(cId, new ArrayList<DateHistoryItem>(Arrays.asList(itemUpdateBefore))));
+		}
+		//insertCareerPathHist
+		careerPathHistoryRepo.add(new CareerPathHistory(AppContexts.user().companyId(), new ArrayList<DateHistoryItem>(Arrays.asList(dateHistoryItem))));
+		return newHistoryId;
 	}
 	
 	//キャリアパスの履歴の更新
 	public void updateCareerPathHist(String hisId, GeneralDate startDate) { 
-		careerPathHistoryRepo.updateCareerPathHist(new CareerPathHistory(AppContexts.user().companyId(), new ArrayList<DateHistoryItem>(Arrays.asList(new DateHistoryItem(hisId, new DatePeriod(startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")))))));
+		String cId = AppContexts.user().companyId();
+		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);
+		if(!his.isPresent() || his.get().getCareerPathHistory().isEmpty()) {
+			return;
+		}
+		Optional<DateHistoryItem> dateHistoryItem = his.get().getCareerPathHistory().stream().filter(c->c.identifier().equals(hisId)).findFirst();
+		if(!dateHistoryItem.isPresent()) {
+			return;
+		}
+		
+		//checks validate
+		his.get().changeSpan(dateHistoryItem.get(), new DatePeriod(startDate, GeneralDate.max()));
+		
+		if(his.get().getCareerPathHistory().size() > 1) {
+			//UpdateEndDateItemBefore
+			DateHistoryItem itemUpdateBefore = his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())*(-1)).collect(Collectors.toList()).get(1);
+			careerPathHistoryRepo.update(new CareerPathHistory(cId, new ArrayList<DateHistoryItem>(Arrays.asList(itemUpdateBefore))));
+		}
+		//UpdateItem
+		careerPathHistoryRepo.update(new CareerPathHistory(cId, new ArrayList<DateHistoryItem>(Arrays.asList(dateHistoryItem.get()))));
+		
 	}
 	
 	//キャリアパスの履歴の削除
 	public void removeCareerPathHist(String hisId) {
-		careerPathHistoryRepo.removeCareerPathHist(AppContexts.user().companyId(), hisId);
+		String cId = AppContexts.user().companyId();
+		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);
+		if(!his.isPresent() || his.get().getCareerPathHistory().isEmpty()) {
+			return;
+		}
+		//checks validate
+		his.get().remove(his.get().getCareerPathHistory().stream().filter(x -> x.identifier().equals(hisId)).findFirst().get());
+		
+		careerPathHistoryRepo.delete(cId, hisId);
+		
+		//UpdateEndDateItemBefore
+		if(!his.get().getCareerPathHistory().isEmpty()) {
+			DateHistoryItem itemUpdateBefore = his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())*(-1)).collect(Collectors.toList()).get(0);
+			careerPathHistoryRepo.update(new CareerPathHistory(cId, new ArrayList<DateHistoryItem>(Arrays.asList(itemUpdateBefore))));
+		}
+		
 	}
 }

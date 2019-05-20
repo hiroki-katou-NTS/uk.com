@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.AddCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.RemoveCareerPathHistoryCommandHandler;
@@ -41,19 +42,19 @@ public class CareerPartHistoryWS {
 	
 	@POST
 	@Path("/saveDateHistoryItem")
-	public String saveDateHistoryItem(GeneralDate startDate){
-		return commandAdd.add(startDate);
+	public JavaTypeResult<String> saveDateHistoryItem(CareerPartHistoryCommand command){
+		return new JavaTypeResult<String>(commandAdd.add(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd")));
 	}
 	
 	@POST
 	@Path("/updateDateHistoryItem")
-	public void updateDateHistoryItem(String historyId, GeneralDate startDate){
-		commandUpdate.update(historyId, startDate);
+	public void updateDateHistoryItem(CareerPartHistoryCommand command){
+		commandUpdate.update(command.getHistoryId(), GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"));
 	}
 	
 	@POST
 	@Path("/removeDateHistoryItem")
-	public void removeDateHistoryItem(String historyId){
-		commandRemove.remove(historyId);
+	public void removeDateHistoryItem(CareerPartHistoryCommand command){
+		commandRemove.remove(command.getHistoryId());
 	}
 }

@@ -10,9 +10,9 @@ public interface CareerPathHistoryRepository {
 	
 	void getCareerPathStartDate();
 	
-	void addCareerPathHist(CareerPathHistory domain);
+	void add(CareerPathHistory domain);
 	
-	void updateCareerPathHist(CareerPathHistory domain);
+	void update(CareerPathHistory domain);
 	
-	void removeCareerPathHist(String cId, String historyId);
+	void delete(String cId, String historyId);
 }

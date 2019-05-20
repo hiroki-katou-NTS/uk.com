@@ -21,6 +21,8 @@ public class CareerPathHistoryRepositoryImpl extends JpaRepository implements Ca
 
 	private static final String SELECT_BY_CID = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId";
 	
+	private static final String SELECT_BY_KEY = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId AND c.PK_JHCMT_CAREER_PATH.HistId = :HistId";
+	
 	@Override
 	public CareerPathHistory getLatestCareerPathHist() {
 		// TODO Auto-generated method stub
@@ -48,19 +50,30 @@ public class CareerPathHistoryRepositoryImpl extends JpaRepository implements Ca
 
 	@Override
 	@Transactional
-	public void addCareerPathHist(CareerPathHistory domain) {
+	public void add(CareerPathHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
 	@Transactional
-	public void updateCareerPathHist(CareerPathHistory domain) {
-		this.commandProxy().update(toEntity(domain));
+	public void update(CareerPathHistory domain) {
+		Optional<JhcmtCareerPath> updateEntity = this.queryProxy().query(SELECT_BY_KEY, JhcmtCareerPath.class)
+				.setParameter("cId", domain.getCompanyId())
+				.setParameter("HistId", domain.getCareerPathHistory().get(0).identifier())
+				.getSingle();
+		if(!updateEntity.isPresent()) {
+			return;
+		}
+		this.commandProxy().update(new JhcmtCareerPath(
+				new JhcmtCareerPathPK(domain.getCompanyId(), domain.getCareerPathHistory().get(0).identifier()),
+				domain.getCareerPathHistory().get(0).start(), 
+				domain.getCareerPathHistory().get(0).end(),
+				updateEntity.get().level));
 	}
 
 	@Override
 	@Transactional
-	public void removeCareerPathHist(String cId, String historyId) {
+	public void delete(String cId, String historyId) {
 		this.commandProxy().remove(JhcmtCareerPath.class, new JhcmtCareerPathPK(cId,historyId));
 	}
 	

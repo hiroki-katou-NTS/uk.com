@@ -8,13 +8,13 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
+import nts.uk.shr.com.history.strategic.PersistentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**キャリアパスの履歴*/
 @AllArgsConstructor
 @Getter
-public class CareerPathHistory extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
+public class CareerPathHistory extends AggregateRoot implements PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 
 	private String companyId;
 	
