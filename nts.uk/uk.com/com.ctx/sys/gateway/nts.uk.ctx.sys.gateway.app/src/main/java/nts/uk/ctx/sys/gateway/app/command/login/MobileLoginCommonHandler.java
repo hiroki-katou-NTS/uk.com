@@ -89,6 +89,11 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
 		this.service.callLoginRecord(param);
 		
+		//hoatt 2019.05.06
+		//EA修正履歴No.3373
+		//アルゴリズム「ログイン後チェック」を実行する
+		this.deleteLoginLog(user.getUserId());
+		
 		return passChecked;
 	}
 
