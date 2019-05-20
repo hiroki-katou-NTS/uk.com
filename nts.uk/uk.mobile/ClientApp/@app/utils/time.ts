@@ -148,7 +148,7 @@ export const time = {
                 return minutesInDay - hour * 60;
             }
         },
-        computeTimePoint(value: number): TimePoint {
+        computeTimePoint(value: number) {
             let hour = 0;
             let minute = 0;
 
@@ -199,11 +199,6 @@ export enum DAYS {
 
 export interface TimeWithDayPoint {
     day: string;
-    hour: number;
-    minute: number;
-}
-
-export interface TimePoint {
     hour: number;
     minute: number;
 }
@@ -407,6 +402,10 @@ export class TimeDuration {
         return new TimeDuration(value);
     }
 
+    public static toString(value: number) {
+        return new TimeDuration(value).toString();
+    }
+
     public toNumber(value?: string) {
         if (value) {
             let negative: boolean = value.indexOf('-') == 0,
@@ -447,4 +446,42 @@ export class TimeDuration {
     private get positiveValue() {
         return Math.abs(this.value);
     }
+}
+
+export class TimePoint {
+    public value: number | undefined = undefined;
+
+    constructor(value: number) {
+        this.value = value;
+    }
+
+    public static from(value: number) {
+        return new TimePoint(value);
+    }
+
+    public static toString(value: number) {
+        return new TimePoint(value).toString();
+    }
+
+    public toString() {
+        return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    }
+
+    get isNegative() {
+        return this.value < 0;
+    }
+
+    get hour() {
+        return Math.floor(this.positiveValue / 60);
+    }
+
+    get minute() {
+        return Math.floor(this.positiveValue % 60);
+    }
+
+    private get positiveValue() {
+        return this.isNegative ? this.value + 1440 : this.value;
+    }
+
+    
 }
