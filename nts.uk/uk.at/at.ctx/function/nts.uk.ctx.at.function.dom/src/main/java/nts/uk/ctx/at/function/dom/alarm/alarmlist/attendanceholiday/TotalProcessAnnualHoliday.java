@@ -193,7 +193,7 @@ public class TotalProcessAnnualHoliday {
 								ligedAnnLeaUseService.get().v().toString(),
 								ligedUseDays.get().v().toString()),	
 						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
-						null
+						ligedAnnLeaUseService.get().v().toString()
 						);
 				listValueExtractAlarm.add(resultCheckRemain);
 			}
