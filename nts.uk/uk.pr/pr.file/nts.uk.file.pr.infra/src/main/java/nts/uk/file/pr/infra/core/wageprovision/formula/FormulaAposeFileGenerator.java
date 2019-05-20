@@ -58,15 +58,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
 
     private void settingPage(Worksheet worksheet, String companyName){
         PageSetup pageSetup = worksheet.getPageSetup();
-        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
         pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 "+ TITLE);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
-        pageSetup.setFitToPagesTall(1);
-        pageSetup.setFitToPagesWide(1);
     }
 
     private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
@@ -116,21 +112,21 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(((BigDecimal) dataRow[4]).intValue() == 1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId
-                                    : dataRow[15] != null ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
+                                    : dataRow[j] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId : "");
                             break;
                         case 11:
                             cells.get(rowStart, j+ startColumn).setValue(getValueRounding(dataRow));
                             break;
                         case 12:
-                            cells.get(rowStart, j+ startColumn).setValue((((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : dataRow[15]) != null ? EnumAdaptor.valueOf(0, RoundingPosition.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, RoundingPosition.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : "");
                             break;
                         case 13:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), Rounding.class).nameId : (dataRow[15]) != null ? EnumAdaptor.valueOf(0, RoundingResult.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, Rounding.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingResult.class).nameId : "");
                             break;
                         case 14:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ?
-                                    EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), AdjustmentClassification.class).nameId : (dataRow[15]) != null ? EnumAdaptor.valueOf(0, AdjustmentClassification.class).nameId: "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ?
+                                    EnumAdaptor.valueOf(0, AdjustmentClassification.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), AdjustmentClassification.class).nameId: "");
                             break;
                         default:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? j > 9 ? dataRow[j - 1] : dataRow[j] : "");
@@ -154,20 +150,35 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.equals((BigDecimal)baseTarget.get(i)[3])) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.intValue() == (Integer)baseTarget.get(i)[3]) {
                 count++;
-                temp.append(baseTarget.get(i)[2] != null);
-                temp.append("＋");
+                temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
         }
         if(count > 0) {
             temp.deleteCharAt(temp.length() - 1);
         }
         if(count > 1) {
-            temp.insert(0, "(");
-            temp.append(")");
+            temp.insert(0, "（  ");
+            temp.append("  ）");
         }
         return temp.toString();
+    }
+
+    private String getName(int standardCls){
+        if(standardCls == 0) {
+            return TextResource.localize("Enum_FormulaElementType_PAYMENT_ITEM");
+        }
+        if(standardCls == 1) {
+            return TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM");
+        }
+        if(standardCls == 2) {
+            return TextResource.localize("Enum_FormulaElementType_COMPANY_UNIT_PRICE_ITEM");
+        }
+        if(standardCls == 3) {
+            return TextResource.localize("Enum_FormulaElementType_INDIVIDUAL_UNIT_PRICE_ITEM");
+        }
+        return TextResource.localize("Enum_FormulaElementType_WAGE_TABLE_ITEM");
     }
 
     private String getDetailedFormula(List<Object[]> formula, String formulaCode){

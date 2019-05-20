@@ -8,6 +8,6 @@ public interface FormulaExRepository {
 
     List<Object[]> getDetailFormula(String cid);
 
-    List<Object[]> getBaseAmountTargetItem(String cid);
+    List<Object[]> getBaseAmountTargetItem(String cid, int startDate);
 
 }

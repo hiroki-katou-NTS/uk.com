@@ -76,7 +76,6 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         StringBuilder sql = new StringBuilder();
         sql.append("    SELECT ");
         sql.append("        FORMULA_CD,");
-        sql.append("        ELEMENT_ORDER,");
         sql.append("        d.FORMULA_ELEMENT,");
         sql.append("        NAME");
         sql.append("     FROM (SELECT * ");
@@ -87,84 +86,84 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("              CASE WHEN CATEGORY_ATR = '0' THEN '0000_0' + ITEM_NAME_CD ");
         sql.append("              WHEN CATEGORY_ATR = '1' THEN '0001_0' + ITEM_NAME_CD ");
         sql.append("              ELSE '0002_0' + ITEM_NAME_CD END AS CD,");
-        sql.append("              CASE WHEN CATEGORY_ATR = '0' THEN ?payment + '{' + NAME + '}'");
-        sql.append("              WHEN CATEGORY_ATR = '1' THEN ?deduction +'{' + NAME + '}'");
-        sql.append("              ELSE ?attendance + '{' + NAME + '}' END AS NAME");
+        sql.append("              CASE WHEN CATEGORY_ATR = '0' THEN ?payment + '｛' + NAME + '｝'");
+        sql.append("              WHEN CATEGORY_ATR = '1' THEN ?deduction +'｛' + NAME + '｝'");
+        sql.append("              ELSE ?attendance + '｛' + NAME + '｝' END AS NAME");
         sql.append("           FROM QPBMT_STATEMENT_ITEM_NAME");
         sql.append("           WHERE CID = ?cid");
         sql.append("           UNION ALL");
         sql.append("           SELECT ");
         sql.append("              'U000_0' + UNIT_PRICE_CD AS CD,");
-        sql.append("              ?companyUnit + '{' + UNIT_PRICE_NAME + '}'");
+        sql.append("              ?companyUnit + '｛' + UNIT_PRICE_NAME + '｝'");
         sql.append("           FROM QPBMT_PAY_UNIT_PRICE");
         sql.append("           WHERE CID = ?cid");
         sql.append("           UNION ALL ");
         sql.append("           SELECT ");
         sql.append("              'U001_0' + INDIVIDUAL_UNIT_PRICE_CD AS CD,");
-        sql.append("             ?individualPrice +'{' + INDIVIDUAL_UNIT_PRICE_NAME + '}'");
+        sql.append("             ?individualPrice +'｛' + INDIVIDUAL_UNIT_PRICE_NAME + '｝'");
         sql.append("           FROM QPBMT_PER_UNIT_PRICE");
         sql.append("           WHERE CID = ?cid");
         sql.append("           UNION ");
         sql.append("           SELECT ");
         sql.append("              'wage_00' + WAGE_TABLE_CD AS CD,");
-        sql.append("              ?wage + '{' + WAGE_TABLE_NAME + '}'");
+        sql.append("              ?wage + '｛' + WAGE_TABLE_NAME + '｝'");
         sql.append("           FROM");
         sql.append("             QPBMT_WAGE_TABLE");
         sql.append("           WHERE CID = ?cid ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00001' AS CD ,");
-        sql.append("               '{' + ?func1 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func1 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00002' AS CD ,");
-        sql.append("               '{' + ?func2 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func2 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00003' AS CD ,");
-        sql.append("               '{' + ?func3 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func3 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00004' AS CD ,");
-        sql.append("               '{' + ?func4 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func4 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00005' AS CD ,");
-        sql.append("               '{' + ?func5 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func5 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00006' AS CD ,");
-        sql.append("               '{' + ?func6 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func6 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00007' AS CD ,");
-        sql.append("               '{' + ?func7 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func7 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00008' AS CD ,");
-        sql.append("               '{' + ?func8 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func8 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00009' AS CD ,");
-        sql.append("              '{' + ?func9 + '}' AS NAME  ");
+        sql.append("              '｛' + ?func9 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00010' AS CD ,");
-        sql.append("               '{' + ?func10 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func10 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00011' AS CD ,");
-        sql.append("               '{' + ?func11 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func11 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00012' AS CD ,");
-        sql.append("               '{' + ?func12 + '}' AS NAME  ");
+        sql.append("               '｛' + ?func12 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00001' AS CD ,");
-        sql.append("               '{' + ?vari1 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari1 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00002' AS CD ,");
-        sql.append("               '{' + ?vari2 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari2 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00003' AS CD ,");
-        sql.append("               '{' + ?vari3 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari3 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00004' AS CD ,");
-        sql.append("               '{' + ?vari4 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari4 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00005' AS CD ,");
-        sql.append("               '{' + ?vari5 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari5 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00008' AS CD ,");
-        sql.append("               '{' + ?vari8 + '}' AS NAME  ");
+        sql.append("               '｛' + ?vari8 + '｝' AS NAME  ");
         sql.append(             ")temp");
         sql.append("     ON temp.CD = FORMULA_ELEMENT");
         sql.append("     ORDER BY ELEMENT_ORDER");
@@ -203,11 +202,11 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
     }
 
     @Override
-    public List<Object[]> getBaseAmountTargetItem(String cid) {
+    public List<Object[]> getBaseAmountTargetItem(String cid, int startDate) {
      List<Object[]> resultQuery = null;
      StringBuilder sql = new StringBuilder();
-     sql.append("	SELECT ");
-     sql.append("     FORMULA_CD,");
+     sql.append("	SELECT DISTINCT");
+     sql.append("     a.FORMULA_CD,");
      sql.append("     CD,");
      sql.append("     NAME,");
      sql.append("     STANDARD_AMOUNT_CLS");
@@ -215,6 +214,11 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("      SELECT *");
      sql.append("      FROM QPBMT_BASIC_CAL_STD_AMOU ");
      sql.append("      WHERE CID = ?cid) a");
+     sql.append("      INNER JOIN");
+     sql.append("               (SELECT *");
+     sql.append("               FROM QPBMT_FORMULA_HISTORY");
+     sql.append("               WHERE CID = ?cid AND START_YM <= ?startDate AND END_YM >= ?startDate) h");
+     sql.append("      ON a.CID = h.CID AND a.FORMULA_CD = h.FORMULA_CD");
      sql.append("      INNER JOIN");
      sql.append("           (SELECT ");
      sql.append("              ITEM_NAME_CD AS CD ,");
@@ -248,7 +252,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("      ON temp.CD = a.TARGET_ITEM_CD");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
-                    .setParameter("cid", cid)
+                    .setParameter("cid", cid).setParameter("startDate", startDate)
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
