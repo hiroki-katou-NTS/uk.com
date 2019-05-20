@@ -121,11 +121,6 @@ public class LayoutWebService extends WebService {
 	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation specialLeaveInfo){
 		return getSPHolidayNextGrantDate.getSPHolidayGrantDate(specialLeaveInfo);
 	}
-	@Path("a")
-	@POST
-	public PeregDto getA(PeregQuery query){
-		return layoutingProcessor.findSingle(query);
-	}
 	
 	/*@Path("b")
 	@POST
