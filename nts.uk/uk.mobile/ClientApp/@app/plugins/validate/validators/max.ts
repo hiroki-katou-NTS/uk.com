@@ -1,5 +1,6 @@
 import { IRule } from 'declarations';
 import { constraint } from '@app/utils';
+import { TimeWithDay, TimeDuration, TimePoint } from '@app/utils/time';
 
 const max = function (value: number | Date, max: number | Date, rule: IRule) {
     let lgt: boolean = value > max,
@@ -29,13 +30,13 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
             case 'Date':
                 return ['FND_E_INTEGER_MIN', constr];
             case 'Time':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['FND_E_INTEGER_MAX', constr];
             case 'Clock':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_16', TimeWithDay.toString(rule.min as number), TimeWithDay.toString(rule.max as number)];
             case 'TimePoint':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_16', TimePoint.toString(rule.min as number), TimePoint.toString(rule.max as number)];
             case 'Duration':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_15', TimeDuration.toString(rule.min as number), TimeDuration.toString(rule.max as number)];
             default:
                 break;
         }
