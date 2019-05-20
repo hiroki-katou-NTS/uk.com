@@ -156,15 +156,15 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         for(int i = 0; i< baseTarget.size(); i++){
             if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.intValue() == (Integer)baseTarget.get(i)[3]) {
                 count++;
-                temp.append(getName((Integer) baseTarget.get(i)[2])).append("{").append(baseTarget.get(i)[2]).append("}").append("+");
+                temp.append(getName((Integer) baseTarget.get(i)[2])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
         }
         if(count > 0) {
             temp.deleteCharAt(temp.length() - 1);
         }
         if(count > 1) {
-            temp.insert(0, "(  ");
-            temp.append("  )");
+            temp.insert(0, "（  ");
+            temp.append("  ）");
         }
         return temp.toString();
     }
