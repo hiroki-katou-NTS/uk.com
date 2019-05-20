@@ -1,7 +1,9 @@
 package nts.uk.file.pr.infra.core.wageprovision.wagetable;
 
 import com.aspose.cells.*;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationPaymentMethod;
 import nts.uk.ctx.pr.file.app.core.wageprovision.unitpricename.SalaryPerUnitSetExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.ItemDataNameExport;
@@ -16,6 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,11 +31,14 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private static final String TEMPLATE_FILE = "report/QMM016.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM016単価名の登録.pdf";
+    private static final String REPORT_FILE_NAME = "QMM016単価名の登録.xlsx";
 
     private static final int COLUMN_START = 1;
 
     private static final int MAX_ROWS = 71;
+    private static final int LINE_IN_PAGE = 104;
+
+    private static final String TITLE = "計算式の登録 ";
     @Inject
     private CompanyAdapter company;
 
@@ -40,59 +46,15 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     public void generate(FileGeneratorContext fileContext, List<WageTablelData> exportData,List<ItemDataNameExport> dataName) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 
-            int rowStart = 3;
-            Workbook wb = reportContext.getWorkbook();
-            WorksheetCollection wsc = wb.getWorksheets();
-            Worksheet ws = wsc.get(0);
-            ws.setName(TextResource.localize("QMM013_40"));
-            //set headler
-            // Company name
-            String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
-            PageSetup pageSetup = ws.getPageSetup();
-            pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
-
-            // Output item name
-            pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "単価名の登録");
-
-            // Set header date
-            DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
-            String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
-            pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
-
-            //break page
-            Cells cells = ws.getCells();
-            // fill data
-            for (int i = 1; i <  Math.ceil((float)exportData.size()/(float)MAX_ROWS); i++) {
-                wsc.get(wsc.addCopy(0)).setName("sheetName" + i);
-            }
-            for (int i = 0; i < exportData.size(); i++) {
-                if (i % MAX_ROWS == 0 && i != 0) {
-                    Worksheet sheet = wsc.get("sheetName" + i / MAX_ROWS);
-                    cells = sheet.getCells();
-                    rowStart = 3;
-                }
-
-                WageTablelData e = exportData.get(i);
-                cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
-                cells.get(rowStart, COLUMN_START + 1).setValue(e.getWageTableName());
-                cells.get(rowStart, COLUMN_START + 2).setValue(e.getWageHisStartYm());
-                cells.get(rowStart, COLUMN_START + 3).setValue(e.getWageHisEndYm());
-
-
-                cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue3(e,dataName));/*R2_5*/
-                cells.get(rowStart, COLUMN_START + 5).setValue(getFixedValue2(e,dataName));/*R2_6*/
-                cells.get(rowStart, COLUMN_START + 6).setValue(getFixedValue1(e,dataName));/*R2_7*/
-
-                cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(e));
-                cells.get(rowStart, COLUMN_START + 8).setValue(getR2_9(e));
-                cells.get(rowStart, COLUMN_START + 9).setValue(getR2_10(e));
-
-                cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
-                cells.get(rowStart, COLUMN_START + 11).setValue(enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())));
-                rowStart++;
-            }
+            Workbook workbook = reportContext.getWorkbook();
+            WorksheetCollection worksheets = workbook.getWorksheets();
+            worksheets.get(0).setName(TextResource.localize("QMM013_40"));
+            int page = exportData.size() == MAX_ROWS ? 0 : exportData.size() / MAX_ROWS;
+            createTable(worksheets, page,this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse(""));
+            printData(worksheets, exportData, dataName);
+            worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -180,10 +142,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     private String enumQualificationPaymentMethod(int index){
         switch (index){
             case 0 : {
-                return "Enum_Qualify_Pay_Method_Add_Multiple";
+                return  TextResource.localize("Enum_Qualify_Pay_Method_Add_Multiple");
             }
             case 1 : {
-                return "Enum_Qualify_Pay_Method_Only_One_Highest";
+                return  TextResource.localize("Enum_Qualify_Pay_Method_Only_One_Highest");
             }
 
             default: return "";
@@ -265,7 +227,62 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     // R_11
+    private void createTable(WorksheetCollection worksheets,int pageMonth, String companyName) throws Exception {
+        Worksheet worksheet = worksheets.get(0);
+        settingPage(worksheet, companyName);
+        for(int i = 0 ; i< pageMonth; i++) {
+            worksheet.getCells().copyRows(worksheet.getCells(), 0, LINE_IN_PAGE * (i+1), LINE_IN_PAGE + 1 );
+        }
+    }
+    private void settingPage(Worksheet worksheet, String companyName){
+        PageSetup pageSetup = worksheet.getPageSetup();
+        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
+        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 "+ TITLE);
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+        String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
+        pageSetup.setFitToPagesTall(1);
+        pageSetup.setFitToPagesWide(1);
+    }
+    private void printData(WorksheetCollection worksheets, List<WageTablelData> data,List<ItemDataNameExport> dataName) {
+
+        fillData(worksheets, data,dataName);
+    }
+    private void fillData(WorksheetCollection worksheets, List<WageTablelData> data,List<ItemDataNameExport> dataName) {
+        try {
+            int rowStart = 3;
+            Worksheet sheet = worksheets.get(0);
+            Cells cells = sheet.getCells();
+            for (int i = 0; i < data.size(); i++) {
+                if(i % MAX_ROWS == 0) {
+                    rowStart += 3;
+                }
+
+                    WageTablelData e = data.get(i);
+                    cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
+                    cells.get(rowStart, COLUMN_START + 1).setValue(e.getWageTableName());
+                    cells.get(rowStart, COLUMN_START + 2).setValue(e.getWageHisStartYm());
+                    cells.get(rowStart, COLUMN_START + 3).setValue(e.getWageHisEndYm());
 
 
+                    cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue3(e,dataName));/*R2_5*/
+                    cells.get(rowStart, COLUMN_START + 5).setValue(getFixedValue2(e,dataName));/*R2_6*/
+                    cells.get(rowStart, COLUMN_START + 6).setValue(getFixedValue1(e,dataName));/*R2_7*/
+
+                    cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(e));
+                    cells.get(rowStart, COLUMN_START + 8).setValue(getR2_9(e));
+                    cells.get(rowStart, COLUMN_START + 9).setValue(getR2_10(e));
+
+                    cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
+                    cells.get(rowStart, COLUMN_START + 11).setValue(enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())));
+                    rowStart++;
+                }
+            }
+            catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

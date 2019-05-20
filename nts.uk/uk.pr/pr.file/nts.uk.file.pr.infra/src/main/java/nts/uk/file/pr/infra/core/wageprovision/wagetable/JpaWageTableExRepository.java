@@ -44,18 +44,18 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    LOWER_LIMIT_3,");
         exportSQL.append("    PAY_AMOUNT,");
         exportSQL.append("    PAY_METHOD,");
-        exportSQL.append("    ELEMENT_SET ");
-        exportSQL.append(" FROM QPBMT_WAGE_TABLE w ");
+        exportSQL.append("    ELEMENT_SET");
+        exportSQL.append(" FROM QPBMT_WAGE_TABLE w");
         exportSQL.append(" INNER JOIN (SELECT * ");
-        exportSQL.append("       FROM QPBMT_WAGE_TABLE_HIST ");
-        exportSQL.append("       WHERE START_YM <= ?startYearMonth AND END_YM >= ?startYearMonth) h ");
-        exportSQL.append(" ON w.WAGE_TABLE_CD = h.WAGE_TABLE_CD AND w.CID = h.CID ");
-        exportSQL.append(" LEFT JOIN QPBMT_ELEM_RANGE_SET e ON e.CID = w.CID AND e.WAGE_TABLE_CD = w.WAGE_TABLE_CD AND e.HIST_ID = h.HIST_ID ");
-        exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = w.CID ");
-        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON w.CID = p.CID ");
-        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_EQ_CD eq ON eq.CID = w.CID ");
-        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = w.CID ");
-        exportSQL.append(" WHERE w.CID = ?cid ");
+        exportSQL.append("       FROM QPBMT_WAGE_TABLE_HIST");
+        exportSQL.append("       WHERE START_YM <= ?startYearMonth AND END_YM >= ?startYearMonth AND CID = ?cid) h");
+        exportSQL.append(" ON w.WAGE_TABLE_CD = h.WAGE_TABLE_CD AND w.CID = h.CID");
+        exportSQL.append(" LEFT JOIN QPBMT_ELEM_RANGE_SET e ON e.CID = h.CID AND e.WAGE_TABLE_CD = w.WAGE_TABLE_CD AND e.HIST_ID = h.HIST_ID ");
+        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_EQ_CD eq ON eq.CID = h.CID AND h.HIST_ID = eq.HIST_ID AND w.WAGE_TABLE_CD = eq.WAGE_TABLE_CD");
+        exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = h.CID AND s.QUALIFY_GROUP_CD = eq.QUALIFY_GROUP_CD");
+        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = eq.WAGE_TABLE_CD");
+        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = h.CID AND ws.HIST_ID = h.HIST_ID AND ws.WAGE_TABLE_CD = e.WAGE_TABLE_CD AND ws.QUALIFY_GROUP_CD = s.QUALIFY_GROUP_CD");
+
 
         try {
             resultQuery = this.getEntityManager()
@@ -88,7 +88,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[19] != null ? e[19].toString() : "",
                         e[20] != null ? e[20].toString() : "",
                         e[21] != null ? e[21].toString() : "",
-                        e[22] != null ? e[22].toString() : "",
+                        e[22] != null ? e[22].toString() : "3",
                         e[23] != null ? e[23].toString() : ""
                 ));
             }
