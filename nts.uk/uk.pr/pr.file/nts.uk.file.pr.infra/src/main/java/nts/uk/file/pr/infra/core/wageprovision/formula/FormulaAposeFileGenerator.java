@@ -116,21 +116,21 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(((BigDecimal) dataRow[4]).intValue() == 1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId
-                                    : dataRow[15] != null ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
+                                    : dataRow[j] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId : "");
                             break;
                         case 11:
                             cells.get(rowStart, j+ startColumn).setValue(getValueRounding(dataRow));
                             break;
                         case 12:
-                            cells.get(rowStart, j+ startColumn).setValue((((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : dataRow[15]) != null ? EnumAdaptor.valueOf(0, RoundingPosition.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, RoundingPosition.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingPosition.class).nameId : "");
                             break;
                         case 13:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), Rounding.class).nameId : (dataRow[15]) != null ? EnumAdaptor.valueOf(0, RoundingResult.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, Rounding.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), RoundingResult.class).nameId : "");
                             break;
                         case 14:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ?
-                                    EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), AdjustmentClassification.class).nameId : (dataRow[15]) != null ? EnumAdaptor.valueOf(0, AdjustmentClassification.class).nameId: "");
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ?
+                                    EnumAdaptor.valueOf(0, AdjustmentClassification.class).nameId : (dataRow[j] != null) ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), AdjustmentClassification.class).nameId: "");
                             break;
                         default:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? j > 9 ? dataRow[j - 1] : dataRow[j] : "");
@@ -154,9 +154,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.equals((BigDecimal)baseTarget.get(i)[3])) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.intValue() == (Integer)baseTarget.get(i)[3]) {
                 count++;
-                temp.append(baseTarget.get(i)[2] != null);
+                temp.append(baseTarget.get(i)[2]);
                 temp.append("＋");
             }
         }
