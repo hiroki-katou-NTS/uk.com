@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
-public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<BasicLoginCommand> {
+public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<MobileLoginCommand> {
 
 
 	/** The employee code setting adapter. */
@@ -29,9 +29,9 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected CheckChangePassDto internalHanler(CommandHandlerContext<BasicLoginCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<MobileLoginCommand> context) {
 
-		BasicLoginCommand command = context.getCommand();
+		MobileLoginCommand command = context.getCommand();
 		// check validate input
 		this.service.checkInput(command);
 		
@@ -52,10 +52,11 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 				
 		// Get User by PersonalId
-		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId,employeeCode);
+		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId, employeeCode);
 
         LoginUserRoles roles = this.checkRole(user.getUserId());
 		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
+
 		
 		// check password
 		String msgErrorId = this.compareHashPassword(user, command.getPassword());
@@ -85,9 +86,11 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
         this.initSessionC(user, em, command.getCompanyCode(), roles);
 		passChecked.successMsg = systemSuspendOutput.getMsgID();
 		
-		// アルゴリズム「ログイン記録」を実行する１
-		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
-		this.service.callLoginRecord(param);
+		if(command.isSaveLog()){
+			// アルゴリズム「ログイン記録」を実行する１
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
+			this.service.callLoginRecord(param);
+		}
 		
 		//hoatt 2019.05.06
 		//EA修正履歴No.3373

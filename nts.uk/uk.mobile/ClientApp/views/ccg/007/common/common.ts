@@ -108,5 +108,6 @@ export namespace ccg007 {
         password: string;
         contractCode: string;
         contractPassword: string;
+        saveLog: boolean;
     }
 }
