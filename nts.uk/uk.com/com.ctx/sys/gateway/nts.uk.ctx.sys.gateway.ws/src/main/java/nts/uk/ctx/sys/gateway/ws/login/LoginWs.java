@@ -21,6 +21,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginWithNoChangePassCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
@@ -217,7 +218,7 @@ public class LoginWs extends WebService {
 	
 	@POST
 	@Path("submit/mobile")
-	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
 		command.setSignOn(false);
 		command.setRequest(request);
 		return this.mobileLoginHandler.handle(command);
@@ -225,7 +226,7 @@ public class LoginWs extends WebService {
 	
 	@POST
 	@Path("submit/mobile/nochangepass")
-	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
 		command.setSignOn(false);
 		command.setRequest(request);
 		return this.mobileLoginNoChangePassHandler.handle(command);
