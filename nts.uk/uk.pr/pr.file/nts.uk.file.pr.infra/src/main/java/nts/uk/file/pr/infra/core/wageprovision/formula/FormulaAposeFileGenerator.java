@@ -58,15 +58,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
 
     private void settingPage(Worksheet worksheet, String companyName){
         PageSetup pageSetup = worksheet.getPageSetup();
-        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
         pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 "+ TITLE);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
-        pageSetup.setFitToPagesTall(1);
-        pageSetup.setFitToPagesWide(1);
     }
 
     private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
