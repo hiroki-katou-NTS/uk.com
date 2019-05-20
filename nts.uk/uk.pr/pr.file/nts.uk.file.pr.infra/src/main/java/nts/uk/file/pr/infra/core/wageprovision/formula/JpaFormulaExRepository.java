@@ -203,7 +203,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
     }
 
     @Override
-    public List<Object[]> getBaseAmountTargetItem(String cid) {
+    public List<Object[]> getBaseAmountTargetItem(String cid, int startDate) {
      List<Object[]> resultQuery = null;
      StringBuilder sql = new StringBuilder();
      sql.append("	SELECT ");
@@ -215,6 +215,11 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("      SELECT *");
      sql.append("      FROM QPBMT_BASIC_CAL_STD_AMOU ");
      sql.append("      WHERE CID = ?cid) a");
+     sql.append("      INNER JOIN");
+     sql.append("               (SELECT *");
+     sql.append("               FROM QPBMT_FORMULA_HISTORY");
+     sql.append("               WHERE CID = ?cid AND START_YM <= ?startDate AND END_YM >= ?startDate) h");
+     sql.append("      ON a.CID = h.CID AND a.FORMULA_CD = h.FORMULA_CD");
      sql.append("      INNER JOIN");
      sql.append("           (SELECT ");
      sql.append("              ITEM_NAME_CD AS CD ,");
@@ -248,7 +253,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("      ON temp.CD = a.TARGET_ITEM_CD");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
-                    .setParameter("cid", cid)
+                    .setParameter("cid", cid).setParameter("startDate", startDate)
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();

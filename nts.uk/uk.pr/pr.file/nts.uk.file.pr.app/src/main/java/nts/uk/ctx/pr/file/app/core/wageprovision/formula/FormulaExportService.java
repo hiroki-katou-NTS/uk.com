@@ -34,7 +34,7 @@ public class FormulaExportService extends ExportService<FormulaExportQuery> {
 		List<Object[]> targetItems = new ArrayList<>();
 		formulaInfor = formulaExRepository.getFormulaInfor(cid, exportServiceContext.getQuery().startDate);
 		formulaDetails = formulaExRepository.getDetailFormula(cid);
-		targetItems = formulaExRepository.getBaseAmountTargetItem(cid);
+		targetItems = formulaExRepository.getBaseAmountTargetItem(cid, exportServiceContext.getQuery().startDate);
 		FormulaExportData data = new FormulaExportData(formulaInfor, formulaDetails , targetItems , companyName, exportServiceContext.getQuery().startDate );
 		formulaFileGenerator.generate(exportServiceContext.getGeneratorContext(), data);
 	}
