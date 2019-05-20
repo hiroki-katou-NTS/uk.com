@@ -8166,7 +8166,7 @@ module nts.uk.ui.mgrid {
                         }
                         
                         let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                        if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                        if (/*data !== tDate &&*/ !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
                             ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
                         }
                         su.endEdit(_$grid[0]);
