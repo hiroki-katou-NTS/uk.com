@@ -156,18 +156,33 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         for(int i = 0; i< baseTarget.size(); i++){
             if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.intValue() == (Integer)baseTarget.get(i)[3]) {
                 count++;
-                temp.append(baseTarget.get(i)[2]);
-                temp.append("＋");
+                temp.append(getName((Integer) baseTarget.get(i)[2])).append("{").append(baseTarget.get(i)[2]).append("}").append("+");
             }
         }
         if(count > 0) {
             temp.deleteCharAt(temp.length() - 1);
         }
         if(count > 1) {
-            temp.insert(0, "(");
-            temp.append(")");
+            temp.insert(0, "(  ");
+            temp.append("  )");
         }
         return temp.toString();
+    }
+
+    private String getName(int standardCls){
+        if(standardCls == 0) {
+            return TextResource.localize("Enum_FormulaElementType_PAYMENT_ITEM");
+        }
+        if(standardCls == 1) {
+            return TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM");
+        }
+        if(standardCls == 2) {
+            return TextResource.localize("Enum_FormulaElementType_COMPANY_UNIT_PRICE_ITEM");
+        }
+        if(standardCls == 3) {
+            return TextResource.localize("Enum_FormulaElementType_INDIVIDUAL_UNIT_PRICE_ITEM");
+        }
+        return TextResource.localize("Enum_FormulaElementType_WAGE_TABLE_ITEM");
     }
 
     private String getDetailedFormula(List<Object[]> formula, String formulaCode){
