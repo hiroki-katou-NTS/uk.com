@@ -790,7 +790,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007E. */
 	public static final Program CCG007E = new Program(WebAppId.COM, ProgramIdConsts.CCG007E, "CCG007_55",
-			"/view/ccg/007/e/index.xhtml", ProgramIdConsts.CCGS07E);
+			"/view/ccg/007/e/index.xhtml", ProgramIdConsts.CCGS07C);
 
 	/** The Constant CCG007F. */
 	public static final Program CCG007F = new Program(WebAppId.COM, ProgramIdConsts.CCG007F, "CCG007_56",
@@ -802,7 +802,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007H. */
 	public static final Program CCG007H = new Program(WebAppId.COM, ProgramIdConsts.CCG007H, "CCG007_58",
-			"/view/ccg/007/h/index.xhtml", ProgramIdConsts.CCGS07C);
+			"/view/ccg/007/h/index.xhtml", ProgramIdConsts.CCGS07E);
 	
 	/** The Constant CCG007I. */
 	public static final Program CCG007I = new Program(WebAppId.COM, ProgramIdConsts.CCG007I, "CCG007_59",
@@ -2198,7 +2198,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007E. IN MOBILE */
 	public static final Program CCGS07C = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07C, "CCG007_55",
-			"/ccg/007/c", ProgramIdConsts.CCG007H);
+			"/ccg/007/c", ProgramIdConsts.CCG007E);
 
 	/** The Constant CCG007F. IN MOBILE */
 	public static final Program CCGS07D = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07D, "CCG007_56",
@@ -2210,7 +2210,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007H. IN MOBILE */
 	public static final Program CCGS07E = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07E, "CCG007_58",
-			"/ccg/007/e", ProgramIdConsts.CCG007E);
+			"/ccg/007/e", ProgramIdConsts.CCG007H);
 	
 	/**
 	 * All programs map.
