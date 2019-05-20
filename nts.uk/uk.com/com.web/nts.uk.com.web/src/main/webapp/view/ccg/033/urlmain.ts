@@ -3,7 +3,6 @@ __viewContext.ready(function() {
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
-    nts.uk.ui.block.invisible();
     nts.uk.request.ajax("com", server_path).done((success) => {
         //Doi ung password policy
         if(!nts.uk.util.isNullOrUndefined(success.changePw.successMsg)&&!nts.uk.util.isNullOrEmpty(success.changePw.successMsg)){
