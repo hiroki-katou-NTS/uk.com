@@ -33,12 +33,12 @@ export class ChangePassComponent extends Vue {
     public changeReason: string;
 
     public policy = {
-        lowestDigits: "0",
-        alphabetDigit: "0",
-        numberOfDigits: "0",
-        symbolCharacters: "0",
-        historyCount: "0",
-        validPeriod: "0",
+        lowestDigits: '0',
+        alphabetDigit: '0',
+        numberOfDigits: '0',
+        symbolCharacters: '0',
+        historyCount: '0',
+        validPeriod: '0',
         isUse: false
     };
 
