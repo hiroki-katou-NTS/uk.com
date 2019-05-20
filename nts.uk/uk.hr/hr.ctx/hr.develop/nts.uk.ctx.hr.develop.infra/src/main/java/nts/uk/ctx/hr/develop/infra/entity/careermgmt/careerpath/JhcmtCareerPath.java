@@ -45,7 +45,7 @@ public class JhcmtCareerPath extends UkJpaEntity implements Serializable {
 	}
 
 	public static List<JhcmtCareerPath> toEntity(CareerPathHistory domain) {
-		return domain.getCareerPathHistory().stream().map(c -> new JhcmtCareerPath(new JhcmtCareerPathPK(domain.getCompanyId(), c.getHistoryId()), c.getPeriod().start(), c.getPeriod().end(), null)).collect(Collectors.toList());
+		return domain.getCareerPathHistory().stream().map(c -> new JhcmtCareerPath(new JhcmtCareerPathPK(domain.getCompanyId(), c.identifier()), c.start(), c.end(), null)).collect(Collectors.toList());
 	}
 	
 }

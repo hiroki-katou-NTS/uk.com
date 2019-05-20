@@ -1,15 +1,10 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerclass;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Career;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerRequirement;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Integer_1_10;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.String_Any_100;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.Code_AlphaNumeric_3;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.MasterMapping;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.String_Any_20;

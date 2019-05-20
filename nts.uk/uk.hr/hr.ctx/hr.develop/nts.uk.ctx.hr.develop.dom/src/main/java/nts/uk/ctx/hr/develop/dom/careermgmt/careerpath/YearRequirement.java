@@ -1,10 +1,5 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 
-import javax.persistence.EnumType;
-import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
-
-import org.junit.validator.PublicClassValidator;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;

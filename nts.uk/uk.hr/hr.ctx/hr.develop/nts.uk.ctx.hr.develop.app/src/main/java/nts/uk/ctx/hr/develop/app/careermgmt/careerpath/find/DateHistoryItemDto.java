@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto;
+package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +7,11 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Getter
 public class DateHistoryItemDto {
+
+	public String historyId;
 	
 	public GeneralDate startDate;
 	
 	public GeneralDate endDate;
-
-	public String historyId;
+	
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto;
+package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +14,9 @@ public class CareerPathHistoryDto {
 	public String companyId;
 
 	public List<DateHistoryItemDto> careerPathHistory;
-	
+
 	public static CareerPathHistoryDto fromDomain(CareerPathHistory domain) {
-		return new CareerPathHistoryDto(domain.getCompanyId(),
-				domain.getCareerPathHistory().stream().map(c->new DateHistoryItemDto(c.getPeriod().start(), c.getPeriod().end(), c.getHistoryId()))
-				.collect(Collectors.toList())
-			);
+		return new CareerPathHistoryDto(domain.getCompanyId(), domain.getCareerPathHistory().stream().map(c -> new DateHistoryItemDto(c.identifier(), c.start(), c.end()))
+				.collect(Collectors.toList()));
 	}
 }
