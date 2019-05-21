@@ -77,6 +77,9 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 		
+		if(sids.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<CareLeaveDataInfo> data = careInfoRepo.getAllCareInfoDataBysId(cid, sids);
 		
 		result.parallelStream().forEach(c ->{
