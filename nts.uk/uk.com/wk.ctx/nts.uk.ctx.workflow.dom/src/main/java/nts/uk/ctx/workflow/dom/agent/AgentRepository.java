@@ -121,4 +121,8 @@ public interface AgentRepository {
 	
 	// only for SPR
 	List<Agent> findAgentForSpr(String companyId, String approverID, GeneralDate startDate, GeneralDate endDate);
+	//hoatt
+	List<Agent> getListByAgentType1(String companyId, String agentId);
+	//hoatt
+	List<Agent> getListAgentBySidReqId(String companyId, String employeeId, String requestId);
 }

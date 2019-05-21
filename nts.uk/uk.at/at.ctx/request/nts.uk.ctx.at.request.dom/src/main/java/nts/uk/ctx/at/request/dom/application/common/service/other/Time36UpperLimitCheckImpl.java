@@ -17,8 +17,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreePeriodYMDExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementPeriodByYMDAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
@@ -90,6 +92,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	
+	@Inject
+	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyID, String employeeID, GeneralDate appDate,
@@ -132,15 +137,15 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		}
 		AppOvertimeDetail appOvertimeDetail = appOvertimeDetailOpt.get();
 		
+		// 画面から36協定対象時間を取得
+		this.getTime36FromScreen(appOvertimeDetail, appType, appTimeItems);
+		
 		// 登録不可３６協定チェック区分を取得
 		Time36AgreeCheckRegister time36AgreeCheckRegister = this.getTime36AgreeCheckRegister(companyID, appType);
 		
 		if(time36AgreeCheckRegister==Time36AgreeCheckRegister.NOT_CHECK){
 			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 		}
-		
-		// 画面から36協定対象時間を取得
-		this.getTime36FromScreen(appOvertimeDetail, appType, appTimeItems);
 		
 		// 36協定時間のエラーチェック処理
 		errorFlg.addAll(this.agree36CheckError(time36AgreeCheckRegister, appOvertimeDetail.getTime36Agree(), appOvertimeDetail.getYearMonth()));
@@ -209,6 +214,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(appDate);
 		appOvertimeDetail.setYearMonth(closurePeriodOpt.get().getYearMonth());
 		
+		// 年月日を指定して、36協定期間を取得する
+		AgreePeriodYMDExport agreePeriodYMDExport = agreementPeriodByYMDAdapter.getAgreementPeriod(companyID, appDate, closureSystem.getClosureId());
+		
 		// 反映処理
 		// chưa đối ứng
 		
@@ -218,11 +226,11 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		// 36協定時間の取得
 		List<AgreementTimeImport> agreementTimeList = Collections.emptyList();
 		agreementTimeList = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID),
-				closurePeriodOpt.get().getYearMonth(), closureSystem.getClosureId());
+				agreePeriodYMDExport.getDateTime(), closureSystem.getClosureId());
 		AgreementTimeImport agreementTime = agreementTimeList.get(0);
 		
 		// 36協定上限複数月平均時間と36協定年間時間の取得
-		AgreementTimeOutput agreementTimeOutput = this.getTime36YearAndAverage(companyID, employeeID, closurePeriodOpt.get().getYearMonth(), appDate, ScheRecAtr.SCHEDULE);
+		AgreementTimeOutput agreementTimeOutput = this.getTime36YearAndAverage(companyID, employeeID, agreePeriodYMDExport.getDateTime(), appDate, ScheRecAtr.SCHEDULE);
 		
 		// 36協定時間の作成
 		this.createTime36Agree(appOvertimeDetail, agreementTime.getConfirmed(), employeeID, appDate, agreementTimeOutput.getAgreementTimeYear());
