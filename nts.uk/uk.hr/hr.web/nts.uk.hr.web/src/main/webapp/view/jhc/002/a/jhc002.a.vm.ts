@@ -67,7 +67,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
 
             //table 
             self.itemList = ko.observableArray([]);
-            $("#fixed-table").ntsFixedTable({ height: 246, width: 600 });
+            $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
 
         }
         startPage(): JQueryPromise<any> {

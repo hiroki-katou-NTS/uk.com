@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
@@ -33,6 +34,7 @@ public class CareerPathHistService {
 	}
 	
 	//キャリアパスの履歴の追加
+	@Transactional
 	public String addCareerPathHist(GeneralDate startDate) {
 		String cId = AppContexts.user().companyId();
 		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);
@@ -52,6 +54,7 @@ public class CareerPathHistService {
 	}
 	
 	//キャリアパスの履歴の更新
+	@Transactional
 	public void updateCareerPathHist(String hisId, GeneralDate startDate) { 
 		String cId = AppContexts.user().companyId();
 		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);
@@ -77,6 +80,7 @@ public class CareerPathHistService {
 	}
 	
 	//キャリアパスの履歴の削除
+	@Transactional
 	public void removeCareerPathHist(String hisId) {
 		String cId = AppContexts.user().companyId();
 		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(cId);

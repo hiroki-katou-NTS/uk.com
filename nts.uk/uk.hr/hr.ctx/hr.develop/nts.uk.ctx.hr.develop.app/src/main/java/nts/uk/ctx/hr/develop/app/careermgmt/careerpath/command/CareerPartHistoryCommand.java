@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.ws.careermgmt.careerpath;
+package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command;
 
 import lombok.Data;
 

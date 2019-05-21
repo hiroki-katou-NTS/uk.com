@@ -1,3 +1,5 @@
 .container.cf{padding-left: 140px;}
-.rightTable tr td{width: 130px; height: 36px;}
+.rightTable tr td{width: 160px; height: 36px;}
 .contentTable{display: flex; margin-top: 20px;}
+.rightTable tr td span{float: left; margin: 4px;}
+.rightTable tr td .small{float: right; margin-right: 5px;}

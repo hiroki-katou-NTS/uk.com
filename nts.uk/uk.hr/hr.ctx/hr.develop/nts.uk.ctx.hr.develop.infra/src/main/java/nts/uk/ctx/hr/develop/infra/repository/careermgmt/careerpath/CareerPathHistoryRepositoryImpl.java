@@ -38,7 +38,7 @@ public class CareerPathHistoryRepositoryImpl extends JpaRepository implements Ca
 			return Optional.empty();
 		}
 		return Optional.of(new CareerPathHistory(cId,
-				entity.stream().map(c -> new DateHistoryItem(c.PK_JHCMT_CAREER_PATH.HistId, new DatePeriod(c.strD, c.endD)))
+				entity.stream().map(c -> new DateHistoryItem(c.PK_JHCMT_CAREER_PATH.histId, new DatePeriod(c.strD, c.endD)))
 				.collect(Collectors.toList())));
 	}
 

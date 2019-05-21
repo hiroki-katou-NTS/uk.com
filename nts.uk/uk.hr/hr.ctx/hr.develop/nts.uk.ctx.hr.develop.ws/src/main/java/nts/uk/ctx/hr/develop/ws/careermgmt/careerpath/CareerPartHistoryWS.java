@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.AddCareerPathHistoryCommandHandler;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartHistoryCommand;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.RemoveCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.UpdateCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find.CareerPathHistoryFinder;

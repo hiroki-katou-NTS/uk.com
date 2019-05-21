@@ -12,16 +12,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class JhcmtCareerPathPK implements Serializable {
-	
+public class JhcmtCareerPathReqPK implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
-	@NotNull
-	@Column(name = "CID")
-    public String companyID;
 
 	@NotNull
-	@Column(name = "HIST_ID")
-    public String histId;
-	
+	@Column(name = "CAREER_ID")
+	public String careerId;
+
+	@NotNull
+	@Column(name = "DISP_NUM")
+	public Integer dispNum;
 }
