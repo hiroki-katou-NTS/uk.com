@@ -35,8 +35,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private static final int COLUMN_START = 1;
 
-    private static final int MAX_ROWS = 71;
-    private static final int LINE_IN_PAGE = 104;
+    private static final int MAX_ROWS = 73;
+
+    private static final int LINE_IN_PAGE = 76;
 
     private static final String TITLE = "計算式の登録 ";
     @Inject
@@ -252,7 +253,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
     private void fillData(WorksheetCollection worksheets, List<WageTablelData> data,List<ItemDataNameExport> dataName) {
         try {
-            int rowStart = 3;
+            int rowStart = 0;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
