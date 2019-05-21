@@ -10,8 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.command.processexecution.ListLeaderOrNotEmpOutput;
