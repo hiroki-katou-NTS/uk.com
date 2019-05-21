@@ -94,8 +94,8 @@ module.exports = (env) => {
                 }
             },
             minimizer: [
-                new UglifyJsPlugin({
-                /*cache: true,
+                /*new UglifyJsPlugin({
+                cache: true,
                 parallel: true,
                 uglifyOptions: {
                     compress: true,
@@ -105,8 +105,8 @@ module.exports = (env) => {
                         comments: false
                     }
                 },
-                sourceMap: false*/
-                }),
+                sourceMap: false
+                }),*/
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: require("cssnano"),
                     cssProcessorOptions: {
