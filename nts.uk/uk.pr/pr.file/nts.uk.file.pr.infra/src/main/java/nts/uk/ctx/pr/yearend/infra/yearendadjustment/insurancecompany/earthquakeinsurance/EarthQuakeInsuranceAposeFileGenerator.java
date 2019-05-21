@@ -83,8 +83,9 @@ public class EarthQuakeInsuranceAposeFileGenerator extends AsposeCellsReportGene
                     sheet = worksheets.get(sheetName + i/RECORD_IN_PAGE);
                     cells = sheet.getCells();
                     rowStart = 3;
+                    startColumn = 1;
                 }
-                if(i > 0 && i % RECORD_IN_TABLE == 0) {
+                if(i > 0 && i % RECORD_IN_TABLE == 0 && i % RECORD_IN_PAGE != 0) {
                     startColumn = 4;
                     rowStart = 3;
                 }
