@@ -44,7 +44,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    UPPER_LIMIT_3,");
         exportSQL.append("    LOWER_LIMIT_3,");
         exportSQL.append("    PAY_AMOUNT,");
-        exportSQL.append("    PAY_METHOD,");
+        exportSQL.append("    PAYMENT_METHOD,");
         exportSQL.append("    ELEMENT_SET");
         exportSQL.append(" FROM QPBMT_WAGE_TABLE w");
         exportSQL.append(" INNER JOIN (SELECT * ");
