@@ -112,58 +112,58 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("           WHERE CID = ?cid ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00001' AS CD ,");
-        sql.append("               '｛' + ?func1 + '｝' AS NAME  ");
+        sql.append("              ?textFunc +  '｛' + ?func1 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00002' AS CD ,");
-        sql.append("               '｛' + ?func2 + '｝' AS NAME  ");
+        sql.append("               ?textFunc +'｛' + ?func2 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00003' AS CD ,");
-        sql.append("               '｛' + ?func3 + '｝' AS NAME  ");
+        sql.append("                ?textFunc +'｛' + ?func3 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00004' AS CD ,");
-        sql.append("               '｛' + ?func4 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func4 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00005' AS CD ,");
-        sql.append("               '｛' + ?func5 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func5 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00006' AS CD ,");
-        sql.append("               '｛' + ?func6 + '｝' AS NAME  ");
+        sql.append("                ?textFunc +'｛' + ?func6 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00007' AS CD ,");
-        sql.append("               '｛' + ?func7 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func7 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00008' AS CD ,");
-        sql.append("               '｛' + ?func8 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func8 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00009' AS CD ,");
-        sql.append("              '｛' + ?func9 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func9 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00010' AS CD ,");
-        sql.append("               '｛' + ?func10 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func10 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00011' AS CD ,");
-        sql.append("               '｛' + ?func11 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func11 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00012' AS CD ,");
-        sql.append("               '｛' + ?func12 + '｝' AS NAME  ");
+        sql.append("                ?textFunc + '｛' + ?func12 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00001' AS CD ,");
-        sql.append("               '｛' + ?vari1 + '｝' AS NAME  ");
+        sql.append("               ?textVari + '｛' + ?vari1 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00002' AS CD ,");
-        sql.append("               '｛' + ?vari2 + '｝' AS NAME  ");
+        sql.append("               ?textVari +'｛' + ?vari2 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00003' AS CD ,");
-        sql.append("               '｛' + ?vari3 + '｝' AS NAME  ");
+        sql.append("               ?textVari +'｛' + ?vari3 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00004' AS CD ,");
-        sql.append("               '｛' + ?vari4 + '｝' AS NAME  ");
+        sql.append("               ?textVari + '｛' + ?vari4 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00005' AS CD ,");
-        sql.append("               '｛' + ?vari5 + '｝' AS NAME  ");
+        sql.append("               ?textVari + '｛' + ?vari5 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
         sql.append("           SELECT 'vari_00008' AS CD ,");
-        sql.append("               '｛' + ?vari8 + '｝' AS NAME  ");
+        sql.append("               ?textVari + '｛' + ?vari8 + '｝' AS NAME  ");
         sql.append(             ")temp");
         sql.append("     ON temp.CD = FORMULA_ELEMENT");
         sql.append("     ORDER BY ELEMENT_ORDER");
@@ -194,6 +194,8 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
                     .setParameter("vari4",TextResource.localize("Enum_SystemVariableList_PROCESSING_YEAR_MONTH"))
                     .setParameter("vari5",TextResource.localize("Enum_SystemVariableList_PROCESSING_YEAR"))
                     .setParameter("vari8",TextResource.localize("Enum_SystemVariableList_WORKDAY"))
+                    .setParameter("textFunc", TextResource.localize("Enum_FormulaElementType_FUNCTION_ITEM"))
+                    .setParameter("textVari", TextResource.localize("Enum_FormulaElementType_VARIABLE_ITEM"))
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
