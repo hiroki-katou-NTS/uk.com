@@ -14,9 +14,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.erroralarmcheck.ErrorAlarmCheck;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.whethertocheck.WhetherToCheck;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -115,7 +117,9 @@ public class TotalProcessAnnualHoliday {
 			ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 					employee.getWorkplaceId(),
 					employee.getId(),
-					"",
+					TextResource.localize("KAL010_908", 
+							dateToString(ligedUseOutput.getPeriod().get().start()),
+							dateToString(ligedUseOutput.getPeriod().get().end())),
 					TextResource.localize("KAL010_400"),
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",
@@ -191,7 +195,9 @@ public class TotalProcessAnnualHoliday {
 				ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 						employee.getWorkplaceId(),
 						employee.getId(),
-						"",
+						TextResource.localize("KAL010_908", 
+								dateToString(ligedUseOutput.getPeriod().get().start()),
+								dateToString(ligedUseOutput.getPeriod().get().end())),
 						TextResource.localize("KAL010_400"),
 						TextResource.localize("KAL010_401"),
 						TextResource.localize("KAL010_402",
@@ -206,5 +212,9 @@ public class TotalProcessAnnualHoliday {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private String dateToString(GeneralDate date) {
+		return date.toString(ErAlConstant.DATE_FORMAT);
 	}
 }
