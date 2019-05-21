@@ -558,7 +558,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		boolean checkErrAppDaily = false;
 		try {
 			// 承認ルート更新（日次）
-			this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+			boolean checkStop = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+			if(checkStop) {
+				return true;
+			}
 		} catch (Exception e) {
 			checkErrAppDaily = true;
 		}
@@ -628,7 +631,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		boolean checkErrAppMonth = false;
 		try {
 			// 承認ルート更新（月次）
-			this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+			boolean checkStop = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+			if(checkStop) {
+				return false;
+			}
 		} catch (Exception e) {
 			checkErrAppMonth = true;
 		}
