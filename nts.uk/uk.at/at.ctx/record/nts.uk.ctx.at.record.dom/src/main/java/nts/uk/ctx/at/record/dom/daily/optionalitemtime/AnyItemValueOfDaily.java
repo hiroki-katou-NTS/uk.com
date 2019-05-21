@@ -51,7 +51,7 @@ public class AnyItemValueOfDaily {
         List<CalcResultOfAnyItem> anyItemList = new ArrayList<>();
         
         for(OptionalItem optionalItem : optionalItemList) {
-        	List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
+        	
         	
         	CalcResultOfAnyItem calcResult = new CalcResultOfAnyItem(optionalItem.getOptionalItemNo(),
         															 Optional.of(BigDecimal.ZERO), 
@@ -62,13 +62,11 @@ public class AnyItemValueOfDaily {
         		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
         		calcResult = optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty());
-                anyItemList.add(calcResult);
-
         	}
-        	
+        	anyItemList.add(calcResult);
             //計算した(calcResult)値を Converter内へ格納
         	if(dailyAnyItem.isPresent()) {
-        		
+        		List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
         		Optional<AnyItemValue> getAnyItem = forcsItem.stream().filter(tc -> tc.getItemNo().v().equals(optionalItem.getOptionalItemNo().v())).findFirst();
     			//存在する(上書き)
         		if(getAnyItem.isPresent()) {
@@ -88,13 +86,11 @@ public class AnyItemValueOfDaily {
         														 calcResult.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
         														 calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
         														 calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
-        		}        		
+        		}     
+            	dailyAnyItem.get().items = forcsItem;
+            	//
+            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
         	}
-        	
-        	dailyAnyItem.get().items = forcsItem;
-        	//
-        	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
-
         }
         
         AnyItemValueOfDaily result = new AnyItemValueOfDaily(employeeId,ymd,new ArrayList<>());
