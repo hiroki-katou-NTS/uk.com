@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTablelData;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,11 +52,11 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("       WHERE START_YM <= ?startYearMonth AND END_YM >= ?startYearMonth AND CID = ?cid) h");
         exportSQL.append(" ON w.WAGE_TABLE_CD = h.WAGE_TABLE_CD AND w.CID = h.CID");
         exportSQL.append(" LEFT JOIN QPBMT_ELEM_RANGE_SET e ON e.CID = h.CID AND e.WAGE_TABLE_CD = w.WAGE_TABLE_CD AND e.HIST_ID = h.HIST_ID ");
-        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_EQ_CD eq ON eq.CID = h.CID AND h.HIST_ID = eq.HIST_ID AND w.WAGE_TABLE_CD = eq.WAGE_TABLE_CD");
-        exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = h.CID AND s.QUALIFY_GROUP_CD = eq.QUALIFY_GROUP_CD");
-        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = eq.WAGE_TABLE_CD");
+        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_EQ_CD eq ON eq.CID = h.CID AND h.HIST_ID = eq.HIST_ID AND w.WAGE_TABLE_CD = eq.WAGE_TABLE_CD ");
+        exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = h.CID  AND s.QUALIFY_GROUP_CD = eq.QUALIFY_GROUP_CD ");
+        exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = w.WAGE_TABLE_CD");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = h.CID AND ws.HIST_ID = h.HIST_ID AND ws.WAGE_TABLE_CD = e.WAGE_TABLE_CD AND ws.QUALIFY_GROUP_CD = s.QUALIFY_GROUP_CD");
-
+        exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, ws.QUALIFY_GROUP_CD");
 
         try {
             resultQuery = this.getEntityManager()
@@ -89,7 +90,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[20] != null ? e[20].toString() : "",
                         e[21] != null ? e[21].toString() : "",
                         e[22] != null ? e[22].toString() : "3",
-                        e[23] != null ? e[23].toString() : ""
+                        e[23] != null ? ((BigDecimal)e[23]).intValue() : 0
                 ));
             }
         } catch (NoResultException e) {

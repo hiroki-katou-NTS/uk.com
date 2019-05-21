@@ -58,6 +58,6 @@ public class WageTablelData {
 
     private String payMethod;
 
-    private String elementSet;
+    private int elementSet;
 
 }
