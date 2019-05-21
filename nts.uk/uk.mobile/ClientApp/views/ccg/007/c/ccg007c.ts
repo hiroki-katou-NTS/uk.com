@@ -33,12 +33,12 @@ export class ChangePassComponent extends Vue {
     public changeReason: string;
 
     public policy = {
-        lowestDigits: "0",
-        alphabetDigit: "0",
-        numberOfDigits: "0",
-        symbolCharacters: "0",
-        historyCount: "0",
-        validPeriod: "0",
+        lowestDigits: '0',
+        alphabetDigit: '0',
+        numberOfDigits: '0',
+        symbolCharacters: '0',
+        historyCount: '0',
+        validPeriod: '0',
         isUse: false,
         complex: ''
     };
@@ -70,16 +70,16 @@ export class ChangePassComponent extends Vue {
             self.policy.validPeriod = policy.validityPeriod.toString();
             self.policy.isUse  = policy.isUse;
             self.userId = user.userId;
-            if(policy.alphabetDigit > 0) {
+            if (policy.alphabetDigit > 0) {
                 complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
             }
-            if(policy.numberOfDigits > 0) {
+            if (policy.numberOfDigits > 0) {
                 complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
             }
-            if(policy.symbolCharacters > 0) {
+            if (policy.symbolCharacters > 0) {
                 complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
             }
-            self.policy.complex = complex.join("、");
+            self.policy.complex = complex.join('、');
         });
     }
 

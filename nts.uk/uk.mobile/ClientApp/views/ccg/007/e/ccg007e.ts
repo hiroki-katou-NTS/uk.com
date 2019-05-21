@@ -68,16 +68,16 @@ export class ResetPassComponent extends Vue {
             self.policy.historyCount = policy.historyCount.toString();
             self.policy.validPeriod = policy.validityPeriod.toString();
             self.policy.isUse  = policy.isUse;
-            if(policy.alphabetDigit > 0) {
+            if (policy.alphabetDigit > 0) {
                 complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
             }
-            if(policy.numberOfDigits > 0) {
+            if (policy.numberOfDigits > 0) {
                 complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
             }
-            if(policy.symbolCharacters > 0) {
+            if (policy.symbolCharacters > 0) {
                 complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
             }
-            self.policy.complex = complex.join("、");
+            self.policy.complex = complex.join('、');
         });
     }
 
