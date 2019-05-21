@@ -268,7 +268,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             let self = this;
             modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
                 let code: string = getShared("QMM003BResult");
-                if (code && code.length > 3) {
+                if (code) {
                     block.invisible()
                     nts.uk.pr.view.qmm003.a.service.getResidentTaxPayeeZero(code).done(data => {
                         self.setData(data);
