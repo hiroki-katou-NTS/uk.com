@@ -21,7 +21,21 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let token = csrf.getToken();
+    let token = csrf.getToken(),
+        $modals = document.body.querySelectorAll('.modal.show');
+
+    // fix show modal on switch view (#107642)
+    if ($modals && $modals.length) {
+
+        [].slice.call($modals).forEach((modal: HTMLElement) => {
+
+            let $close = modal.querySelector('.modal-header .close, .modal-header .btn-close') as HTMLElement;
+
+            if ($close) {
+                $close.click();
+            }
+        });
+    }
 
     // if login or documents page
     if (to.path.indexOf('ccg/007') >= 0 || to.path.indexOf('/documents/') === 0) {

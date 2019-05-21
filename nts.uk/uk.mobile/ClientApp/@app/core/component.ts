@@ -138,27 +138,6 @@ export function component(options: ComponentOptions<Vue>): any {
 
             delete options.route;
 
-            // fix show modal on switch view (#107642)
-            (options.mixins || (options.mixins = [])).push({
-                beforeMount() {
-                    let self = this,
-                        $modals = document.body.querySelectorAll('.modal.show');
-
-                    if ($modals && $modals.length) {
-                        self.$mask('hide');
-
-                        [].slice.call($modals).forEach((modal: HTMLElement) => {
-
-                            let $close = modal.querySelector('.modal-header .close, .modal-header .btn-close') as HTMLElement;
-
-                            if ($close) {
-                                $close.click();
-                            }
-                        });
-                    }
-                }
-            });
-
             // use next on
             if (browser.mobile) {
                 if (browser.ios) {
