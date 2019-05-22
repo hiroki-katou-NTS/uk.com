@@ -2,12 +2,11 @@ package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**キャリアパス*/
-@AllArgsConstructor
 @Getter
 public class CareerPath extends AggregateRoot{
 
@@ -27,4 +26,20 @@ public class CareerPath extends AggregateRoot{
 				careerList
 				);
 	}
+
+	public CareerPath(String companyId, String historyId, Integer_1_10 maxClassLevel, List<Career> careerList) {
+		super();
+		this.companyId = companyId;
+		this.historyId = historyId;
+		this.maxClassLevel = maxClassLevel;
+		this.careerList = careerList;
+		validateExt();
+	}
+	
+	private void validateExt() {
+		if(this.careerList.isEmpty()) {
+			throw new BusinessException("MsgJ_50");
+		}
+	}
+	
 }

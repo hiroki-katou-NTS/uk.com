@@ -47,7 +47,7 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 	
 	private List<JhcmtCareerPathCareer> toEntity(CareerPath domain) {
 		if(domain.getCareerList().isEmpty()) {
-			throw new BusinessException("CareerList not null - ThanhPV");
+			throw new BusinessException("MsgJ_50");
 		}
 		return domain.getCareerList().stream().map(c-> {
 			String careerId = IdentifierUtil.randomUniqueId();
