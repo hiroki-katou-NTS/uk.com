@@ -8,7 +8,11 @@ import { component } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {},
-    constraints: []
+    constraints: [],
+    markdown: {
+        vi: require('./content/vi.md'),
+        jp: require('./content/jp.md')
+    }
 })
 export class DocumentsControlsTextSearchBoxComponent extends Vue {
     

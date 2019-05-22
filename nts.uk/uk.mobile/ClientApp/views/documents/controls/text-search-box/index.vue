@@ -6,6 +6,7 @@
         v-on:search="searchList"/>
         
     <br/>
+    <markdown />
 
     <br>
     <label>
