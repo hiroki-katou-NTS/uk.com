@@ -1,9 +1,10 @@
 import { characteristics } from '@app/utils/storage';
-import { _ } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 
-export namespace ccg007 {
+export class CCG007Login extends Vue {
 
-    export function login(servicePath: string, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected login(servicePath: string, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+        let self = this;
 
         self.$validate();
         if (!self.$valid) {
@@ -13,14 +14,14 @@ export namespace ccg007 {
         self.$mask('show');
         self.$http.post(servicePath, submitData).then((res: { data: CheckChangePass }) => {
             if (res.data.showContract) {
-                authenticateContract(self);
+                this.authenticateContract(self);
             } else {
                 if (!_.isEmpty(res.data.successMsg)) {
                     self.$modal.info({ messageId: res.data.successMsg }).then(() => {
-                        processAfterLogin(res, self, submitData, resetForm, saveInfo);
+                        this.processAfterLogin(res, self, submitData, resetForm, saveInfo);
                     });
                 } else {
-                    processAfterLogin(res, self, submitData, resetForm, saveInfo);
+                    this.processAfterLogin(res, self, submitData, resetForm, saveInfo);
                 }
             }
         }).catch((res: any) => {
@@ -38,7 +39,7 @@ export namespace ccg007 {
         });
     }
 
-    function processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
         self.$mask('hide');
         characteristics.remove('companyCode')
                     .then(() => characteristics.save('companyCode', submitData.companyCode))
@@ -58,7 +59,7 @@ export namespace ccg007 {
                                     });
                                 } else {
                                     submitData.loginDirect = true;
-                                    login(ccg007.submitLogin, self, submitData, resetForm, saveInfo);
+                                    this.login(CCG007Login.SUBMIT_LOGIN, submitData, resetForm, saveInfo);
                                 }
                             });
                         } else {
@@ -76,38 +77,38 @@ export namespace ccg007 {
                                     self.$modal.error({ messageId: res.data.msgErrorId });
                                 }
                             } else {
-                                toHomePage(self);
+                                this.toHomePage(self);
                             }
                         }
                     });
     }
 
-    export function toHomePage(self) {
+    protected toHomePage(self) {
         self.$mask('hide');
         self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
     }
 
-    export function authenticateContract(self) {
+    protected authenticateContract(self) {
         self.$goto({ name: 'contractAuthentication' });
     }
     
-    export const submitLogin =  'ctx/sys/gateway/login/submit/mobile';
+    protected static readonly SUBMIT_LOGIN: string =  'ctx/sys/gateway/login/submit/mobile';
+}
 
-    interface CheckChangePass {
-        showChangePass: boolean;
-        msgErrorId: string;
-        showContract: boolean;
-        successMsg: string;
-        spanDays: number;
-        changePassReason: string;
-    }
+interface CheckChangePass {
+    showChangePass: boolean;
+    msgErrorId: string;
+    showContract: boolean;
+    successMsg: string;
+    spanDays: number;
+    changePassReason: string;
+}
 
-    interface LoginParam {
-        companyCode: string;
-        employeeCode: string;
-        password: string;
-        contractCode: string;
-        contractPassword: string;
-        loginDirect: boolean;
-    }
+interface LoginParam {
+    companyCode: string;
+    employeeCode: string;
+    password: string;
+    contractCode: string;
+    contractPassword: string;
+    loginDirect: boolean;
 }

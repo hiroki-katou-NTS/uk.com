@@ -1,7 +1,7 @@
-import { Vue, _ } from '@app/provider';
+import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
-import { ccg007 } from '../common/common';
+import { CCG007Login } from '../common/common';
 import { characteristics } from '@app/utils/storage';
 
 @component({
@@ -23,7 +23,7 @@ import { characteristics } from '@app/utils/storage';
     }, 
     name: 'changepass'
 })
-export class ChangePassComponent extends Vue {
+export class ChangePassComponent extends CCG007Login {
 
     @Prop({ default: () => ({}) })
     public params!: any;
@@ -111,7 +111,7 @@ export class ChangePassComponent extends Vue {
         
         // submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            ccg007.login(ccg007.submitLogin , this, {    companyCode : self.params.companyCode,
+            super.login(CCG007Login.SUBMIT_LOGIN, {    companyCode : self.params.companyCode,
                                     employeeCode: self.params.employeeCode,
                                     password: command.newPassword,
                                     contractCode : self.params.contractCode,
@@ -138,7 +138,7 @@ export class ChangePassComponent extends Vue {
                             if (self.params.saveInfo) {
                                 characteristics.save('employeeCode', self.params.employeeCode);
                             }
-                        }).then(() => ccg007.toHomePage(self));
+                        }).then(() => this.toHomePage(self));
         // ccg007.login(servicePath.loginWithNoChangePass , this, {    companyCode : self.params.companyCode,
         //                                             employeeCode: self.params.employeeCode,
         //                                             password: self.params.oldPassword,

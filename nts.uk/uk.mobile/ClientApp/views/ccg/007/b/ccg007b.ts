@@ -1,8 +1,8 @@
-import { Vue, _ } from '@app/provider';
+import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { characteristics } from '@app/utils/storage';
 import { NavMenu, SideMenu } from '@app/services';
-import { ccg007 } from '../common/common';
+import { CCG007Login } from '../common/common';
 
 @component({
     route: '/ccg/007/b',
@@ -25,7 +25,7 @@ import { ccg007 } from '../common/common';
     name: 'login',
     constraints: [ 'nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode' ]
 })
-export class LoginComponent extends Vue {
+export class LoginComponent extends CCG007Login {
 
     @Prop({ default: () => ({}) })
     public params!: any;
@@ -65,7 +65,7 @@ export class LoginComponent extends Vue {
                         .then(() => characteristics.save('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass }));
                 } else {
                     if (rel.data.showContract && !rel.data.onpre) {
-                        ccg007.authenticateContract(self);
+                        this.authenticateContract(self);
                     }
                 }
             }).then(() => {
@@ -135,7 +135,7 @@ export class LoginComponent extends Vue {
     public login() {
         let self = this;
 
-        ccg007.login(ccg007.submitLogin, this, {    companyCode : self.model.comp,
+        super.login(CCG007Login.SUBMIT_LOGIN, {    companyCode : self.model.comp,
                                 employeeCode: self.model.employeeCode,
                                 password: self.model.password,
                                 contractCode : self.contractCode,
