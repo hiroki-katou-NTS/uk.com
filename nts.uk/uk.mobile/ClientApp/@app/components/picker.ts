@@ -8,22 +8,28 @@ export const MobilePicker = {
         'ipkr': InfinityPicker
     },
     template: `<transition name="picker-fade" v-on:after-leave="destroyPicker">
-        <div class="infinity-picker android centered" v-bind:class="className" v-show="show" v-on:touchmove="preventScroll">
-        <div class="ipkr-caption" v-if="title">
-            <div class="ipkr-caption-item">{{title}}</div>
-        </div>
-        <div class="ipkr-content">
-            <ipkr v-for="(cols, idx) in dataSources" v-bind:key="idx"
-                v-model="selects[idx]"
-                v-bind:data-sources="cols"
-                v-bind:option-text="options.text"
-                v-bind:option-value="options.value"
-                v-on:input="value => onInput(value, idx)" />
-        </div>
-        <div class="ipkr-navbar">
-            <a class="ipkr-navbar-btn" ref="close" v-on:click="close">{{'cancel' | i18n}}</a>
-            <a class="ipkr-navbar-btn" v-on:click="finish">{{'accept' | i18n}}</a>
-        </div>
+        <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
+            <div class="modal-dialog modal-md modal-popup modal-dialog-centered" v-on:touchmove="preventScroll">
+                <div class="modal-content">
+                    <div class="modal-body infinity-picker android" v-bind:class="className">
+                        <div class="ipkr-caption" v-if="title">
+                            <div class="ipkr-caption-item">{{title}}</div>
+                        </div>
+                        <div class="ipkr-content">
+                            <ipkr v-for="(cols, idx) in dataSources" v-bind:key="idx"
+                                v-model="selects[idx]"
+                                v-bind:data-sources="cols"
+                                v-bind:option-text="options.text"
+                                v-bind:option-value="options.value"
+                                v-on:input="value => onInput(value, idx)" />
+                        </div>
+                        <div class="ipkr-navbar">
+                            <a class="ipkr-navbar-btn" ref="close" v-on:click="close">{{'cancel' | i18n}}</a>
+                            <a class="ipkr-navbar-btn" v-on:click="finish">{{'accept' | i18n}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </transition>`,
     props: {
@@ -60,16 +66,8 @@ export const MobilePicker = {
                     defaultData = self.value;
 
                 if (!show) {
-                    if (self.$mask) {
-                        self.$mask('hide');
-                    }
-
                     dom.removeClass(document.body, 'modal-open');
                 } else {
-                    if (self.$mask) {
-                        self.$mask('show', 0.01);
-                    }
-
                     dom.addClass(document.body, 'modal-open');
 
                     obj.objectForEach(self.dataSources, (key: string, items: any[]) => {
