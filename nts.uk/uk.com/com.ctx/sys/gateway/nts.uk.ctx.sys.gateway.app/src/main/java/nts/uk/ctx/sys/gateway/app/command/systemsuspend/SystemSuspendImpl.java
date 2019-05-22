@@ -74,7 +74,7 @@ public class SystemSuspendImpl implements SystemSuspendService {
 				return new SystemSuspendOutput(false, "Msg_1475", "");
 			}
 			// リクエストリスト497を呼ぶ。：「ログイン者が担当者か判断する」で担当者ロールが存在するかを判別
-			if(roleAdapter.isEmpWhetherLoginerCharge()){
+			if(roleAdapter.isEmpWhetherLoginerCharge(loginUserRoles)){
 				return new SystemSuspendOutput(false, "Msg_1475", "");
 			}
 		}

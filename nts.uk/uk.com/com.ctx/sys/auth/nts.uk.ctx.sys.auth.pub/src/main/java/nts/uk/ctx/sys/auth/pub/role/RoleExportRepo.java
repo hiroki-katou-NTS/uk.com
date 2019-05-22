@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * The Interface RoleExportRepo.
@@ -74,6 +75,8 @@ public interface RoleExportRepo {
 	 * @return
 	 */
 	RoleWhetherLoginPubExport  getWhetherLoginerCharge();
+	
+	RoleWhetherLoginPubExport  getWhetherLoginerCharge(LoginUserRoles roles);
 	
 	/**
 	 * RequestList325

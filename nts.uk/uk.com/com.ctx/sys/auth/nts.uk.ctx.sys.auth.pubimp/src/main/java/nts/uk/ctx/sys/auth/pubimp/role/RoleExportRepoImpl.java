@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.auth.pub.role.WorkplaceIdExport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * The Class RoleExportRepoImpl.
@@ -150,6 +151,18 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
 		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
+	}
+	
+	@Override
+	public RoleWhetherLoginPubExport getWhetherLoginerCharge(LoginUserRoles roles) {
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge(roles);
 		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
 				data.isEmployeeCharge(),
 				data.isSalaryProfessional(),
