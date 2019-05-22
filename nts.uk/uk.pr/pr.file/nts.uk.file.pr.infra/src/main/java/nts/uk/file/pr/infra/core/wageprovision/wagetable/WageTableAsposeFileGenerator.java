@@ -122,7 +122,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement1());
         }
         if (!e.getOptAddElement1().isEmpty()) {
-            return getListItemName(dataName, e.getOptAddElement3());
+            return getListItemName(dataName, e.getOptAddElement1());
         }
         return "";
 
@@ -136,10 +136,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return "欠勤日数";
         }
         if (!e.getFixElement2().isEmpty()) {
-            return enumElementType(e.getFixElement1());
+            return enumElementType(e.getFixElement2());
         }
         if (!e.getOptAddElement2().isEmpty()) {
-            return getListItemName(dataName, getOptAddElementName());
+            return getListItemName(dataName, e.getOptAddElement2());
         }
 
         return "";
@@ -150,15 +150,11 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return "遅刻・早退回数";
         }
         if (!e.getFixElement3().isEmpty()) {
-            return enumElementType(e.getFixElement1());
+            return enumElementType(e.getFixElement3());
         }
         if (!e.getOptAddElement3().isEmpty()) {
-            return getListItemName(dataName, e.getOptAddElement1());
+            return getListItemName(dataName, e.getOptAddElement3());
         }
-        return "";
-    }
-
-    private String getOptAddElementName() {
         return "";
     }
 
@@ -167,7 +163,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement3());
         }
         if (!e.getLowerLimit1().isEmpty()) {
-            return e.getLowerLimit1() + e.getUpperLimit1();
+            return e.getLowerLimit1() + TextResource.localize("QMM016_31") + e.getUpperLimit1();
         }
         return "";
     }
@@ -177,7 +173,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement2());
         }
         if (!e.getLowerLimit2().isEmpty()) {
-            return e.getLowerLimit2() + e.getUpperLimit2();
+            return e.getLowerLimit2() + TextResource.localize("QMM016_31") + e.getUpperLimit2();
         }
         return "";
     }
@@ -187,7 +183,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement3());
         }
         if (!e.getLowerLimit3().isEmpty()) {
-            return e.getLowerLimit3() + e.getUpperLimit3();
+            return e.getLowerLimit3() + TextResource.localize("QMM016_31") + e.getUpperLimit3();
         }
         return "";
     }

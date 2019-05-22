@@ -67,7 +67,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append(" LEFT JOIN QPBMT_DETAIL_FORMULA_SET d ");
         sql.append("     ON d.HIST_ID = h.HIST_ID AND f.CID = d.CID AND f.FORMULA_CD = d.FORMULA_CD");
         sql.append(" LEFT JOIN (SELECT");
-        sql.append("        '00000000' + CODE AS CODE ,");
+        sql.append("        CODE ,");
         sql.append("        NAME,");
         sql.append("        0 AS MASTER_USE");
         sql.append("      FROM BSYMT_EMPLOYMENT");
