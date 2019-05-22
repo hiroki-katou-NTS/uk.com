@@ -98,7 +98,7 @@ const DIRTY = 'dirty',
                                 $isValid = (p: string) => !$.size($.get($errors, p));
 
                             $erPaths.forEach((p: string, i: number) => {
-                                if (!$erPaths[i + 1] || $erPaths[i + 1].indexOf(p) === -1) {
+                                if (!$erPaths[i + 1] || $erPaths[i + 1].indexOf(p + '.') === -1) {
                                     rulePath.push(p);
                                 }
                             });
