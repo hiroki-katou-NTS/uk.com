@@ -67,7 +67,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 				c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
 		List<CheckCondition> checkConList = c.getCheckConditonList().stream()
-				.map(x ->convertToCheckCondition(x))
+				.map(x ->convertToCheckCondition(x, c.getAlarmPatternCD()))
 				.collect(Collectors.toList());
 		// set update property  
 		domain.setAlarmPerSet(alarmPerSet);
@@ -84,7 +84,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 	}
 
-	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
+	public CheckCondition convertToCheckCondition (CheckConditionCommand command, String code) {
+		String companyId = AppContexts.user().companyId();
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
 				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
@@ -107,6 +108,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
+			
+			Optional<AlarmPatternSetting> dataExtra =  repo.findByAlarmPatternCode(companyId, code);
 			AYear extractYear = command.getExtractionYear().toDomain();
 			extractYear.setExtractionRange(ExtractionRange.YEAR);
 			extractionList.add(extractYear);
@@ -118,7 +121,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 			// Set ExtractionId & ExtractionRange
 			extractionList.forEach( e-> {
-				e.setExtractionId(extractYear.getExtractionId());
+				e.setExtractionId(dataExtra.get().getCheckConList().get(0).getExtractPeriodList().get(0).getExtractionId());
+				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
 		

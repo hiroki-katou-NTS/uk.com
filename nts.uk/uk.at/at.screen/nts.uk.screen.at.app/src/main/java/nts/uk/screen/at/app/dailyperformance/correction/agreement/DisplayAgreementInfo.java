@@ -58,10 +58,14 @@ public class DisplayAgreementInfo {
 					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime() != null
 							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime().v())
 							: "0:00");
-			result.setMaxTime(agreeTimeOpt.get().getAgreementTime() != null
-					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime() != null
-							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime().v())
-							: "0:00");
+			
+			Integer valueMaxTime = agreeTimeOpt.get().getAgreementTime() == null ? 0 : (agreeTimeOpt.get()
+					.getAgreementTime().getAgreementTime().getExceptionLimitErrorTime().isPresent())
+							? agreeTimeOpt.get().getAgreementTime().getAgreementTime().getExceptionLimitErrorTime()
+									.get().v()
+							: agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime().v();
+									
+			result.setMaxTime(convertTime(valueMaxTime));
 		}
 
 		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperationSettingRepository.find(companyId);
