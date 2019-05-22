@@ -64,30 +64,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return dataName.isPresent() ? dataName.get().getName() : "";
     }
 
-
-    /*ElementSetting*/
-    private String enumElementSetting(int index) {
-        switch (index) {
-            case 0: {
-                return TextResource.localize("Enum_Element_Setting_One_Dimension");
-            }
-            case 1: {
-                return TextResource.localize("Enum_Element_Setting_Two_Dimension");
-            }
-            case 2: {
-                return TextResource.localize("Enum_Element_Setting_Three_Dimension");
-            }
-            case 3: {
-                return TextResource.localize("Enum_Element_Setting_Qualification");
-            }
-            case 4: {
-                return TextResource.localize("Enum_Element_Setting_Fine_Work");
-            }
-            default:
-                return "";
-        }
-    }
-
     /*ElementType*/
     private String enumElementType(String code) {
         switch (code) {
@@ -128,23 +104,19 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     /*QualificationPaymentMethod*/
     private String enumQualificationPaymentMethod(int index) {
-        switch (index) {
-            case 0: {
-                return TextResource.localize("Enum_Qualify_Pay_Method_Add_Multiple");
-            }
-            case 1: {
-                return TextResource.localize("Enum_Qualify_Pay_Method_Only_One_Highest");
-            }
-
-            default:
-                return "";
+        if(index == 0) {
+            return TextResource.localize("Enum_Qualify_Pay_Method_Add_Multiple");
         }
+        return TextResource.localize("Enum_Qualify_Pay_Method_Only_One_Highest");
     }
 
 
     private String getFixedValue3(WageTablelData e, List<ItemDataNameExport> dataName) {
         if (e.getElementSet() == 3) {
-            return "資格グループ";
+            return TextResource.localize("QMM016_49");
+        }
+        if(e.getElementSet() == 4) {
+            return "欠勤日数";
         }
         if (!e.getFixElement3().isEmpty()) {
             return enumElementType(e.getFixElement1());
@@ -158,7 +130,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getFixedValue2(WageTablelData e, List<ItemDataNameExport> dataName) {
         if (e.getElementSet() == 2) {
-            return "資格名称";
+            return TextResource.localize("QMM016_50");
+        }
+        if(e.getElementSet() == 4) {
+            return "欠勤日数";
         }
         if (!e.getFixElement2().isEmpty()) {
             return enumElementType(e.getFixElement1());

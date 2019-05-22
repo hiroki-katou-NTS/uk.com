@@ -1,11 +1,14 @@
 package nts.uk.file.pr.infra.core.wageprovision.formula;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.wageprovision.formula.FormulaExRepository;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,62 +17,129 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
 
 
     @Override
-    public List<Object[]> getFormulaInfor(String cid, int startDate){
+    public List<Object[]> getFormulaInfor(String cid, int startDate, GeneralDate baseDate){
         List<Object[]> resultQuery = null;
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append("        f.FORMULA_CD,");
-        sql.append("        FORMULA_NAME,");
-        sql.append("        START_YM,");
-        sql.append("        END_YM,");
-        sql.append("        SETTING_METHOD,");
-        sql.append("        NESTED_ATR,");
-        sql.append("        MASTER_BRANCH_USE,");
-        sql.append("        MASTER_USE,");
-        sql.append("        c.MASTER_USE_CD,");
-        sql.append("        REFERENCE_MONTH,");
-        sql.append("        c.ROUNDING_METHOD,");
-        sql.append("        ROUNDING_POSITION,");
-        sql.append("        d.ROUNDING_METHOD,");
-        sql.append("        ROUNDING_RESULT,");
-        sql.append("        ADJUSTMENT_ATR,");
-        sql.append("        FORMULA_TYPE,");
-        sql.append("        STANDARD_AMOUNT_ATR,");
-        sql.append("        STANDARD_FIXED_VALUE,");
-        sql.append("        COEFFICIENT_ATR,");
-        sql.append("        COEFFICIENT_FIXED_VALUE,");
-        sql.append("        EXTRA_RATE,");
-        sql.append("        BASE_ITEM_FIXED_VALUE,");
-        sql.append("        BASE_ITEM_ATR");
-        sql.append("    FROM (SELECT * ");
-        sql.append("            FROM QPBMT_FORMULA");
-        sql.append("            WHERE CID = ?cid) f");
-        sql.append("    INNER JOIN (SELECT ");
-        sql.append("            CID,");
-        sql.append("             FORMULA_CD,");
-        sql.append("            START_YM,");
-        sql.append("            END_YM,");
-        sql.append("            HIST_ID");
-        sql.append("        FROM QPBMT_FORMULA_HISTORY");
-        sql.append("        WHERE START_YM <= ?startDate AND END_YM >= ?startDate) h");
+        sql.append("SELECT ");
+        sql.append("   f.FORMULA_CD,");
+        sql.append("   FORMULA_NAME,");
+        sql.append("   START_YM,");
+        sql.append("   END_YM,");
+        sql.append("   SETTING_METHOD,");
+        sql.append("   NESTED_ATR,");
+        sql.append("   MASTER_BRANCH_USE,");
+        sql.append("   b.MASTER_USE,");
+        sql.append("   c.MASTER_USE_CD,");
+        sql.append("   REFERENCE_MONTH,");
+        sql.append("   c.ROUNDING_METHOD,");
+        sql.append("   ROUNDING_POSITION,");
+        sql.append("   d.ROUNDING_METHOD,");
+        sql.append("   ROUNDING_RESULT,");
+        sql.append("   ADJUSTMENT_ATR,");
+        sql.append("   FORMULA_TYPE,");
+        sql.append("   STANDARD_AMOUNT_ATR,");
+        sql.append("   STANDARD_FIXED_VALUE,");
+        sql.append("   COEFFICIENT_ATR,");
+        sql.append("   COEFFICIENT_FIXED_VALUE,");
+        sql.append("   EXTRA_RATE,");
+        sql.append("   BASE_ITEM_FIXED_VALUE,");
+        sql.append("   BASE_ITEM_ATR,");
+        sql.append("   mc.NAME");
+        sql.append(" FROM (SELECT * ");
+        sql.append("   FROM QPBMT_FORMULA");
+        sql.append("   WHERE CID = ?cid) f");
+        sql.append(" INNER JOIN (SELECT ");
+        sql.append("         CID,");
+        sql.append("         FORMULA_CD,");
+        sql.append("         START_YM,");
+        sql.append("         END_YM,");
+        sql.append("         HIST_ID");
+        sql.append("      FROM QPBMT_FORMULA_HISTORY");
+        sql.append("      WHERE START_YM <= ?startDate AND END_YM >= ?startDate) h");
         sql.append("      ON f.CID = h.CID AND f.FORMULA_CD = h.FORMULA_CD");
-        sql.append("    LEFT JOIN QPBMT_BASIC_FORMULA_SET b");
+        sql.append(" LEFT JOIN QPBMT_BASIC_FORMULA_SET b");
         sql.append("     ON f.CID = b.CID AND h.HIST_ID = b.HIST_ID AND f.FORMULA_CD = b.FORMULA_CD");
-        sql.append("    LEFT JOIN QPBMT_BASIC_CAL_FORM c");
+        sql.append(" LEFT JOIN QPBMT_BASIC_CAL_FORM c");
         sql.append("     ON f.CID = c.CID AND f.FORMULA_CD = c.FORMULA_CD ");
         sql.append("     AND c.HIST_ID = h.HIST_ID");
-        sql.append("    LEFT JOIN QPBMT_DETAIL_FORMULA_SET d ");
+        sql.append(" LEFT JOIN QPBMT_DETAIL_FORMULA_SET d ");
         sql.append("     ON d.HIST_ID = h.HIST_ID AND f.CID = d.CID AND f.FORMULA_CD = d.FORMULA_CD");
-        sql.append("    ORDER BY f.FORMULA_CD, START_YM");
+        sql.append(" LEFT JOIN (SELECT");
+        sql.append("        '00000000' + CODE AS CODE ,");
+        sql.append("        NAME,");
+        sql.append("        0 AS MASTER_USE");
+        sql.append("      FROM BSYMT_EMPLOYMENT");
+        sql.append("      WHERE CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("      SELECT  CD AS CODE ,");
+        sql.append("          NAME,");
+        sql.append("          1 AS MASTER_USE");
+        sql.append("      FROM BSYMT_DEPARTMENT_INFO f");
+        sql.append("      INNER JOIN BSYMT_DEPARTMENT_HIST h ON f.HIST_ID = h.HIST_ID ");
+        sql.append("      AND f.CID = h.CID AND f.DEP_ID = h.DEP_ID AND h.STR_D <= ?baseDate' AND h.END_D >= ?baseDate'");
+        sql.append("      WHERE f.CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("      SELECT  CLSCD AS CODE ,");
+        sql.append("          CLSNAME AS NAME,");
+        sql.append("          2 AS MASTER_USE");
+        sql.append("      FROM BSYMT_CLASSIFICATION ");
+        sql.append("      WHERE CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("     SELECT  JOB_CD AS CODE ,");
+        sql.append("         JOB_NAME AS NAME,");
+        sql.append("         3 AS MASTER_USE");
+        sql.append("     FROM BSYMT_JOB_INFO f");
+        sql.append("     INNER JOIN BSYMT_JOB_HIST h ON h.CID = f.CID AND h.JOB_ID = f.JOB_ID AND h.HIST_ID = f.HIST_ID ");
+        sql.append("     AND h.START_DATE <= ?baseDate' AND h.END_DATE >= ?baseDate'");
+        sql.append("     WHERE f.CID = ?cid");
+        sql.append("  UNION ALL ");
+        sql.append("     SELECT  SALARY_CLS_CD AS CODE ,");
+        sql.append("         SALARY_CLS_NAME AS NAME,");
+        sql.append("         4 AS MASTER_USE");
+        sql.append("     FROM QPBMT_SALARY_CLS_INFO ");
+        sql.append("     WHERE CID = ?cid");
+        sql.append("  UNION ALL");
+        sql.append("     SELECT  '0000000001' AS CODE , ");
+        sql.append("         '月給' AS NAME ,");
+        sql.append("         5 AS MASTER_USE");
+        sql.append("  UNION ALL");
+        sql.append("    SELECT  '0000000002' AS CODE ,");
+        sql.append("        '日給月給' AS NAME,");
+        sql.append("        5 AS MASTER_USE");
+        sql.append("  UNION ALL");
+        sql.append("    SELECT '0000000003' AS CODE ,");
+        sql.append("        '日給' AS NAME,");
+        sql.append("        5 AS MASTER_USE");
+        sql.append("  UNION ALL    ");
+        sql.append("    SELECT '0000000004' AS CODE , ");
+        sql.append("        '時給' AS NAME,");
+        sql.append("         5 AS MASTER_USE) mc ");
+        sql.append("  ON mc.MASTER_USE = b.MASTER_USE AND mc.CODE = c.MASTER_USE_CD");
+        sql.append("   ORDER BY f.FORMULA_CD, START_YM");
         try {
-            resultQuery = this.getEntityManager().createNativeQuery(sql.toString()).setParameter("cid", cid).setParameter("startDate", startDate)
+            resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
+                    .setParameter("cid", cid).setParameter("startDate", startDate)
+                    .setParameter("baseDate", getBaseDate(baseDate))
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
         }
         return resultQuery;
-
     }
+
+    private java.sql.Date getBaseDate(GeneralDate baseDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date sqlDate = null;
+        java.util.Date date = null;
+        try {
+            date = format.parse(baseDate.toString());
+            sqlDate = new java.sql.Date(date.getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+        return sqlDate;
+    }
+
     @Override
     public List<Object[]> getDetailFormula(String cid) {
         List<Object[]> resultQuery = null;
