@@ -3,6 +3,7 @@ import { component, Prop } from '@app/core/component';
 import { TimeWDPickerComponent } from '@app/components';
 import { TimeWithDay, DAYS } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
+import { Component } from 'vue-property-decorator';
 @component({
     template: `
     <div class="time-range-search-box">
@@ -89,6 +90,32 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 }
 
+@Component({
+    template: `
+    <div class="text-search-box">
+            
+        <input class="input form-control" 
+            v-model="value" 
+            v-bind:placeholder="placeholder"
+            v-on:keydown.13="emitSearch">
+        <span class="search-button" v-on:click="emitSearch"> 
+            <div class="search-icon fas fa-search"></div>
+        </span>
+    </div>
+    `
+})
+export class TextSearchBox extends Vue {
+
+    @Prop({ default : () => ''})
+    public placeholder: string;
+
+    public value: String = null;
+
+    public emitSearch() {
+        this.$emit('search', this.value);
+    }
+}
+
 class TimeWithDayPicker {
 
     public static getDataSource(value: number) {
@@ -161,3 +188,4 @@ class TimeWithDayPicker {
 }
 
 Vue.component('time-range-search-box', TimeRangeSearchBoxComponent);
+Vue.component('text-search-box', TextSearchBox);
