@@ -94,7 +94,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Inject
 	private IdentificationRepository identificationRepository;
 	@Override
-	public boolean appReflectProcess(AppCommonPara para) {
+	public boolean appReflectProcess(AppCommonPara para, ExecutionType executionType) {
 		boolean output = true;		
 		ScheRemainCreateInfor scheInfor = null;
 		if(para.isChkRecord()) {
@@ -116,7 +116,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		//WorkInfoOfDailyPerformance dailyInfor = optDaily.get();
 		//反映状況によるチェック
 		CommonCheckParameter checkPara = new CommonCheckParameter(para.isChkRecord() ? DegreeReflectionAtr.RECORD : DegreeReflectionAtr.SCHEDULE,
-				ExecutionType.EXCECUTION,
+				executionType,
 				EnumAdaptor.valueOf(para.getStateReflectionReal().value, ReflectedStateRecord.class),
 				EnumAdaptor.valueOf(para.getStateReflection().value, ReflectedStateRecord.class));
 		boolean chkProcess = processCheckService.commonProcessCheck(checkPara);
@@ -149,7 +149,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 					para.isChkRecord() ? false : scheInfor.isConfirmedAtr());
 			return this.checkConfirmStatus(chkParam);
 		}
-		return output;
+		return chkProcess;
 	}
 
 	@Override
@@ -295,17 +295,11 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			if(chkParam.isRecordReflect()) {
 				return output;
 			}
-			List<ApproveRootStatusForEmpImport> lstRootStatus = appAdapter.getApprovalByEmplAndDate(chkParam.getAppDate(), chkParam.getAppDate(),
-					chkParam.getSid(), chkParam.getCid(), 1);
-			if(lstRootStatus.isEmpty() 
-					|| lstRootStatus.get(0).getApprovalStatus() == ApprovalStatusForEmployee.UNAPPROVED) {
-				List<Identification> findByEmployeeID = identificationRepository.findByEmployeeID(chkParam.getSid(), chkParam.getAppDate(), chkParam.getAppDate());
-				if(!findByEmployeeID.isEmpty()) {
-					return false; 
-				}
-				return output;
+			//対象期間内で本人確認をした日をチェックする
+			List<Identification> findByEmployeeID = identificationRepository.findByEmployeeID(chkParam.getSid(), chkParam.getAppDate(), chkParam.getAppDate());
+			if(!findByEmployeeID.isEmpty()) {
+				return false; 
 			}
-			return false;
 		} else {
 			//ドメインモデル「反映情報」．予定強制反映をチェックする
 			if(chkParam.isScheReflect()) {
