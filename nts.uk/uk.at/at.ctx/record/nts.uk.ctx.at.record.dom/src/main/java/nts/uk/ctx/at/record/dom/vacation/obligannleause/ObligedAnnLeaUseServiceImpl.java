@@ -132,7 +132,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 期間を作成
 		GeneralDate startDate = remainData.getGrantDate();
-		return Optional.of(new DatePeriod(startDate, startDate.addYears(1)));
+		return Optional.of(new DatePeriod(startDate, startDate.addYears(1).addDays(-1)));
 	}
 	
 	/** 年休使用義務日数の按分しない期間の付与日数を取得 */
