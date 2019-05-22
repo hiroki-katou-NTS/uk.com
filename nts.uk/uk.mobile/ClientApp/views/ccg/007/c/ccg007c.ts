@@ -116,7 +116,7 @@ export class ChangePassComponent extends Vue {
                                     password: command.newPassword,
                                     contractCode : self.params.contractCode,
                                     contractPassword : self.params.contractPassword,
-                                    saveLog: false
+                                    loginDirect: true
             }, () => {
                 self.model.currentPassword = '';
                 self.model.newPassword = '';

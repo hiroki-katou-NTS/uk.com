@@ -39,51 +39,47 @@ export namespace ccg007 {
     }
 
     function processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
-        if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId == 'Msg_1517') {
-            // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-            self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays.toString()]}).then((code) => {
-                if (code === 'yes') {
-                    self.$goto({ name: 'changepass', params: _.merge({}, 
-                        submitData, 
-                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523', spanDays: res.data.spanDays }) 
-                    });
-                } else {
-                    characteristics.remove('companyCode')
-                                    .then(() => characteristics.save('companyCode', submitData.companyCode))
-                                    .then(() => characteristics.remove('employeeCode'))
-                                    .then(() => {
-                                        if (saveInfo) {
-                                            characteristics.save('employeeCode', submitData.employeeCode);
-                                        }
-                                    }).then(() => toHomePage(self));
-                }
-            });
-        } else {
-            // check MsgError
-            if (!_.isEmpty(res.data.msgErrorId) || res.data.showChangePass) {
-                if (res.data.showChangePass) {
-                    self.$goto({ name: 'changepass', params: _.merge({}, 
-                                submitData, 
-                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, 
-                                    changePassReason: res.data.changePassReason }) 
-                            });
-                } else {
-                    resetForm();
-                    /** TODO: wait for dialog error method */
-                    self.$modal.error({ messageId: res.data.msgErrorId });
-                }
-                self.$mask('hide');
-            } else {
-                characteristics.remove('companyCode')
+        self.$mask('hide');
+        characteristics.remove('companyCode')
                     .then(() => characteristics.save('companyCode', submitData.companyCode))
                     .then(() => characteristics.remove('employeeCode'))
                     .then(() => {
                         if (saveInfo) {
                             characteristics.save('employeeCode', submitData.employeeCode);
                         }
-                    }).then(() => toHomePage(self));
-            }
-        }
+                    }).then(() => {
+                        if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId === 'Msg_1517' && !submitData.loginDirect) {
+                            // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+                            self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays.toString()]}).then((code) => {
+                                if (code === 'yes') {
+                                    self.$goto({ name: 'changepass', params: _.merge({}, 
+                                        submitData, 
+                                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523', spanDays: res.data.spanDays }) 
+                                    });
+                                } else {
+                                    submitData.loginDirect = true;
+                                    login(ccg007.submitLogin, self, submitData, resetForm, saveInfo);
+                                }
+                            });
+                        } else {
+                            // check MsgError
+                            if ((!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId !== 'Msg_1517') || res.data.showChangePass) {
+                                if (res.data.showChangePass) {
+                                    self.$goto({ name: 'changepass', params: _.merge({}, 
+                                                submitData, 
+                                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, 
+                                                    changePassReason: res.data.changePassReason }) 
+                                            });
+                                } else {
+                                    resetForm();
+                                    /** TODO: wait for dialog error method */
+                                    self.$modal.error({ messageId: res.data.msgErrorId });
+                                }
+                            } else {
+                                toHomePage(self);
+                            }
+                        }
+                    });
     }
 
     export function toHomePage(self) {
@@ -112,6 +108,6 @@ export namespace ccg007 {
         password: string;
         contractCode: string;
         contractPassword: string;
-        saveLog: boolean;
+        loginDirect: boolean;
     }
 }

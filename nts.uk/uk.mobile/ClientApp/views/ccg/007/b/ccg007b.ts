@@ -140,7 +140,7 @@ export class LoginComponent extends Vue {
                                 password: self.model.password,
                                 contractCode : self.contractCode,
                                 contractPassword : self.contractPass, 
-                                saveLog: true
+                                loginDirect: false
                             }, () => self.model.password = '', 
                             self.model.autoLogin[0]);
     }
