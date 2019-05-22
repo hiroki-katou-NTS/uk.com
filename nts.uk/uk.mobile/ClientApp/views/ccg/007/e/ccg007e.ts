@@ -131,14 +131,14 @@ export class ResetPassComponent extends Vue {
         if (!res.businessException) {
             return;
         }
-
         /** TODO: show error message */
-        if (Array.isArray(res.errors)) {
+        if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
             // nts.uk.ui.dialog.bundledErrors(res);
+            /** TODO: show multi line message */
+            this.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.errors[0].parameterIds });
         } else {
-            // nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+            this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         }
-        this.$modal.error(res.message);
     }
 }
 
