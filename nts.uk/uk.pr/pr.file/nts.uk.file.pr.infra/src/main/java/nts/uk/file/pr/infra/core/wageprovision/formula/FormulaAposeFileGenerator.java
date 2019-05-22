@@ -203,6 +203,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(obj[15] == null) {
             return "";
         }
+        if(((BigDecimal)obj[24]).intValue() == 0) {
+            return obj[25] != null ? obj[25].toString() : "";
+        }
+        if(((BigDecimal)obj[24]).intValue() == 2) {
+            obj[16] = new BigDecimal(2);
+        }
         c.append(obj[20] != null ? ((BigDecimal)obj[20]).intValue() : "");
         b.append(obj[22] != null ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
         if(((BigDecimal)obj[16]).intValue() == StandardAmountClassification.FIXED_AMOUNT.value) {
@@ -222,20 +228,20 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
 
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append( a.length() > 0 ? "×": "").append(c).append(c.length()> 0 ? "×": "").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
-            temp.append(a).append(a.length() > 0 ? "÷" : "").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "×": "").append(e);
+            temp.append(a).append(a.length() > 0 ? "÷" : "").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "×": "").append(e).append("％");
         }
 
         return temp.toString();
     }
 
     private String getUsageMasterType(Object[] data){
-        if(((BigDecimal)data[4]).intValue() == 1 || ((BigDecimal)data[5]).intValue() == 0) {
+        if(((BigDecimal)data[4]).intValue() == 1 || ((BigDecimal)data[6]).intValue() == 0) {
             return "なし";
         }
-        return data[6] != null ? EnumAdaptor.valueOf(((BigDecimal) data[6]).intValue(), MasterUse.class).nameId : "" ;
+        return data[7] != null ? EnumAdaptor.valueOf(((BigDecimal) data[7]).intValue(), MasterUse.class).nameId : "" ;
     }
 
     private String getUsageMasterName(Object[] data){

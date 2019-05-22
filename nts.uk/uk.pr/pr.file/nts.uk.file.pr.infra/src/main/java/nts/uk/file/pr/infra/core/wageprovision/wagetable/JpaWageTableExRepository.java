@@ -26,12 +26,12 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    WAGE_TABLE_NAME,");
         exportSQL.append("    START_YM,");
         exportSQL.append("    END_YM,");
-        exportSQL.append("    FIXED_ELEMENT_3,");
-        exportSQL.append("    OPT_ADD_ELEMENT_3,");
-        exportSQL.append("    FIXED_ELEMENT_2,");
-        exportSQL.append("    OPT_ADD_ELEMENT_2,");
         exportSQL.append("    FIXED_ELEMENT_1,");
         exportSQL.append("    OPT_ADD_ELEMENT_1,");
+        exportSQL.append("    FIXED_ELEMENT_2,");
+        exportSQL.append("    OPT_ADD_ELEMENT_2,");
+        exportSQL.append("    FIXED_ELEMENT_3,");
+        exportSQL.append("    OPT_ADD_ELEMENT_3,");
         exportSQL.append("    STEP_INCREMENT_1,");
         exportSQL.append("    UPPER_LIMIT_1,");
         exportSQL.append("    LOWER_LIMIT_1,");

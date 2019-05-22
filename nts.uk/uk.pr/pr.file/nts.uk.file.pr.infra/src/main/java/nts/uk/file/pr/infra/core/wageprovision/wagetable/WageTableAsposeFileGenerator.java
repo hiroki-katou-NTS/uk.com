@@ -111,17 +111,17 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
 
-    private String getFixedValue3(WageTablelData e, List<ItemDataNameExport> dataName) {
+    private String getFixedValue1(WageTablelData e, List<ItemDataNameExport> dataName) {
         if (e.getElementSet() == 3) {
             return TextResource.localize("QMM016_49");
         }
         if(e.getElementSet() == 4) {
             return "欠勤日数";
         }
-        if (!e.getFixElement3().isEmpty()) {
+        if (!e.getFixElement1().isEmpty()) {
             return enumElementType(e.getFixElement1());
         }
-        if (!e.getOptAddElement3().isEmpty()) {
+        if (!e.getOptAddElement1().isEmpty()) {
             return getListItemName(dataName, e.getOptAddElement3());
         }
         return "";
@@ -145,12 +145,14 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return "";
     }
 
-    private String getFixedValue1(WageTablelData e, List<ItemDataNameExport> dataName) {
-
-        if (!e.getFixElement1().isEmpty()) {
+    private String getFixedValue3(WageTablelData e, List<ItemDataNameExport> dataName) {
+        if(e.getElementSet() == 4) {
+            return "遅刻・早退回数";
+        }
+        if (!e.getFixElement3().isEmpty()) {
             return enumElementType(e.getFixElement1());
         }
-        if (!e.getOptAddElement1().isEmpty()) {
+        if (!e.getOptAddElement3().isEmpty()) {
             return getListItemName(dataName, e.getOptAddElement1());
         }
         return "";
@@ -228,13 +230,13 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                 cells.get(rowStart, COLUMN_START + 2).setValue(convertYearMonth(e.getWageHisStartYm()));
                 cells.get(rowStart, COLUMN_START + 3).setValue(convertYearMonth(e.getWageHisEndYm()));
 
-                cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue3(e, dataName));
+                cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue1(e, dataName));
                 cells.get(rowStart, COLUMN_START + 5).setValue(e.getElementSet() == 0 ? "" : getFixedValue2(e, dataName));
-                cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == 0 ? "" : getFixedValue1(e, dataName));
+                cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getFixedValue3(e, dataName) : "");
 
-                cells.get(rowStart, COLUMN_START + 7).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_8(e) : "");
+                cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(e));
                 cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(e));
-                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 1 || e.getElementSet() == 3 ? "" : getR2_10(e));
+                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(e) : "");
 
                 cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
                 cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");

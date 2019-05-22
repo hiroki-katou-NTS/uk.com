@@ -44,7 +44,9 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("   EXTRA_RATE,");
         sql.append("   BASE_ITEM_FIXED_VALUE,");
         sql.append("   BASE_ITEM_ATR,");
-        sql.append("   mc.NAME");
+        sql.append("   mc.NAME,");
+        sql.append("   CALCULATION_FORMULA_ATR,");
+        sql.append("   BASIC_CALCULATION_FORMULA");
         sql.append(" FROM (SELECT * ");
         sql.append("   FROM QPBMT_FORMULA");
         sql.append("   WHERE CID = ?cid) f");

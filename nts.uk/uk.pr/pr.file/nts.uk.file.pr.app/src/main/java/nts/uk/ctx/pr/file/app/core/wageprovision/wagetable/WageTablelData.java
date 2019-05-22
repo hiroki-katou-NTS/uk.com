@@ -20,17 +20,17 @@ public class WageTablelData {
     //R4
     private String WageHisEndYm;
 
-    private String fixElement3;
+    private String fixElement1;
 
-    private String optAddElement3;
+    private String optAddElement1;
 
     private String fixElement2;
 
     private String optAddElement2;
 
-    private String fixElement1;
+    private String fixElement3;
 
-    private String optAddElement1;
+    private String optAddElement3;
 
     private String stepIncrement1;
 
