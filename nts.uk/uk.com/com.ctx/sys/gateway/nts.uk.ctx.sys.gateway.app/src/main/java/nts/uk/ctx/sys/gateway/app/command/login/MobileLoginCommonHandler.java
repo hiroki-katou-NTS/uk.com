@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.google.common.base.Objects;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
@@ -79,23 +81,24 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 			return passChecked;
 		}
 		
-		//set info to session
-		command.getRequest().changeSessionId();
-        
-        //ログインセッション作成 (Create login session)
-        this.initSessionC(user, em, command.getCompanyCode(), roles);
-		passChecked.successMsg = systemSuspendOutput.getMsgID();
-		
-		if(command.isSaveLog()){
+		if(!(!command.isLoginDirect() && Objects.equal(passChecked.msgErrorId, "Msg_1517")) || command.isLoginDirect()){
+			
+			//set info to session
+			command.getRequest().changeSessionId();
+	        
+	        //ログインセッション作成 (Create login session)
+	        this.initSessionC(user, em, command.getCompanyCode(), roles);
+			passChecked.successMsg = systemSuspendOutput.getMsgID();
+			
 			// アルゴリズム「ログイン記録」を実行する１
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
 			this.service.callLoginRecord(param);
+			
+			//hoatt 2019.05.06
+			//EA修正履歴No.3373
+			//アルゴリズム「ログイン後チェック」を実行する
+			this.deleteLoginLog(user.getUserId());
 		}
-		
-		//hoatt 2019.05.06
-		//EA修正履歴No.3373
-		//アルゴリズム「ログイン後チェック」を実行する
-		this.deleteLoginLog(user.getUserId());
 		
 		return passChecked;
 	}

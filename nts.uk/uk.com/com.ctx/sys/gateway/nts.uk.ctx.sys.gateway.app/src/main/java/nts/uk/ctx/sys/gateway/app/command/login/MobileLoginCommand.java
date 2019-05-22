@@ -14,7 +14,7 @@ public class MobileLoginCommand extends SubmitLoginFormThreeCommand {
 
 	@Getter
 	@Setter
-	private boolean saveLog = true;
+	private boolean loginDirect = false;
 	
 	/**
 	 * Instantiates a new submit login form one command.
