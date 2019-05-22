@@ -1,22 +1,21 @@
-import { obj } from '@app/utils';
+import { obj, dom } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
 const vm = Vue.extend({
     data: () => ({
         show: false,
         callback: {
-            hide: [],
-            click: []
+            hide: Function,
+            click: Function
         },
         opacity: null
     }),
     template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-on:touchmove="preventTouch" v-on:click="onClick"></div>`,
     methods: {
         onClick(evt: MouseEvent) {
-            this.callback.click
-                .forEach((click) => {
-                    click();
-                });
+            if (this.callback.click) {
+                this.callback.click();
+            }
 
             evt.preventDefault();
             evt.stopPropagation();
@@ -32,60 +31,49 @@ const vm = Vue.extend({
             if (!show) {
                 this.opacity = null;
 
-                while (this.callback.hide.length > 0) {
-                    this.callback.hide.shift()();
+                if (this.callback.hide > 0) {
+                    this.callback.hide();
                 }
+
+                this.$destroy(true);
             }
         }
+    },
+    destroyed() {
+        let self = this;
+
+        document.body.removeChild(self.$el);
     }
 }), mask = {
     install(vue: VueConstructor<Vue>) {
-        let $mask: {
-            show: boolean;
-            opacity: number;
-            readonly toggle: boolean;
-            callback: {
-                hide: Array<Function>;
-                click: Array<Function>;
-            };
-            $el: HTMLElement;
-            $once(act: 'remove', callback: () => void);
-            $mount(to: HTMLElement);
-        } | undefined;
-
         vue.prototype.$mask = function (act: 'hide' | 'show', opacity: number = 0.2) {
+            let self = this;
+
             if (act === 'hide') {
-                if ($mask) {
-                    $mask.show = false;
+                if (self.$$mask) {
+                    self.$$mask.show = false;
 
-                    document.body.removeChild($mask.$el);
-
-                    $mask = undefined;
+                    delete self.$$mask;
                 }
-            } else {
-                if (!$mask) {
-                    let msk = document.createElement('div');
-                    document.body.appendChild(msk);
+            } else if (act === 'show') {
+                if (!self.$$mask) {
+                    self.$$mask = new vm();
+                    self.$$mask.$mount(dom.create('div'));
 
-                    {
-                        $mask = new vm();
-                        $mask.$mount(msk);
+                    self.$$mask.show = true;
+                    self.$$mask.opacity = opacity;
 
-                        $mask.show = true;
-                        $mask.opacity = opacity;
-
-                        $mask.$once('remove', () => $mask = undefined);
-                    }
+                    document.body.appendChild(self.$$mask.$el);
                 }
 
                 return {
-                    on (click: () => void, hide: () => void) {
+                    on(click: () => void, hide: () => void) {
                         if (obj.isFunction(hide)) {
-                            $mask.callback.hide.push(hide);
+                            self.$$mask.callback.hide = hide;
                         }
 
                         if (obj.isFunction(click)) {
-                            $mask.callback.click.push(click);
+                            self.$$mask.callback.click = click;
                         }
                     }
                 };

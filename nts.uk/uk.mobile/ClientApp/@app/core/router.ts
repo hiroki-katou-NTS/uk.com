@@ -1,6 +1,6 @@
 import { routes } from '@app/core/routes';
-import { VueRouter } from '@app/provider';
-import { csrf } from '@app/utils';
+import { Vue, VueRouter } from '@app/provider';
+import { csrf, obj } from '@app/utils';
 // import { HomeComponent } from '../../views/home';
 import { Page404Component } from '@app/components';
 
@@ -22,17 +22,38 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     let token = csrf.getToken(),
-        $modals = document.body.querySelectorAll('.modal.show');
+        $modals = document.body.querySelectorAll('.modal.show'),
+        $modalbs = document.body.querySelectorAll('.modal-backdrop.show');
 
     // fix show modal on switch view (#107642)
     if ($modals && $modals.length) {
-
         [].slice.call($modals).forEach((modal: HTMLElement) => {
+            let vm = Vue.vmOf(modal);
 
-            let $close = modal.querySelector('.modal-header .close, .modal-header .btn-close') as HTMLElement;
+            if (obj.has(vm, 'show')) {
+                vm.show = false;
+            } else if (vm.$vnode && vm.$vnode.context) {
+                let ctx = vm.$vnode.context;
 
-            if ($close) {
-                $close.click();
+                if (obj.has(ctx, 'show')) {
+                    ctx.show = false;
+                }
+            }
+        });
+    }
+
+    if ($modalbs && $modalbs.length) {
+        [].slice.call($modalbs).forEach((modal: HTMLElement) => {
+            let vm = Vue.vmOf(modal);
+
+            if (obj.has(vm, 'show')) {
+                vm.show = false;
+            } else if (vm.$vnode && vm.$vnode.context) {
+                let ctx = vm.$vnode.context;
+
+                if (obj.has(ctx, 'show')) {
+                    ctx.show = false;
+                }
             }
         });
     }

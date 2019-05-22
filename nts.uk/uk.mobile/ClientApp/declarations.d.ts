@@ -72,6 +72,7 @@ declare module "vue/types/options" {
 declare module "vue/types/vue" {
     interface Vue {
         pgName: string;
+        readonly $valid: boolean;
         $http: {
             get(url: string): Promise<{}>;
             get(pg: WebAppId, url: string): Promise<{}>;
@@ -87,30 +88,46 @@ declare module "vue/types/vue" {
                 cancel: (taskId: string) => Promise<{}>;
             }
         };
-        $i18n(resr: string): string;
-        $i18n(resr: string, param: string): string;
-        $i18n(resr: string, param: string[]): string;
-        $i18n(resr: string, param: { [key: string]: string }): string;
-        $close(): void;
-        $close(data: any): void;
-        $mask(act: 'hide'): void;
-        $mask(act: 'show', opacity?: number): {
-            on: (click: () => void, hide?: () => void) => void;
+        $i18n: {
+            (resr: string): string;
+            (resr: string, param: string): string;
+            (resr: string, param: string[]): string;
+            (resr: string, param: { [key: string]: string }): string;
         };
-        $goto(name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
-        $goto(location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
+        $close: {
+            (): void;
+            (data: any): void;
+        };
+        $mask: {
+            (act: 'hide'): void;
+            (act: 'show', opacity?: number): {
+                on: (click: () => void, hide?: () => void) => void;
+            }
+        };
+        $goto: {
+            (name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
+            (location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
+        };
         $modal: {
             (name: string, params?: any, options?: IModalOptions): Promise<{}>;
             (component: VueConstructor<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
             (component: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
-            warn(msg: string): Promise<{}>;
-            warn(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
-            info(msg: string): Promise<{}>;
-            info(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
-            error(msg: string): Promise<{}>;
-            error(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
-            confirm(msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
-            confirm(resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+            warn: {
+                (msg: string): Promise<{}>;
+                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            };
+            info: {
+                (msg: string): Promise<{}>;
+                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            };
+            error: {
+                (msg: string): Promise<{}>;
+                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
+            };
+            confirm: {
+                (msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+            }
         };
         $picker: {
             (value: { [key: string]: any },
@@ -132,17 +149,20 @@ declare module "vue/types/vue" {
                     required?: boolean;
                 }): Promise<{}>;
         };
-        readonly $valid: boolean;
         $errors: {
             [name: string]: {
                 [rule: string]: string;
             }
         };
-        $validate(): void;
-        $validate(act: 'clear'): void;
-        $validate(name: string): boolean;
-        $updateValidator(rule: IRule): void;
-        $updateValidator(name: string, rule: IRule): void;
+        $validate: {
+            (): void;
+            (act: 'clear'): void;
+            (name: string): boolean;
+        };
+        $updateValidator: {
+            (rule: IRule): void;
+            (name: string, rule: IRule): void;
+        };
         validations: {
             [name: string]: IRule;
         };
@@ -155,6 +175,7 @@ declare module "vue/types/vue" {
             extend: (to: any, from: any) => any;
         };
         toJS: (value: any) => any;
+        vmOf: (el: HTMLElement) => { [key: string]: any; };
     }
 }
 
