@@ -167,7 +167,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return e.getQualifiGroupName();
         }
         if(e.getMasterNumAtr1() == 0) {
-            return getNameMaster(data, e.getWageTableCode() , e.getMasterCd1());
+            return getNameMaster(data, e.getFixElement1() , e.getMasterCd1());
         }
         if (e.getElementSet() == 0 && e.getFixElement1().startsWith("M")) {
             return enumElementType(e.getFixElement1());
@@ -180,7 +180,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
         if(e.getMasterNumAtr2() == 0) {
-            getNameMaster(data, e.getWageTableCode() , e.getMasterCd2());
+            getNameMaster(data, e.getFixElement2() , e.getMasterCd2());
         }
         if (e.getFixElement2().startsWith("M")) {
             return enumElementType(e.getFixElement2());
@@ -193,7 +193,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
         if(e.getMasterNumAtr3() == 0) {
-            getNameMaster(data, e.getWageTableCode() , e.getMasterCd3());
+            getNameMaster(data, e.getFixElement3() , e.getMasterCd3());
         }
         if (e.getFixElement3().startsWith("M")) {
             return enumElementType(e.getFixElement3());
