@@ -336,7 +336,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
                 CollectionUtil.split(classificationCodes, ELEMENT_300, splitClassificationCodes -> {
                     // workplace condition
                     CollectionUtil.split(workplaceCodes, ELEMENT_300, splitWorkplaceCodes -> {
-                        // departmen condition
+                        // department condition
                         CollectionUtil.split(departmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() + splitWorkplaceCodes.size() - countParameterFinal), splitDepartmentCodes ->
                                 resultList.addAll(executeQuery(
                                     paramQuery.getFilterByEmployment(), splitEmploymentCodes,
@@ -587,7 +587,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * #findBySid(java.lang.String, java.lang.String, nts.arc.time.GeneralDateTime)
 	 */
 	@Override
-	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate) {
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate, int systemType) {
 		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
@@ -604,13 +604,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// Where SID.
 		conditions.add(cb.equal(root.get(EmployeeDataView_.sid), sid));
 
-		// Department.
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
-
-		// Workplace.
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
+		if (systemType == CCG001SystemType.SALARY.value) {
+			// Department.
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
+		} else {
+			// Workplace.
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
+		}
 
 		// Find fist.
 		cq.where(conditions.toArray(new Predicate[] {}));
