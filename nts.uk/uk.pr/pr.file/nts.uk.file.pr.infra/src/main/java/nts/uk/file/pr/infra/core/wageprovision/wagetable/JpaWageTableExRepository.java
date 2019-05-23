@@ -1,6 +1,7 @@
 package nts.uk.file.pr.infra.core.wageprovision.wagetable;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.ItemDataNameExport;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTableExportRepository;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTablelData;
@@ -8,9 +9,12 @@ import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTablelData;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -48,7 +52,10 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    ELEMENT_SET,");
         exportSQL.append("    MASTER_NUM_ATR_1,");
         exportSQL.append("    MASTER_NUM_ATR_2,");
-        exportSQL.append("    MASTER_NUM_ATR_3");
+        exportSQL.append("    MASTER_NUM_ATR_3,");
+        exportSQL.append("    MASTER_CD_1,");
+        exportSQL.append("    MASTER_CD_2,");
+        exportSQL.append("    MASTER_CD_3");
         exportSQL.append(" FROM QPBMT_WAGE_TABLE w");
         exportSQL.append(" INNER JOIN (SELECT * ");
         exportSQL.append("       FROM QPBMT_WAGE_TABLE_HIST");
@@ -96,7 +103,10 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[23] != null ? ((BigDecimal)e[23]).intValue() : 0,
                         e[24] != null ? ((BigDecimal)e[24]).intValue() : 0,
                         e[25] != null ? ((BigDecimal)e[25]).intValue() : 0,
-                        e[26] != null ? ((BigDecimal)e[26]).intValue() : 0
+                        e[26] != null ? ((BigDecimal)e[26]).intValue() : 0,
+                        e[27] != null ? e[27].toString() : "",
+                        e[28] != null ? e[28].toString() : "",
+                        e[29] != null ? e[29].toString() : ""
                 ));
             }
         } catch (NoResultException e) {
@@ -104,6 +114,79 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         }
         return resulfData;
 
+    }
+
+    @Override
+    public List<ItemDataNameExport> getItemNameMaster(String cid){
+        List<Object[]> result = null;
+        List<ItemDataNameExport> resulfData = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append("   SELECT");
+        sql.append("        CODE ,");
+        sql.append("        NAME,");
+        sql.append("        'M001' AS TYPE");
+        sql.append("      FROM BSYMT_EMPLOYMENT");
+        sql.append("      WHERE CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("      SELECT  CD AS CODE ,");
+        sql.append("          NAME,");
+        sql.append("          'M002' AS TYPE");
+        sql.append("      FROM BSYMT_DEPARTMENT_INFO f");
+        sql.append("      INNER JOIN BSYMT_DEPARTMENT_HIST h ON f.HIST_ID = h.HIST_ID ");
+        sql.append("      AND f.CID = h.CID AND f.DEP_ID = h.DEP_ID AND h.STR_D <= ?baseDate AND h.END_D >= ?baseDate");
+        sql.append("      WHERE f.CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("      SELECT  CLSCD AS CODE ,");
+        sql.append("          CLSNAME AS NAME,");
+        sql.append("          'M003' AS TYPE");
+        sql.append("      FROM BSYMT_CLASSIFICATION ");
+        sql.append("      WHERE CID = ?cid");
+        sql.append("   UNION ALL");
+        sql.append("     SELECT  JOB_CD AS CODE ,");
+        sql.append("         JOB_NAME AS NAME,");
+        sql.append("         'M004' AS TYPE");
+        sql.append("     FROM BSYMT_JOB_INFO f");
+        sql.append("     INNER JOIN BSYMT_JOB_HIST h ON h.CID = f.CID AND h.JOB_ID = f.JOB_ID AND h.HIST_ID = f.HIST_ID ");
+        sql.append("     AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate");
+        sql.append("     WHERE f.CID = ?cid");
+        sql.append("  UNION ALL ");
+        sql.append("     SELECT  SALARY_CLS_CD AS CODE ,");
+        sql.append("         SALARY_CLS_NAME AS NAME,");
+        sql.append("         'M005' AS TYPE");
+        sql.append("     FROM QPBMT_SALARY_CLS_INFO ");
+        sql.append("     WHERE CID = ?cid");
+        sql.append("  UNION ALL ");
+        sql.append("     SELECT QUALIFICATION_CD , ");
+        sql.append("         QUALIFICATION_NAME,");
+        sql.append("         'M006' AS TYPE");
+        sql.append("     FROM QPBMT_QUALIFICATION_INFO");
+        sql.append("     WHERE CID = ?cid");
+        try {
+            result = this.getEntityManager()
+                    .createNativeQuery(sql.toString())
+                    .setParameter("cid", cid)
+                    .setParameter("baseDate", getBaseDate())
+                    .getResultList();
+            resulfData = result.stream().map(item -> new ItemDataNameExport(item[0].toString(),
+                                    item[1].toString(), item[2].toString())).collect(Collectors.toList());
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+        return resulfData;
+    }
+
+    private java.sql.Date getBaseDate() {
+        GeneralDate baseDate = GeneralDate.today();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date sqlDate = null;
+        java.util.Date date = null;
+        try {
+            date = format.parse(baseDate.toString());
+            sqlDate = new java.sql.Date(date.getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+        return sqlDate;
     }
 
     @Override

@@ -9,4 +9,10 @@ import lombok.*;
 public class ItemDataNameExport {
     private String code;
     private String name;
+    private String type;
+
+    public ItemDataNameExport(String code, String name){
+        this.code = code;
+        this.name = name;
+    }
 }

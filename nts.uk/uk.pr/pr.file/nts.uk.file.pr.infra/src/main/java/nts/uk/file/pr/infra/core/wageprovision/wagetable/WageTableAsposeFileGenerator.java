@@ -41,7 +41,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     private CompanyAdapter company;
 
     @Override
-    public void generate(FileGeneratorContext fileContext, List<WageTablelData> exportData, List<ItemDataNameExport> dataName) {
+    public void generate(FileGeneratorContext fileContext, List<WageTablelData> exportData, List<ItemDataNameExport> dataName, List<ItemDataNameExport> dataNameMaster) {
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 
             Workbook workbook = reportContext.getWorkbook();
@@ -49,7 +49,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             worksheets.get(0).setName(SHEET_NAME);
             int page = exportData.size() == MAX_ROWS ? 0 : exportData.size() / MAX_ROWS;
             createTable(worksheets, page, this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse(""));
-            fillData(worksheets, exportData, dataName);
+            fillData(worksheets, exportData, dataName, dataNameMaster);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
@@ -59,7 +59,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     /* get list item name*/
-    private String getListItemName(List<ItemDataNameExport> data, String codeOp) {
+    private String getItemName(List<ItemDataNameExport> data, String codeOp) {
         Optional<ItemDataNameExport> dataName = data.stream().filter(e -> e.equals(codeOp)).findFirst();
         return dataName.isPresent() ? dataName.get().getName() : "";
     }
@@ -102,6 +102,11 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         }
     }
 
+    private String getNameMaster(List<ItemDataNameExport> dataNameMaster, String type, String masterCd){
+        Optional<ItemDataNameExport> item = dataNameMaster.stream().filter(i -> masterCd.equals(i.getCode()) && type.equals(i.getType())).findFirst();
+        return item.isPresent() ? item.get().getName() : "";
+    }
+
     /*QualificationPaymentMethod*/
     private String enumQualificationPaymentMethod(int index) {
         if(index == 0) {
@@ -109,7 +114,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         }
         return TextResource.localize("Enum_Qualify_Pay_Method_Only_One_Highest");
     }
-
 
     private String getFixedValue1(WageTablelData e, List<ItemDataNameExport> dataName) {
         if (e.getElementSet() == 3) {
@@ -122,7 +126,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement1());
         }
         if (!e.getOptAddElement1().isEmpty()) {
-            return getListItemName(dataName, e.getOptAddElement1());
+            return getItemName(dataName, e.getOptAddElement1());
         }
         return "";
 
@@ -139,7 +143,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement2());
         }
         if (!e.getOptAddElement2().isEmpty()) {
-            return getListItemName(dataName, e.getOptAddElement2());
+            return getItemName(dataName, e.getOptAddElement2());
         }
 
         return "";
@@ -153,13 +157,19 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return enumElementType(e.getFixElement3());
         }
         if (!e.getOptAddElement3().isEmpty()) {
-            return getListItemName(dataName, e.getOptAddElement3());
+            return getItemName(dataName, e.getOptAddElement3());
         }
         return "";
     }
 
-    private String getR2_8(WageTablelData e) {
-        if (e.getElementSet() == 0 || (e.getElementSet() == 1 && e.getMasterNumAtr1() == 0) ) {
+    private String getR2_8(List<ItemDataNameExport> data, WageTablelData e) {
+        if(e.getElementSet() == 3) {
+            return e.getQualifiGroupName();
+        }
+        if(e.getMasterNumAtr1() == 0) {
+            return getNameMaster(data, e.getWageTableCode() , e.getMasterCd1());
+        }
+        if (e.getElementSet() == 0 && e.getFixElement1().startsWith("M")) {
             return enumElementType(e.getFixElement1());
         }
         if (!e.getLowerLimit1().isEmpty()) {
@@ -168,9 +178,12 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return "";
     }
 
-    private String getR2_9(WageTablelData e) {
-        if (e.getMasterNumAtr2() == 0) {
-            return enumElementType(e.getFixElement3());
+    private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
+        if(e.getMasterNumAtr2() == 0) {
+            getNameMaster(data, e.getWageTableCode() , e.getMasterCd2());
+        }
+        if (e.getFixElement2().startsWith("M")) {
+            return enumElementType(e.getFixElement2());
         }
         if (!e.getLowerLimit2().isEmpty()) {
             return e.getLowerLimit2() + TextResource.localize("QMM016_31") + e.getUpperLimit2();
@@ -178,8 +191,11 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return "";
     }
 
-    private String getR2_10(WageTablelData e) {
-        if (e.getMasterNumAtr3() == 0) {
+    private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
+        if(e.getMasterNumAtr3() == 0) {
+            getNameMaster(data, e.getWageTableCode() , e.getMasterCd3());
+        }
+        if (e.getFixElement3().startsWith("M")) {
             return enumElementType(e.getFixElement3());
         }
         if (!e.getLowerLimit3().isEmpty()) {
@@ -210,7 +226,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return startYearMonth.toString().substring(0,4) + "/" + startYearMonth.toString().substring(4,6);
     }
 
-    private void fillData(WorksheetCollection worksheets, List<WageTablelData> data, List<ItemDataNameExport> dataName) {
+    private void fillData(WorksheetCollection worksheets, List<WageTablelData> data, List<ItemDataNameExport> dataName, List<ItemDataNameExport> dataMasterName) {
         try {
             int rowStart = 3;
             Worksheet sheet = worksheets.get(0);
@@ -230,9 +246,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                 cells.get(rowStart, COLUMN_START + 5).setValue(e.getElementSet() == 0 ? "" : getFixedValue2(e, dataName));
                 cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getFixedValue3(e, dataName) : "");
 
-                cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(e));
-                cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(e));
-                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(e) : "");
+                cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(dataMasterName, e));
+                cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(dataMasterName, e));
+                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(dataMasterName, e) : "");
 
                 cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
                 cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");

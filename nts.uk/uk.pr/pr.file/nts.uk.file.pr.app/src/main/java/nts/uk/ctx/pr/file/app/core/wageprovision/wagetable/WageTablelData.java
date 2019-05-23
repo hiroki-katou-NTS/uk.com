@@ -66,4 +66,10 @@ public class WageTablelData {
 
     private int masterNumAtr3;
 
+    private String masterCd1;
+
+    private String masterCd2;
+
+    private String masterCd3;
+
 }

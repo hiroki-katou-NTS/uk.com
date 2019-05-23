@@ -139,6 +139,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
     }
 
+    private String getAdjustmentClassification(){
+
+        return "";
+    }
+
     private String getValueRounding(Object[] obj){
         if(((BigDecimal)obj[4]).intValue() == 1 || (obj[15] != null && ((BigDecimal)obj[15]).intValue() == 1)) {
             return "なし";
@@ -248,6 +253,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private String getUsageMasterName(Object[] data){
         if(((BigDecimal)data[4]).intValue() == 1 || ((BigDecimal)data[6]).intValue() == 0) {
             return "なし";
+        }
+        if(data[8] != null && "0000000000".equals(data[8].toString())) {
+            return TextResource.localize("QMM017_30");
         }
         return data[23] != null ? data[23].toString() : "";
     }

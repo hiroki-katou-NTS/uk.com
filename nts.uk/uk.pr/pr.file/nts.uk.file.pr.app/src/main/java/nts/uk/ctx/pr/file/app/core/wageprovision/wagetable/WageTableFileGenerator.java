@@ -7,5 +7,5 @@ import java.util.List;
 
 
 public interface WageTableFileGenerator {
-    void generate(FileGeneratorContext fileContext, List<WageTablelData> exportData,List<ItemDataNameExport> dataName);
+    void generate(FileGeneratorContext fileContext, List<WageTablelData> exportData, List<ItemDataNameExport> dataName, List<ItemDataNameExport> dataNameMaster);
 }

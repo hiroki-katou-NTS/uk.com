@@ -11,12 +11,8 @@ import java.util.List;
 @Stateless
 public class WageTableExportService extends ExportService<WageTableExportQuery> {
 
-
-
     @Inject
     private WageTableExportRepository mWageTableExportRepository;
-
-
 
     @Inject
     private WageTableFileGenerator mWageTableFileGenerator;
@@ -25,7 +21,8 @@ public class WageTableExportService extends ExportService<WageTableExportQuery> 
     protected void handle(ExportServiceContext<WageTableExportQuery> exportServiceContext) {
         String cid = AppContexts.user().companyId();
         List<ItemDataNameExport> dataName = mWageTableExportRepository.getItemName(cid);
+        List<ItemDataNameExport> dataNameMaster = mWageTableExportRepository.getItemNameMaster(cid);
         List<WageTablelData> mWageTablelData = mWageTableExportRepository.getWageTableExport(cid,exportServiceContext.getQuery().startDate);
-        mWageTableFileGenerator.generate(exportServiceContext.getGeneratorContext(),mWageTablelData,dataName);
+        mWageTableFileGenerator.generate(exportServiceContext.getGeneratorContext(),mWageTablelData, dataName, dataNameMaster);
     }
 }
