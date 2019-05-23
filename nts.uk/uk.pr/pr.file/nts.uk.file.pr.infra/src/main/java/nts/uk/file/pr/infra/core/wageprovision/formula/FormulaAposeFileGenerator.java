@@ -112,7 +112,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(((BigDecimal) dataRow[4]).intValue() == 1 ? getDetailedFormula(formula, dataRow[0].toString()) : getSimpleFormula(dataRow, targetItem));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 1 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
+                            cells.get(rowStart, j+ startColumn).setValue(((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
                                     : dataRow[j] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), ReferenceMonth.class).nameId : "");
                             break;
                         case 11:
@@ -140,11 +140,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getValueRounding(Object[] obj){
-        if(obj[15] != null) {
-            return obj[11] != null ? EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingMethod.class).nameId :"";
-        }
         if(((BigDecimal)obj[4]).intValue() == 1 || (obj[15] != null && ((BigDecimal)obj[15]).intValue() == 1)) {
             return "なし";
+        }
+        if(obj[15] != null && ((BigDecimal)obj[15]).intValue() != 1) {
+            return obj[11] != null ? EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingMethod.class).nameId :"";
         }
         return "";
     }
@@ -153,7 +153,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && amountCls.intValue() == (Integer)baseTarget.get(i)[3]) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && (amountCls.intValue() == (Integer)baseTarget.get(i)[3])
+                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0) {
                 count++;
                 temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }

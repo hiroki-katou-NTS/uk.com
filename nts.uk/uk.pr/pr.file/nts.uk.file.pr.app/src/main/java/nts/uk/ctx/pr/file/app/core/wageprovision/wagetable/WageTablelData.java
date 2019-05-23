@@ -60,4 +60,10 @@ public class WageTablelData {
 
     private int elementSet;
 
+    private int masterNumAtr1;
+
+    private int masterNumAtr2;
+
+    private int masterNumAtr3;
+
 }

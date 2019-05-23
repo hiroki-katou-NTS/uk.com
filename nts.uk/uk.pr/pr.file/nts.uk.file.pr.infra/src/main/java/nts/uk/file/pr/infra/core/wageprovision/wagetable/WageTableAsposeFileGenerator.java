@@ -159,8 +159,8 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_8(WageTablelData e) {
-        if (!e.getFixElement3().isEmpty()) {
-            return enumElementType(e.getFixElement3());
+        if (e.getElementSet() == 0 ||  (e.getElementSet() == 1 || e.getMasterNumAtr1() == 0) ) {
+            return enumElementType(e.getFixElement1());
         }
         if (!e.getLowerLimit1().isEmpty()) {
             return e.getLowerLimit1() + TextResource.localize("QMM016_31") + e.getUpperLimit1();
@@ -169,8 +169,8 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_9(WageTablelData e) {
-        if (!e.getFixElement2().isEmpty()) {
-            return enumElementType(e.getFixElement2());
+        if (e.getMasterNumAtr2() == 0) {
+            return enumElementType(e.getFixElement3());
         }
         if (!e.getLowerLimit2().isEmpty()) {
             return e.getLowerLimit2() + TextResource.localize("QMM016_31") + e.getUpperLimit2();
@@ -179,7 +179,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_10(WageTablelData e) {
-        if (!e.getFixElement3().isEmpty()) {
+        if (e.getMasterNumAtr3() == 0) {
             return enumElementType(e.getFixElement3());
         }
         if (!e.getLowerLimit3().isEmpty()) {

@@ -45,7 +45,10 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    LOWER_LIMIT_3,");
         exportSQL.append("    PAY_AMOUNT,");
         exportSQL.append("    PAYMENT_METHOD,");
-        exportSQL.append("    ELEMENT_SET");
+        exportSQL.append("    ELEMENT_SET,");
+        exportSQL.append("    MASTER_NUM_ATR_1,");
+        exportSQL.append("    MASTER_NUM_ATR_2,");
+        exportSQL.append("    MASTER_NUM_ATR_3");
         exportSQL.append(" FROM QPBMT_WAGE_TABLE w");
         exportSQL.append(" INNER JOIN (SELECT * ");
         exportSQL.append("       FROM QPBMT_WAGE_TABLE_HIST");
@@ -90,7 +93,10 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[20] != null ? e[20].toString() : "",
                         e[21] != null ? e[21].toString() : "",
                         e[22] != null ? e[22].toString() : "3",
-                        e[23] != null ? ((BigDecimal)e[23]).intValue() : 0
+                        e[23] != null ? ((BigDecimal)e[23]).intValue() : 0,
+                        e[24] != null ? ((BigDecimal)e[24]).intValue() : 0,
+                        e[25] != null ? ((BigDecimal)e[25]).intValue() : 0,
+                        e[26] != null ? ((BigDecimal)e[26]).intValue() : 0
                 ));
             }
         } catch (NoResultException e) {
