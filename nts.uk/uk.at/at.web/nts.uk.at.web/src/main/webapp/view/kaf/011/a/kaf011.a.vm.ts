@@ -215,6 +215,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
                 self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
+                self.recWk().workTimeCDs(data.workTimeCDs || null);
             }
         }
         validateControl() {
@@ -299,6 +300,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let checkBoxValue = self.checkBoxValue();
             // if (isCheckReasonError) { return; }
             block.invisible();
+            saveCmd.checkOver1Year = true;
             service.save(saveCmd).done((data) => {
                 self.saveDone(data, checkBoxValue);
             }).fail((res) => {

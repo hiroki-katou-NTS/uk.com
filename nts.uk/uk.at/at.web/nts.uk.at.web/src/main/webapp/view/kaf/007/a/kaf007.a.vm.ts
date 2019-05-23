@@ -286,10 +286,35 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.changeUnregisterValue();
 
             let workChange = ko.toJS(self.appWorkChange());
+            workChange.checkOver1Year = true;
 
             service.addWorkChange(workChange).done((data) => {
-                //Success
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                workChange.checkOver1Year = false;
+                self.sendMail(data);                
+            }).fail((res) => {
+                if(res.messageId == "Msg_1518"){//confirm
+                    dialog.confirm({messageId: res.messageId}).ifYes(() => {
+                        workChange.checkOver1Year = false;
+                        service.addWorkChange(workChange).done((data) => {
+                            self.sendMail(data);                
+                        }).fail((res) => {
+                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                            nts.uk.ui.block.clear();
+                        });
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                    
+                }else{
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    nts.uk.ui.block.clear();
+                }
+            });
+        }
+
+        sendMail(data){
+            let self = this;
+            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if (data.autoSendMail) {
                         appcommon.CommonProcess.displayMailResult(data);
                     } else {
@@ -300,12 +325,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         }
                     }
                 });
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                nts.uk.ui.block.clear();
-            });
         }
-
         getStartDate() {
             let self = this,
                 dateValue = self.multiDate() ? self.datePeriod().startDate : self.dateSingle();
@@ -419,6 +439,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //実績の内容
             service.getRecordWorkInfoByDate({appDate : moment(!endDate ? startDate : endDate).format(self.dateFormat), employeeID : null}).done((recordWorkInfo) => {
                 //Binding data
+                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
+                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
                 if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
                     self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
