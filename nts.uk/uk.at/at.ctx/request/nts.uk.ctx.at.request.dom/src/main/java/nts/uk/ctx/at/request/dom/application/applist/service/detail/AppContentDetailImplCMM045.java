@@ -39,6 +39,10 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	private AppStampRepository appStampRepo;
 	@Inject
 	private LateOrLeaveEarlyRepository lateLeaveEarlyRepo;
+	
+	private final static String KDL030 = "\n";
+	private final static String CMM045 = "<br/>";
+	
 	/**
 	 * get content OverTimeBf
 	 * 残業申請 kaf005 - appType = 0
@@ -58,7 +62,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		String contentv4 = time1 + time2;
 		String contentv42 = this.convertFrameTime(overTime.getLstFrame());
 		// No.417
-		String timeNo417 = this.displayTimeNo417(overTime.getTimeNo417());
+		String timeNo417 = this.displayTimeNo417(overTime.getTimeNo417(), screenAtr);
 		String cont1 = Strings.isBlank(contentv42) ? timeNo417 : Strings.isBlank(timeNo417) ? contentv42 : contentv42 + "　" + timeNo417;
 		String setTrue = Strings.isBlank(contentv4) ? cont1 : Strings.isBlank(cont1) ? contentv4 : contentv4 + "　" + cont1;
 		String appCt005 = detailSet == 1 ? setTrue : cont1;
@@ -165,7 +169,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		String cont1 = name == "" ? caF : caF == "" ? name : name + "　" + caF;
 		String appContent010 = cont1 == "" ? this.convertFrameTimeHd(hdWork.getLstFrame()) : cont1 + "　" + this.convertFrameTimeHd(hdWork.getLstFrame());
         //No.417
-		String timeNo417 = this.displayTimeNo417(hdWork.getTimeNo417());
+		String timeNo417 = this.displayTimeNo417(hdWork.getTimeNo417(), screenAtr);
 		String appCt010 = appContent010 + timeNo417;
 		return this.checkAddReason(appCt010, appReason, appReasonDisAtr, screenAtr);
 	}
@@ -429,7 +433,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		}
 		//振出 rec typeApp = 1
         //振休 abs typeApp = 0
-        String content010 = this.convertC(compltSync, appReasonDisAtr);
+        String content010 = this.convertC(compltSync, appReasonDisAtr, screenAtr);
         return this.checkAddReason(content010, appReason, appReasonDisAtr, screenAtr);
 	}
 	
@@ -442,7 +446,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
             return this.getContentCompltLeave(complt, companyId, appId, appReasonDisAtr, appReason, screenAtr);
         }
 	}
-	private String displayTimeNo417(TimeNo417 timeNo417) {
+	private String displayTimeNo417(TimeNo417 timeNo417, int screenAtr) {
 		if (timeNo417 == null) {
 			return "";
 		}
@@ -450,7 +454,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			return "";
 		}
 		if (timeNo417.getNumOfYear36Over() == 0) {// 未超過の場合
-			return "<br/>" + I18NText.getText("CMM045_282") + this.convertTime_Short_HM(timeNo417.getTotalOv()) + "　"
+			return this.checkCRLF(screenAtr) + I18NText.getText("CMM045_282") + this.convertTime_Short_HM(timeNo417.getTotalOv()) + "　"
 					+ I18NText.getText("CMM045_283")
 					+ I18NText.getText("CMM045_284", String.valueOf(timeNo417.getNumOfYear36Over()));
 		}
@@ -465,7 +469,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			a2 = a2 == "" ? I18NText.getText("CMM045_285", String.valueOf(mon))
 					: a2 + "、" + I18NText.getText("CMM045_285", String.valueOf(mon));
 		}
-		return a2 == "" ? "<br/>" + a1 : "<br/>" + a1 + "(" + a2 + ")";
+		return a2 == "" ? this.checkCRLF(screenAtr) + a1 : this.checkCRLF(screenAtr) + a1 + "(" + a2 + ")";
 	}
 	
 	private String convertTime_Short_HM(int time) {
@@ -588,7 +592,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
     //申請モード/承認モード merge convert C + D
     //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)表示（２段）
     //振出(rec) -> 振休(abs)
-    private String convertC(AppCompltLeaveSync compltSync, int appReasonDisAtr){
+    private String convertC(AppCompltLeaveSync compltSync, int appReasonDisAtr, int screenAtr){
     	AppCompltLeaveFull abs = null;
     	AppCompltLeaveFull rec = null;
     	String recContent = "";
@@ -605,8 +609,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
             absContent = this.convertB(abs);
             recContent = this.convertA(rec);
         }
-        String cont1 = "<div class = 'rec' >" + recContent + "</div>" + "<div class = 'abs' >" + absContent;
-        return appReasonDisAtr == 1 ? cont1 : "<div class = 'rec' >" + recContent + "</div>" + "<div class = 'abs' >" + absContent + "</div>";
+//        String cont1 = "<div class = 'rec' >" + recContent + "</div>" + "<div class = 'abs' >" + absContent;
+//        return appReasonDisAtr == 1 ? cont1 : "<div class = 'rec' >" + recContent + "</div>" + "<div class = 'abs' >" + absContent + "</div>";
+        return recContent + this.checkCRLF(screenAtr) + absContent;
     }
     private String getAsString(TimeDay time) {
 		return time == null ? "" : time.toString();
@@ -618,11 +623,19 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
     	String contentFull = "";
     	String addReason = appReasonDisAtr != null && appReasonDisAtr == 1 ? appReason : "";
 		if(screenAtr == ScreenAtr.KDL030.value){
-			addReason = addReason == "" ? "" : "申請理由：" + "<br/>" + addReason;
-			contentFull = contentDetail == "" ? addReason : addReason == "" ? contentDetail : contentDetail + "<br/>"+ addReason; 
+			addReason = addReason == "" ? "" : "申請理由：" + this.checkCRLF(screenAtr) + addReason;
+			contentFull = contentDetail == "" ? addReason : addReason == "" ? contentDetail : contentDetail + this.checkCRLF(screenAtr) + addReason; 
 		}else{//KAF018 + CMM045
 			contentFull = contentDetail;
 		}
 		return contentFull;
+    }
+    
+    private String checkCRLF(int screenAtr){
+    	if(screenAtr == ScreenAtr.KDL030.value){
+    		return KDL030;
+    	}else{
+    		return CMM045;
+    	}
     }
 }

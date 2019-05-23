@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaGrantInfoOutput;
+import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaUsedDaysOutput;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -68,11 +69,11 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	
 	/** 義務日数計算期間内の年休使用数を取得 */
 	@Override
-	public Optional<AnnualLeaveUsedDayNumber> getAnnualLeaveUsedDays(String companyId, String employeeId,
+	public AnnLeaUsedDaysOutput getAnnualLeaveUsedDays(String companyId, String employeeId,
 			GeneralDate criteria, ReferenceAtr referenceAtr, boolean distributeAtr,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
-		Optional<AnnualLeaveUsedDayNumber> result = Optional.empty();
+		AnnLeaUsedDaysOutput result = new AnnLeaUsedDaysOutput();
 		
 		// 按分が必要かどうか判断
 		DatePeriod period = null;
@@ -91,9 +92,15 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		if (period == null) return result;
 		
 		// 指定した期間の年休使用数を取得する
-		result = this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
+		Optional<AnnualLeaveUsedDayNumber> AnnLeaUsedDaysOpt =
+				this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
 		
 		// 年休使用数を返す
+		result.setDays(AnnLeaUsedDaysOpt);
+		
+		// 期間を返す
+		result.setPeriod(Optional.ofNullable(period));
+		
 		return result;
 	}
 	
@@ -125,7 +132,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 期間を作成
 		GeneralDate startDate = remainData.getGrantDate();
-		return Optional.of(new DatePeriod(startDate, startDate.addYears(1)));
+		return Optional.of(new DatePeriod(startDate, startDate.addYears(1).addDays(-1)));
 	}
 	
 	/** 年休使用義務日数の按分しない期間の付与日数を取得 */

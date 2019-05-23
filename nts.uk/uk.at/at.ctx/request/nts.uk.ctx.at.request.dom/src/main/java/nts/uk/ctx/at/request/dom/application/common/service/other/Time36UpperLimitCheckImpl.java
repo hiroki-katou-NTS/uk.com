@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -55,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.outsideot.service.Time36AgreementTargetItem;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -329,11 +331,11 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	// 月間時間の作成
 	private void createMonthly(AppOvertimeDetail appOvertimeDetail, Optional<AgreeTimeOfMonthExport> confirmed, String employeeID){
 		// 項目を移送する
-		appOvertimeDetail.getTime36Agree().getAgreeMonth().setActualTime(confirmed.get().getAgreementTime());
-		appOvertimeDetail.getTime36Agree().getAgreeMonth().setLimitAlarmTime(confirmed.get().getLimitAlarmTime());
-		appOvertimeDetail.getTime36Agree().getAgreeMonth().setLimitErrorTime(confirmed.get().getLimitErrorTime());
-		appOvertimeDetail.getTime36Agree().getAgreeMonth().setExceptionLimitAlarmTime(confirmed.get().getExceptionLimitAlarmTime().orElse(null));
-		appOvertimeDetail.getTime36Agree().getAgreeMonth().setExceptionLimitErrorTime(confirmed.get().getExceptionLimitErrorTime().orElse(null));
+		appOvertimeDetail.getTime36Agree().getAgreeMonth().setActualTime(confirmed.map(x -> x.getAgreementTime()).orElse(0));
+		appOvertimeDetail.getTime36Agree().getAgreeMonth().setLimitAlarmTime(confirmed.map(x -> x.getLimitAlarmTime()).orElse(0));
+		appOvertimeDetail.getTime36Agree().getAgreeMonth().setLimitErrorTime(confirmed.map(x -> x.getLimitErrorTime()).orElse(0));
+		appOvertimeDetail.getTime36Agree().getAgreeMonth().setExceptionLimitAlarmTime(confirmed.map(x -> x.getExceptionLimitAlarmTime().orElse(null)).orElse(null));
+		appOvertimeDetail.getTime36Agree().getAgreeMonth().setExceptionLimitErrorTime(confirmed.map(x -> x.getExceptionLimitErrorTime().orElse(null)).orElse(null));
 		// 超過回数を取得する
 		Year year = new Year(appOvertimeDetail.getYearMonth().year());
 		AgreementExcessInfoImport agreeInfo = excessTimesYearAdapter.getExcessTimesYear(employeeID, year);
@@ -344,8 +346,8 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	// 年間時間の作成
 	private void createAnnual(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate, Optional<AgreementTimeYear> opAgreementTimeYear){
-		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setActualTime(opAgreementTimeYear.get().getRecordTime());
-		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreementTimeYear.get().getLimitTime());
+		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setActualTime(opAgreementTimeYear.map(x -> x.getRecordTime()).orElse(new AttendanceTimeYear(0)));
+		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreementTimeYear.map(x -> x.getLimitTime()).orElse(new LimitOneYear(0)));
 	}
 	
 	// 36協定上限時間の作成
@@ -360,13 +362,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	// 月間時間の作成
 	private void createMonthlyUpperLimit(AppOvertimeDetail appOvertimeDetail, Optional<AgreMaxTimeOfMonthExport> confirmedMax){
 		// 項目移送する
-		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().updateOverTime(confirmedMax.map(x -> x.getAgreementTime()).orElse(null));
-		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().updateUpperLimitTime(confirmedMax.map(x -> x.getMaxTime()).orElse(null));
+		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().updateOverTime(confirmedMax.map(x -> x.getAgreementTime()).orElse(0));
+		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitMonth().updateUpperLimitTime(confirmedMax.map(x -> x.getMaxTime()).orElse(0));
 	}
 	
 	// 複数月平均時間の作成
 	private void createMonthlyAverage(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate referenceDate, Optional<AgreMaxAverageTimeMulti> opAgreMaxAverageTimeMulti){
-		AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = opAgreMaxAverageTimeMulti.get();
+		AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = opAgreMaxAverageTimeMulti.orElse(new AgreMaxAverageTimeMulti());
 		// 上限時間の項目移送
 		appOvertimeDetail.getTime36AgreeUpperLimit().getAgreeUpperLimitAverage().setUpperLimitTime(agreMaxAverageTimeMulti.getMaxTime());
 		List<Time36AgreeUpperLimitPerMonth> averageTimeLst = new ArrayList<>();

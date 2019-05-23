@@ -248,6 +248,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
+	@SneakyThrows
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
 				.collect(Collectors.toList());

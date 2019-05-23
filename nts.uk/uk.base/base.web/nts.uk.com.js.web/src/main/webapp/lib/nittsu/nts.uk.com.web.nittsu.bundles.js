@@ -3900,6 +3900,14 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function jumpToUsedSSOLoginPage() {
+                    uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
+                        window.location.href = path;
+                    }).ifEmpty(function () {
+                        request.jump('com', '/view/ccg/007/d/index.xhtml?signon=on');
+                    });
+                }
+                login.jumpToUsedSSOLoginPage = jumpToUsedSSOLoginPage;
                 function keepSerializedSession() {
                     var dfd = $.Deferred();
                     dfd.resolve();
@@ -4064,9 +4072,22 @@ var nts;
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
                         || uk.request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
                 };
+                var getEmployeeSetting = function () {
+                    var dfd = $.Deferred(), es = nts.uk.sessionStorage.getItem("nts.uk.session.EMPLOYEE_SETTING");
+                    if (es.isPresent()) {
+                        dfd.resolve(JSON.parse(es.get()));
+                    }
+                    else {
+                        uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (constraints) {
+                            nts.uk.sessionStorage.setItemAsJson("nts.uk.session.EMPLOYEE_SETTING", constraints);
+                            dfd.resolve(constraints);
+                        });
+                    }
+                    return dfd.promise();
+                };
                 var loadEmployeeCodeConstraints = function () {
                     var self = this, dfd = $.Deferred();
-                    uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
+                    getEmployeeSetting().done(function (res) {
                         var formatOption = {
                             autofill: true
                         };
@@ -4165,6 +4186,9 @@ var nts;
             (function (menu) {
                 var DATA_TITLEITEM_PGID = "pgid";
                 var DATA_TITLEITEM_PGNAME = "pgname";
+                var MENU_SET_KEY = "nts.uk.session.MENU_SET";
+                var COMPANY_KEY = "nts.uk.session.COMPANY";
+                var PROGRAM_KEY = "nts.uk.session.PROGRAM";
                 /** Showing item */
                 var showingItem;
                 /**
@@ -4209,7 +4233,7 @@ var nts;
                         uk.request.jumpToTopPage();
                     });
                     displayUserInfo();
-                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
+                    getMenuSet().done(function (menuSet) {
                         var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
                         if (!menuSet || menuSet.length === 0)
                             return;
@@ -4230,6 +4254,23 @@ var nts;
                     getProgram();
                 }
                 menu.request = request;
+                /**
+                 * Get menu set.
+                 */
+                function getMenuSet() {
+                    var dfd = $.Deferred();
+                    var menuSetOpt = nts.uk.sessionStorage.getItem(MENU_SET_KEY);
+                    if (menuSetOpt.isPresent()) {
+                        dfd.resolve(JSON.parse(menuSetOpt.get()));
+                    }
+                    else {
+                        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
+                            nts.uk.sessionStorage.setItemAsJson(MENU_SET_KEY, menuSet);
+                            dfd.resolve(menuSet);
+                        });
+                    }
+                    return dfd.promise();
+                }
                 /**
                  * Generate.
                  */
@@ -4257,6 +4298,23 @@ var nts;
                     init();
                 }
                 /**
+                 * Get company.
+                 */
+                function getCompany() {
+                    var dfd = $.Deferred();
+                    var companyOpt = nts.uk.sessionStorage.getItem(COMPANY_KEY);
+                    if (companyOpt.isPresent()) {
+                        dfd.resolve(JSON.parse(companyOpt.get()));
+                    }
+                    else {
+                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
+                            nts.uk.sessionStorage.setItemAsJson(COMPANY_KEY, companies);
+                            dfd.resolve(companies);
+                        });
+                    }
+                    return dfd.promise();
+                }
+                /**
                  * Display user info.
                  */
                 function displayUserInfo() {
@@ -4269,7 +4327,7 @@ var nts;
                             op();
                         }
                     };
-                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
+                    getCompany().done(function (companies) {
                         if (!companies || companies.length === 0)
                             return;
                         var $companyName = $("<span/>").attr("id", "company-name");
@@ -4351,12 +4409,23 @@ var nts;
                                         });
                                         return;
                                     }
-                                    $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to login screen and request logout to server
-                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                            nts.uk.request.login.jumpToUsedLoginPage();
-                                        });
+                                    nts.uk.characteristics.restore("loginMode").done(function (mode) {
+                                        if (mode) {
+                                            $li.remove();
+                                        }
+                                        else {
+                                            $li.on(constants.CLICK, function () {
+                                                // TODO: Jump to login screen and request logout to server
+                                                nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                                    nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                                    nts.uk.sessionStorage.removeItem(MENU_SET_KEY);
+                                                    nts.uk.sessionStorage.removeItem(PROGRAM_KEY);
+                                                    nts.uk.sessionStorage.removeItem(COMPANY_KEY);
+                                                    nts.uk.sessionStorage.removeItem("nts.uk.session.EMPLOYEE_SETTING");
+                                                    nts.uk.request.login.jumpToUsedLoginPage();
+                                                });
+                                            });
+                                        }
                                     });
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
@@ -4381,11 +4450,27 @@ var nts;
                 }
                 menu.displayUserInfo = displayUserInfo;
                 /**
+                 * Get session program.
+                 */
+                function getSessionProgram() {
+                    var dfd = $.Deferred(), pgOpt = nts.uk.sessionStorage.getItem(PROGRAM_KEY);
+                    if (pgOpt.isPresent()) {
+                        dfd.resolve(JSON.parse(pgOpt.get()));
+                    }
+                    else {
+                        nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                            nts.uk.sessionStorage.setItemAsJson(PROGRAM_KEY, pg);
+                            dfd.resolve(pg);
+                        });
+                    }
+                    return dfd.promise();
+                }
+                /**
                  * Get program.
                  */
                 function getProgram() {
                     initPgArea();
-                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                    getSessionProgram().done(function (pg) {
                         var programName = "";
                         var queryString = __viewContext.program.queryString;
                         if (queryString) {
@@ -14680,9 +14765,12 @@ var nts;
                      */
                     function isEqual(one, two, fields) {
                         if (_.isObject(one) && _.isObject(two)) {
-                            return (fields && fields.length > 0)
-                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
-                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                            if (fields && fields.length > 0) {
+                                var oFields_1 = _.cloneDeep(fields);
+                                _(fields).filter(function (f) { return f.slice(-4) === "Name"; }).forEach(function (f) { return oFields_1.push(f.substr(0, f.length - 4) + "Code"); });
+                                return _.isEqual(_.omitBy(one, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }));
+                            }
+                            return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
                         }
                         return _.isEqual(one, two);
                     }
@@ -27470,112 +27558,148 @@ var nts;
                             return res;
                         },
                         disableNtsControlAt: function (id, key, $cell, hidden) {
+                            var dc = [];
                             if (!$cell) {
-                                var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
-                                if (_.isNil(idx))
+                                var idx_1 = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
+                                if (_.isNil(idx_1))
                                     return;
-                                $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
+                                _.forEach(_.keys(_mafollicle), function (k) {
+                                    if (k === SheetDef)
+                                        return;
+                                    _.forEach(_.keys(_mafollicle[SheetDef]), function (d) {
+                                        var f = _mafollicle[k][d], c;
+                                        if (f) {
+                                            c = lch.cellAt(_$grid[0], idx_1, key, f.desc, hidden);
+                                            if (c)
+                                                dc.push(c);
+                                        }
+                                    });
+                                    if (dc.length > 0)
+                                        return false;
+                                });
                             }
-                            if (_.isNil($cell)) {
-                                if (_.find(_cstifle(), function (c) { return c.key === key; })) {
-                                    color.pushState(id, key, color.Disable);
+                            else
+                                dc.push($cell);
+                            if (dc.length === 0) {
+                                //                    if (_.find(_cstifle(), c => c.key === key)) {
+                                color.pushState(id, key, color.Disable);
+                                //                    }
+                                return;
+                            }
+                            dc.forEach(function ($cell) {
+                                if ($cell.classList.contains(color.Disable))
+                                    return;
+                                $cell.classList.add(color.Disable);
+                                switch (dkn.controlType[key]) {
+                                    case dkn.LABEL:
+                                        $cell.innerHTML = "";
+                                        break;
+                                    case dkn.LINK_LABEL:
+                                        var link = $cell.querySelector(".mlink-button");
+                                        if (link) {
+                                            link.removeXEventListener(ssk.CLICK_EVT);
+                                            link.style.color = "#333";
+                                            link.style.cursor = "default";
+                                        }
+                                        break;
+                                    case dkn.BUTTON:
+                                    case dkn.DELETE_BUTTON:
+                                    case dkn.REFER_BUTTON:
+                                        var btn = $cell.querySelector(".mbutton");
+                                        if (btn)
+                                            btn.disabled = true;
+                                        break;
+                                    case dkn.FLEX_IMAGE:
+                                        var img = $cell.querySelector("span");
+                                        if (img) {
+                                            img.removeXEventListener(ssk.CLICK_EVT);
+                                            img.style.cursor = "default";
+                                        }
+                                        break;
+                                    case dkn.CHECKBOX:
+                                        var check = $cell.querySelector("input");
+                                        if (check) {
+                                            check.setAttribute("disabled", "disabled");
+                                        }
+                                        break;
                                 }
-                                return;
-                            }
-                            if ($cell.classList.contains(color.Disable))
-                                return;
-                            $cell.classList.add(color.Disable);
-                            switch (dkn.controlType[key]) {
-                                case dkn.LABEL:
-                                    $cell.innerHTML = "";
-                                    break;
-                                case dkn.LINK_LABEL:
-                                    var link = $cell.querySelector(".mlink-button");
-                                    if (link) {
-                                        link.removeXEventListener(ssk.CLICK_EVT);
-                                        link.style.color = "#333";
-                                        link.style.cursor = "default";
-                                    }
-                                    break;
-                                case dkn.BUTTON:
-                                case dkn.DELETE_BUTTON:
-                                case dkn.REFER_BUTTON:
-                                    var btn = $cell.querySelector(".mbutton");
-                                    if (btn)
-                                        btn.disabled = true;
-                                    break;
-                                case dkn.FLEX_IMAGE:
-                                    var img = $cell.querySelector("span");
-                                    if (img) {
-                                        img.removeXEventListener(ssk.CLICK_EVT);
-                                        img.style.cursor = "default";
-                                    }
-                                    break;
-                                case dkn.CHECKBOX:
-                                    var check = $cell.querySelector("input");
-                                    if (check) {
-                                        check.setAttribute("disabled", "disabled");
-                                    }
-                                    break;
-                            }
+                            });
                             color.pushState(id, key, color.Disable);
                         },
                         enableNtsControlAt: function (id, key, $cell, hidden) {
+                            var dc = [];
                             if (!$cell) {
-                                var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
-                                if (_.isNil(idx))
+                                var idx_2 = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
+                                if (_.isNil(idx_2))
                                     return;
-                                $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
-                            }
-                            if (_.isNil($cell)) {
-                                if (_.find(_cstifle(), function (c) { return c.key === key; })) {
-                                    color.popState(id, key, color.Disable);
-                                }
-                                return;
-                            }
-                            if (!$cell.classList.contains(color.Disable))
-                                return;
-                            $cell.classList.remove(color.Disable);
-                            switch (dkn.controlType[key]) {
-                                case dkn.LABEL:
-                                    var label = $.data($cell, v.DATA);
-                                    $cell.innerHTML = _.isNil(label) ? "" : label;
-                                    break;
-                                case dkn.LINK_LABEL:
-                                    var link = $cell.querySelector(".mlink-button");
-                                    if (link) {
-                                        link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
-                                        link.style.color = "#0066CC";
-                                        link.style.cursor = "pointer";
-                                    }
-                                    break;
-                                case dkn.BUTTON:
-                                case dkn.DELETE_BUTTON:
-                                case dkn.REFER_BUTTON:
-                                    var btn = $cell.querySelector(".mbutton");
-                                    if (btn) {
-                                        btn.disabled = false;
-                                        var hdl = $.data(btn, ssk.CLICK_EVT);
-                                        if (hdl) {
-                                            btn.removeXEventListener(ssk.CLICK_EVT);
-                                            btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                                _.forEach(_.keys(_mafollicle), function (k) {
+                                    if (k === SheetDef)
+                                        return;
+                                    _.forEach(_.keys(_mafollicle[SheetDef]), function (d) {
+                                        var f = _mafollicle[k][d], c;
+                                        if (f) {
+                                            c = lch.cellAt(_$grid[0], idx_2, key, f.desc, hidden);
+                                            if (c)
+                                                dc.push(c);
                                         }
-                                    }
-                                    break;
-                                case dkn.FLEX_IMAGE:
-                                    var img = $cell.querySelector("span");
-                                    if (img) {
-                                        img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
-                                        img.style.cursor = "pointer";
-                                    }
-                                    break;
-                                case dkn.CHECKBOX:
-                                    var check = $cell.querySelector("input");
-                                    if (check) {
-                                        check.removeAttribute("disabled");
-                                    }
-                                    break;
+                                    });
+                                    if (dc.length > 0)
+                                        return false;
+                                });
                             }
+                            else
+                                dc.push($cell);
+                            if (dc.length === 0) {
+                                //                    if (_.find(_cstifle(), c => c.key === key)) {
+                                color.popState(id, key, color.Disable);
+                                //                    }    
+                                return;
+                            }
+                            dc.forEach(function ($cell) {
+                                if (!$cell.classList.contains(color.Disable))
+                                    return;
+                                $cell.classList.remove(color.Disable);
+                                switch (dkn.controlType[key]) {
+                                    case dkn.LABEL:
+                                        var label = $.data($cell, v.DATA);
+                                        $cell.innerHTML = _.isNil(label) ? "" : label;
+                                        break;
+                                    case dkn.LINK_LABEL:
+                                        var link = $cell.querySelector(".mlink-button");
+                                        if (link) {
+                                            link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
+                                            link.style.color = "#0066CC";
+                                            link.style.cursor = "pointer";
+                                        }
+                                        break;
+                                    case dkn.BUTTON:
+                                    case dkn.DELETE_BUTTON:
+                                    case dkn.REFER_BUTTON:
+                                        var btn = $cell.querySelector(".mbutton");
+                                        if (btn) {
+                                            btn.disabled = false;
+                                            var hdl = $.data(btn, ssk.CLICK_EVT);
+                                            if (hdl) {
+                                                btn.removeXEventListener(ssk.CLICK_EVT);
+                                                btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                                            }
+                                        }
+                                        break;
+                                    case dkn.FLEX_IMAGE:
+                                        var img = $cell.querySelector("span");
+                                        if (img) {
+                                            img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
+                                            img.style.cursor = "pointer";
+                                        }
+                                        break;
+                                    case dkn.CHECKBOX:
+                                        var check = $cell.querySelector("input");
+                                        if (check) {
+                                            check.removeAttribute("disabled");
+                                        }
+                                        break;
+                                }
+                            });
                             color.popState(id, key, color.Disable);
                         },
                         setState: function (id, key, states) {
