@@ -478,7 +478,13 @@ module nts.layout {
                                             if (ctrls[0].data.value() == 1) {
                                                 c.data.editable(true);
                                             } else {
-                                                c.data.editable(false);
+                                                //itemCode: "IS00376"
+                                                if(ctrls[0].data.itemCode == "IS00376" || ctrls[0].data.itemCode == "IS00381" ){
+                                                    c.data.editable(true);
+                                                }else{
+                                                    c.data.editable(false);
+                                                }
+                                                
                                             }
                                         }
                                     }

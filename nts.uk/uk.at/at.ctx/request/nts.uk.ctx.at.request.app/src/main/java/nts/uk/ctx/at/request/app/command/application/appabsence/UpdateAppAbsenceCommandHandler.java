@@ -155,8 +155,8 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				1, 
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), 
-				command.getVersion(),command.getWorkTypeCode(),
-				command.getWorkTimeCode());
+				command.getVersion(),appAbsence.getWorkTypeCode().v(),
+				appAbsence.getWorkTimeCode().v());
 		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
 				opAppAbsence.get().getApplication().getAppDate(),

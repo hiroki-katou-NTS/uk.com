@@ -149,6 +149,8 @@ module nts.uk.at.view.kaf007.b {
                                 employeeID : self.appWorkChange().application().applicantSID()
                             }).done((recordWorkInfo) => {
                                 //Binding data
+                                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
+                                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
                                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
                                  //Focus process
                                 self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });

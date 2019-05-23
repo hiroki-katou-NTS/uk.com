@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf005.b {
             workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
             
             // AppOvertimeReference
-            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
+            appDateReference: KnockoutObservable<string> = ko.observable("");
             workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
             workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
             siftCodeReference:  KnockoutObservable<string> = ko.observable("");
@@ -940,11 +940,11 @@ module nts.uk.at.view.kaf005.b {
                     self.appDateReference(data.appOvertimeReference.appDateRefer);
                     if(data.appOvertimeReference.workTypeRefer != null){
                         self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
-                        self.workTypeNameReference(data.appOvertimeReference.workTypeRefer.workTypeName);
+                        self.workTypeNameReference(self.getName(data.appOvertimeReference.workTypeRefer.workTypeCode, data.appOvertimeReference.workTypeRefer.workTypeName));
                     }
                     if(data.appOvertimeReference.siftTypeRefer != null){
                         self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
-                        self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
+                        self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
                     }
                     self.workClockFrom1To1Reference(data.appOvertimeReference.workClockFromTo1Refer);
                     self.workClockFrom2To2Reference(data.appOvertimeReference.workClockFromTo2Refer);

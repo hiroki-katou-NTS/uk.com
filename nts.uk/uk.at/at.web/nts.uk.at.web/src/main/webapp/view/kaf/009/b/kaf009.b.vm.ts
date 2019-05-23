@@ -212,8 +212,8 @@ module nts.uk.at.view.kaf009.b {
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
-                        self.workTypeName(detailData.workTypeName|| text("KAL003_120"));
-                        self.siftName(detailData.workTimeName|| text("KAL003_120"));
+                        self.workTypeName(self.getName(detailData.goBackDirectlyDto.workTypeCD, detailData.workTypeName));
+                        self.siftName(self.getName(detailData.goBackDirectlyDto.siftCD, detailData.workTimeName));
                         self.workLocationName(detailData.workLocationName1 == null ? '' : detailData.workLocationName1);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
@@ -661,11 +661,18 @@ module nts.uk.at.view.kaf009.b {
                 })
             }
             
+            getName(code, name) {
+                let result = "";
+                if (code) {
+                    result = name || text("KAL003_120");
+                }
+                return result;
+            }
             setRealData(data: any){
                 let self = this;
                 self.realTimeDate(data.date);
-                self.realTimeWorkType(data.workType.workTypeCode+"   "+data.workType.name);
-                self.realTimeWorkTime(data.workTime.workTimeCD+"   "+data.workTime.workTimeName);
+                self.realTimeWorkType(data.workType.workTypeCode + "   " + self.getName(data.workType.workTypeCode, data.workType.name));
+                self.realTimeWorkTime(data.workTime.workTimeCD + "   " + self.getName(data.workTime.workTimeCD, data.workTime.workTimeName));
                 let startTime1 = data.startTime1;
                 let endTime1 = data.endTime1;
                 let startTime2 = data.startTime2;

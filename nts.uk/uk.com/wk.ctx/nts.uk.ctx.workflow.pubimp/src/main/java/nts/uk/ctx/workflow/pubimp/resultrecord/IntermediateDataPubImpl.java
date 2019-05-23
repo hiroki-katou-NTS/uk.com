@@ -50,6 +50,7 @@ import nts.uk.ctx.workflow.dom.service.resultrecord.RouteSituation;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
+import nts.uk.ctx.workflow.pub.resultrecord.ConfirmDeleteParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpSprDailyConfirmExport;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
@@ -62,8 +63,8 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
-import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
@@ -584,14 +585,14 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				if(personImport==null || Strings.isBlank(personImport.getEmployeeCode())){
 					return;
 				}
-				result.add(new EmpSprDailyConfirmExport(personImport.getEmployeeCode(), 1));
+				result.add(new EmpSprDailyConfirmExport(personImport.getSID(), personImport.getEmployeeCode(), 1));
 			} else if(approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
 				// （基幹・社員Export）アルゴリズム「社員IDから個人社員基本情報を取得」を実行する　RequestList No.1
 				PersonImport personImport = employeeAdapter.getEmployeeInformation(approvalRootState.getEmployeeID());
 				if(personImport==null || Strings.isBlank(personImport.getEmployeeCode())){
 					return;
 				}
-				result.add(new EmpSprDailyConfirmExport(personImport.getEmployeeCode(), 0));
+				result.add(new EmpSprDailyConfirmExport(personImport.getSID(), personImport.getEmployeeCode(), 0));
 			}
 		});
 		return result;
@@ -630,5 +631,30 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 						x.getApproverEmpState().value, 
 						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public void deleteRootConfirmDay(String employeeID, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, employeeID, date, RecordRootType.CONFIRM_WORK_BY_DAY);
+		if(opAppRootConfirm.isPresent()){
+			AppRootConfirm appRootConfirm = opAppRootConfirm.get();
+			appRootConfirm.setListAppPhase(new ArrayList<>());
+			appRootConfirmRepository.update(appRootConfirm);
+		}
+	}
+
+	@Override
+	public void deleteRootConfirmMonth(String employeeID, List<ConfirmDeleteParam> confirmDeleteParamLst) {
+		String companyID = AppContexts.user().companyId();
+		for(ConfirmDeleteParam confirmDeleteParam : confirmDeleteParamLst){
+			Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employeeID, confirmDeleteParam.getYearMonth(),
+					confirmDeleteParam.getClosureID(), confirmDeleteParam.getClosureDate(), RecordRootType.CONFIRM_WORK_BY_MONTH);
+			if(opAppRootConfirm.isPresent()){
+				AppRootConfirm appRootConfirm = opAppRootConfirm.get();
+				appRootConfirm.setListAppPhase(new ArrayList<>());
+				appRootConfirmRepository.update(appRootConfirm);
+			}
+		}
 	}
 }

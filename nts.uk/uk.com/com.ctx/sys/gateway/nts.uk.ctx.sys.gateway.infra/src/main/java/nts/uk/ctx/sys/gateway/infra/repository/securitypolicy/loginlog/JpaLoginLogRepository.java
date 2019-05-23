@@ -31,6 +31,11 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 			 + " WHERE c.userId = :userId"
 			 + " AND c.successOrFailure = :successOrFail"
 			 + " AND c.operationSection = :operation";
+	//hoatt
+	private static final String DELETE_LIST_LOG = "DELETE FROM SgwmtLoginLog c"
+			 + " WHERE c.userId IN :lstUserId"
+			 + " AND c.successOrFailure = :successOrFail"
+			 + " AND c.operationSection = :operation";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,6 +92,18 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 	public void deleteLoginLog(String userId, int successOrFail, int operation) {
 		this.getEntityManager().createQuery(DELETE_LOG)
 				.setParameter("userId", userId)
+				.setParameter("successOrFail", successOrFail)
+				.setParameter("operation", operation)
+				.executeUpdate();
+	}
+
+	@Override
+	public void deleteLstLoginLog(List<String> lstUserId, int successOrFail, int operation) {
+		if(lstUserId.isEmpty()){
+			return;
+		}
+		this.getEntityManager().createQuery(DELETE_LIST_LOG)
+				.setParameter("lstUserId", lstUserId)
 				.setParameter("successOrFail", successOrFail)
 				.setParameter("operation", operation)
 				.executeUpdate();
