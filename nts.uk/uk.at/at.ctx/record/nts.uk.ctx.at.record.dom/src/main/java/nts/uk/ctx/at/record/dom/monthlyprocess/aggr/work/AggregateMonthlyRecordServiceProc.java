@@ -1493,14 +1493,17 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod){
 		
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(this.employeeId);
+		
 		// 月初の所属情報を取得
 		boolean isExistStartWorkInfo = false;
 		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())){
 			isExistStartWorkInfo = true;
 		}
-		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
-				this.employeeId, datePeriod.start());
-		if (!firstInfoOfDailyOpt.isPresent()){
+		val firstInfoOfDailyList = this.repositories.getAffiliationInfoOfDaily().finds(employeeIds, datePeriod);
+		firstInfoOfDailyList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
+		if (firstInfoOfDailyList.size() <= 0){
 			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1508,10 +1511,10 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstInfoOfDaily = firstInfoOfDailyOpt.get();
-		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
-				this.employeeId, datePeriod.start());
-		if (!firstWorkTypeOfDailyOpt.isPresent()){
+		val firstInfoOfDaily = firstInfoOfDailyList.get(0);
+		val firstWorkTypeOfDailyList = this.repositories.getWorkTypeOfDaily().finds(employeeIds, datePeriod);
+		firstWorkTypeOfDailyList.sort((a, b) -> a.getDate().compareTo(b.getDate()));
+		if (firstWorkTypeOfDailyList.size() <= 0){
 			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1519,7 +1522,7 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstWorkTypeOfDaily = firstWorkTypeOfDailyOpt.get();
+		val firstWorkTypeOfDaily = firstWorkTypeOfDailyList.get(0);
 		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
