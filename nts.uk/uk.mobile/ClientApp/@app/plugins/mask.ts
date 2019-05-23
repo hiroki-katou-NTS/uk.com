@@ -31,7 +31,7 @@ const vm = Vue.extend({
             if (!show) {
                 this.opacity = null;
 
-                if (this.callback.hide > 0) {
+                if (this.callback.hide) {
                     this.callback.hide();
                 }
 
