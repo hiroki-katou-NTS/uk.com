@@ -159,7 +159,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_8(WageTablelData e) {
-        if (e.getElementSet() == 0 ||  (e.getElementSet() == 1 || e.getMasterNumAtr1() == 0) ) {
+        if (e.getElementSet() == 0 || (e.getElementSet() == 1 && e.getMasterNumAtr1() == 0) ) {
             return enumElementType(e.getFixElement1());
         }
         if (!e.getLowerLimit1().isEmpty()) {

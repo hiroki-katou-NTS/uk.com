@@ -153,8 +153,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && (amountCls.intValue() == (Integer)baseTarget.get(i)[3])
-                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3])
+                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
                 count++;
                 temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
