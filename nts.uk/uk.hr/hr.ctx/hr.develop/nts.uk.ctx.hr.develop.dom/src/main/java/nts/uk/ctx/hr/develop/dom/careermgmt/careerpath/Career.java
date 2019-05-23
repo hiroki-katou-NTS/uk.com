@@ -21,12 +21,12 @@ public class Career {
 	
 	private List<CareerRequirement> careerRequirementList;
 	
-	public static Career createFromJavaType(String careerTypeItem, int careerLevel, String careerClassItem, String careerClassRole, List<CareerRequirement> careerRequirementList) {
+	public static Career createFromJavaType(String careerTypeItem, int careerLevel, String careerClassItem, Optional<String> careerClassRole, List<CareerRequirement> careerRequirementList) {
 		return new Career(
 				careerTypeItem,
 				new Integer_1_10(careerLevel),
 				careerClassItem,
-				careerClassRole.equals("")?Optional.empty() : Optional.of(new String_Any_100(careerClassRole)),
+				careerClassRole.isPresent()?Optional.of(new String_Any_100(careerClassRole.get())):Optional.empty(),
 				careerRequirementList
 				);
 	}

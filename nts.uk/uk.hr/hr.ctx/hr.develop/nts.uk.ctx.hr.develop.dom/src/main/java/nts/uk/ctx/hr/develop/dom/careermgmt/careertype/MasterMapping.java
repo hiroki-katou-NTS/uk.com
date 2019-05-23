@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careertype;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,11 +17,11 @@ public class MasterMapping {
 	
 	private List<Item> itemList;
 	
-	public static MasterMapping createFromJavaType(int displayNumber, String type, List<Item> itemList) {
+	public static MasterMapping createFromJavaType(int displayNumber, String type, List<String> itemList) {
 		return new MasterMapping(
 				new Integer_1_5(displayNumber), 
 				type,
-				itemList
+				itemList.stream().map(c->new Item(c)).collect(Collectors.toList())
 				);
 	}
 }

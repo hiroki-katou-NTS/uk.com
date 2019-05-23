@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,9 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerRequirement;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterItem;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterRequirement;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearRequirement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -85,5 +89,20 @@ public class JhcmtCareerPathReq extends UkJpaEntity implements Serializable {
 				:new ArrayList<>();
 	}
 	
-	
+	public CareerRequirement toDomain() {
+		Optional<YearRequirement> yearReq = Optional.empty();
+		if(this.yearType!=null && this.yearMinNum!=null && this.yearStdNum!=null) {
+			yearReq = Optional.ofNullable(YearRequirement.createFromJavaType(this.yearType, this.yearMinNum, this.yearStdNum));
+		}
+		Optional<MasterRequirement> masterReq = Optional.empty();
+		if(this.masterType != null) {
+			masterReq = Optional.ofNullable(new MasterRequirement(this.masterType, this.masterItemList.stream().map(c -> new MasterItem(c.masterItem)).collect(Collectors.toList())));
+		}
+		return CareerRequirement.createFromJavaType(
+				this.PK_JHCMT_CAREER_PATH_REQUIREMENT.dispNum, 
+				this.reqType, 
+				yearReq, 
+				masterReq, 
+				Optional.ofNullable(this.inputReq));
+	}
 }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.hr.develop.infra.repository.careermgmt.careerpath;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,25 +10,32 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Career;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPath;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathRepository;
+import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPath;
 import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathCareer;
 import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathCareerPK;
+import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathPK;
 import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathReq;
 
 @Stateless
 public class CareerPathRepositoryImpl extends JpaRepository implements CareerPathRepository{
 
-	private static final String SELECT_BY_CID = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId";
-	
-	private static final String SELECT_BY_KEY = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId AND c.PK_JHCMT_CAREER_PATH.HistId = :HistId";
-	
-	
-	
+	private static final String SELECT_CAREER_ID_BY_CID_HISTID = "SELECT c.PK_JHCMT_CAREER_PATH_CAREER.careerId FROM JhcmtCareerPathCareer c WHERE c.PK_JHCMT_CAREER_PATH_CAREER.companyID = :companyID AND c.PK_JHCMT_CAREER_PATH_CAREER.histId =:histId";
+
 	@Override
-	public CareerPath getCareerPath(String companyId, String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<CareerPath> getCareerPath(String companyId, String historyId) {
+		List<String> listCareerId = this.getCareerId(companyId, historyId);
+		if(listCareerId.isEmpty()) {
+			return Optional.empty();
+		}
+		List<Career> careerList = new ArrayList<>(); 
+		for (String careerId : listCareerId) {
+			JhcmtCareerPathCareer etity = this.getEntityManager().find(JhcmtCareerPathCareer.class, new JhcmtCareerPathCareerPK(companyId, historyId, careerId));
+			careerList.add(etity.toDomain());
+		}
+		return Optional.ofNullable(CareerPath.createFromJavaType(companyId, historyId, this.getMaxClassLevel(companyId, historyId), careerList));
 	}
 
 	@Override
@@ -41,7 +50,6 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 
 	@Override
 	public void removeCareerPath() {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -61,5 +69,16 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 					new JhcmtCareerPathReq(d, domain.getCompanyId(), domain.getHistoryId(), careerId)
 					).collect(Collectors.toList()));
 		}).collect(Collectors.toList());
+	}
+	
+	private List<String> getCareerId(String companyId, String historyId){
+		return this.queryProxy().query(SELECT_CAREER_ID_BY_CID_HISTID, String.class)
+				.setParameter("companyID", companyId)
+				.setParameter("histId", historyId)
+				.getList();
+	}
+	
+	private Integer getMaxClassLevel(String companyId, String historyId){
+		return this.getEntityManager().find(JhcmtCareerPath.class, new JhcmtCareerPathPK(companyId,historyId)).level;
 	}
 }

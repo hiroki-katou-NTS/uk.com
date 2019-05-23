@@ -1,8 +1,10 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 
+import java.util.Optional;
+
 public interface CareerPathRepository {
 	
-	CareerPath getCareerPath(String companyId, String historyId);
+	Optional<CareerPath> getCareerPath(String companyId, String historyId);
 	
 	void addCareerPath(CareerPath domain);
 	

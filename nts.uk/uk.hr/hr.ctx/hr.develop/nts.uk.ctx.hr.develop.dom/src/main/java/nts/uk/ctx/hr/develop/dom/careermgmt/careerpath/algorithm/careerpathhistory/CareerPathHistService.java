@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathHistory;
@@ -31,6 +32,15 @@ public class CareerPathHistService {
 			return new ArrayList<>();
 		}
 		return his.get().getCareerPathHistory().stream().sorted((x, y) -> x.start().compareTo(y.start())*(-1)).collect(Collectors.toList());
+	}
+	
+	//開始日の取得
+	public GeneralDate getCareerPathStartDate(String companyId, String hisId) {
+		Optional<CareerPathHistory> his = careerPathHistoryRepo.getCareerPathHist(companyId);
+		if(!his.isPresent()) {
+			throw new BusinessException("Missing Data CareerPathHist");
+		}
+		return his.get().getCareerPathHistory().stream().filter(c -> c.identifier().equals(hisId)).findFirst().get().start();
 	}
 	
 	//キャリアパスの履歴の追加

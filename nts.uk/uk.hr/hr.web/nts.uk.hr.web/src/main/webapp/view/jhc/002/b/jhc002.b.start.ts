@@ -1,4 +1,4 @@
-module nts.uk.com.view.cas013.a {
+module nts.uk.hr.view.jhc002.b {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {

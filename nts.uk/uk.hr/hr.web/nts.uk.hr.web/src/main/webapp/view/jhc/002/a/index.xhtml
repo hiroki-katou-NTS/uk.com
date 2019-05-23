@@ -118,12 +118,14 @@
 											<tr>
 												<td><div id="combo-box"
 														data-bind="ntsComboBox: {
-														options: comBoList,
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val1,
 														optionsText: 'name',
 														width: 160,
+														selectFirstIfNull: 'false',
+														dropDownAttachedToBody: 'true',
 														columns: [ { prop: 'name', length: 4 },]}">
 													</div></td>
 												<td><div id="combo-box"

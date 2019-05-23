@@ -21,7 +21,7 @@ public class CareerPathHistoryRepositoryImpl extends JpaRepository implements Ca
 
 	private static final String SELECT_BY_CID = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId";
 	
-	private static final String SELECT_BY_KEY = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId AND c.PK_JHCMT_CAREER_PATH.HistId = :HistId";
+	private static final String SELECT_BY_KEY = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId AND c.PK_JHCMT_CAREER_PATH.histId = :HistId";
 	
 	@Override
 	public CareerPathHistory getLatestCareerPathHist() {

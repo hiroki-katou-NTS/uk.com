@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.algorithm.careerpath;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,7 +15,7 @@ public class CareerPathService {
 	private CareerPathRepository careerPathRepo;
 	
 	//キャリアパスの取得
-	public CareerPath getCareerPath(String cId, String hisId) {
+	public Optional<CareerPath> getCareerPath(String cId, String hisId) {
 		return careerPathRepo.getCareerPath(cId, hisId);
 	}
 

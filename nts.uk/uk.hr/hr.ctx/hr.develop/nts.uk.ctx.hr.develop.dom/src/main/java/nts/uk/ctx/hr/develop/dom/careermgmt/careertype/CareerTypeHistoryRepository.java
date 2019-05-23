@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
-public interface CareerTypeRepository {
+public interface CareerTypeHistoryRepository {
 
-	List<CareerType> getLisHisId(String cId, GeneralDate referDate);
+	List<String> getLisHisId(String cId, GeneralDate referDate);
 }

@@ -14,13 +14,15 @@ import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.AddCareerPathHist
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartHistoryCommand;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.RemoveCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.UpdateCareerPathHistoryCommandHandler;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerPartDto;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.DateHistoryItemDto;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find.CareerPathFinder;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find.CareerPathHistoryFinder;
-import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find.DateHistoryItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("careermgmt/careerpath")
 @Produces(MediaType.APPLICATION_JSON)
-public class CareerPartHistoryWS {
+public class CareerPartWS {
 
 	@Inject
 	private CareerPathHistoryFinder finder;
@@ -33,6 +35,9 @@ public class CareerPartHistoryWS {
 	
 	@Inject
 	private RemoveCareerPathHistoryCommandHandler commandRemove;
+	
+	@Inject
+	private CareerPathFinder careerPathFinder;
 	
 	@POST
 	@Path("/getDateHistoryItem")
@@ -58,4 +63,12 @@ public class CareerPartHistoryWS {
 	public void removeDateHistoryItem(CareerPartHistoryCommand command){
 		commandRemove.remove(command.getHistoryId());
 	}
+	
+	@POST
+	@Path("/getCareerPart")
+	public CareerPartDto getCareerPart(CareerPartHistoryCommand command){
+		String cId = AppContexts.user().companyId();
+		return careerPathFinder.getCareerPath(cId, command.getHistoryId(), GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"));
+	}
+	
 }

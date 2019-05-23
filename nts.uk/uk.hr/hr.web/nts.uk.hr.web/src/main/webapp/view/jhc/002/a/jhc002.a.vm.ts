@@ -9,8 +9,10 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         masterId: KnockoutObservable<string>;
         histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
-
         itemList: KnockoutObservableArray<ScreenItem>;
+        
+        //careerpart
+        careerClass: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -52,23 +54,29 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.delVisible = ko.observable(true);
             self.delChecked = ko.observable();
             self.afterRender = () => {
-                alert("Load!");
+                //alert("Load!");
             };
             self.afterAdd = () => {
-                alert("Added");
+                //alert("Added");
             };
             self.afterUpdate = () => {
-                alert("Updated");
+                //alert("Updated");
             };
             self.afterDelete = () => {
-                alert("Deleted");
+                //alert("Deleted");
             };
 
 
             //table 
             self.itemList = ko.observableArray([]);
             $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
+            
+            self.selectedHistId.subscribe(function(newValue) {
+               let startDate = _.filter(self.histList(), ['histId', newValue])[0].startDate;
+               self.getCarrerPart(newValue,startDate);
+            });
 
+            self.careerClass = ko.observableArray([]);
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -78,6 +86,20 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }
             dfd.resolve();
             return dfd.promise();
+        }
+        
+         private getCarrerPart(hisId: string, date: any): void {
+             var self = this;
+             let command = {
+                 historyId: hisId,
+                 startDate: moment(date).format("YYYY/MM/DD")
+             }
+             if (hisId != '') {
+                new service.getCareerPart(command).done(function(data: any) {
+                    console.log(data);
+                    self.careerClass(data.careerClass);
+                });
+            }
         }
     }
 

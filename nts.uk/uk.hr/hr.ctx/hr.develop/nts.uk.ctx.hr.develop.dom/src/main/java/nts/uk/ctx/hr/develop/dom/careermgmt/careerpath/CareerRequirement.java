@@ -21,13 +21,13 @@ public class CareerRequirement {
 	
 	private Optional<InputRequirement> inputRequirement;
 	
-	public static CareerRequirement createFromJavaType(int displayNumber, int requirementType, Optional<YearRequirement> yearRequirement, Optional<MasterRequirement> masterRequirement, String inputRequirement) {
+	public static CareerRequirement createFromJavaType(int displayNumber, int requirementType, Optional<YearRequirement> yearRequirement, Optional<MasterRequirement> masterRequirement, Optional<String> inputRequirement) {
 		return new CareerRequirement(
 				new Integer_1_6(displayNumber),
 				EnumAdaptor.valueOf(requirementType, RequirementType.class), 
 				yearRequirement,
 				masterRequirement,
-				inputRequirement.equals("")?Optional.empty() : Optional.of(new InputRequirement(inputRequirement))
+				inputRequirement.isPresent()? Optional.of(new InputRequirement(inputRequirement.get())):Optional.empty()
 				);
 	}
 }

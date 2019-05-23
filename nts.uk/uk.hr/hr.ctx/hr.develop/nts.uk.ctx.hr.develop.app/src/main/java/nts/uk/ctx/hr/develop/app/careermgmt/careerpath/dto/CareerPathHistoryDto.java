@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find;
+package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;

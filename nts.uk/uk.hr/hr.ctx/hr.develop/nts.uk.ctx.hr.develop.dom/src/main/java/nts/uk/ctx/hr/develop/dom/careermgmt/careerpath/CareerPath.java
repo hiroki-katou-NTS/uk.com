@@ -33,7 +33,7 @@ public class CareerPath extends AggregateRoot{
 		this.historyId = historyId;
 		this.maxClassLevel = maxClassLevel;
 		this.careerList = careerList;
-		validateExt();
+		this.validateExt();
 	}
 	
 	private void validateExt() {
