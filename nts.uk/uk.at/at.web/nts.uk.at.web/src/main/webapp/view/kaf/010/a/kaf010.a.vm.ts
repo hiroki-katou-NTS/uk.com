@@ -301,9 +301,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.employeeID(data.employeeID);
             if (data.workTime != null) {
                 self.siftCD(data.workTime.siftCode);
-                if (data.workTime.siftCode) {
-                    self.siftName(self.getName(data.workTime.siftCode, data.workTime.siftName));
-                }
+                self.siftName(self.getName(data.workTime.siftCode, data.workTime.siftName));
             }
             if (data.workType != null) {
                 self.workTypeCd(data.workType.workTypeCode);
@@ -526,7 +524,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 uiType: self.uiType(),
                 calculateFlag: self.calculateFlag(),
                 appReasonID: comboBoxReason,
-                checkOver1Year: true;
+                checkOver1Year: true
             };
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);
@@ -871,11 +869,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.appDateReference(data.appOvertimeReference.appDateRefer);
                 if(data.appOvertimeReference.workTypeRefer != null){
                     self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
-                    self.workTypeNameReference(data.appOvertimeReference.workTypeRefer.workTypeName);
+                    self.workTypeNameReference(self.getName(data.appOvertimeReference.workTypeRefer.workTypeCode, data.appOvertimeReference.workTypeRefer.workTypeName));
                 }
                 if(data.appOvertimeReference.siftTypeRefer != null){
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
-                    self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
+                    self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
                 }
                 if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
                      self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));

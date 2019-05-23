@@ -215,6 +215,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
                 self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
+                self.recWk().workTimeCDs(data.workTimeCDs || null);
             }
         }
         validateControl() {
