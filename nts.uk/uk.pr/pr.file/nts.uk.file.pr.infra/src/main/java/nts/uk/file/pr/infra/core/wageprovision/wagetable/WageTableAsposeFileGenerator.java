@@ -29,10 +29,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private static final int COLUMN_START = 1;
 
-    private static final int MAX_ROWS = 71;
-
-    private static final int LINE_IN_PAGE = 76;
-
     private static final String TITLE = "賃金テーブルの登録";
 
     private static final String SHEET_NAME = "マスタリスト";
@@ -47,8 +43,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             worksheets.get(0).setName(SHEET_NAME);
-            int page = exportData.size() == MAX_ROWS ? 0 : exportData.size() / MAX_ROWS;
-            createTable(worksheets, page, this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse(""));
+            settingPage(worksheets.get(0), this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse(""));
             fillData(worksheets, exportData, dataName, dataNameMaster);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
@@ -204,15 +199,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return "";
     }
 
-    // R_11
-    private void createTable(WorksheetCollection worksheets, int pageMonth, String companyName) throws Exception {
-        Worksheet worksheet = worksheets.get(0);
-        settingPage(worksheet, companyName);
-        for (int i = 0; i < pageMonth; i++) {
-            worksheet.getCells().copyRows(worksheet.getCells(), 0, LINE_IN_PAGE * (i + 1), LINE_IN_PAGE + 1);
-        }
-    }
-
     private void settingPage(Worksheet worksheet, String companyName) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
@@ -232,7 +218,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                cells.copyRows(cells, rowStart + i, rowStart + i + 1, 1);
+                if(i % 2 ==0) {
+                    cells.copyRows(cells, rowStart + i, rowStart + i + 1, 2);
+                }
                 WageTablelData e = data.get(i);
                 cells.get(rowStart + i, COLUMN_START).setValue(e.getWageTableCode());
                 cells.get(rowStart + i, COLUMN_START + 1).setValue(e.getWageTableName());
