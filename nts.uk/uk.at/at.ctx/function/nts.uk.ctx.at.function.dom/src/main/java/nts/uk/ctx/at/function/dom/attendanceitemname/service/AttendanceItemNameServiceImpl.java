@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -106,6 +107,15 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				.getFullDataByAttdIdAndType(attendanceItemIds, type);
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
+	
+	@Override
+	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type) {
+		List<AttItemName> attendanceItems = this.getAttendanceItemName(type);
+		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
+		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
+				.getFullDataByAttdIdAndType(attendanceItems.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList()), type);
+		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
+	}
 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
@@ -124,9 +134,9 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		attendanceItems = this.getAttendanceItemName(attendanceItems);
-		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream()
+		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream().distinct()
 				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
-		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream()
+		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream().distinct()
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		for (AttendanceItemLinking link : attendanceItemAndFrameNos) {
 			int id = link.getAttendanceItemId();
@@ -397,6 +407,41 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		case Monthly:
 			attendanceItemList = this.monthlyAttendanceItemRepository
 					.findByAttendanceItemId(companyId, attendanceItemIds).stream().map(item -> {
+						AttItemName dto = new AttItemName();
+						dto.setAttendanceItemId(item.getAttendanceItemId());
+						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));
+						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr().value);
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
+						return dto;
+					}).collect(Collectors.toList());
+			break;
+		default:
+			break;
+		}
+
+		return attendanceItemList;
+	}
+	
+	private List<AttItemName> getAttendanceItemName(TypeOfItem type) {
+		String companyId = AppContexts.user().companyId();
+		List<AttItemName> attendanceItemList = new ArrayList<>();
+
+		switch (type) {
+		case Daily:
+			attendanceItemList = this.dailyAttendanceItemAdapter.getDailyAttendanceItemList(companyId)
+					.stream().map(item -> {
+						AttItemName dto = new AttItemName();
+						dto.setAttendanceItemId(item.getAttendanceItemId());
+						dto.setAttendanceItemName(this.formatName(item.getAttendanceName()));
+						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
+						return dto;
+					}).collect(Collectors.toList());
+			break;
+		case Monthly:
+			attendanceItemList = this.monthlyAttendanceItemRepository.findAll(companyId).stream().map(item -> {
 						AttItemName dto = new AttItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));

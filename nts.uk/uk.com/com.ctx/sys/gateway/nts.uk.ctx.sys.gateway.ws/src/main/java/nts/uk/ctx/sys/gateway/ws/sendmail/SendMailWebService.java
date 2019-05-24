@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailForgetPassMobileCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoCommand;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoFormGCommand;
@@ -30,6 +31,10 @@ public class SendMailWebService extends WebService {
 	/** The send mail info form G command handler. */
 	@Inject 
 	private SendMailInfoFormGCommandHandler sendMailInfoFormGCommandHandler;
+	
+	/** The send mail info mobile command handler. */
+	@Inject 
+	private SendMailForgetPassMobileCommandHandler mobileSendMail;
 	
 	/**
 	 * Submit send mail.
@@ -55,5 +60,11 @@ public class SendMailWebService extends WebService {
 	public List<SendMailReturnDto> submitSendMail2(SendMailInfoFormGCommand command) {
 		//sendMailformG
 		return this.sendMailInfoFormGCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("mobile")
+	public List<SendMailReturnDto> sendMailMobile(SendMailInfoFormGCommand command) {
+		return this.mobileSendMail.handle(command);
 	}
 }

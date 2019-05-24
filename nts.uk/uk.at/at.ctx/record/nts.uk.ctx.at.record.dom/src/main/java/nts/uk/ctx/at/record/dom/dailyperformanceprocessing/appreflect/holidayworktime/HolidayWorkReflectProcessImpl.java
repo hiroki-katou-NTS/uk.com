@@ -19,18 +19,18 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
+	public boolean updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
 			String workTimeCode, boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if(workTimeCode.isEmpty()
 				|| workTypeCode.isEmpty()) {
-			return;
+			return false;
 		}
 		//予定勤種・就時を反映できるかチェックする
 		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, isPre, scheAndRecordSameChangeFlg)) {
-			return;
+			return false;
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(employeeId, 
@@ -38,6 +38,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 				workTimeCode, 
 				workTypeCode, false); 
 		workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
+		return true;		
 	}
 
 	@Override
@@ -60,12 +61,10 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	}
 
 	@Override
-	public void reflectWorkTimeFrame(String employeeId, 
-			GeneralDate baseDate, 
-			Map<Integer, Integer> mapWorkTimeFrame, 
-			IntegrationOfDaily dailyData) {
+	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
+			IntegrationOfDaily dailyData, boolean isPre) {
 		Map<Integer, Integer> tmp = new HashMap<>();
-		for(Map.Entry<Integer,Integer> entry : mapWorkTimeFrame.entrySet()){
+		for(Map.Entry<Integer,Integer> entry : holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame().entrySet()){
 			//INPUT．休出時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
 			if(entry.getValue() >= 0) {
@@ -73,7 +72,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			}
 		}
 		//事前休出時間の反映
-		workUpdate.updateWorkTimeFrame(employeeId, baseDate, tmp, true, dailyData, false);
+		workUpdate.updateWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), tmp, isPre, dailyData, false);
 		
 	}
 

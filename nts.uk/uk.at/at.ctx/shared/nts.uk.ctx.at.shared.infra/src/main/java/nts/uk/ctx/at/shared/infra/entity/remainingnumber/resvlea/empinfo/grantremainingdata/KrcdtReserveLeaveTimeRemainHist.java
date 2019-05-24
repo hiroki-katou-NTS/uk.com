@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -13,27 +15,22 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author HungTT - 積立年休付付与時点残数履歴データ
- *
+ * @author phongtq
+ * 積立年休付付与時点残数履歴データ
  */
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_RVSLEA_TIME_RM_HIST")
-public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity {
-
-	@Id
-	@Column(name = "RVSLEA_ID")
-	public String rvsLeaId;
-
-	@Column(name = "SID")
-	public String sid;
-
+public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KrcdtReserveLeaveTimeRemainHistPK krcdtReserveLeaveTimeRemainHist;
+	
 	@Column(name = "CID")
 	public String cid;
-
-	@Column(name = "GRANT_DATE")
-	public GeneralDate grantDate;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -57,35 +54,30 @@ public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity {
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
 
-	// 付与処理日
-	@Column(name = "GRANT_PROC_DATE")
-	public GeneralDate grantProcessDate;
-
 	public static KrcdtReserveLeaveTimeRemainHist fromDomain(ReserveLeaveGrantTimeRemainHistoryData domain,
 			String cid) {
-		return new KrcdtReserveLeaveTimeRemainHist(domain.getRsvLeaID(), domain.getEmployeeId(), cid,
+		return new KrcdtReserveLeaveTimeRemainHist(domain.getEmployeeId(), cid, domain.getGrantProcessDate(),
 				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
 				domain.getRegisterType().value, domain.getDetails().getGrantNumber().v(),
 				domain.getDetails().getUsedNumber().getDays().v(),
 				domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
 						? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
-				domain.getDetails().getRemainingNumber().v(), domain.getGrantProcessDate());
+				domain.getDetails().getRemainingNumber().v());
 	}
 
 	public ReserveLeaveGrantTimeRemainHistoryData toDomain() {
-		return new ReserveLeaveGrantTimeRemainHistoryData(this.rvsLeaId, this.sid, this.grantDate, this.deadline,
-				this.expStatus, this.registerType, this.grantDays, this.usedDays, this.overLimitDays,
-				this.remainingDays, this.grantProcessDate);
+		return new ReserveLeaveGrantTimeRemainHistoryData(this.krcdtReserveLeaveTimeRemainHist.sid,
+				this.krcdtReserveLeaveTimeRemainHist.grantProcessDate, this.krcdtReserveLeaveTimeRemainHist.grantDate,
+				this.deadline, this.expStatus, this.registerType, this.grantDays, this.usedDays, this.overLimitDays,
+				this.remainingDays);
 	}
 
-	public KrcdtReserveLeaveTimeRemainHist(String rvsLeaId, String sid, String cid, GeneralDate grantDate,
+	public KrcdtReserveLeaveTimeRemainHist(String sid, String cid, GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, double usedDays,
-			Double overLimitDays, double remainingDays, GeneralDate grantProcessDate) {
+			Double overLimitDays, double remainingDays) {
 		super();
-		this.rvsLeaId = rvsLeaId;
-		this.sid = sid;
+		this.krcdtReserveLeaveTimeRemainHist = new KrcdtReserveLeaveTimeRemainHistPK(sid, grantProcessDate, grantDate);
 		this.cid = cid;
-		this.grantDate = grantDate;
 		this.deadline = deadline;
 		this.expStatus = expStatus;
 		this.registerType = registerType;
@@ -93,11 +85,10 @@ public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity {
 		this.usedDays = usedDays;
 		this.overLimitDays = overLimitDays;
 		this.remainingDays = remainingDays;
-		this.grantProcessDate = grantProcessDate;
 	}
 
 	@Override
 	protected Object getKey() {
-		return this.rvsLeaId;
+		return this.krcdtReserveLeaveTimeRemainHist;
 	}
 }

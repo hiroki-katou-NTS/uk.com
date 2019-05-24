@@ -36,48 +36,9 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	private ScheTimeReflect scheTime;
 	
 	@Override
-	public void startEndTimeOffReflect(OvertimeParameter param, WorkInfoOfDailyPerformance workInfo) {
-		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(!param.isActualReflectFlg()) {
-			return;
-		}
-		//自動打刻をクリアする
-		this.clearAutomaticEmbossing(param.getEmployeeId(),
-				param.getDateInfo(),
-				workInfo.getRecordInfo().getWorkTypeCode().v(),
-				param.isAutoClearStampFlg(),
-				param.getOvertimePara());
-		//開始終了時刻の反映(事前)
-		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getDateInfo(), param.getOvertimePara().getStartTime1(), 
-				param.getOvertimePara().getEndTime1(), param.getOvertimePara().getStartTime2(), 
-				param.getOvertimePara().getEndTime2(), 
-				param.getOvertimePara().getWorkTimeCode(), param.getOvertimePara().getWorkTypeCode(), param.getOvertimePara().getOvertimeAtr());
-		//this.startEndTimeOutput(startEndTimeData, workInfo);
-	}
-	@Override
-	public void startEndTimeOffReflect(OvertimeParameter param, IntegrationOfDaily workInfo) {
-		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(!param.isActualReflectFlg()) {
-			return;
-		}
-		//自動打刻をクリアする
-		this.clearAutomaticEmbossing(param.getEmployeeId(),
-				param.getDateInfo(),
-				workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
-				param.isAutoClearStampFlg(),
-				param.getOvertimePara());
-		//開始終了時刻の反映(事前)
-		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getDateInfo(), param.getOvertimePara().getStartTime1(), 
-				param.getOvertimePara().getEndTime1(), param.getOvertimePara().getStartTime2(), 
-				param.getOvertimePara().getEndTime2(), 
-				param.getOvertimePara().getWorkTimeCode(), param.getOvertimePara().getWorkTypeCode(), param.getOvertimePara().getOvertimeAtr());
-		this.startEndTimeOutput(startEndTimeData, workInfo);
-	}
-
-	@Override
 	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode,
 			boolean isClearAuto, OvertimeAppParameter overInfor) {
-		// INPUT．自動セット打刻をクリアフラグをチェックする
+		/*// INPUT．自動セット打刻をクリアフラグをチェックする
 		if(!isClearAuto) {
 			return;
 		}
@@ -122,7 +83,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 			return;
 		}
 		TimeReflectPara timeReflectData = new TimeReflectPara(employeeId, dateData, overInfor.getStartTime1(), overInfor.getEndTime1(), 1, isStart, isEnd);
-		scheWorkUpdate.updateRecordStartEndTimeReflect(timeReflectData);
+		scheWorkUpdate.updateRecordStartEndTimeReflect(timeReflectData);*/
 	}
 
 	@Override

@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.service.workrule.closure;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -93,5 +99,65 @@ public class ClosureEmploymentService {
 		
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
+	}
+	
+	public YearMonth getCurentMonth() {
+		String employee = AppContexts.user().employeeId();
+		Closure Closure = closureService.getClosureDataByEmployee(employee, GeneralDate.today());
+		if(Closure == null) {
+			throw new BusinessException("Msg_1134");
+		}
+		return Closure.getClosureMonth().getProcessingYm();
+	}
+
+	/**
+	 * Find employment closure.
+	 *
+	 * @param employeeIds the list employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	//社員に対応する処理締めを取得する
+	public Map<String, Closure> findClosureByEmployee(List<String> employeeIds, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		Map<String, Closure> results = new HashMap<>();
+
+		// Find Employment History by employeeId and base date.
+		Map<String, BsEmploymentHistoryImport> empHistAll = this.employmentAdapter
+				.findEmpHistoryVer2(companyId, employeeIds, baseDate);
+
+		List<String> employmentCDs = empHistAll.entrySet().stream().map(x -> x.getValue().getEmploymentCode()).distinct()
+				.collect(Collectors.toList());
+
+		// Find closure employment by emp code.
+		Map<String, ClosureEmployment> employmentAll = this.closureEmploymentRepository.findListEmployment(companyId, employmentCDs)
+				.stream().collect(Collectors.toMap(ClosureEmployment::getEmploymentCD, x -> x));
+
+		List<Integer> closureIds = employmentAll.entrySet().stream().map(x -> x.getValue().getClosureId()).distinct()
+				.collect(Collectors.toList());
+
+		// Find closure.
+		Map<Integer, Closure> closureALl = this.closureRepository.findByListId(companyId, closureIds)
+				.stream().collect(Collectors.toMap(x -> x.getClosureId().value, x -> x));
+
+		for (String employeeId : employeeIds) {
+			if (!empHistAll.containsKey(employeeId)) {
+				continue;
+			}
+			String employmentCode = empHistAll.get(employeeId).getEmploymentCode();
+
+			if (!employmentAll.containsKey(employmentCode)) {
+				continue;
+			}
+			Integer closureId = employmentAll.get(employmentCode).getClosureId();
+
+			if (!closureALl.containsKey(closureId)) {
+				continue;
+			}
+
+			results.put(employeeId, closureALl.get(closureId));
+		}
+
+		return results;
 	}
 }

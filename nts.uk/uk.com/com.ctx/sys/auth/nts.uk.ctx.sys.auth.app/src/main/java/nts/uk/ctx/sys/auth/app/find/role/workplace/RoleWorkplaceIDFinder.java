@@ -14,7 +14,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.SysAuthWorkplaceAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
@@ -36,6 +38,9 @@ public class RoleWorkplaceIDFinder {
 	/** The workplace adapter. */
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
+
+	@Inject
+	private SysAuthWorkplaceAdapter sysAuthWorkplaceAdapter;
 	
 	/** The workplace manager repository. */
 	@Inject
@@ -48,10 +53,11 @@ public class RoleWorkplaceIDFinder {
 	 * @return the list
 	 */
 	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
-
+		String companyId = AppContexts.user().companyId();
 		if (systemType == SystemType.ADMINISTRATOR.value) {
 			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
-			List<String> listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
+			List<String> listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 			workplaceIdDto.setListWorkplaceIds(listWkpId);
 			workplaceIdDto.setIsAllEmp(true);
 			return workplaceIdDto;
@@ -66,7 +72,8 @@ public class RoleWorkplaceIDFinder {
 		// if role is present
 		if (opRole.isPresent()) {
 			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
-				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
+				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(true);
 			} else {
@@ -84,44 +91,43 @@ public class RoleWorkplaceIDFinder {
 	}
 	
 	/**
-	 * Find wkp id by agorithm.
+	 * Find wkp id by algorithm.
 	 *
 	 * @param referenceDate the reference date
 	 * @param role the role
 	 * @return the list
 	 */
 	public List<String> findListWkpIdByOtherCase(GeneralDate referenceDate, Role role) {
-		List<String> listWkpId = new ArrayList<>();
+		List<String> listWkpId;
 
 		String workplaceId = "";
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		
-		// get workplace manager 
+
+		// Including management workplace = null
+		// Get workplace manager
 		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, referenceDate);
 		
-		// add wkpId to listWkpId
-		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
+		// Map list workplace manager to list workplace id
+		listWkpId = listWkpManager.stream().map(WorkplaceManager::getWorkplaceId).collect(Collectors.toList());
 				
-		// requestList #30 get aff workplace history
-		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
-				.findWkpByBaseDateAndEmployeeId(referenceDate, employeeId);
+		// RequestList No.30 get aff workplace history
+		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
+				.findWkpByBaseDateAndEmpId(referenceDate, employeeId);
 
-		// add wkpId to listWkpId
-		if (opAffWorkplaceHistImport.isPresent()) {
-			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
+		if (optAffWorkplaceHistImport.isPresent()) {
+			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
 		}
 
-		// check workplace id != null
-		if (workplaceId != null) {
-			listWkpId.add(workplaceId);
-		}
+        // check workplace id != null
+        if (workplaceId != null) {
+            listWkpId.add(workplaceId);
+        }
 
-		// action RequestList #154
-		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD && workplaceId != null) {
-			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId,
-					referenceDate);
-			listWkpId.addAll(list);
+		// [No.567] 職場の下位職場を取得する
+		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD && !workplaceId.isEmpty()) {
+			List<String> wkpIds = sysAuthWorkplaceAdapter.getAllChildrenOfWorkplaceId(companyId, referenceDate, workplaceId);
+			listWkpId.addAll(wkpIds);
 		}
 
 		return listWkpId.stream().distinct().collect(Collectors.toList());
@@ -135,18 +141,18 @@ public class RoleWorkplaceIDFinder {
 	 * @author TrangTh
 	 */
 	public List<String> findListWorkplaceId(WorkplaceParam param) {
-
-		List<String> listWkpId = new ArrayList<>();
+		List<String> listWkpId;
+		String companyId = AppContexts.user().companyId();
 		//check ReferenceRange 
 		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 			//get list WorkplaceId by WorkplaceAdapter
-			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(param.getBaseDate());
+			listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, param.getBaseDate())
+					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 		} else {
 			//get list WorkplaceId by function findListWkpId
 			listWkpId = this.findListWkpId(param);
 		}
 		return listWkpId;
-
 	}
 	
 	/**
@@ -161,31 +167,26 @@ public class RoleWorkplaceIDFinder {
 		String workplaceId = "";
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		
-		// get workplace manager 
-		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, param.getBaseDate());
-		
-		// add wkpId to listWkpId
-		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
-				
-		// requestList #30 get aff workplace history
-		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
-				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
 
-		// add wkpId to listWkpId
-		if (opAffWorkplaceHistImport.isPresent()) {
-			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
+		// Including management workplace = false
+
+		// RequestList No.30 get aff workplace history
+		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
+				.findWkpByBaseDateAndEmpId(param.getBaseDate(), employeeId);
+
+		if (optAffWorkplaceHistImport.isPresent()) {
+			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
 		}
 
-		// check workplace id != null
-		if (workplaceId != null) {
-			listWkpId.add(workplaceId);
-		}
+        // check workplace id != null
+        if (workplaceId != null) {
+            listWkpId.add(workplaceId);
+        }
 
-		// action RequestList #154
-		if (param.getReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value && workplaceId != null) {
-			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, param.getBaseDate());
-			listWkpId.addAll(list);
+		// [No.567] 職場の下位職場を取得する
+		if (param.getReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value && !workplaceId.isEmpty()) {
+			List<String> wkpIds = sysAuthWorkplaceAdapter.getAllChildrenOfWorkplaceId(companyId, param.getBaseDate(), workplaceId);
+			listWkpId.addAll(wkpIds);
 		}
 
 		return listWkpId.stream().distinct().collect(Collectors.toList());

@@ -11,7 +11,9 @@ public enum WebAppId {
 	// Payroll
 	PR("pr"),
 	// Attendance
-	AT("at");
+	AT("at"),
+	// mobile
+	MOBI("mobile");
 	
 	public String name;
 	WebAppId(String name) {

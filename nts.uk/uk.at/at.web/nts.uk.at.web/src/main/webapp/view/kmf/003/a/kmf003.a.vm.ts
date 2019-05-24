@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         code: KnockoutObservable<string> = ko.observable("");
         editMode: KnockoutObservable<boolean> = ko.observable(true);
         name: KnockoutObservable<string> = ko.observable("");
-        useConditionCls: KnockoutObservable<boolean> = ko.observable(false);
+        useConditionCls: KnockoutObservable<boolean> = ko.observable(true);
         grantDate: KnockoutObservable<string> = ko.observable("");
         enableGrantDate: KnockoutObservable<boolean> = ko.observable(true);
         A6_2Data: KnockoutObservableArray<any> = ko.observableArray([
@@ -59,7 +59,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionValue05Percent: KnockoutObservable<string> = ko.observable("");
         
         note: KnockoutObservable<string> = ko.observable("");
-        conditionValue01Enable: KnockoutObservable<boolean> = ko.observable(false);
+        conditionValue01Enable: KnockoutObservable<boolean> = ko.observable(true);
         conditionValue02Enable: KnockoutObservable<boolean> = ko.observable(false);
         conditionValue03Enable: KnockoutObservable<boolean> = ko.observable(false);
         conditionValue04Enable: KnockoutObservable<boolean> = ko.observable(false);
@@ -363,7 +363,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04Percent("");
             self.conditionValue05Percent("");
             self.note("");
-            self.conditionValue01Enable(false);
+            self.conditionValue01Enable(true);
             self.conditionValue02Enable(false);
             self.conditionValue03Enable(false);
             self.conditionValue04Enable(false);
@@ -384,10 +384,10 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useCls03(false);
             self.useCls04(false);
             self.useCls05(false);
-            self.useCls02Enable(false);
-            self.useCls03Enable(false);
-            self.useCls04Enable(false);
-            self.useCls05Enable(false);
+            self.useCls02Enable(true);
+            self.useCls03Enable(true);
+            self.useCls04Enable(true);
+            self.useCls05Enable(true);
             
             //Grid data
             self.singleSelectedCode([]);
@@ -1015,7 +1015,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(value == true){
                     self.conditionValue03Enable(true);
-                    self.btnSetting03Enable(true);
+                    self.btnSetting03Enable(!self.editMode());
                     
                     if(self.useCls02()) {
                         self.setConditionValues(Number(self.conditionValue02()), 3); 
@@ -1085,7 +1085,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(value == true){
                     self.conditionValue04Enable(true);
-                    self.btnSetting04Enable(true);
+                    self.btnSetting04Enable(!self.editMode());
                     
                     if(self.useCls02()) {
                         if(self.useCls03()) {
@@ -1149,9 +1149,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
-                if(value == true){
+                if(value == true ){
                     self.conditionValue05Enable(true);
-                    self.btnSetting05Enable(true);
+                    self.btnSetting05Enable(!self.editMode());
                     
                     if(self.useCls04()) {
                         self.setConditionValues(Number(self.conditionValue04()), 5);

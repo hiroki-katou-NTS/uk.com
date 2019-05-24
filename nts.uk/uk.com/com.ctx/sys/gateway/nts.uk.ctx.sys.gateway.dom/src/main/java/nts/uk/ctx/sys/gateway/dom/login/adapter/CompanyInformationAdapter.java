@@ -22,6 +22,13 @@ public interface CompanyInformationAdapter {
 	List<CompanyInformationImport> findAll();
 	
 	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	List<CompanyInformationImport> findByContract(String contractCode);
+	
+	/**
 	 * Find by id.
 	 *
 	 * @param companyId the company id

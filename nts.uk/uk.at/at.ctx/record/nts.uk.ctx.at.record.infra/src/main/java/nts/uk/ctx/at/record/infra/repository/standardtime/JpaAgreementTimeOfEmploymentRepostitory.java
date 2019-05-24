@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,6 +91,19 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 		return this.queryProxy().query(FIND_EMPLOYMENT_SETTING, KmkmtAgeementTimeEmployment.class)
 				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
 				.getList(f -> f.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
+	}
+	
+	@Override
+	public List<AgreementTimeOfEmployment> findEmploymentSetting(String comId, List<String> employments) {
+		if(employments.isEmpty()){
+			return new ArrayList<>();
+		}
+		String query = "SELECT a FROM KmkmtAgeementTimeEmployment a WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId"
+				+ " AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode IN :employments";
+		
+		return this.queryProxy().query(query, KmkmtAgeementTimeEmployment.class)
+				.setParameter("companyId", comId).setParameter("employments", employments)
+				.getList(f -> toDomain(f));
 	}
 
 	private KmkmtAgeementTimeEmployment toEntity(AgreementTimeOfEmployment agreementTimeOfEmployment) {

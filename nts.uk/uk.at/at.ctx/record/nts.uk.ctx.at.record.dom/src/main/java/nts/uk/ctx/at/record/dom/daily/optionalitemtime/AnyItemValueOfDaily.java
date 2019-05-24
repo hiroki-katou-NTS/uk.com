@@ -11,14 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -53,15 +51,8 @@ public class AnyItemValueOfDaily {
         List<CalcResultOfAnyItem> anyItemList = new ArrayList<>();
         
         for(OptionalItem optionalItem : optionalItemList) {
-        	
-        	Optional<EmpCondition> empCondition = Optional.empty();
-        	List<EmpCondition> findResult = empConditionList.stream().filter(t -> t.getOptItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
-        	if(!findResult.isEmpty()) {
-        		empCondition = Optional.of(findResult.get(0));
-        	}
-        	
         	//利用条件の判定
-        	if(optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt)) {
+        	if(decisionCondition(optionalItem,empConditionList,bsEmploymentHistOpt)) {
         		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
         		val calcResult = optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty());
@@ -108,6 +99,16 @@ public class AnyItemValueOfDaily {
     	}
 
         return result;
+    }
+    
+    public static boolean decisionCondition(OptionalItem optionalItem,List<EmpCondition> empConditionList,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
+    	Optional<EmpCondition> empCondition = Optional.empty();
+    	List<EmpCondition> findResult = empConditionList.stream().filter(t -> t.getOptItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
+    	if(!findResult.isEmpty()) {
+    		empCondition = Optional.of(findResult.get(0));
+    	}
+    	
+    	return optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt);
     }
 
     public Optional<AnyItemValue> getNo(int no) {

@@ -1,0 +1,251 @@
+.bg {
+    &-green {
+        background-color: $bg-green;
+    }
+
+    &-yellow {
+        background-color: $bg-yellow;
+    }
+
+    &-danger {
+        background-color: $bg-danger;
+
+        &:hover {
+            background-color: $bg-danger-hover;
+        }
+    }
+
+    &-process {
+        background-color: $bg-process;
+
+        &:hover {
+            background-color: $bg-process-hover;
+        }
+    }
+
+    &-daily-alter-self {
+        background-color: $bg-daily-alter-self;
+    }
+
+    &-daily-alter-other {
+        background-color: $bg-daily-alter-other;
+    }
+
+    &-daily-reflect-application {
+        background-color: $bg-daily-reflect-application;
+    }
+
+    &-daily-error {
+        background-color: $bg-daily-error;
+    }
+
+    &-daily-alarm {
+        background-color: $bg-daily-alarm;
+    }
+
+    &-daily-calculated {
+        background-color: $bg-daily-calculated;
+    }
+
+    &-schedule-saturday {
+        background-color: $bg-schedule-saturday;
+    }
+
+    &-schedule-sunday {
+        background-color: $bg-schedule-sunday;
+    }
+
+    &-schedule-support {
+        background-color: $bg-schedule-support;
+    }
+
+    &-schedule-no-empl-insurance {
+        background-color: $bg-schedule-no-empl-insurance;
+    }
+
+    &-schedule-no-health-insurance {
+        background-color: $bg-schedule-no-health-insurance;
+    }
+
+    &-schedule-no-empl-health-insurance {
+        background-color: $bg-schedule-no-empl-health-insurance;
+    }
+
+    &-schedule-fixed {
+        background-color: $bg-schedule-fixed;
+    }
+
+    &-schedule-uncorrectable {
+        background-color: $bg-schedule-uncorrectable;
+    }
+
+    &-schedule-work-by-dow {
+        background-color: $bg-schedule-work-by-dow;
+    }
+
+    &-schedule-specific-date {
+        background-color: $bg-schedule-specific-date;
+    }
+
+    &-schedule-that-day {
+        background-color: $bg-schedule-that-day;
+    }
+
+    &-schedule-focus {
+        background-color: $bg-schedule-focus;
+    }
+
+    &-choice-row {
+        background-color: $bg-choice-row;
+    }
+
+    &-calendar-ym-set {
+        background-color: $bg-calendar-ym-set;
+    }
+
+    &-workinh-result-excess {
+        background-color: $bg-workinh-result-excess;
+    }
+
+    &-pre-application-excess {
+        background-color: $bg-pre-application-excess;
+    }
+
+    &-application-approved {
+        background-color: $bg-application-approved;
+    }
+
+    &-application-reflected {
+        background-color: $bg-application-reflected;
+    }
+
+    &-unapproved-application {
+        background-color: $bg-unapproved-application;
+    }
+
+    &-remanded-application {
+        background-color: $bg-remanded-application;
+    }
+
+    &-canceled-application {
+        background-color: $bg-canceled-application;
+    }
+
+    &-weekdays {
+        background-color: $bg-weekdays;
+    }
+
+    &-pasted {
+        background-color: $bg-pasted;
+    }
+
+    &-updating-cell {
+        background-color: $bg-updating-cell;
+    }
+
+    &-selecting {
+        background-color: $bg-selecting;
+    }
+
+    &-added-row {
+        background-color: $bg-added-row;
+    }
+
+    &-actual-superior-unverified {
+        background-color: $bg-actual-superior-unverified;
+    }
+
+    &-error-actual {
+        background-color: $bg-error-actual;
+    }
+}
+
+.color {
+    &-info {
+        color: $color-info;
+    }
+
+    &-danger {
+        color: $color-danger;
+    }
+
+    &-active {
+        color: $color-active;
+    }
+
+    &-proceed {
+        color: $color-proceed;
+    }
+
+    &-required {
+        color: $color-required;
+    }
+
+    &-disable {
+        color: $color-disabled;
+    }
+
+    &-working-day {
+        color: $color-working-day;
+    }
+
+    &-non-working-day {
+        color: $color-non-working-day;
+    }
+
+    &-attendance {
+        color: $color-attendance;
+    }
+
+    &-holiday {
+        color: $color-holiday;
+    }
+
+    &-daily-holiday {
+        color: $color-daily-holiday;
+    }
+
+    &-daily-extra-holiday {
+        color: $color-daily-extra-holiday;
+    }
+
+    &-schedule-performance {
+        color: $color-schedule-performance;
+    }
+
+    &-schedule-error {
+        color: $color-schedule-error;
+    }
+
+    &-schedule-saturday {
+        color: $color-schedule-saturday;
+    }
+
+    &-schedule-sunday {
+        color: $color-schedule-sunday;
+    }
+
+    &-half-day-work {
+        color: $color-half-day-work;
+    }
+
+    &-operation-case-character {
+        color: $color-operation-case-character;
+    }
+
+    &-working-schedule {
+        color: $color-working-schedule;
+    }
+
+    &-sunday {
+        color: $color-sunday;
+    }
+
+    &-saturday {
+        color: $color-saturday;
+    }
+
+    &-weekdays {
+        color: $color-weekdays;
+    }
+}

@@ -58,4 +58,8 @@ public class CheckCondition  extends DomainObject {
 	public boolean isAgrrement() {
 		return this.alarmCategory== AlarmCategory.AGREEMENT;
 	}
+	
+	public boolean isAttHoliday() {
+		return this.alarmCategory== AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY;
+	}
 }

@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
@@ -36,6 +38,7 @@ import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
+import nts.uk.ctx.workflow.dom.service.output.Request133Output;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstancePeriod;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstanceService;
@@ -59,6 +62,8 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request133Export;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
@@ -71,7 +76,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
@@ -102,17 +108,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	private EmployeeAdapter employeeAdapter;
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
+	public Request133Export getAppRootStatusByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
 			Integer rootType) throws BusinessException {
-		List<String> employeeIDLst = Arrays.asList(employeeID);
-		List<AppRootStateStatusSprExport> rslist = new ArrayList<>();
-		try {
-			rslist=	appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
-			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
-		} catch (BusinessException e) {
-			throw new BusinessException("Msg_1430", "承認者");
-		}
-		return rslist;
+		Request133Output result = appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class));
+		return new Request133Export(
+				result.getAppRootStatusLst().stream()
+					.map(x -> new AppRootStateStatusSprExport(x.getDate(), x.getEmployeeID(), x.getDailyConfirmAtr().value)).collect(Collectors.toList()), 
+				result.isErrorFlg(), 
+				result.getErrorMsgID(), 
+				result.getEmpLst());
 	}
 
 	@Override
@@ -121,7 +125,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		List<AppRootStateStatusSprExport> result = new ArrayList<>();
 		dateLst.forEach(date -> {
 			DatePeriod period = new DatePeriod(date, date);
-			result.addAll(appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			result.addAll(appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class)).getAppRootStatusLst()
 			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList()));
 		});
 		return result;
@@ -130,7 +134,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period,
 			Integer rootType) {
-		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class)).getAppRootStatusLst()
 			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
 	}
 	
@@ -436,12 +440,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<AppRootSttMonthExport> getAppRootStatusByEmpsMonth(
+	public Request533Export getAppRootStatusByEmpsMonth(
 			List<EmpPerformMonthParam> empPerformMonthParamLst) throws BusinessException{
 		String companyID = AppContexts.user().companyId();
 		List<AppRootSttMonthExport> appRootSttMonthLst = new ArrayList<>();
+		boolean errorFlg = false;
+		String errorMsgID = "";
+		List<String> errorEmpLst = new ArrayList<>();
 		// INPUT．対象者社員IDの先頭から最後へループ
-		empPerformMonthParamLst.forEach(employee -> {
+		for(EmpPerformMonthParam employee : empPerformMonthParamLst){
 			// 対象者と期間から承認ルート中間データを取得する
 			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
 					Arrays.asList(employee.getEmployeeID()), 
@@ -451,11 +458,18 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(employee.getBaseDate(), 
 					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employee.getEmployeeID())).findAny().get().getAppRootInstanceLst());
 			if(appRootInstance==null){
-				throw new BusinessException("Msg_1430", "承認者");
+				errorFlg = true;
+				errorMsgID = "Msg_1430";
+				errorEmpLst.add(employee.getEmployeeID());
+				continue;
 			}
 			// ドメインモデル「就業実績確認状態」を取得する
-			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employee.getEmployeeID(), employee.getYearMonth(), 
+			Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employee.getEmployeeID(), employee.getYearMonth(), 
 					employee.getClosureID(), employee.getClosureDate(), RecordRootType.CONFIRM_WORK_BY_MONTH);
+			if(!opAppRootConfirm.isPresent()){
+				continue;
+			}
+			AppRootConfirm appRootConfirm = opAppRootConfirm.get();
 			// 中間データから承認ルートインスタンスに変換する
 			ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 			// 承認ルート状況を取得する
@@ -465,8 +479,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 					approvalRootStateStatusLst.get(0),
 					employee.getYearMonth(), employee.getClosureID(), employee.getClosureDate()));
 			}
-		});
-		return appRootSttMonthLst;
+		}
+		return new Request533Export(appRootSttMonthLst, errorFlg, errorMsgID, errorEmpLst);
 	}
 
 	@Override

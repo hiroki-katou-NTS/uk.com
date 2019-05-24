@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 840, height: 600 };</script>
+			<script>var dialogSize = { width: 900, height: 600 };</script>
 			<com:stylefile path="ccg013.d.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.d.start.js" />
@@ -45,38 +45,57 @@
 					<div class="first-caret">
 						<span class="caret-bottom caret-inline"></span>
 					</div>
+
+					<div class="left-contents">
+						<div style="width: 295px"
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
+							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+						<br />
+						<table class="left-data" id="multi-list1" tabindex="2"
+							data-bind="ntsGridList: {
+								height: 320,
+								options: items,
+								optionsValue: 'primaryKey',
+								columns: columns,
+								multiple: true,
+								rows: 12,
+								value: currentCodeList}">
+						</table>
+					</div>
+
+					<div class="move-function">
+						<button data-bind="click: add">
+							<i class="icon icon-button-arrow-right"></i>
+						</button>
+						<button id="remove-items"
+							data-bind="click: remove, enable: disableSwap">
+							<i class="icon icon-button-arrow-left"></i>
+						</button>
+					</div>
+
 					<div class="right-contents">
 						<button id="d1_13" class="label caret-bottom"
 							data-bind="style: {color: titleBar().textColor, 'background-color': titleBar().backgroundColor},text: titleBar().name">Button</button>
+						<table id="multi-list2" tabindex="3"
+							data-bind="ntsGridList: {
+								height: 320,
+								options: newItems,
+								optionsValue: 'primaryKey',
+								columns: newColumns,
+								multiple: true,
+								rows: 12,
+								value: newCurrentCodeList}">
+						</table>
 					</div>
-					<div class="left-contents">
-					
-						<div id="swap-list"
-							data-bind="ntsSwapList: {
-							showSearchBox: { showLeft : true, showRight: true},
-							height: 300,
-							dataSource: items,
-							disableMoveButton: false,
-							primaryKey: 'code',
-							leftColumns: columns,
-							rightColumns: newColumns,
-							value: currentCodeList,
-							searchMode: 'filter',
-							searchCriterion: ['code'],
-							rows: 12,
-							multipleDrag: { left: true, right: true }
-							
-						}"></div>
-					</div>
+
 					<div class="chane-position-function">
 						<div id="swap-up-down"
 							data-bind="ntsUpDown: {
-									targetSource: currentCodeList,
-									primaryKey: 'code',
-									comId: '#swap-list',
-									type: 'swap',
-									swapTarget: 'right',
-									enable: true
+									targetSource: newItems,
+									primaryKey: 'primaryKey',
+									comId: '#multi-list2',
+									type: 'grid',
+									enable: disableSwap
 								}"
 							class=""></div>
 					</div>

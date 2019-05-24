@@ -169,6 +169,15 @@ module nts.uk.ui.koExtentions {
                 $tree.data("mousePosition", pageCoords );
             });
             $tree.setupSearchScroll("igTree");
+            
+            $tree.bind("sourcechanging", function(evt){
+                let source = $tree.igTree("option", "dataSource").__ds;
+                if(_.isNil(data.dataSource)){
+                    data.options(source);
+                } else {
+                    data.dataSource(source);    
+                }
+            });
         }
 
         /**
