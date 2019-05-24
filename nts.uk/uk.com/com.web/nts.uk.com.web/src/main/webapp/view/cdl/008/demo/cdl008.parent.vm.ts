@@ -10,7 +10,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         listSystemType: KnockoutObservableArray<any>;
         selectedSystemType: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        restrictionOfReferenceRange: boolean;
+        restrictionOfReferenceRange: KnockoutObservable<boolean>;
         isDisplayUnselect: KnockoutObservable<boolean>;
         isShowBaseDate: KnockoutObservable<boolean>;
         selectedStartMode: KnockoutObservable<number>;
@@ -33,7 +33,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 {code : 5, name: '管理者', enable: self.enable}
             ]);
             self.selectedSystemType = ko.observable(5);
-            self.restrictionOfReferenceRange = true;
+            self.restrictionOfReferenceRange = ko.observable(true);
             self.isDisplayUnselect = ko.observable(false);
             self.isShowBaseDate = ko.observable(false);
 
@@ -69,7 +69,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 baseDate: self.baseDate(),
                 isMultiple: self.selectMode(),
                 selectedSystemType: self.selectedSystemType(),
-                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,
+                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange(),
                 showNoSelection: self.isDisplayUnselect(),
                 isShowBaseDate: self.isShowBaseDate(),
                 startMode: self.selectedStartMode()
@@ -82,7 +82,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 }
                 //view all code of selected item
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
-                var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
+                var baseDateOutput = nts.uk.ui.windows.getShared('baseDateCDL008');
                 self.selectWorkplaceIds(output);
                 self.selectedBaseDate(baseDateOutput);
             })

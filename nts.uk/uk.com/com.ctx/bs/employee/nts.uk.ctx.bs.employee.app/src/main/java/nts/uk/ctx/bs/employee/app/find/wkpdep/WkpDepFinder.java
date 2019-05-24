@@ -295,7 +295,6 @@ public class WkpDepFinder {
         }
         // Check start mode (department or workplace)
         switch (findObject.getStartMode()) {
-
             case WORKPLACE_MODE:
             	if (findObject.getRestrictionOfReferenceRange()) {
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter

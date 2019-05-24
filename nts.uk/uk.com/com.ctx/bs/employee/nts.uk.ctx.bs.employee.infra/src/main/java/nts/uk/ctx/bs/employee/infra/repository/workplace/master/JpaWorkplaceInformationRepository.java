@@ -89,6 +89,21 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	}
 
 	@Override
+	public List<WorkplaceInformation> getAllWorkplaceByWkpIds(String companyId, String wkpHistId, List<String> listWorkplaceId) {
+		if (listWorkplaceId.isEmpty())
+			return Collections.emptyList();
+		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.pk.workplaceId IN :listWkpIds";
+		List<WorkplaceInformation> result = new ArrayList<>();
+		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+					.setParameter("wkpHistId", wkpHistId).setParameter("listWkpIds", subIdList)
+					.getList(f -> f.toDomain()));
+		});
+		return result;
+	}
+
+	@Override
 	public Optional<WorkplaceInformation> getWorkplaceByKey(String companyId, String wkpHistId, String wkpId) {
 		return this.queryProxy().find(new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId), BsymtWorkplaceInfor.class)
 				.map(i -> i.toDomain());

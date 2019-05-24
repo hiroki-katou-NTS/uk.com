@@ -59,4 +59,14 @@ public class DepartmentPubImpl implements DepartmentPub {
         }).collect(Collectors.toList());
     }
 
+	@Override
+	public List<String> getAllChildDepartmentId(String companyId, GeneralDate baseDate, String parentDepartmentId) {
+		return depExpService.getAllChildDepartmentId(companyId, baseDate, parentDepartmentId);
+	}
+
+	@Override
+	public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId) {
+		return depExpService.getDepartmentIdAndChildren(companyId, baseDate, departmentId);
+	}
+
 }

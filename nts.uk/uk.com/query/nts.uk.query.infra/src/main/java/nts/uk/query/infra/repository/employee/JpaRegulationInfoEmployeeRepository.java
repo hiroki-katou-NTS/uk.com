@@ -146,7 +146,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
         // department condition
         Predicate depCondition = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate),
-                cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
+                cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate),
+				cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depConfEndDate), baseDate.toDate()), cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depConfStrDate), baseDate.toDate())),
+                      cb.isNull(root.get(EmployeeDataView_.depConfStrDate))));
         if (paramQuery.getFilterByDepartment()) {
             // return empty list if condition code list is empty
             if (departmentCodes.isEmpty()) {
@@ -155,15 +157,17 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
             // update query conditions
             conditions.add(depCondition);
-            countParameter += 2;
+            countParameter += 5;
         } else {
             conditions.add(cb.or(cb.isNull(root.get(EmployeeDataView_.depStrDate)), depCondition));
-            countParameter += 3;
+            countParameter += 6;
         }
 
         // workplace condition
         Predicate wplCondition = cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate),
-                cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
+                cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate),
+                cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), baseDate.toDate()), cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), baseDate.toDate())),
+                      cb.isNull(root.get(EmployeeDataView_.wkpConfStrDate))));
         if (paramQuery.getFilterByWorkplace()) {
             // return empty list if condition code list is empty
             if (workplaceCodes.isEmpty()) {
@@ -172,10 +176,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
             // update query conditions
             conditions.add(wplCondition);
-            countParameter += 2;
+            countParameter += 5;
         } else {
             conditions.add(cb.or(cb.isNull(root.get(EmployeeDataView_.wkpStrDate)), wplCondition));
-            countParameter += 3;
+            countParameter += 6;
         }
 
 
@@ -330,9 +334,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
             CollectionUtil.split(jobTitleCodes, ELEMENT_300, splitJobTitleCodes -> {
                 // classification condition
                 CollectionUtil.split(classificationCodes, ELEMENT_300, splitClassificationCodes -> {
-                    // workplacet condition
+                    // workplace condition
                     CollectionUtil.split(workplaceCodes, ELEMENT_300, splitWorkplaceCodes -> {
-                        // departmen condition
+                        // department condition
                         CollectionUtil.split(departmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() + splitWorkplaceCodes.size() - countParameterFinal), splitDepartmentCodes ->
                                 resultList.addAll(executeQuery(
                                     paramQuery.getFilterByEmployment(), splitEmploymentCodes,
@@ -360,14 +364,12 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.departmentHierarchyCode(Optional.ofNullable(entity.getDepHierarchyCode()))
 				.departmentCode(Optional.ofNullable(entity.getDepCode()))
 				.departmentName(Optional.ofNullable(entity.getDepName()))
-				.departmentConfStrDate(Optional.ofNullable(entity.getDepConfStrDate()))
-				.departmentConfEndDate(Optional.ofNullable(entity.getDepConfEndDate()))
+				.departmentDeleteFlag(Optional.ofNullable(entity.getDepDeleteFlag()))
 				.workplaceId(Optional.ofNullable(entity.getWkpId()))
 				.workplaceHierarchyCode(Optional.ofNullable(entity.getWkpHierarchyCode()))
 				.workplaceCode(Optional.ofNullable(entity.getWkpCode()))
 				.workplaceName(Optional.ofNullable(entity.getWkpName()))
-				.workplaceConfStrDate(Optional.ofNullable(entity.getDepConfStrDate()))
-				.workplaceConfEndDate(Optional.ofNullable(entity.getDepConfEndDate()))
+				.workplaceDeleteFlag(Optional.ofNullable(entity.getWkpDeleteFlag()))
 				.build())
 				.sorted(Comparator.comparing(RegulationInfoEmployee::getEmployeeCode))
 				.collect(Collectors.toList());
@@ -603,15 +605,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		conditions.add(cb.equal(root.get(EmployeeDataView_.sid), sid));
 
 		if (systemType == CCG001SystemType.SALARY.value) {
-            // Department.
+			// Department.
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.depStrDate), baseDate));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.depEndDate), baseDate));
 		} else {
-            // Workplace.
+			// Workplace.
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpStrDate), baseDate));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpEndDate), baseDate));
 		}
-		
+
 		// Find fist.
 		cq.where(conditions.toArray(new Predicate[] {}));
 		List<EmployeeDataView> res = this.getEntityManager().createQuery(cq).getResultList();
@@ -637,8 +639,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.workplaceHierarchyCode(Optional.ofNullable(entity.getWkpHierarchyCode()))
 				.workplaceCode(Optional.ofNullable(entity.getWkpCode()))
 				.workplaceName(Optional.ofNullable(entity.getWkpName()))
-				.depDeleteFlag(Optional.ofNullable(entity.getDepDeleteFlag()))
-				.wkpDeleteFlag(Optional.ofNullable(entity.getWkpDeleteFlag()))
+				.departmentDeleteFlag(Optional.ofNullable(entity.getDepDeleteFlag()))
+				.workplaceDeleteFlag(Optional.ofNullable(entity.getWkpDeleteFlag()))
 				.build();
 	}
 
