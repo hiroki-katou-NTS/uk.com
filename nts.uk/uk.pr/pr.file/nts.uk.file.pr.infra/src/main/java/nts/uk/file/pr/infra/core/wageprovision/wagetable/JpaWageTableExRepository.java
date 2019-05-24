@@ -66,7 +66,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = h.CID  AND s.QUALIFY_GROUP_CD = eq.QUALIFY_GROUP_CD ");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = w.WAGE_TABLE_CD");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = h.CID AND ws.HIST_ID = h.HIST_ID AND ws.WAGE_TABLE_CD = e.WAGE_TABLE_CD AND ws.QUALIFY_GROUP_CD = s.QUALIFY_GROUP_CD");
-        exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, ws.QUALIFY_GROUP_CD");
+        exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, MASTER_CD_1 DESC, FIXED_ELEMENT_1 , MASTER_CD_2 DESC, FIXED_ELEMENT_2, MASTER_CD_3 DESC, FIXED_ELEMENT_3, s.QUALIFY_GROUP_CD");
 
         try {
             resultQuery = this.getEntityManager()
@@ -181,7 +181,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         java.sql.Date sqlDate = null;
         java.util.Date date = null;
         try {
-            date = format.parse(baseDate.toString());
+            date = format.parse(baseDate.toString("yyyy-MM-dd"));
             sqlDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             return null;

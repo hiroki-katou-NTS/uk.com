@@ -117,7 +117,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("        '時給' AS NAME,");
         sql.append("         5 AS MASTER_USE) mc ");
         sql.append("  ON mc.MASTER_USE = b.MASTER_USE AND mc.CODE = c.MASTER_USE_CD");
-        sql.append("   ORDER BY f.FORMULA_CD, START_YM");
+        sql.append("  ORDER BY f.FORMULA_CD, b.MASTER_USE, MASTER_USE_CD");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
                     .setParameter("cid", cid).setParameter("startDate", startDate)
@@ -134,7 +134,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         java.sql.Date sqlDate = null;
         java.util.Date date = null;
         try {
-            date = format.parse(baseDate.toString());
+            date = format.parse(baseDate.toString("yyyy-MM-dd"));
             sqlDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             return null;

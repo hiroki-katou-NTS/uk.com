@@ -22,7 +22,7 @@ public class EarthQuakeInsuranceAposeFileGenerator extends AsposeCellsReportGene
 
     private static final String TEMPLATE_FILE = "report/QMM031_EARTH_QUAKEI_INS.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
-    private static final String FILE_NAME = "QMM031保険会社の登録_地震保険";
+    private static final String FILE_NAME = "QMM031保険会社の登録_地震保険_";
     private static final int RECORD_IN_PAGE = 74;
     private static final int RECORD_IN_TABLE = 37;
 
