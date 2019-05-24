@@ -990,23 +990,26 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (!CollectionUtil.isEmpty(reEmployeeList)) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, reEmployeeList);
-						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
-						try {
-							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
-							log.info("更新処理自動実行_個人スケジュール作成_END_"+context.getCommand().getExecItemCd()+"_"+GeneralDateTime.now());
-							if(checkStop(execId)) {
-								return false;
-							}
-							runSchedule = true;
-						} catch (Exception e) {
-							//再実行の場合にExceptionが発生したかどうかを確認する。
-							if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
-								return false;
+						if (endDate != null) {
+							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
+							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
+									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+											calculateSchedulePeriod, reEmployeeList);
+							scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
+									.setPeriod(new DatePeriod(periodDate.start(), endDate));
+							try {
+								handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+										+ GeneralDateTime.now());
+								if (checkStop(execId)) {
+									return false;
+								}
+								runSchedule = true;
+							} catch (Exception e) {
+								// 再実行の場合にExceptionが発生したかどうかを確認する。
+								if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+									return false;
+								}
 							}
 						}
 					}
