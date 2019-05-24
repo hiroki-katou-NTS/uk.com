@@ -23,7 +23,7 @@ public class LifeInsuranceAposeFileGenerator extends AsposeCellsReportGenerator 
 
     private static final String TEMPLATE_FILE = "report/QMM031_INS_LIFE.xlsx";
     private static final String REPORT_FILE_EXTENSION = ".pdf";
-    private static final String FILE_NAME = "QMM031保険会社の登録_生命保険";
+    private static final String FILE_NAME = "QMM031保険会社の登録_生命保険_";
     private static final int RECORD_IN_PAGE = 39;
 
     @Override

@@ -167,7 +167,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return e.getQualifiGroupName();
         }
         if(e.getMasterNumAtr1() == 0) {
-            return getNameMaster(data, e.getFixElement1() , e.getMasterCd1());
+            return getNameMaster(data, e.getFixElement1() , e.getMasterCd1().trim());
         }
         if (e.getElementSet() == 0 && e.getFixElement1().startsWith("M")) {
             return enumElementType(e.getFixElement1());
@@ -180,7 +180,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
         if(e.getMasterNumAtr2() == 0) {
-            getNameMaster(data, e.getFixElement2() , e.getMasterCd2());
+            return getNameMaster(data, e.getFixElement2() , e.getMasterCd2().trim());
         }
         if (e.getFixElement2().startsWith("M")) {
             return enumElementType(e.getFixElement2());
@@ -193,7 +193,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
         if(e.getMasterNumAtr3() == 0) {
-            getNameMaster(data, e.getFixElement3() , e.getMasterCd3());
+            return getNameMaster(data, e.getFixElement3() , e.getMasterCd3().trim());
         }
         if (e.getFixElement3().startsWith("M")) {
             return enumElementType(e.getFixElement3());
@@ -232,27 +232,27 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                if (i % MAX_ROWS == 0 && i > 0) {
-                    rowStart += 5;
-                }
-
+                cells.copyRows(cells, rowStart + i, rowStart + i + 1, 1);
                 WageTablelData e = data.get(i);
-                cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
-                cells.get(rowStart, COLUMN_START + 1).setValue(e.getWageTableName());
-                cells.get(rowStart, COLUMN_START + 2).setValue(convertYearMonth(e.getWageHisStartYm()));
-                cells.get(rowStart, COLUMN_START + 3).setValue(convertYearMonth(e.getWageHisEndYm()));
+                cells.get(rowStart + i, COLUMN_START).setValue(e.getWageTableCode());
+                cells.get(rowStart + i, COLUMN_START + 1).setValue(e.getWageTableName());
+                cells.get(rowStart + i, COLUMN_START + 2).setValue(convertYearMonth(e.getWageHisStartYm()));
+                cells.get(rowStart + i, COLUMN_START + 3).setValue(convertYearMonth(e.getWageHisEndYm()));
 
-                cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue1(e, dataName));
-                cells.get(rowStart, COLUMN_START + 5).setValue(e.getElementSet() == 0 ? "" : getFixedValue2(e, dataName));
-                cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getFixedValue3(e, dataName) : "");
+                cells.get(rowStart + i, COLUMN_START + 4).setValue(getFixedValue1(e, dataName));
+                cells.get(rowStart + i, COLUMN_START + 5).setValue(e.getElementSet() == 0 ? "" : getFixedValue2(e, dataName));
+                cells.get(rowStart + i, COLUMN_START + 6).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getFixedValue3(e, dataName) : "");
 
-                cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(dataMasterName, e));
-                cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(dataMasterName, e));
-                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(dataMasterName, e) : "");
+                cells.get(rowStart + i, COLUMN_START + 7).setValue(getR2_8(dataMasterName, e));
+                cells.get(rowStart + i, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(dataMasterName, e));
+                cells.get(rowStart + i, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(dataMasterName, e) : "");
 
-                cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
-                cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");
+                cells.get(rowStart + i, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
+                cells.get(rowStart + i, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");
                 rowStart++;
+            }
+            if(data.size() > 0) {
+                cells.deleteRows(rowStart + data.size(), 1);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
