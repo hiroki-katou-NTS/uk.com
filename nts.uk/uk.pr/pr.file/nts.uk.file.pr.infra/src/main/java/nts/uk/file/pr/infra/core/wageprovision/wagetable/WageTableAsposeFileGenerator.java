@@ -215,11 +215,12 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     private void fillData(WorksheetCollection worksheets, List<WageTablelData> data, List<ItemDataNameExport> dataName, List<ItemDataNameExport> dataMasterName) {
         try {
             int rowStart = 3;
+            int lineCopy = 2;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                if(i % 2 ==0) {
-                    cells.copyRows(cells, rowStart + i, rowStart + i + 1, 2);
+                if(i % 2 == 0) {
+                    cells.copyRows(cells, rowStart + i, rowStart + i + lineCopy, lineCopy);
                 }
                 WageTablelData e = data.get(i);
                 cells.get(rowStart + i, COLUMN_START).setValue(e.getWageTableCode());
