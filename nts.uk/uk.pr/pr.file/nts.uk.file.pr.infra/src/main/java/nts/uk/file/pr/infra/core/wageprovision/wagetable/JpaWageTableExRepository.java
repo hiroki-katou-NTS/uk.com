@@ -37,16 +37,16 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append("    FIXED_ELEMENT_3,");
         exportSQL.append("    OPT_ADD_ELEMENT_3,");
         exportSQL.append("    STEP_INCREMENT_1,");
-        exportSQL.append("    UPPER_LIMIT_1,");
-        exportSQL.append("    LOWER_LIMIT_1,");
+        exportSQL.append("    FRAME_UPPER_1,");
+        exportSQL.append("    FRAME_LOWER_1,");
         exportSQL.append("    s.QUALIFY_GROUP_CD,");
         exportSQL.append("    s.QUALIFY_GROUP_NAME,");
         exportSQL.append("    STEP_INCREMENT_2,");
-        exportSQL.append("    UPPER_LIMIT_2,");
-        exportSQL.append("    LOWER_LIMIT_2,");
+        exportSQL.append("    FRAME_UPPER_2,");
+        exportSQL.append("    FRAME_LOWER_2,");
         exportSQL.append("    STEP_INCREMENT_3,");
-        exportSQL.append("    UPPER_LIMIT_3,");
-        exportSQL.append("    LOWER_LIMIT_3,");
+        exportSQL.append("    FRAME_UPPER_3,");
+        exportSQL.append("    FRAME_LOWER_3,");
         exportSQL.append("    PAY_AMOUNT,");
         exportSQL.append("    PAYMENT_METHOD,");
         exportSQL.append("    ELEMENT_SET,");
@@ -66,8 +66,12 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append(" LEFT JOIN QPBMT_QUALIFI_GROUP_SET s ON s.CID = h.CID  AND s.QUALIFY_GROUP_CD = eq.QUALIFY_GROUP_CD ");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = w.WAGE_TABLE_CD");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = h.CID AND ws.HIST_ID = h.HIST_ID AND ws.WAGE_TABLE_CD = e.WAGE_TABLE_CD AND ws.QUALIFY_GROUP_CD = s.QUALIFY_GROUP_CD");
-        exportSQL.append(" ORDER BY w.WAGE_TABLE_CD,  MASTER_CD_1 DESC, FIXED_ELEMENT_1 DESC, MASTER_CD_2 DESC, FIXED_ELEMENT_2 DESC, MASTER_CD_3 DESC, FIXED_ELEMENT_3 DESC, s.QUALIFY_GROUP_CD");
-
+        exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, ");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_1 ELSE MASTER_CD_3 END DESC");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_1 ELSE FIXED_ELEMENT_3 END DESC");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_2 ELSE MASTER_CD_3 END DESC");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_2 ELSE FIXED_ELEMENT_3 END ASC");
+        exportSQL.append(" ,s.QUALIFY_GROUP_CD");
         try {
             resultQuery = this.getEntityManager()
                     .createNativeQuery(exportSQL.toString())
