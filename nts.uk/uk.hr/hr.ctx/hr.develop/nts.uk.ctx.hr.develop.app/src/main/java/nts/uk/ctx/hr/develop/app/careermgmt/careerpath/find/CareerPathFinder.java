@@ -55,6 +55,10 @@ public class CareerPathFinder {
 		return this.getCareerPartMaster(companyId, hisId);
 	}
 	
+	public Integer getMaxClassLevel(String companyId){
+		return carrierManagementOperationSetting.getCareerPathMaxClassLevel(companyId);
+	}
+	
 	//新規モードでキャリアパスを画面に表示する
 	private CareerPartDto getCareerPartMaster(String companyId, String hisId) {
 		//最大階層レベルの取得

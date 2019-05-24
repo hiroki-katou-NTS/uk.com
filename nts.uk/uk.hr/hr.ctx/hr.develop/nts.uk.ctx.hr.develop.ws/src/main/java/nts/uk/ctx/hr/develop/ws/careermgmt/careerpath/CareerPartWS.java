@@ -65,10 +65,18 @@ public class CareerPartWS {
 	}
 	
 	@POST
+	@Path("/getMaxClassLevel")
+	public JavaTypeResult<Integer> getMaxClassLevel(){
+		String cId = AppContexts.user().companyId();
+		return new JavaTypeResult<Integer>(careerPathFinder.getMaxClassLevel(cId));
+	}
+	
+	@POST
 	@Path("/getCareerPart")
 	public CareerPartDto getCareerPart(CareerPartHistoryCommand command){
 		String cId = AppContexts.user().companyId();
 		return careerPathFinder.getCareerPath(cId, command.getHistoryId(), GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"));
 	}
+	
 	
 }

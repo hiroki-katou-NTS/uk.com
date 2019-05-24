@@ -9,10 +9,12 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         masterId: KnockoutObservable<string>;
         histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
-        itemList: KnockoutObservableArray<ScreenItem>;
+        listCareerType: KnockoutObservableArray<ScreenItem>;
         
         //careerpart
         careerClass: KnockoutObservableArray<any>;
+        careerType: KnockoutObservableArray<any>;
+        maxClassLevel: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
@@ -66,44 +68,67 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 //alert("Deleted");
             };
 
-
             //table 
-            self.itemList = ko.observableArray([]);
-            $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
+            self.listCareerType = ko.observableArray([]);
+            $("#fixed-table").ntsFixedTable({ height: 246, width: 990});
             
             self.selectedHistId.subscribe(function(newValue) {
-               let startDate = _.filter(self.histList(), ['histId', newValue])[0].startDate;
-               self.getCarrerPart(newValue,startDate);
+               self.getCarrerPart(newValue);
             });
 
             self.careerClass = ko.observableArray([]);
+            self.careerType = ko.observableArray([]);
+            self.maxClassLevel = ko.observable(1);
+           
+            //set width for table
+            self.maxClassLevel.subscribe(function(newValue) {
+                let width = newValue * 165;
+                document.getElementsByClassName("fixed-table")[0].style.width = width+"px";
+                document.getElementsByClassName("nts-fixed-header-wrapper")[0].style.width = width+"px";
+                document.getElementsByClassName("nts-fixed-body-wrapper")[0].style.width = width+"px";
+                document.getElementsByClassName("fixed-table")[0].style.width = width+"px";
+                document.getElementsByClassName("fixed-table")[1].style.width = width+"px";
+            });
+            
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            for (let i = 1; i <= 6; i++) {
-                self.itemList.push(new ScreenItem(i, '1', '1', '1', '1', '1', '1', '3', '1', '1', '1'));
+            new service.getMaxClassLevel().done(function(data: any) {
+                self.maxClassLevel(5);
+                dfd.resolve();
             }
-            dfd.resolve();
             return dfd.promise();
         }
-        
-         private getCarrerPart(hisId: string, date: any): void {
-             var self = this;
-             let command = {
-                 historyId: hisId,
-                 startDate: moment(date).format("YYYY/MM/DD")
-             }
-             if (hisId != '') {
+        private getCarrerPart(hisId: string): void {
+            var self = this;
+            let startDate = _.filter(self.histList(), ['histId', hisId])[0].startDate;
+            let command = {
+                historyId: hisId,
+                startDate: moment(startDate).format("YYYY/MM/DD")
+            }
+            if (hisId != '') {
+                block.grayout();
                 new service.getCareerPart(command).done(function(data: any) {
+                    data.careerClass.add({ id: "", code: "", name: "" });
                     console.log(data);
-                    self.careerClass(data.careerClass);
+                    self.maxClassLevel(data.maxClassLevel);
+                    self.careerType(_.orderBy(data.careerType, ['code'], ['asc']));
+                    self.careerClass(_.orderBy(data.careerClass, ['code'], ['asc']));
+                    let list = [];
+                    _.forEach(data.careerType, function(value) {
+                        console.log(value);
+                        list.push(new ScreenItem(value.code, '1', '1', '1', '1', '1', '1', '3', '1', '1', '1'));
+                    });
+                    self.listCareerType(list);
+                    block.clear();
                 });
             }
         }
     }
 
     class ScreenItem {
+        code: KnockoutObservable<String>;
         val1: KnockoutObservable<String>;
         val2: KnockoutObservable<String>;
         val3: KnockoutObservable<String>;
@@ -114,8 +139,6 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         val8: KnockoutObservable<String>;
         val9: KnockoutObservable<String>;
         val10: KnockoutObservable<String>;
-        code: KnockoutObservable<String>;
-        comBoList: KnockoutObservableArray<ItemModel>;
         constructor(code: String, val1: String, val2: String, val3: String, val4: String, val5: String, val6: String, val7: String, val8: String, val9: String, val10: String) {
             var self = this;
             self.code = ko.observable(code);
@@ -129,22 +152,11 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.val8 = ko.observable(val8);
             self.val9 = ko.observable(val9);
             self.val10 = ko.observable(val10);
-            
-            self.comBoList = ko.observableArray([
-                new ItemModel('1', 'chon 1'),
-                new ItemModel('2', 'chon 2'),
-                new ItemModel('3', 'chon 3'),
-                new ItemModel('4', 'chon 4'),
-                new ItemModel('5', 'chon 5'),
-                new ItemModel('6', 'chon 6')
-            ]);
         }
     }
     class ItemModel {
-        
         code: string;
         name: string;
-
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;

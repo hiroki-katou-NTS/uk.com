@@ -58,29 +58,9 @@
 												<th class="ui-widget-header" colspan="1">first column</th>
 											</tr>
 										</thead>
-										<tbody>
+										<tbody data-bind="foreach: careerType">
 											<tr>
-												<td><span data-bind="">Thanh1</span>
-													<button class="small">Small</button></td>
-											</tr>
-											<tr>
-												<td><span data-bind="">Thanh2</span>
-													<button class="small">Small</button></td>
-											</tr>
-											<tr>
-												<td><span data-bind="">Thanh3</span>
-													<button class="small">Small</button></td>
-											</tr>
-											<tr>
-												<td><span data-bind="">Thanh4</span>
-													<button class="small">Small</button></td>
-											</tr>
-											<tr>
-												<td><span data-bind="">Thanh5</span>
-													<button class="small">Small</button></td>
-											</tr>
-											<tr>
-												<td><span data-bind="">Thanh6</span>
+												<td><span data-bind="text: name"></span>
 													<button class="small">Small</button></td>
 											</tr>
 										</tbody>
@@ -89,35 +69,76 @@
 								<div class="table">
 									<table id="fixed-table">
 										<colgroup>
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
-											<col width="165px" />
+											<com:ko-if bind="maxClassLevel() &gt; 0">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 1">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 2">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 3">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 4">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 5">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 6">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 7">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 8">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 9">
+												<col width="165px" />
+											</com:ko-if>
 										</colgroup>
 										<thead>
 											<tr>
-												<th class="ui-widget-header lever1" colspan="1">lever1</th>
-												<th class="ui-widget-header lever2" colspan="1">lever2</th>
-												<th class="ui-widget-header lever3" colspan="1">lever3</th>
-												<th class="ui-widget-header lever4" colspan="1">lever4</th>
-												<th class="ui-widget-header lever5" colspan="1">lever5</th>
-												<th class="ui-widget-header lever6" colspan="1">lever6</th>
-												<th class="ui-widget-header lever7" colspan="1">lever7</th>
-												<th class="ui-widget-header lever8" colspan="1">lever8</th>
-												<th class="ui-widget-header lever9" colspan="1">lever9</th>
-												<th class="ui-widget-header lever10" colspan="1">lever10</th>
+												<com:ko-if bind="maxClassLevel() &gt; 0">
+													<th class="ui-widget-header lever1" colspan="1">lever1</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 1">
+													<th class="ui-widget-header lever2" colspan="1">lever2</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 2">
+													<th class="ui-widget-header lever3" colspan="1">lever3</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 3">
+													<th class="ui-widget-header lever4" colspan="1">lever4</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 4">
+													<th class="ui-widget-header lever5" colspan="1">lever5</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 5">
+													<th class="ui-widget-header lever6" colspan="1">lever6</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 6">
+													<th class="ui-widget-header lever7" colspan="1">lever7</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 7">
+													<th class="ui-widget-header lever8" colspan="1">lever8</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 8">
+													<th class="ui-widget-header lever9" colspan="1">lever9</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 9">
+													<th class="ui-widget-header lever10" colspan="1">lever10</th>
+												</com:ko-if>
 											</tr>
 										</thead>
-										<tbody data-bind="foreach: itemList">
+										<tbody data-bind="foreach: listCareerType">
 											<tr>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 0">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
 														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -127,97 +148,116 @@
 														selectFirstIfNull: 'false',
 														dropDownAttachedToBody: 'true',
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 1">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val2,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 2">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val3,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 3">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val4,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 4">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val5,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 5">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val6,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 6">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val7,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 7">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val8,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 8">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val9,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
-												<td><div id="combo-box"
-														data-bind="ntsComboBox: {
-														options: comBoList,
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 9">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: val10,
 														optionsText: 'name',
 														width: 160,
 														columns: [ { prop: 'name', length: 4 },]}">
-													</div></td>
+														</div></td>
+												</com:ko-if>
 											</tr>
 										</tbody>
 									</table>

@@ -3,6 +3,7 @@ module nts.uk.hr.view.jhc002.a {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
+            getMaxClassLevel: "careermgmt/careerpath/getMaxClassLevel",
             getCareerPart: "careermgmt/careerpath/getCareerPart",
             getAccountLockPolicy: "ctx/sys/gateway/securitypolicy/getAccountLockPolicy",
             getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy",
@@ -14,8 +15,12 @@ module nts.uk.hr.view.jhc002.a {
         export function getAccountLockPolicy(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAccountLockPolicy);
         }
-        export function getCareerPart(param: any): JQueryPromise < any > {
+        export function getMaxClassLevel(): JQueryPromise<any> {
+            return ajax(paths.getMaxClassLevel);
+        }
+        export function getCareerPart(param: any): JQueryPromise<any> {
             return ajax(paths.getCareerPart, param);
         }
+
     }
 }
