@@ -82,7 +82,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 }
                 //view all code of selected item
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
-                var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
+                var baseDateOutput = nts.uk.ui.windows.getShared('baseDateCDL008');
                 self.selectWorkplaceIds(output);
                 self.selectedBaseDate(baseDateOutput);
             })
