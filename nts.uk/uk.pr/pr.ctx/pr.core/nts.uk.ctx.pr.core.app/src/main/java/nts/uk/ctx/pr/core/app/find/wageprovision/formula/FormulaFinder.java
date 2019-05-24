@@ -1,20 +1,11 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.formula;
 import nts.arc.primitive.PrimitiveValueBase;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.SalaryPerUnitPriceFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.SalaryPerUnitPriceNameDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaElementDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaService;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
@@ -23,6 +14,11 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Stateless
 /**
@@ -71,7 +67,9 @@ public class FormulaFinder {
     }
 
     public List<MasterUseDto> getMasterUseInfo (int masterUseClassification) {
-        return formulaService.getMasterUseInfo(masterUseClassification);
+        List<MasterUseDto> result = formulaService.getMasterUseInfo(masterUseClassification);
+        result.sort(Comparator.comparing(e -> e.code));
+        return result;
     }
 
     public Map<String, List<FormulaElementDto>> getFormulaElement(int yearMonth) {
