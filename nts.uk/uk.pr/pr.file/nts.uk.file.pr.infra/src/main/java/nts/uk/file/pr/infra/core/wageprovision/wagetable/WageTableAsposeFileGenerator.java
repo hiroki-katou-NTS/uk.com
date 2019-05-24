@@ -128,7 +128,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getFixedValue2(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if (e.getElementSet() == 2) {
+        if (e.getElementSet() == 3) {
             return TextResource.localize("QMM016_50");
         }
         if(e.getElementSet() == 4) {
@@ -220,7 +220,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
-                    cells.copyRows(cells, rowStart + i, rowStart + i + lineCopy, lineCopy);
+                    cells.copyRows(cells, rowStart, rowStart + lineCopy, lineCopy);
                 }
                 WageTablelData e = data.get(i);
                 cells.get(rowStart + i, COLUMN_START).setValue(e.getWageTableCode());

@@ -78,7 +78,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
-                    cells.copyRows(cells, rowStart + i, rowStart + i + lineCopy, lineCopy);
+                    cells.copyRows(cells, rowStart, rowStart + lineCopy, lineCopy);
                 }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
