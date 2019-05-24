@@ -8,11 +8,14 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaType;
 import nts.uk.ctx.pr.file.app.core.wageprovision.formula.FormulaExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.formula.FormulaFileGenerator;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,9 +29,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private static final String REPORT_FILE_EXTENSION = ".xlsx";
     private static final String FILE_NAME = "QMM017計算式の登録_";
     private static final String TITLE = "計算式の登録 ";
-    private static final int RECORD_IN_PAGE = 71;
-    private static final int LINE_IN_PAGE = 74;
     private static final String SHEET_NAME = "マスタリスト";
+    @Inject
+    private CompanyAdapter company;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, FormulaExportData exportData) {
@@ -36,8 +39,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             worksheets.get(0).setName(SHEET_NAME);
-            int page = exportData.getFormulas().size() == RECORD_IN_PAGE ? 0 : exportData.getFormulas().size() / RECORD_IN_PAGE;
-            createTable(worksheets, page, exportData.getCompanyName());
+            settingPage(worksheets.get(0), this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse(""));
             printData(worksheets, exportData.getFormulas(), exportData.getFormulaDetails(), exportData.getTargetItems());
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
@@ -45,14 +47,6 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                     FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void createTable(WorksheetCollection worksheets,int pageMonth, String companyName) throws Exception {
-        Worksheet worksheet = worksheets.get(0);
-        settingPage(worksheet, companyName);
-        for(int i = 0 ; i< pageMonth; i++) {
-            worksheet.getCells().copyRows(worksheet.getCells(), 0, LINE_IN_PAGE * (i+1), LINE_IN_PAGE + 1 );
         }
     }
 
@@ -79,11 +73,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                           List<Object[]> targetItem, int numColumn, int startColumn) {
         try {
             int rowStart = 0;
+            int lineCopy =2;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                if(i % RECORD_IN_PAGE == 0) {
-                    rowStart += 3;
+                if(i % 2 == 0) {
+                    cells.copyRows(cells, rowStart + i, rowStart + i + lineCopy, lineCopy);
                 }
                 Object[] dataRow = data.get(i);
                 for (int j = 0; j < numColumn; j++) {
