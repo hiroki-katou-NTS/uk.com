@@ -215,12 +215,15 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     private void fillData(WorksheetCollection worksheets, List<WageTablelData> data, List<ItemDataNameExport> dataName, List<ItemDataNameExport> dataMasterName) {
         try {
             int rowStart = 3;
-            int lineCopy = 2;
+            int lineCopy = 3;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
-                    cells.copyRows(cells, rowStart + 1, rowStart + lineCopy, lineCopy);
+                    cells.copyRows(cells, rowStart, rowStart + lineCopy, lineCopy);
+                }
+                if(i == data.size() - 1) {
+                    cells.deleteRows(rowStart, data.size() % 3);
                 }
                 WageTablelData e = data.get(i);
                 cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
@@ -240,8 +243,8 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                 cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");
                 rowStart++;
             }
-            if(data.size() % lineCopy == 0) {
-                cells.deleteRows(rowStart, 1);
+            if(data.size() == 0) {
+                cells.deleteRows(rowStart, 2);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
