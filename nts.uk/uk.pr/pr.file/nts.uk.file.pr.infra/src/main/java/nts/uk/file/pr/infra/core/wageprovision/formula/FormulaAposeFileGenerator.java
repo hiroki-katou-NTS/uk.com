@@ -73,7 +73,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                           List<Object[]> targetItem, int numColumn, int startColumn) {
         try {
             int rowStart = 3;
-            int lineCopy = 2;
+            int lineCopy = 3;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
