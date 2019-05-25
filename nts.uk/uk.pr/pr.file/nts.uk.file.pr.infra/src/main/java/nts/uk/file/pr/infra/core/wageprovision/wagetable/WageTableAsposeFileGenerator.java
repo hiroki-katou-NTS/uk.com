@@ -219,7 +219,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                if(i % 2 == 0 && i + lineCopy < data.size()) {
+                if(i % 2 == 0) {
                     cells.copyRows(cells, rowStart + 1, rowStart + lineCopy, lineCopy);
                 }
                 WageTablelData e = data.get(i);

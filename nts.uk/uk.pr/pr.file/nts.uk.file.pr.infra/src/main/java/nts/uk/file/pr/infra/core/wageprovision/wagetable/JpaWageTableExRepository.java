@@ -69,7 +69,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, ");
         exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_1 ELSE MASTER_CD_3 END DESC,");
         exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_1 ELSE FIXED_ELEMENT_3 END DESC,");
-        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_2 ELSE MASTER_CD_3 END DESC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_2 ELSE MASTER_CD_3 END ASC,");
         exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_2 ELSE FIXED_ELEMENT_3 END DESC");
         exportSQL.append(" ,s.QUALIFY_GROUP_CD");
         try {
