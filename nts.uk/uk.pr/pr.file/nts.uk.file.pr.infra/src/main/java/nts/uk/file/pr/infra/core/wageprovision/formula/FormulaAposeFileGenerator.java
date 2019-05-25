@@ -73,11 +73,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                           List<Object[]> targetItem, int numColumn, int startColumn) {
         try {
             int rowStart = 3;
-            int lineCopy =2;
+            int lineCopy = 2;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
-                if(i % 2 == 0) {
+                if(i % lineCopy == 0 && i + lineCopy < data.size()) {
                     cells.copyRows(cells, rowStart, rowStart + lineCopy, lineCopy);
                 }
                 Object[] dataRow = data.get(i);
@@ -128,6 +128,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                     }
                 }
                 rowStart++;
+            }
+            if(data.size() % lineCopy == 0) {
+                cells.deleteRows(rowStart, 1);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
