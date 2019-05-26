@@ -1,6 +1,9 @@
 package nts.uk.file.pr.infra.core.comlegalrecord;
 
-import com.aspose.cells.*;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.file.app.core.comlegalrecord.CompanyStatutoryWriteExportData;
 import nts.uk.ctx.pr.file.app.core.comlegalrecord.CompanyStatutoryWriteExportGenerator;
@@ -65,40 +68,53 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
     }
 
     private void writeFileExcel(WorksheetCollection wsc, List<CompanyStatutoryWriteExportData> exportData, String companyName){
-        int rowIndex = FIRST_ROW_FILL;
-        Worksheet ws = wsc.get(0);
-        this.settingHeader(ws,companyName);
-        for(CompanyStatutoryWriteExportData entity : exportData){
-
-            ws.getCells().get(rowIndex,CODE).putValue(entity.getCode());
-            ws.getCells().get(rowIndex,NAME).putValue(entity.getName());
-            ws.getCells().get(rowIndex,KANANAME).putValue(entity.getKanaName());
-            ws.getCells().get(rowIndex,CORPORATENUMBER).putValue(entity.getCorporateNumber());
-            ws.getCells().get(rowIndex,REPRESENTATIVE_NAME).putValue(entity.getClubRepresentativeName());
-            ws.getCells().get(rowIndex,REPRESENTATIVE_POSITION).putValue(entity.getClubRepresentativePosition());
-            ws.getCells().get(rowIndex,POSTALCODE).putValue(entity.getPostalCode());
-            ws.getCells().get(rowIndex,ADDRESS1).putValue(entity.getAddress1());
-            ws.getCells().get(rowIndex,ADDRESSKANA1).putValue(entity.getAddressKana1());
-            ws.getCells().get(rowIndex,ADDRESS2).putValue(entity.getAddress2());
-            ws.getCells().get(rowIndex,ADDRESSKANA2).putValue(entity.getAddressKana2());
-            ws.getCells().get(rowIndex,PHONENUMBER).putValue(entity.getPhoneNumber());
-            ws.getCells().get(rowIndex,ACCOUNT_MANANAME).putValue(entity.getAccountManagerName());
-            ws.getCells().get(rowIndex,CONTACT_CLASS).putValue(entity.getContactClass());
-            ws.getCells().get(rowIndex,CONTACT_NAME).putValue(entity.getContactName());
-            ws.getCells().get(rowIndex,CONTRACT_PHONE_NUMBER).putValue(entity.getContactPhoneNumber());
-            ws.getCells().get(rowIndex,ACCOUNTING_OFF_NAME).putValue(entity.getAccountingOfficeName());
-            ws.getCells().get(rowIndex,ACCOUNTING_OFF_NAME_PHONE_NUMBER).putValue(entity.getAccountingOfficeTelephoneNumber());
-            ws.getCells().get(rowIndex,SALAPAY_METHOD_DUE_DATE1).putValue(entity.getSalaryPaymentMethodAndDueDate1());
-            ws.getCells().get(rowIndex,SALAPAY_METHOD_DUE_DATE2).putValue(entity.getSalaryPaymentMethodAndDueDate2());
-            ws.getCells().get(rowIndex,SALAPAY_METHOD_DUE_DATE3).putValue(entity.getSalaryPaymentMethodAndDueDate3());
-            ws.getCells().get(rowIndex,BUSINESSLINE1).putValue(entity.getBusinessLine1());
-            ws.getCells().get(rowIndex,BUSINESSLINE2).putValue(entity.getBusinessLine2());
-            ws.getCells().get(rowIndex,BUSINESSLINE3).putValue(entity.getBusinessLine3());
-            ws.getCells().get(rowIndex,TAX_OFFICE).putValue(entity.getTaxOffice());
-            ws.getCells().get(rowIndex,NAME_BANK_TRANFEINS).putValue(entity.getNameBankTransferInstitution());
-            ws.getCells().get(rowIndex,VIBLOCAFININS).putValue(entity.getVibrantLocationFinancialInstitutions());
-
-            rowIndex ++;
+        try {
+            int rowIndex = FIRST_ROW_FILL;
+            Worksheet ws = wsc.get(0);
+            int lineCopy = 3;
+            this.settingHeader(ws, companyName);
+            for (int i = 0; i < exportData.size(); i++) {
+                CompanyStatutoryWriteExportData entity = exportData.get(i);
+                if (i % 2 == 0) {
+                    ws.getCells().copyRows(ws.getCells(), rowIndex, rowIndex + lineCopy - 1, lineCopy);
+                }
+                if (i == exportData.size() - 1) {
+                    ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
+                }
+                ws.getCells().get(rowIndex, CODE).putValue(entity.getCode());
+                ws.getCells().get(rowIndex, NAME).putValue(entity.getName());
+                ws.getCells().get(rowIndex, KANANAME).putValue(entity.getKanaName());
+                ws.getCells().get(rowIndex, CORPORATENUMBER).putValue(entity.getCorporateNumber());
+                ws.getCells().get(rowIndex, REPRESENTATIVE_NAME).putValue(entity.getClubRepresentativeName());
+                ws.getCells().get(rowIndex, REPRESENTATIVE_POSITION).putValue(entity.getClubRepresentativePosition());
+                ws.getCells().get(rowIndex, POSTALCODE).putValue(entity.getPostalCode());
+                ws.getCells().get(rowIndex, ADDRESS1).putValue(entity.getAddress1());
+                ws.getCells().get(rowIndex, ADDRESSKANA1).putValue(entity.getAddressKana1());
+                ws.getCells().get(rowIndex, ADDRESS2).putValue(entity.getAddress2());
+                ws.getCells().get(rowIndex, ADDRESSKANA2).putValue(entity.getAddressKana2());
+                ws.getCells().get(rowIndex, PHONENUMBER).putValue(entity.getPhoneNumber());
+                ws.getCells().get(rowIndex, ACCOUNT_MANANAME).putValue(entity.getAccountManagerName());
+                ws.getCells().get(rowIndex, CONTACT_CLASS).putValue(entity.getContactClass());
+                ws.getCells().get(rowIndex, CONTACT_NAME).putValue(entity.getContactName());
+                ws.getCells().get(rowIndex, CONTRACT_PHONE_NUMBER).putValue(entity.getContactPhoneNumber());
+                ws.getCells().get(rowIndex, ACCOUNTING_OFF_NAME).putValue(entity.getAccountingOfficeName());
+                ws.getCells().get(rowIndex, ACCOUNTING_OFF_NAME_PHONE_NUMBER).putValue(entity.getAccountingOfficeTelephoneNumber());
+                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE1).putValue(entity.getSalaryPaymentMethodAndDueDate1());
+                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE2).putValue(entity.getSalaryPaymentMethodAndDueDate2());
+                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE3).putValue(entity.getSalaryPaymentMethodAndDueDate3());
+                ws.getCells().get(rowIndex, BUSINESSLINE1).putValue(entity.getBusinessLine1());
+                ws.getCells().get(rowIndex, BUSINESSLINE2).putValue(entity.getBusinessLine2());
+                ws.getCells().get(rowIndex, BUSINESSLINE3).putValue(entity.getBusinessLine3());
+                ws.getCells().get(rowIndex, TAX_OFFICE).putValue(entity.getTaxOffice());
+                ws.getCells().get(rowIndex, NAME_BANK_TRANFEINS).putValue(entity.getNameBankTransferInstitution());
+                ws.getCells().get(rowIndex, VIBLOCAFININS).putValue(entity.getVibrantLocationFinancialInstitutions());
+                rowIndex++;
+            }
+            if(exportData.size() == 0) {
+                ws.getCells().deleteRows(rowIndex, 2);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
