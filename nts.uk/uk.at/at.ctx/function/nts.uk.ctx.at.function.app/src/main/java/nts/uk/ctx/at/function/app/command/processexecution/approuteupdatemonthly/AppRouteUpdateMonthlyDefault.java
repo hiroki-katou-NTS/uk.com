@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthl
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,7 +11,6 @@ import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.CheckCreateperApprovalClosure;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.OutputCreatePerAppMonImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
@@ -63,7 +64,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	@Override
-	public void checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	public boolean checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
 		for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
@@ -83,10 +84,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				}
 			}
 			processExecutionLogRepo.update(procExecLog);
-			return;
+			return false;
 		}
 		System.out.println("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
+		AtomicBoolean checkStop = new AtomicBoolean(false);
 		/** ドメインモデル「就業締め日」を取得する(lấy thông tin domain ル「就業締め日」) */
 		List<Closure> listClosure = closureRepository.findAllActive(procExec.getCompanyId(),
 				UseClassification.UseClass_Use);
@@ -95,6 +97,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		long startTime = System.currentTimeMillis();
 		
 		listClosure.forEach(itemClosure -> {
+			if(checkStop.get()) return;
 			log.info("承認ルート更新(月別) 締め: " + itemClosure.getClosureId());
 			
 			/** 締め開始日を取得する */
@@ -240,14 +243,19 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 					.find(regulationInfoEmployeeAdapterImport);
 
 			
-
+			if(checkStop.get()) return;
 			/** アルゴリズム「日別実績の承認ルート中間データの作成」を実行する */
-			boolean check = createperApprovalMonthlyAdapter.createperApprovalMonthly(procExec.getCompanyId(),
+			OutputCreatePerAppMonImport check = createperApprovalMonthlyAdapter.createperApprovalMonthly(procExec.getCompanyId(),
 			 procExecLog.getExecId(),
 			 lstRegulationInfoEmployee.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), 
 			 procExec.getProcessExecType().value, 
 			 closureData.getClosureEndDate());
-			 listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check));
+			
+			if(check.isCheckStop()) {
+				checkStop.set(true);
+				return;
+			}
+			 listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check.isCreateperApprovalMon()));
 			
 //		}
 		});
@@ -277,7 +285,10 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		}
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
-		
+		if(checkStop.get()) {
+			return true;
+		}
+		return false;
 
 	}
 
