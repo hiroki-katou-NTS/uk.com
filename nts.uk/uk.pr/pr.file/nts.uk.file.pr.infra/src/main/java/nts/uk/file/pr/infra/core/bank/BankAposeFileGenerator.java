@@ -67,16 +67,12 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
                 this.settingHeader(ws,companyName);
                 rowIndex = FIRST_ROW_FILL;
                 count = 0;
-                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[0]);
-                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[1]);
-                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[2]);
 
-            }else{
-                ws.getCells().get(rowIndex,CD_BANK).putValue(entity[6].toString().equals("1") ? entity[0] : null);
-                ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[6].toString().equals("1")  ? entity[1] : null);
-                ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[6].toString().equals("1") ? entity[2] : null);
+
             }
-
+            ws.getCells().get(rowIndex,CD_BANK).putValue(entity[0]);
+            ws.getCells().get(rowIndex,NAME_BANK).putValue(entity[1]);
+            ws.getCells().get(rowIndex,KANA_NAME_BANK).putValue(entity[2]);
             ws.getCells().get(rowIndex,CD_BRANCH).putValue(entity[3]);
             ws.getCells().get(rowIndex,NAME_BRANCH).putValue(entity[4]);
             ws.getCells().get(rowIndex,KANA_BRANCH).putValue(entity[5]);
