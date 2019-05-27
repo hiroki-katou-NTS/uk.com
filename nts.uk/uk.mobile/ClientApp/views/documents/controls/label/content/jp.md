@@ -5,7 +5,7 @@
 ```
 ###### 2.2 制約を表示する場合
 
-拘束を表示するために`v-bind:constraint`を追加してください。
+制約を表示するために`v-bind:constraint`を追加してください。
 ```html
 <nts-label v-bind:constraint="{required: true, min: 100, max: 1000}">{{'required_label' | i18n}}</nts-label>
 ```
