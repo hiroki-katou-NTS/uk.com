@@ -23,10 +23,10 @@ public class AppUpdateSuspension {
 	public void updateSuspension(String exeId,boolean isDaily) {
 		if(isDaily) {
 			//承認中間データ中断管理（日別実績）．中断状態を更新
-			appInterrupDailyRepository.updateAppInterrupDaily(new AppInterrupDaily(exeId,true));
+			appInterrupDailyRepository.addAppInterrupDaily(new AppInterrupDaily(exeId,true));
 		}else {
 			//承認中間データ中断管理（月別実績）．中断状態を更新
-			appInterrupMonRepository.updateAppInterrupMon(new AppInterrupMon(exeId,true));
+			appInterrupMonRepository.addAppInterrupMon(new AppInterrupMon(exeId,true));
 		}
 	}
 }

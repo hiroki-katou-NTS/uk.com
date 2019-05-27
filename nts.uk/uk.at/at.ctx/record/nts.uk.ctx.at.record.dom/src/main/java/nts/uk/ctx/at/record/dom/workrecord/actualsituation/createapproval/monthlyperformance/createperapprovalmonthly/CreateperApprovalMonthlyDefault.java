@@ -35,8 +35,6 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 	@Override
 	public OutputCreatePerApprovalMon createperApprovalMonthly(String companyId, String executionId, List<String> employeeIDs,
 			int processExecType, GeneralDate endDateClosure) {
-			//ドメインモデル「承認中間データ中断管理（月別実績）」を追加する
-			appInterrupMonRepository.addAppInterrupMon(new AppInterrupMon(executionId,false));
 			AtomicBoolean checkStop = new AtomicBoolean(false);
 			/**パラメータ.社員ID（List）の数だけループする*/
 			this.parallel.forEach(employeeIDs, employeeID -> {
@@ -56,7 +54,7 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 				if(checkStop.get()) return;
 				//ドメインモデル「承認中間データ中断管理（月別実績）」を取得する
 				Optional<AppInterrupMon> appInterrupMon =  appInterrupMonRepository.getAppInterrupMonByID(executionId);
-				if(!appInterrupMon.isPresent() || appInterrupMon.get().isSuspendedState()) {
+				if(appInterrupMon.isPresent() && appInterrupMon.get().isSuspendedState()) {
 					checkStop.set(true);
 					return;
 				}

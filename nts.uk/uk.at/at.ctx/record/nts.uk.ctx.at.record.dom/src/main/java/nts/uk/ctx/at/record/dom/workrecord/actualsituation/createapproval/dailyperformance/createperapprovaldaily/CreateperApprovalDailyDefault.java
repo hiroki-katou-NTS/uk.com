@@ -42,11 +42,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 	@Override
 	public OutputCreatePerApprovalDaily createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
 			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
-		//ドメインモデル「承認中間データ中断管理（日別実績）」を追加する
-		appInterrupDailyRepository.addAppInterrupDaily(new AppInterrupDaily(executionId,false));
-
 		AtomicBoolean checkStop = new AtomicBoolean(false);
-		
 		/** パラメータ.実行種別をチェック */
 		// 通常実行の場合 : processExecType = 0(通常実行)
 		if (!employeeIDs.isEmpty()) {
@@ -94,7 +90,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 					if(checkStop.get()) return;
 					//ドメインモデル「承認中間データ中断管理（日別実績）」を取得する
 					Optional<AppInterrupDaily> appInterrupDaily = appInterrupDailyRepository.getAppInterrupDailyByID(executionId);
-					if(!appInterrupDaily.isPresent() || appInterrupDaily.get().isSuspendedState()) {
+					if(appInterrupDaily.isPresent() && appInterrupDaily.get().isSuspendedState()) {
 						checkStop.set(true);
 						return;
 					}
@@ -122,7 +118,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 					if(checkStop.get()) return;
 					//ドメインモデル「承認中間データ中断管理（日別実績）」を取得する
 					Optional<AppInterrupDaily> appInterrupDaily = appInterrupDailyRepository.getAppInterrupDailyByID(executionId);
-					if(!appInterrupDaily.isPresent() || appInterrupDaily.get().isSuspendedState()) {
+					if(appInterrupDaily.isPresent() && appInterrupDaily.get().isSuspendedState()) {
 						checkStop.set(true);
 						return;
 					}

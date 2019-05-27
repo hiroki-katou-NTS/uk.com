@@ -262,6 +262,9 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		
 		log.info("承認ルート更新(月別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
 		System.out.println("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		if(checkStop.get()) {
+			return true;
+		}
 		boolean checkError = false;
 		/*終了状態で「エラーあり」が返ってきたか確認する*/
 		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
@@ -285,9 +288,6 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		}
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
-		if(checkStop.get()) {
-			return true;
-		}
 		return false;
 
 	}
