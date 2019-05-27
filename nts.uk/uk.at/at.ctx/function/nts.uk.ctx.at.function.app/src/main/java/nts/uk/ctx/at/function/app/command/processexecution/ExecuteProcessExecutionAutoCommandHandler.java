@@ -561,6 +561,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			// 承認ルート更新（日次）
 			boolean checkStop = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
 			if (checkStop) {
+				// 各処理の終了状態 ＝ [承認ルート更新（日次）、強制終了]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.FORCE_END);
+				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 				return true;
 			}
 		} catch (Exception e) {
@@ -633,7 +637,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			boolean checkStop = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec,
 					procExecLog);
 			if (checkStop) {
-				return false;
+				// 各処理の終了状態 ＝ [承認ルート更新（月次）、強制終了]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.FORCE_END);
+				return true;
 			}
 		} catch (Exception e) {
 			checkErrAppMonth = true;
