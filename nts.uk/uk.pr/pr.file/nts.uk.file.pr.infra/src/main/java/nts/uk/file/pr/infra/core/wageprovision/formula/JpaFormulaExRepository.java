@@ -305,24 +305,17 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("           SELECT ");
      sql.append("              UNIT_PRICE_CD AS CD,");
      sql.append("              UNIT_PRICE_NAME,");
-     sql.append("              2 AS STANDARD_AMOUNT_CLS");
+     sql.append("              3 AS STANDARD_AMOUNT_CLS");
      sql.append("           FROM QPBMT_PAY_UNIT_PRICE");
      sql.append("           WHERE CID = ?cid");
      sql.append("           UNION ALL ");
      sql.append("           SELECT ");
      sql.append("               INDIVIDUAL_UNIT_PRICE_CD AS CD,");
      sql.append("               INDIVIDUAL_UNIT_PRICE_NAME,");
-     sql.append("               3 AS STANDARD_AMOUNT_CLS");
+     sql.append("               4 AS STANDARD_AMOUNT_CLS");
      sql.append("           FROM QPBMT_PER_UNIT_PRICE");
      sql.append("           WHERE CID = ?cid");
-     sql.append("           UNION ");
-     sql.append("           SELECT ");
-     sql.append("               WAGE_TABLE_CD AS CD,");
-     sql.append("               WAGE_TABLE_NAME,");
-     sql.append("               4 AS STANDARD_AMOUNT_CLS ");
-     sql.append("           FROM");
-     sql.append("             QPBMT_WAGE_TABLE");
-     sql.append("           WHERE CID = ?cid) temp");
+     sql.append("           ) temp");
      sql.append("      ON temp.CD = a.TARGET_ITEM_CD");
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
