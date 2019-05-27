@@ -220,10 +220,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             Cells cells = sheet.getCells();
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
-                    cells.copyRows(cells, rowStart, rowStart + lineCopy, lineCopy);
+                    cells.copyRows(cells, rowStart, rowStart + lineCopy - 1, lineCopy);
                 }
                 if(i == data.size() - 1) {
-                    cells.deleteRows(rowStart, data.size() % 3);
+                    cells.deleteRows(rowStart, data.size() % 2 == 0 ? 3 : 4);
                 }
                 WageTablelData e = data.get(i);
                 cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());

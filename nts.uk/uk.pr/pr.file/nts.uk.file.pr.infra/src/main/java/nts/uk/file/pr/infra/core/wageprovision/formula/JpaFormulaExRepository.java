@@ -78,7 +78,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("          1 AS MASTER_USE");
         sql.append("      FROM BSYMT_DEPARTMENT_INFO f");
         sql.append("      INNER JOIN BSYMT_DEPARTMENT_HIST h ON f.HIST_ID = h.HIST_ID ");
-        sql.append("      AND f.CID = h.CID AND f.DEP_ID = h.DEP_ID AND h.STR_D <= ?baseDate' AND h.END_D >= ?baseDate'");
+        sql.append("      AND f.CID = h.CID AND f.DEP_ID = h.DEP_ID AND h.STR_D <= ?baseDate AND h.END_D >= ?baseDate");
         sql.append("      WHERE f.CID = ?cid");
         sql.append("   UNION ALL");
         sql.append("      SELECT  CLSCD AS CODE ,");
@@ -92,7 +92,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("         3 AS MASTER_USE");
         sql.append("     FROM BSYMT_JOB_INFO f");
         sql.append("     INNER JOIN BSYMT_JOB_HIST h ON h.CID = f.CID AND h.JOB_ID = f.JOB_ID AND h.HIST_ID = f.HIST_ID ");
-        sql.append("     AND h.START_DATE <= ?baseDate' AND h.END_DATE >= ?baseDate'");
+        sql.append("     AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate");
         sql.append("     WHERE f.CID = ?cid");
         sql.append("  UNION ALL ");
         sql.append("     SELECT  SALARY_CLS_CD AS CODE ,");
