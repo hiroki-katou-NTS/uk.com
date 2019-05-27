@@ -1,4 +1,4 @@
-## 2. Khai báo trong index.html
+##### 2. Khai báo trong index.html
 
 ```html
 <nts-text-editor
@@ -6,7 +6,7 @@
     name='Text Item'/>
 ```
 
-## 3. Khai báo trong index.ts
+##### 3. Khai báo trong index.ts
 
 Khai báo một biến 'text' trong class chính để bind vào giá trị 'text' trong v-model="text"
 
@@ -19,7 +19,7 @@ export class ViewModel extends Vue {
     *
 }
 ```
-## 4. Thông tin bổ sung
+##### 4. Thông tin bổ sung
 
 "nts-text-editor" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
 
