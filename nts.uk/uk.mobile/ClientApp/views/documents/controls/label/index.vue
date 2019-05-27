@@ -10,23 +10,23 @@
       </div>
       <div class="col-md-2">
         <nts-label
-          v-bind:constraint="{required: true, min: 100, max: 1000}"
+          v-bind:constraint="{required: true, min: 100, max: 1000, valueType: 'Integer'}"
         >{{'sample_label' | i18n}}</nts-label>
       </div>
       <div class="col-md-2">
         <nts-label
-          v-bind:constraint="{required: false, min: 100, max: 1000}"
+          v-bind:constraint="{required: false, min: 100, max: 1000, valueType: 'Integer'}"
         >{{'sample_label' | i18n}}</nts-label>
       </div>
       <div class="col-md-2">
         <nts-label
-          v-bind:constraint="{required: true, min: 100, max: 1000}"
+          v-bind:constraint="{required: true, min: 100, max: 1000, valueType: 'Integer'}"
           class="control-label-inline"
         >{{'sample_label' | i18n}}</nts-label>
       </div>
       <div class="col-md-2">
         <nts-label
-          v-bind:constraint="{required: false, min: 100, max: 1000}"
+          v-bind:constraint="{required: false, min: 100, max: 1000, valueType: 'Integer'}"
           class="control-label-inline"
         >{{'sample_label' | i18n}}</nts-label>
       </div>
