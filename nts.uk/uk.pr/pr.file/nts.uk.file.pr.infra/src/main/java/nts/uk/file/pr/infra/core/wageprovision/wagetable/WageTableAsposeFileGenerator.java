@@ -25,7 +25,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private static final String TEMPLATE_FILE = "report/QMM016.xlsx";
 
-    private static final String REPORT_FILE_NAME = "QMM016単価名の登録.xlsx";
+    private static final String REPORT_FILE_NAME = "QMM016賃金テーブルの登録.xlsx";
 
     private static final int COLUMN_START = 1;
 
@@ -218,6 +218,8 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             int lineCopy = 3;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
+
+
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
                     cells.copyRows(cells, rowStart, rowStart + lineCopy - 1, lineCopy);
@@ -246,6 +248,15 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             if(data.size() == 0) {
                 cells.deleteRows(rowStart, 2);
             }
+            if(data.size() > 1 && data.size() % 2 == 0) {
+                int totalColumn = 12;
+                for(int column = COLUMN_START; column < totalColumn +  COLUMN_START; column++) {
+                    Style style = worksheets.get(0).getCells().get(rowStart - 1, column).getStyle();
+                    style.setForegroundColor(Color.fromArgb(216,228, 188));
+                    worksheets.get(0).getCells().get(rowStart - 1, column).setStyle(style);
+                }
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

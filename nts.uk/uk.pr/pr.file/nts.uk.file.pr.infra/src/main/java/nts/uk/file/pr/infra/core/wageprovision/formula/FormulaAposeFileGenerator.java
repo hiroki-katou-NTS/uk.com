@@ -135,6 +135,16 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             if(data.size() > 0) {
                 cells.deleteRows(rowStart, 2);
             }
+
+            if(data.size() > 1 && data.size() % 2 == 0) {
+                int totalColumn = 15;
+                int columnStart = 1;
+                for(int column = columnStart; column < totalColumn +  columnStart; column++) {
+                    Style style = cells.get(rowStart - 1, column).getStyle();
+                    style.setForegroundColor(Color.fromArgb(216,228, 188));
+                    cells.get(rowStart - 1, column).setStyle(style);
+                }
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
