@@ -29,7 +29,7 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-
+            worksheets.get(worksheets.addCopy(0)).setName("salary");
             this.writeExcel(worksheets, exportData,list,socialInsuranceCode,socialInsuranceName);
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(generatorContext,

@@ -49,6 +49,7 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
     private static final int TAX_OFFICE = 25;
     private static final int NAME_BANK_TRANFEINS = 26;
     private static final int VIBLOCAFININS = 27;
+    private static final String TITLE = "法定調書用会社の登録";
 
 
     @Override
@@ -130,7 +131,7 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
         // Set print page
         PageSetup pageSetup = ws.getPageSetup();
         pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
-
+        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
         // Set header date
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
         pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
