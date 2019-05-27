@@ -1,4 +1,4 @@
-## 2. Khai báo trong index.html
+##### 2. Khai báo trong index.html
 
 ```html
 <nts-text-area
@@ -6,7 +6,7 @@
     name='Textarea Item'/>
 ```
 
-## 3. Khai báo trong index.ts
+##### 3. Khai báo trong index.ts
 
 Khai báo một biến 'text' trong class chính để bind vào giá trị 'text' trong v-model="text"
 
@@ -19,7 +19,7 @@ export class ViewModel extends Vue {
     *
 }
 ```
-## 4. Thông tin bổ sung
+##### 4. Thông tin bổ sung
 
 "nts-text-area" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
 
@@ -37,4 +37,6 @@ export class ViewModel extends Vue {
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ... |
 
 Khi khai báo nts-text-area trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
-
+   
+    
+**Tạo bởi: Phạm Văn Dân**
