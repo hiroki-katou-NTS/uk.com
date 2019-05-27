@@ -7,7 +7,7 @@
 ```
 
 HTMLでは`v-on:search="searchList"`がある`text-search-box`のタグを作ってください。  
-`searchList`はビューモデルにある関数。  
+`searchList`はビューモデルにある関数である。  
 
 良かったら`placeholder`の属性を追加してください。`placeholder`の初期値は空白。
 
@@ -21,7 +21,7 @@ export class ViewModel extends Vue {
     *
     *
     public searchList(value: string) {
-        // process the event 'search'
+        // 「search」エベントを処理
     }
     *
     *
