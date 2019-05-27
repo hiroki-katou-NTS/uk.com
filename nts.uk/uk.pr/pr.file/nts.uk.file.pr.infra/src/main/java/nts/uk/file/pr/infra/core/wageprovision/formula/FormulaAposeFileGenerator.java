@@ -111,7 +111,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[j] != null ? ((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
+                            cells.get(rowStart, j+ startColumn).setValue(dataRow[9] != null ? ((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
                                     :  EnumAdaptor.valueOf(((BigDecimal) dataRow[9]).intValue(), ReferenceMonth.class).nameId : "");
                             break;
                         case 11:
@@ -311,7 +311,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             e.append(obj[19].toString());
         }
         if(((BigDecimal)obj[18]).intValue() != CoefficientClassification.FIXED_VALUE.value){
-            e.append((EnumAdaptor.valueOf(((BigDecimal)obj[18]).intValue(), CoefficientClassification.class).nameId));
+            e.append(((BigDecimal)obj[18]).intValue() == 2 ? "（  " : "").
+                    append((EnumAdaptor.valueOf(((BigDecimal)obj[18]).intValue(), CoefficientClassification.class).nameId))
+                    .append(((BigDecimal)obj[18]).intValue() == 2 ? "  ）" : "");
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
             temp.append(a).append(a.length() > 0 ? "×" : "").append(e);
