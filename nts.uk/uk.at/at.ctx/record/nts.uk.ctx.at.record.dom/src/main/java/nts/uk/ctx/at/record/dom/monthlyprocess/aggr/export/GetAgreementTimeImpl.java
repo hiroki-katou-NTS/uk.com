@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -273,6 +275,10 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 				companyId, this.repositories);
 		if (companySets.getErrorInfos().size() > 0) return result;
 		
+		// 社員に対応する処理締めを取得する
+		Closure closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
+		if (closure == null) return result;
+		
 		// 「36協定運用設定」を取得
 		if (!companySets.getAgreementOperationSet().isPresent()) return result;
 		AgreementOperationSetting agreementOpeSet = companySets.getAgreementOperationSet().get();
@@ -295,6 +301,24 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			procYmList.sort((a, b) -> a.compareTo(b));
 		}
 		
+		// 指定した年月日時点の締め期間を取得する
+		GeneralDate maxDate = GeneralDate.today();
+		if (maxDate.before(criteria)) maxDate = criteria;
+		maxDate = maxDate.addMonths(1);
+		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(maxDate);
+		if (!closurePeriodOpt.isPresent()) return result;
+		val closurePeriod = closurePeriodOpt.get();
+		YearMonth maxYm = closurePeriod.getYearMonth();		// システム日付または基準日＋1か月時点の年月
+		
+		// 集計期間から未来の年月を削除する
+		ListIterator<YearMonth> itrProcYm = procYmList.listIterator();
+		while (itrProcYm.hasNext()) {
+			YearMonth checkYm = itrProcYm.next();
+			if (checkYm.greaterThan(maxYm)) itrProcYm.remove();
+		}
+		if (procYmList.size() <= 0) return result;
+		procYmList.sort((a, b) -> a.compareTo(b));
+		
 		// 年月期間から36協定期間を取得する
 		YearMonthPeriod allPeriod = new YearMonthPeriod(procYmList.get(0), procYmList.get(procYmList.size()-1));
 		val allAggrPeriodOpt = agreementOpeSet.getAgreementPeriodByYMPeriod(allPeriod);
@@ -314,10 +338,6 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 		MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
 				companyId, employeeId, emplSetsPeriod, this.repositories);
 		if (employeeSets.getErrorInfos().size() > 0) return result;
-		
-		// 社員に対応する処理締めを取得する
-		Closure closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
-		if (closure == null) return result;
 		
 		// 36協定時間の集計取得
 		Map<YearMonth, AgreementTimeOfManagePeriod> agreTimeMap =
