@@ -17,7 +17,7 @@
 </nts-dropdown>
 ```
 
-###### 2.1 Khai báo viewmodel
+###### 2.2 Khai báo viewmodel
 
 > Diễn giải của viewmodel xem trong comment của ví dụ
 
@@ -51,12 +51,7 @@ export class ViewModel extends Vue {
 | Tên Thuộc tính| Type | Mặc định | Mô tả |
 | --------------|------| -------- | ------|
 | name | string | '' | Tên hiển thị của item |
+| disabled | boolean | false | Item có bị disable hay không? |
 | showTitle | boolean | true | Có hiển thị title cùng input hay không? |
 | inlineTitle | boolean | false | Constraint có hiển thị cùng một dòng mới title hay không? |
-| value | any | '' | Giá trị đầu vào của item |
-| disabled | boolean | false | Item có bị disable hay không? |
-| errors | any | null | ... |
-| errorsAlways | any | null | ... |inlineTitle 
-| constraint | Irule | {} | Định dạng validate cho item |
-| icons | {before, after} | { before: '', after: ''} | Icon của item |
-| columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ... |
+| columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | Điều chỉnh để title và input hiển thị cùng một dòng. (Ví dụ: { title: 'col-md-6', input: 'col-md-6'})|
