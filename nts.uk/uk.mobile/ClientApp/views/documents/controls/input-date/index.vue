@@ -3,13 +3,10 @@
     <h5>1. {{'sample' | i18n}}</h5>
     <label>
       <i>
-        Chú ý: Sử dụng demo này bằng
-        <b>Smartphone</b>
+        Note: Using <b>Smartphone</b> to see this sample
       </i>
     </label>
     <nts-date-input v-model="date" name='Date Item'/>
-    <markdown/>
-
     <markdown/>
   </div>
 </template>
