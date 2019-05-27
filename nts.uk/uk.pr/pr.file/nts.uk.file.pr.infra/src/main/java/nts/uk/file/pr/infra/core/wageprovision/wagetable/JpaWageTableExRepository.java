@@ -67,11 +67,16 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_COMBO_PAY p ON h.CID = p.CID AND p.HIST_ID = h.HIST_ID AND p.WAGE_TABLE_CD = w.WAGE_TABLE_CD");
         exportSQL.append(" LEFT JOIN QPBMT_WAGE_TBL_GRP_SET ws ON ws.CID = h.CID AND ws.HIST_ID = h.HIST_ID AND ws.WAGE_TABLE_CD = e.WAGE_TABLE_CD AND ws.QUALIFY_GROUP_CD = s.QUALIFY_GROUP_CD");
         exportSQL.append(" ORDER BY w.WAGE_TABLE_CD, ");
-        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_1 ELSE MASTER_CD_3 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_1 IS NULL THEN  LOWER_LIMIT_1 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_1 IS NULL THEN  FRAME_UPPER_1 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_2 IS NULL THEN  LOWER_LIMIT_2 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_2 IS NULL THEN  FRAME_UPPER_2 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN  LOWER_LIMIT_3 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN  LOWER_LIMIT_3 END ASC,");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NOT NULL  THEN MASTER_CD_3 ELSE MASTER_CD_1 END ASC,");
         exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_1 ELSE FIXED_ELEMENT_3 END ASC,");
         exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN MASTER_CD_2 ELSE MASTER_CD_3 END ASC,");
-        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_2 ELSE FIXED_ELEMENT_3 END ASC");
-        exportSQL.append(" ,LOWER_LIMIT_1,FRAME_UPPER_1, LOWER_LIMIT_2,FRAME_UPPER_2, LOWER_LIMIT_3,FRAME_UPPER_3, s.QUALIFY_GROUP_CD");
+        exportSQL.append(" CASE WHEN MASTER_CD_3 IS NULL THEN FIXED_ELEMENT_2 ELSE FIXED_ELEMENT_3 END ASC, s.QUALIFY_GROUP_CD");
         try {
             resultQuery = this.getEntityManager()
                     .createNativeQuery(exportSQL.toString())
