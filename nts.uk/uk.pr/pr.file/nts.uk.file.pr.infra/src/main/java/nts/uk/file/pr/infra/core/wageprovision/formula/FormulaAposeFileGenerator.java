@@ -232,7 +232,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 && ("".equals(getSimpleFormula(obj, targetItem)))))){
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 || (obj[15] != null && ((BigDecimal)obj[15]).intValue() == 0)) {
+        if(((BigDecimal)obj[4]).intValue() == 1) {
             return "なし";
         }
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
@@ -241,6 +241,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRoundingMethod(defaultValue, objs, formula, targetItem) : "";
+        }
+        if((obj[15] != null && ((BigDecimal)obj[15]).intValue() == 0) && ((BigDecimal)obj[24]).intValue() == 1) {
+            return "なし";
         }
         if(obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1) {
             return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) obj[10]).intValue(), RoundingMethod.class).nameId);
