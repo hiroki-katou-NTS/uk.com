@@ -135,6 +135,16 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             if(data.size() > 0) {
                 cells.deleteRows(rowStart, 2);
             }
+
+            if(data.size() > 1 && data.size() % 2 == 0) {
+                int totalColumn = 15;
+                int columnStart = 1;
+                for(int column = columnStart; column < totalColumn +  columnStart; column++) {
+                    Style style = cells.get(rowStart - 1, column).getStyle();
+                    style.setForegroundColor(Color.fromArgb(216,228, 188));
+                    cells.get(rowStart - 1, column).setStyle(style);
+                }
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -222,7 +232,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 && ("".equals(getSimpleFormula(obj, targetItem)))))){
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 || (obj[15] != null && ((BigDecimal)obj[15]).intValue() == 0)) {
+        if(((BigDecimal)obj[4]).intValue() == 1) {
             return "なし";
         }
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
@@ -231,6 +241,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRoundingMethod(defaultValue, objs, formula, targetItem) : "";
+        }
+        if((obj[15] != null && ((BigDecimal)obj[15]).intValue() == 0) && ((BigDecimal)obj[24]).intValue() == 1) {
+            return "なし";
         }
         if(obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1) {
             return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) obj[10]).intValue(), RoundingMethod.class).nameId);

@@ -1,9 +1,6 @@
 package nts.uk.file.pr.infra.core.comlegalrecord;
 
-import com.aspose.cells.PageSetup;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.file.app.core.comlegalrecord.CompanyStatutoryWriteExportData;
 import nts.uk.ctx.pr.file.app.core.comlegalrecord.CompanyStatutoryWriteExportGenerator;
@@ -112,6 +109,16 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
             }
             if(exportData.size() == 0) {
                 ws.getCells().deleteRows(rowIndex, 2);
+            }
+
+            if(exportData.size() % 2 == 0 && exportData.size() > 1) {
+                int totalColumn = 27;
+                int columnStart = 1;
+                for(int column = columnStart ; column < totalColumn + columnStart; column++) {
+                    Style style = ws.getCells().get(rowIndex - 1, column).getStyle();
+                    style.setForegroundColor(Color.fromArgb(216,228, 188));
+                    ws.getCells().get(rowIndex - 1, column).setStyle(style);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
