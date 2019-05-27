@@ -243,6 +243,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
 
 	@Inject
+	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
+	
+	@Inject
 	private ChangePersionList changePersionList;
 	
 	@Inject
