@@ -3,7 +3,10 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsswitchbox',
-    route: '/documents/controls/switchbox',
+    route: {
+        url: '/controls/switchbox',
+        parent: '/documents'
+    },
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

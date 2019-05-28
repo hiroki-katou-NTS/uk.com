@@ -3,7 +3,10 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolsradio',
-    route: '/documents/controls/radio',
+    route: {
+        url: '/controls/radio',
+        parent: '/documents'
+    },
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

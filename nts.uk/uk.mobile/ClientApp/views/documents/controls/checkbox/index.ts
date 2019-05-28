@@ -3,7 +3,10 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolscheckbox',
-    route: '/documents/controls/checkbox',
+    route: {
+        url: '/controls/checkbox',
+        parent: '/documents'
+    },
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

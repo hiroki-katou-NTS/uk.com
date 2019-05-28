@@ -3,7 +3,10 @@ import { component } from '@app/core/component';
 
 @component({
     name: 'documentscontrolstext-search-box',
-    route: '/documents/controls/text-search-box',
+    route: {
+        url: '/controls/text-search-box',
+        parent: '/documents'
+    },
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

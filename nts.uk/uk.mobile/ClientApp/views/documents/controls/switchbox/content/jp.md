@@ -40,7 +40,6 @@ export class FormCheckComponent extends Vue {
 
 | 属性名 | 種類 | 初期値 | 説明 |
 | -----|---------|--------------|-----------|
-| `name` | `string` | '' |　準備中。。。 |
 | `disabled` | `boolean` | false | 無効？ |
 
 **著者：Pham Van Dan**
