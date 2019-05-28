@@ -1212,8 +1212,33 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             });
             self.displayGrid(items, columns, true);
         }
-        
-    }
+
+
+        exportExcel() {
+            let params = {
+                date: null,
+                mode: 6
+            };
+
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let startDate = result.standardYearMonth;
+                    let data = {
+                        startDate: startDate
+                    }
+                    service.exportExcel(data).done(function() {
+                        //nts.uk.ui.windows.close();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            });
+        }
 
     class Node {
         wageTableCode: string;

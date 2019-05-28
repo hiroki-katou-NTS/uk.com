@@ -10,6 +10,11 @@ module nts.uk.pr.view.qmm017.a.service {
         addFormulaHistory: parentPath + "/addFormulaHistory",
         updateFormulaSetting: parentPath + "/updateFormulaSetting",
         getMasterUseInfo: parentPath + "/getMasterUseInfo/{0}",
+        exportExcel: "file/core/wageprovision/formula/export"
+    };
+
+    export function exportExcel(data: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportExcel, data);
     }
     /**
      * get all

@@ -30,7 +30,7 @@
 	            <!-- A1_2 -->
 	            <button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty, click: register, timeClick: 500">#{i18n.getText('QMM003_2')}</button>
 	            <!-- A1_3 -->
-	            <button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM003_3')}</button>
+	            <button tabindex="3" data-bind="click : exportFilePdf">#{i18n.getText('QMM003_3')}</button>
 	            <!-- A1_4 -->
 	            <button tabindex="4" data-bind="click: openDialogQmm003e, timeClick: 500">#{i18n.getText('QMM003_4')}</button>
 	            <!-- A1_5 -->

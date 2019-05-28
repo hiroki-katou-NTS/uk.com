@@ -12,7 +12,17 @@ module nts.uk.pr.view.qmm031.a.service {
         addEarthquake: "ctx/pr/yearend/earthquake/addEarthquake",
         updateEarthquake: "ctx/pr/yearend/earthquake/updateEarthquake",
         removeEarthquake: "ctx/pr/yearend/earthquake/removeEarthquake",
+        exportEarthQuakeIns: "file/yearend/yearendadjustment/earthquakeinsurance/export",
+        exportLifeIns: "file/yearend/yearendadjustment/lifeInsurance/export",
     };
+
+    export function exportEarthQuakeIns(): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportEarthQuakeIns);
+    }
+
+    export function exportLifeIns(): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportLifeIns);
+    }
 
     export function getLifeInsuranceData(): JQueryPromise<any> {
         return ajax("pr", format(paths.getLifeInsuranceData));
