@@ -4,13 +4,28 @@ import { component, Prop, Model } from '@app/core/component';
 export const select = () => component({
     template: `<div class="form-check">
         <label class="form-check-label">
-            <input ref="input" :name="name" :type="type" :value="value" :checked="checked" :disabled="!!disabled && disabled !== 'false'" v-bind:tabindex="tabindex" v-on:click="onClick()" class="form-check-input" />
+            <input ref="input" 
+                :name="name" 
+                :type="type" 
+                :value="value" 
+                :checked="checked" 
+                :disabled="!!disabled && disabled !== 'false'" 
+                v-bind:tabindex="tabindex" 
+                v-on:click="onClick()" 
+                class="form-check-input" />
             <span><slot /></span>
         </label>
     </div>`
 }), switchbtn = () => component({
     template: `<label class="btn btn-secondary" v-bind:tabindex="tabindex">
-        <input ref="input" :name="name" :type="type" :value="value" :checked="checked" :disabled="!!disabled && disabled !== 'false'" v-on:click="onClick()" class="form-check-input" />
+        <input ref="input" 
+            :name="name" 
+            :type="type" 
+            :value="value" 
+            :checked="checked" 
+            :disabled="!!disabled && disabled !== 'false'" 
+            v-on:click="onClick()"
+            class="form-check-input" />
         <span><slot /></span>
     </label>`
 });
