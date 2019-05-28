@@ -115,7 +115,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return TextResource.localize("QMM016_49");
         }
         if(e.getElementSet() == 4) {
-            return "欠勤日数";
+            return TextResource.localize("QMM016_53");
         }
         if (!e.getFixElement1().isEmpty()) {
             return enumElementType(e.getFixElement1());
