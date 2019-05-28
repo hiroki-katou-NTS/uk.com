@@ -40,6 +40,6 @@ export class FormCheckComponent extends Vue {
 
 | Tên | Kiểu dữ liệu | Mặc định | Diễn giải |
 | -----|---------|--------------|-----------|
-| `disabled?` | `boolean` | false | Checkbox option đó có bị disable hay không? |
+| `disabled?` | `boolean` | false | switchbox option đó có bị disable hay không? |
 
 **Tạo bởi: Phạm Văn Dân**
