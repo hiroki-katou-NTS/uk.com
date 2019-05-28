@@ -131,7 +131,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 }
                 rowStart++;
             }
-            if(data.size() > 0) {
+            if(data.size() == 0) {
                 cells.deleteRows(rowStart, 2);
             }
 
@@ -139,9 +139,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 int totalColumn = 15;
                 int columnStart = 1;
                 for(int column = columnStart; column < totalColumn +  columnStart; column++) {
-                    Style style = cells.get(rowStart - 1, column).getStyle();
+                    Style style = worksheets.get(0).getCells().get(rowStart - 1, column).getStyle();
                     style.setForegroundColor(Color.fromArgb(216,228, 188));
-                    cells.get(rowStart - 1, column).setStyle(style);
+                    style.setPattern(BackgroundType.SOLID);
+                    worksheets.get(0).getCells().get(rowStart - 1, column).setStyle(style);
                 }
             }
         } catch (Exception e) {
