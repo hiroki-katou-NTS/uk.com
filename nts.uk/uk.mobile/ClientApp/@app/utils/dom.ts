@@ -30,6 +30,14 @@ const dom = {
 
         return element;
     },
+    clone: (element: HTMLElement) => {
+        if (element) {
+            let name = element.tagName.toLowerCase(),
+                clone_element = dom.create(name);
+
+            return dom.cloneAttrs(element, clone_element);
+        }
+    },
     empty: (element: HTMLElement) => {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
@@ -71,6 +79,8 @@ const dom = {
                     dom.setAttr(destination, attr.nodeName, attr.nodeValue);
                 }
             });
+
+        return destination;
     },
     hasClass: (element: HTMLElement, classCss: string) => {
         return element && element.className && element.classList.contains(classCss.trim());
@@ -257,18 +267,19 @@ const dom = {
         return handler.call(element, event);
     },
     data: (function () {
-        let dataStoreKeyExpandoPropertyName = '__nts__' + (new Date()).getTime(),
-            getDataForNode = function (node, createIfNotFound) {
-                let dataForNode = node[dataStoreKeyExpandoPropertyName];
+        const dsName = `__nts__${new Date().getTime()}`,
+            getDataForNode = function (node: HTMLElement, createIfNotFound: boolean) {
+                let dataForNode = node[dsName];
+
                 if (!dataForNode && createIfNotFound) {
-                    dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
+                    dataForNode = node[dsName] = {};
                 }
 
                 return dataForNode;
             },
-            clear = function (node) {
-                if (node[dataStoreKeyExpandoPropertyName]) {
-                    delete node[dataStoreKeyExpandoPropertyName];
+            clear = function (node: HTMLElement) {
+                if (node[dsName]) {
+                    delete node[dsName];
 
                     return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
                 }
@@ -278,13 +289,14 @@ const dom = {
 
         return {
             get(node: HTMLElement, key: string) {
-                let dataForNode = getDataForNode(node, false);
+                const dataForNode = getDataForNode(node, false);
 
                 return dataForNode && dataForNode[key];
             },
             set(node: HTMLElement, key: string, value: any) {
                 // Make sure we don't actually create a new domData key if we are actually deleting a value
-                let dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
+                const dataForNode = getDataForNode(node, value !== undefined /* createIfNotFound */);
+
                 dataForNode && (dataForNode[key] = value);
             },
             getOrSet(node: HTMLElement, key: string, value: any) {
