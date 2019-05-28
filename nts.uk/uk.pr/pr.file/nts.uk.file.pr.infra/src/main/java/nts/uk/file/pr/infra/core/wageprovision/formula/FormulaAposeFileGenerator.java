@@ -257,17 +257,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         for(int i = 0; i< baseTarget.size(); i++){
             if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3])
                     || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
+                temp.append(count == 0 ? getName((Integer) baseTarget.get(i)[3]) : "")
+                        .append(count == 0 ? "｛" : "＋").append(baseTarget.get(i)[2]);
                 count++;
-                temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
         }
-        if(count > 0) {
-            temp.deleteCharAt(temp.length() - 1);
-        }
-        if(count > 1) {
-            temp.insert(0, "（  ");
-            temp.append("  ）");
-        }
+        temp.append(count > 0 ? "｝" : "");
         return temp.toString();
     }
 
@@ -278,13 +273,13 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(standardCls == 1) {
             return TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM");
         }
-        if(standardCls == 2) {
+        if(standardCls == 3) {
             return TextResource.localize("Enum_FormulaElementType_COMPANY_UNIT_PRICE_ITEM");
         }
-        if(standardCls == 3) {
+        if(standardCls == 4) {
             return TextResource.localize("Enum_FormulaElementType_INDIVIDUAL_UNIT_PRICE_ITEM");
         }
-        return TextResource.localize("Enum_FormulaElementType_WAGE_TABLE_ITEM");
+        return "";
     }
 
     private String getDetailedFormula(List<Object[]> formula, String formulaCode){
