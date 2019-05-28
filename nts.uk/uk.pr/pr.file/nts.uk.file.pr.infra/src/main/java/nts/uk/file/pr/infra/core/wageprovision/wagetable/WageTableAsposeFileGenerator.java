@@ -157,9 +157,36 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         return "";
     }
 
+    private void chageValue(WageTablelData e){
+        String tempFix = e.getFixElement1();
+        e.setFixElement1(e.getFixElement3());
+        e.setFixElement3(e.getFixElement2());
+        e.setFixElement2(tempFix);
+
+        String tempOpt = e.getOptAddElement1();
+        e.setOptAddElement1(e.getOptAddElement3());
+        e.setOptAddElement3(e.getOptAddElement2());
+        e.setOptAddElement2(tempOpt);
+
+        int tempNumAtr = e.getMasterNumAtr1();
+        e.setMasterNumAtr1(e.getMasterNumAtr3());
+        e.setMasterNumAtr3(e.getMasterNumAtr2());
+        e.setMasterNumAtr2(tempNumAtr);
+
+        String tempLower = e.getLowerLimit1();
+        e.setLowerLimit1(e.getLowerLimit3());
+        e.setLowerLimit3(e.getLowerLimit2());
+        e.setLowerLimit2(tempLower);
+
+        String tempMasterCd = e.getMasterCd1();
+        e.setMasterCd1(e.getMasterCd3());
+        e.setMasterCd3(e.getMasterCd2());
+        e.setMasterCd2(tempMasterCd);
+    }
+
     private String getR2_8(List<ItemDataNameExport> data, WageTablelData e) {
         if(e.getElementSet() == 3) {
-            return e.getQualifiGroupName();
+            return  "".equals(e.getQualifiGroupName()) ? "なし" : e.getQualifiGroupName();
         }
         if(e.getMasterNumAtr1() == 0) {
             return getNameMaster(data, e.getFixElement1() , e.getMasterCd1().trim());
@@ -174,6 +201,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
+        if(e.getElementSet() == 3) {
+            return e.getQualificationName();
+        }
         if(e.getMasterNumAtr2() == 0) {
             return getNameMaster(data, e.getFixElement2() , e.getMasterCd2().trim());
         }
@@ -218,8 +248,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             int lineCopy = 3;
             Worksheet sheet = worksheets.get(0);
             Cells cells = sheet.getCells();
-
-
             for (int i = 0; i < data.size(); i++) {
                 if(i % 2 == 0) {
                     cells.copyRows(cells, rowStart, rowStart + lineCopy - 1, lineCopy);
@@ -228,6 +256,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                     cells.deleteRows(rowStart, data.size() % 2 == 0 ? 3 : 4);
                 }
                 WageTablelData e = data.get(i);
+                if(e.getElementSet() == 2 || e.getElementSet() == 4) {
+                    chageValue(e);
+                }
                 cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
                 cells.get(rowStart, COLUMN_START + 1).setValue(e.getWageTableName());
                 cells.get(rowStart, COLUMN_START + 2).setValue(convertYearMonth(e.getWageHisStartYm()));
