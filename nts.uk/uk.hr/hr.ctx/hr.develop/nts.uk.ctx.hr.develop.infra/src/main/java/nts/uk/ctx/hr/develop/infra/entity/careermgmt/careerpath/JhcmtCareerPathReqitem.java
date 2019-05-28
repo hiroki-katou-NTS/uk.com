@@ -43,7 +43,7 @@ public class JhcmtCareerPathReqitem extends UkJpaEntity implements Serializable 
 
 	@ManyToOne
 	@JoinColumns({
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "CAREER_ID", referencedColumnName = "CAREER_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "DISP_NUM", referencedColumnName = "DISP_NUM", insertable = false, updatable = false) })
 	public JhcmtCareerPathReq masterItemList;
 

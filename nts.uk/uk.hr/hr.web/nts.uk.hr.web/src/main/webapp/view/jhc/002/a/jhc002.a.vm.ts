@@ -12,6 +12,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         listCareerType: KnockoutObservableArray<ScreenItem>;
         
         //careerpart
+        listCareer: KnockoutObservableArray<any>;
         careerClass: KnockoutObservableArray<any>;
         careerType: KnockoutObservableArray<any>;
         maxClassLevel: KnockoutObservable<number>;
@@ -76,6 +77,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                self.getCarrerPart(newValue);
             });
 
+            self.listCareer = ko.observableArray([]);
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
             self.maxClassLevel = ko.observable(1);
@@ -94,10 +96,15 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.grayout();
             new service.getMaxClassLevel().done(function(data: any) {
                 self.maxClassLevel(5);
                 dfd.resolve();
-            }
+            }).fail(function(error) {
+                nts.uk.ui.dialog.error({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
             return dfd.promise();
         }
         private getCarrerPart(hisId: string): void {
@@ -112,6 +119,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 new service.getCareerPart(command).done(function(data: any) {
                     data.careerClass.add({ id: "", code: "", name: "" });
                     console.log(data);
+                    self.listCareer(data.career);
                     self.maxClassLevel(data.maxClassLevel);
                     self.careerType(_.orderBy(data.careerType, ['code'], ['asc']));
                     self.careerClass(_.orderBy(data.careerClass, ['code'], ['asc']));
@@ -122,6 +130,29 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     });
                     self.listCareerType(list);
                     block.clear();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.error({ messageId: error.messageId});
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+        }
+        public openDialogB(careerType: any): void {
+            var self = __viewContext.vm;
+            let startDate = _.filter(self.histList(), ['histId', self.selectedHistId()])[0].startDate;
+            let command = {
+                historyId: careerType.id,
+                startDate: moment(startDate).format("YYYY/MM/DD"),
+                career: __viewContext.vm.listCareer()
+            }
+            if (careerType != '') {
+                block.grayout();
+                new service.checkDataCareer(command).done(function() {
+                    nts.uk.request.jump("hr", "/view/jhc/002/b/index.xhtml");
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.error({ messageId: error.messageId});
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
         }

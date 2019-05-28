@@ -6,5 +6,7 @@ import nts.arc.time.GeneralDate;
 
 public interface CareerTypeRepository {
 
-	List<CareerType> getLisHisId(String cId, GeneralDate referDate);
+	List<CareerType> getLisCareerType(String cId, GeneralDate referDate);
+	
+	String getCareerTypeId(String cId, GeneralDate referDate);
 }

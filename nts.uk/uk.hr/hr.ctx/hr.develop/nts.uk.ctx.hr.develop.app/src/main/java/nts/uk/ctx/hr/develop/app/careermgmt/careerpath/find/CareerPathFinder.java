@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.MasterCareer;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.Career;
@@ -45,7 +46,7 @@ public class CareerPathFinder {
 			//キャリアリスト
 			List<Career> listCareer = careerPath.get().getCareerList().stream().map(c-> new Career(c.getCareerTypeItem(), c.getCareerLevel().v(), c.getCareerClassItem())).collect(Collectors.toList());
 			//職務マスタリストの取得
-			List<MasterCareer> listCareerType = careerTypeService.getCareerPath(companyId, referenceDate).stream().map(c-> new MasterCareer(c.getCareerTypeId(), c.getCareerTypeCode().v(), c.getCareerTypeName().v())).collect(Collectors.toList());
+			List<MasterCareer> listCareerType = careerTypeService.getCareerTypeList(companyId, referenceDate).stream().map(c-> new MasterCareer(c.getCareerTypeId(), c.getCareerTypeCode().v(), c.getCareerTypeName().v())).collect(Collectors.toList());
 			//キャリアマスタリストの取得
 			List<MasterCareer> listCareerClass = careerClassService.getCareerPath(companyId, referenceDate).stream().map(c-> new MasterCareer(c.getCareerClassId(), c.getCareerClassCode().v(), c.getCareerClassName().v())).collect(Collectors.toList());
 			
@@ -66,10 +67,20 @@ public class CareerPathFinder {
 		//開始日の取得
 		GeneralDate startDate = careerPathHistService.getCareerPathStartDate(companyId, hisId);
 		//職務マスタリストの取得
-		List<MasterCareer> listCareerType = careerTypeService.getCareerPath(companyId, startDate).stream().map(c-> new MasterCareer(c.getCareerTypeId(), c.getCareerTypeCode().v(), c.getCareerTypeName().v())).collect(Collectors.toList());
+		List<MasterCareer> listCareerType = careerTypeService.getCareerTypeList(companyId, startDate).stream().map(c-> new MasterCareer(c.getCareerTypeId(), c.getCareerTypeCode().v(), c.getCareerTypeName().v())).collect(Collectors.toList());
 		//キャリアマスタリストの取得
 		List<MasterCareer> listCareerClass = careerClassService.getCareerPath(companyId, startDate).stream().map(c-> new MasterCareer(c.getCareerClassId(), c.getCareerClassCode().v(), c.getCareerClassName().v())).collect(Collectors.toList());
 		
 		return new CareerPartDto(false, maxClassLevel, listCareerType, listCareerClass, new ArrayList<>());
+	}
+	//画面Bを起動
+	public void checkDataCareer(String companyId, GeneralDate referenceDate, List<Career> listCareer) {
+		//共通職務IDの取得
+		String careerTypeId = careerTypeService.getCommonCareerTypeId(companyId, referenceDate);
+		
+		Optional<Career> career = listCareer.stream().filter(c-> c.getCareerTypeItem().equals(careerTypeId)).findFirst();
+		if(!career.isPresent()) {
+			throw new BusinessException("MsgJ_48");
+		}
 	}
 }

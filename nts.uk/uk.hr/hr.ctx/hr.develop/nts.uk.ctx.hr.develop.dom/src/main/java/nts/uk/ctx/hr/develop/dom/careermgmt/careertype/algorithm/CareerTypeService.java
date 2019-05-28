@@ -16,8 +16,13 @@ public class CareerTypeService {
 	private CareerTypeRepository careerTypeRepo;
 	
 	//職務マスタリストの取得
-	public List<CareerType> getCareerPath(String cId, GeneralDate referDate) {
-		return careerTypeRepo.getLisHisId(cId, referDate);
+	public List<CareerType> getCareerTypeList(String cId, GeneralDate referDate) {
+		return careerTypeRepo.getLisCareerType(cId, referDate);
+	}
+	
+	//共通職務IDの取得
+	public String getCommonCareerTypeId(String cId, GeneralDate referDate) {
+		return careerTypeRepo.getCareerTypeId(cId, referDate);
 	}
 
 

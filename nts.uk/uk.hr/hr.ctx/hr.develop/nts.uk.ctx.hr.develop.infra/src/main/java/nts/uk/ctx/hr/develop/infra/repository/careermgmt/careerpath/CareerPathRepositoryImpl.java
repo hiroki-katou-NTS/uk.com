@@ -35,7 +35,11 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 			JhcmtCareerPathCareer etity = this.getEntityManager().find(JhcmtCareerPathCareer.class, new JhcmtCareerPathCareerPK(companyId, historyId, careerId));
 			careerList.add(etity.toDomain());
 		}
-		return Optional.ofNullable(CareerPath.createFromJavaType(companyId, historyId, this.getMaxClassLevel(companyId, historyId), careerList));
+		Integer maxClassLevel = this.getMaxClassLevel(companyId, historyId);
+		if(maxClassLevel == null) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(CareerPath.createFromJavaType(companyId, historyId, maxClassLevel, careerList));
 	}
 
 	@Override
