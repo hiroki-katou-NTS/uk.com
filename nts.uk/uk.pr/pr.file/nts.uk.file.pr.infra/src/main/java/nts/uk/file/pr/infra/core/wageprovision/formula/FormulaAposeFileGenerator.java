@@ -111,8 +111,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data));
                             break;
                         case 10:
-                            cells.get(rowStart, j+ startColumn).setValue(dataRow[9] != null ? ((BigDecimal)dataRow[4]).intValue() == 0 ? EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId
-                                    :  EnumAdaptor.valueOf(((BigDecimal) dataRow[9]).intValue(), ReferenceMonth.class).nameId : "");
+                            cells.get(rowStart, j+ startColumn).setValue(getReferenceMonth(dataRow));
                             break;
                         case 11:
                             cells.get(rowStart, j+ startColumn).setValue(getValueRoundingMethod(dataRow, data, formula, targetItem));
@@ -148,6 +147,16 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getReferenceMonth(Object[] obj){
+        if(((BigDecimal)obj[4]).intValue() == 1  && obj[9] == null) {
+            return "";
+        }
+        if(((BigDecimal)obj[4]).intValue() == 0 ) {
+            return EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId;
+        }
+        return EnumAdaptor.valueOf(((BigDecimal) obj[9]).intValue(), ReferenceMonth.class).nameId;
     }
 
     private String getValueFomula(Object[] obj, List<Object[]> formulas, List<Object[]> targetItem, List<Object[]> objs){
