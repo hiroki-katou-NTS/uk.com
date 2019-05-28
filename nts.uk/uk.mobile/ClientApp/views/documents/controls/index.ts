@@ -9,6 +9,7 @@ import './input-year-month';
 import './label';
 import './radio';
 import './checkbox';
+import './switchbox';
 import './text-area';
 import './text-search-box';
 import './time-range-search-box';
