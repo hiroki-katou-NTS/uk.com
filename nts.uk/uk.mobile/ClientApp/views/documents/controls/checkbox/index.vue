@@ -1,5 +1,5 @@
 <template>
-<div class="documentscontrolsradio">
+<div class="documentscontrolscheckbox">
     <h5>1. {{'sample' | i18n}}</h5>
 
     <div class="form-group row">

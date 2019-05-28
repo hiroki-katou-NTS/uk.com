@@ -2,8 +2,8 @@ import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    name: 'documentscontrolscheck-box',
-    route: '/documents/controls/check-box',
+    name: 'documentscontrolscheckbox',
+    route: '/documents/controls/checkbox',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -14,7 +14,7 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }
 })
-export class DocumentsControlsCheckBoxComponent extends Vue {   
+export class DocumentsControlsCheckboxComponent extends Vue {   
     // don't use v-for
     public checked1s: Array<number> = [1, 3];
 

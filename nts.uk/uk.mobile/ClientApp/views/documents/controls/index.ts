@@ -8,7 +8,7 @@ import './input-time';
 import './input-year-month';
 import './label';
 import './radio';
-import './check-box';
+import './checkbox';
 import './text-area';
 import './text-search-box';
 import './time-range-search-box';
