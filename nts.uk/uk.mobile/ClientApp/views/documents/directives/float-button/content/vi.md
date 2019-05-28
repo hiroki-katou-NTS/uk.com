@@ -1,8 +1,5 @@
-##### 1. Float buttons
-> `v-float-action` là một `directive` nhóm một nhóm các `button` thành một `floating` nhóm các `button` nổi lên trên tất cả các đối tượng khác.
-> <br />Thực tế mỗi màn hình sẽ sử dụng `v-float-action` này cho mỗi tác vụ khác nhau, hãy ứng dụng sao cho thật hiệu quả và phù hợp với thiết kế chung của màn hình.
-
-##### 2. Preview
+  
+##### 1. Preview
 <div class="fixed-action-btn active" style="z-index: 99; position: relative; width: 330px; margin-top: 50px;">
     <ul class="list-unstyled" style="height: 228px">
         <li class="btn-info btn btn-floating">
@@ -27,9 +24,12 @@
     </a>
 </div>
 
+##### 2. Float buttons
+`v-float-action` là một `directive` nhóm một nhóm các `button` thành một `floating`.  
+Thực tế mỗi màn hình sẽ sử dụng `v-float-action` này cho mỗi tác vụ khác nhau.
 
 ##### 3. Code
-> Cấu trúc cơ bản của một `v-float-action`:
+Cấu trúc cơ bản của một `v-float-action`:
 
 ```html
 <div v-float-action>
