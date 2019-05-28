@@ -10,7 +10,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
         listCareerType: KnockoutObservableArray<ScreenItem>;
-        
+
         //careerpart
         listCareer: KnockoutObservableArray<any>;
         careerClass: KnockoutObservableArray<any>;
@@ -24,9 +24,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.height = ko.observable("200px");
             self.labelDistance = ko.observable("30px");
             self.screenMode = ko.observable(1);
-            self.masterId = ko.observable("a2316878-a3a5-4362-917e-ad71d956e6c2");
+            self.masterId = ko.observable("");
             self.histList = ko.observableArray([]);
-            self.selectedHistId = ko.observable();
+            self.selectedHistId = ko.observable('');
             self.pathGet = ko.observable(`careermgmt/careerpath/getDateHistoryItem`);
             self.pathAdd = ko.observable(`careermgmt/careerpath/saveDateHistoryItem`);
             self.pathUpdate = ko.observable(`careermgmt/careerpath/updateDateHistoryItem`);
@@ -41,7 +41,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 if (selectedHist) return selectedHist.startDate;
             };
             self.commandAdd = (masterId, histId, startDate, endDate) => {
-                return {startDate: moment(startDate).format("YYYY/MM/DD")}
+                return { startDate: moment(startDate).format("YYYY/MM/DD") }
             };
             self.commandUpdate = (masterId, histId, startDate, endDate) => {
                 return {
@@ -71,27 +71,27 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
 
             //table 
             self.listCareerType = ko.observableArray([]);
-            $("#fixed-table").ntsFixedTable({ height: 246, width: 990});
-            
+            $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
+
             self.selectedHistId.subscribe(function(newValue) {
-               self.getCarrerPart(newValue);
+                self.getCarrerPart(newValue);
             });
 
             self.listCareer = ko.observableArray([]);
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
             self.maxClassLevel = ko.observable(1);
-           
+
             //set width for table
             self.maxClassLevel.subscribe(function(newValue) {
                 let width = newValue * 165;
-                document.getElementsByClassName("fixed-table")[0].style.width = width+"px";
-                document.getElementsByClassName("nts-fixed-header-wrapper")[0].style.width = width+"px";
-                document.getElementsByClassName("nts-fixed-body-wrapper")[0].style.width = width+"px";
-                document.getElementsByClassName("fixed-table")[0].style.width = width+"px";
-                document.getElementsByClassName("fixed-table")[1].style.width = width+"px";
+                document.getElementsByClassName("fixed-table")[0].style.width = width + "px";
+                document.getElementsByClassName("nts-fixed-header-wrapper")[0].style.width = width + "px";
+                document.getElementsByClassName("nts-fixed-body-wrapper")[0].style.width = width + "px";
+                document.getElementsByClassName("fixed-table")[0].style.width = width + "px";
+                document.getElementsByClassName("fixed-table")[1].style.width = width + "px";
             });
-            
+
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -126,12 +126,12 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     let list = [];
                     _.forEach(data.careerType, function(value) {
                         console.log(value);
-                        list.push(new ScreenItem(value.code, '1', '1', '1', '1', '1', '1', '3', '1', '1', '1'));
+                        list.push(new ScreenItem(value.code, '', '', '', '', '', '', '', '', '', ''));
                     });
                     self.listCareerType(list);
                     block.clear();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.error({ messageId: error.messageId});
+                    nts.uk.ui.dialog.error({ messageId: error.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -150,11 +150,29 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 new service.checkDataCareer(command).done(function() {
                     nts.uk.request.jump("hr", "/view/jhc/002/b/index.xhtml");
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.error({ messageId: error.messageId});
+                    nts.uk.ui.dialog.error({ messageId: error.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
             }
+        }
+        public save(): void {
+            var self = this;
+            let kt = false;
+            _.forEach(ko.toJS(self.listCareerType()), function(value) {
+                kt = value.checkExistSelected(self.maxClassLevel());
+                if (kt) return false;
+            });
+            if (kt) {
+                nts.uk.ui.windows.sub.modal("../c/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared("isNotice");
+                    console.log(data);
+                });
+            } else {
+                nts.uk.ui.dialog.error({ messageId: 'MsgJ_50' });
+            }
+            let startDate = _.filter(self.histList(), ['histId', self.selectedHistId()])[0].startDate;
+
         }
     }
 
@@ -183,6 +201,40 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.val8 = ko.observable(val8);
             self.val9 = ko.observable(val9);
             self.val10 = ko.observable(val10);
+        }
+        public checkExistSelected(maxLever: number): boolean {
+            if (maxLever == 0) return false;
+            if (maxLever >= 1) {
+                if (this.val1 != "") return true;
+            }
+            if (maxLever >= 2) {
+                if (this.val2 != "") return true;
+            }
+            if (maxLever >= 3) {
+                if (this.val3 != "") return true;
+            }
+            if (maxLever >= 4) {
+                if (this.val4 != "") return true;
+            }
+            if (maxLever >= 5) {
+                if (this.val5 != "") return true;
+            }
+            if (maxLever >= 6) {
+                if (this.val6 != "") return true;
+            }
+            if (maxLever >= 7) {
+                if (this.val7 != "") return true;
+            }
+            if (maxLever >= 8) {
+                if (this.val8 != "") return true;
+            }
+            if (maxLever >= 9) {
+                if (this.val9 != "") return true;
+            }
+            if (maxLever == 10) {
+                if (this.val10 != "") return true;
+            }
+            return false;
         }
     }
     class ItemModel {
