@@ -1,6 +1,6 @@
 
 import './dropdown';
-import './form-check';
+//import './form-check';
 import './input-date';
 import './input-number';
 import './input-string';
