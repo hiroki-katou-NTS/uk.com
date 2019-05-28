@@ -1,31 +1,46 @@
-##### 2. Explaint
-> Sample quote
+##### 1. サンプル
+<div class="navbar bg-primary" style="padding-left: 15px">
+    <div class="row">
+        <div class="col-md-9">
+            <button type="button" class="btn btn-link"><i class="fa fa-save"></i></button>
+            <button type="button" class="btn btn-link">Middle</button>
+            <button type="button" class="btn btn-link">Right</button>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group input-group-transparent input-group-search">
+                <div class="input-group-append">
+                    <span class="input-group-text fa fa-search"></span>
+                </div>
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+    </div>
+</div>
+<br />
 
-- First item list
-- Second item list
+##### 2. 説明
+`toolbar`は`directive`である。  
+Toolbarを作るために`v-toolbar`を`nav`や`div`につけてください。
 
-**HTML Code:**
+##### 3. コード
 ```html
-<div class="sample">
-    <span>Sample html code</span>
+<div v-toolbar>
+    <div class="row">
+        <div class="col-md-9">
+            <button type="button" class="btn btn-link">
+                <i class="fa fa-save"></i>
+            </button>
+            <button type="button" class="btn btn-link">Middle</button>
+            <button type="button" class="btn btn-link">Right</button>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group input-group-transparent input-group-search">
+                <div class="input-group-append">
+                    <span class="input-group-text fa fa-search"></span>
+                </div>
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+    </div>
 </div>
 ```
-
-**Typescript code:**
-```typescript
-class ClassName {
-    constructor() {
-        // sample contructor
-    }
-
-    choose() {
-        // sample method
-    }
-}
-```
-
-##### 3. API
-
-id | name | content
-----|----|------
-id | name | content

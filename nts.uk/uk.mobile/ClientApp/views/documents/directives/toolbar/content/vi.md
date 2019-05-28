@@ -1,7 +1,4 @@
-# Toolbar
-> Khái niệm `toolbar` (thanh công cụ) ở đây được hiểu là một `directive` chỉ định một thẻ `nav` hoặc thẻ `div` bất kỳ trong `template` của `view/component` được phép chuyển đổi thành `toolbar` thay thế cho `toolbar` mặc định của hệ thống.<br />Để tạo `toolbar` (nơi đặt các nút Thêm, Lưu, Sửa, Xoá, Tìm kiếm,...) ta sử dụng directive `v-toolbar` ở thẻ `nav` hoặc `div` được chỉ định.<br />Khi directive `v-toolbar` được gọi, `toolbar` mặc định của hệ thống sẽ được ẩn đi mà không cần điều chỉnh gì thêm.
-
-##### Ví dụ về một `toolbar`
+##### 1. Sample
 <div class="navbar bg-primary" style="padding-left: 15px">
     <div class="row">
         <div class="col-md-9">
@@ -21,7 +18,11 @@
 </div>
 <br />
 
-##### Code
+##### 2. Giải thích  
+`Toolbar` ở đây được hiểu là một `directive`. Nó chuyển đổi một thẻ `nav` hoặc thẻ `div` thành `toolbar` thay thế cho `toolbar` mặc định của hệ thống.  
+Để tạo `toolbar`, ta sử dụng directive `v-toolbar` ở thẻ `nav` hoặc `div` được chỉ định. Khi directive `v-toolbar` được gọi, `toolbar` mặc định của hệ thống sẽ được ẩn đi.
+
+##### 3. Code HTML
 ```html
 <div v-toolbar>
     <div class="row">
