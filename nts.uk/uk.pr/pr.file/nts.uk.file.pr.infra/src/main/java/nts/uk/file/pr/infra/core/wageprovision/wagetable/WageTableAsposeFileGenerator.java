@@ -178,6 +178,11 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         e.setLowerLimit3(e.getLowerLimit2());
         e.setLowerLimit2(tempLower);
 
+        String tempUper = e.getUpperLimit1();
+        e.setUpperLimit1(e.getUpperLimit3());
+        e.setUpperLimit3(e.getUpperLimit2());
+        e.setUpperLimit2(tempUper);
+
         String tempMasterCd = e.getMasterCd1();
         e.setMasterCd1(e.getMasterCd3());
         e.setMasterCd3(e.getMasterCd2());
