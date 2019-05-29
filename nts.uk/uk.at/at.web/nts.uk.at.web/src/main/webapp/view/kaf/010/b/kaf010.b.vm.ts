@@ -308,7 +308,7 @@ module nts.uk.at.view.kaf010.b {
                 self.overtimeHoursPre.removeAll();
                 if (data.preAppHolidayWorkDto.holidayWorkInputs != null) {
                     for (let i = 0; i < data.preAppHolidayWorkDto.holidayWorkInputs.length; i++) {
-                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != -1) {
+                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != null) {
                             self.overtimeHoursPre.push(new common.AppOvertimePre("", "",
                                 data.preAppHolidayWorkDto.holidayWorkInputs[i].attendanceID,
                                 "", data.preAppHolidayWorkDto.holidayWorkInputs[i].frameNo,
@@ -570,7 +570,7 @@ module nts.uk.at.view.kaf010.b {
                     overtimeHours: ko.toJS(self.overtimeHours()),
                     breakTimes: ko.toJS(self.breakTimes()),
                     restTime: ko.toJS(self.restTime()),
-                    holidayWorkShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                    holidayWorkShiftNight: ko.toJS(overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp),
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
                     calculateFlag: self.calculateFlag(),
