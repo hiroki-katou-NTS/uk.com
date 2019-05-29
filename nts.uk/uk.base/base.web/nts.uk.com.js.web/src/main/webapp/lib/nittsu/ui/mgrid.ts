@@ -6808,8 +6808,23 @@ module nts.uk.ui.mgrid {
             
             let osht = function(inoth) {
                 _.forEach(_.keys(_mafollicle[SheetDef]), s => {
-                    if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns)) return;
-                    let t, formatted, disFormat, maf = _mafollicle[currentPage][s], errDetail;
+                    if (s === _currentSheet) return;
+                    let maf = _mafollicle[currentPage][s];
+//                    if (maf && _.find(_fixedColumns, fc => fc.key === coord.columnKey)) {
+//                        if (maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+//                            && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
+//                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+//                            delete maf.dirties[id][coord.columnKey];
+//                        } else if (cellValue === origVal
+//                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+//                            delete maf.dirties[id][coord.columnKey];
+//                        }
+//                        
+//                        return;
+//                    }
+                    
+                    if (!some(_mafollicle[SheetDef][s].columns) && !_.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
+                    let t, formatted, disFormat, errDetail;
                     if (maf && maf.desc) {
                         t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                         if (!t || !t.c || _.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
