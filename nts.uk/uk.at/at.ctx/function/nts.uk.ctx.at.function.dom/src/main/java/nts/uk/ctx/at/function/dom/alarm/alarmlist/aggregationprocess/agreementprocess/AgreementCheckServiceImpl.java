@@ -170,8 +170,10 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 						yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth())+"");
 				// alarm name
 				String alarmItem = optAgreeName.isPresent() ? optAgreeName.get().getName().v() : "";
+				//
+				String nameByMonthDistance = alarmItemByMonth(checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth(),checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth());
 				// カテゴリ
-				String alarmContent = TextResource.localize("KAL010_203", alarmItem,
+				String alarmContent = TextResource.localize("KAL010_203", nameByMonthDistance,
 						formatHourData(checkedAgreementResult.getUpperLimit()), formatHourData(
 								checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
 				lstReturn.add(new ValueExtractAlarm(workPlaceId, checkedAgreementResult.getEmpId(), alarmValueDate,
@@ -180,6 +182,26 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 			}
 		}
 		return lstReturn;
+	}
+	
+	private String alarmItemByMonth(YearMonth yearMonthStart,YearMonth yearMonthEnd) {
+		String alarmItem = "";
+		int yearStart = yearMonthStart.year();
+		int yearEnd = yearMonthEnd.year();
+		int monthDistance = (yearEnd - yearStart)*12 +yearMonthEnd.month() -  yearMonthStart.month();
+		if(monthDistance == 1) {
+			alarmItem = TextResource.localize("KAL010_212");
+		}else if(monthDistance == 2) {
+			alarmItem = TextResource.localize("KAL010_213");
+		}else if(monthDistance == 3) {
+			alarmItem = TextResource.localize("KAL010_214");
+		}else if(monthDistance == 4) {
+			alarmItem = TextResource.localize("KAL010_215");
+		}else if(monthDistance == 5) {
+			alarmItem = TextResource.localize("KAL010_216");
+		}
+		return alarmItem ;
+		
 	}
 
 	private String yearmonthToString(YearMonth yearMonth) {
