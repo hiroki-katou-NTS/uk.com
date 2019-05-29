@@ -1,5 +1,5 @@
 import { routes } from '@app/core/routes';
-import { Vue, VueRouter } from '@app/provider';
+import { Vue, VueRouter, Route } from '@app/provider';
 import { csrf, obj } from '@app/utils';
 // import { HomeComponent } from '../../views/home';
 import { Page404Component } from '@app/components';
@@ -21,8 +21,22 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let token = csrf.getToken(),
-        $modals = document.body.querySelectorAll('.modal.show'),
+    let token = csrf.getToken();
+
+    // if login or documents page
+    if (to.path.indexOf('ccg/007') >= 0 || to.path.indexOf('/documents/') === 0) {
+        next();
+    } else {
+        if (token) {
+            next();
+        } else {
+            next('/ccg/007/b');
+        }
+    }
+});
+
+router.afterEach((to: Route, from: Route) => {
+    let $modals = document.body.querySelectorAll('.modal.show'),
         $modalbs = document.body.querySelectorAll('.modal-backdrop.show');
 
     // fix show modal on switch view (#107642)
@@ -57,17 +71,9 @@ router.beforeEach((to, from, next) => {
             }
         });
     }
-
-    // if login or documents page
-    if (to.path.indexOf('ccg/007') >= 0 || to.path.indexOf('/documents/') === 0) {
-        next();
-    } else {
-        if (token) {
-            next();
-        } else {
-            next('/ccg/007/b');
-        }
-    }
+    
+    // scroll to top
+    document.scrollingElement.scrollTop = 0;
 });
 
 export { router };
