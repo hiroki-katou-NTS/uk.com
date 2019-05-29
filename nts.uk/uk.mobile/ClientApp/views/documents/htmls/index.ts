@@ -1,6 +1,6 @@
 import './accordion';
 import './buttons';
-import './clearfix';
+//import './clearfix';
 import './color';
 import './float';
 import './hidden-element';
