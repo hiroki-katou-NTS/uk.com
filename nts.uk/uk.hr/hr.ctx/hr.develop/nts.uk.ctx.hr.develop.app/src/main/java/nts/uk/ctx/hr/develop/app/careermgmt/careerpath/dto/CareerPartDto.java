@@ -13,9 +13,9 @@ public class CareerPartDto {
 	
 	public Integer maxClassLevel;
 	
-	public List<MasterCareer> careerType;
+	public List<MasterCareerDto> careerType;
 	
-	public List<MasterCareer> careerClass;
+	public List<MasterCareerDto> careerClass;
 	
-	public List<Career> career;
+	public List<CareerDto> career;
 }

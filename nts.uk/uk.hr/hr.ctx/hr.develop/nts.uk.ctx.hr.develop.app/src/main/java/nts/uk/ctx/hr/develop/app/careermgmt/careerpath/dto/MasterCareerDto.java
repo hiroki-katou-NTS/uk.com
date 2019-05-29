@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class MasterCareer {
+public class MasterCareerDto {
 
 	public String id;
 	

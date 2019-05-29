@@ -9,7 +9,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         masterId: KnockoutObservable<string>;
         histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
-        listCareerType: KnockoutObservableArray<ScreenItem>;
+        listCareerType: KnockoutObservableArray<any>;
 
         //careerpart
         listCareer: KnockoutObservableArray<any>;
@@ -126,7 +126,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     let list = [];
                     _.forEach(data.careerType, function(value) {
                         console.log(value);
-                        list.push(new ScreenItem(value.code, '', '', '', '', '', '', '', '', '', ''));
+                        list.push(new ScreenItem(value.code, _.filter(data.career, ['careerTypeItem', value.id])));
+                        //self.listCareerType.push(a);
                     });
                     self.listCareerType(list);
                     block.clear();
@@ -177,62 +178,90 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
     }
 
     class ScreenItem {
-        code: KnockoutObservable<String>;
-        val1: KnockoutObservable<String>;
-        val2: KnockoutObservable<String>;
-        val3: KnockoutObservable<String>;
-        val4: KnockoutObservable<String>;
-        val5: KnockoutObservable<String>;
-        val6: KnockoutObservable<String>;
-        val7: KnockoutObservable<String>;
-        val8: KnockoutObservable<String>;
-        val9: KnockoutObservable<String>;
-        val10: KnockoutObservable<String>;
-        constructor(code: String, val1: String, val2: String, val3: String, val4: String, val5: String, val6: String, val7: String, val8: String, val9: String, val10: String) {
-            var self = this;
-            self.code = ko.observable(code);
-            self.val1 = ko.observable(val1);
-            self.val2 = ko.observable(val2);
-            self.val3 = ko.observable(val3);
-            self.val4 = ko.observable(val4);
-            self.val5 = ko.observable(val5);
-            self.val6 = ko.observable(val6);
-            self.val7 = ko.observable(val7);
-            self.val8 = ko.observable(val8);
-            self.val9 = ko.observable(val9);
-            self.val10 = ko.observable(val10);
+        code: KnockoutObservable<string> = ko.observable("");
+        l1: KnockoutObservable<string> = ko.observable("");
+        l2: KnockoutObservable<string> = ko.observable("");
+        l3: KnockoutObservable<string> = ko.observable("");
+        l4: KnockoutObservable<string> = ko.observable("");
+        l5: KnockoutObservable<string> = ko.observable("");
+        l6: KnockoutObservable<string> = ko.observable("");
+        l7: KnockoutObservable<string> = ko.observable("");
+        l8: KnockoutObservable<string> = ko.observable("");
+        l9: KnockoutObservable<string> = ko.observable("");
+        l10: KnockoutObservable<string> = ko.observable("");
+        constructor(code: string, career: Array<any>) {
+            var self2 = this;
+            self2.code = ko.observable(code);
+            
+            for (let i = 0; i < career.length; i++) {
+                switch (career[i].careerLevel) {
+                    case 1:
+                        self2.l1(career[i].careerClassItem);
+                        break;
+                    case 2:
+                        self2.l2(career[i].careerClassItem);
+                        break;
+                    case 3:
+                        self2.l3(career[i].careerClassItem);
+                        break;
+                    case 4:
+                        self2.l4(career[i].careerClassItem);
+                        break;
+                    case 5:
+                        self2.l5(career[i].careerClassItem);
+                        break;
+                    case 6:
+                        self2.l6(career[i].careerClassItem);
+                        break;
+                    case 7:
+                        self2.l7(career[i].careerClassItem);
+                        break;
+                    case 8:
+                        self2.l8(career[i].careerClassItem);
+                        break;
+                    case 9:
+                        self2.l9(career[i].careerClassItem);
+                        break;
+                    case 10:
+                        self2.l10(career[i].careerClassItem);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
+        
         public checkExistSelected(maxLever: number): boolean {
             if (maxLever == 0) return false;
             if (maxLever >= 1) {
-                if (this.val1 != "") return true;
+                if (this.l1() != "") return true;
             }
             if (maxLever >= 2) {
-                if (this.val2 != "") return true;
+                if (this.l2() != "") return true;
             }
             if (maxLever >= 3) {
-                if (this.val3 != "") return true;
+                if (this.l3() != "") return true;
             }
             if (maxLever >= 4) {
-                if (this.val4 != "") return true;
+                if (this.l4() != "") return true;
             }
             if (maxLever >= 5) {
-                if (this.val5 != "") return true;
+                if (this.l5() != "") return true;
             }
             if (maxLever >= 6) {
-                if (this.val6 != "") return true;
+                if (this.l6() != "") return true;
             }
             if (maxLever >= 7) {
-                if (this.val7 != "") return true;
+                if (this.l7() != "") return true;
             }
             if (maxLever >= 8) {
-                if (this.val8 != "") return true;
+                if (this.l8() != "") return true;
             }
             if (maxLever >= 9) {
-                if (this.val9 != "") return true;
+                if (this.l9() != "") return true;
             }
             if (maxLever == 10) {
-                if (this.val10 != "") return true;
+                if (this.l10() != "") return true;
             }
             return false;
         }

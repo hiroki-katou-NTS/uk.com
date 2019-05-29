@@ -64,8 +64,8 @@ public class JhcmtCareerClass extends UkJpaEntity implements Serializable {
 
 		return CareerClass.createFromJavaType(
 				this.cId, 
-				this.PK_JHCMT_CAREER_CLASS.careerClassId, 
-				this.PK_JHCMT_CAREER_CLASS.histId,
+				this.PK_JHCMT_CAREER_CLASS.histId, 
+				this.PK_JHCMT_CAREER_CLASS.careerClassId,
 				this.careerClassCd,
 				this.careerClassName,
 				this.disableFlg == 1,
