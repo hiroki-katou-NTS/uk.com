@@ -20,7 +20,7 @@ const router = new VueRouter({
     ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to: Route, from: Route, next: (to?: string) => void) => {
     let token = csrf.getToken();
 
     // if login or documents page
