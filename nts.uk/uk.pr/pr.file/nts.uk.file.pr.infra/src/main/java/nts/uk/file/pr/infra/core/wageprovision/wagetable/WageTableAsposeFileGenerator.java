@@ -55,7 +55,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     /* get list item name*/
     private String getItemName(List<ItemDataNameExport> data, String codeOp) {
-        Optional<ItemDataNameExport> dataName = data.stream().filter(e -> e.equals(codeOp)).findFirst();
+        Optional<ItemDataNameExport> dataName = data.stream().filter(e -> e.getCode().equals(codeOp)).findFirst();
         return dataName.isPresent() ? dataName.get().getName() : "";
     }
 
@@ -190,7 +190,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_8(List<ItemDataNameExport> data, WageTablelData e) {
-        if(e.getElementSet() == 3) {
+        if("M007".equals(e.getFixElement1()) || "M007".equals(e.getOptAddElement1())){
+            return e.getFrameNumber();
+        }
+        if(e.getElementSet() == 2) {
             return  "".equals(e.getQualifiGroupName()) ? "なし" : e.getQualifiGroupName();
         }
         if(e.getMasterNumAtr1() == 0) {
