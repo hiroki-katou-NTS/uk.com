@@ -1122,6 +1122,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					e.printStackTrace();
 				}
 			}
+		}else {
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
+			log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"+ GeneralDateTime.now());
 		}
 
 		this.procExecLogRepo.update(procExecLog);
