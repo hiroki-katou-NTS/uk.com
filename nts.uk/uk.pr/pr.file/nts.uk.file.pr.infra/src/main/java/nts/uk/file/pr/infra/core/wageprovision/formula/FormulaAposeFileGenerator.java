@@ -151,10 +151,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getReferenceMonth(Object[] obj){
-        if(((BigDecimal)obj[4]).intValue() == 1  && obj[9] == null) {
+        if( obj[9] == null) {
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 0 ) {
+        if(((BigDecimal)obj[4]).intValue() == 0) {
             return EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId;
         }
         return EnumAdaptor.valueOf(((BigDecimal) obj[9]).intValue(), ReferenceMonth.class).nameId;
