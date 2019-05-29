@@ -4,7 +4,7 @@ import { component } from '@app/core/component';
 @component({
     name: 'documentsfiltersi18n',
     route: { 
-        url: '/filters/i18n',
+        url: '/plugins/i18n',
         parent: '/documents'
     },
     template: require('./index.vue'),
