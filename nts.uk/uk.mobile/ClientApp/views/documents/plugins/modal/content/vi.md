@@ -33,6 +33,18 @@ export class ParentComponent extends Vue {
     }
 }
 ```
+
+Tham số thứ 3 `option` là 1 Object có dạng:
+```typescript 
+declare interface IModalOptions {
+    type?: 'modal' | 'popup' | 'info' | 'dropback';
+    size?: 'lg' | 'md' | 'sm' | 'xs';
+    title?: string;
+    style?: string;
+    animate?: 'up' | 'right' | 'down' | 'left';
+    opacity?: number;
+}
+```
 ##### 4. Các modal đặc biệt
 
 Có thể khởi tạo modal ở các dạng hiển thị đặc biệt như 
