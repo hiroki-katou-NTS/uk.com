@@ -1139,8 +1139,26 @@ module nts.uk.at.view.kaf010.b {
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });       
                     } else {
-                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
-                        .then(function() { nts.uk.ui.block.clear(); });      
+                        let errors = res.errors;
+                        for(let i = 0; i < errors.length; i++){
+                            let error = errors[i];
+                            if(error.messageId=="Msg_1538"){
+                                error.parameterIds = [
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+                                ];     
+                            } else {
+                                error.parameterIds = [
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+                                ];     
+                            }
+                            error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+                        }
+                        nts.uk.ui.dialog.bundledErrors({ errors: errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });          
                     }           
                 });        
             }
