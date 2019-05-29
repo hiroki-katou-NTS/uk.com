@@ -151,7 +151,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getReferenceMonth(Object[] obj){
-        if( obj[9] == null) {
+        if( obj[9] == null && ((BigDecimal)obj[4]).intValue() == 1) {
             return "";
         }
         if(((BigDecimal)obj[4]).intValue() == 0) {
@@ -224,22 +224,24 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(obj[11] == null && ((BigDecimal)obj[4]).intValue() == 1) {
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
+        if(((BigDecimal)obj[4]).intValue() == 1) {
+            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId;
+        }
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
             return "なし";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRoundingPosition(defaultValue, objs, formula) : "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId;
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
+            return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId;
         }
-        return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId;
+        return "";
     }
 
     private String getValueRoundingMethod(Object[] obj, List<Object[]> objs, List<Object[]> formula, List<Object[]> targetItem){
-        if(obj[10] == null || (("".equals(getDetailedFormula(formula, obj[0].toString()))
-                && ("".equals(getSimpleFormula(obj, targetItem)))))){
+        if((obj[10] == null) && ((BigDecimal)obj[4]).intValue() == 0){
             return "";
         }
         if(((BigDecimal)obj[4]).intValue() == 1) {
