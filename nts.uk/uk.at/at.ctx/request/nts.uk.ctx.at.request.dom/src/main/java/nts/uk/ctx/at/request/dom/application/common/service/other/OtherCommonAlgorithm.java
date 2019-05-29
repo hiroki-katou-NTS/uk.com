@@ -7,6 +7,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -123,4 +124,12 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 申請理由出力_共通
+	 * @author hoatt
+	 * @param 申請 application
+	 * @param 休暇種類(Optional) holidayType
+	 * @return 結果(使用/未使用)
+	 */
+	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType);
 }
