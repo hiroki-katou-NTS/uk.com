@@ -13,8 +13,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDe
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -23,22 +22,21 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	@Inject
 	private AppContentDetailCMM045 contentDtail;
 	@Inject
-	private RequestSettingRepository repoRequestSet;
-	@Inject
 	private AppListInitialRepository appLstInitRepo;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
+	@Inject
+	private OtherCommonAlgorithm otherComAlg;
 	
 	@Override
 	public String getApplicationContent(Application_New app) {
 		String appReason = app.getAppReason().toString();
 		String appID = app.getAppID();
 		String companyID = AppContexts.user().companyId();
-		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
-		Integer appReasonDisAtr = null;
-		if(requestSet.isPresent()){
-			appReasonDisAtr = requestSet.get().getApprovalListDisplaySetting().getAppReasonDisAtr().value;
-		}
+		//EA3478　#107902
+		//hoatt 2019.05.28
+		//アルゴリズム「申請理由出力_共通」を実行する
+		Integer appReasonDisAtr = otherComAlg.appReasonOutFlg(app, Optional.empty()) ? 1 : 0;
 		GeneralDate appDate = app.getAppDate();
 		switch (app.getAppType()) {
 		case OVER_TIME_APPLICATION: {
