@@ -33,4 +33,4 @@ class ViewModel extends Vue {
 }
 ``` 
 
-***著者：Nguyen Van Vuong*
+**著者：Nguyen Van Vuong**
