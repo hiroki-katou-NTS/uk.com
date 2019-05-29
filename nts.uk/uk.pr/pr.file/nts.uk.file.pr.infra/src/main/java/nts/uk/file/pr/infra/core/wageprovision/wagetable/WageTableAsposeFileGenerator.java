@@ -98,7 +98,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getNameMaster(List<ItemDataNameExport> dataNameMaster, String type, String masterCd){
-        Optional<ItemDataNameExport> item = dataNameMaster.stream().filter(i -> masterCd.equals(i.getCode()) && type.equals(i.getType())).findFirst();
+        Optional<ItemDataNameExport> item = dataNameMaster.stream().filter(i -> masterCd.equals(i.getCode().trim()) && type.equals(i.getType())).findFirst();
         return item.isPresent() ? item.get().getName() : "";
     }
 
@@ -193,7 +193,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if("M007".equals(e.getFixElement1()) || "M007".equals(e.getOptAddElement1())){
             return e.getFrameNumber();
         }
-        if(e.getElementSet() == 2) {
+        if(e.getElementSet() == 3) {
             return  "".equals(e.getQualifiGroupName()) ? "なし" : e.getQualifiGroupName();
         }
         if(e.getMasterNumAtr1() == 0) {
