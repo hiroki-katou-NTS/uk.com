@@ -333,14 +333,14 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                     .append(((BigDecimal)obj[18]).intValue() == 2 ? "  ）" : "");
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
-            temp.append(a).append(a.length() > 0 ? "×" : "").append(e);
+            temp.append(a).append(a.length() > 0 ? "×" : "（）× ").append(e);
         }
 
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append( a.length() > 0 ? "×": "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
-            temp.append(a).append(a.length() > 0 ? "÷" : "").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append(a.length() > 0 ? "÷" : "（）÷").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
         }
 
         return temp.toString();
