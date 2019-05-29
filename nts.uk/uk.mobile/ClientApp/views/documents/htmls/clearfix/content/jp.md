@@ -1,31 +1,33 @@
-##### 2. Explaint
-> Sample quote
+##### 1. 説明
 
-- First item list
-- Second item list
+`子のエレメント`に適用した`float`を消するために`clearfix`というクラスを`親のエレメント`に追加してください。  
 
-**HTML Code:**
+##### 2. HTML
+
 ```html
-<div class="sample">
-    <span>Sample html code</span>
+<div class="clearfix">
+    .
+    .
+    .
 </div>
 ```
 
-**Typescript code:**
-```typescript
-class ClassName {
-    constructor() {
-        // sample contructor
-    }
+> Hoặc sử dụng mixin (include) vào thẻ cuối của thẻ được áp dụng `float`.
 
-    choose() {
-        // sample method
-    }
+**Scss code:**
+```scss
+// Đã được định nghĩa
+@mixin clearfix() {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+
+// Sử dụng như một mixin
+.element {
+  @include clearfix;
 }
 ```
-
-##### 3. API
-
-id | name | content
-----|----|------
-id | name | content
+##### 2. Tài liệu liên quan
