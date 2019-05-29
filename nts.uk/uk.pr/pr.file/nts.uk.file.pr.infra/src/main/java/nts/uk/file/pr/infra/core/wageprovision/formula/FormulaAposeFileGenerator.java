@@ -276,10 +276,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getName(int standardCls){
-        if(standardCls == 0) {
+        if(standardCls == 1) {
             return TextResource.localize("Enum_FormulaElementType_PAYMENT_ITEM");
         }
-        if(standardCls == 1) {
+        if(standardCls == 2) {
             return TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM");
         }
         if(standardCls == 3) {
