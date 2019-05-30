@@ -1,7 +1,11 @@
 package nts.uk.file.pr.infra.core.wageprovision.wagetable;
 
 import com.aspose.cells.*;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.MasterNumericAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationPaymentMethod;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.ItemDataNameExport;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTableFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.WageTablelData;
@@ -103,18 +107,18 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     /*QualificationPaymentMethod*/
-    private String enumQualificationPaymentMethod(int index) {
-        if(index == 0) {
-            return TextResource.localize("Enum_Qualify_Pay_Method_Add_Multiple");
+    private String enumQualificationPaymentMethod(WageTablelData e, int index) {
+        if (e.getQualificationName().isEmpty()) {
+            return "";
         }
-        return TextResource.localize("Enum_Qualify_Pay_Method_Only_One_Highest");
+        return TextResource.localize(EnumAdaptor.valueOf(index, QualificationPaymentMethod.class).nameId);
     }
 
     private String getFixedValue1(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if (e.getElementSet() == 3) {
+        if (e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return TextResource.localize("QMM016_49");
         }
-        if(e.getElementSet() == 4) {
+        if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return TextResource.localize("QMM016_53");
         }
         if (!e.getFixElement1().isEmpty()) {
@@ -124,14 +128,13 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
             return getItemName(dataName, e.getOptAddElement1());
         }
         return "";
-
     }
 
     private String getFixedValue2(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if (e.getElementSet() == 3) {
+        if (e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return TextResource.localize("QMM016_50");
         }
-        if(e.getElementSet() == 4) {
+        if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return "欠勤日数";
         }
         if (!e.getFixElement2().isEmpty()) {
@@ -140,12 +143,11 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if (!e.getOptAddElement2().isEmpty()) {
             return getItemName(dataName, e.getOptAddElement2());
         }
-
         return "";
     }
 
     private String getFixedValue3(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if(e.getElementSet() == 4) {
+        if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return "遅刻・早退回数";
         }
         if (!e.getFixElement3().isEmpty()) {
@@ -193,13 +195,13 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if("M007".equals(e.getFixElement1()) || "M007".equals(e.getOptAddElement1())){
             return e.getFrameNumber();
         }
-        if(e.getElementSet() == 3) {
-            return  "".equals(e.getQualifiGroupName()) ? "なし" : e.getQualifiGroupName();
+        if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
+            return  "".equals(e.getQualifiGroupName()) ? "".equals(e.getQualificationName()) ? "" : "なし" : e.getQualifiGroupName();
         }
-        if(e.getMasterNumAtr1() == 0) {
+        if(e.getMasterNumAtr1() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement1() , e.getMasterCd1().trim());
         }
-        if (e.getElementSet() == 0 && e.getFixElement1().startsWith("M")) {
+        if (e.getElementSet() == ElementSetting.ONE_DIMENSION.value && e.getFixElement1().startsWith("M")) {
             return enumElementType(e.getFixElement1());
         }
         if (!e.getLowerLimit1().isEmpty()) {
@@ -209,10 +211,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
-        if(e.getElementSet() == 3) {
+        if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return e.getQualificationName();
         }
-        if(e.getMasterNumAtr2() == 0) {
+        if(e.getMasterNumAtr2() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement2() , e.getMasterCd2().trim());
         }
         if (e.getFixElement2().startsWith("M")) {
@@ -225,7 +227,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
-        if(e.getMasterNumAtr3() == 0) {
+        if(e.getMasterNumAtr3() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement3() , e.getMasterCd3().trim());
         }
         if (e.getFixElement3().startsWith("M")) {
@@ -264,24 +266,23 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                     cells.deleteRows(rowStart, data.size() % 2 == 0 ? 3 : 4);
                 }
                 WageTablelData e = data.get(i);
-                if(e.getElementSet() == 2 || e.getElementSet() == 4) {
+                if(e.getElementSet() == ElementSetting.THREE_DIMENSION.value || e.getElementSet() == ElementSetting.FINE_WORK.value) {
                     chageValue(e);
                 }
                 cells.get(rowStart, COLUMN_START).setValue(e.getWageTableCode());
                 cells.get(rowStart, COLUMN_START + 1).setValue(e.getWageTableName());
                 cells.get(rowStart, COLUMN_START + 2).setValue(convertYearMonth(e.getWageHisStartYm()));
                 cells.get(rowStart, COLUMN_START + 3).setValue(convertYearMonth(e.getWageHisEndYm()));
-
                 cells.get(rowStart, COLUMN_START + 4).setValue(getFixedValue1(e, dataName));
-                cells.get(rowStart, COLUMN_START + 5).setValue(e.getElementSet() == 0 ? "" : getFixedValue2(e, dataName));
-                cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getFixedValue3(e, dataName) : "");
-
+                cells.get(rowStart, COLUMN_START + 5).setValue(e.getElementSet() == ElementSetting.ONE_DIMENSION.value ? "" : getFixedValue2(e, dataName));
+                cells.get(rowStart, COLUMN_START + 6).setValue(e.getElementSet() == ElementSetting.THREE_DIMENSION.value
+                        || e.getElementSet() == ElementSetting.FINE_WORK.value ? getFixedValue3(e, dataName) : "");
                 cells.get(rowStart, COLUMN_START + 7).setValue(getR2_8(dataMasterName, e));
-                cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == 0 ? "" : getR2_9(dataMasterName, e));
-                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == 2 || e.getElementSet() == 4 ? getR2_10(dataMasterName, e) : "");
-
+                cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == ElementSetting.ONE_DIMENSION.value ? "" : getR2_9(dataMasterName, e));
+                cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == ElementSetting.THREE_DIMENSION.value
+                        || e.getElementSet() == ElementSetting.FINE_WORK.value ? getR2_10(dataMasterName, e) : "");
                 cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
-                cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == 3 ? enumQualificationPaymentMethod(Integer.parseInt(e.getPayMethod())) : "");
+                cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == ElementSetting.QUALIFICATION.value ? enumQualificationPaymentMethod(e,Integer.parseInt(e.getPayMethod())) : "");
                 rowStart++;
             }
             if(data.size() == 0) {
@@ -295,7 +296,6 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                     worksheets.get(0).getCells().get(rowStart - 1, column).setStyle(style);
                 }
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
