@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,6 +12,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.exceptions.DatabaseException;
+
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 //import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -23,6 +27,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.error.ThrowableAnalyzer;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.AppRouteUpdateDailyService;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
@@ -3361,43 +3366,38 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			EmpCalAndSumExeLog empCalAndSumExeLog, List<String> lstEmpId, DatePeriod period, List<String> workPlaceIds,
 			String typeExecution, ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		boolean isInterrupt = false;
-		List<Boolean> listIsInterrupt = new ArrayList<>();
-		List<String> listErrorTryCatch = new ArrayList<>();
-		// int size = lstEmpId.size();
-		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL), lstEmpId,
-				empId -> {
-					// アルゴリズム「開始日を入社日にする」を実行する
-					try {
-						DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, empId,
-								period);
-						if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
-								.getTargetGroupClassification().isMidJoinEmployee()) {
 
-						} else {
-							if (employeeDatePeriod != null) {
-								boolean executionDaily = this.executionDaily(companyId, context, processExecution,
-										empId, empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
-								if (executionDaily) {
-									listIsInterrupt.add(true);
-									return;
-								}
-							}
+		List<Boolean> listIsInterrupt = Collections.synchronizedList(new ArrayList<>());
+//		List<String> listErrorTryCatch = new ArrayList<>();
+		//int size = lstEmpId.size();
+		try {
+			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL), lstEmpId, empId -> {
+				// アルゴリズム「開始日を入社日にする」を実行する
+				DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, empId, period);
+				if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
+						.getTargetGroupClassification().isMidJoinEmployee()) {
+					
+				}else {
+					if(employeeDatePeriod != null) {
+						boolean executionDaily = this.executionDaily(companyId, context, processExecution, empId,
+								empCalAndSumExeLog, employeeDatePeriod, typeExecution, dailyCreateLog);
+						if (executionDaily) {
+							listIsInterrupt.add(true);
+							return;
 						}
-					} catch (CreateDailyException ex) {
-						listErrorTryCatch.add("errCreateDailyException");
-					} catch (DailyCalculateException ex) {
-						listErrorTryCatch.add("errDailyCalculateException");
 					}
-				});
-		if (!listErrorTryCatch.isEmpty()) {
-			if (listErrorTryCatch.get(0).equals("errCreateDailyException")) {
-				throw new CreateDailyException();
-			}
-			if (listErrorTryCatch.get(0).equals("errDailyCalculateException")) {
-				throw new DailyCalculateException();
+				}
+			});
+		} catch (Exception e) {
+			val analyzer = new ThrowableAnalyzer(e);
+			if(analyzer.findByClass(CreateDailyException.class).isPresent()){
+				throw new CreateDailyException(e);
+			} else if (analyzer.findByClass(DailyCalculateException.class).isPresent()) {
+				throw new DailyCalculateException(e);
 			}
 		}
-		if (!listIsInterrupt.isEmpty()) {
+
+		if(!listIsInterrupt.isEmpty()) {
 			isInterrupt = true;
 		}
 		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
@@ -3407,12 +3407,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		}).collect(Collectors.toList());
 
 		if ("日別作成".equals(typeExecution)) {
-			if (!errorMessage.isEmpty()) {
-				throw new CreateDailyException();
+			if(!errorMessage.isEmpty()) {
+				throw new CreateDailyException(null);
 			}
 		} else {
 			if (isInterrupt) {
-				throw new DailyCalculateException();
+				throw new DailyCalculateException(null);
 			}
 		}
 		if (isInterrupt) {
@@ -3462,8 +3462,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	// true is interrupt
 	private boolean executionDaily(String companyId, CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			ProcessExecution processExecution, String employeeId, EmpCalAndSumExeLog empCalAndSumExeLog,
-			DatePeriod period, String typeExecution, ExecutionLog dailyCreateLog)
-			throws CreateDailyException, DailyCalculateException {
+			DatePeriod period, String typeExecution, ExecutionLog dailyCreateLog) {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState;
 		// 受け取った期間が「作成した期間（日別作成）」の場合
@@ -3478,14 +3477,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						false, false, null);
 				System.out.println("create data done :  !" + employeeId);
 			} catch (Exception e) {
-				throw new CreateDailyException();
+				throw new CreateDailyException(e);
 			}
 		} else {
 			try {
 				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
 						Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 			} catch (Exception e) {
-				throw new DailyCalculateException();
+				throw new DailyCalculateException(e);
 			}
 
 		}
@@ -3614,7 +3613,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), reCreateWorkType,
 					reCreateWorkPlace, reCreateRestTime, null);
 		} catch (Exception e) {
-			throw new CreateDailyException();
+			throw new CreateDailyException(e);
 		}
 		log.info("更新処理自動実行_日別実績の作成_END_" + procExec.getExecItemCd() + "_" + GeneralDateTime.now());
 		log.info("更新処理自動実行_日別実績の計算_START_" + procExec.getExecItemCd() + "_" + GeneralDateTime.now());
@@ -3625,7 +3624,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(empId, period, Optional.empty(),
 					empCalAndSumExeLogId);
 		} catch (Exception e) {
-			throw new DailyCalculateException();
+			throw new DailyCalculateException(e);
 		}
 
 		// 社員の申請を反映 cua chi du
