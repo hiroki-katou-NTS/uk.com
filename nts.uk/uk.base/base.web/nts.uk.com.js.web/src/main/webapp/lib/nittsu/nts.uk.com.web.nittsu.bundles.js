@@ -324,7 +324,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2377,6 +2377,7 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
+                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -3481,6 +3482,7 @@ var nts;
                     .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(location.ajaxRootDir)
                     .mergeRelativePath(path);
+                var countRetryByDeadLock = 0;
                 function ajaxFunc() {
                     $.ajax({
                         type: options.method || 'POST',
@@ -3503,6 +3505,12 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
+                        // デッドロックの場合、待機時間を少しずつ増やしながらリトライ（とりあえず10回までとする）
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.deadLock === true && countRetryByDeadLock < 10) {
+                            countRetryByDeadLock++;
+                            setTimeout(ajaxFunc, 300 + countRetryByDeadLock * 100);
+                            return;
+                        }
                         AjaxErrorHandlers.main(jqXHR, textStatus, errorThrown);
                     });
                 }
@@ -3894,6 +3902,14 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function jumpToUsedSSOLoginPage() {
+                    uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
+                        window.location.href = path;
+                    }).ifEmpty(function () {
+                        request.jump('com', '/view/ccg/007/d/index.xhtml?signon=on');
+                    });
+                }
+                login.jumpToUsedSSOLoginPage = jumpToUsedSSOLoginPage;
                 function keepSerializedSession() {
                     var dfd = $.Deferred();
                     dfd.resolve();
@@ -4058,9 +4074,22 @@ var nts;
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
                         || uk.request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
                 };
+                var getEmployeeSetting = function () {
+                    var dfd = $.Deferred(), es = nts.uk.sessionStorage.getItem("nts.uk.session.EMPLOYEE_SETTING");
+                    if (es.isPresent()) {
+                        dfd.resolve(JSON.parse(es.get()));
+                    }
+                    else {
+                        uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (constraints) {
+                            nts.uk.sessionStorage.setItemAsJson("nts.uk.session.EMPLOYEE_SETTING", constraints);
+                            dfd.resolve(constraints);
+                        });
+                    }
+                    return dfd.promise();
+                };
                 var loadEmployeeCodeConstraints = function () {
                     var self = this, dfd = $.Deferred();
-                    uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
+                    getEmployeeSetting().done(function (res) {
                         var formatOption = {
                             autofill: true
                         };
@@ -4159,6 +4188,9 @@ var nts;
             (function (menu) {
                 var DATA_TITLEITEM_PGID = "pgid";
                 var DATA_TITLEITEM_PGNAME = "pgname";
+                var MENU_SET_KEY = "nts.uk.session.MENU_SET";
+                var COMPANY_KEY = "nts.uk.session.COMPANY";
+                var PROGRAM_KEY = "nts.uk.session.PROGRAM";
                 /** Showing item */
                 var showingItem;
                 /**
@@ -4203,7 +4235,7 @@ var nts;
                         uk.request.jumpToTopPage();
                     });
                     displayUserInfo();
-                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
+                    getMenuSet().done(function (menuSet) {
                         var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
                         if (!menuSet || menuSet.length === 0)
                             return;
@@ -4224,6 +4256,23 @@ var nts;
                     getProgram();
                 }
                 menu.request = request;
+                /**
+                 * Get menu set.
+                 */
+                function getMenuSet() {
+                    var dfd = $.Deferred();
+                    var menuSetOpt = nts.uk.sessionStorage.getItem(MENU_SET_KEY);
+                    if (menuSetOpt.isPresent()) {
+                        dfd.resolve(JSON.parse(menuSetOpt.get()));
+                    }
+                    else {
+                        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
+                            nts.uk.sessionStorage.setItemAsJson(MENU_SET_KEY, menuSet);
+                            dfd.resolve(menuSet);
+                        });
+                    }
+                    return dfd.promise();
+                }
                 /**
                  * Generate.
                  */
@@ -4251,6 +4300,23 @@ var nts;
                     init();
                 }
                 /**
+                 * Get company.
+                 */
+                function getCompany() {
+                    var dfd = $.Deferred();
+                    var companyOpt = nts.uk.sessionStorage.getItem(COMPANY_KEY);
+                    if (companyOpt.isPresent()) {
+                        dfd.resolve(JSON.parse(companyOpt.get()));
+                    }
+                    else {
+                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
+                            nts.uk.sessionStorage.setItemAsJson(COMPANY_KEY, companies);
+                            dfd.resolve(companies);
+                        });
+                    }
+                    return dfd.promise();
+                }
+                /**
                  * Display user info.
                  */
                 function displayUserInfo() {
@@ -4263,7 +4329,7 @@ var nts;
                             op();
                         }
                     };
-                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
+                    getCompany().done(function (companies) {
                         if (!companies || companies.length === 0)
                             return;
                         var $companyName = $("<span/>").attr("id", "company-name");
@@ -4345,12 +4411,23 @@ var nts;
                                         });
                                         return;
                                     }
-                                    $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to login screen and request logout to server
-                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                            nts.uk.request.login.jumpToUsedLoginPage();
-                                        });
+                                    nts.uk.characteristics.restore("loginMode").done(function (mode) {
+                                        if (mode) {
+                                            $li.remove();
+                                        }
+                                        else {
+                                            $li.on(constants.CLICK, function () {
+                                                // TODO: Jump to login screen and request logout to server
+                                                nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                                    nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                                    nts.uk.sessionStorage.removeItem(MENU_SET_KEY);
+                                                    nts.uk.sessionStorage.removeItem(PROGRAM_KEY);
+                                                    nts.uk.sessionStorage.removeItem(COMPANY_KEY);
+                                                    nts.uk.sessionStorage.removeItem("nts.uk.session.EMPLOYEE_SETTING");
+                                                    nts.uk.request.login.jumpToUsedLoginPage();
+                                                });
+                                            });
+                                        }
                                     });
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
@@ -4375,11 +4452,21 @@ var nts;
                 }
                 menu.displayUserInfo = displayUserInfo;
                 /**
+                 * Get session program.
+                 */
+                function getSessionProgram() {
+                    var dfd = $.Deferred();
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        dfd.resolve(pg);
+                    });
+                    return dfd.promise();
+                }
+                /**
                  * Get program.
                  */
                 function getProgram() {
                     initPgArea();
-                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                    getSessionProgram().done(function (pg) {
                         var programName = "";
                         var queryString = __viewContext.program.queryString;
                         if (queryString) {
@@ -6148,9 +6235,11 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
+                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
+                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -8906,7 +8995,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) {
+                                    else if (makeup.textColor) { // Don't set textColor
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -14674,9 +14763,12 @@ var nts;
                      */
                     function isEqual(one, two, fields) {
                         if (_.isObject(one) && _.isObject(two)) {
-                            return (fields && fields.length > 0)
-                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
-                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                            if (fields && fields.length > 0) {
+                                var oFields_1 = _.cloneDeep(fields);
+                                _(fields).filter(function (f) { return f.slice(-4) === "Name"; }).forEach(function (f) { return oFields_1.push(f.substr(0, f.length - 4) + "Code"); });
+                                return _.isEqual(_.omitBy(one, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return oFields_1.every(function (f) { return f !== p; }); }));
+                            }
+                            return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
                         }
                         return _.isEqual(one, two);
                     }
@@ -15724,6 +15816,7 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
+                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -15754,6 +15847,7 @@ var nts;
                                     }
                                 }
                             })
+                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -15762,6 +15856,7 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
+                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -15781,6 +15876,7 @@ var nts;
                                     }
                                 }
                             })
+                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16079,6 +16175,7 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
+                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16091,6 +16188,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
+                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16110,7 +16208,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else {
+                                    else { // auto width
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -17500,6 +17598,7 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
+                        var DATA_CHANGE_EVENT_STATUS = "change-event-status";
                         var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -17526,6 +17625,11 @@ var nts;
                             }
                         });
                         $input.on(valueUpdate, function (e) {
+                            if ($input.data(DATA_CHANGE_EVENT_STATUS) === "doing") {
+                                return;
+                            }
+                            $input.data(DATA_CHANGE_EVENT_STATUS, "doing");
+                            _.defer(function () { return $input.data(DATA_CHANGE_EVENT_STATUS, "done"); });
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
                             var result = validator.validate(newText);
@@ -17561,6 +17665,14 @@ var nts;
                                 if (result.isValid) {
                                     $input.ntsError('clearKibanError');
                                     $input.val(formatter.format(result.parsedValue));
+                                    /**
+                                     On window-8.1 with IE browser, the 'change' event is not called automatically.
+                                     So, we trigger it manually when the 'value' isn't equals the result.parsedValue.
+                                     See more information at 106538
+                                    */
+                                    if (value() != result.parsedValue) {
+                                        $input.trigger(valueUpdate);
+                                    }
                                 }
                                 else {
                                     var error = $input.ntsError('getError');
@@ -18081,7 +18193,7 @@ var nts;
                                             }
                                         }
                                     }
-                                    else {
+                                    else { // or else, check only decimal length
                                         var dlen = rd.option.decimallength, mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
                                         if (dlen < mdlen) {
                                             evt.preventDefault();
@@ -18090,7 +18202,7 @@ var nts;
                                     }
                                 }
                             }
-                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) {
+                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) { // key backspace || delete
                                 var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                                 // if value after delete out of range, preventDefault
                                 if (primitive) {
@@ -18776,7 +18888,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -19154,8 +19266,20 @@ var nts;
                         });
                         if (!isEqual) {
                             var clickCheckBox = false;
-                            if (!nts.uk.util.isNullOrEmpty(data.value()) && data.value().length == sources.length) {
-                                if ($grid.igGridSelection('option', 'multipleSelection')) {
+                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
+                                var isSameSource_1 = true, sortedValue = _.sortBy(data.value()), sortedSource_1 = _.sortBy(sources, [optionsValue]);
+                                if (sortedValue.length === sortedSource_1.length) {
+                                    _.forEach(sortedValue, function (v, i) {
+                                        if (v !== sortedSource_1[i][optionsValue]) {
+                                            isSameSource_1 = false;
+                                            return false;
+                                        }
+                                    });
+                                }
+                                else {
+                                    isSameSource_1 = false;
+                                }
+                                if (isSameSource_1 && data.value().length == sources.length && $grid.igGridSelection('option', 'multipleSelection')) {
                                     var features = _.find($grid.igGrid("option", "features"), function (f) {
                                         return f.name === "RowSelectors";
                                     });
@@ -19993,12 +20117,33 @@ var nts;
                         this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);
                         this.searchField = searchField;
                     }
-                    SearchBox.prototype.search = function (searchKey) {
+                    SearchBox.prototype.filter = function (searchKey) {
                         var self = this;
-                        if (_.isEmpty(this.source)) {
+                        return self.filterWithSource(searchKey, this.source);
+                    };
+                    SearchBox.prototype.search = function (searchKey, fromIndex) {
+                        var self = this;
+                        // search in the next array
+                        var nextSource = self.source.slice(fromIndex + 1);
+                        var nextFilterdItems = self.filterWithSource(searchKey, nextSource);
+                        if (nextFilterdItems.length > 0) {
+                            return nextFilterdItems[0];
+                        }
+                        // search in the previous array
+                        var previousSource = self.source.slice(0, fromIndex + 1);
+                        var previouseFilteredItems = self.filterWithSource(searchKey, previousSource);
+                        if (previouseFilteredItems.length > 0) {
+                            return previouseFilteredItems[0];
+                        }
+                        // if not match searchKey
+                        return null;
+                    };
+                    SearchBox.prototype.filterWithSource = function (searchKey, source) {
+                        var self = this;
+                        if (_.isEmpty(source)) {
                             return [];
                         }
-                        var flatArr = nts.uk.util.flatArray(this.source, this.childField);
+                        var flatArr = nts.uk.util.flatArray(source, this.childField);
                         var filtered = _.filter(flatArr, function (item) {
                             return _.find(self.searchField, function (x) {
                                 if (x !== undefined && x !== null) {
@@ -20043,41 +20188,47 @@ var nts;
                     }
                     SearchPub.prototype.search = function (searchKey, selectedItems) {
                         var result = new SearchResult();
-                        var filtered = this.seachBox.search(searchKey);
-                        if (!_.isEmpty(filtered)) {
-                            var key_1 = this.key;
-                            if (this.mode === "highlight") {
-                                result.options = this.seachBox.getDataSource();
-                                var index = 0;
-                                if (!_.isEmpty(selectedItems)) {
-                                    var firstItemValue_1 = $.isArray(selectedItems)
-                                        ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
-                                    index = _.findIndex(filtered, function (item) {
-                                        return item[key_1].toString() === firstItemValue_1;
-                                    });
-                                    if (!_.isNil(index)) {
-                                        index++;
-                                    }
-                                }
-                                if (index >= 0) {
-                                    result.selectItems = [filtered[index >= filtered.length ? 0 : index]];
-                                }
+                        var key = this.key;
+                        if (this.mode === "highlight") {
+                            var dataSource = this.seachBox.getDataSource();
+                            var selectingIndex = this.computeSelectingIndex(dataSource, selectedItems, key);
+                            var selectItem = this.seachBox.search(searchKey, selectingIndex);
+                            if (selectItem == null) {
+                                return result;
                             }
-                            else if (this.mode === "filter") {
-                                result.options = filtered;
-                                var selectItem = _.filter(filtered, function (itemFilterd) {
-                                    return _.find(selectedItems, function (item) {
-                                        var itemVal = itemFilterd[key_1];
-                                        if (_.isNil(itemVal) || _.isNil(item["id"])) {
-                                            return false;
-                                        }
-                                        return itemVal.toString() === item["id"].toString();
-                                    }) !== undefined;
-                                });
-                                result.selectItems = selectItem;
-                            }
+                            result.options = dataSource;
+                            result.selectItems = [selectItem];
+                            return result;
                         }
-                        return result;
+                        else {
+                            var filtered = this.seachBox.filter(searchKey);
+                            if (_.isEmpty(filtered)) {
+                                return result;
+                            }
+                            var selectItem = _.filter(filtered, function (itemFilterd) {
+                                return _.find(selectedItems, function (item) {
+                                    var itemVal = itemFilterd[key];
+                                    if (_.isNil(itemVal) || _.isNil(item["id"])) {
+                                        return false;
+                                    }
+                                    return itemVal.toString() === item["id"].toString();
+                                }) !== undefined;
+                            });
+                            result.options = filtered;
+                            result.selectItems = selectItem;
+                            return result;
+                        }
+                    };
+                    SearchPub.prototype.computeSelectingIndex = function (dataSource, selectedItems, key) {
+                        var selectingIndex = 0;
+                        if (!_.isEmpty(selectedItems)) {
+                            var firstItemValue_1 = $.isArray(selectedItems)
+                                ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
+                            selectingIndex = _.findIndex(dataSource, function (item) {
+                                return item[key].toString() === firstItemValue_1;
+                            });
+                        }
+                        return selectingIndex;
                     };
                     SearchPub.prototype.setDataSource = function (source) {
                         this.seachBox.setDataSource(source);
@@ -25785,7 +25936,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -25818,7 +25969,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = 0; i < _mDesc.rows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -27411,112 +27562,148 @@ var nts;
                             return res;
                         },
                         disableNtsControlAt: function (id, key, $cell, hidden) {
+                            var dc = [];
                             if (!$cell) {
-                                var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
-                                if (_.isNil(idx))
+                                var idx_1 = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
+                                if (_.isNil(idx_1))
                                     return;
-                                $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
+                                _.forEach(_.keys(_mafollicle), function (k) {
+                                    if (k === SheetDef)
+                                        return;
+                                    _.forEach(_.keys(_mafollicle[SheetDef]), function (d) {
+                                        var f = _mafollicle[k][d], c;
+                                        if (f) {
+                                            c = lch.cellAt(_$grid[0], idx_1, key, f.desc, hidden);
+                                            if (c)
+                                                dc.push(c);
+                                        }
+                                    });
+                                    if (dc.length > 0)
+                                        return false;
+                                });
                             }
-                            if (_.isNil($cell)) {
-                                if (_.find(_cstifle(), function (c) { return c.key === key; })) {
-                                    color.pushState(id, key, color.Disable);
+                            else
+                                dc.push($cell);
+                            if (dc.length === 0) {
+                                //                    if (_.find(_cstifle(), c => c.key === key)) {
+                                color.pushState(id, key, color.Disable);
+                                //                    }
+                                return;
+                            }
+                            dc.forEach(function ($cell) {
+                                if ($cell.classList.contains(color.Disable))
+                                    return;
+                                $cell.classList.add(color.Disable);
+                                switch (dkn.controlType[key]) {
+                                    case dkn.LABEL:
+                                        $cell.innerHTML = "";
+                                        break;
+                                    case dkn.LINK_LABEL:
+                                        var link = $cell.querySelector(".mlink-button");
+                                        if (link) {
+                                            link.removeXEventListener(ssk.CLICK_EVT);
+                                            link.style.color = "#333";
+                                            link.style.cursor = "default";
+                                        }
+                                        break;
+                                    case dkn.BUTTON:
+                                    case dkn.DELETE_BUTTON:
+                                    case dkn.REFER_BUTTON:
+                                        var btn = $cell.querySelector(".mbutton");
+                                        if (btn)
+                                            btn.disabled = true;
+                                        break;
+                                    case dkn.FLEX_IMAGE:
+                                        var img = $cell.querySelector("span");
+                                        if (img) {
+                                            img.removeXEventListener(ssk.CLICK_EVT);
+                                            img.style.cursor = "default";
+                                        }
+                                        break;
+                                    case dkn.CHECKBOX:
+                                        var check = $cell.querySelector("input");
+                                        if (check) {
+                                            check.setAttribute("disabled", "disabled");
+                                        }
+                                        break;
                                 }
-                                return;
-                            }
-                            if ($cell.classList.contains(color.Disable))
-                                return;
-                            $cell.classList.add(color.Disable);
-                            switch (dkn.controlType[key]) {
-                                case dkn.LABEL:
-                                    $cell.innerHTML = "";
-                                    break;
-                                case dkn.LINK_LABEL:
-                                    var link = $cell.querySelector(".mlink-button");
-                                    if (link) {
-                                        link.removeXEventListener(ssk.CLICK_EVT);
-                                        link.style.color = "#333";
-                                        link.style.cursor = "default";
-                                    }
-                                    break;
-                                case dkn.BUTTON:
-                                case dkn.DELETE_BUTTON:
-                                case dkn.REFER_BUTTON:
-                                    var btn = $cell.querySelector(".mbutton");
-                                    if (btn)
-                                        btn.disabled = true;
-                                    break;
-                                case dkn.FLEX_IMAGE:
-                                    var img = $cell.querySelector("span");
-                                    if (img) {
-                                        img.removeXEventListener(ssk.CLICK_EVT);
-                                        img.style.cursor = "default";
-                                    }
-                                    break;
-                                case dkn.CHECKBOX:
-                                    var check = $cell.querySelector("input");
-                                    if (check) {
-                                        check.setAttribute("disabled", "disabled");
-                                    }
-                                    break;
-                            }
+                            });
                             color.pushState(id, key, color.Disable);
                         },
                         enableNtsControlAt: function (id, key, $cell, hidden) {
+                            var dc = [];
                             if (!$cell) {
-                                var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
-                                if (_.isNil(idx))
+                                var idx_2 = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
+                                if (_.isNil(idx_2))
                                     return;
-                                $cell = lch.cellAt(_$grid[0], idx, key, null, hidden);
-                            }
-                            if (_.isNil($cell)) {
-                                if (_.find(_cstifle(), function (c) { return c.key === key; })) {
-                                    color.popState(id, key, color.Disable);
-                                }
-                                return;
-                            }
-                            if (!$cell.classList.contains(color.Disable))
-                                return;
-                            $cell.classList.remove(color.Disable);
-                            switch (dkn.controlType[key]) {
-                                case dkn.LABEL:
-                                    var label = $.data($cell, v.DATA);
-                                    $cell.innerHTML = _.isNil(label) ? "" : label;
-                                    break;
-                                case dkn.LINK_LABEL:
-                                    var link = $cell.querySelector(".mlink-button");
-                                    if (link) {
-                                        link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
-                                        link.style.color = "#0066CC";
-                                        link.style.cursor = "pointer";
-                                    }
-                                    break;
-                                case dkn.BUTTON:
-                                case dkn.DELETE_BUTTON:
-                                case dkn.REFER_BUTTON:
-                                    var btn = $cell.querySelector(".mbutton");
-                                    if (btn) {
-                                        btn.disabled = false;
-                                        var hdl = $.data(btn, ssk.CLICK_EVT);
-                                        if (hdl) {
-                                            btn.removeXEventListener(ssk.CLICK_EVT);
-                                            btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                                _.forEach(_.keys(_mafollicle), function (k) {
+                                    if (k === SheetDef)
+                                        return;
+                                    _.forEach(_.keys(_mafollicle[SheetDef]), function (d) {
+                                        var f = _mafollicle[k][d], c;
+                                        if (f) {
+                                            c = lch.cellAt(_$grid[0], idx_2, key, f.desc, hidden);
+                                            if (c)
+                                                dc.push(c);
                                         }
-                                    }
-                                    break;
-                                case dkn.FLEX_IMAGE:
-                                    var img = $cell.querySelector("span");
-                                    if (img) {
-                                        img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
-                                        img.style.cursor = "pointer";
-                                    }
-                                    break;
-                                case dkn.CHECKBOX:
-                                    var check = $cell.querySelector("input");
-                                    if (check) {
-                                        check.removeAttribute("disabled");
-                                    }
-                                    break;
+                                    });
+                                    if (dc.length > 0)
+                                        return false;
+                                });
                             }
+                            else
+                                dc.push($cell);
+                            if (dc.length === 0) {
+                                //                    if (_.find(_cstifle(), c => c.key === key)) {
+                                color.popState(id, key, color.Disable);
+                                //                    }    
+                                return;
+                            }
+                            dc.forEach(function ($cell) {
+                                if (!$cell.classList.contains(color.Disable))
+                                    return;
+                                $cell.classList.remove(color.Disable);
+                                switch (dkn.controlType[key]) {
+                                    case dkn.LABEL:
+                                        var label = $.data($cell, v.DATA);
+                                        $cell.innerHTML = _.isNil(label) ? "" : label;
+                                        break;
+                                    case dkn.LINK_LABEL:
+                                        var link = $cell.querySelector(".mlink-button");
+                                        if (link) {
+                                            link.addXEventListener(ssk.CLICK_EVT, $.data(link, ssk.CLICK_EVT));
+                                            link.style.color = "#0066CC";
+                                            link.style.cursor = "pointer";
+                                        }
+                                        break;
+                                    case dkn.BUTTON:
+                                    case dkn.DELETE_BUTTON:
+                                    case dkn.REFER_BUTTON:
+                                        var btn = $cell.querySelector(".mbutton");
+                                        if (btn) {
+                                            btn.disabled = false;
+                                            var hdl = $.data(btn, ssk.CLICK_EVT);
+                                            if (hdl) {
+                                                btn.removeXEventListener(ssk.CLICK_EVT);
+                                                btn.addXEventListener(ssk.CLICK_EVT, hdl);
+                                            }
+                                        }
+                                        break;
+                                    case dkn.FLEX_IMAGE:
+                                        var img = $cell.querySelector("span");
+                                        if (img) {
+                                            img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
+                                            img.style.cursor = "pointer";
+                                        }
+                                        break;
+                                    case dkn.CHECKBOX:
+                                        var check = $cell.querySelector("input");
+                                        if (check) {
+                                            check.removeAttribute("disabled");
+                                        }
+                                        break;
+                                }
+                            });
                             color.popState(id, key, color.Disable);
                         },
                         setState: function (id, key, states) {
@@ -27532,6 +27719,9 @@ var nts;
                                         self.disableNtsControlAt(id, key, $c);
                                         disabled = true;
                                         return;
+                                    }
+                                    else if (s === color.ManualEditTarget || s === color.ManualEditOther) {
+                                        $.data($c, v.INIT_MAN_EDIT, s);
                                     }
                                     if (!$c.classList.contains(s))
                                         $c.classList.add(s);
@@ -27907,9 +28097,8 @@ var nts;
                                 var col = _columnsMap[key];
                                 if (!col || col.length === 0)
                                     return;
-                                val = String(val);
                                 var formatted = su.format(col[0], val);
-                                $cell.innerHTML = formatted;
+                                $cell.innerHTML = _.isNil(formatted) ? "" : formatted;
                                 var disFormat = su.formatSave(col[0], val);
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, disFormat, reset);
                                 $.data($cell, v.DATA, disFormat);
@@ -27921,7 +28110,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) {
+                                if (val) { //&& check.getAttribute("checked") !== "checked") {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -27930,7 +28119,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) {
+                                else if (!val) { // && check.getAttribute("checked") === "checked") {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28266,6 +28455,10 @@ var nts;
                                     if (!condition(d[key], d))
                                         return;
                                     var setVal = value(d[key], d);
+                                    var maf = _mafollicle[k][_currentSheet], r;
+                                    if (maf && maf.desc && (r = maf.desc.rows[i])) {
+                                        khl.clear({ id: d[_pk], columnKey: key, element: r[maf.desc.colIdxes[key]] });
+                                    }
                                     _$grid.mGrid("updateCell", d[_pk], key, setVal, false, !dr);
                                 });
                             });
@@ -28314,6 +28507,36 @@ var nts;
                                 khl.set(e, e.message, 2);
                                 z--;
                             }
+                        },
+                        clearErrors: function (errs, s) {
+                            if (!errs)
+                                return;
+                            s = !_.isNil(s) ? s : _currentSheet;
+                            _.forEach(errs, function (e) {
+                                _.forEach(_.keys(_mafollicle), function (p) {
+                                    if (p === SheetDef)
+                                        return;
+                                    var maf = _mafollicle[p][s];
+                                    if (maf && maf.desc) {
+                                        var y = _.findIndex(_mafollicle[p].dataSource, function (d) { return d[_pk] === e.id; }), i = maf.desc.fixedColIdxes[e.columnKey];
+                                        if (_.isNil(i)) {
+                                            i = maf.desc.colIdxes[e.columnKey];
+                                            if (!_.isNil(maf.desc.rows[y])) {
+                                                e.element = maf.desc.rows[y][i];
+                                            }
+                                        }
+                                        else if (!_.isNil(maf.desc.fixedRows[y])) {
+                                            e.element = maf.desc.fixedRows[y][i];
+                                        }
+                                        if (e.element) {
+                                            khl.clear(e);
+                                        }
+                                    }
+                                    else {
+                                        _.remove(maf && maf.checkedErrors, function (ce) { return ce.columnKey === e.columnKey && ce.id === e.id; });
+                                    }
+                                });
+                            });
                         },
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
@@ -28950,46 +29173,52 @@ var nts;
                                 return;
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                             }
                         });
                         $grid.addXEventListener(ssk.KEY_DOWN, function (evt) {
                             var $grid = evt.currentTarget, $tCell = evt.target;
                             if (!$grid)
                                 return;
-                            if (ti.isEnterKey(evt)) {
-                                var direct = $.data($grid, "enterDirect");
-                                if (evt.shiftKey) {
-                                    lch.selectPrev($grid, direct);
-                                }
-                                else {
-                                    lch.selectNext($grid, direct);
-                                }
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
+                                && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
+                                ssk.KeyPressed[evt.keyCode] = true;
                             }
-                            else if (ti.isTabKey(evt)) {
-                                evt.preventDefault();
-                                if (evt.shiftKey) {
+                            if (!_(ssk.KeyPressed).keys().filter(function (k) { return k !== "13" && k !== "9"; }).size()) {
+                                if (ti.isEnterKey(evt)) {
+                                    var direct = $.data($grid, "enterDirect");
+                                    if (evt.shiftKey) {
+                                        lch.selectPrev($grid, direct);
+                                    }
+                                    else {
+                                        lch.selectNext($grid, direct);
+                                    }
+                                }
+                                else if (ti.isTabKey(evt)) {
+                                    evt.preventDefault();
+                                    if (evt.shiftKey) {
+                                        lch.selectPrev($grid);
+                                    }
+                                    else {
+                                        lch.selectNext($grid);
+                                    }
+                                }
+                                else if (ti.isArrowLeft(evt)) {
+                                    evt.preventDefault();
                                     lch.selectPrev($grid);
                                 }
-                                else {
+                                else if (ti.isArrowRight(evt)) {
+                                    evt.preventDefault();
                                     lch.selectNext($grid);
                                 }
-                            }
-                            else if (ti.isArrowLeft(evt)) {
-                                evt.preventDefault();
-                                lch.selectPrev($grid);
-                            }
-                            else if (ti.isArrowRight(evt)) {
-                                evt.preventDefault();
-                                lch.selectNext($grid);
-                            }
-                            else if (ti.isArrowUp(evt)) {
-                                evt.preventDefault();
-                                lch.selectPrev($grid, "below");
-                            }
-                            else if (ti.isArrowDown(evt)) {
-                                evt.preventDefault();
-                                lch.selectNext($grid, "below");
+                                else if (ti.isArrowUp(evt)) {
+                                    evt.preventDefault();
+                                    lch.selectPrev($grid, "below");
+                                }
+                                else if (ti.isArrowDown(evt)) {
+                                    evt.preventDefault();
+                                    lch.selectNext($grid, "below");
+                                }
                             }
                             // Get input
                             if (!evt.ctrlKey && ti.isAlphaNumeric(evt) || ti.isMinusSymbol(evt) || ti.isDeleteKey(evt)
@@ -29075,6 +29304,18 @@ var nts;
                                 annuler();
                             }
                         });
+                        $grid.addXEventListener(ssk.KEY_UP, function (evt) {
+                            delete ssk.KeyPressed[evt.keyCode];
+                        });
+                        document.addXEventListener(ssk.KEY_DOWN, function (evt) {
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
+                                && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
+                                ssk.KeyPressed[evt.keyCode] = true;
+                            }
+                        });
+                        document.addXEventListener(ssk.KEY_UP, function (evt) {
+                            delete ssk.KeyPressed[evt.keyCode];
+                        });
                         if (_copie) {
                             $grid.addXEventListener(ssk.FOCUS_IN, function (evt) {
                                 if (_collerer && _copieer)
@@ -29107,7 +29348,7 @@ var nts;
                     /**
                      * EndEdit.
                      */
-                    function endEdit($grid) {
+                    function endEdit($grid, fromDoc) {
                         var editor = _mEditor;
                         if (!editor)
                             return;
@@ -29223,6 +29464,9 @@ var nts;
                                 wedgeCell($grid, editor, date);
                                 $bCell.textContent = mDate._i;
                                 $.data($bCell, v.DATA, date);
+                            }
+                            if (fromDoc && picker && _.isFunction(picker.inputProcess)) {
+                                picker.inputProcess(mDate, _dataSource[parseFloat(editor.rowIdx)]);
                             }
                             $input.value = "";
                             dkn.closeDD(dkn._ramass[editor.formatType], true);
@@ -29363,10 +29607,14 @@ var nts;
                                     else {
                                         colour = color.ManualEditOther;
                                     }
-                                    if (main)
+                                    if (main) {
+                                        color.popState(id, coord.columnKey, [color.ManualEditTarget, color.ManualEditOther]);
                                         color.pushState(id, coord.columnKey, [colour], true);
+                                    }
                                     if (!$cell_1)
                                         return { colour: colour };
+                                    $cell_1.classList.remove(color.ManualEditTarget);
+                                    $cell_1.classList.remove(color.ManualEditOther);
                                     $cell_1.classList.add(colour);
                                     return { c: calcCell, colour: colour };
                                 }
@@ -30108,6 +30356,7 @@ var nts;
                     ssk.RENDERED = "mgridrowsrendered";
                     ssk.MS = "mgridms";
                     ssk.MS_BEFORE_COMPL = "mgridmsbeforecompletion";
+                    ssk.KeyPressed = {};
                     window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
                     window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
                     /**
@@ -30740,21 +30989,26 @@ var nts;
                         dkn.controlType[dkn.TEXTBOX] = { my: $editContainer, type: dkn.TEXTBOX };
                         $editor.addXEventListener(ssk.KEY_DOWN, function (evt) {
                             if (ti.isEnterKey(evt) || ti.isTabKey(evt)) {
-                                var d = ti.closest($editor, "td." + v.CELL_CLS);
-                                var coord = ti.getCellCoord(d), ctrl = dkn.controlType[coord.columnKey];
-                                if (!ctrl || ctrl.type !== dkn.DATE_PICKER) {
+                                if (!_(ssk.KeyPressed).keys().filter(function (k) { return k !== "13" && k !== "9"; }).size()) {
+                                    var d = ti.closest($editor, "td." + v.CELL_CLS);
+                                    var coord = ti.getCellCoord(d), ctrl = dkn.controlType[coord.columnKey];
+                                    if (!ctrl || ctrl.type !== dkn.DATE_PICKER) {
+                                        su.endEdit(_$grid[0]);
+                                        return;
+                                    }
+                                    var data = $.data(d, v.DATA);
+                                    if (data instanceof Date) {
+                                        data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
+                                    }
+                                    var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
+                                    if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                                        ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                                    }
                                     su.endEdit(_$grid[0]);
-                                    return;
                                 }
-                                var data = $.data(d, v.DATA);
-                                if (data instanceof Date) {
-                                    data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
-                                }
-                                var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                                if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                                    ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
-                                }
-                                su.endEdit(_$grid[0]);
+                            }
+                            else if ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223)) {
+                                ssk.KeyPressed[evt.keyCode] = true;
                             }
                             if (ti.isArrowLeft(evt) || ti.isArrowRight(evt) || ti.isArrowUp(evt) || ti.isArrowDown(evt)) {
                                 evt.stopPropagation();
@@ -30778,6 +31032,7 @@ var nts;
                             }
                         };
                         $editor.addXEventListener(ssk.KEY_UP, function (evt) {
+                            delete ssk.KeyPressed[evt.keyCode];
                             ms();
                         });
                         $editor.addXEventListener(ssk.MS_BEFORE_COMPL, function () {
@@ -33359,7 +33614,7 @@ var nts;
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
-/// <reference path="ui/mgrid.ts"/> 
+/// <reference path="ui/mgrid.ts"/>
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -34781,15 +35036,19 @@ var nts;
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             // for performance when select all
-                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.isEqual(selectedId, baseID)) {
+                            var baseID_1 = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                            if (_.isEqual(selectedId, baseID_1)) {
                                 var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
                                 if (chk.attr("data-chk") === "off") {
                                     chk.click();
                                 }
                             }
                             else {
-                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                                selectedId.forEach(function (id) {
+                                    if (_.includes(baseID_1, id)) {
+                                        $grid.igGridSelection('selectRowById', id);
+                                    }
+                                });
                             }
                         }
                         else {
@@ -34985,7 +35244,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -35297,6 +35556,7 @@ var nts;
                         if (!value)
                             return;
                         var sources = $grid.igGrid("option", "dataSource");
+                        var optionsValue = $grid.igGrid("option", "primaryKey");
                         var multiple = $grid.igGridSelection('option', 'multipleSelection');
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, value, function (current, newVal) {
@@ -35305,8 +35565,19 @@ var nts;
                             }
                         });
                         if (!isEqual) {
-                            var clickCheckBox = false;
-                            if (value.length == sources.length) {
+                            var clickCheckBox = false, isSameSource_2 = true, sortedValue = _.sortBy(value), sortedSource_2 = _.sortBy(sources, [optionsValue]);
+                            if (sortedValue.length === sortedSource_2.length) {
+                                _.forEach(sortedValue, function (v, i) {
+                                    if (v !== sortedSource_2[i][optionsValue]) {
+                                        isSameSource_2 = false;
+                                        return false;
+                                    }
+                                });
+                            }
+                            else {
+                                isSameSource_2 = false;
+                            }
+                            if (isSameSource_2 && value.length == sources.length) {
                                 if (multiple) {
                                     var features = _.find($grid.igGrid("option", "features"), function (f) {
                                         return f.name === "RowSelectors";
@@ -39829,8 +40100,8 @@ var nts;
                                     var owns = $self.attr("aria-owns");
                                     if (!owns)
                                         return;
-                                    var key_2 = owns.split(" ")[0].split("_")[1];
-                                    setBackground($self, key_2, columns);
+                                    var key_1 = owns.split(" ")[0].split("_")[1];
+                                    setBackground($self, key_1, columns);
                                     return;
                                 }
                                 var key = columnId.split("_")[1];
@@ -39843,8 +40114,8 @@ var nts;
                                     var owns = $self.attr("aria-owns");
                                     if (!owns)
                                         return;
-                                    var key_3 = owns.split(" ")[0].split("_")[1];
-                                    setBackground($self, key_3, columns);
+                                    var key_2 = owns.split(" ")[0].split("_")[1];
+                                    setBackground($self, key_2, columns);
                                     return;
                                 }
                                 var key = columnId.split("_")[1];
@@ -40388,7 +40659,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) {
+                            else if (loader.keys) { // Switch sheet
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -40457,6 +40728,9 @@ var nts;
                                 var setting = $grid.data(internal.SETTINGS);
                                 setting.pageSize = ui.newPageSize;
                                 setting.pageIndex = 0;
+                                if ($grid.igGridPaging("option", "currentPageIndex") > 0) {
+                                    $grid.igGridPaging("pageSize", setting.pageSize);
+                                }
                                 var loader = $grid.data(internal.LOADER);
                                 if (!loader)
                                     return;
@@ -41148,7 +41422,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) {
+                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
                                     hide(control);
                                 }
                             });
@@ -44442,7 +44716,7 @@ var nts;
                                 optionsText: 'text',
                                 width: '60px',
                                 enable: data.enable,
-                                name: _.size(source) == 13 ? (ko.toJS(data.name) + "の月") : (ko.toJS(data.name) + "の日"),
+                                name: _.size(source) == 13 ? (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の月") : (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の日"),
                                 required: _.size(source) == 13 ? data.required : ko.computed(function () { return !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value); })
                             });
                         }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()), dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);
@@ -44743,6 +45017,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
+                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -44770,7 +45045,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else {
+                            else { //employ the strategy of moving items
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
