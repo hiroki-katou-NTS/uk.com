@@ -319,7 +319,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             obj[16] = new BigDecimal(2);
         }
         c.append(obj[20] != null ? ((BigDecimal)obj[20]).intValue() : "");
-        b.append(obj[22] != null ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
+        b.append(obj[22] != null ? ((BigDecimal)obj[22]).intValue() == 0 ? obj[21].toString() : (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
         if(((BigDecimal)obj[16]).intValue() == StandardAmountClassification.FIXED_AMOUNT.value) {
             a.append(obj[17].toString());
         }
