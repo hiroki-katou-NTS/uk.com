@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
-import java.util.List;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 
 public interface AbsenceServiceProcess {
 	/**
@@ -75,6 +72,5 @@ public interface AbsenceServiceProcess {
 	 * @param baseDate - 基準日
 	 * @return 年休残数-代休残数-振休残数-ストック休暇残数
 	 */
-	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate, 
-			List<AppEmploymentSetting> appEmpSetAs);
+	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate);
 }

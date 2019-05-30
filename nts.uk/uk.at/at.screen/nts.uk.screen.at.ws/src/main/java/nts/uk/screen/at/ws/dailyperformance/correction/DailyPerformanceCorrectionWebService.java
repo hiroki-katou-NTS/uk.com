@@ -64,6 +64,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProc
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.DPLoadVerProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerData;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
@@ -147,6 +148,7 @@ public class DailyPerformanceCorrectionWebService {
 		Integer closureId = params.closureId;
 		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
+		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", dtoResult.getLstData());
@@ -163,6 +165,7 @@ public class DailyPerformanceCorrectionWebService {
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes, params.showLock, closureId);
 		session.setAttribute("domainOlds", results.getDomainOld());
+		session.setAttribute("domainOldForLog", cloneListDto(results.getDomainOld()));
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", results.getLstData());
@@ -211,6 +214,7 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
 		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
 		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
@@ -268,7 +272,10 @@ public class DailyPerformanceCorrectionWebService {
 		param.setClosureId(closureId);
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
-		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
+		if(!param.getOnlyLoadMonth()) {
+			session.setAttribute("domainOlds", result.getDomainOld());
+			session.setAttribute("domainOldForLog", result.getDomainOldForLog());
+		}
 		result.setDomainOld(Collections.emptyList());
 		return result;
 	}
@@ -276,7 +283,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("loadVerData")
 	@SuppressWarnings("unchecked")
-	public void addAndUpdate(LoadVerData loadVerData) {
+	public LoadVerDataResult addAndUpdate(LoadVerData loadVerData) {
 		HttpSession session = httpRequest.getSession();
 		val domain = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
@@ -289,7 +296,8 @@ public class DailyPerformanceCorrectionWebService {
 		val result = dPLoadVerProcessor.loadVerAfterCheckbox(loadVerData);
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("domainOlds", result.getLstDomainOld());
-		return;
+		result.setLstDomainOld(new ArrayList<>());
+		return result;
 	}
 	
 	@POST

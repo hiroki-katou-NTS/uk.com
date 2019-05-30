@@ -92,6 +92,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
+			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 			String appContent = appContentService.getApplicationContent(application_New.get());
 			//ver7
 			String date = app.getStartDate().get().equals(app.getEndDate().get()) ? app.getStartDate().get().toString() : 

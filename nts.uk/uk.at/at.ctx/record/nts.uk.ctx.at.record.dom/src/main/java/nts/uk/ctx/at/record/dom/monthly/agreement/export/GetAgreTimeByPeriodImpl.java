@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRep
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
@@ -39,7 +40,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
 /**
  * 実装：指定期間36協定時間の取得
  * @author shuichi_ishida
@@ -65,6 +68,13 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 	/** 36協定運用設定の取得 */
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSetRepo;
+	/** ドメインサービス：締め */
+	@Inject
+	private ClosureService closureService;
+	/** 年度から集計期間を取得 */
+	@Inject
+	private GetAgreementPeriodFromYear getAgreementPeriodFromYear;
+	
     @Inject
     private ManagedParallelWithContext parallel;
 	
@@ -430,13 +440,17 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 		// 上限時間をセット
 		int maxMinutes = basicAgreementSet.getLimitOneYear().v();
 
+		// 社員に対応する処理締めを取得する
+		val closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
+		if (closure == null) return Optional.empty();
+
 		// 36協定運用設定の取得
 		val agreementOpeSetOpt = this.agreementOperationSetRepo.find(companyId);
 		if (!agreementOpeSetOpt.isPresent()) return Optional.empty();
 		val agreementOpeSet = agreementOpeSetOpt.get();
 		
 		// 年度から36協定の年月期間を取得する
-		val period = agreementOpeSet.getYearMonthPeriod(year);
+		val period = agreementOpeSet.getYearMonthPeriod(year, closure, this.getAgreementPeriodFromYear);
 		
 		// 管理期間の36協定時間を取得
 		List<String> employeeIds = new ArrayList<>();

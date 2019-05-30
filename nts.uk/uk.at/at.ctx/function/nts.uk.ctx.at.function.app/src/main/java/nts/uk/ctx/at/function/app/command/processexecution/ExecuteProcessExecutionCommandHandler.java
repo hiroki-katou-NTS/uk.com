@@ -564,7 +564,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
 		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
-			// 各処理の終了状態 ＝ [アラーム抽出、未実施]
+			// 各処理の終了状態 ＝ [アラーム抽出、強制終了]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
 			// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
@@ -582,7 +582,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		boolean checkErrAppDaily = false;
 		try {
 			// 承認ルート更新（日次）
-			this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+			boolean checkStop = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+			if(checkStop) {
+				// 各処理の終了状態 ＝ [承認ルート更新（日次）、強制終了]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.FORCE_END);
+				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				return true;
+			}
 		} catch (Exception e) {
 			checkErrAppDaily = true;
 		}
@@ -650,7 +657,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		boolean checkErrAppMonth = false;
 		try {
 			// 承認ルート更新（月次）
-			this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+			boolean checkStop = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+			if(checkStop) {
+				// 各処理の終了状態 ＝ [承認ルート更新（月次）、強制終了]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.FORCE_END);
+				return true;
+			}
 		} catch (Exception e) {
 			checkErrAppMonth = true;
 		}
@@ -999,24 +1011,26 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (!CollectionUtil.isEmpty(reEmployeeList)) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, reEmployeeList);
-						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
-						try {
-							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
-							log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-									+ GeneralDateTime.now());
-							if (checkStop(execId)) {
-								return false;
-							}
-							runSchedule = true;
-						} catch (Exception e) {
-							// 再実行の場合にExceptionが発生したかどうかを確認する。
-							if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
-								return false;
+						if (endDate != null) {
+							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
+							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
+									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+											calculateSchedulePeriod, reEmployeeList);
+							scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
+									.setPeriod(new DatePeriod(periodDate.start(), endDate));
+							try {
+								handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+										+ GeneralDateTime.now());
+								if (checkStop(execId)) {
+									return false;
+								}
+								runSchedule = true;
+							} catch (Exception e) {
+								// 再実行の場合にExceptionが発生したかどうかを確認する。
+								if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+									return false;
+								}
 							}
 						}
 					}
@@ -1108,6 +1122,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					e.printStackTrace();
 				}
 			}
+		}else {
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
+			log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"+ GeneralDateTime.now());
 		}
 
 		this.procExecLogRepo.update(procExecLog);

@@ -5,6 +5,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -30,9 +31,10 @@ public interface GetAgreementPeriodPub {
 	 * @param companyId 会社ID
 	 * @param criteria 指定年月日
 	 * @param agreementOperationSet 36協定運用設定
+	 * @param closure 締め
 	 * @return 年月期間
 	 */
 	// RequestList579
 	Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
-			Optional<AgreementOperationSetting> agreementOperationSet);
+			Optional<AgreementOperationSetting> agreementOperationSet, Closure closure);
 }
