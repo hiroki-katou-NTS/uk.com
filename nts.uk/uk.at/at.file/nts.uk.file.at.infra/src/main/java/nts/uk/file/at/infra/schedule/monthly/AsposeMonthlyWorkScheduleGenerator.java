@@ -969,7 +969,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 //					勤怠項目ID＝193、198：アルゴリズム「職位を取得する」
 					else if(itemValue.getItemId() == 193 || itemValue.getItemId() == 198 ) {
-						Optional<CodeName> object = lstPossition.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						Optional<CodeName> object = lstPossition.stream().filter(c -> c.getId().equals(itemValue.getValue())).findFirst();
 						if(object.isPresent()) {
 							codeName = object.get().getCode()+ "　" + object.get().getName();
 						}
@@ -977,7 +977,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 //					勤怠項目ID＝194、199：アルゴリズム「職場を取得する」
 					else if(itemValue.getItemId() == 194 || itemValue.getItemId() == 199 ) {
-						Optional<CodeName> object = lstWorkPlace.stream().filter(c -> c.getCode().equals(itemValue.getValue())).findFirst();
+						Optional<CodeName> object = lstWorkPlace.stream().filter(c -> c.getId().equals(itemValue.getValue())).findFirst();
 						if(object.isPresent()) {
 							codeName = object.get().getCode()+ "　" + object.get().getName();
 						}
