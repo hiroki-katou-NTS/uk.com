@@ -324,9 +324,8 @@ module kcp.share.tree {
 
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
-                let listModel = self.findUnitModelByListWorkplaceId(self.backupItemList());
                 let listRowSelected: Array<RowSelection> = [];
-                self.findSelectionRowData(listModel, listRowSelected);
+                self.findSelectionRowData(self.backupItemList(), listRowSelected);
                 return listRowSelected;
             }
 
