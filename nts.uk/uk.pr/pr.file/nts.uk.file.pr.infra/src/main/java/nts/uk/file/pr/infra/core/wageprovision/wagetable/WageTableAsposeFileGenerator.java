@@ -111,6 +111,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if (e.getQualificationName().isEmpty()) {
             return "";
         }
+
         return TextResource.localize(EnumAdaptor.valueOf(index, QualificationPaymentMethod.class).nameId);
     }
 
