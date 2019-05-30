@@ -85,11 +85,11 @@ public class BankAposeFileGenerator extends AsposeCellsReportGenerator implement
 
         // Set print page
         PageSetup pageSetup = ws.getPageSetup();
-        pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
 
         // Set header date
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
-        pageSetup.setHeader(2, "&10&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
     }
 }
