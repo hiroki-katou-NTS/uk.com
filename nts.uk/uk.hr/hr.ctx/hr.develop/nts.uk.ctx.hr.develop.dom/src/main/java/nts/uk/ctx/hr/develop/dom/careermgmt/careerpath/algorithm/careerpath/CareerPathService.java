@@ -13,11 +13,15 @@ public class CareerPathService {
 
 	@Inject
 	private CareerPathRepository careerPathRepo;
-	
-	//キャリアパスの取得
+
+	// キャリアパスの取得
 	public Optional<CareerPath> getCareerPath(String cId, String hisId) {
 		return careerPathRepo.getCareerPath(cId, hisId);
 	}
 
+	// キャリアパスの登録
+	public void addCareerPath(CareerPath careerPath) {
+		careerPathRepo.addCareerPath(careerPath);
+	}
 
 }

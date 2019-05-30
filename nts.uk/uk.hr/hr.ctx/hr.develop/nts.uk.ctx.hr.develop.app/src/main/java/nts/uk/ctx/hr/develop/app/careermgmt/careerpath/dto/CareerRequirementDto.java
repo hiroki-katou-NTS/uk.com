@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerRequirement;
@@ -27,4 +29,12 @@ public class CareerRequirementDto {
 		this.inputRequirement = careerRequirement.getInputRequirement().isPresent()?careerRequirement.getInputRequirement().get().v():null;
 	}
 	
+	public CareerRequirement toDomain() {
+		return CareerRequirement.createFromJavaType(
+				this.displayNumber, 
+				this.requirementType, 
+				this.yearRequirement == null? Optional.empty():Optional.of(this.yearRequirement.toDomain()), 
+				this.masterRequirement == null? Optional.empty():Optional.of(this.masterRequirement.toDomain()), 
+				Optional.ofNullable(inputRequirement));
+	}
 }

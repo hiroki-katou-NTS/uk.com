@@ -6,65 +6,11 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
 
-        masterId: KnockoutObservable<string>;
-        histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
-
         itemList: KnockoutObservableArray<ScreenItem>;
 
         constructor() {
             var self = this;
-
-            // history component            
-            self.height = ko.observable("200px");
-            self.labelDistance = ko.observable("30px");
-            self.screenMode = ko.observable(1);
-            self.masterId = ko.observable("a2316878-a3a5-4362-917e-ad71d956e6c2");
-            self.histList = ko.observableArray([]);
-            self.selectedHistId = ko.observable();
-            self.pathGet = ko.observable(`careermgmt/careerpath/getDateHistoryItem`);
-            self.pathAdd = ko.observable(`careermgmt/careerpath/saveDateHistoryItem`);
-            self.pathUpdate = ko.observable(`careermgmt/careerpath/updateDateHistoryItem`);
-            self.pathDelete = ko.observable(`careermgmt/careerpath/removeDateHistoryItem`);
-            self.getQueryResult = (res) => {
-                return _.map(res, h => {
-                    return { histId: h.historyId, startDate: h.startDate, endDate: h.endDate, displayText: `${h.startDate} ～ ${h.endDate}` };
-                });
-            };
-            self.getSelectedStartDate = () => {
-                let selectedHist = _.find(self.histList(), h => h.histId === self.selectedHistId());
-                if (selectedHist) return selectedHist.startDate;
-            };
-            self.commandAdd = (masterId, histId, startDate, endDate) => {
-                return {startDate: moment(startDate).format("YYYY/MM/DD")}
-            };
-            self.commandUpdate = (masterId, histId, startDate, endDate) => {
-                return {
-                    historyId: histId,
-                    startDate: moment(startDate).format("YYYY/MM/DD")
-                }
-            };
-            self.commandDelete = (masterId, histId) => {
-                return {
-                    historyId: histId
-                };
-            };
-            self.delVisible = ko.observable(true);
-            self.delChecked = ko.observable();
-            self.afterRender = () => {
-                alert("Load!");
-            };
-            self.afterAdd = () => {
-                alert("Added");
-            };
-            self.afterUpdate = () => {
-                alert("Updated");
-            };
-            self.afterDelete = () => {
-                alert("Deleted");
-            };
-
-
             //table 
             self.itemList = ko.observableArray([]);
             $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
@@ -73,10 +19,15 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            for (let i = 1; i <= 6; i++) {
-                self.itemList.push(new ScreenItem(i, '1', '1', '1', '1', '1', '1', '3', '1', '1', '1'));
-            }
-            dfd.resolve();
+            block.grayout();
+            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj) => { 
+                console.log(obj);
+                block.clear();
+                dfd.resolve();
+            }).fail(() => {
+                dfd.resolve();
+                block.clear();
+            });
             return dfd.promise();
         }
     }

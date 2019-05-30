@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterItem;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterRequirement;
 
 @Getter
@@ -26,4 +27,7 @@ public class MasterRequirementDto {
 				masterRequirement.get().getMasterItemList().stream().map(c -> c.getMasterItem()).collect(Collectors.toList()));
 	}
 
+	public MasterRequirement toDomain() {
+		return new MasterRequirement(this.masterType, this.masterItemList.stream().map(c->new MasterItem(c)).collect(Collectors.toList()));
+	}
 }

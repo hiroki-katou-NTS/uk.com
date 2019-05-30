@@ -24,4 +24,8 @@ public class YearRequirementDto {
 		}
 		return new YearRequirementDto(yearRequirement.get().getYearType().value, yearRequirement.get().getYearMinimumNumber().v(),yearRequirement.get().getYearStandardNumber().v());
 	}
+	
+	public YearRequirement toDomain() {
+		return YearRequirement.createFromJavaType(this.yearType, this.yearMinimumNumber, this.yearStandardNumber);
+	}
 }

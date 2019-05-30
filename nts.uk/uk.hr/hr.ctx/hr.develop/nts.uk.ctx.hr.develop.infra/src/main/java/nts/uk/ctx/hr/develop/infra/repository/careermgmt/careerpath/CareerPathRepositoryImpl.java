@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,7 +24,7 @@ import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathR
 public class CareerPathRepositoryImpl extends JpaRepository implements CareerPathRepository{
 
 	private static final String SELECT_CAREER_ID_BY_CID_HISTID = "SELECT c.PK_JHCMT_CAREER_PATH_CAREER.careerId FROM JhcmtCareerPathCareer c WHERE c.PK_JHCMT_CAREER_PATH_CAREER.companyID = :companyID AND c.PK_JHCMT_CAREER_PATH_CAREER.histId =:histId";
-
+	
 	@Override
 	public Optional<CareerPath> getCareerPath(String companyId, String historyId) {
 		List<String> listCareerId = this.getCareerId(companyId, historyId);
@@ -43,8 +44,27 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 	}
 
 	@Override
+	@Transactional
 	public void addCareerPath(CareerPath domain) {
-		this.commandProxy().insertAll(toEntity(domain));
+		JhcmtCareerPath careerPathEntity = this.getCareerPathEntity(domain.getCompanyId(), domain.getHistoryId());
+		if(careerPathEntity == null) {
+			throw new BusinessException("MsgJ_49");
+		}else {
+			List<String> listCareerId = this.getCareerId(domain.getCompanyId(), domain.getHistoryId());
+			List<JhcmtCareerPathCareerPK> careerPathCareerPK = listCareerId.stream().map(c -> new JhcmtCareerPathCareerPK(domain.getCompanyId(), domain.getHistoryId(), c)).collect(Collectors.toList()); 
+			
+			//remove all CareerPathCareer
+			this.commandProxy().removeAll(JhcmtCareerPathCareer.class, careerPathCareerPK);
+			
+			//set MaxClassLevel careerPath
+			careerPathEntity.level = domain.getMaxClassLevel().v();
+			
+			//Update career path
+			this.commandProxy().update(careerPathEntity);
+	
+			//add List<JhcmtCareerPathCareer>
+			this.commandProxy().insertAll(toEntity(domain));
+		}
 	}
 
 	@Override
@@ -55,6 +75,10 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 	@Override
 	public void removeCareerPath() {
 		
+	}
+	
+	private JhcmtCareerPath getCareerPathEntity(String companyId, String historyId) {
+		return this.getEntityManager().find(JhcmtCareerPath.class, new JhcmtCareerPathPK(companyId,historyId));
 	}
 	
 	private List<JhcmtCareerPathCareer> toEntity(CareerPath domain) {

@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.AddCareerPathCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.AddCareerPathHistoryCommandHandler;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartCommand;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartHistoryCommand;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.RemoveCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.UpdateCareerPathHistoryCommandHandler;
@@ -38,6 +40,9 @@ public class CareerPartWS {
 	
 	@Inject
 	private CareerPathFinder careerPathFinder;
+	
+	@Inject
+	private AddCareerPathCommandHandler addCareerPathCommandHandler;
 	
 	@POST
 	@Path("/getDateHistoryItem")
@@ -85,4 +90,9 @@ public class CareerPartWS {
 		careerPathFinder.checkDataCareer(cId, GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), command.getCareer());
 	}
 	
+	@POST
+	@Path("/saveCareer")
+	public void saveCareer(CareerPartCommand command){
+		addCareerPathCommandHandler.add(command);
+	}
 }
