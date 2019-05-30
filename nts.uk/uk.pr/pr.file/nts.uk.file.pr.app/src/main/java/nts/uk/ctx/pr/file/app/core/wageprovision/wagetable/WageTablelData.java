@@ -72,4 +72,8 @@ public class WageTablelData {
 
     private String masterCd3;
 
+    private String qualificationName;
+
+    private String frameNumber;
+
 }

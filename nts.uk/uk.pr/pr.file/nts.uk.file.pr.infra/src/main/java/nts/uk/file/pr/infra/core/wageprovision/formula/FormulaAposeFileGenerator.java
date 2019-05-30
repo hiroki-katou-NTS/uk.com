@@ -126,12 +126,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getAdjustmentClassification(dataRow, data));
                             break;
                         default:
-                            cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null ? j > 9 ? dataRow[j - 1] : dataRow[j] : "");
+                            cells.get(rowStart, j + startColumn).setValue(dataRow[j]);
                     }
                 }
                 rowStart++;
             }
-            if(data.size() > 0) {
+            if(data.size() == 0) {
                 cells.deleteRows(rowStart, 2);
             }
 
@@ -139,9 +139,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                 int totalColumn = 15;
                 int columnStart = 1;
                 for(int column = columnStart; column < totalColumn +  columnStart; column++) {
-                    Style style = cells.get(rowStart - 1, column).getStyle();
+                    Style style = worksheets.get(0).getCells().get(rowStart - 1, column).getStyle();
                     style.setForegroundColor(Color.fromArgb(216,228, 188));
-                    cells.get(rowStart - 1, column).setStyle(style);
+                    style.setPattern(BackgroundType.SOLID);
+                    worksheets.get(0).getCells().get(rowStart - 1, column).setStyle(style);
                 }
             }
         } catch (Exception e) {
@@ -150,10 +151,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getReferenceMonth(Object[] obj){
-        if(((BigDecimal)obj[4]).intValue() == 1  && obj[9] == null) {
+        if( obj[9] == null && ((BigDecimal)obj[4]).intValue() == 1) {
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 0 ) {
+        if(((BigDecimal)obj[4]).intValue() == 0) {
             return EnumAdaptor.valueOf(0, ReferenceMonth.class).nameId;
         }
         return EnumAdaptor.valueOf(((BigDecimal) obj[9]).intValue(), ReferenceMonth.class).nameId;
@@ -182,14 +183,14 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             return "調整しない";
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
-            return "";
+            return "なし";
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getAdjustmentClassification(defaultValue, objs) : "";
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[13]).intValue(), AdjustmentClassification.class).nameId;
+            return EnumAdaptor.valueOf(((BigDecimal) obj[14]).intValue(), AdjustmentClassification.class).nameId;
         }
         return "";
     }
@@ -200,52 +201,54 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getValueRounding(Object[] obj, List<Object[]> objs){
-        if(obj[12] == null ) {
+        if(obj[13] == null) {
             return "";
         }
         if (((BigDecimal)obj[4]).intValue() == 1){
             return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) obj[12]).intValue(), AmountRounding.class).nameId);
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
-            return "";
+            return "なし";
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRounding(defaultValue, objs) : "";
         }
         if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[12]).intValue(), RoundingResult.class).nameId;
+            return EnumAdaptor.valueOf(((BigDecimal) obj[13]).intValue(), RoundingResult.class).nameId;
         }
         return "";
     }
 
     private String getValueRoundingPosition(Object[] obj, List<Object[]> objs, List<Object[]> formula){
-        if(obj[11] == null || ("".equals(getDetailedFormula(formula, obj[0].toString())) )) {
+        if(obj[11] == null && ((BigDecimal)obj[4]).intValue() == 1) {
             return "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
-            return "";
+        if(((BigDecimal)obj[4]).intValue() == 1) {
+            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId;
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
+            return "なし";
+        }
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRoundingPosition(defaultValue, objs, formula) : "";
         }
-        if(((BigDecimal)obj[4]).intValue() == 1 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId;
+        if(((BigDecimal)obj[4]).intValue() == 0 && (obj[24] != null && ((BigDecimal)obj[24]).intValue() == 1)) {
+            return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId;
         }
-        return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId;
+        return "";
     }
 
     private String getValueRoundingMethod(Object[] obj, List<Object[]> objs, List<Object[]> formula, List<Object[]> targetItem){
-        if(obj[10] == null || (("".equals(getDetailedFormula(formula, obj[0].toString()))
-                && ("".equals(getSimpleFormula(obj, targetItem)))))){
+        if((obj[10] == null) && ((BigDecimal)obj[4]).intValue() == 0){
             return "";
         }
         if(((BigDecimal)obj[4]).intValue() == 1) {
             return "なし";
         }
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 0)) {
-            return "";
+            return "なし";
         }
         if((obj[24] != null && ((BigDecimal)obj[24]).intValue() == 2)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
@@ -264,8 +267,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3])
-                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3]))) {
                 temp.append(count == 0 ? getName((Integer) baseTarget.get(i)[3]) : "")
                         .append(count == 0 ? "｛" : "＋").append(baseTarget.get(i)[2]);
                 count++;
@@ -276,10 +278,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getName(int standardCls){
-        if(standardCls == 0) {
+        if(standardCls == 1) {
             return TextResource.localize("Enum_FormulaElementType_PAYMENT_ITEM");
         }
-        if(standardCls == 1) {
+        if(standardCls == 2) {
             return TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM");
         }
         if(standardCls == 3) {
@@ -333,14 +335,14 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                     .append(((BigDecimal)obj[18]).intValue() == 2 ? "  ）" : "");
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
-            temp.append(a).append(a.length() > 0 ? "×" : "").append(e);
+            temp.append(a).append(a.length() > 0 ? "×" : "（）× ").append(e);
         }
 
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append( a.length() > 0 ? "×": "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
         }
         if(((BigDecimal)obj[15]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
-            temp.append(a).append(a.length() > 0 ? "÷" : "").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append(a.length() > 0 ? "÷" : "（）÷").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
         }
 
         return temp.toString();

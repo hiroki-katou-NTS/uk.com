@@ -53,18 +53,18 @@ public class SalaryHealthAposeFileGenerator extends AsposeCellsReportGenerator i
 
         // Set print page 1
         PageSetup pageSetup = ws.getPageSetup();
-        pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + exportData.getCompanyName());
+        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + exportData.getCompanyName());
 
         // Set header date
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
-        pageSetup.setHeader(2, "&10&\"MS ゴシック\"  " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
         // Set print page 1
         PageSetup pageSetup1 = ws1.getPageSetup();
-        pageSetup1.setHeader(0, "&10&\"MS ゴシック\"" + exportData.getCompanyName());
+        pageSetup1.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + exportData.getCompanyName());
 
         // Set header date
-        pageSetup1.setHeader(2, "&10&\"MS ゴシック\"  " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+        pageSetup1.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
         ws.getCells().get(0,3).putValue(socialInsuranceCode);
         ws.getCells().get(0,5).putValue(socialInsuranceName);

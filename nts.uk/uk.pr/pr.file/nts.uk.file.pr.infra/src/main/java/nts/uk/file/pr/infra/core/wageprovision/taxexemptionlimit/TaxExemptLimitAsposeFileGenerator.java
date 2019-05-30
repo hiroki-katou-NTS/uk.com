@@ -45,10 +45,10 @@ public class TaxExemptLimitAsposeFileGenerator extends AsposeCellsReportGenerato
             // Company name
             String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
             PageSetup pageSetup = ws.getPageSetup();
-            pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
+            pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
 
             // Output item name
-            pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "非課税限度額の登録");
+            pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + "非課税限度額の登録");
 
             // Set header date
             DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);

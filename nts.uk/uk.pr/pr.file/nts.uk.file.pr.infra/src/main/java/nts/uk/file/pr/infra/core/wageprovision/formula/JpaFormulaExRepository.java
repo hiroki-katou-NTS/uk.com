@@ -183,6 +183,13 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("             QPBMT_WAGE_TABLE");
         sql.append("           WHERE CID = ?cid ");
         sql.append("           UNION ALL");
+        sql.append("           SELECT ");
+        sql.append("              'calc_00' + FORMULA_CD AS CD,");
+        sql.append("              ?calc + '｛' + FORMULA_NAME + '｝'");
+        sql.append("           FROM");
+        sql.append("               QPBMT_FORMULA");
+        sql.append("           WHERE CID = ?cid ");
+        sql.append("           UNION ALL");
         sql.append("           SELECT 'Func_00001' AS CD ,");
         sql.append("              ?textFunc +  '｛' + ?func1 + '｝' AS NAME  ");
         sql.append("           UNION ALL");
@@ -248,6 +255,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
                     .setParameter("companyUnit", TextResource.localize("Enum_FormulaElementType_COMPANY_UNIT_PRICE_ITEM"))
                     .setParameter("individualPrice", TextResource.localize("Enum_FormulaElementType_INDIVIDUAL_UNIT_PRICE_ITEM"))
                     .setParameter("wage", TextResource.localize("Enum_FormulaElementType_WAGE_TABLE_ITEM"))
+                    .setParameter("calc",TextResource.localize("Enum_CalculationFormulaCls_FORMULA"))
                     .setParameter("func1", TextResource.localize("Enum_FunctionList_CONDITIONAL_EXPRESSION"))
                     .setParameter("func2", TextResource.localize("Enum_FunctionList_AND"))
                     .setParameter("func3", TextResource.localize("Enum_FunctionList_OR"))
@@ -261,8 +269,8 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
                     .setParameter("func11", TextResource.localize("Enum_FunctionList_YEAR_EXTRACTION"))
                     .setParameter("func12", TextResource.localize("Enum_FunctionList_MONTH_EXTRACTION"))
                     .setParameter("vari1",TextResource.localize("Enum_SystemVariableList_SYSTEM_YMD_DATE"))
-                    .setParameter("vari2",TextResource.localize("Enum_SystemVariableList_SYSTEM_YM_DATE"))
-                    .setParameter("vari3",TextResource.localize("Enum_SystemVariableList_SYSTEM_Y_DATE"))
+                    .setParameter("vari2",TextResource.localize("Enum_SystemVariableList_SYSTEM_Y_DATE"))
+                    .setParameter("vari3",TextResource.localize("Enum_SystemVariableList_SYSTEM_YM_DATE"))
                     .setParameter("vari4",TextResource.localize("Enum_SystemVariableList_PROCESSING_YEAR_MONTH"))
                     .setParameter("vari5",TextResource.localize("Enum_SystemVariableList_PROCESSING_YEAR"))
                     .setParameter("vari8",TextResource.localize("Enum_SystemVariableList_WORKDAY"))
@@ -298,7 +306,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("              ITEM_NAME_CD AS CD ,");
      sql.append("              NAME,");
      sql.append("              CASE WHEN CATEGORY_ATR = '0' ");
-     sql.append("              THEN 0 ELSE 1 END AS STANDARD_AMOUNT_CLS");
+     sql.append("              THEN 1 ELSE 2 END AS STANDARD_AMOUNT_CLS");
      sql.append("           FROM QPBMT_STATEMENT_ITEM_NAME");
      sql.append("           WHERE CID = ?cid AND (CATEGORY_ATR = 0 OR CATEGORY_ATR = 1)");
      sql.append("           UNION ALL");

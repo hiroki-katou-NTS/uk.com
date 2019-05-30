@@ -11,12 +11,6 @@ module nts.uk.pr.view.qmm010.a.service {
     }
 
     export function exportExcel(): JQueryPromise<any> {
-        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = "QMM010";
-        if (program.length > 1){
-            program.shift();
-            domainType = domainType + program.join(" ");
-        }
         return nts.uk.request.exportFile( paths.exportExcel);
     }
 

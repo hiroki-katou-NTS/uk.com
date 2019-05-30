@@ -117,6 +117,7 @@ public class CompanyStatutoryWriteAposeFileGenerator extends AsposeCellsReportGe
                 int columnStart = 1;
                 for(int column = columnStart ; column < totalColumn + columnStart; column++) {
                     Style style = wsc.get(0).getCells().get(rowIndex - 1, column).getStyle();
+                    style.setPattern(BackgroundType.SOLID);
                     style.setForegroundColor(Color.fromArgb(216,228, 188));
                     wsc.get(0).getCells().get(rowIndex - 1, column).setStyle(style);
                 }
