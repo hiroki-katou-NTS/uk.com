@@ -1,4 +1,4 @@
-## 2. Khai báo trong index.html
+##### 2. Khai báo trong index.html
 
 ```html
 <nts-number-editor 
@@ -7,7 +7,7 @@
     />
 ```
 
-## 3. Khai báo trong index.ts
+##### 3. Khai báo trong index.ts
 
 Khai báo một biến 'number' trong class chính để bind vào giá trị 'number' trong v-model="number"
 
@@ -20,7 +20,7 @@ export class ViewModel extends Vue {
     *
 }
 ```
-## 4. Thông tin bổ sung
+##### 4. Thông tin bổ sung
 
 "nts-number-editor" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
 

@@ -1,11 +1,11 @@
-## 2. Khai báo trong index.html
+##### 2. Khai báo trong index.html
 
 ```html
 <nts-date-input
         v-model="date"
         name='DateItem'/>
 ```
-## 3. Khai báo trong index.ts
+##### 3. Khai báo trong index.ts
 Khai báo một biến 'date' trong ViewModel để bind vào giá trị 'date' sử dụng ở v-model="date"
 
 ```ts
@@ -18,7 +18,7 @@ export class ViewModel extends Vue {
 }
 ```
 
-## 4. Thông tin bổ sung
+##### 4. Thông tin bổ sung
 
 "nts-date-input" là một dạng input trong UK-Mobile, vì thế nó có các thuộc tính chung của Input như là: 
 

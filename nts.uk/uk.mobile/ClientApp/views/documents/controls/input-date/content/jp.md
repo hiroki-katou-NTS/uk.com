@@ -1,11 +1,11 @@
-## 2. ビューでの定義
+##### 2. ビューでの定義
 
 ```html
 <nts-date-input
         v-model="date"
         name='DateItem'/>
 ```
-## 3. ビューモデルでの定義
+##### 3. ビューモデルでの定義
 HTMLの`v-model="date"`を使えるためViewModelの中は`date`という変数を定義してください。  
 
 ```ts
@@ -18,7 +18,7 @@ export class ViewModel extends Vue {
 }
 ```
 
-## 4. 補足情報
+##### 4. 補足情報
 
 | 属性名| 種類 | 初期値 | 説明 |
 | --------------|------| -------- | ------|
