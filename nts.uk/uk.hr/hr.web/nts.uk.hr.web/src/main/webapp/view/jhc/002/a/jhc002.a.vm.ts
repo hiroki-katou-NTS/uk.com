@@ -138,6 +138,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         }
         public openDialogB(careerType: any): void {
             var self = __viewContext.vm;
+            self.updateCareer();
             let startDate = _.filter(self.histList(), ['histId', self.selectedHistId()])[0].startDate;
             let command = {
                 historyId: careerType.id,
@@ -168,12 +169,12 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         }
         public save(): void {
             var self = this;
+            self.updateCareer();
             let kt = false;
             _.forEach(ko.toJS(self.listCareerType()), function(value) {
                 kt = value.checkExistSelected(self.maxClassLevel());
                 if (kt) return false;
             });
-            self.convertData();
             if (kt) {
                 nts.uk.ui.windows.sub.modal("../c/index.xhtml").onClosed(() => {
                     let isNotice = nts.uk.ui.windows.getShared("isNotice");
@@ -199,16 +200,16 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             let startDate = _.filter(self.histList(), ['histId', self.selectedHistId()])[0].startDate;
         }
         
-        private convertData(): void {
+        private updateCareer(): void {
             var self = this;
             _.forEach(ko.toJS(self.listCareerType()), function(value) {
                 for (let i = 1; i <= 10; i++) { 
-                  self.updateCareer(value, i);
+                  self.convertData(value, i);
                 }
             });
         }
         
-        private updateCareer(value: any, lever: number): void {
+        private convertData(value: any, lever: number): void {
             let self = this;
             let typeInfo = _.filter(self.careerType(), ['code', value.code])[0];
             let a;
@@ -233,17 +234,12 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }else if(lever == 10){
                 a = value.l10;
             }
-            let careerClassRole = '';
-            let careerRole = _.find(self.listCareer(), {'careerTypeItem': typeInfo.id, 'careerLevel': lever });
-            if(careerRole!=undefined){
-                careerClassRole = careerRole.careerClassRole; 
-            }
             if(a != ''){
                 if(_.find(self.listCareer(), { 'careerTypeItem': typeInfo.id, 'careerLevel': lever }) == undefined){
                     //add Career
                     let itemCareer = {
                         careerClassItem: a, 
-                        careerClassRole: careerClassRole, 
+                        careerClassRole: '', 
                         careerLevel: lever, 
                         careerRequirementList: [],
                         careerTypeItem: typeInfo.id
