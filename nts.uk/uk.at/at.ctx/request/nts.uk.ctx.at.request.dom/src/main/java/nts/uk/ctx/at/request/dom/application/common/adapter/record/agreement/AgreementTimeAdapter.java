@@ -40,9 +40,9 @@ public interface AgreementTimeAdapter {
 	
 	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId, YearMonth yearMonth, GeneralDate criteria);
 	
-	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria);
+//	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria);
 	
 	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			YearMonthPeriod yearPeriod, GeneralDate criteria, ScheRecAtr scheRecAtr);
+			GeneralDate criteria, ScheRecAtr scheRecAtr);
 	
 }
