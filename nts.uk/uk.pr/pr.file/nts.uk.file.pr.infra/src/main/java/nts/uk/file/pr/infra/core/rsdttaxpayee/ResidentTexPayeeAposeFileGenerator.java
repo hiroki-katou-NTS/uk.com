@@ -46,7 +46,7 @@ public class ResidentTexPayeeAposeFileGenerator extends AsposeCellsReportGenerat
             pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
 
             // Output item name
-            pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "単価名の登録");
+            pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "住民税納付先の登録");
 
             // Set header date
             DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
