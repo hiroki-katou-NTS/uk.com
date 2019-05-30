@@ -2,11 +2,9 @@ package nts.uk.file.pr.infra.core.laborinsurance.laborinsuranceoffice;
 
 import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.file.app.core.laborinsurance.laborinsuranceoffice.LaborInsuranceExportData;
 import nts.uk.ctx.pr.file.app.core.laborinsurance.laborinsuranceoffice.LaborInsuranceFileGenerator;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -60,7 +58,7 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "労働保険事業所の登録");
+        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + "労働保険事業所の登録");
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/dd  H:mm:ss", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
@@ -71,18 +69,19 @@ public class LaborInsuranceAposeFileGenerator extends AsposeCellsReportGenerator
     private void printData(WorksheetCollection worksheets, List<Object[]> data,
                            String companyName) {
         try {
+            String sheetName = "Labor";
             Worksheet worksheet = worksheets.get(0);
             settingPage(worksheet, companyName);
             Cells cells = worksheet.getCells();
             int startIndex = 1;
             for(int page = 0; page < data.size() ; page += 2) {
-                worksheets.get(worksheets.addCopy(0)).setName("sheetName" + page/2);
-                worksheet = worksheets.get("sheetName" + page/2);
+                worksheets.get(worksheets.addCopy(0)).setName(sheetName + page/2);
+                worksheet = worksheets.get(sheetName + page/2);
                 settingPage(worksheet, companyName);
             }
             for (int i = 0; i < data.size(); i++) {
                 if( i % 2 == 0) {
-                    Worksheet sheet = worksheets.get("sheetName" + i/2);
+                    Worksheet sheet = worksheets.get(sheetName + i/2);
                     cells = sheet.getCells();
                     startIndex = 1;
                 }
