@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36ErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -224,8 +225,43 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
+			for(Time36ErrorOutput time36ErrorOutput : result.getErrorFlg()){
+				switch (time36ErrorOutput.errorFlg) {
+				case MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case YEAR:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case MAX_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case AVERAGE_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538", "1900/01", "1900/01", "00:00", "00:00", 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd,
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime);
+					break;
+				default:
+					break;
+				}
 			}
 			throw bundledBusinessExceptions;
 		}
@@ -246,8 +282,43 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
+			for(Time36ErrorOutput time36ErrorOutput : result.getErrorFlg()){
+				switch (time36ErrorOutput.errorFlg) {
+				case MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case YEAR:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case MAX_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case AVERAGE_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538", "1900/01", "1900/01", "00:00", "00:00",
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd,
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime);
+					break;
+				default:
+					break;
+				}
 			}
 			throw bundledBusinessExceptions;
 		}
@@ -268,8 +339,43 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
+			for(Time36ErrorOutput time36ErrorOutput : result.getErrorFlg()){
+				switch (time36ErrorOutput.errorFlg) {
+				case MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case YEAR:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case MAX_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case AVERAGE_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538", "1900/01", "1900/01", "00:00", "00:00",
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd,
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime);
+					break;
+				default:
+					break;
+				}
 			}
 			throw bundledBusinessExceptions;
 		}
@@ -290,8 +396,43 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
+			for(Time36ErrorOutput time36ErrorOutput : result.getErrorFlg()){
+				switch (time36ErrorOutput.errorFlg) {
+				case MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case YEAR:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case MAX_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537", "00:00", "00:00", "", "",
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime, 
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd);
+					break;
+				case AVERAGE_MONTH:
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538", "1900/01", "1900/01", "00:00", "00:00",
+							time36ErrorOutput.yearMonthStart,
+							time36ErrorOutput.yearMonthEnd,
+							time36ErrorOutput.realTime, 
+							time36ErrorOutput.limitTime);
+					break;
+				default:
+					break;
+				}
 			}
 			throw bundledBusinessExceptions;
 		}

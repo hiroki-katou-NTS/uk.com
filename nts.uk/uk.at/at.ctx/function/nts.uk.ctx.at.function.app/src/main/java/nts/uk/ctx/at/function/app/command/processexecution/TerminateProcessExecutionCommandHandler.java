@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskService;
+import nts.uk.ctx.at.function.app.command.processexecution.appupdatesuspension.AppUpdateSuspension;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -43,6 +44,9 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 	
 	@Inject
 	private ProcessExecutionLogHistRepository processExecutionLogHistRepo;
+	
+	@Inject
+	private AppUpdateSuspension appUpdateSuspension;
 
 	//終了ボタン押下時処理
 	@Override
@@ -200,7 +204,23 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 					statusStop = task.getProcExecTask();
 //					break;
 				}
-			} else{
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.APP_ROUTE_U_DAI.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null && !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+					}
+					appUpdateSuspension.updateSuspension(execId, true);
+					statusStop = task.getProcExecTask();
+				}
+			}else if (task.getProcExecTask().value == ProcessExecutionTask.APP_ROUTE_U_MON.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null && !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+					}
+					appUpdateSuspension.updateSuspension(execId, false); //if monthly
+					statusStop = task.getProcExecTask();
+				}
+			}else{
 //				if(execType == 1){ 
 //					dataSetter.setData("interupt", "true");
 //				}
