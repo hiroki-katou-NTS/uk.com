@@ -3398,7 +3398,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			EmpCalAndSumExeLog empCalAndSumExeLog, List<String> lstEmpId, DatePeriod period, List<String> workPlaceIds,
 			String typeExecution, ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		boolean isInterrupt = false;
-
+		
 		List<Boolean> listIsInterrupt = Collections.synchronizedList(new ArrayList<>());
 //		List<String> listErrorTryCatch = new ArrayList<>();
 		//int size = lstEmpId.size();
