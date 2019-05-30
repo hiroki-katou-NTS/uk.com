@@ -75,6 +75,7 @@ Hoặc sử dụng cặp thẻ `<router-link>` do `Vue-router` cung cấp.
 <router-link v-bind:to="{ name: 'SampleComponent' }">{{'go_to_sample' | i18n}}</router-link>
 ```
 
+<!--
 ##### 3. Kỹ thuật chống tràn bộ nhớ.
 Thông thường, khi chuyển qua view mới, `vue-router` sẽ tự động `destroy` component cũ đi để giải phóng bộ nhớ.  
 Tuy nhiên các đối tượng khai báo ngoài component sẽ không được `destroy` đi.
@@ -109,5 +110,6 @@ export class OtherSampleComponent extends Vue {
 }
 
 ```
+-->
 
 Tạo bởi: **Nguyễn Văn Vương**
