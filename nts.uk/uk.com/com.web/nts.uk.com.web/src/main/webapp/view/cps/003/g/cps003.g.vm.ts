@@ -16,7 +16,13 @@ module cps003.g.vm {
             let self = this;
             var dfd = $.Deferred();
             let paramA = getShared("CPS003G_ERROR_LIST"), paramC: GridDtoError = getShared("CPS003G_ERROR_LIST");
-            self.data(paramA);
+            self.data(_.map(paramA, a => {
+                return {
+                    empCd: a.empCd, empName: a.empName,
+                    employeeId: a.employeeId, errorType: a.errorType == 0 ? nts.uk.resource.getText("CPS003_127") : nts.uk.resource.getText("CPS003_128"),
+                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message
+                }
+            }));
             $("#grid2").igGrid({
                 autoGenerateColumns: true,
                 dataSource: self.data(),
