@@ -25,7 +25,7 @@ module cps003.g.vm {
                     { headerText: nts.uk.resource.getText("CPS003_101"), key: "empName", dataType: "string",width: "100px" },
                     { headerText: nts.uk.resource.getText("CPS003_102"), key: "no", dataType: "string",width: "50px" },
                     { headerText: nts.uk.resource.getText("CPS003_103"), key: "isDisplayRegister", dataType: "boolean",width: "50px" , formatter: function(v) { return v ? '〇' : 'X' }  },
-                    { headerText: nts.uk.resource.getText("CPS003_104"), key: "errorType", dataType: "number",width: "50px" },
+                    { headerText: nts.uk.resource.getText("CPS003_104"), key: "errorType", dataType: "string",width: "50px" },
                     { headerText: nts.uk.resource.getText("CPS003_105"), key: "itemName", dataType: "string",width: "250px" },
                     { headerText: nts.uk.resource.getText("CPS003_106"), key: "message", dataType: "string",width: "500px" },
                      { headerText: nts.uk.resource.getText("CPS003_106"), key: "employeeId", dataType: "string",  hidden: true }
@@ -50,7 +50,7 @@ module cps003.g.vm {
             _.each(dataGroup, c => {
                 let em = { employeeId: c[0].employeeId, employeeCd: c[0].empCd, employeeName: c[0].empName, order: c[0].no, errorLst: [] };
                 _.each(c, i => {
-                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType };
+                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType};
                         em.errorLst.push(item);
                 });
                 result.push(em);
