@@ -53,6 +53,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private static final int MASTER_NAME = 23;
     private static final int CALCULATION_FORMULA_ATR = 24;
     private static final int BASIC_CALCULATION_FORMULA = 25;
+    private static final String UNIT = "丸め";
 
 
     @Override
@@ -258,7 +259,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             return "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId;
+            return EnumAdaptor.valueOf(((BigDecimal) obj[11]).intValue(), RoundingPosition.class).nameId + UNIT;
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value)) {
@@ -271,7 +272,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
-            return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId;
+            return EnumAdaptor.valueOf(0, RoundingPosition.class).nameId + UNIT;
         }
         return "";
     }
