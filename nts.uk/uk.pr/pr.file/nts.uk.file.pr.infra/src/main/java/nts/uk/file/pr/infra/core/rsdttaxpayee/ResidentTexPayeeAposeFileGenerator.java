@@ -43,10 +43,10 @@ public class ResidentTexPayeeAposeFileGenerator extends AsposeCellsReportGenerat
             // Company name
             String companyName = this.company.getCurrentCompany().map(CompanyInfor::getCompanyName).orElse("");
             PageSetup pageSetup = ws.getPageSetup();
-            pageSetup.setHeader(0, "&10&\"MS ゴシック\"" + companyName);
+            pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
 
             // Output item name
-            pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "住民税納付先の登録");
+            pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + "住民税納付先の登録");
 
             // Set header date
             DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);

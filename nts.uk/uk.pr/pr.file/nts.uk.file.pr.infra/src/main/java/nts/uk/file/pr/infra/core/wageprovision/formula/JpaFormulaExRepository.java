@@ -143,16 +143,20 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
     }
 
     @Override
-    public List<Object[]> getDetailFormula(String cid) {
+    public List<Object[]> getDetailFormula(String cid, int startDate) {
         List<Object[]> resultQuery = null;
         StringBuilder sql = new StringBuilder();
         sql.append("    SELECT ");
-        sql.append("        FORMULA_CD,");
+        sql.append("        d.FORMULA_CD,");
         sql.append("        d.FORMULA_ELEMENT,");
         sql.append("        NAME");
         sql.append("     FROM (SELECT * ");
         sql.append("        FROM QPBMT_DETAIL_CAL_FORMULA");
         sql.append("         WHERE CID = ?cid) d ");
+        sql.append("     INNER JOIN (SELECT *    ");
+        sql.append("                FROM QPBMT_FORMULA_HISTORY");
+        sql.append("                WHERE START_YM <= ?startDate AND END_YM >= ?startDate)h");
+        sql.append("     ON d.CID = h.CID AND d.HIST_ID = h.HIST_ID AND d.FORMULA_CD = h.FORMULA_CD");
         sql.append("     LEFT JOIN ");
         sql.append("           (SELECT ");
         sql.append("              CASE WHEN CATEGORY_ATR = '0' THEN '0000_0' + ITEM_NAME_CD ");
@@ -249,6 +253,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
                     .setParameter("cid", cid)
+                    .setParameter("startDate", startDate)
                     .setParameter("payment", TextResource.localize("Enum_FormulaElementType_PAYMENT_ITEM"))
                     .setParameter("deduction", TextResource.localize("Enum_FormulaElementType_DEDUCTION_ITEM"))
                     .setParameter("attendance", TextResource.localize("Enum_FormulaElementType_ATTENDANCE_ITEM"))

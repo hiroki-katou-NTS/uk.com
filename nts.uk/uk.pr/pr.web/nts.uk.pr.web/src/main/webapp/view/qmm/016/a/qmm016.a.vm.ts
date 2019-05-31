@@ -1152,7 +1152,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 }
             ];
             data.forEach(i => {
-                let columnKey = "secondFrameNo" + i.masterCode, columnName = i.masterName;
+                let columnKey = "secondFrameNo" + i.masterCode, columnName = _.escape(i.masterName);
                 if (i.masterCode != null && i.frameNumber != null) {
                     // work level
                     columnKey = "secondFrameNo" + i.frameNumber;

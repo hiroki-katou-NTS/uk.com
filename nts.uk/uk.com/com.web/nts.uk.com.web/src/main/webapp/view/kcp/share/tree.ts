@@ -816,7 +816,7 @@ module kcp.share.tree {
             let listModel = self.findUnitModelByListWorkplaceId();
             self.findListSubWorkplaceId(listModel, workplaceIdSet);
             if (workplaceIdSet.size > 0) {
-                self.selectedWorkplaceIds(self.convertSetToArray(workplaceIdSet));
+                self.selectedIds(self.convertSetToArray(workplaceIdSet));
             }
         }
 
@@ -850,9 +850,9 @@ module kcp.share.tree {
         private findListSubWorkplaceId(dataList: Array<UnitModel>, workplaceIdSet: Set<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                workplaceIdSet.add(alreadySetting.workplaceId);
-                if (alreadySetting.childs && alreadySetting.childs.length > 0) {
-                    this.findListSubWorkplaceId(alreadySetting.childs, workplaceIdSet);
+                workplaceIdSet.add(alreadySetting.id);
+                if (alreadySetting.children && alreadySetting.children.length > 0) {
+                    this.findListSubWorkplaceId(alreadySetting.children, workplaceIdSet);
                 }
             }
         }
