@@ -398,9 +398,6 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getUsageMasterType(Object[] data){
-        if(data[MASTER_BRANCH_USE] == null) {
-            return "";
-        }
         if(((BigDecimal)data[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value || ((BigDecimal)data[MASTER_BRANCH_USE]).intValue() == 0) {
             return "なし";
         }
