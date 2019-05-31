@@ -299,7 +299,7 @@ public class PeregProcessor {
 			
 		}
 
-		return null;
+		return new ArrayList<>();
 	}
 
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
