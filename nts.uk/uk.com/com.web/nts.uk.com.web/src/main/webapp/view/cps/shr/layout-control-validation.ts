@@ -1561,13 +1561,13 @@ module nts.layout {
                             setShared('inputCDL008', null);
                             dfd.resolve();
                         } else {
-                            fetch.checkFunctionNo().done(data => {
+                            fetch.checkFunctionNo().done(functionNo => {
                                 setShared('inputCDL008', {
                                     selectedCodes: [ko.toJS(data.value)],
                                     baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: data.available,
+                                    isrestrictionOfReferenceRange: functionNo.available,
                                     showNoSelection: !data.required,
                                     isShowBaseDate: false
                                 }, true);
@@ -1579,13 +1579,13 @@ module nts.layout {
                             let v = CS00017_IS00082.data.value();
 
                             if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
@@ -1597,26 +1597,26 @@ module nts.layout {
                             }
                         } else {
                             if (__viewContext.viewModel.layout.mode() == 'layout') {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
                                     dfd.resolve();
                                 });
                             } else {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
