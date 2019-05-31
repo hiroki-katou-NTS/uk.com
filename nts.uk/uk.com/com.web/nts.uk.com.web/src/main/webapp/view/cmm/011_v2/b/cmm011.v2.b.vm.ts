@@ -19,6 +19,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         selectedEndDate: KnockoutObservable<string>;
         copyPreviousConfig: KnockoutObservable<boolean>;
         isLatestHistory: KnockoutObservable<boolean>;
+        deletedHistory: boolean = false;
         
         constructor() {
             let self = this, params = getShared("CMM011AParams");
@@ -95,6 +96,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 block.invisible();
                 let data = { historyId: self.selectedHistoryId(), initMode: self.initMode() };
                 service.deleteConfiguration(data).done(() => {
+                    self.deletedHistory = true;
                     self.startPage().done(() => {
                         self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                     });
@@ -194,6 +196,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         }
         
         cancel() {
+            let self = this;
+            setShared("CMM011BParams", {reload: self.deletedHistory});
             nts.uk.ui.windows.close();
         }
     }

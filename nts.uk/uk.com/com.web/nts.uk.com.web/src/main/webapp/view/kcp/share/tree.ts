@@ -341,9 +341,8 @@ module kcp.share.tree {
 
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
-                let listModel = self.findUnitModelByListWorkplaceId(self.backupItemList());
                 let listRowSelected: Array<RowSelection> = [];
-                self.findSelectionRowData(listModel, listRowSelected);
+                self.findSelectionRowData(self.backupItemList(), listRowSelected);
                 return listRowSelected;
             }
 
@@ -812,13 +811,21 @@ module kcp.share.tree {
          */
         private selectSubParent() {
             let self = this;
-            let listSubWorkplaceId: Array<string> = [];
+            let workplaceIdSet = new Set();
 
             let listModel = self.findUnitModelByListWorkplaceId();
-            self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
-            if (listSubWorkplaceId.length > 0) {
-                self.selectedIds(listSubWorkplaceId);
+            self.findListSubWorkplaceId(listModel, workplaceIdSet);
+            if (workplaceIdSet.size > 0) {
+                self.selectedIds(self.convertSetToArray(workplaceIdSet));
             }
+        }
+
+        private convertSetToArray(workplaceIdSet: Set<string>) {
+            let newArray = [];
+            workplaceIdSet.forEach(element => {
+                newArray.push(element);
+            });
+            return newArray;
         }
         /**
          * Find UnitModel By ListWorkplaceId
@@ -840,12 +847,12 @@ module kcp.share.tree {
         /**
          * Find list sub id of parent
          */
-        private findListSubWorkplaceId(dataList: Array<UnitModel>, listSubWorkplaceId: Array<string>) {
+        private findListSubWorkplaceId(dataList: Array<UnitModel>, workplaceIdSet: Set<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                listSubWorkplaceId.push(alreadySetting.id);
+                workplaceIdSet.add(alreadySetting.id);
                 if (alreadySetting.children && alreadySetting.children.length > 0) {
-                    this.findListSubWorkplaceId(alreadySetting.children, listSubWorkplaceId);
+                    this.findListSubWorkplaceId(alreadySetting.children, workplaceIdSet);
                 }
             }
         }
