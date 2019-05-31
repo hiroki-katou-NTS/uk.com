@@ -147,7 +147,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         List<Object[]> resultQuery = null;
         StringBuilder sql = new StringBuilder();
         sql.append("    SELECT ");
-        sql.append("        FORMULA_CD,");
+        sql.append("        d.FORMULA_CD,");
         sql.append("        d.FORMULA_ELEMENT,");
         sql.append("        NAME");
         sql.append("     FROM (SELECT * ");
