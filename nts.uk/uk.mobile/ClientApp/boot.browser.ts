@@ -48,22 +48,26 @@ new Vue({
         const self = this,
             rapi = '/i18n/resources/mobile/get';
 
+        self.$mask('show', { message: true, opacity: 0.75 });
         browser.private
             .then((prid: boolean) => {
                 if (browser.version === 'Safari 10' && prid) {
                     self.$modal.warn({ messageId: 'Msg_1533' });
                 }
-            });
-
-        self.$http.get(rapi)
-            .then((resp: { data: any }) => {
-                obj.merge(resources,
-                    {
-                        jp: resp.data
+            }).then(() => {
+                self.$http.get(rapi)
+                    .then((resp: { data: any }) => {
+                        obj.merge(resources,
+                            {
+                                jp: resp.data
+                            }, true);
+                    })
+                    .then(() => {
+                        Language.refresh();
+                    })
+                    .then(() => {
+                        self.$mask('hide');
                     });
-            })
-            .then(() => {
-                Language.refresh();
             });
     }
 });

@@ -221,11 +221,11 @@ const $ = {
 
         return object;
     },
-    merge(object: any, source: any): any {
+    merge(object: any, source: any, over: boolean = false): any {
         $.objectForEach(source, (key: string, value: any) => {
             let override = $.get(object, key);
 
-            if (override === null || override == undefined) {
+            if (override === null || override == undefined || (over && !$.isObject(override))) {
                 $.set(object, key, value);
             } else if (override instanceof Object) {
                 $.merge(override, value);

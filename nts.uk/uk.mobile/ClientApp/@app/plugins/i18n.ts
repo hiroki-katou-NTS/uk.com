@@ -13,12 +13,14 @@ const style = dom.create('style', {
         jp: {
             'jp': '日本',
             'vi': 'Tiếng Việt',
-            'app_name': '勤次郎'
+            'app_name': '勤次郎',
+            'plz_wait': 'お待ちください'
         },
         vi: {
             'jp': '日本',
             'vi': 'Tiếng Việt',
-            'app_name': 'UK Mobile'
+            'app_name': 'UK Mobile',
+            'plz_wait': 'Vui lòng chờ trong giây lát...'
         }
     }, language = new Vue({
         data: {
@@ -58,6 +60,25 @@ const style = dom.create('style', {
                 }));
             }
         },
+        created() {
+            let self = this,
+                lg = localStorage.getItem('lang') || 'jp',
+                resor = localStorage.getItem('lang_resources'),
+                lang = JSON.parse(resor || '{}');
+
+            if (lang) {
+                let ob: { [key: string]: any } = {};
+
+                ob[lg] = lang;
+
+                obj.extend(window, { 'jp0': ob.jp });
+
+                obj.merge(resources, ob, true);
+
+                self.current = '';
+                self.current = lg;
+            }
+        },
         destroyed() {
             [].slice.call(this.watchers).forEach((w: Function) => w());
         }
@@ -82,6 +103,8 @@ const style = dom.create('style', {
         refresh() {
             language.current = '';
             language.current = localStorage.getItem('lang') || 'jp';
+
+            localStorage.setItem('lang_resources', JSON.stringify(resources[language.current]));
         }
     }, LanguageBar = {
         template: `

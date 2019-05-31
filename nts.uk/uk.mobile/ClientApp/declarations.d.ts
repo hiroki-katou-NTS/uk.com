@@ -102,7 +102,10 @@ declare module "vue/types/vue" {
             (act: 'hide'): void;
             (act: 'show', opacity?: number): {
                 on: (click: () => void, hide?: () => void) => void;
-            }
+            };
+            (act: 'show', options: { opacity?: number; message?: boolean | string; }): {
+                on: (click: () => void, hide?: () => void) => void;
+            };
         };
         $goto: {
             (name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
