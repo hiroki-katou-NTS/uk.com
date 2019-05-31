@@ -88,7 +88,7 @@ module nts.custombinding {
                 </div>
                 <div class="cps003d-body" data-bind="foreach: { data: items, as: 'row', afterRender: afterRender }">
                     <div class="cps003d-body-row">
-                        <div class='cps003d-col1' data-bind="text: row['itemName']"></div>
+                        <div class='cps003d-col1 limited-label' data-bind="text: row['itemName']"></div>
                         <div class='cps003d-col2' data-bind="text: $parent.i18n(row['required'] ? 'CPS006_27' : 'CPS006_26')"></div>
                         <div class='cps003d-col3'>
                             <div tabindex="0" class="ntsControl ntsCheckBox" data-bind="event: { keydown: $parent.checkItem }">
