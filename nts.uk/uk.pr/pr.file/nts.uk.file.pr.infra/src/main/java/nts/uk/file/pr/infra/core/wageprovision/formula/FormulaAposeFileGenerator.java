@@ -54,6 +54,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private static final int CALCULATION_FORMULA_ATR = 24;
     private static final int BASIC_CALCULATION_FORMULA = 25;
     private static final String UNIT = "丸め";
+    private static final String CODE_DEFAULT = "0000000000";
 
 
     @Override
@@ -221,22 +222,22 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[14]).intValue(), AdjustmentClassification.class).nameId;
+            return EnumAdaptor.valueOf(((BigDecimal) obj[ADJUSTMENT_ATR]).intValue(), AdjustmentClassification.class).nameId;
         }
         return "";
     }
 
     private Object[] findDefault(List<Object[]> data, String fomulaCode){
-        Optional<Object[]> defaultValue = data.stream().filter(item -> item[CODE].equals(fomulaCode) && "0000000000".equals(item[MASTER_USE_CD])).findFirst();
+        Optional<Object[]> defaultValue = data.stream().filter(item -> item[CODE].equals(fomulaCode) && CODE_DEFAULT.equals(item[MASTER_USE_CD])).findFirst();
         return defaultValue.orElse(null);
     }
 
     private String getValueRounding(Object[] obj, List<Object[]> objs){
-        if(obj[13] == null) {
+        if((obj[ROUNDING_RESULT - 1] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value)) {
             return "";
         }
         if (((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value){
-            return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) obj[12]).intValue(), AmountRounding.class).nameId);
+            return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) obj[ROUNDING_POSITION]).intValue(), AmountRounding.class).nameId);
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value)) {
@@ -249,7 +250,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
-            return EnumAdaptor.valueOf(((BigDecimal) obj[13]).intValue(), RoundingResult.class).nameId;
+            return EnumAdaptor.valueOf(((BigDecimal) obj[ROUNDING_RESULT]).intValue(), RoundingResult.class).nameId;
         }
         return "";
     }
@@ -284,10 +285,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
             return "なし";
         }
-        if((obj[24] != null && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value)) {
+        if((obj[CALCULATION_FORMULA_ATR] != null && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value)) {
             return "なし";
         }
-        if((obj[24] != null && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value)) {
+        if((obj[CALCULATION_FORMULA_ATR] != null && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value)) {
             Object[] defaultValue = findDefault(objs, obj[0].toString());
             return defaultValue != null ? getValueRoundingMethod(defaultValue, objs, formula, targetItem) : "";
         }
@@ -351,7 +352,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             return "";
         }
         if(((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value) {
-            return obj[25] != null ? obj[25].toString() : "";
+            return obj[BASIC_CALCULATION_FORMULA] != null ? obj[BASIC_CALCULATION_FORMULA].toString() : "";
         }
         if(((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value) {
             obj[STANDARD_AMOUNT_ATR] = new BigDecimal(2);
@@ -397,7 +398,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(((BigDecimal)data[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value || ((BigDecimal)data[6]).intValue() == 0) {
             return "なし";
         }
-        if(data[MASTER_USE_CD] != null && "0000000000".equals(data[MASTER_USE_CD].toString())) {
+        if(data[MASTER_USE_CD] != null && CODE_DEFAULT.equals(data[MASTER_USE_CD].toString())) {
             return "既定値";
         }
         return data[MASTER_NAME] != null ? data[MASTER_NAME].toString() : "";
