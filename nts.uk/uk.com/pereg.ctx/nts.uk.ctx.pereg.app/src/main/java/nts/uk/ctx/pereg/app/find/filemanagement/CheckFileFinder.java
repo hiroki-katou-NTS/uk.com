@@ -244,6 +244,8 @@ public class CheckFileFinder {
 					}
 				}
 			}
+		}else {
+			throw new BusinessException("Msg_724");
 		}
 		return result;
 	}
