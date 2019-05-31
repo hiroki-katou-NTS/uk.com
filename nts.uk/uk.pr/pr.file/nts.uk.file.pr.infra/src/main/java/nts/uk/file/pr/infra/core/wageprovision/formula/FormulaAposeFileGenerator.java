@@ -306,13 +306,19 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3]))) {
-                temp.append(count == 0 ? getName((Integer) baseTarget.get(i)[3]) : "")
-                        .append(count == 0 ? "｛" : "＋").append(baseTarget.get(i)[2]);
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3])
+                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
                 count++;
+                temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
         }
-        temp.append(count > 0 ? "｝" : "");
+        if(count > 0) {
+            temp.deleteCharAt(temp.length() - 1);
+        }
+        if(count > 1) {
+            temp.insert(0, "（");
+            temp.append("）");
+        }
         return temp.toString();
     }
 
@@ -358,7 +364,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             obj[STANDARD_AMOUNT_ATR] = new BigDecimal(2);
         }
         c.append(obj[EXTRA_RATE] != null ? ((BigDecimal)obj[EXTRA_RATE]).intValue() : "");
-        b.append(obj[BASE_ITEM_ATR] != null ? ((BigDecimal)obj[BASE_ITEM_ATR]).intValue() == 0 ? obj[BASE_ITEM_FIXED_VALUE].toString() : (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
+        if(obj[BASE_ITEM_ATR] != null) {
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() == BaseItemClassification.FIXED_VALUE.value ? obj[BASE_ITEM_FIXED_VALUE].toString() : "");
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > BaseItemClassification.ATTENDANCE_DAY.value ? "（" + (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) + "）" : "");
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() <= BaseItemClassification.ATTENDANCE_DAY.value && ((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > 0 ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
+        }
         if(((BigDecimal)obj[STANDARD_AMOUNT_ATR]).intValue() == StandardAmountClassification.FIXED_AMOUNT.value) {
             a.append(obj[STANDARD_FIXED_VALUE].toString());
         }
@@ -369,16 +379,16 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             e.append(obj[COEFFICIENT_FIXED_VALUE].toString());
         }
         if(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() != CoefficientClassification.FIXED_VALUE.value){
-            e.append(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() == CoefficientClassification.WORKDAY_AND_HOLIDAY.value ? "（  " : "").
+            e.append(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() == CoefficientClassification.WORKDAY_AND_HOLIDAY.value ? "（" : "").
                     append((EnumAdaptor.valueOf(((BigDecimal)obj[COEFFICIENT_ATR]).intValue(), CoefficientClassification.class).nameId))
-                    .append(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() == CoefficientClassification.WORKDAY_AND_HOLIDAY.value ? "  ）" : "");
+                    .append(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() == CoefficientClassification.WORKDAY_AND_HOLIDAY.value ? "）" : "");
         }
         if(((BigDecimal)obj[FORMULA_TYPE]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE1.value){
             temp.append(a).append(a.length() > 0 ? "×" : "（）× ").append(e);
         }
 
         if(((BigDecimal)obj[FORMULA_TYPE]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％×": "").append(e);
         }
         if(((BigDecimal)obj[FORMULA_TYPE]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
             temp.append(a).append(a.length() > 0 ? "÷" : "（）÷").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
@@ -388,6 +398,9 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getUsageMasterType(Object[] data){
+        if(data[MASTER_BRANCH_USE] == null) {
+            return "";
+        }
         if(((BigDecimal)data[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value || ((BigDecimal)data[MASTER_BRANCH_USE]).intValue() == 0) {
             return "なし";
         }
