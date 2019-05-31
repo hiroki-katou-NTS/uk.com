@@ -388,7 +388,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
 
         if(((BigDecimal)obj[FORMULA_TYPE]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE2.value){
-            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
+            temp.append(a).append( a.length() > 0 ? "×": "（）×").append(c).append(c.length() > 0 ? "％×": "").append(e);
         }
         if(((BigDecimal)obj[FORMULA_TYPE]).intValue() == FormulaType.CALCULATION_FORMULA_TYPE3.value){
             temp.append(a).append(a.length() > 0 ? "÷" : "（）÷").append(b).append(b.length() > 0 ? "×" : "").append(c).append(c.length() > 0 ? "％ ×": "").append(e);
