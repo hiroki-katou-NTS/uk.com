@@ -9,7 +9,7 @@ const vm = Vue.extend({
             click: Function
         },
         color: null,
-        message: 'plz_wait',
+        message: false,
         opacity: null
     }),
     template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-on:touchmove="preventTouch" v-on:click="onClick">
