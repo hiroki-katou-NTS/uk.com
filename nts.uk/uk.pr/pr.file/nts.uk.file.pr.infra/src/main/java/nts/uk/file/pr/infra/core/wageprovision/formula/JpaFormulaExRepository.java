@@ -156,7 +156,7 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("     INNER JOIN (SELECT *    ");
         sql.append("                FROM QPBMT_FORMULA_HISTORY");
         sql.append("                WHERE START_YM <= ?startDate AND END_YM >= ?startDate)h");
-        sql.append("     ON d.CID = h.CID d.HIST_ID = h.HIST_ID AND d.FORMULA_CD = h.FORMULA_CD");
+        sql.append("     ON d.CID = h.CID AND d.HIST_ID = h.HIST_ID AND d.FORMULA_CD = h.FORMULA_CD");
         sql.append("     LEFT JOIN ");
         sql.append("           (SELECT ");
         sql.append("              CASE WHEN CATEGORY_ATR = '0' THEN '0000_0' + ITEM_NAME_CD ");
