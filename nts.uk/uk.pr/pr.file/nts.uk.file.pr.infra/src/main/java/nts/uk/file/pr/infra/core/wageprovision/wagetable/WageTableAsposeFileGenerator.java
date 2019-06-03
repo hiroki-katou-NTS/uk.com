@@ -66,7 +66,40 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     /*ElementType*/
     private String enumElementType(String code) {
-        return TextResource.localize(ElementType.valueOf(code).nameId);
+        switch (code) {
+            case "M001": {
+                return TextResource.localize("Enum_Element_Type_M001");
+            }
+            case "M002": {
+                return TextResource.localize("Enum_Element_Type_M002");
+            }
+            case "M003": {
+                return TextResource.localize("Enum_Element_Type_M003");
+            }
+            case "M004": {
+                return TextResource.localize("Enum_Element_Type_M004");
+            }
+            case "M005": {
+                return TextResource.localize("Enum_Element_Type_M005");
+            }
+            case "M006": {
+                return TextResource.localize("Enum_Element_Type_M006");
+            }
+            case "M007": {
+                return TextResource.localize("Enum_Element_Type_M007");
+            }
+            case "N001": {
+                return TextResource.localize("Enum_Element_Type_N001");
+            }
+            case "N002": {
+                return TextResource.localize("Enum_Element_Type_N002");
+            }
+            case "N003": {
+                return TextResource.localize("Enum_Element_Type_N003");
+            }
+            default:
+                return "";
+        }
     }
 
     private String getNameMaster(List<ItemDataNameExport> dataNameMaster, String type, String masterCd){
