@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.MasterCareerDto;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerDto;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerListDto;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerPartDto;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerclass.algorithm.CareerClassService;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPath;
@@ -83,4 +84,8 @@ public class CareerPathFinder {
 			throw new BusinessException("MsgJ_48");
 		}
 	}
+	
+	public CareerListDto getCareerList(String cId, String hisId, String careerTypeItem) {
+		return new CareerListDto(careerPathService.getCareerPathRequirement(cId, hisId, careerTypeItem).stream().map(c -> new CareerDto(c)).collect(Collectors.toList()));
+	} 
 }

@@ -1,5 +1,15 @@
-.container.cf{padding-left: 140px;}
+.container.cf{margin: 0 auto;}
 .rightTable tr td{width: 160px; height: 36px;}
 .contentTable{display: flex; margin-top: 20px;}
 .rightTable tr td span{float: left; margin: 4px;}
 .rightTable tr td .small{float: right; margin-right: 5px;}
+.careerClassRole textarea{height: 130px; margin: 3px 0 0 7px; width: 218px;}
+#fixed-table2 .careerClassRole td{height: 249px;}
+.radioReqType .ntsRadioBox{display: flex; margin-bottom: 20px;}
+.radioReqType{position: relative; top: 24px; left: 20px;}
+.comboYearType{position: relative; top: -55px; left: 44px;}
+.comboMasterType{position: relative; top: -70px; left: 192px;}
+
+.inputTextYearType{position: relative; top: -9px; left: 8px;}
+.buttonMasterType{position: relative; top: 8px; left: 7px;}
+#fixed-table2 .careerClassRole .inputTextarea{position: relative; top: 30px; height: 100px;}

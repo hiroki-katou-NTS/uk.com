@@ -8,10 +8,14 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:EnumScript>
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.RequirementType
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearType
+			</com:EnumScript>
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.sample.SampleTimeClock
-					nts.uk.shr.com.primitive.sample.ProcessingNo
-				</com:ValidatorScript>
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.String_Any_100
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Integer_0_99
+			</com:ValidatorScript>
 			<com:stylefile path="jhc002.b.style.css" />
 			<com:scriptfile path="jhc002.b.vm.js" />
 			<com:scriptfile path="jhc002.b.service.js" />
@@ -21,40 +25,576 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- Go back Style -->
-				<a class="goback" data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('JHC002_B1_1')}</a>
-				<button tabindex="1" data-bind="">#{i18n.getText('JHC002_B1_2')}</button>
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('JHC002_B1_1')}</a>
+				<button class="proceed" tabindex="1" data-bind="click: save">#{i18n.getText('JHC002_B1_2')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="main-area">
 					<div id="main-center-area">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_B222_1')}</div>
-						<div class="contentTable">
-							<div class="nts-fixed-body-container ui-iggrid">
-								<table class="rightTable">
-									<colgroup>
-										<col width="330px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th class="ui-widget-header" colspan="1"></th>
-										</tr>
-										<tr>
-											<th class="ui-widget-header" colspan="1">#{i18n.getText('JHC002_B222_8')}</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><span data-bind="">#{i18n.getText('JHC002_B222_11')}</span></td>
-										</tr>
-										<tr>
-											<td>
-												<div></div>
-												<div></div>
-												<div></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+						<div class="container cf">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_B222_1')}</div>
+							
+							<!-- table header and input role class -->
+							
+							<div class="contentTable">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable" style="width:330px">
+										<colgroup>
+											<col width="330px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" colspan="1"></th>
+											</tr>
+											<tr>
+												<th class="ui-widget-header" colspan="1">#{i18n.getText('JHC002_B222_8')}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td style="height:150px; vertical-align: text-bottom;"><span>#{i18n.getText('JHC002_B222_11')}</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table">
+									<table id="fixed-table">
+										<colgroup>
+											<com:ko-if bind="showLevel1()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel2()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel3()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel4()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel5()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel6()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel7()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel8()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel9()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel10()">
+												<col width="260px" />
+											</com:ko-if>
+										</colgroup>
+										<thead>
+											<tr>
+												<com:ko-if bind="showLevel1()">
+													<th class="ui-widget-header lever1" colspan="1">#{i18n.getText('JHC002_B222_6')} 1</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel2()">
+													<th class="ui-widget-header lever2" colspan="1">#{i18n.getText('JHC002_B222_6')} 2</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel3()">
+													<th class="ui-widget-header lever3" colspan="1">#{i18n.getText('JHC002_B222_6')} 3</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel4()">
+													<th class="ui-widget-header lever4" colspan="1">#{i18n.getText('JHC002_B222_6')} 4</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel5()">
+													<th class="ui-widget-header lever5" colspan="1">#{i18n.getText('JHC002_B222_6')} 5</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel6()">
+													<th class="ui-widget-header lever6" colspan="1">#{i18n.getText('JHC002_B222_6')} 6</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel7()">
+													<th class="ui-widget-header lever7" colspan="1">#{i18n.getText('JHC002_B222_6')} 7</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel8()">
+													<th class="ui-widget-header lever8" colspan="1">#{i18n.getText('JHC002_B222_6')} 8</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel9()">
+													<th class="ui-widget-header lever9" colspan="1">#{i18n.getText('JHC002_B222_6')} 9</th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel10()">
+													<th class="ui-widget-header lever10" colspan="1">#{i18n.getText('JHC002_B222_6')} 10</th>
+												</com:ko-if>
+											</tr>
+											<tr>
+												<com:ko-if bind="showLevel1()">
+													<th class="ui-widget-header lever1" colspan="1" data-bind="text: nameLevel1()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel2()">
+													<th class="ui-widget-header lever2" colspan="1" data-bind="text: nameLevel2()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel3()">
+													<th class="ui-widget-header lever3" colspan="1" data-bind="text: nameLevel3()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel4()">
+													<th class="ui-widget-header lever4" colspan="1" data-bind="text: nameLevel4()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel5()">
+													<th class="ui-widget-header lever5" colspan="1" data-bind="text: nameLevel5()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel6()">
+													<th class="ui-widget-header lever6" colspan="1" data-bind="text: nameLevel6()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel7()">
+													<th class="ui-widget-header lever7" colspan="1" data-bind="text: nameLevel7()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel8()">
+													<th class="ui-widget-header lever8" colspan="1" data-bind="text: nameLevel8()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel9()">
+													<th class="ui-widget-header lever9" colspan="1" data-bind="text: nameLevel9()"></th>
+												</com:ko-if>
+												<com:ko-if bind="showLevel10()">
+													<th class="ui-widget-header lever10" colspan="1" data-bind="text: nameLevel10()"></th>
+												</com:ko-if>
+											</tr>
+										</thead>
+										<tbody >
+											<tr class="careerClassRole">
+												<com:ko-if bind="showLevel1()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel1(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel2()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel2(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel3()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel3(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel4()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel4(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel5()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel5(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel6()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel6(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel7()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel7(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel8()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel8(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel9()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel9(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel10()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel10(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+							<!-- table option select value -->
+							
+							<div style="display: flex;">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable" style="width:330px">
+										<colgroup>
+											<col width="330px" />
+										</colgroup>
+										<tbody>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':1})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':2})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':3})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':4})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':5})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':6})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':7})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':8})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':9})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+											<tr data-bind="with: _.find(careerRequirementList(),{'displayNumber':10})">
+												<td style="height:249px; vertical-align: text-bottom;">
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: ko.observable(requirementType),
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: ko.observable(yearType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: ko.observable(masterType),
+															optionsText: 'name',
+															width: 110,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table ">
+									<table id="fixed-table2">
+										<colgroup>
+											<com:ko-if bind="showLevel1()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel2()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel3()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel4()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel5()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel6()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel7()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel8()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel9()">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="showLevel10()">
+												<col width="260px" />
+											</com:ko-if>
+										</colgroup>
+										<tbody >
+											<tr class="careerClassRole">
+												<com:ko-if bind="showLevel1()">
+													<td>
+														<div class="inputTextYearType">
+															<input data-bind="ntsNumberEditor: {
+																value: ko.observable(1),
+																constraint: 'Integer_0_99',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(true),
+																enable: ko.observable(true),
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: ko.observable(1),
+																constraint: 'Integer_0_99',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(true),
+																enable: ko.observable(true),
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="">aaaaaaa</span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: careerClassRoleLevel2(), constraint: 'String_Any_100' }" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel2()">
+													<td>
+														<div class="inputTextYearType">
+															<input data-bind="ntsNumberEditor: {
+																value: ko.observable(1),
+																constraint: 'Integer_0_99',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(true),
+																enable: ko.observable(true),
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: ko.observable(1),
+																constraint: 'Integer_0_99',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(true),
+																enable: ko.observable(true),
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="">aaaaaaa</span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: careerClassRoleLevel2(), constraint: 'String_Any_100' }" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel3()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel3(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel4()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel4(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel5()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel5(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel6()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel6(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel7()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel7(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel8()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel8(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel9()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel9(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="showLevel10()">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRoleLevel10(), constraint: 'String_Any_100' }" /></td>
+												</com:ko-if>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -3,16 +3,11 @@ module nts.uk.hr.view.jhc002.b {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            
-            getAccountLockPolicy:"ctx/sys/gateway/securitypolicy/getAccountLockPolicy",
-            getPasswordPolicy:"ctx/sys/gateway/securitypolicy/getPasswordPolicy",
-            updateAccountPolicy:"ctx/sys/gateway/securitypolicy/updateAccountPolicy"
-            }
+            getCareerList: "careermgmt/careerpath/getCareerList",
+        }
 
-     
-        
-         export function getAccountLockPolicy(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAccountLockPolicy);
+         export function getCareerList(param: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getCareerList, param);
         }
     }
 }

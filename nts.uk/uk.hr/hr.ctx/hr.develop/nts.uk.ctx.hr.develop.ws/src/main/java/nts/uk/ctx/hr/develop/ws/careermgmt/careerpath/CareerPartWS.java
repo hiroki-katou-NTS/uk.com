@@ -16,6 +16,7 @@ import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartCommand
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.CareerPartHistoryCommand;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.RemoveCareerPathHistoryCommandHandler;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.command.UpdateCareerPathHistoryCommandHandler;
+import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerListDto;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerPartDto;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.DateHistoryItemDto;
 import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.find.CareerPathFinder;
@@ -95,4 +96,12 @@ public class CareerPartWS {
 	public void saveCareer(CareerPartCommand command){
 		addCareerPathCommandHandler.add(command);
 	}
+	
+	@POST
+	@Path("/getCareerList")
+	public CareerListDto getCareerList(CareerPartHistoryCommand command){
+		String cId = AppContexts.user().companyId();
+		return careerPathFinder.getCareerList(cId, command.getHistoryId(), command.getCareerTypeItem());
+	}
+	
 }

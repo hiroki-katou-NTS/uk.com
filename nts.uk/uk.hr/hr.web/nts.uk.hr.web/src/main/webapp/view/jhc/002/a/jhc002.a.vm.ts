@@ -149,7 +149,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 careerTypeId: careerType.id,
                 careerTypeName: careerType.name,
                 historyId: self.selectedHistId(),
-                career: self.listCareer()
+                career: self.listCareer(),
+                maxClassLevel: self.maxClassLevel(),
+                careerClass: self.careerClass()
             }
             if (careerType != '') {
                 block.grayout();

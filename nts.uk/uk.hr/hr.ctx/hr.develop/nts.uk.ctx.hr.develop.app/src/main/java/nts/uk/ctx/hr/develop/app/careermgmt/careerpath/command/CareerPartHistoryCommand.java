@@ -12,5 +12,7 @@ public class CareerPartHistoryCommand {
 	
 	private String startDate;
 	
+	private String careerTypeItem;
+	
 	private List<CareerDto> career;
 }
