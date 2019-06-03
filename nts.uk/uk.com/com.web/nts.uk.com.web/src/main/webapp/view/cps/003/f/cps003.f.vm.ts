@@ -92,7 +92,7 @@ module cps003.f.vm {
                             }, constraint: any = {
                                 itemName: item.itemName,
                                 itemCode: item.itemCode,
-                                required: item.isRequired// !!x.isRequired
+                                required: !!item.isRequired// !!x.isRequired
                             };
 
                         // set name for display on F2_004
@@ -292,12 +292,12 @@ module cps003.f.vm {
                     mode: undefined,
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
-                    matchValue: item.filter || undefined,
+                    matchValue: item.filter || null,
                     replaceValue: undefined,
                     replaceFormat: undefined
                 };
 
-            $('input:not([disabled])').trigger('validate');
+           // $('input:not([disabled])').trigger('validate');
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
