@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,8 +12,10 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
-
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
+//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogHistRepository extends JpaRepository
 		implements ProcessExecutionLogHistRepository {
@@ -53,24 +57,77 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	public void update(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity2(domain);
 		
-		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
-		.setParameter("companyId", domain.getCompanyId())
-		.setParameter("execItemCd", domain.getExecItemCd())
-		.setParameter("execId", domain.getExecId()).getSingle().get();
-		updateEntity.overallStatus = newEntity.overallStatus;
-		updateEntity.errorDetail = newEntity.errorDetail;
-		updateEntity.prevExecDateTime = newEntity.prevExecDateTime;
-		updateEntity.schCreateStart = newEntity.schCreateStart;
-		updateEntity.schCreateEnd = newEntity.schCreateEnd;
-		updateEntity.dailyCreateStart = newEntity.dailyCreateStart;
-		updateEntity.dailyCreateEnd = newEntity.dailyCreateEnd;
-		updateEntity.dailyCalcStart = newEntity.dailyCalcStart;
-		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
-		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
-		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
-		updateEntity.taskLogList = newEntity.taskLogList;
-		this.commandProxy().update(updateEntity);		
-		this.getEntityManager().flush();
+//		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
+//		.setParameter("companyId", domain.getCompanyId())
+//		.setParameter("execItemCd", domain.getExecItemCd())
+//		.setParameter("execId", domain.getExecId()).getSingle().get();
+//		updateEntity.overallStatus = newEntity.overallStatus;
+//		updateEntity.errorDetail = newEntity.errorDetail;
+//		updateEntity.prevExecDateTime = newEntity.prevExecDateTime;
+//		updateEntity.schCreateStart = newEntity.schCreateStart;
+//		updateEntity.schCreateEnd = newEntity.schCreateEnd;
+//		updateEntity.dailyCreateStart = newEntity.dailyCreateStart;
+//		updateEntity.dailyCreateEnd = newEntity.dailyCreateEnd;
+//		updateEntity.dailyCalcStart = newEntity.dailyCalcStart;
+//		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
+//		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
+//		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
+//		updateEntity.taskLogList = newEntity.taskLogList;
+//		this.commandProxy().update(updateEntity);	
+		
+		try {
+			String updateTableSQL = " UPDATE KFNMT_PROC_EXEC_LOG_HIST SET"
+					+ " OVERALL_STATUS = ?" 
+					+ " ,ERROR_DETAIL = ? "
+					+ " ,LAST_EXEC_DATETIME = ? " 
+					+ " ,SCH_CREATE_START = ?" 
+					+ " ,SCH_CREATE_END = ?"
+					+ " ,DAILY_CREATE_START = ?"
+					+ " ,DAILY_CREATE_END = ?"
+					+ " ,DAILY_CALC_START = ?"
+					+ " ,DAILY_CALC_END = ?"
+					+ " ,RFL_APPR_START = ?"
+					+ " ,RFL_APPR_END = ?"
+					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ?";
+			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
+				ps.setInt(1, newEntity.overallStatus);
+				ps.setString(2, newEntity.errorDetail == null ? null : newEntity.errorDetail.toString());
+				ps.setString(3, newEntity.prevExecDateTime.toString());
+				ps.setDate(4, newEntity.schCreateStart ==null?null: Date.valueOf(newEntity.schCreateStart.localDate()));
+				ps.setDate(5, newEntity.schCreateEnd ==null?null: Date.valueOf(newEntity.schCreateEnd.localDate()));
+				ps.setDate(6, newEntity.dailyCreateStart ==null?null: Date.valueOf(newEntity.dailyCreateStart.localDate()));
+				ps.setDate(7, newEntity.dailyCreateEnd ==null?null: Date.valueOf(newEntity.dailyCreateEnd.localDate()));
+				ps.setDate(8, newEntity.dailyCalcStart ==null?null: Date.valueOf(newEntity.dailyCalcStart.localDate()));
+				ps.setDate(9, newEntity.dailyCalcEnd ==null?null: Date.valueOf(newEntity.dailyCalcEnd.localDate()));
+				ps.setDate(10, newEntity.reflectApprovalResultStart ==null?null: Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
+				ps.setDate(11, newEntity.reflectApprovalResultEnd ==null?null: Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
+				ps.setString(12, domain.getCompanyId());
+				ps.setString(13, domain.getExecItemCd().v());
+				ps.setString(14, domain.getExecId());
+				ps.executeUpdate();
+			}
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		try {
+			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : newEntity.taskLogList) {
+				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
+						+ " STATUS = ?"
+						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
+				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
+					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
+					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.executeUpdate();
+				}
+			}
+			
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

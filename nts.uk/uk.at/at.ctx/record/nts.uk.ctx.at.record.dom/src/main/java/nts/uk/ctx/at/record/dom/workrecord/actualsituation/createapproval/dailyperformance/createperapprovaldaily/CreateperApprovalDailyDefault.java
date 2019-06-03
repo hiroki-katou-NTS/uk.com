@@ -52,7 +52,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 						.getAffCompanyHistByEmployee(employeeIDs,
 								new DatePeriod(startDateClosure, GeneralDate.today()));
 				this.parallel.forEach(employeeIDs, employeeID -> {
-					
+					if(checkStop.get()) return;
 					// 年月日　←「システム日付の前日」
 					GeneralDate ymd = GeneralDate.today().addDays(-1);
 					if (createNewEmp == 1) {	
@@ -73,6 +73,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 							}
 						}
 					}
+					if(checkStop.get()) return;
 					/** アルゴリズム「指定社員の中間データを作成する」を実行する */
 					AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
 							.createDailyApprover(employeeID, 1, ymd,startDateClosure);
@@ -80,7 +81,6 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 					boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false:true;
 					String errorMessage = appRootInsContentFnImport.getErrorMsgID();
 					// 取得したエラーフラグ != エラーなし
-					if(checkStop.get()) return;
 					if (flagError) {
 						/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する */
 						AppDataInfoDaily appDataInfoDaily = new AppDataInfoDaily(employeeID, executionId,
