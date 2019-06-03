@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.pub.monthly.agreement.CheckAgreementTimeStatusPub;
-import nts.uk.ctx.at.record.pub.monthly.agreement.GetAgreementPeriodPub;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
@@ -39,8 +38,8 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 	@Inject
 	private CheckAgreementTimeStatusPub checkAgreementTimeStatusPub;
 	
-	@Inject
-	private GetAgreementPeriodPub getAgreementPeriodPub;
+//	@Inject
+//	private GetAgreementPeriodPub getAgreementPeriodPub;
 	
 	@Override
 	public List<AgreementTimeImport> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth,
@@ -104,15 +103,15 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 		return getAgreementTimePub.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
 	}
 
-	@Override
-	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria) {
-		return getAgreementPeriodPub.containsDate(companyID, criteria, Optional.empty());
-	}
+//	@Override
+//	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria) {
+//		return getAgreementPeriodPub.containsDate(companyID, criteria, Optional.empty());
+//	}
 
 	@Override
 	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			YearMonthPeriod yearPeriod, GeneralDate criteria, ScheRecAtr scheRecAtr) {
-		return getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, yearPeriod, criteria, scheRecAtr);
+			GeneralDate criteria, ScheRecAtr scheRecAtr) {
+		return getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
 	}
 
 }

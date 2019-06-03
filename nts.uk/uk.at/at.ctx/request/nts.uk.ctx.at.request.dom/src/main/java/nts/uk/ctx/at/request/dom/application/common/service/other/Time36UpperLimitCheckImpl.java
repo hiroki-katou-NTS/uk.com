@@ -64,7 +64,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
@@ -246,12 +245,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	// 36協定上限複数月平均時間と36協定年間時間の取得
 	private AgreementTimeOutput getTime36YearAndAverage(String companyID, String employeeID, YearMonth yearMonth, GeneralDate appDate, ScheRecAtr scheRecAtr){
-		
-		// [NO.579]指定日を含む年期間を取得
-		YearMonthPeriod period = agreementTimeAdapter.containsDate(companyID, appDate).get();
+
+// 2019.5.30 DEL shuichi_ishida Redmine #107910　（NO.579は、NO.599内で呼ぶように仕様変更）
+//		// [NO.579]指定日を含む年期間を取得
+//		YearMonthPeriod period = agreementTimeAdapter.containsDate(companyID, appDate).get();
 	
 		// [NO.599]36協定上限複数月平均時間と年間時間の取得
-		return agreementTimeAdapter.getAverageAndYear(companyID, employeeID, yearMonth, period, appDate, scheRecAtr);
+		return agreementTimeAdapter.getAverageAndYear(companyID, employeeID, yearMonth, appDate, scheRecAtr);
 		
 	}
 	

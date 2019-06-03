@@ -3,14 +3,13 @@ package nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.command.processexecution.ListLeaderOrNotEmpOutput;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.CreateperApprovalDailyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.OutputCreatePerAppDailyImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
@@ -66,7 +66,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 	public static int MAX_DELAY_PARALLEL = 0;
 	
 	@Override
-	public void checkAppRouteUpdateDaily(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	public boolean checkAppRouteUpdateDaily(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
 		/**ドメインモデル「更新処理自動実行ログ」を更新する*/
 		for(ExecutionTaskLog executionTaskLog :procExecLog.getTaskLogList() ) {
 			if(executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_DAI) {
@@ -85,7 +85,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				}
 			}
 			processExecutionLogRepo.update(procExecLog);
-			return;
+			return false;
 		}
 		System.out.println("更新処理自動実行_承認ルート更新（日次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		
@@ -97,8 +97,10 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		long startTime = System.currentTimeMillis();
 		
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
+		AtomicBoolean checkStop = new AtomicBoolean(false);
 		//取得した就業締め日の数(so du lieu 就業締め日 lay duoc)　＝　回数
 		listClosure.forEach(itemClosure -> {
+			if(checkStop.get()) return;
 		//for(Closure closure : listClosure) {
 			log.info("承認ルート更新(日別) 締め: " + itemClosure.getClosureId());
 			/**締め開始日を取得する*/
@@ -252,6 +254,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			}else {
 				//再作成の場合
 				List<String> listEmp = lstRegulationInfoEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+				if(checkStop.get()) return;
 				if(!listEmp.isEmpty()) {
 					/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
 					DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
@@ -267,9 +270,15 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			Integer createNewEmp = null;
 			if(procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent())
 				createNewEmp = procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value;
-			boolean check = createperApprovalDailyAdapter.createperApprovalDaily(procExec.getCompanyId(), procExecLog.getExecId(),
+			if(checkStop.get()) return;
+			OutputCreatePerAppDailyImport check = createperApprovalDailyAdapter.createperApprovalDaily(procExec.getCompanyId(), procExecLog.getExecId(),
 					listEmployeeID.stream().distinct().collect(Collectors.toList()), procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate(),closureData.getClosureEndDate());
-			listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check));
+			if(check.isCheckStop()) {
+				checkStop.set(true);
+				return;
+			}
+			
+			listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check.isCreateperApprovalDaily()));
 		
 		
 		});
@@ -277,6 +286,9 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 
 		log.info("承認ルート更新(日別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
 		System.out.println("更新処理自動実行_承認ルート更新（日次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		if(checkStop.get()) {
+			return true;
+		}
 		boolean checkError = false;
 		/*終了状態で「エラーあり」が返ってきたか確認する*/
 		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
@@ -301,9 +313,9 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		}
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
-		
+		return false;
 	}
 		
-		
+	
 		
 }

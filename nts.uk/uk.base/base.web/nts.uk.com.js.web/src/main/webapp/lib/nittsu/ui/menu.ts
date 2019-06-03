@@ -281,16 +281,10 @@ module nts.uk.ui.menu {
      * Get session program.
      */
     function getSessionProgram() {
-        let dfd = $.Deferred(),
-            pgOpt = nts.uk.sessionStorage.getItem(PROGRAM_KEY);
-        if (pgOpt.isPresent()) {
-            dfd.resolve(JSON.parse(pgOpt.get()));
-        } else {
-            nts.uk.request.ajax(constants.APP_ID, constants.PG).done(pg => {
-                nts.uk.sessionStorage.setItemAsJson(PROGRAM_KEY, pg);
-                dfd.resolve(pg);    
-            });
-        }
+        let dfd = $.Deferred();
+        nts.uk.request.ajax(constants.APP_ID, constants.PG).done(pg => {
+            dfd.resolve(pg);    
+        });
         
         return dfd.promise();
     }
