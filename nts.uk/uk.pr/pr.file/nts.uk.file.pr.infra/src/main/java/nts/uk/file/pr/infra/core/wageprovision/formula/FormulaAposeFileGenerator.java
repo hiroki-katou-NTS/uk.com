@@ -366,8 +366,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         c.append(obj[EXTRA_RATE] != null ? ((BigDecimal)obj[EXTRA_RATE]).intValue() : "");
         if(obj[BASE_ITEM_ATR] != null) {
             b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() == BaseItemClassification.FIXED_VALUE.value ? obj[BASE_ITEM_FIXED_VALUE].toString() : "");
-            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > BaseItemClassification.ATTENDANCE_DAY.value ? "（" + (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) + "）" : "");
-            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() <= BaseItemClassification.ATTENDANCE_DAY.value && ((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > 0 ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > BaseItemClassification.ATTENDANCE_DAY.value && ((BigDecimal)obj[BASE_ITEM_ATR]).intValue() != BaseItemClassification.ATTENDANCE_TIME.value
+                    ? "（" + (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) + "）" : "");
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() <= BaseItemClassification.ATTENDANCE_DAY.value && ((BigDecimal)obj[BASE_ITEM_ATR]).intValue() > 0
+                    ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
+            b.append(((BigDecimal)obj[BASE_ITEM_ATR]).intValue() == BaseItemClassification.ATTENDANCE_TIME.value
+                    ? (EnumAdaptor.valueOf(((BigDecimal)obj[22]).intValue(), BaseItemClassification.class).nameId) : "");
         }
         if(((BigDecimal)obj[STANDARD_AMOUNT_ATR]).intValue() == StandardAmountClassification.FIXED_AMOUNT.value) {
             a.append(obj[STANDARD_FIXED_VALUE].toString());
