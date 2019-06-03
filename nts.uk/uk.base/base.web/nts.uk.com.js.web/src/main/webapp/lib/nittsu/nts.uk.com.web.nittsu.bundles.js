@@ -4453,16 +4453,10 @@ var nts;
                  * Get session program.
                  */
                 function getSessionProgram() {
-                    var dfd = $.Deferred(), pgOpt = nts.uk.sessionStorage.getItem(PROGRAM_KEY);
-                    if (pgOpt.isPresent()) {
-                        dfd.resolve(JSON.parse(pgOpt.get()));
-                    }
-                    else {
-                        nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-                            nts.uk.sessionStorage.setItemAsJson(PROGRAM_KEY, pg);
-                            dfd.resolve(pg);
-                        });
-                    }
+                    var dfd = $.Deferred();
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        dfd.resolve(pg);
+                    });
                     return dfd.promise();
                 }
                 /**
@@ -40575,6 +40569,9 @@ var nts;
                                 var setting = $grid.data(internal.SETTINGS);
                                 setting.pageSize = ui.newPageSize;
                                 setting.pageIndex = 0;
+                                if ($grid.igGridPaging("option", "currentPageIndex") > 0) {
+                                    $grid.igGridPaging("pageSize", setting.pageSize);
+                                }
                                 var loader = $grid.data(internal.LOADER);
                                 if (!loader)
                                     return;

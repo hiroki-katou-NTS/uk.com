@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -50,7 +51,7 @@ public class GetAgreementPeriodImpl implements GetAgreementPeriod {
 	/** 指定日を含む年期間を取得 */
 	@Override
 	public Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
-			Optional<AgreementOperationSetting> agreementOperationSetOpt) {
+			Optional<AgreementOperationSetting> agreementOperationSetOpt, Closure closure) {
 		
 		// 「36協定運用設定」を取得する
 		AgreementOperationSetting agreementOpeSet = null;
@@ -64,6 +65,6 @@ public class GetAgreementPeriodImpl implements GetAgreementPeriod {
 		if (agreementOpeSet == null) return Optional.empty(); 
 		
 		// 年月期間を返す
-		return Optional.of(agreementOpeSet.getPeriodYear(criteria));
+		return Optional.of(agreementOpeSet.getPeriodYear(criteria, closure, this.getAgreementPeriodFromYear));
 	}
 }
