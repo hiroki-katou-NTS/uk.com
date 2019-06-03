@@ -28,12 +28,11 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         nameLevel10: KnockoutObservable<any>;
         
         careerOrderList: KnockoutObservableArray<ScreenItem>;
-        
         careerRequirementList: KnockoutObservableArray<ScreenItem>;
-        
         nameLevel: KnockoutObservable<DataLever>;
-        
         career: KnockoutObservableArray<Career>;
+        
+        datatransfer: any;
         
         constructor() {
             var self = this;
@@ -86,13 +85,15 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             
             self.careerOrderList = ko.observableArray([]);
             self.careerRequirementList = ko.observableArray([]);
+            self.datatransfer = null;
 
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj) => { 
+            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj: any) => { 
+                self.datatransfer = obj;
                 console.log(obj);
                 self.careerClass(obj.careerClass);
                 self.itemList = _.orderBy(_.filter(obj.career, ['careerTypeItem', obj.careerTypeId]), ['careerLevel'], ['asc']);
@@ -122,6 +123,46 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         public save():void{
             let self = this;
             var i = 1;
+        }
+        
+        public openDiaLogMasterItem(selected: any):void{
+            let self = this;
+            let param = {isMultiple: true, showNoSelection: false, selectedCodes: selected.masterItemList()}
+            let displayNumber = selected.displayNumber;
+            let masterType = _.find(self.careerOrderList(),{'displayNumber':displayNumber}).masterType();
+            let careerMaster = _.find(self.career(),{'displayNumber':displayNumber});
+            if(masterType == 'M00002'){
+                nts.uk.ui.windows.setShared('inputCDL008', param);
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function() {
+                    let data = getShared('outputCDL008');
+                    if (data) {
+                    }
+                });    
+            }else if(masterType == 'M00003'){
+                nts.uk.ui.windows.setShared('CDL002Params', param);
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/002/a/index.xhtml').onClosed(function() {
+                    let data = getShared('CDL002Output');
+                    if (data) {
+                    }
+                });        
+            }else if(masterType == 'M00004'){
+                nts.uk.ui.windows.setShared('inputCDL003', param);
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/003/a/index.xhtml').onClosed(function() {
+                    let data = getShared('outputCDL003');
+                    if (data) {
+                        careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
+                    }
+                });     
+                nts.uk.ui.windows.getShared
+            }else if(masterType == 'M00005'){
+                nts.uk.ui.windows.setShared('inputCDL004', param);
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/004/a/index.xhtml').onClosed(function() {
+                    let data = getShared('outputCDL004');
+                    if (data) {
+                    }
+                });       
+            } 
+            
         }
         
         private checksShowLever(selected: any): void{
@@ -241,6 +282,14 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             }   
             return false;
         }
+        
+        public getNameMasterItemList(): string{
+            return this.masterItemList().toString().replace(/\,/g, " + ");
+        }
+        
+        public setNameMasterItemList(masterRequirement: any): void{
+            this.masterItemList(masterRequirement);
+        }
     }
     class ItemModel {
         code: string;
@@ -288,6 +337,30 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     self.lever10 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
                 }
             });
+        }
+        public getCareerbyLever(lever: number): ScreenItem{
+            let self =  this;
+            if(lever == 1){
+                return self.lever1;   
+            } else if (lever == 2) {
+                return self.lever2;
+            } else if (lever == 3) {
+                return self.lever3;
+            } else if (lever == 4) {
+                return self.lever4;
+            } else if (lever == 5) {
+                return self.lever5;
+            } else if (lever == 6) {
+                return self.lever6;
+            } else if (lever == 7) {
+                return self.lever7;
+            } else if (lever == 8) {
+                return self.lever8;
+            } else if (lever == 9) {
+                return self.lever9;
+            } else if (lever == 10) {
+                return self.lever10;
+            }
         }
     }
     

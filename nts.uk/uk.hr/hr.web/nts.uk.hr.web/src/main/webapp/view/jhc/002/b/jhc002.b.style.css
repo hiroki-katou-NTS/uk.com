@@ -12,4 +12,5 @@
 
 .inputTextYearType{position: relative; top: -9px; left: 4px;}
 .buttonMasterType{position: relative; top: 8px; left: 7px;}
+.buttonMasterType .limited-label{width:199px; vertical-align: middle;}
 #fixed-table2 .careerClassRole .inputTextarea{position: relative; top: 30px; height: 100px;}

@@ -219,6 +219,8 @@
 															value: yearType,
 															optionsText: 'name',
 															width: 110,
+															selectFirstIfNull: false,             
+															dropDownAttachedToBody: true,
 															enable: requirementType() == 1,
 															columns: [ { prop: 'name', length: 10 },]}"></div>
 													<div class="comboMasterType" data-bind="ntsComboBox: {
@@ -228,6 +230,8 @@
 															value: masterType,
 															optionsText: 'name',
 															width: 110,
+															selectFirstIfNull: false,             
+															dropDownAttachedToBody: true,
 															enable: requirementType() == 2,
 															columns: [ { prop: 'name', length: 4 },]}"></div>
 												</td>
@@ -283,7 +287,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -294,12 +298,12 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
@@ -316,7 +320,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -327,18 +331,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),3)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever3()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -349,7 +353,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -360,18 +364,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),4)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever4()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -382,7 +386,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -393,18 +397,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),5)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever5()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -415,7 +419,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -426,18 +430,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),6)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever6()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -448,7 +452,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -459,18 +463,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),7)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever7()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -481,7 +485,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -492,18 +496,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),8)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever8()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -514,7 +518,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -525,18 +529,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),9)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever9()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -547,7 +551,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -558,18 +562,18 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: $parents[1].updateCareer()">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes($parent.level(),10)">
-													<td data-bind="with: lever2()">
+													<td data-bind="with: lever10()">
 														<div class="inputTextYearType">
 															<input type="hidden" data-bind="ntsNumberEditor: {value: $parents[1].careerOrderList()[$index()].requirementType()}" />
 															<input data-bind="ntsNumberEditor: {
@@ -580,7 +584,7 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
 															<input data-bind="ntsNumberEditor: {
@@ -591,12 +595,12 @@
 													                    unitID: 'YEARS'
 													                },
 																required: ko.observable(true),
-																enable: $parents[1].careerOrderList()[$index()].requirementType() == 1,
+																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: $parents[1].careerOrderList()[$index()].requirementType() == 2">#{i18n.getText('JHC002_B222_25')}</button>
-															<span data-bind="">aaaaaaa</span>
+															<button class="small" data-bind="enable: ($parents[1].careerOrderList()[$index()].requirementType() == 2 &amp;&amp; $parents[1].careerOrderList()[$index()].masterType() != null), click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: $parents[1].careerOrderList()[$index()].requirementType() == 3}" />
 													</td>
