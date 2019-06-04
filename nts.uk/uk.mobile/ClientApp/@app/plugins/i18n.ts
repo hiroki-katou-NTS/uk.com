@@ -5,180 +5,187 @@ const style = dom.create('style', {
     type: 'text/css',
     rel: 'stylesheet',
     text: 'body { font-family: "Meryo UI"; }'
-}), resources: {
+});
+const resources: {
     [lang: string]: {
         [key: string]: string;
     }
 } = {
-        jp: {
-            'jp': '日本',
-            'vi': 'Tiếng Việt',
-            'app_name': '勤次郎',
-            'plz_wait': 'お待ちください'
-        },
-        vi: {
-            'jp': '日本',
-            'vi': 'Tiếng Việt',
-            'app_name': 'UK Mobile',
-            'plz_wait': 'Vui lòng chờ trong giây lát...'
-        }
-    }, language = new Vue({
-        data: {
-            current: 'jp',
-            watchers: [],
-            pgName: ''
-        },
-        watch: {
-            current: {
-                immediate: true,
-                handler(lg: string) {
-                    if (lg === 'jp') {
-                        document.head.appendChild(style);
-                    } else if (document.head.contains(style)) {
-                        document.head.removeChild(style);
-                    }
-                }
-            },
-            pgName(name: string) {
-                let title = document.querySelector('head>title') as HTMLElement;
-
-                if (title) {
-                    title.innerHTML = `${getText('app_name')}: ${getText(name)}`;
+    jp: {
+        'jp': '日本',
+        'vi': 'Tiếng Việt',
+        'app_name': '勤次郎',
+        'plz_wait': 'お待ちください'
+    },
+    vi: {
+        'jp': '日本',
+        'vi': 'Tiếng Việt',
+        'app_name': 'UK Mobile',
+        'plz_wait': 'Vui lòng chờ trong giây lát...'
+    }
+};
+const language = new Vue({
+    data: {
+        current: 'jp',
+        watchers: [],
+        pgName: ''
+    },
+    watch: {
+        current: {
+            immediate: true,
+            handler(lg: string) {
+                if (lg === 'jp') {
+                    document.head.appendChild(style);
+                } else if (document.head.contains(style)) {
+                    document.head.removeChild(style);
                 }
             }
         },
-        methods: {
-            change(lang: string) {
-                this.current = lang;
+        pgName(name: string) {
+            let title = document.querySelector('head>title') as HTMLElement;
 
-                localStorage.setItem('lang', lang);
-            },
-            watch(callback: Function) {
-                let self = this;
-                self.watchers.push(self.$watch('current', (v: string) => {
-                    callback(v);
-                }));
+            if (title) {
+                title.innerHTML = `${getText('app_name')}: ${getText(name)}`;
             }
-        },
-        created() {
-            let self = this,
-                lg = localStorage.getItem('lang') || 'jp',
-                resor = localStorage.getItem('lang_resources'),
-                lang = JSON.parse(resor || '{}');
-
-            if (lang) {
-                let ob: { [key: string]: any } = {};
-
-                ob[lg] = lang;
-
-                obj.extend(window, { 'jp0': ob.jp });
-
-                obj.merge(resources, ob, true);
-
-                self.current = '';
-                self.current = lg;
-            }
-        },
-        destroyed() {
-            [].slice.call(this.watchers).forEach((w: Function) => w());
         }
-    }), Language = {
-        set pgName(name: string) {
-            language.pgName = name;
-        },
-        get current() {
-            return language.current;
-        },
-        set current(lang: string) {
-            language.current = lang;
+    },
+    methods: {
+        change(lang: string) {
+            this.current = lang;
 
             localStorage.setItem('lang', lang);
         },
-        i18n(resource: string, params?: { [key: string]: string }) {
-            return getText(resource, params);
-        },
         watch(callback: Function) {
-            language.watch(callback);
-        },
-        refresh() {
-            language.current = '';
-            language.current = localStorage.getItem('lang') || 'jp';
-
-            localStorage.setItem('lang_resources', JSON.stringify(resources[language.current]));
+            let self = this;
+            self.watchers.push(self.$watch('current', (v: string) => {
+                callback(v);
+            }));
         }
-    }, LanguageBar = {
-        template: `
+    },
+    created() {
+        let self = this,
+            lg = localStorage.getItem('lang') || 'jp',
+            resor = localStorage.getItem('lang_resources'),
+            lang = JSON.parse(resor || '{}');
+
+        if (lang) {
+            let ob: { [key: string]: any } = {};
+
+            ob[lg] = lang;
+
+            obj.extend(window, { 'jp0': ob.jp });
+
+            obj.merge(resources, ob, true);
+
+            self.current = '';
+            self.current = lg;
+        }
+    },
+    destroyed() {
+        [].slice.call(this.watchers).forEach((w: Function) => w());
+    }
+});
+const Language = {
+    set pgName(name: string) {
+        language.pgName = name;
+    },
+    get current() {
+        return language.current;
+    },
+    set current(lang: string) {
+        language.current = lang;
+
+        localStorage.setItem('lang', lang);
+    },
+    i18n(resource: string, params?: { [key: string]: string }) {
+        return getText(resource, params);
+    },
+    watch(callback: Function) {
+        language.watch(callback);
+    },
+    refresh() {
+        language.current = '';
+        language.current = localStorage.getItem('lang') || 'jp';
+
+        localStorage.setItem('lang_resources', JSON.stringify(resources[language.current]));
+    }
+};
+const LanguageBar = {
+    template: `
         <li class="nav-item dropdown">
             <a class="nav-item nav-link dropdown-toggle mr-md-2">{{current | i18n}}</a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" v-for="lg in languages" v-on:click="change(lg)">{{lg | i18n}}</a>
             </div>
         </li>`,
-        methods: {
-            change(lg: string) {
-                language.change(lg);
+    methods: {
+        change(lg: string) {
+            language.change(lg);
 
-                this.$emit('change', lg);
-            }
-        },
-        computed: {
-            current: () => language.current,
-            languages: () => Object.keys(resources)
+            this.$emit('change', lg);
         }
-    }, i18n = {
-        install(vue: VueConstructor<Vue>, lang: string) {
-            language.current = lang || localStorage.getItem('lang') || 'jp';
+    },
+    computed: {
+        current: () => language.current,
+        languages: () => Object.keys(resources)
+    }
+};
+const i18n = {
+    install(vue: VueConstructor<Vue>, lang: string) {
+        language.current = lang || localStorage.getItem('lang') || 'jp';
 
-            vue.filter('i18n', getText);
-            vue.prototype.$i18n = getText;
+        vue.filter('i18n', getText);
+        vue.prototype.$i18n = getText;
 
-            vue.mixin({
-                computed: {
-                    pgName: {
-                        get() {
-                            return language.pgName;
-                        },
-                        set(name: string) {
-                            language.pgName = name || '';
-                        }
+        vue.mixin({
+            computed: {
+                pgName: {
+                    get() {
+                        return language.pgName;
+                    },
+                    set(name: string) {
+                        language.pgName = name || '';
                     }
                 }
-            });
-        }
-    }, getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
-        let lng = Language.current,
-            i18lang = resources[lng],
-            groups: { [key: string]: string } = {};
-
-        if (!!params) {
-            if (!obj.isString(params)) {
-                obj.extend(groups, params);
-            } else {
-                obj.extend(groups, { '0': params.toString() });
             }
+        });
+    }
+};
+const getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
+    let lng = Language.current,
+        i18lang = resources[lng],
+        groups: { [key: string]: string } = {};
+
+    if (!!params) {
+        if (!obj.isString(params)) {
+            obj.extend(groups, params);
+        } else {
+            obj.extend(groups, { '0': params.toString() });
         }
+    }
 
-        // accept numbet raw
-        resource = resource.toString();
+    // accept numbet raw
+    resource = resource.toString();
 
-        if (resource) {
-            [].slice.call(resource.match(/(#.+)|(#{.+})|({#.+})|({\d+})/g) || [])
-                .map((match: string) => match.replace(/[\#\{\}]/g, ''))
-                .forEach((key: string) => {
-                    if (!obj.has(groups, key)) {
-                        obj.set(groups, key, key);
-                    }
-                });
+    if (resource) {
+        [].slice.call(resource.match(/(#.+)|(#{.+})|({#.+})|({\d+})/g) || [])
+            .map((match: string) => match.replace(/[\#\{\}]/g, ''))
+            .forEach((key: string) => {
+                if (!obj.has(groups, key)) {
+                    obj.set(groups, key, key);
+                }
+            });
+        let result = (i18lang[resource] || resource)
+            .replace(/(#.+)|(#{.+})|({#.+})|({\d+})/g, (match: string) => {
+                let key = match.replace(/[\#\{\}]/g, '');
 
-            return ((i18lang[resource] || resource)
-                .replace(/(#.+)|(#{.+})|({#.+})|({\d+})/g, (match: string) => {
-                    let key = match.replace(/[\#\{\}]/g, '');
+                return getText((groups[key] || key), groups);
+            }) || resource;
 
-                    return getText((groups[key] || key), groups);
-                }) || resource).toString();
-        }
+        return result.toString();
+    }
 
-        return '';
-    };
+    return '';
+};
 
 export { i18n, Language, resources, LanguageBar };
