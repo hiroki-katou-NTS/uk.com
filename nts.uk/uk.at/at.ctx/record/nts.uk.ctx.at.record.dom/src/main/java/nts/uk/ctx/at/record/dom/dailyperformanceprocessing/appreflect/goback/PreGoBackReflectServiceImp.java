@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
+import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -25,6 +27,11 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
 		} catch(Exception ex) {
+			 boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+	            if(!isError) {
+	                throw ex;
+	            }
+	        commonService.createLogError(para.getEmployeeId(), para.getDateData(), para.getExcLogId());
 			return false;
 		}
 	}

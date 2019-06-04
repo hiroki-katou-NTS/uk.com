@@ -38,5 +38,5 @@ public class CommonReflectPubParameter {
 	
 	private Integer startTime;
 	private Integer endTime;
-	
+	private String excLogId;
 }
