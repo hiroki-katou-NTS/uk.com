@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -34,12 +33,19 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.enums.EnumAdaptor;
 
 @Stateless
 public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
@@ -77,6 +83,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private EmployeeDailyPerErrorRepository employeeError;
     @Inject
     private DailyRecordTransactionService dailyTransaction;
+    @Inject
+    private ErrMessageInfoRepository errMessInfo;
 
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
@@ -289,5 +297,19 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 						|| CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS.contains(x.getAttendanceItemId()))
 				.collect(Collectors.toList());
 		return lstEditCheck.isEmpty() ? false : true;
+	}
+
+	@Override
+	public void createLogError(String sid, GeneralDate ymd, String excLogId) {
+		if(excLogId == "") {
+			return;
+		}
+        ErrMessageInfo errMes = new ErrMessageInfo(sid, 
+                excLogId,
+                new ErrMessageResource("024"),
+                EnumAdaptor.valueOf(1, ExecutionContent.class),
+                ymd,
+                new ErrMessageContent(TextResource.localize("Msg_1541")));
+        this.errMessInfo.add(errMes);		
 	}
 }
