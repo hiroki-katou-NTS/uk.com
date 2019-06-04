@@ -308,7 +308,7 @@ module nts.uk.at.view.kaf010.b {
                 self.overtimeHoursPre.removeAll();
                 if (data.preAppHolidayWorkDto.holidayWorkInputs != null) {
                     for (let i = 0; i < data.preAppHolidayWorkDto.holidayWorkInputs.length; i++) {
-                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != -1) {
+                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != null) {
                             self.overtimeHoursPre.push(new common.AppOvertimePre("", "",
                                 data.preAppHolidayWorkDto.holidayWorkInputs[i].attendanceID,
                                 "", data.preAppHolidayWorkDto.holidayWorkInputs[i].frameNo,
@@ -570,7 +570,7 @@ module nts.uk.at.view.kaf010.b {
                     overtimeHours: ko.toJS(self.overtimeHours()),
                     breakTimes: ko.toJS(self.breakTimes()),
                     restTime: ko.toJS(self.restTime()),
-                    holidayWorkShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                    holidayWorkShiftNight: ko.toJS(overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp),
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
                     calculateFlag: self.calculateFlag(),
@@ -1139,8 +1139,26 @@ module nts.uk.at.view.kaf010.b {
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });       
                     } else {
-                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
-                        .then(function() { nts.uk.ui.block.clear(); });      
+                        let errors = res.errors;
+                        for(let i = 0; i < errors.length; i++){
+                            let error = errors[i];
+                            if(error.messageId=="Msg_1538"){
+                                error.parameterIds = [
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+                                ];     
+                            } else {
+                                error.parameterIds = [
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+                                ];     
+                            }
+                            error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+                        }
+                        nts.uk.ui.dialog.bundledErrors({ errors: errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });          
                     }           
                 });        
             }

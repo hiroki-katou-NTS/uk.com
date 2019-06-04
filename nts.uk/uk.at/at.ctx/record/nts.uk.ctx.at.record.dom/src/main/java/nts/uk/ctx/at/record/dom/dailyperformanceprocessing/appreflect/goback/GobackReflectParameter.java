@@ -43,5 +43,5 @@ public class GobackReflectParameter {
 	 * 直行直帰申請情報
 	 */
 	private GobackAppParameter gobackData;
-
+	private String excLogId;
 }

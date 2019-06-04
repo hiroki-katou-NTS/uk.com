@@ -60,12 +60,12 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
 			typicalReason += command.appCommand.getAppReasonID();
 		}
-		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-			if(Strings.isNotBlank(typicalReason)){
-				displayReason += System.lineSeparator();
-			}
-			displayReason += command.appCommand.getApplicationReason();
+		//if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(Strings.isNotBlank(typicalReason)){
+			displayReason += System.lineSeparator();
 		}
+		displayReason += command.appCommand.getApplicationReason();
+		//}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyId);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();

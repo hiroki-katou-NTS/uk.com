@@ -1,21 +1,28 @@
 package nts.uk.screen.at.app.dailyperformance.correction.agreement;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetNumberOverrunByYM;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 
+/**
+ * @author thanhnx
+ *
+ */
 @Stateless
 public class DisplayAgreementInfo {
 	
@@ -38,10 +45,12 @@ public class DisplayAgreementInfo {
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	
 	@Inject
-	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
+	private GetNumberOverrunByYM getNumberOverrunByYM;
 	
+	//36協定情報を表示する
 	public AgreementInfomationDto displayAgreementInfo(String companyId, String employeeId, int year, int month){
 		
+		//取得しているドメインモデル「日別実績の修正の機能．36協定情報を表示する」をチェックする
 		Optional<DaiPerformanceFun> funOpt = findata.getDailyPerformFun(companyId);
 		if(!funOpt.isPresent() || funOpt.get().getDisp36Atr() == 0) return AgreementInfomationDto.builder().showAgreement(false).build();
 		
@@ -49,8 +58,10 @@ public class DisplayAgreementInfo {
 		AgreementInfomationDto result = new AgreementInfomationDto();
 		
 		result.setShowAgreement(true);
-		
-		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = agreementTimeOfManagePeriodRepository.find(employeeId, YearMonth.of(year, month));
+		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperationSettingRepository.find(companyId);
+		//年月を指定して管理期間の36協定時間を取得する
+		List<AgreementTimeOfManagePeriod> lstAgree = getCoordinatedHours(companyId, Arrays.asList(employeeId), YearMonth.of(year, month), agreeOperationOpt);
+		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = lstAgree.isEmpty() ? Optional.empty() : Optional.of(lstAgree.get(0));
 		
 		if (agreeTimeOpt.isPresent()) {
 			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getStatus().value));
@@ -68,17 +79,33 @@ public class DisplayAgreementInfo {
 			result.setMaxTime(convertTime(valueMaxTime));
 		}
 
-		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperationSettingRepository.find(companyId);
-
 		result.setMaxNumber(agreeOperationOpt.isPresent()
 				? String.valueOf(agreeOperationOpt.get().getNumberTimesOverLimitType().value)
 				: "0");
-		result.setExcessFrequency(String.valueOf(getExcessTimesYearAdapter.algorithm(employeeId, new Year(year))));
-		if (Integer.parseInt(result.getExcessFrequency()) >= Integer.parseInt(result.getMaxNumber())) {
+		Optional<AgreementExcessInfo> agreeExcessOpt = agreeTimeOpt.isPresent()
+				? getNumberOverrunByYM.getNumberOverrunByYearMonth(employeeId,  YearMonth.of(year, month),
+						agreeOperationOpt)
+				: Optional.empty();
+		result.setExcessFrequency(String.valueOf(agreeExcessOpt.isPresent() ? agreeExcessOpt.get().getExcessTimes() : 0 ));
+		if (Integer.parseInt(result.getExcessFrequency()) > Integer.parseInt(result.getMaxNumber())) {
 			result.setCssFrequency(ERROR);
+		}else if(Integer.parseInt(result.getExcessFrequency()) == Integer.parseInt(result.getMaxNumber())) {
+			result.setCssFrequency(ALARM);
 		}
 
 		return result;
+	}
+	
+	public List<AgreementTimeOfManagePeriod> getCoordinatedHours(String companyId, List<String> employeeIds,
+			YearMonth yearMonth, Optional<AgreementOperationSetting> agreementOperaSetOpt) {
+		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperaSetOpt.isPresent() ? agreementOperaSetOpt
+				: agreementOperationSettingRepository.find(companyId);
+		if (!agreeOperationOpt.isPresent())
+			return Collections.emptyList();
+		YearMonth yearMonthChange = agreeOperationOpt.get().getYearMonthOfAgreementPeriod(yearMonth);
+		List<AgreementTimeOfManagePeriod> agreeTimes = agreementTimeOfManagePeriodRepository
+				.findByEmployees(employeeIds, yearMonthChange);
+		return agreeTimes;
 	}
 	
 	private String convertStateCell(int value) {
