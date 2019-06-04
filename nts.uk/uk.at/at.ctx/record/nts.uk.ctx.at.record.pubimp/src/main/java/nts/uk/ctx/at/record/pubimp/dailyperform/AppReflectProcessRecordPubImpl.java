@@ -90,12 +90,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Inject
 	private RemainCreateInforByScheData scheData;
 	@Inject
-	private ApprovalStatusAdapter appAdapter;
-	@Inject
 	private IdentificationRepository identificationRepository;
 	@Override
-	public boolean appReflectProcess(AppCommonPara para, ExecutionType executionType) {
-		boolean output = true;		
+	public boolean appReflectProcess(AppCommonPara para, ExecutionType executionType) {		
 		ScheRemainCreateInfor scheInfor = null;
 		if(para.isChkRecord()) {
 			//ドメインモデル「日別実績の勤務情報」を取得する
@@ -176,7 +173,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectAtr.class),
 				para.isScheReflectAtr(),
-				appPara);
+				appPara,
+				para.getExcLogId());
 		return gobackPara;
 		
 	}
@@ -208,7 +206,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isAutoClearStampFlg(), 
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheTimeOutFlg(),
-				appOver);
+				appOver,
+				param.getExcLogId());
 		return overtimePara;
 	}
 
@@ -238,7 +237,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheReflectFlg(),
 				param.isHwRecordReflectTime(),
 				param.isHwRecordReflectBreak(),
-				appPara);
+				appPara,
+				param.getExcLogId());
 		return holidayworkService.preHolidayWorktimeReflect(para, isPre);
 	}
 
@@ -257,7 +257,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			 	param.getStartDate(),
 			 	param.getEndDate(),
 			 	param.getStartTime(),
-			 	param.getEndTime());
+			 	param.getEndTime(),
+			 	param.getExcLogId());
 		return outputData;
 	}
 
