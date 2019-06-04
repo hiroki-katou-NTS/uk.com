@@ -174,7 +174,9 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				appOverTime.getApplication().getAppDate(), 
 				1, 
 				appOverTime.getAppID(), 
-				appOverTime.getApplication().getPrePostAtr(), command.getVersion(),command.getWorkTypeCode(),command.getSiftTypeCode());
+				appOverTime.getApplication().getPrePostAtr(), command.getVersion(),
+				appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(),
+				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
 		//ドメインモデル「残業申請」を更新する
 		overtimeRepository.update(appOverTime);
 		applicationRepository.updateWithVersion(appOverTime.getApplication());

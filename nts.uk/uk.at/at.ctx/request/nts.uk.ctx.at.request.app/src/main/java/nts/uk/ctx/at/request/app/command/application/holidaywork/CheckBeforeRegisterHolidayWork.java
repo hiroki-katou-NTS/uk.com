@@ -76,7 +76,7 @@ public class CheckBeforeRegisterHolidayWork {
 				 command.getOverTimeShiftNight(),
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
 
-		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain);
+		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isCheckOver1Year());
 	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateHolidayWorkCommand command) {
@@ -107,11 +107,11 @@ public class CheckBeforeRegisterHolidayWork {
 		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain);
 	}
 	
-	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork) {
+	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app,0);
+		newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		//03-06_計算ボタンチェック

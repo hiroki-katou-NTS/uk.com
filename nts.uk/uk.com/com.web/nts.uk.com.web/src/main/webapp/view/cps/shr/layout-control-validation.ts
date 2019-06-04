@@ -475,10 +475,16 @@ module nts.layout {
                                         if (cb) {
                                             c.data.editable(true);
                                         } else {
-                                            if (ctrls[0].data.value() == 1) {
+                                            if (ctrls[0] && ctrls[0].data.value() == 1) {
                                                 c.data.editable(true);
                                             } else {
-                                                c.data.editable(false);
+                                                //itemCode: "IS00376"
+                                                if( ctrls[0] && (ctrls[0].data.itemCode == "IS00376" || ctrls[0].data.itemCode == "IS00381")){
+                                                    c.data.editable(true);
+                                                }else{
+                                                    c.data.editable(false);
+                                                }
+                                                
                                             }
                                         }
                                     }
@@ -1468,6 +1474,7 @@ module nts.layout {
         // validate datetime control
         dateTime = () => {
             let self = this,
+                dfd = $.Deferred(),
                 finder: IFinder = self.finder,
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
@@ -1552,17 +1559,19 @@ module nts.layout {
                         }
                         if (_.isNil(baseDateParam) || !moment.utc(baseDateParam, "YYYYMMDD").isValid()) {
                             setShared('inputCDL008', null);
+                            dfd.resolve();
                         } else {
-                            fetch.checkFunctionNo().done(data => {
+                            fetch.checkFunctionNo().done(functionNo => {
                                 setShared('inputCDL008', {
                                     selectedCodes: [ko.toJS(data.value)],
                                     baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: data.available,
+                                    isrestrictionOfReferenceRange: functionNo.available,
                                     showNoSelection: !data.required,
                                     isShowBaseDate: false
                                 }, true);
+                                dfd.resolve();
                             });
                         }
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
@@ -1570,44 +1579,48 @@ module nts.layout {
                             let v = CS00017_IS00082.data.value();
 
                             if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
+                                    dfd.resolve();
                                 });
                             } else {
                                 setShared('inputCDL008', null);
+                                dfd.resolve();
                             }
                         } else {
                             if (__viewContext.viewModel.layout.mode() == 'layout') {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
+                                    dfd.resolve();
                                 });
                             } else {
-                                fetch.checkFunctionNo().done(data => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: data.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
+                                    dfd.resolve();
                                 });
                             }
                         }
@@ -1727,20 +1740,22 @@ module nts.layout {
 
                         initCDL008Data(ko.toJS(CS00017_IS00084.data));
 
-                        if (!!getShared('inputCDL008')) {
-                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                                // Check is cancel.
-                                if (getShared('CDL008Cancel')) {
-                                    return;
-                                }
-
-                                //view all code of selected item
-                                let output = getShared('outputCDL008');
-                                if (!_.isNil(output)) {
-                                    CS00017_IS00084.data.value(output);
-                                }
-                            });
-                        }
+                        dfd.promise().done(() => {
+                            if (!!getShared('inputCDL008')) {
+                                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                    // Check is cancel.
+                                    if (getShared('CDL008Cancel')) {
+                                        return;
+                                    }
+    
+                                    //view all code of selected item
+                                    let output = getShared('outputCDL008');
+                                    if (!_.isNil(output)) {
+                                        CS00017_IS00084.data.value(output);
+                                    }
+                                });
+                            }
+                        });
                     });
             }
 
@@ -1759,20 +1774,22 @@ module nts.layout {
 
                         initCDL008Data(ko.toJS(CS00017_IS00085.data));
 
-                        if (!!getShared('inputCDL008')) {
-                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                                // Check is cancel.
-                                if (getShared('CDL008Cancel')) {
-                                    return;
-                                }
-
-                                //view all code of selected item
-                                let output = getShared('outputCDL008');
-                                if (!_.isNil(output)) {
-                                    CS00017_IS00085.data.value(output);
-                                }
-                            });
-                        }
+                        dfd.promise().done(() => {
+                            if (!!getShared('inputCDL008')) {
+                                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                    // Check is cancel.
+                                    if (getShared('CDL008Cancel')) {
+                                        return;
+                                    }
+    
+                                    //view all code of selected item
+                                    let output = getShared('outputCDL008');
+                                    if (!_.isNil(output)) {
+                                        CS00017_IS00085.data.value(output);
+                                    }
+                                });
+                            }
+                        });
                     });
             }
             let getComboData = () => {

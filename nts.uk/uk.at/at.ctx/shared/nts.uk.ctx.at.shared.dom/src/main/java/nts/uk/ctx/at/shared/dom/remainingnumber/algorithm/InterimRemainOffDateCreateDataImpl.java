@@ -327,17 +327,16 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DayoffTranferInfor createDayOffTranferFromRecord(String cid, CreateAtr createAtr, RecordRemainCreateInfor recordData,
 			boolean dayOffTimeIsUse) {
 		//代休振替情報を作成する
-		TranferTimeInfor tranferBreakTime = new TranferTimeInfor(createAtr, recordData.getTransferTotal(), Optional.empty());
-		DayoffTranferInfor outputData = new DayoffTranferInfor(recordData.getWorkTimeCode(), Optional.of(tranferBreakTime), Optional.empty());
+		Optional<TranferTimeInfor> tranferBreakTime = Optional.of(new TranferTimeInfor(createAtr, recordData.getTransferTotal(), Optional.empty()));
+		DayoffTranferInfor outputData = new DayoffTranferInfor(recordData.getWorkTimeCode(), tranferBreakTime, Optional.empty());
 		//アルゴリズム「代休振替時間を算出する」を実行する
 		String workTimeCode = recordData.getWorkTimeCode().isPresent() ? recordData.getWorkTimeCode().get() : "";
-		tranferBreakTime = this.calDayoffTranferTime(cid, tranferBreakTime, workTimeCode, DayoffChangeAtr.BREAKTIME);
-		outputData.setTranferBreakTime(tranferBreakTime != null ? Optional.of(tranferBreakTime) : Optional.empty());
+		tranferBreakTime = this.calDayoffTranferTime(cid, createAtr, workTimeCode, recordData.getTransferTotal(), DayoffChangeAtr.BREAKTIME);
+		outputData.setTranferBreakTime(tranferBreakTime);
 		//アルゴリズム「実績から振替残業時間を作成する」を実行する
 		if(dayOffTimeIsUse) {
-			TranferTimeInfor tranferOvertime = new TranferTimeInfor(createAtr, recordData.getTransferOvertimesTotal(), Optional.empty());
-			tranferOvertime = this.calDayoffTranferTime(cid, tranferOvertime, workTimeCode, DayoffChangeAtr.OVERTIME);
-			outputData.setTranferOverTime(tranferOvertime != null ? Optional.of(tranferOvertime) : Optional.empty());
+			Optional<TranferTimeInfor> tranferOvertime = this.calDayoffTranferTime(cid, createAtr, workTimeCode, recordData.getTransferOvertimesTotal(), DayoffChangeAtr.OVERTIME);
+			outputData.setTranferOverTime(tranferOvertime);
 		}
 		return outputData;
 	}
@@ -405,22 +404,22 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			if(!chkDayOff) {
 				continue;
 			}
-			TranferTimeInfor transferBreak = new TranferTimeInfor(createAtr, timeSetting, Optional.empty());
-			TranferTimeInfor transferOver = new TranferTimeInfor(createAtr, timeOverSetting, Optional.empty());
+			Optional<TranferTimeInfor> transferBreak = Optional.of(new TranferTimeInfor(createAtr, timeSetting, Optional.empty()));
+			Optional<TranferTimeInfor> transferOver = Optional.of(new TranferTimeInfor(createAtr, timeOverSetting, Optional.empty()));
 			//振替可能時間をチェックする
 			if(timeSetting == null) {
 				//アルゴリズム「所定時間を取得」を実行する
 				timeSetting = workTimeService.getTimeByWorkTimeTypeCode(workTimeCode, workTypeInfor.getWorkTypeCode());
-				transferBreak.setTranferTime(timeSetting);
+				transferBreak.get().setTranferTime(timeSetting);
 			}
 			if(timeOverSetting != null && dayOffTimeIsUse) {
 				//振替残業時間を作成する
-				transferOver = this.calDayoffTranferTime(cid, transferOver, workTimeCode, DayoffChangeAtr.OVERTIME);
+				transferOver = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME);
 			}
 			//アルゴリズム「代休振替時間を算出する」を実行する
-			transferBreak = this.calDayoffTranferTime(cid, transferBreak, workTimeCode, DayoffChangeAtr.BREAKTIME);
+			transferBreak = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeSetting, DayoffChangeAtr.BREAKTIME);
 			
-			lstOutput.add(new DayoffTranferInfor(Optional.of(workTimeCode), Optional.of(transferBreak), Optional.of(transferOver)));
+			lstOutput.add(new DayoffTranferInfor(Optional.of(workTimeCode), transferBreak, transferOver));
 		}
 		
 		return lstOutput;
@@ -443,24 +442,24 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	}
 
 	@Override
-	public TranferTimeInfor calDayoffTranferTime(String cid, TranferTimeInfor timeInfor, String workTimeCode, DayoffChangeAtr dayoffChange) {
+	public Optional<TranferTimeInfor> calDayoffTranferTime(String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange) {
 		//アルゴリズム「代休振替設定を取得」を実行する
 		Optional<SubHolTransferSet> optDayOffTranferSetting = confirmTime.get(cid, workTimeCode);
 		if(!optDayOffTranferSetting.isPresent()) {
-			return timeInfor;
+			return Optional.empty();
 		}
 		//使用区分をチェックする
 		SubHolTransferSet transferSetting = optDayOffTranferSetting.get();
 		if(!transferSetting.isUseDivision()) {
-			return timeInfor;
+			return Optional.empty();
 		}
 		//振替区分をチェックする
 		if(transferSetting.getSubHolTransferSetAtr() == SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL) {
 			//一定時間の振替処理を行う
-			return new TranferTimeInfor(timeInfor.getCreateAtr(), this.processCertainTime(transferSetting, timeInfor.getTranferTime()), Optional.empty());
+			return Optional.of(new TranferTimeInfor(createAtr, this.processCertainTime(transferSetting, timeSetting), Optional.empty()));
 		} else {
 			//指定時間の振替処理を行う
-			return this.processDesignationTime(transferSetting, timeInfor.getTranferTime(), timeInfor.getCreateAtr());			
+			return Optional.of(this.processDesignationTime(transferSetting, timeSetting, createAtr));			
 		}
 	}
 	/**
@@ -493,7 +492,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return outData;
 		}
 		//振替可能時間と1日の時間を比較する
-		if(transferSetting.getDesignatedTime().getOneDayTime() != null && timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
+		if(timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
 			//半日の時間をチェックする
 			//振替可能時間と半日の時間を比較する
 			if(transferSetting.getDesignatedTime().getHalfDayTime().v() > 0

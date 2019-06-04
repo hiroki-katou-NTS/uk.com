@@ -132,7 +132,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 期間を作成
 		GeneralDate startDate = remainData.getGrantDate();
-		return Optional.of(new DatePeriod(startDate, startDate.addYears(1)));
+		return Optional.of(new DatePeriod(startDate, startDate.addYears(1).addDays(-1)));
 	}
 	
 	/** 年休使用義務日数の按分しない期間の付与日数を取得 */
@@ -167,8 +167,18 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		val period = periodOpt.get();
 		
 		// 前回付与日から次回付与日までの期間をチェックする　（１年以上なら、空の結果を返す）
-		GeneralDate checkYmd = period.start().addYears(1);
-		if (checkYmd.beforeOrEquals(period.end())) return result;
+		GeneralDate checkYmd = period.start().addYears(1).addDays(-1);	// ちょうど1年経つ日
+		if (period.end().afterOrEquals(checkYmd)) {
+			
+			// 1年以上の時、前回付与した「年休付与残数データ」を返す
+			for (val grantRemain : obligedAnnualLeaveUse.getGrantRemainList()) {
+				GeneralDate grantDate = grantRemain.getGrantDate();
+				if (grantDate.compareTo(period.start()) == 0) {
+					result.getGrantRemainList().add(grantRemain);
+				}
+			}
+			return result;
+		}
 		
 		// 付与残数を取得
 		for (val grantRemain : obligedAnnualLeaveUse.getGrantRemainList()) {

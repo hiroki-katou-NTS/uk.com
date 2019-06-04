@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf005.b {
             workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
             
             // AppOvertimeReference
-            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
+            appDateReference: KnockoutObservable<string> = ko.observable("");
             workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
             workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
             siftCodeReference:  KnockoutObservable<string> = ko.observable("");
@@ -656,7 +656,25 @@ module nts.uk.at.view.kaf005.b {
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });       
                     } else {
-                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                        let errors = res.errors;
+                        for(let i = 0; i < errors.length; i++){
+                            let error = errors[i];
+                            if(error.messageId=="Msg_1538"){
+                                error.parameterIds = [
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+                                ];     
+                            } else {
+                                error.parameterIds = [
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])), 
+                                    nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+                                ];     
+                            }
+                            error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+                        }
+                        nts.uk.ui.dialog.bundledErrors({ errors: errors })    
                         .then(function() { nts.uk.ui.block.clear(); });      
                     }
                 });
@@ -940,11 +958,11 @@ module nts.uk.at.view.kaf005.b {
                     self.appDateReference(data.appOvertimeReference.appDateRefer);
                     if(data.appOvertimeReference.workTypeRefer != null){
                         self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
-                        self.workTypeNameReference(data.appOvertimeReference.workTypeRefer.workTypeName);
+                        self.workTypeNameReference(self.getName(data.appOvertimeReference.workTypeRefer.workTypeCode, data.appOvertimeReference.workTypeRefer.workTypeName));
                     }
                     if(data.appOvertimeReference.siftTypeRefer != null){
                         self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
-                        self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
+                        self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
                     }
                     self.workClockFrom1To1Reference(data.appOvertimeReference.workClockFromTo1Refer);
                     self.workClockFrom2To2Reference(data.appOvertimeReference.workClockFromTo2Refer);

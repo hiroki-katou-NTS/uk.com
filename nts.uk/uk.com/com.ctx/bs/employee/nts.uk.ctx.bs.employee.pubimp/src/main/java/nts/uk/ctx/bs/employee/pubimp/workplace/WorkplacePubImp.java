@@ -952,10 +952,32 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<ResultRequest597Export> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
 		List<String> sids = affWorkplaceHistoryItemRepository.getHistIdLstByWorkplaceIdsAndPeriod(workplaceIds, period);
-		List<ResultRequest597Export> results = subEmp.getEmpNotDeletedLstBySids(sids).stream()
+		if(CollectionUtil.isEmpty(sids)) { return new ArrayList<>();}
+		List<ResultRequest597Export> results = subEmp.getEmpInfoLstBySids(sids, period, true, true).stream()
 				.map(c -> new ResultRequest597Export(c.getSid(), c.getEmployeeCode(), c.getEmployeeName()))
 				.collect(Collectors.toList());
 		return results;
+	}
+
+	@Override
+	public List<WorkPlaceInfoExport> findWkpByWkpIdRQ324Ver2(String companyId, GeneralDate baseDate,
+			List<String> wkpIds) {
+		List<Workplace> workplace = workplaceRepo.findByWkpIds(wkpIds);
+		List<String> lstHistID = new ArrayList<>();
+		for (Workplace wkp : workplace) {
+			if(!wkp.getCompanyId().equals(companyId)){
+				continue;
+			}
+			List<WorkplaceHistory> workplaceHistory = wkp.getWorkplaceHistory();
+			for (WorkplaceHistory wkpHist : workplaceHistory) {
+				if(wkpHist.start().beforeOrEquals(baseDate) && wkpHist.end().afterOrEquals(baseDate)){
+					lstHistID.add(wkpHist.identifier());
+				}
+			}
+		}
+		List<WorkplaceInfo> wkpInfors = workplaceInfoRepo.findByHistory(lstHistID, companyId);
+		return wkpInfors.stream().map(item -> WorkPlaceInfoExport.builder().workplaceId(item.getWorkplaceId())
+				.workPlaceName(item.getWorkplaceName().v()).build()).collect(Collectors.toList());
 	}
 
 }

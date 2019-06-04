@@ -94,6 +94,11 @@ module nts.uk.ui.jqueryExtentions {
         
         function scrollToSelect($grid: JQuery) {
             var row = null;
+			
+			if ($grid.data('igGrid') === undefined ) {
+                return;
+            }
+			
             var selectedRows = $grid.igGrid("selectedRows");
             if (selectedRows) {
                 row = selectedRows[0];

@@ -12,6 +12,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
@@ -136,6 +138,9 @@ public class LoginRecordRegistService {
 		LoginUserRoles authorityInformation = AppContexts.user().roles();
 
 		// set LogBasicInformation
+		if(Strings.isBlank(companyId)){
+			companyId = AppContexts.user().companyId();
+		}
 		LogBasicInformation logBasicInfor = new LogBasicInformation(operationId, companyId, userInfor, loginInformation,
 				dateTime, authorityInformation, targetProgram, infor.remark != null ? Optional.of(infor.remark) : Optional.empty());
 

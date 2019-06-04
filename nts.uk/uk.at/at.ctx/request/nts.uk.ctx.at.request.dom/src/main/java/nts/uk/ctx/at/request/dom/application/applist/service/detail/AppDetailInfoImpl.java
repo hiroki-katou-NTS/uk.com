@@ -15,11 +15,16 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.i18n.I18NText;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -86,6 +91,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlg;
+	@Inject
+	private ApplicationRepository_New repoApp;
 	/**
 	 * 残業申請
 	 * get Application Over Time Info
@@ -675,5 +684,30 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 					this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null))));
 		}
 		return lstAppFull;
+	}
+
+	@Override
+	public AppCompltLeaveSync getCompltLeaveSync(String companyID, String appId) {
+		AppCompltLeaveFull appMain = null;
+		AppCompltLeaveFull appSub = null;
+		String appDateSub = null;
+		String appInputSub = null;
+		//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
+		AppCompltLeaveSyncOutput sync = otherCommonAlg.getAppComplementLeaveSync(companyID, appId);
+		if(!sync.isSync()){//TH k co don lien ket
+			//lay thong tin chi tiet
+			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType());
+		}else{//TH co don lien ket
+			//lay thong tin chi tiet A
+			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType());
+			//check B co trong list don xin k?
+			String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
+			//lay thong tin chung
+			Application_New sub = repoApp.findByID(companyID, appIdSync).get();
+			appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+			appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
+			appSub = this.getAppCompltLeaveInfo(companyID, appIdSync, sync.getType() == 0 ? 1 : 0);
+		}
+		return new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub);
 	}
 }

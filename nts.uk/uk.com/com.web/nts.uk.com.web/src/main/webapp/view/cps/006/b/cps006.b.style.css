@@ -23,7 +23,6 @@
 .line_col_2_sel {
 	width: 350px;
 	float: left;
-	margin-left: 30px;
 }
 
 #content-left {
@@ -69,6 +68,9 @@
 	margin-left: 130px !important;
 }
 
+#B2_44{
+	margin-left: -95px;
+}
 .currency:after {
 	content: '¥';
 }

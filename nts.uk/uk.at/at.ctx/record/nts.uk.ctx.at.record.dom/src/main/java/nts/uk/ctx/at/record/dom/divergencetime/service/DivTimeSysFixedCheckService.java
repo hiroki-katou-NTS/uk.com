@@ -12,8 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.program.ProgramIdConsts;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
@@ -21,10 +19,8 @@ import nts.arc.i18n.I18NResources;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
-import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
@@ -48,22 +44,23 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalsituationmanagement.export.clearapprovalconfirm.ClearConfirmApprovalService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.program.ProgramIdConsts;
 
 @Stateless
 public class DivTimeSysFixedCheckService {
@@ -107,8 +104,8 @@ public class DivTimeSysFixedCheckService {
 	@Inject
 	private IdentityProcessUseSetRepository iPSURepo;
 	
-	@Inject
-	private IdentificationRepository identityRepo;
+//	@Inject
+//	private IdentificationRepository identityRepo;
 	
 //	@Inject
 //	private EmployeeDailyPerErrorRepository errorRepo;
@@ -119,11 +116,11 @@ public class DivTimeSysFixedCheckService {
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalSettingRepo;
 	
-	@Inject
-	private ApprovalStatusOfDailyPerforRepository approvalStateRepo;
+//	@Inject
+//	private ApprovalStatusOfDailyPerforRepository approvalStateRepo;
 	
-	@Inject
-	private AppRootStateConfirmAdapter appRootStateAdapter;
+//	@Inject
+//	private AppRootStateConfirmAdapter appRootStateAdapter;
 	
 	@Inject
 	private I18NResources resources;
@@ -133,6 +130,9 @@ public class DivTimeSysFixedCheckService {
 	
 	@Inject
 	private BusinessTypeOfEmployeeRepository bteRepo;
+	
+	@Inject
+	private ClearConfirmApprovalService approvalService;
 	
 	public final static List<String> SYSTEM_FIXED_DIVERGENCE_CHECK_CODE = Arrays.asList("D001", "D002", "D003", "D004", "D005", 
 			"D006", "D007", "D008", "D009", "D010", "D011", "D012", "D013", "D014", "D015", "D016", "D017", "D018", "D019", "D020");
@@ -302,41 +302,51 @@ public class DivTimeSysFixedCheckService {
 			List<EmployeeDailyPerError> errors, IdentityProcessUseSet iPUS, MasterShareContainer<String> shareContainer) {
 		List<EmployeeDailyPerError> divEr67 = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null
 				&& (c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.value)
-				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value))
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_3.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_4.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_5.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_9.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_10.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_8.value))
 				&& c.getDate().equals(tarD) && c.getEmployeeID().equals(empId)).collect(Collectors.toList());
 		
 		if (!divEr67.isEmpty()) {
-			if (iPUS.isUseConfirmByYourself()) {
-				identityRepo.findByCode(empId, tarD).ifPresent(id -> {
-					removeSelfIdentity(comId, iPUS, divEr67, empId);
-				});
-			}
-			shareContainer.getShared(join(APPROVAL_SETTING_KEY, SEPERATOR, comId),
-					() -> approvalSettingRepo.findByCompanyId(comId)).ifPresent(as -> {
-				if (as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()
-						&& as.getSupervisorConfirmErrorAtr() != null
-						&& !as.getSupervisorConfirmErrorAtr().equals(ConfirmationOfManagerOrYouself.CAN_CHECK)) {
-					approvalStateRepo.find(empId, tarD).ifPresent(asd -> {
-						/** 承認状態をすべてクリアする */
-						appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
-					});
-				}
-			});
+//			if (iPUS.isUseConfirmByYourself()) {
+//				identityRepo.findByCode(empId, tarD).ifPresent(id -> {
+//					removeSelfIdentity(comId, iPUS, divEr67, empId);
+//				});
+//			}
+			Optional<ApprovalProcessingUseSetting>  approvalSet = shareContainer.getShared(join(APPROVAL_SETTING_KEY, SEPERATOR, comId),
+					() -> approvalSettingRepo.findByCompanyId(comId));
+			
+			approvalService.clearConfirmApproval(empId, divEr67.stream().map(c -> c.getDate()).collect(Collectors.toList()), 
+					approvalSet, Optional.of(iPUS));
+//				if (as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()
+//						&& as.getSupervisorConfirmErrorAtr() != null
+//						&& !as.getSupervisorConfirmErrorAtr().equals(ConfirmationOfManagerOrYouself.CAN_CHECK)) {
+//					approvalStateRepo.find(empId, tarD).ifPresent(asd -> {
+//						/** 承認状態をすべてクリアする */
+//						appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
+//					});
+//				}
 		}
 		return errors;
 	}
 	
 	/** 日の本人確認を解除する */
-	private void removeSelfIdentity(String comId, IdentityProcessUseSet iPUS, List<EmployeeDailyPerError> divEr67, String empId) {
-		iPUS.getYourSelfConfirmError().ifPresent(sConEr -> {
-			if (sConEr != SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
-				// fix remove ドメインモデル「日の本人確認」を削除する Thanh
-				divEr67.stream().forEach(c -> {
-					identityRepo.remove(comId, empId, c.getDate());
-				});
-			}
-		});
-	}
+//	private void removeSelfIdentity(String comId, IdentityProcessUseSet iPUS, List<EmployeeDailyPerError> divEr67, String empId) {
+//		iPUS.getYourSelfConfirmError().ifPresent(sConEr -> {
+//			if (sConEr != SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
+//				// fix remove ドメインモデル「日の本人確認」を削除する Thanh
+//				divEr67.stream().forEach(c -> {
+//					identityRepo.remove(comId, empId, c.getDate());
+//				});
+//			}
+//		});
+//	}
 	
 	/** システム固定エラー：　乖離時間をチェックする */
 	private List<EmployeeDailyPerError> check(String comId, String empId, GeneralDate tarD,

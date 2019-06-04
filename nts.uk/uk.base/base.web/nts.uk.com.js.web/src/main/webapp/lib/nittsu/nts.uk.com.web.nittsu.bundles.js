@@ -4453,16 +4453,10 @@ var nts;
                  * Get session program.
                  */
                 function getSessionProgram() {
-                    var dfd = $.Deferred(), pgOpt = nts.uk.sessionStorage.getItem(PROGRAM_KEY);
-                    if (pgOpt.isPresent()) {
-                        dfd.resolve(JSON.parse(pgOpt.get()));
-                    }
-                    else {
-                        nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-                            nts.uk.sessionStorage.setItemAsJson(PROGRAM_KEY, pg);
-                            dfd.resolve(pg);
-                        });
-                    }
+                    var dfd = $.Deferred();
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        dfd.resolve(pg);
+                    });
                     return dfd.promise();
                 }
                 /**
@@ -29633,9 +29627,24 @@ var nts;
                         };
                         var osht = function (inoth) {
                             _.forEach(_.keys(_mafollicle[SheetDef]), function (s) {
-                                if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns))
+                                if (s === _currentSheet)
                                     return;
-                                var t, formatted, disFormat, maf = _mafollicle[currentPage][s], errDetail;
+                                var maf = _mafollicle[currentPage][s];
+                                //                    if (maf && _.find(_fixedColumns, fc => fc.key === coord.columnKey)) {
+                                //                        if (maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                //                            && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
+                                //                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                //                            delete maf.dirties[id][coord.columnKey];
+                                //                        } else if (cellValue === origVal
+                                //                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                //                            delete maf.dirties[id][coord.columnKey];
+                                //                        }
+                                //                        
+                                //                        return;
+                                //                    }
+                                if (!some(_mafollicle[SheetDef][s].columns) && !_.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
+                                    return;
+                                var t, formatted, disFormat, errDetail;
                                 if (maf && maf.desc) {
                                     t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                                     if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
@@ -30997,7 +31006,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                                    if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                                    if ( /*data !== tDate &&*/!d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -40575,6 +40584,9 @@ var nts;
                                 var setting = $grid.data(internal.SETTINGS);
                                 setting.pageSize = ui.newPageSize;
                                 setting.pageIndex = 0;
+                                if ($grid.igGridPaging("option", "currentPageIndex") > 0) {
+                                    $grid.igGridPaging("pageSize", setting.pageSize);
+                                }
                                 var loader = $grid.data(internal.LOADER);
                                 if (!loader)
                                     return;

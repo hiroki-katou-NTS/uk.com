@@ -21,7 +21,7 @@
 
 .placement-wraper {
 	position: relative;
-	height: 470px;
+	height: calc(100vh - 190px);
 	overflow: auto;
 }
 /* Override base */

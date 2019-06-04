@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -52,6 +57,8 @@ public class ApplicationListFinder {
 	private HdAppSetRepository repoHdAppSet;
 	@Inject
 	private AppDispNameRepository repoAppDispName;
+	@Inject
+	private AppContentDetailCMM045 contentDtail;
 	
 	public ApplicationListDto getAppList(AppListParamFilter param){
 		AppListExtractConditionDto condition = param.getCondition();
@@ -110,9 +117,11 @@ public class ApplicationListFinder {
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition());
 		List<ApplicationDto_New> lstAppSort = param.getCondition().getAppListAtr() == 1 ? this.sortByIdModeApproval(lstAppDto, lstApp.getDataMaster().getLstAppMasterInfo()) : 
 									this.sortByIdModeApp(lstAppDto, lstApp.getDataMaster().getMapAppBySCD(), lstApp.getDataMaster().getLstSCD());
+		//contentApp
+		List<ContentApp> lstContentApp = this.crateContentApp(lstAppSort, appListExCon.getAppListAtr(), displaySet.getAppReasonDisAtr(), lstApp.getDataMaster().getLstAppMasterInfo());
 		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getDataMaster().getLstAppMasterInfo(),lstAppSort,
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
-				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
+				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync(), lstContentApp);
 	}
 	/**
 	 * find status approval
@@ -250,5 +259,71 @@ public class ApplicationListFinder {
 			lstResult.addAll(this.sortById(this.findBylstID(lstApp, lstAppID)));
 		}
 		return lstResult;
+	}
+
+	private List<ContentApp> crateContentApp(List<ApplicationDto_New> lstApp, ApplicationListAtr appListAtr,
+			int appReasonDisAtr, List<AppMasterInfo> lstMaster) {
+		String companyID = AppContexts.user().companyId();
+		List<ContentApp> lstContent = new ArrayList<>();
+		for (ApplicationDto_New app : lstApp) {
+			String appID = app.getApplicationID();
+			String content = "";
+			switch (app.getApplicationType()) {
+				case 0: {// 残業申請
+					if (appListAtr.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr() == 1) {// 承認モード(事後)
+//						content = contentDtail.getContentOverTimeAf(companyID, appID, this.finddetailSet(lstMaster, appID),
+//								appReasonDisAtr, "");
+					} else {
+						content = contentDtail.getContentOverTimeBf(companyID, appID, this.finddetailSet(lstMaster, appID),
+								appReasonDisAtr, "", ScreenAtr.CMM045.value);
+					}
+					break;
+				}
+				case 1: {// 休暇申請
+					Integer day = 0;
+					if (Strings.isNotBlank(app.getStartDate()) && Strings.isNotBlank(app.getEndDate())) {
+						day = GeneralDate.fromString(app.getStartDate(), "yyyy/MM/dd")
+								.daysTo(GeneralDate.fromString(app.getEndDate(), "yyyy/MM/dd")) + 1;
+					}
+					content = contentDtail.getContentAbsence(companyID, appID, appReasonDisAtr, "", day,
+							ScreenAtr.CMM045.value);
+					break;
+				}
+				case 2: {// 勤務変更申請
+					content = contentDtail.getContentWorkChange(companyID, appID, appReasonDisAtr, "",
+							ScreenAtr.CMM045.value);
+					break;
+				}
+				case 4: {// 直行直帰申請*/
+					content = contentDtail.getContentGoBack(companyID, appID, appReasonDisAtr, "",
+							ScreenAtr.CMM045.value);
+					break;
+				}
+				case 6: {// 休出時間申請
+					if (appListAtr.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr() == 1) {// 承認モード(事後)
+//						content = contentDtail.getContentHdWorkAf(companyID, appID, appReasonDisAtr, "");
+					} else {
+						content = contentDtail.getContentHdWorkBf(companyID, appID, appReasonDisAtr, "",
+								ScreenAtr.CMM045.value);
+					}
+					break;
+				}
+				case 10: {// 振休振出申請*/
+					content = contentDtail.getContentComplt(companyID, appID, appReasonDisAtr, "",
+							ScreenAtr.CMM045.value);
+					break;
+				}
+			}
+			lstContent.add(new ContentApp(appID, content));
+		}
+		return lstContent;
+	}
+	private int finddetailSet(List<AppMasterInfo> lstMaster, String appID){
+		for (AppMasterInfo app : lstMaster) {
+			if(app.getAppID() == appID){
+				return app.getDetailSet().intValue();
+			}
+		}
+		return 0;
 	}
 }

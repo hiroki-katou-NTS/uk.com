@@ -117,9 +117,6 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 				}
 				appRootConfirmRepository.update(appRootConfirm);
 			}
-			if(!phaseComplete){
-				break;
-			}
 		}
 	}
 
@@ -135,7 +132,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		for(AppPhaseInstance appPhaseInstance : appPhaseInstanceLst){
 			// (中間データ版)承認フェーズ中間データ毎の承認者を取得する
 			List<String> approverLst = this.getApproverFromPhase(appPhaseInstance);
-			if(approverLst.isEmpty()){
+			if(!approverLst.contains(approverID)){
 				// ループ終了フラグをチェックする
 				if(loopCompleteFlg){
 					break;
@@ -159,6 +156,18 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			if(!this.canCancelCheck(approvalPhaseState, approverID)){
 				break;
 			}
+			List<ApprovalFrame> confirmFrameLst = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr()==ConfirmPerson.CONFIRM).collect(Collectors.toList());
+			// 承認形態と確定区分をチェックする
+			if((approvalPhaseState.getApprovalForm()==ApprovalForm.SINGLE_APPROVED)&&confirmFrameLst.isEmpty()){
+				appRootConfirm.getListAppPhase().remove(appPhaseConfirm);
+				// 解除を実行したかフラグ=true
+				cleanComplete = true;
+				// ループ終了フラグをチェックする
+				if(loopCompleteFlg){
+					break;
+				} 
+				continue;
+			}
 			// ループ終了フラグ=false(初期化)
 			loopCompleteFlg = false;
 			for(AppFrameInstance appFrameInstance : appPhaseInstance.getListAppFrame()){
@@ -179,7 +188,6 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			if(CollectionUtil.isEmpty(appPhaseConfirm.getListAppFrame())){
 				// ループする順の「承認済フェーズ」を削除する	
 				appRootConfirm.getListAppPhase().remove(appPhaseConfirm);
-				// loopCompleteFlg = true;
 			} else {
 				// ループする順の「承認済フェーズ」．承認区分=未承認
 				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.UNAPPROVED);
@@ -271,14 +279,9 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 					canCancel = true;
 				}
 			} else {
-				// 指定する社員が承認を行った承認者かチェックする
-				Optional<ApprovalFrame> opFrameApproved = approvalPhaseState.getListApprovalFrame().stream()
-						.filter(frame -> frame.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();
-				if(opFrameApproved.isPresent()){
-					ApprovalFrame frameApproved = opFrameApproved.get();
-					if(frameApproved.getApproverID().equals(employeeID) || frameApproved.getRepresenterID().equals(employeeID)){
-						canCancel = true;
-					}
+				// 指定する社員が承認を解除できるか
+				if (approvalPhaseState.canRelease(employeeID)) {
+					canCancel = true;
 				}
 			}
 		}
