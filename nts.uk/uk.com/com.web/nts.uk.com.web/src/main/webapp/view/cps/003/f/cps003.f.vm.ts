@@ -293,7 +293,7 @@ module cps003.f.vm {
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
                     matchValue: item.filter || null,
-                    replaceValue: undefined,
+                    replaceValue: "",
                     replaceFormat: undefined
                 };
 
