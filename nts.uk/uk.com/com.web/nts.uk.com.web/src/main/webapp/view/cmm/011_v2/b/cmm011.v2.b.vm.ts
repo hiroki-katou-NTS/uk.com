@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.NEW);
         lstWpkHistory: KnockoutObservableArray<HistoryItem>;
         selectedHistoryId: KnockoutObservable<string>;
+        bkHistoryId: string;
         selectedStartDateInput: KnockoutObservable<string>;
         selectedStartDateText: KnockoutObservable<string>;
         selectedEndDate: KnockoutObservable<string>;
@@ -32,6 +33,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             if (params) {
                 self.initMode(params.initMode);
                 self.selectedHistoryId(params.historyId);
+                self.bkHistoryId = params.historyId;
             }
             if (self.initMode() == INIT_MODE.DEPARTMENT) {
                 let currentScreen = nts.uk.ui.windows.getSelf();
@@ -96,7 +98,8 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 block.invisible();
                 let data = { historyId: self.selectedHistoryId(), initMode: self.initMode() };
                 service.deleteConfiguration(data).done(() => {
-                    self.deletedHistory = true;
+                    if (data.historyId == self.bkHistoryId)
+                        self.deletedHistory = true;
                     self.startPage().done(() => {
                         self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                     });
@@ -197,7 +200,12 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         
         cancel() {
             let self = this;
-            setShared("CMM011BParams", {reload: self.deletedHistory});
+            if (self.deletedHistory)
+                setShared("CMM011BParams", { 
+                    historyId: self.lstWpkHistory()[0].historyId, 
+                    startDate: self.lstWpkHistory()[0].startDate, 
+                    endDate: self.lstWpkHistory()[0].endDate 
+                });
             nts.uk.ui.windows.close();
         }
     }
