@@ -74,6 +74,10 @@ public class WageTablelData {
 
     private String qualificationName;
 
-    private String frameNumber;
+    private String frameNumber1;
+
+    private String frameNumber2;
+
+    private String frameNumber3;
 
 }

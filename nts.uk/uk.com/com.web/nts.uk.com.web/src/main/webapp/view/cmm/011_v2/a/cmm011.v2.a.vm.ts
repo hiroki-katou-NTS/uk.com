@@ -261,21 +261,15 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             modal("/view/cmm/011_v2/b/index.xhtml").onClosed(() => {
                 let params = getShared("CMM011BParams");
                 if (params) {
-                    if (params.reload != null) {
-                        if (params.reload)
-                            self.startPage();
-                    } else {
-                        self.configuration().historyId(params.historyId);
-                        self.configuration().startDate(params.startDate);
-                        self.configuration().endDate(params.endDate);
-                        block.invisible();
-                        self.getAllWkpDepInfor().done(() => {
-                            
-                        }).always(() => {
-                            block.clear()
-                        });
-                    }
-                    
+                    self.configuration().historyId(params.historyId);
+                    self.configuration().startDate(params.startDate);
+                    self.configuration().endDate(params.endDate);
+                    block.invisible();
+                    self.getAllWkpDepInfor().done(() => {
+                        
+                    }).always(() => {
+                        block.clear()
+                    });
                 }
             });
         }

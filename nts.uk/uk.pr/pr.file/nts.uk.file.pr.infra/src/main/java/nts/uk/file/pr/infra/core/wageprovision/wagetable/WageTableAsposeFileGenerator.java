@@ -4,6 +4,7 @@ import com.aspose.cells.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.MasterNumericAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationPaymentMethod;
 import nts.uk.ctx.pr.file.app.core.wageprovision.wagetable.ItemDataNameExport;
@@ -190,11 +191,16 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         e.setMasterCd1(e.getMasterCd3());
         e.setMasterCd3(e.getMasterCd2());
         e.setMasterCd2(tempMasterCd);
+
+        String tempFramNumber = e.getFrameNumber1();
+        e.setFrameNumber1(e.getFrameNumber3());
+        e.setFrameNumber3(e.getFrameNumber2());
+        e.setFrameNumber2(tempFramNumber);
     }
 
     private String getR2_8(List<ItemDataNameExport> data, WageTablelData e) {
-        if("M007".equals(e.getFixElement1()) || "M007".equals(e.getOptAddElement1())){
-            return e.getFrameNumber();
+        if(ElementType.FINE_WORK.value.equals(e.getFixElement1()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement1())){
+            return e.getFrameNumber1();
         }
         if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return  "".equals(e.getQualifiGroupName()) ? "".equals(e.getQualificationName()) ? "" : "なし" : e.getQualifiGroupName();
@@ -212,6 +218,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
+        if(ElementType.FINE_WORK.value.equals(e.getFixElement2()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement2())){
+            return e.getFrameNumber2();
+        }
         if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return e.getQualificationName();
         }
@@ -228,6 +237,9 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
+        if(ElementType.FINE_WORK.value.equals(e.getFixElement3()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement3())){
+            return e.getFrameNumber3();
+        }
         if(e.getMasterNumAtr3() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement3() , e.getMasterCd3().trim());
         }
