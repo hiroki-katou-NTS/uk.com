@@ -16,6 +16,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         careerClass: KnockoutObservableArray<any>;
         careerType: KnockoutObservableArray<any>;
         maxClassLevel: KnockoutObservable<number>;
+        checkStartFromBScreen: boolean;
+        dataFromBScreen: any;
 
         constructor() {
             var self = this;
@@ -58,6 +60,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.delChecked = ko.observable();
             self.afterRender = () => {
                 //alert("Load!");
+                if(self.checkStartFromBScreen){
+                    self.selectedHistId(self.dataFromBScreen.historyId);    
+                }
             };
             self.afterAdd = () => {
                 //alert("Added");
@@ -81,6 +86,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
             self.maxClassLevel = ko.observable(1);
+            self.checkStartFromBScreen = false;
+            self.dataFromBScreen = null;
 
             //set width for table
             self.maxClassLevel.subscribe(function(newValue) {
@@ -97,6 +104,13 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
+            nts.uk.characteristics.restore("DataShareCareerToAScreen").done((obj: any) => {
+                if(obj != undefined){
+                    self.checkStartFromBScreen = true;
+                    self.dataFromBScreen = obj;
+                    nts.uk.characteristics.remove("DataShareCareerToAScreen");    
+                }
+            });
             new service.getMaxClassLevel().done(function(data: any) {
                 self.maxClassLevel(5);
                 dfd.resolve();
@@ -119,6 +133,10 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 new service.getCareerPart(command).done(function(data: any) {
                     data.careerClass.add({ id: "", code: "", name: "" });
                     console.log(data);
+                    if(self.checkStartFromBScreen && self.dataFromBScreen != null){
+                        data.career = self.dataFromBScreen.career;
+                        self.checkStartFromBScreen = false;
+                    }
                     self.listCareer(data.career);
                     self.maxClassLevel(data.maxClassLevel);
                     self.careerType(_.orderBy(data.careerType, ['code'], ['asc']));
@@ -151,7 +169,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 historyId: self.selectedHistId(),
                 career: self.listCareer(),
                 maxClassLevel: self.maxClassLevel(),
-                careerClass: self.careerClass()
+                careerClass: self.careerClass(),
+                startDate: moment(startDate).format("YYYY/MM/DD")
             }
             if (careerType != '') {
                 block.grayout();

@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- Go back Style -->
-				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('JHC002_B1_1')}</a>
+				<a class="goback" data-bind="ntsLinkButton: { }, click: backTopAScreen">#{i18n.getText('JHC002_B1_1')}</a>
 				<button class="proceed" tabindex="1" data-bind="click: save">#{i18n.getText('JHC002_B1_2')}</button>
 			</div>
 			<div id="contents-area">
@@ -199,10 +199,15 @@
 							
 							<div style="display: flex;">
 								<div class="nts-fixed-body-container ui-iggrid">
-									<table class="rightTable" style="width:330px">
+									<table class="rightTable" id="fixed-table3">
 										<colgroup>
 											<col width="330px" />
 										</colgroup>
+										<thead style="display: none;">
+											<tr>
+												<td></td>
+											</tr>
+										</thead>
 										<tbody data-bind="foreach: careerOrderList()">
 											<tr>
 												<td style="height:249px; vertical-align: text-bottom;">
@@ -273,6 +278,40 @@
 												<col width="260px" />
 											</com:ko-if>
 										</colgroup>
+										<thead style="display: none;">
+											<tr>
+												<com:ko-if bind="_.includes(level(),1)">
+													<th class="ui-widget-header lever1" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),2)">
+													<th class="ui-widget-header lever2" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),3)">
+													<th class="ui-widget-header lever3" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),4)">
+													<th class="ui-widget-header lever4" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),5)">
+													<th class="ui-widget-header lever5" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),6)">
+													<th class="ui-widget-header lever6" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),7)">
+													<th class="ui-widget-header lever7" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),8)">
+													<th class="ui-widget-header lever8" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),9)">
+													<th class="ui-widget-header lever9" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),10)">
+													<th class="ui-widget-header lever10" colspan="1"></th>
+												</com:ko-if>
+											</tr>
+										</thead>
 										<tbody data-bind="foreach: career()">
 											<tr class="careerClassRole">
 												<com:ko-if bind="_.includes($parent.level(),1)">
@@ -286,7 +325,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -297,7 +336,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -319,7 +358,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -330,7 +369,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -352,7 +391,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -363,7 +402,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -385,7 +424,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -396,7 +435,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -418,7 +457,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -429,7 +468,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -451,7 +490,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -462,7 +501,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -484,7 +523,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -495,7 +534,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -517,7 +556,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -528,7 +567,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -550,7 +589,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -561,7 +600,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>
@@ -583,7 +622,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 															<span>#{i18n.getText('JHC002_B222_23')}</span>
@@ -594,7 +633,7 @@
 													                    width: '50',
 													                    unitID: 'YEARS'
 													                },
-																required: ko.observable(true),
+																required: ko.observable(false),
 																enable: ($parents[1].careerOrderList()[$index()].requirementType() == 1 &amp;&amp; $parents[1].careerOrderList()[$index()].yearType() != null),
 																readonly: ko.observable(false)}" />
 														</div>

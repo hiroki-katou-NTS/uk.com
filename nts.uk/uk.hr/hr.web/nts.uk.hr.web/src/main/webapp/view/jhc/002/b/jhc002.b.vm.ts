@@ -9,13 +9,13 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         selectedHistId: KnockoutObservable<any>;
         itemList: any;
         masterTypelist: KnockoutObservableArray<ItemModel>;
-        level : KnockoutObservableArray<number>;
+        level: KnockoutObservableArray<number>;
         levelNumber: KnockoutObservable<number>;
-        careerClass:  KnockoutObservableArray<any>;
-        
+        careerClass: KnockoutObservableArray<any>;
+
         requirementType: KnockoutObservableArray<any>;
         yearType: KnockoutObservableArray<any>;
-        
+
         nameLevel1: KnockoutObservable<any>;
         nameLevel2: KnockoutObservable<any>;
         nameLevel3: KnockoutObservable<any>;
@@ -26,30 +26,42 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         nameLevel8: KnockoutObservable<any>;
         nameLevel9: KnockoutObservable<any>;
         nameLevel10: KnockoutObservable<any>;
-        
+
         careerOrderList: KnockoutObservableArray<ScreenItem>;
         careerRequirementList: KnockoutObservableArray<ScreenItem>;
         nameLevel: KnockoutObservable<DataLever>;
         career: KnockoutObservableArray<Career>;
-        
+        startDate: string;
+
         datatransfer: any;
-        
+
         constructor() {
             var self = this;
             //table 
             self.itemList = [];
-            $("#fixed-table").ntsFixedTable({ height: 197, width: 990 });
-            $("#fixed-table2").ntsFixedTable({ height: 197, width: 990 });
-//          2019/3/11
-//          プロトタイプの製造時は、以下のリストをOutputとする。
-//          Khi code prototype se Out put list duoi 
+            $("#fixed-table").ntsFixedTable({ height: 197, width: 780 });
+            $("#fixed-table2").ntsFixedTable({ height: 275, width: 780 });
+            $("#fixed-table3").ntsFixedTable({ height: 252, width: 311 });
+            var div1 = $("#fixed-table").closest(".nts-fixed-body-container");
+            div1.css("overflow-x", "hidden");
+            var div2 = $("#fixed-table2").closest(".nts-fixed-body-container");
+            var div3 = $("#fixed-table3").closest(".nts-fixed-body-container");
+            div3.css("overflow", "hidden");
+            div2.on("scroll", function() {
+                div1[0].scrollLeft = div2[0].scrollLeft;
+                div3[0].scrollTop = div2[0].scrollTop;
+            });
+
+            //          2019/3/11
+            //          プロトタイプの製造時は、以下のリストをOutputとする。
+            //          Khi code prototype se Out put list duoi 
             self.masterTypelist = ko.observableArray([
                 new ItemModel('M00002', '職場マスタ'),
                 new ItemModel('M00003', '雇用マスタ'),
                 new ItemModel('M00004', '分類マスタ1'),
                 new ItemModel('M00005', '職位マスタ')
             ]);
-            
+
             //set width for table
             self.levelNumber = ko.observable(0);
             self.levelNumber.subscribe(function(newValue) {
@@ -58,20 +70,20 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 document.getElementsByClassName("nts-fixed-header-wrapper")[0].style.width = width + "px";
                 document.getElementsByClassName("nts-fixed-body-wrapper")[0].style.width = width + "px";
                 document.getElementsByClassName("fixed-table")[0].style.width = width + "px";
-                document.getElementsByClassName("fixed-table")[1].style.width = width + "px";
-                
-                document.getElementsByClassName("fixed-table")[1].style.width = width + "px";
-                document.getElementsByClassName("nts-fixed-header-wrapper")[1].style.width = width + "px";
-                document.getElementsByClassName("nts-fixed-body-wrapper")[1].style.width = width + "px";
+                document.getElementsByClassName("fixed-table")[2].style.width = width + "px";
+
+                document.getElementsByClassName("fixed-table")[2].style.width = width + "px";
+                document.getElementsByClassName("nts-fixed-header-wrapper")[2].style.width = width + "px";
+                document.getElementsByClassName("nts-fixed-body-wrapper")[2].style.width = width + "px";
             });
-            
+
             self.requirementType = ko.observable(__viewContext.enums.RequirementType);
             self.yearType = ko.observable(__viewContext.enums.YearType);
-            
+
             self.careerClass = ko.observableArray([]);
             self.level = ko.observableArray([]);
             self.career = ko.observableArray([]);
-            
+
             self.nameLevel1 = ko.observable('');
             self.nameLevel2 = ko.observable('');
             self.nameLevel3 = ko.observable('');
@@ -82,18 +94,20 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.nameLevel8 = ko.observable('');
             self.nameLevel9 = ko.observable('');
             self.nameLevel10 = ko.observable('');
-            
+
             self.careerOrderList = ko.observableArray([]);
             self.careerRequirementList = ko.observableArray([]);
             self.datatransfer = null;
+            self.startDate = '';
 
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj: any) => { 
+            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj: any) => {
                 self.datatransfer = obj;
+                self.startDate = obj.startDate;
                 console.log(obj);
                 self.careerClass(obj.careerClass);
                 self.itemList = _.orderBy(_.filter(obj.career, ['careerTypeItem', obj.careerTypeId]), ['careerLevel'], ['asc']);
@@ -120,113 +134,134 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             });
             return dfd.promise();
         }
-        public save():void{
+
+        public save(): void {
             let self = this;
             var i = 1;
         }
         
-        public openDiaLogMasterItem(selected: any):void{
+        public remove(): void {
             let self = this;
-            let param = {isMultiple: true, showNoSelection: false, selectedCodes: selected.masterItemList()}
+            var i = 1;
+        }
+
+        public backTopAScreen(): void {
+            let self = this;
+            nts.uk.characteristics.remove("DataShareCareerToAScreen").done(function() {
+                parent.nts.uk.characteristics.save('DataShareCareerToAScreen', self.datatransfer).done(function() {
+                    parent.nts.uk.ui.block.clear();
+                    nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
+                });
+            });
+        }
+
+        public openDiaLogMasterItem(selected: any): void {
+            let self = this;
+            let param = { isMultiple: true, showNoSelection: false, selectedCodes: selected.masterItemList(), baseDate: self.startDate }
             let displayNumber = selected.displayNumber;
-            let masterType = _.find(self.careerOrderList(),{'displayNumber':displayNumber}).masterType();
-            let careerMaster = _.find(self.career(),{'displayNumber':displayNumber});
-            if(masterType == 'M00002'){
+            let masterType = _.find(self.careerOrderList(), { 'displayNumber': displayNumber }).masterType();
+            let careerMaster = _.find(self.career(), { 'displayNumber': displayNumber });
+            if (masterType == 'M00002') {
                 nts.uk.ui.windows.setShared('inputCDL008', param);
                 nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL008');
                     if (data) {
+                        if (data) {
+                            careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
+                        }
                     }
-                });    
-            }else if(masterType == 'M00003'){
+                });
+            } else if (masterType == 'M00003') {
                 nts.uk.ui.windows.setShared('CDL002Params', param);
-                nts.uk.ui.windows.sub.modal('com','/view/cdl/002/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function() {
                     let data = getShared('CDL002Output');
                     if (data) {
+                        careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
                     }
-                });        
-            }else if(masterType == 'M00004'){
+                });
+            } else if (masterType == 'M00004') {
                 nts.uk.ui.windows.setShared('inputCDL003', param);
-                nts.uk.ui.windows.sub.modal('com','/view/cdl/003/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL003');
                     if (data) {
                         careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
                     }
-                });     
+                });
                 nts.uk.ui.windows.getShared
-            }else if(masterType == 'M00005'){
+            } else if (masterType == 'M00005') {
                 nts.uk.ui.windows.setShared('inputCDL004', param);
-                nts.uk.ui.windows.sub.modal('com','/view/cdl/004/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL004');
                     if (data) {
+                        careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
                     }
-                });       
-            } 
-            
+                });
+            }
+
         }
-        
-        private checksShowLever(selected: any): void{
+
+        private checksShowLever(selected: any): void {
             let self = this;
-            self.levelNumber(selected.length);    
-            _.forEach(selected, function(value){
-                if(value.careerLevel == 1){
-                    self.nameLevel1(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+            self.levelNumber(selected.length);
+            _.forEach(selected, function(value) {
+                if (value.careerLevel == 1) {
+                    self.nameLevel1(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 2) {
-                    self.nameLevel2(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
+                    self.nameLevel2(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 3) {
-                    self.nameLevel3(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel)); 
+                    self.nameLevel3(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 4) {
-                    self.nameLevel4(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
+                    self.nameLevel4(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 5) {
-                    self.nameLevel5(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel)); 
+                    self.nameLevel5(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 6) {
-                    self.nameLevel6(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
+                    self.nameLevel6(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 7) {
-                    self.nameLevel7(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
+                    self.nameLevel7(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 8) {
-                    self.nameLevel8(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel)); 
+                    self.nameLevel8(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 9) {
-                    self.nameLevel9(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel)); 
+                    self.nameLevel9(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 } else if (value.careerLevel == 10) {
-                    self.nameLevel10(_.find(self.careerClass(),{'id':value.careerClassItem}).name);
-                    _.forEach(value.careerRequirementList, function(careerRequirement){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel)); 
+                    self.nameLevel10(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    _.forEach(value.careerRequirementList, function(careerRequirement) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
                     });
                 }
-                self.level.push(value.careerLevel);    
+                self.level.push(value.careerLevel);
             });
         }
-        private addDefaultCareer(): void{
+        private addDefaultCareer(): void {
             let self = this;
-            for(let i = 1; i < 7; i++){
-                _.forEach(self.level(), function(value){
+            for (let i = 1; i < 7; i++) {
+                _.forEach(self.level(), function(value) {
                     let careerRequirementDefault = {
                         displayNumber: i,
                         requirementType: '',
@@ -237,14 +272,34 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                         masterItemList: [],
                         inputRequirement: '',
                     }
-                    if(_.find(self.careerRequirementList(),{'displayNumber':i,'lever':value}) == undefined){
-                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value));   
+                    if (_.find(self.careerRequirementList(), { 'displayNumber': i, 'lever': value }) == undefined) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value));
                     }
                 });
-                self.careerOrderList.push(_.find(self.careerRequirementList(),{'displayNumber':i}));
-                self.career.push(new Career(_.filter(self.careerRequirementList(), { 'displayNumber': i}), i));
+                self.careerOrderList.push(_.find(self.careerRequirementList(), { 'displayNumber': i }));
+                self.career.push(new Career(_.filter(self.careerRequirementList(), { 'displayNumber': i }), i));
             }
-            
+
+        }
+        private validate(): void {
+            let self = this;
+            let yearTypeListCheck = [];
+            let masterTypeListCheck = [];
+            _.forEach(self.careerOrderList(), function(value) {
+                if (value.requirementType == 1 && value.yearType != '') {
+                    if (_.includes(yearTypeListCheck, value.yearType) == undefined) {
+                        yearTypeListCheck.push(value.yearType);
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: 'MsgJ-46' });
+                    }
+                } else if (value.requirementType == 2 && value.masterType != '') {
+                    if (_.includes(masterTypeListCheck, value.masterType) == undefined) {
+                        masterTypeListCheck.push(value.masterType);
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: 'MsgJ-47' });
+                    }
+                }
+            });
         }
     }
 
@@ -263,31 +318,45 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.lever = careerLevel;
             self.displayNumber = obj.displayNumber;
             self.requirementType = ko.observable(obj.requirementType);
-            self.yearType = ko.observable(obj.yearRequirement == null ? (obj.yearType == undefined?'':obj.yearType): obj.yearRequirement.yearType);
-            self.yearMinimumNumber = ko.observable(obj.yearRequirement == null ? (obj.yearMinimumNumber == undefined?'':obj.yearMinimumNumber): obj.yearRequirement.yearMinimumNumber);
-            self.yearStandardNumber = ko.observable(obj.yearRequirement == null ? (obj.yearStandardNumber == undefined?'':obj.yearStandardNumber): obj.yearRequirement.yearStandardNumber);
-            self.masterType = ko.observable(obj.masterRequirement == null ? (obj.masterType == undefined?'':obj.masterType): obj.masterRequirement.masterType);
-            self.masterItemList = ko.observableArray(obj.masterRequirement == null ? (obj.masterItemList == undefined?[]:obj.masterItemList): obj.masterRequirement.masterItemList);
+            self.yearType = ko.observable(obj.yearRequirement == null ? (obj.yearType == undefined ? '' : obj.yearType) : obj.yearRequirement.yearType);
+            self.yearMinimumNumber = ko.observable(obj.yearRequirement == null ? (obj.yearMinimumNumber == undefined ? '' : obj.yearMinimumNumber) : obj.yearRequirement.yearMinimumNumber);
+            self.yearStandardNumber = ko.observable(obj.yearRequirement == null ? (obj.yearStandardNumber == undefined ? '' : obj.yearStandardNumber) : obj.yearRequirement.yearStandardNumber);
+            self.masterType = ko.observable(obj.masterRequirement == null ? (obj.masterType == undefined ? '' : obj.masterType) : obj.masterRequirement.masterType);
+            self.masterItemList = ko.observableArray(obj.masterRequirement == null ? (obj.masterItemList == undefined ? [] : obj.masterItemList) : obj.masterRequirement.masterItemList);
             self.inputRequirement = ko.observable(obj.inputRequirement);
+            self.masterType.subscribe(function(newValue) {
+                if (newValue != null) {
+                    nts.uk.ui.dialog.confirmProceed({ messageId: "MsgJ_52" }).ifYes(() => {
+                        alert("YES!");
+                        __viewContext.vm.save();
+                    }).ifNo(() => {
+                        alert("NO!");
+                    });
+                }
+            });
         }
-        
-        public validate(): boolean{
+
+        public validate(): boolean {
             let self = this;
-            if(self.requirementType == 1 && self.yearType != '' && self.yearStandardNumber != '' && self.yearStandardNumber != ''){
+            if (self.requirementType == 1 && self.yearType != '' && self.yearStandardNumber != '' && self.yearStandardNumber != '') {
+                if (self.yearStandardNumber < self.yearStandardNumber) {
+                    nts.uk.ui.dialog.error({ messageId: 'MsgJ-51' });
+                    return false;
+                }
                 return true;
-            }else if(self.requirementType == 2 && self.masterType != '' && self.masterItemList.length != 0){
+            } else if (self.requirementType == 2 && self.masterType != '' && self.masterItemList.length != 0) {
                 return true;
-            }else if(self.requirementType == 3 && self.inputRequirement != ''){
+            } else if (self.requirementType == 3 && self.inputRequirement != '') {
                 return true;
-            }   
+            }
             return false;
         }
-        
-        public getNameMasterItemList(): string{
+
+        public getNameMasterItemList(): string {
             return this.masterItemList().toString().replace(/\,/g, " + ");
         }
-        
-        public setNameMasterItemList(masterRequirement: any): void{
+
+        public setNameMasterItemList(masterRequirement: any): void {
             this.masterItemList(masterRequirement);
         }
     }
@@ -300,7 +369,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         }
     }
     class Career {
-        displayNumber: number;  
+        displayNumber: number;
         lever1: KnockoutObservable<ScreenItem>;
         lever2: KnockoutObservable<ScreenItem>;
         lever3: KnockoutObservable<ScreenItem>;
@@ -314,34 +383,34 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         constructor(obj: any, displayNumber: number) {
             var self = this;
             self.displayNumber = displayNumber;
-            _.forEach(obj, function(value){
-                if(value.lever == 1){
-                    self.lever1 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));   
-                }else if(value.lever == 2){
+            _.forEach(obj, function(value) {
+                if (value.lever == 1) {
+                    self.lever1 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                } else if (value.lever == 2) {
                     self.lever2 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 3){
+                } else if (value.lever == 3) {
                     self.lever3 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 4){
+                } else if (value.lever == 4) {
                     self.lever4 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 5){
+                } else if (value.lever == 5) {
                     self.lever5 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 6){
+                } else if (value.lever == 6) {
                     self.lever6 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 7){
+                } else if (value.lever == 7) {
                     self.lever7 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 8){
+                } else if (value.lever == 8) {
                     self.lever8 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 9){
+                } else if (value.lever == 9) {
                     self.lever9 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
-                }else if(value.lever == 10){
+                } else if (value.lever == 10) {
                     self.lever10 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
                 }
             });
         }
-        public getCareerbyLever(lever: number): ScreenItem{
-            let self =  this;
-            if(lever == 1){
-                return self.lever1;   
+        public getCareerbyLever(lever: number): ScreenItem {
+            let self = this;
+            if (lever == 1) {
+                return self.lever1;
             } else if (lever == 2) {
                 return self.lever2;
             } else if (lever == 3) {
@@ -363,5 +432,5 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             }
         }
     }
-    
+
 }

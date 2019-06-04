@@ -8,9 +8,14 @@
 .radioReqType .ntsRadioBox{display: flex; margin-bottom: 20px;}
 .radioReqType{position: relative; top: 24px; left: 20px;}
 .comboYearType{position: relative; top: -55px; left: 44px;}
-.comboMasterType{position: relative; top: -70px; left: 192px;}
+.comboMasterType{position: relative; top: -5px; left: -75px;}
 
 .inputTextYearType{position: relative; top: -9px; left: 4px;}
 .buttonMasterType{position: relative; top: 8px; left: 7px;}
 .buttonMasterType .limited-label{width:199px; vertical-align: middle;}
 #fixed-table2 .careerClassRole .inputTextarea{position: relative; top: 30px; height: 100px;}
+.scroll-header{display: none !important;}
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td,
+.nts-fixed-table table.fixed-table > tbody > tr:hover > th {
+  background-color: #FFF;
+}
