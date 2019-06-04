@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
@@ -37,6 +36,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -49,8 +49,8 @@ import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
 @Stateless
 public class GridPeregProcessor {
-	@Inject
-	private ManagedParallelWithContext parallel;
+//	@Inject
+//	private ManagedParallelWithContext parallel;
 
 	@Inject
 	private PeregProcessor layoutProcessor;
@@ -179,7 +179,11 @@ public class GridPeregProcessor {
 			if (personInfoItemAuth == null) {
 				continue;
 			}
-
+			
+			if(personInfoItemAuth.getSelfAuth() == PersonInfoAuthType.HIDE
+					&& personInfoItemAuth.getOtherAuth() == PersonInfoAuthType.HIDE) {
+				continue;
+			}
 			// convert item-definition to layoutDto
 			PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i,
 					ActionRole.EDIT);
