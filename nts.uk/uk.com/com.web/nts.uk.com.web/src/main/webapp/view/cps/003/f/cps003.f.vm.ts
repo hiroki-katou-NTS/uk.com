@@ -293,7 +293,7 @@ module cps003.f.vm {
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
                     matchValue: item.filter || null,
-                    replaceValue: "",
+                    replaceValue: undefined,
                     replaceFormat: undefined
                 };
 
@@ -554,12 +554,28 @@ module cps003.f.vm {
                 if (value.matchValue) {
                     if (mode == null) {
                         if (value.replaceValue) {
-                            confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                            let valueText = value.matchValue;
+                            if(item.itemData.dataType == 6){
+                               let itemX = _.filter(item.itemData.selectionItems, function(x){return x.optionValue == value.matchValue});
+                                if(itemX.length > 0){
+                                    valueText = itemX[0].optionText;
+                                }
+                            }
+                            confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
                             });
                         } else {
-                            confirm({ messageId: 'Msg_636', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                            let valueTextMatch = item.replacer;
+                            if (item.itemData.dataType == 6) {
+                                let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
+                                if (itemX.length > 0) {
+                                    valueTextMatch = itemX[0].optionText;
+                                }
+                            }else{
+                                valueTextMatch = value.matchValue;
+                            }
+                            confirm({ messageId: 'Msg_636', messageParams: [item.name, valueTextMatch] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
                             });
@@ -594,7 +610,7 @@ module cps003.f.vm {
                                 });
                             } else {
                                 if (value.replaceValue) {
-                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, value.replaceValue] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
