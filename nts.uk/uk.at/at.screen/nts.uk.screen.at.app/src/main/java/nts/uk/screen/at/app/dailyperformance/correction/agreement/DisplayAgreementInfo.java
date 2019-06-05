@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.agreement;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +59,9 @@ public class DisplayAgreementInfo {
 		result.setShowAgreement(true);
 		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperationSettingRepository.find(companyId);
 		//年月を指定して管理期間の36協定時間を取得する
-		List<AgreementTimeOfManagePeriod> lstAgree = getCoordinatedHours(companyId, Arrays.asList(employeeId), YearMonth.of(year, month), agreeOperationOpt);
-		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = lstAgree.isEmpty() ? Optional.empty() : Optional.of(lstAgree.get(0));
+		//List<AgreementTimeOfManagePeriod> lstAgree = getCoordinatedHours(companyId, Arrays.asList(employeeId), YearMonth.of(year, month), agreeOperationOpt);
+		//Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = lstAgree.isEmpty() ? Optional.empty() : Optional.of(lstAgree.get(0));
+		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = agreementTimeOfManagePeriodRepository.find(employeeId, YearMonth.of(year, month));
 		
 		if (agreeTimeOpt.isPresent()) {
 			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getStatus().value));

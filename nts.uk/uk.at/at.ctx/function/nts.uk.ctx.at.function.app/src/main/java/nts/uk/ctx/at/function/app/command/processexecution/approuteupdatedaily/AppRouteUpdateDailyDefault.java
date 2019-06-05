@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 @Slf4j
 public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
