@@ -1,11 +1,11 @@
 import { obj, dom } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
-const style = dom.create('style', {
+/*const style = dom.create('style', {
     type: 'text/css',
     rel: 'stylesheet',
     text: 'body { font-family: "Meryo UI"; }'
-});
+});*/
 const resources: {
     [lang: string]: {
         [key: string]: string;
@@ -31,7 +31,7 @@ const language = new Vue({
         pgName: ''
     },
     watch: {
-        current: {
+        /*current: {
             immediate: true,
             handler(lg: string) {
                 if (lg === 'jp') {
@@ -40,7 +40,7 @@ const language = new Vue({
                     document.head.removeChild(style);
                 }
             }
-        },
+        },*/
         pgName(name: string) {
             let title = document.querySelector('head>title') as HTMLElement;
 
