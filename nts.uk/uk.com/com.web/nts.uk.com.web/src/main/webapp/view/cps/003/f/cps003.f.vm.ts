@@ -536,7 +536,7 @@ module cps003.f.vm {
                                 });
                             } else {
                                 if (value.replaceValue) {
-                                    confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_633', messageParams: [item.name, value.replaceValue] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
