@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.remark;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
@@ -103,6 +106,18 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 			commandProxy().removeAll(entities);
 		}
 	}
+	
+	@Override
+	public void removeWithJdbc(String employeeId, GeneralDate workingDate) {
+		try (val statement = this.connection()
+				.prepareStatement("delete from KRCDT_DAY_REMARKSCOLUMN where SID = ? and YMD = ?")) {
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(workingDate.toLocalDate()));
+			statement.execute();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void update(List<RemarksOfDailyPerform> domain) {
@@ -116,7 +131,9 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 	@Override
 	public void add(List<RemarksOfDailyPerform> domain) {
 		if(!domain.isEmpty()){
-			commandProxy().insert(domain.stream().map(c -> KrcdtDayRemarksColumn.toEntity(c)).collect(Collectors.toList()));	
+			domain.stream().forEach(c -> {
+				add(c);
+			});
 		}
 		
 	}

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface OtherCommonAlgorithm {
@@ -113,4 +115,21 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates);
+	
+	/**
+	 * 11.指定日の勤務実績（予定）の勤務種類を取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @return
+	 */
+	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 申請理由出力_共通
+	 * @author hoatt
+	 * @param 申請 application
+	 * @param 休暇種類(Optional) holidayType
+	 * @return 結果(使用/未使用)
+	 */
+	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType);
 }

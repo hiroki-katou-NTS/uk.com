@@ -36,6 +36,8 @@ public class DPItemParent {
 	
 	private List<DailyRecordDto> dailyEdits;
 	
+	private List<DailyRecordDto> dailyOldForLog;
+	
 	private boolean flagCalculation;
 	
 	private List<CellEdit> cellEdits;
@@ -51,4 +53,8 @@ public class DPItemParent {
 	private List<DPItemValue> lstNotFoundWorkType = new ArrayList<>();
 	
 	private Boolean showDialogError;
+	
+	private boolean showFlex;
+	
+	private boolean checkDailyChange;
 }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -29,14 +30,14 @@ import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.StatusOfEmployment;
-import nts.uk.ctx.sys.gateway.dom.adapter.employment.SEmpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employment.GwSyEmploymentAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.employment.SEmpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusEmploymentAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusOfEmploymentImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syjobtitle.EmployeeJobHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syjobtitle.GwSyJobTitleAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.GwSyWorkplaceAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -65,7 +66,6 @@ import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockOutMessage;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
@@ -78,6 +78,8 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.service.NotifyResult;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.service.PassWordPolicyAlgorithm;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
@@ -147,7 +149,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/** The Password policy repo. */
 	@Inject
-	private PasswordPolicyRepository PasswordPolicyRepo;
+	private PasswordPolicyRepository pwPolicyRepo;
 
 	/** The role adapter. */
 	@Inject
@@ -184,6 +186,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The sy employment adapter. */
 	@Inject
 	private GwSyEmploymentAdapter syEmploymentAdapter;
+	
+	@Inject
+	private PassWordPolicyAlgorithm pWPolicyAlg;
+	@Inject
+	private LoginLogRepository loginLogRepo;
 	
 	private static final boolean IS_EMPLOYMENT = true;
 	private static final boolean IS_CLASSIFICATION = false;
@@ -278,7 +285,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 	
 	/**
-	 * Check employee del status.
+	 * 社員が削除されたかを取得
 	 *
 	 * @param sid
 	 *            the sid
@@ -398,28 +405,75 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		this.setRoleId(user.getUserId());
 	}
 	/**
-	 * Check after login.
-	 *
+	 * ログイン後チェック
 	 * @param user
-	 *            the user
 	 * @param oldPassword
-	 *            the old password
-	 * @return true, if successful
+	 * @return
 	 */
-	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
-		if (user.getPassStatus() != PassStatus.Reset.value) {
-			// Get PasswordPolicy
-			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
-					.getPasswordPolicy(new ContractCode(user.getContractCode()));
-
-			if (passwordPolicyOpt.isPresent()) {
-				// Event Check
-				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
-			}
-			return true;
-		} else {
-			return false;
+	public CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword, boolean signon) {
+		if(signon){
+			return new CheckChangePassDto(false, null, false);
 		}
+		//ドメインモデル「ユーザ．パスワード状態」をチェックする
+		if(user.getPassStatus() == PassStatus.Reset.value){//「リセット」の場合(reset)
+			//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
+			//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
+//			「社員．パスワード状態=リセット」の場合　⇒　#Msg_283#
+			//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
+			return new CheckChangePassDto("Msg_283");
+		}
+		//「リセット以外」の場合
+		//imported（GateWay）「パスワードポリシー」を取得する
+		Optional<PasswordPolicy> pwPoliOp = pwPolicyRepo.getPasswordPolicy(new ContractCode(user.getContractCode()));
+		if (!pwPoliOp.isPresent()) {
+			return new CheckChangePassDto(false, null, false);
+		}
+		PasswordPolicy pwPoli = pwPoliOp.get();
+		//「パスワードポリシー.利用する」区分をチェックする (Check「PasswoedPlicy.isUse」)
+		if(!pwPoli.isUse()){//利用しない場合(not use)
+			return new CheckChangePassDto(false, null, false);
+		}
+		//利用する場合(use)
+		//「パスワードポリシー.初回ログイン時にパスワード変更する」区分をチェックする (Check 「PasswordPolicy.initialPasswordChange」)
+		if (pwPoli.isInitialPasswordChange()) {//変更する
+			//ドメインモデル「ユーザ．パスワード状態」をチェックする (Check 「User．passwordStatus」)
+			if (user.getPassStatus() == PassStatus.InitPassword.value) {//「初期パスワード」の場合(InitialPassword)
+				//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
+				//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
+//				「社員．パスワード状態=初期パスワード」の場合 　⇒　#Msg_282#
+				//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
+				return new CheckChangePassDto("Msg_282");
+			}
+		}
+		//入力されたパスワードは「パスワードポリシー」を満たしているかをチェックする (Check xem password đã nhập có thỏa mãn  "PasswordPolicy" không)
+		CheckBeforeChangePass mess = userAdapter.passwordPolicyCheckForSubmit(user.getUserId(), oldPassword, user.getContractCode());
+		if (mess.isError()) {//社員のパスワードがパスワードポリシーを満たさない場合(ko thỏa mãn PasswordPolicy)
+			//「パスワードポリシー.ログイン時にパスワードに従っていない場合変更させる」区分をチェックする (Check 「PasswordPolicy.loginCheck」)
+			if (pwPoli.isLoginCheck()) {//loginCheck = True
+				//画面モデル「パスワード変更ダイアログ．変更理由」に該当したメッセージを設定する
+				//(set message tương ứng vào 「ChangePasswordDialog．ChangeReason」 trên screenModel)
+//				「社員．パスワード」がパスワードポリシーを満たさない場合 　⇒　#Msg_284#
+				//画面「パスワード変更ダイアログ」を起動する (Khởi động màn hình  "ChangPasswordDialog")
+				return new CheckChangePassDto("Msg_284");
+			}
+			return new CheckChangePassDto(false, null, false);
+		}
+		//パスワードポリシーを満たす場合(Thỏa mãn PasswordPolicy)
+		//アルゴリズム「パスワードの期限切れチェック」を実行する (Thực hiện thuật toán 「Check hết hạn password」)
+		//エラーあり：パスワードの有効期限が切れた場合
+		if(pWPolicyAlg.checkExpiredPass(user.getUserId(), pwPoli.getValidityPeriod().v().intValue())){
+			return new CheckChangePassDto("Msg_1516");
+		}
+		//エラーなし
+		//アルゴリズム「パスワード変更通知チェック」を実行する (Thực hiện thuật toán 「Check thông báo thay đổi password」)
+		//通知しない(ko thông báo)
+		NotifyResult notifyResult = pWPolicyAlg.checkNotifyChangePass(user.getUserId(), pwPoli.getValidityPeriod().v().intValue(), pwPoli.getNotificationPasswordChange().v().intValue());
+		if(!notifyResult.isNotifyFlg()){
+			return new CheckChangePassDto(false, null, false);
+		}
+		//通知する(có  thông báo- có check vào mục thông báo)
+		//確認メッセージ（Msg_1517）を表示する {0}【残り何日】
+		return new CheckChangePassDto("Msg_1517", notifyResult.getSpanDays());
 	}
 
 	/**
@@ -609,13 +663,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Compare account.
+	 * アカウント照合
 	 *
 	 * @param context
 	 *            the context
 	 * @return the windows account
 	 */
-	// アルゴリズム「アカウント照合」を実行する
 	protected WindowsAccount compareAccount(HttpServletRequest context) {
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
@@ -662,8 +715,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Gets the user and check limit time.
-	 *
+	 * ドメインモデル「ユーザ」を取得する
+	 * ユーザーの有効期限チェック
 	 * @param windowAccount
 	 *            the window account
 	 * @return the user and check limit time
@@ -678,7 +731,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// get user
 		Optional<UserImportNew> optUserImport = this.userAdapter.findUserByEmployeeId(windowAccount.getEmployeeId());
 
-		// Validate limit time
+		//ユーザーの有効期限チェック(User expiration check)
 		if (optUserImport.isPresent()) {
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				String remarkText = hostname + " " + username + " " + TextResource.localize("Msg_316");
@@ -695,7 +748,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Error check.
+	 * エラーチェック（形式１）
 	 *
 	 * @param userId
 	 *            the user id
@@ -704,7 +757,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractCode
 	 *            the contract code
 	 */
-	// アルゴリズム「エラーチェック（形式１）」を実行する
 	public void errorCheck(String loginId, String userId, Integer roleType, String contractCode, boolean isSignOn) {
 
 		GeneralDate date = GeneralDate.today();
@@ -721,24 +773,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
-			throw new BusinessException("Msg_1419");
+			throw new BusinessException("Msg_1527");
 		}
-
-		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();
-
-		if (!message.isEmpty()) {
-			// return messageError
-			throw new BusinessException(message);
-		}
+		//hoatt 2019.05.07  #107445
+		//EA修正履歴No.3365
+//		String message = this.checkAccoutLock(loginId,contractCode, userId, " ", isSignOn).v();
+//		if (!message.isEmpty()) {
+//			// return messageError
+//			throw new BusinessException(message);
+//		}
 	}
 
 	/**
-	 * Error check 2.
+	 * エラーチェック（形式２・３）
 	 *
 	 * @param companyId
 	 *            the company id
 	 */
-	// ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon, String employeeId) {
 
 		// ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model
@@ -791,18 +842,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		}
 		//update EA修正履歴 No.3054
-		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);
-		
-		String loginId = "";
-		if (opUserImport.isPresent()) {
-			loginId = opUserImport.get().getLoginId();
-		}
-		String message = this.checkAccoutLock(loginId, contractCode, userId, companyId, isSignon).v();
-		
-		if (!message.isEmpty()) {
-			// return messageError
-			throw new BusinessException(message);
-		}
+//		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);
+//		String loginId = "";
+//		if (opUserImport.isPresent()) {
+//			loginId = opUserImport.get().getLoginId();
+//		}
+		//hoatt 2019.05.07 #107445
+		//EA修正履歴No.3366
+//		String message = this.checkAccoutLock(loginId, contractCode, userId, companyId, isSignon).v();
+//		if (!message.isEmpty()) {
+//			// return messageError
+//			throw new BusinessException(new RawErrorMessage(message));
+//		}
 		
 		List<String> lstEmployeeId = new ArrayList<>();
 //		DatePeriod periodEmployee = new DatePeriod(GeneralDate.today(), GeneralDate.today());
@@ -942,15 +993,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
-	 * Check accout lock.
-	 *
-	 * @param contractCode
-	 *            the contract code
-	 * @param userId
-	 *            the user id
+	 * アカウントロックチェック
+	 * @param 契約コード contractCode
+	 * @param ユーザID userId
+	 * @param ログインID loginId
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String loginId, String contractCode, String userId, String companyId, boolean isSignOn) {
+	protected void checkAccoutLock(String loginId, String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -973,12 +1022,21 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					this.service.callLoginRecord(param);
 
 					// エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する
-					// (Display error message (domain model "Account lock
-					// policy. Lockout message"))
-					return accountLockPolicy.getLockOutMessage();
+					throw new BusinessException(new RawErrorMessage(accountLockPolicy.getLockOutMessage()));
 				}
 			}
 		}
-		return new LockOutMessage(null);
 	}
+	/**
+	 * ログインログを削除
+	 * @param ユーザID userId
+	 */
+	protected void deleteLoginLog(String userId){
+//		条件
+//		　・ユーザID＝INPUT.ユーザID
+//		　・成功失敗区分＝失敗
+//		　・操作区分＝ログイン
+		//ドメインモデル「ログインログ」を削除する
+		loginLogRepo.deleteLoginLog(userId, SuccessFailureClassification.Failure.value, OperationSection.Login.value);
+	};
 }

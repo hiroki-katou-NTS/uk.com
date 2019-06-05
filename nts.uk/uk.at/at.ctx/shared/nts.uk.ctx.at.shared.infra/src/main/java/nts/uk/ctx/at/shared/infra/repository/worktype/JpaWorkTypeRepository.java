@@ -21,6 +21,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -379,6 +380,42 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 	
 	@Override
+	public List<WorkTypeInfor> getPossibleWorkTypeWithNoMasterAndOrder(String companyId, List<String> lstPossible) {
+		if(CollectionUtil.isEmpty(lstPossible)){
+			return Collections.emptyList();
+		}
+		List<WorkTypeInfor> resultList = new ArrayList<>();
+		
+		lstPossible.forEach(wkTypeCd -> {
+
+			WorkTypeInfor wkType;
+
+			Optional<WorkTypeInfor> optWkInfo = this.queryProxy().query(SELECT_WORKTYPE_WITH_NO_MASTER_AND_ORDER, WorkTypeInfor.class)
+					.setParameter("companyId", companyId).setParameter("wkTypeCd", wkTypeCd).getSingle();
+			if (!StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+				if (optWkInfo.isPresent()) {
+
+					wkType = optWkInfo.get();
+				} else {
+					wkType = new WorkTypeInfor(wkTypeCd, TextResource.localize("KAL003_120"), "", "", 0, "", 0, 0, 0, 0,
+							0, null, Collections.emptyList());
+				}
+
+				resultList.add(wkType);
+			}
+
+		});
+		List<WorkTypeInfor> lstOrder = resultList.stream().filter(c -> c.getDispOrder() != null).collect(Collectors.toList());
+		List<WorkTypeInfor> lstNotOrder = resultList.stream().filter(c -> c.getDispOrder() == null).collect(Collectors.toList());
+		Collections.sort(lstOrder, Comparator.comparing(WorkTypeInfor:: getDispOrder));
+		Collections.sort(lstNotOrder, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
+		List<WorkTypeInfor> lstSort = new ArrayList<>();
+		lstSort.addAll(lstOrder);
+		lstSort.addAll(lstNotOrder);
+		return lstSort;
+	}
+	
+	@Override
 	public List<WorkTypeInfor> findAllByOrder(String companyId) {
 		return this.queryProxy().query(SELECT_WORKTYPE_ALL_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId).getList();
 	}
@@ -443,6 +480,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
+				.map(x -> toDomain(x));
+	}
+	
+	@Override
+	public Optional<WorkType> findNoAbolishByPK(String companyId, String workTypeCd) {
+		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class).filter(x -> {
+			return x.deprecateAtr == 0;
+		})
 				.map(x -> toDomain(x));
 	}
 

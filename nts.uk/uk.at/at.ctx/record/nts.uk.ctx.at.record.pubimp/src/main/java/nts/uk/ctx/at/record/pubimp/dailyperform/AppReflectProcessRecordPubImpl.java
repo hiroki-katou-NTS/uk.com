@@ -1,15 +1,14 @@
 package nts.uk.ctx.at.record.pubimp.dailyperform;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-//import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
-//import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
@@ -27,10 +26,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Gob
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
@@ -71,8 +70,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Inject
 	private PreOvertimeReflectService preOvertimeReflect;
 	@Inject
-	private AfterOvertimeReflectService afterOvertimeReflect;
-	@Inject
 	private AbsenceReflectService absenceReflect;
 	@Inject
 	private PreHolidayWorktimeReflectService holidayworkService;
@@ -93,12 +90,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Inject
 	private RemainCreateInforByScheData scheData;
 	@Inject
-	private ApprovalStatusAdapter appAdapter;
-	@Inject
 	private IdentificationRepository identificationRepository;
 	@Override
-	public boolean appReflectProcess(AppCommonPara para) {
-		boolean output = true;		
+	public boolean appReflectProcess(AppCommonPara para, ExecutionType executionType) {		
 		ScheRemainCreateInfor scheInfor = null;
 		if(para.isChkRecord()) {
 			//ドメインモデル「日別実績の勤務情報」を取得する
@@ -119,40 +113,40 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		//WorkInfoOfDailyPerformance dailyInfor = optDaily.get();
 		//反映状況によるチェック
 		CommonCheckParameter checkPara = new CommonCheckParameter(para.isChkRecord() ? DegreeReflectionAtr.RECORD : DegreeReflectionAtr.SCHEDULE,
-				ExecutionType.EXCECUTION,
+				executionType,
 				EnumAdaptor.valueOf(para.getStateReflectionReal().value, ReflectedStateRecord.class),
 				EnumAdaptor.valueOf(para.getStateReflection().value, ReflectedStateRecord.class));
 		boolean chkProcess = processCheckService.commonProcessCheck(checkPara);
-		if(chkProcess) {
-			//ドメインモデル「申請承認設定」.データが確立されている場合の承認済申請の反映のチェックをする
-			if(para.getReflectAtr() == ReflectRecordAtr.REFLECT) {
-				return output;
-			}
-			//アルゴリズム「実績ロックされているか判定する」を実行する
-			Closure closureData = closureService.getClosureDataByEmployee(para.getSid(), para.getYmd());
-			if(closureData == null) {
-				return false;
-			}
-			LockStatus lockStatus = resultLock.getDetermineActualLocked(para.getCid(),
-					para.getYmd(),
-					closureData.getClosureId().value,
-					PerformanceType.DAILY);
-			if(lockStatus == LockStatus.LOCK) {
-				return false;
-			}
-			//確定状態によるチェック
-			ConfirmStatusCheck chkParam = new ConfirmStatusCheck(para.getCid(), 
-					para.getSid(),
-					para.getYmd(), 
-					para.getPrePostAtr(),
-					para.getAppType(), 
-					para.isChkRecord() ? ObjectCheck.DAILY : ObjectCheck.SCHE, 
-					para.isRecordReflect(),
-					para.isScheReflect(),
-					para.isChkRecord() ? false : scheInfor.isConfirmedAtr());
-			return this.checkConfirmStatus(chkParam);
+		if(!chkProcess) {
+			return false;
 		}
-		return output;
+		//ドメインモデル「申請承認設定」.データが確立されている場合の承認済申請の反映のチェックをする
+		/*if(para.getReflectAtr() == ReflectRecordAtr.REFLECT) {
+			return output;
+		}*/
+		//アルゴリズム「実績ロックされているか判定する」を実行する
+		Closure closureData = closureService.getClosureDataByEmployee(para.getSid(), para.getYmd());
+		if(closureData == null) {
+			return false;
+		}
+		LockStatus lockStatus = resultLock.getDetermineActualLocked(para.getCid(),
+				para.getYmd(),
+				closureData.getClosureId().value,
+				PerformanceType.DAILY);
+		if(lockStatus == LockStatus.LOCK) {
+			return false;
+		}
+		//確定状態によるチェック
+		ConfirmStatusCheck chkParam = new ConfirmStatusCheck(para.getCid(), 
+				para.getSid(),
+				para.getYmd(), 
+				para.getPrePostAtr(),
+				para.getAppType(), 
+				para.isChkRecord() ? ObjectCheck.DAILY : ObjectCheck.SCHE, 
+				para.isRecordReflect(),
+				para.isScheReflect(),
+				para.isChkRecord() ? false : scheInfor.isConfirmedAtr());
+		return this.checkConfirmStatus(chkParam);
 	}
 
 	@Override
@@ -179,7 +173,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectAtr.class),
 				para.isScheReflectAtr(),
-				appPara);
+				appPara,
+				para.getExcLogId());
 		return gobackPara;
 		
 	}
@@ -187,11 +182,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Override
 	public boolean preOvertimeReflect(PreOvertimePubParameter param) {
 		return preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));		
-	}
-
-	@Override
-	public boolean afterOvertimeReflect(PreOvertimePubParameter param) {
-		return afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));		
 	}
 
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
@@ -216,7 +206,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isAutoClearStampFlg(), 
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheTimeOutFlg(),
-				appOver);
+				appOver,
+				param.getExcLogId());
 		return overtimePara;
 	}
 
@@ -227,12 +218,18 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param, boolean isPre) {
+		 Map<Integer, BreakTimeAppPara> mapBreakTimeFrame = new HashMap<>();
+		 param.getHolidayWorkPara().getMapBreakTime().forEach((a,b) -> {
+			 BreakTimeAppPara breakTime = new BreakTimeAppPara(b.getStartTime(), b.getEndTime());
+	            mapBreakTimeFrame.put(a, breakTime);
+	        });
 		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
 				param.getHolidayWorkPara().getWorkTimeCode(),
 				param.getHolidayWorkPara().getMapWorkTimeFrame(),
 				param.getHolidayWorkPara().getNightTime(),
 				param.getHolidayWorkPara().getStartTime(),
-				param.getHolidayWorkPara().getEndTime());
+				param.getHolidayWorkPara().getEndTime(),
+				mapBreakTimeFrame);
 		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
 				param.getBaseDate(),
 				param.isHolidayWorkReflectFlg(), 
@@ -240,7 +237,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheReflectFlg(),
 				param.isHwRecordReflectTime(),
 				param.isHwRecordReflectBreak(),
-				appPara);
+				appPara,
+				param.getExcLogId());
 		return holidayworkService.preHolidayWorktimeReflect(para, isPre);
 	}
 
@@ -259,7 +257,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			 	param.getStartDate(),
 			 	param.getEndDate(),
 			 	param.getStartTime(),
-			 	param.getEndTime());
+			 	param.getEndTime(),
+			 	param.getExcLogId());
 		return outputData;
 	}
 
@@ -297,25 +296,16 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			if(chkParam.isRecordReflect()) {
 				return output;
 			}
-			List<ApproveRootStatusForEmpImport> lstRootStatus = appAdapter.getApprovalByEmplAndDate(chkParam.getAppDate(), chkParam.getAppDate(),
-					chkParam.getSid(), chkParam.getCid(), 1);
-			if(lstRootStatus.isEmpty() 
-					|| lstRootStatus.get(0).getApprovalStatus() == ApprovalStatusForEmployee.UNAPPROVED) {
-				List<Identification> findByEmployeeID = identificationRepository.findByEmployeeID(chkParam.getSid(), chkParam.getAppDate(), chkParam.getAppDate());
-				if(!findByEmployeeID.isEmpty()) {
-					return false; 
-				}
-				return output;
-			}
-			return false;
 		} else {
 			//ドメインモデル「反映情報」．予定強制反映をチェックする
 			if(chkParam.isScheReflect()) {
 				return output;
 			} 
-			if(chkParam.isConfirmedAtr()) {
-				return false;
-			}
+		}
+		//対象期間内で本人確認をした日をチェックする
+		List<Identification> findByEmployeeID = identificationRepository.findByEmployeeID(chkParam.getSid(), chkParam.getAppDate(), chkParam.getAppDate());
+		if(!findByEmployeeID.isEmpty()) {
+			return false; 
 		}
 		return output;
 	}

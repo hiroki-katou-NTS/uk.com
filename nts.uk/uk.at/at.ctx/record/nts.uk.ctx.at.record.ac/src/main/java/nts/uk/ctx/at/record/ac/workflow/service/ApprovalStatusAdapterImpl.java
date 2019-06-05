@@ -31,12 +31,14 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ConfirmDeleteParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
+import nts.uk.ctx.workflow.pub.resultrecord.ConfirmDeleteParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
@@ -172,6 +174,14 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 		return convertFromExportNew(export);
 	}
 	
+	@Override
+	public ApprovalRootOfEmployeeImport getDailyApprovalStatus(String approverId, List<String> targetEmployeeIds,
+			DatePeriod period) {
+		AppEmpStatusExport export = intermediateDataPub.getDailyApprovalStatus(
+				approverId, targetEmployeeIds, period);
+		return convertFromExportNew(export);
+	}
+	
 	private ApprovalRootOfEmployeeImport convertFromExportNew(AppEmpStatusExport export) {
 		//ApprovalRootOfEmployeeExport
 		if(export.getRouteSituationLst() != null && export.getEmployeeID() != null){
@@ -237,8 +247,8 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	// RequestList 534
 	@Override
 	public AppRootOfEmpMonthImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth,
-			Integer closureID, ClosureDate closureDate, GeneralDate baseDate) {
-		val exportResult = intermediateDataPub.getApprovalEmpStatusMonth(approverID, yearMonth, closureID, closureDate, baseDate);
+			Integer closureID, ClosureDate closureDate, GeneralDate baseDate, boolean useDayApproverConfirm, DatePeriod closurePeriod) {
+		val exportResult = intermediateDataPub.getApprovalEmpStatusMonth(approverID, yearMonth, closureID, closureDate, baseDate, useDayApproverConfirm, closurePeriod);
 		return new AppRootOfEmpMonthImport(
 				exportResult.getEmployeeID(), 
 				exportResult.getRouteSituationLst().stream()
@@ -299,5 +309,19 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						y.getEmployeeCD(), 
 						y.getEmployeeName()))
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public void deleteRootConfirmDay(String employeeID, GeneralDate date) {
+		intermediateDataPub.deleteRootConfirmDay(employeeID, date);
+		
+	}
+
+	@Override
+	public void deleteRootConfirmMonth(String employeeID, List<ConfirmDeleteParamImport> confirmDeleteParamLst) {
+		intermediateDataPub.deleteRootConfirmMonth(employeeID,
+				confirmDeleteParamLst.stream()
+						.map(x -> new ConfirmDeleteParam(x.getYearMonth(), x.getClosureID(), x.getClosureDate()))
+						.collect(Collectors.toList()));
 	}
 }

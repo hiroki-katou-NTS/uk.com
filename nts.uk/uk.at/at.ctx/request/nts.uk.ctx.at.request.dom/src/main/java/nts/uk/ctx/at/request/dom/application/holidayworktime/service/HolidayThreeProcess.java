@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 public interface HolidayThreeProcess {
@@ -21,7 +21,7 @@ public interface HolidayThreeProcess {
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
-	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, 
+	ColorConfirmResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, 
 			int attendanceId, List<HolidayWorkInput> overtimeInputs, String employeeID) ;
 	
 	/**

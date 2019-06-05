@@ -6,6 +6,7 @@ import java.util.Map;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 public interface HolidaySixProcess {
@@ -25,6 +26,9 @@ public interface HolidaySixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> breakTimeInputs,
+			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
+	
+	public ColorConfirmResult checkDisplayColorCF(List<CaculationTime> breakTimeInputs,
 			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
 
 	/**
@@ -52,5 +56,8 @@ public interface HolidaySixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> checkDisplayColorForApprover(List<CaculationTime> breakTimeInputs,
+			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
+	
+	public ColorConfirmResult checkDisplayColorForApproverCF(List<CaculationTime> breakTimeInputs,
 			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
 }

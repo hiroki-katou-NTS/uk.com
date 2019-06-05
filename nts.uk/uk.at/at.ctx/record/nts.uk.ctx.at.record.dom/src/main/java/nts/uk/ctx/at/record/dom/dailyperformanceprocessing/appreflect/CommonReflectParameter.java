@@ -40,5 +40,6 @@ public class CommonReflectParameter {
 	
 	private Integer startTime;
 	private Integer endTime;
+	private String excLogId;
 
 }

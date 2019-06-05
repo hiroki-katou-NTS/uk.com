@@ -43,9 +43,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
-
-//	private static final String REMOVE_BY_EMPLOYEE;
-
+	
 	private static final String DEL_BY_LIST_KEY;
 
 	private static final String SELECT_BY_EMPLOYEE_AND_DATE;
@@ -250,6 +248,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
+	@SneakyThrows
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
 				.collect(Collectors.toList());
@@ -273,8 +272,8 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			toRemove.stream().forEach(c -> {
 				commandProxy().remove(c);
 			});
-//			commandProxy().updateAll(toRemove);
-//			commandProxy().removeAll(toRemove);
+			// commandProxy().updateAll(toRemove);
+			// commandProxy().removeAll(toRemove);
 			// commandProxy().removeAll(toRemove);
 		} else {
 			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
@@ -282,7 +281,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		// commandProxy().updateAll(breakTimes.stream().map(c ->
 		// KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
 		// .collect(Collectors.toList()));
-//		this.getEntityManager().flush();
+		// this.getEntityManager().flush();
 	}
 
 	@Override
@@ -402,4 +401,12 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
+	@Override
+	public void updateNotDelete(List<BreakTimeOfDailyPerformance> breakTimes) {
+		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
+				.collect(Collectors.toList());
+		if(!all.isEmpty()) {
+			commandProxy().updateAll(all);
+		}
+	}
 }

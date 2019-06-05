@@ -166,7 +166,7 @@ public class DailyAggregationProcessService {
 		return listErrorRecord.stream().filter(er -> er.isError()).map(er -> this.checkConditionGenerateValue(empMap.get(er.getEmployeeId()), 
 																												er.getDate(), holder.mapWorkRecordExtraCon.get(er.getErAlId()), 
 																												companyID, getAlarmItem(holder, er), 
-																												mapAttdName, KAL010_1)).collect(Collectors.toList());
+																												mapAttdName, KAL010_1,er.getCheckedValue())).collect(Collectors.toList());
 	}
 
 	private String getAlarmItem(DataHolder holder, ErrorRecordImport errorRecord) {
@@ -266,19 +266,22 @@ public class DailyAggregationProcessService {
 			String KAL010_1 = TextResource.localize("KAL010_1");
 			String KAL010_42 = TextResource.localize("KAL010_42");
 			String KAL010_43 = TextResource.localize("KAL010_43");
+			String KAL010_72 = TextResource.localize("KAL010_72");
 			employee.stream().forEach(emp -> {
 				List<GeneralDate> empEral = erals.get(emp.getId());
 				period.getListDate().stream().forEach(date -> {
 					if(empEral == null || !empEral.contains(date)){
 						no3.stream().forEach(c -> {
+							String checkedValue = KAL010_72;
 							listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), emp.getId(), date.toString(ErAlConstant.DATE_FORMAT), 
-																			KAL010_1, KAL010_42, KAL010_43, c.getMessage()));
+																			KAL010_1, KAL010_42, KAL010_43, c.getMessage(),checkedValue));
 						});	
 					}
 				});
 			});
 		}
 	}
+	
 
 	/** TODO: need response */
 	/** 連続休暇チェック */
@@ -290,9 +293,10 @@ public class DailyAggregationProcessService {
 				List<ValueExtractAlarm> erals = fixedCheckItemAdapter.checkContinuousVacation(emp.getId(), datePeriod);
 				if (!erals.isEmpty()) {
 					for (ValueExtractAlarm tmp : erals) {
+						String checkedValue = TextResource.localize("KAL010_75",String.valueOf(tmp.getConsecutiveDays()));
 						no6.stream().forEach(c -> {
-							listValueExtractAlarm.add(new ValueExtractAlarm(tmp.getWorkplaceID().orElse(null), tmp.getEmployeeID(), tmp.getAlarmValueDate(), 
-																			tmp.getClassification(), tmp.getAlarmItem(), tmp.getAlarmValueMessage(), c.getMessage()));
+							listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), tmp.getEmployeeID(), TextResource.localize("KAL010_907",tmp.getAlarmValueDate()), 
+																			tmp.getClassification(), tmp.getAlarmItem(), tmp.getAlarmValueMessage(), c.getMessage(),checkedValue));
 						});	
 					}
 				}
@@ -308,14 +312,16 @@ public class DailyAggregationProcessService {
 			String KAL010_1 = TextResource.localize("KAL010_1");
 			String KAL010_44 = TextResource.localize("KAL010_44");
 			String KAL010_45 = TextResource.localize("KAL010_45");
+			String KAL010_73 = TextResource.localize("KAL010_73");
 			Map<String, List<GeneralDate>> erals = fixedCheckItemAdapter.checkAdminUnverified(empIds, datePeriod);
 			if(!erals.isEmpty()){
 				employee.stream().forEach(emp -> {
 					if (erals.containsKey(emp.getId())) {
 						erals.get(emp.getId()).forEach(eral -> {
 							no4.stream().forEach(c -> {
+								String checkedValue = KAL010_73;
 								listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), emp.getId(), eral.toString(ErAlConstant.DATE_FORMAT), 
-																				KAL010_1, KAL010_44, KAL010_45, c.getMessage()));
+																				KAL010_1, KAL010_44, KAL010_45, c.getMessage(),checkedValue));
 							});	
 						});
 					}
@@ -339,6 +345,7 @@ public class DailyAggregationProcessService {
 			String KAL010_8 = TextResource.localize("KAL010_8");
 			String KAL010_65 = TextResource.localize("KAL010_65");
 			String KAL010_66 = TextResource.localize("KAL010_66");
+			String KAL010_74 = TextResource.localize("KAL010_74");
 			
 			Map<String, String> workTypes = getWorkTypes(comId, recordWorkInfo, no1);
 			Map<String, String> workTimes = getWorkTimes(comId, recordWorkInfo, no2);
@@ -351,24 +358,27 @@ public class DailyAggregationProcessService {
 						RecordWorkInfoFunAdapterDto rw = currentRecord.get();
 						if(!no1.isEmpty() && !workTypes.containsKey(rw.getWorkTypeCode())) {
 							String KAL010_7 = TextResource.localize("KAL010_7", rw.getWorkTypeCode());
+							String checkedValue = TextResource.localize("KAL010_76", rw.getWorkTypeCode());
 							no1.stream().forEach(fixed -> {
 								listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), emp.getId(), date.toString(ErAlConstant.DATE_FORMAT),
-																				KAL010_1, KAL010_6, KAL010_7, fixed.getMessage()));
+																				KAL010_1, KAL010_6, KAL010_7, fixed.getMessage(),checkedValue));
 							});
 						}
 						if(!no2.isEmpty() && rw.getWorkTimeCode() != null) {
 							if(!workTimes.containsKey(rw.getWorkTimeCode())) {
 								String KAL010_9 = TextResource.localize("KAL010_9", rw.getWorkTimeCode());
+								String checkedValue = TextResource.localize("KAL010_77", rw.getWorkTimeCode());
 								no2.stream().forEach(fixed -> {
 									listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), emp.getId(), date.toString(ErAlConstant.DATE_FORMAT),
-																					KAL010_1, KAL010_8, KAL010_9, fixed.getMessage()));
+																					KAL010_1, KAL010_8, KAL010_9, fixed.getMessage(),checkedValue));
 								});
 							}
 						}
 					} else {
+						String checkedValue =KAL010_74; 
 						noOthers.stream().forEach(c -> {
 							listValueExtractAlarm.add(new ValueExtractAlarm(emp.getWorkplaceId(), emp.getId(), date.toString(ErAlConstant.DATE_FORMAT), 
-																			KAL010_1, KAL010_65, KAL010_66, c.getMessage()));
+																			KAL010_1, KAL010_65, KAL010_66, c.getMessage(),checkedValue));
 						});	
 					}
 				});
@@ -472,7 +482,7 @@ public class DailyAggregationProcessService {
 					}
 				}
 				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), 
-						mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID, alarmItem, mapAttdName, KAL010_1));				
+						mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID, alarmItem, mapAttdName, KAL010_1,""));				
 			}			
 		}
 		
@@ -604,7 +614,8 @@ public class DailyAggregationProcessService {
 	}
 	
 	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  
-			String companyID,String alarmItem, Map<Integer,DailyAttendanceItem> mapAtdItemName, String KAL010_1) {
+			String companyID,String alarmItem, Map<Integer,DailyAttendanceItem> mapAtdItemName, String KAL010_1,String checkedValue) {
+		String checkedValueNew = checkedValue;
 		String alarmContent = "";
 		TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(workRecordExtraCon.getCheckItem(), TypeCheckWorkRecord.class);
 		
@@ -612,7 +623,14 @@ public class DailyAggregationProcessService {
 		if(alarmContent.length()>100) {
 			alarmContent = alarmContent.substring(0, 100);
 		}
-		return new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), date.toString(ErAlConstant.DATE_FORMAT), KAL010_1, alarmItem, alarmContent, workRecordExtraCon.getErrorAlarmCondition().getDisplayMessage());
+		if(workRecordExtraCon.getCheckItem() == TypeCheckWorkRecord.CONTINUOUS_CONDITION.value ) {
+			checkedValueNew = TextResource.localize("KAL010_998");
+		} else if (workRecordExtraCon.getCheckItem() == TypeCheckWorkRecord.TIME.value
+				|| workRecordExtraCon.getCheckItem() == TypeCheckWorkRecord.TIME_OF_DAY.value) {
+			checkedValueNew = this.formatHourData(String.valueOf(Double.valueOf(checkedValueNew).intValue()),
+					EnumAdaptor.valueOf(workRecordExtraCon.getCheckItem(), TypeCheckWorkRecord.class));
+		}
+		return new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), date.toString(ErAlConstant.DATE_FORMAT), KAL010_1, workRecordExtraCon.getNameWKRecord(), alarmContent, workRecordExtraCon.getErrorAlarmCondition().getDisplayMessage(),checkedValueNew);
 	}
 	
 	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID, Map<Integer,DailyAttendanceItem> mapAtdItemName) {
@@ -642,8 +660,8 @@ public class DailyAggregationProcessService {
 					alarmContent = TextResource.localize("KAL010_49", wktypeText, this.formatHourData( atdItemCon.getCompareStartValue().toString(), checkItem), coupleOperator.getOperatorStart(), attendanceText,
 							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString(), checkItem));
 				}else {
-					alarmContent = TextResource.localize("KAL010_121", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
-							atdItemCon.getCompareEndValue().toString(), coupleOperator.getOperatorEnd(), attendanceText);
+					alarmContent = TextResource.localize("KAL010_121", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString(),checkItem),
+							this.formatHourData(atdItemCon.getCompareEndValue().toString(), checkItem), coupleOperator.getOperatorEnd(), attendanceText);
 				}
 				
 			} else {

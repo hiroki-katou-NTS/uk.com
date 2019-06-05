@@ -49,7 +49,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutputNew;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
@@ -70,7 +70,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalStatusForEmployee;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverEmployeeState;
-import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
@@ -351,14 +351,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID,
+	public ApproverPersonExportNew judgmentTargetPersonCanApprove(String companyID, String rootStateID,
 			String employeeID, Integer rootType) {
-		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService
+		ApproverPersonOutputNew approverPersonOutput = judgmentApprovalStatusService
 				.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, rootType);
-		return new ApproverPersonExport(
+		return new ApproverPersonExportNew(
 				approverPersonOutput.getAuthorFlag(), 
 				EnumAdaptor.valueOf(approverPersonOutput.getApprovalAtr().value, ApprovalBehaviorAtrExport.class) , 
-				approverPersonOutput.getExpirationAgentFlag());
+				approverPersonOutput.getExpirationAgentFlag(),
+				EnumAdaptor.valueOf(approverPersonOutput.getApprovalPhaseAtr().value, ApprovalBehaviorAtrExport.class));
 	}
 
 	@Override
@@ -598,31 +599,16 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			 approvalRootStates = this.approvalRootStateRepository
 					.findByApprover(companyID, startDate, endDate, approverID, rootType);
 		}
-		// ドメインモデル「代行承認」を取得する
-		List<Agent> agents = this.agentRepository.findByApproverAndDate(companyID, approverID, startDate, endDate);
-		List<String> employeeApproverID = new ArrayList<>();
-		employeeApproverID.add(approverID);
-		if (!CollectionUtil.isEmpty(agents)) {
-			for (Agent agent : agents) {
-				// ドメインモデル「承認ルートインスタンス」を取得する
-				employeeApproverID.add(agent.getEmployeeId());
-				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository
-						.findByApprover(companyID, startDate, endDate, agent.getEmployeeId(), rootType);
-				if (!CollectionUtil.isEmpty(approvalRootStateAgents)) {
-					for (ApprovalRootState approver : approvalRootStateAgents) {
-						approvalRootStates.add(approver);
-					}
-				}
-			}
-		}
 		if(CollectionUtil.isEmpty(approvalRootStates)){
 			return false;
 		}
-		System.out.println(approvalRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList()));
 		boolean result = false;
 		for(ApprovalRootState approval : approvalRootStates){
-			ApproverPersonExport ApproverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);
-			if(ApproverPersonExport.getAuthorFlag() && ApproverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && !ApproverPersonExport.getExpirationAgentFlag()){
+			ApproverPersonExportNew approverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);
+			if(approverPersonExport.getAuthorFlag() && 
+					approverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && 
+					!approverPersonExport.getExpirationAgentFlag() &&
+					(approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.UNAPPROVED || approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.REMAND)){
 				result = true;
 				break;
 			}else{

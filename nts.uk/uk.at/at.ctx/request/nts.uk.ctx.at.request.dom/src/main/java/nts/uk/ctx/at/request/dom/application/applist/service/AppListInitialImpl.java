@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -304,6 +303,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		//get status app
 //		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
+		
 		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack,lstAppHdWork, 
 				lstAppWkChange,lstAppAbsence,lstAppCompltLeaveSync, null, null, null, null, null, null);// NOTE
 	}
@@ -364,9 +364,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
 			//loc du lieu
 			//imported（申請承認）「承認ルートの内容」を取得する - RequestList309
-			System.out.println("before merger: "+ LocalDateTime.now());
 			List<ApplicationFullOutput> lstAppFull = this.mergeAppAndPhase(lstApp, companyId);
-			System.out.println("after merger: "+ LocalDateTime.now());
 			//条件１： ログイン者の表示対象の基本条件
 			List<ApplicationFullOutput> lstAppFullFil1 = new ArrayList<>();
 			for (ApplicationFullOutput appFull : lstAppFull) {
@@ -1209,7 +1207,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //	}
 	//ver14 + EA1360
 	////Bug #97415 - EA2161、2162
-	private Integer detailSet(String companyId, String wkpId, Integer appType, GeneralDate date){
+	@Override
+	public int detailSet(String companyId, String wkpId, Integer appType, GeneralDate date){
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
@@ -1701,8 +1700,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<String> lstId = new ArrayList<>();
 		String idAppr = null;
 		for(AgentDataRequestPubImport agent : lstAgent){
-			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().afterOrEquals(app.getAppDate())
-					&& this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())){
+			//2019/05/14　EA修正履歴 No.3436 #107724
+			if(this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())){
 				lstId.add(agent.getAgentSid1());
 				idAppr = agent.getEmployeeId();
 			}

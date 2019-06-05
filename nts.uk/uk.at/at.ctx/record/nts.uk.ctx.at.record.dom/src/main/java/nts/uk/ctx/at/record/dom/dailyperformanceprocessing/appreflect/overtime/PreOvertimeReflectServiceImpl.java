@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
@@ -95,14 +97,17 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
-			//申請理由の反映
-			updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
-					param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr());
+			
 			List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
 	
 		} catch (Exception ex) {
+			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+            if(!isError) {
+                throw ex;
+            }
+            commonService.createLogError(param.getEmployeeId(), param.getDateInfo(), param.getExcLogId());
 			return false;
 		}
 	}
@@ -200,7 +205,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(),
 					param.getOvertimePara().getFlexExessTime(), dailyInfor);
 		}
-		
+		//申請理由の反映
+		updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
+				param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr(), dailyInfor);
 		//日別実績の修正からの計算
 		//○日別実績を置き換える Replace daily performance	
 		List<IntegrationOfDaily> lstDaily = commonService.lstIntegrationOfDaily(dailyInfor, param.getEmployeeId(), param.getDateInfo(), true);

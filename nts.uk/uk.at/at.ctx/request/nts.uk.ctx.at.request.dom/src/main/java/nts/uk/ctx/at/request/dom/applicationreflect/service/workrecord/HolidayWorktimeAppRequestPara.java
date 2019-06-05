@@ -37,4 +37,8 @@ public class HolidayWorktimeAppRequestPara {
 	private ReasonNotReflectDaily_New reasonNotReflect;
 	private Integer startTime;
 	private Integer endTime;
+	/**
+	 * 休憩時間
+	 */
+	private Map<Integer, BreakTime> mapBreakTime;
 }

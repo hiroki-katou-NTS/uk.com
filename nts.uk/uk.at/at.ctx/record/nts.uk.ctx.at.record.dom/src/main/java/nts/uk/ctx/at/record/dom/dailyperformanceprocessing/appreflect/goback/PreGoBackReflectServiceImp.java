@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
+import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -14,8 +16,6 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	private WorkTimeTypeScheReflect timeTypeSche;
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
-	@Inject
-	private AfterScheTimeReflect afterScheTime;
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Inject
@@ -27,6 +27,11 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
 		} catch(Exception ex) {
+			 boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+	            if(!isError) {
+	                throw ex;
+	            }
+	        commonService.createLogError(para.getEmployeeId(), para.getDateData(), para.getExcLogId());
 			return false;
 		}
 	}
@@ -35,13 +40,8 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 		IntegrationOfDaily dailyInfor = preOvertime.calculateForAppReflect(para.getEmployeeId(), para.getDateData());
 		//予定勤種・就時の反映
 		boolean chkTimeTypeSche = timeTypeSche.reflectScheWorkTimeType(para, dailyInfor);
-		if(isPre) {
-			//予定時刻の反映
-			scheTimeReflect.reflectScheTime(para, chkTimeTypeSche, dailyInfor);
-		} else {
-			//予定時刻の反映
-			afterScheTime.reflectScheTime(para, chkTimeTypeSche, dailyInfor);
-		}
+		//予定時刻の反映
+		scheTimeReflect.reflectScheTime(para, chkTimeTypeSche, dailyInfor, isPre);
 		//勤種・就時の反映
 		boolean isRecord = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
 		//時刻の反映

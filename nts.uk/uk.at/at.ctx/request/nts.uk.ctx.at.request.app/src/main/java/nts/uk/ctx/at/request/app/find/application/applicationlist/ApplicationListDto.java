@@ -37,4 +37,6 @@ public class ApplicationListDto {
 	private List<AppInfor> lstAppInfor;
 	private HdAppSetDto hdAppSet;
 	private List<AppCompltLeaveSync> lstAppCompltLeaveSync;
+	//contentApp
+	private List<ContentApp> lstContentApp;
 }

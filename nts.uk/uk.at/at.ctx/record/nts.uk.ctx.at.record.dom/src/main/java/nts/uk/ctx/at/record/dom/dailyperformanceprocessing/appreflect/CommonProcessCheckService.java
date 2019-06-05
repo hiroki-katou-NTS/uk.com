@@ -29,7 +29,8 @@ public interface CommonProcessCheckService {
 	 * @param absencePara
 	 * @return
 	 */
-	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre, String workTimeCode);
+	public boolean checkReflectScheWorkTimeType(boolean isScheTimeReflectAtr, ScheAndRecordSameChangeFlg isChangeFlg,
+			boolean isPre, String workTimeCode);
 	/**
 	 * 
 	 * @param integrationOfDaily
@@ -54,5 +55,6 @@ public interface CommonProcessCheckService {
 			GeneralDate ymd, boolean isOt);
 	
 	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
-	
+    public void createLogError(String sid, GeneralDate ymd, String excLogId);
+
 }

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmpl
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ConfirmDeleteParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -56,6 +57,17 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyeeNew(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
+	
+	/**
+	 * <=>RequestList595
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	ApprovalRootOfEmployeeImport getDailyApprovalStatus(String approverId, List<String> targetEmployeeIds, DatePeriod period);
 	
 	/**
 	 * <=>RequestList229
@@ -158,7 +170,7 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	public AppRootOfEmpMonthImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
-			ClosureDate closureDate, GeneralDate baseDate);
+			ClosureDate closureDate, GeneralDate baseDate, boolean useDayApproverConfirm, DatePeriod closurePeriod);
 	
 	/**
 	 * RequestList 528
@@ -186,4 +198,14 @@ public interface ApprovalStatusAdapter {
 	 * RequestList 538
 	 */
 	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date);
+	
+	/**
+	 * RequestList 601
+	 * [No.601]日別の承認をクリアする
+	 * @param employeeID
+	 * @param date
+	 */
+	public void deleteRootConfirmDay(String employeeID, GeneralDate date);
+	
+	public void deleteRootConfirmMonth(String employeeID, List<ConfirmDeleteParamImport> confirmDeleteParamLst);
 }

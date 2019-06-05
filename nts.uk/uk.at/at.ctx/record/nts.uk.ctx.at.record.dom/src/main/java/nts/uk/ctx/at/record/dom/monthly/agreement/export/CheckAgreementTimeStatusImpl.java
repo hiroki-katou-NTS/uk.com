@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
@@ -31,8 +29,8 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 
 	/** 36協定運用設定の取得 */
-	@Inject
-	private AgreementOperationSettingRepository agreementOpeSetRepo;
+//	@Inject
+//	private AgreementOperationSettingRepository agreementOpeSetRepo;
 	
 	/** 36協定時間の状態チェック */
 	@Override
@@ -103,7 +101,7 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		List<AgreMaxAverageTime> checkedTimeList = new ArrayList<>();
 		
 		// 36協定運用設定を取得
-		val agreementOpeSetOpt = this.agreementOpeSetRepo.find(companyId);
+//		val agreementOpeSetOpt = this.agreementOpeSetRepo.find(companyId);
 		
 		// 36協定上限複数月平均時間．上限時間をチェック
 		if (sourceTime.getMaxTime().v() <= 0) return sourceTime;
@@ -112,26 +110,27 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		for (val averageTime : sourceTime.getAverageTimeList()) {
 			int checkTotalMinutes = averageTime.getTotalTime().v();
 			
-			// 申請時間、申請年月日を確認
-			if (requestTimeOpt.isPresent() && requestDateOpt.isPresent()) {
-				
-				// 申請時間を合計時間に加算する　（36協定運用設定が存在する時）
-				if (agreementOpeSetOpt.isPresent()) {
-					val agreementOpeSet = agreementOpeSetOpt.get();
-					
-					// 年月期間から36協定期間を取得する
-					val periodOpt = agreementOpeSet.getAgreementPeriodByYMPeriod(averageTime.getPeriod());
-					if (periodOpt.isPresent()) {
-						
-						// 追加年月日が期間に含まれているか確認
-						if (periodOpt.get().contains(requestDateOpt.get())) {
-							
-							// 追加時間を合計時間に加算する
-							checkTotalMinutes += requestTimeOpt.get().v();
-						}
-					}
-				}
-			}
+// 2019.5.28 DEL shuichi_ishida Redmine #106940　（未反映申請対応）
+//			// 申請時間、申請年月日を確認
+//			if (requestTimeOpt.isPresent() && requestDateOpt.isPresent()) {
+//				
+//				// 申請時間を合計時間に加算する　（36協定運用設定が存在する時）
+//				if (agreementOpeSetOpt.isPresent()) {
+//					val agreementOpeSet = agreementOpeSetOpt.get();
+//					
+//					// 年月期間から36協定期間を取得する
+//					val periodOpt = agreementOpeSet.getAgreementPeriodByYMPeriod(averageTime.getPeriod());
+//					if (periodOpt.isPresent()) {
+//						
+//						// 追加年月日が期間に含まれているか確認
+//						if (periodOpt.get().contains(requestDateOpt.get())) {
+//							
+//							// 追加時間を合計時間に加算する
+//							checkTotalMinutes += requestTimeOpt.get().v();
+//						}
+//					}
+//				}
+//			}
 				
 			// 36協定上限各月平均時間を作成
 			AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of(

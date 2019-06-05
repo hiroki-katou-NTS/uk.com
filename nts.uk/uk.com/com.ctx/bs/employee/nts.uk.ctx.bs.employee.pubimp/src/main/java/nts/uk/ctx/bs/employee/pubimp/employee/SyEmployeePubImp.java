@@ -55,6 +55,8 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.ResultRequest596Export;
+import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
@@ -110,6 +112,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	
 	@Inject
 	private TempAbsenceRepositoryFrame tempAbsenceRepoFrame;
+	
+	@Inject
+	private PersonRepository personRepo;
 
 //	@Inject
 //	private AffJobTitleHistoryRepository affJobRep;
@@ -837,5 +842,63 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return new TempAbsenceFrameExport(i.getCompanyId(), i.getTempAbsenceFrNo().v().intValue(),
 					i.getUseClassification().value, i.getTempAbsenceFrName().toString());
 		}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<ResultRequest596Export> getEmpDeletedLstBySids(List<String> sids) {
+		List<ResultRequest596Export> result = new ArrayList<>();
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findBySidDel(sids);
+		List<String> personLst = emps.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<Person> personDomainLst = personRepo.getPersonByPersonIds(personLst);
+		emps.parallelStream().forEach(c ->{
+			Optional<Person> personOpt = personDomainLst.parallelStream().filter(p -> p.getPersonId().equals(c.getEmployeeId())).findFirst();
+			if(personOpt.isPresent()) {
+				result.add(new ResultRequest596Export(c.getEmployeeId(), c.getEmployeeCode().v(),
+						personOpt.get().getPersonNameGroup().getBusinessName().v()));
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public List<ResultRequest600Export> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany) {
+		List<String> personIds = new ArrayList<>();
+		List<EmployeeDataMngInfo> emps = new ArrayList<>();
+		List<ResultRequest600Export> result = new ArrayList<>();
+		
+		//Input「削除社員を取り除く」をチェックする
+		if(isDelete == true) {
+			//ドメインモデル「社員データ管理情報」を取得する
+			emps.addAll(this.empDataMngRepo.findBySidNotDel(sids));
+		}else {
+			//ドメインモデル「社員データ管理情報」を全て取得する
+			emps.addAll(this.empDataMngRepo.findByListEmployeeId(sids));
+		}
+		
+		if(!CollectionUtil.isEmpty(emps)) {
+			//Input「会社に所属していない社員を取り除く」をチェックする
+			if(isGetAffCompany == true) {
+				//社員一覧を特定の会社に在籍している社員に絞り込む
+				List<AffCompanyHist> affComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, period);
+				if(!CollectionUtil.isEmpty(affComHist)) {
+					personIds.addAll(affComHist.stream().map(c -> c.getPId()).collect(Collectors.toList()));
+				}
+				
+			}else {
+				personIds.addAll(emps.stream().map(c -> c.getPersonId()).collect(Collectors.toList()));
+			}
+			
+			//ドメインモデル「個人基本情報」を全て取得する
+			List<Person> personLst = personRepo.getPersonByPersonIds(personIds);
+			emps.stream().forEach(c ->{
+				Optional<Person> personOpt = personLst.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
+				if(personOpt.isPresent()) {
+					result.add(new ResultRequest600Export(c.getEmployeeId(), c.getEmployeeCode().v(),
+							personOpt.get().getPersonNameGroup().getBusinessName().v()));
+				}
+			});
+		}
+
+		return result;
 	}
 }

@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -16,12 +17,15 @@ import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.ErrorMessage;
+import com.google.common.base.Strings;
+
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLogRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
@@ -31,6 +35,8 @@ import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecove
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtRestorationTarget;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtTarget;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
@@ -58,6 +64,9 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
 	
 	private static final String DELETE_TABLE_LIST = "DELETE FROM SspmtTableList  t where t.dataRecoveryProcessId =:dataRecoveryProcessId";
+	
+	@Inject
+	private DataRecoveryLogRepository repoDataRecoveryLog;
 	
 	/*@PersistenceContext(unitName = "UK")
     private EntityManager entityManager;*/
@@ -103,7 +112,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public List<Target> findByDataRecoveryId(String dataRecoveryProcessId) {
 		List<SspmtTarget> listTarget = this.getEntityManager().createQuery(SELECT_ALL_TARGET, SspmtTarget.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getResultList();
@@ -119,15 +127,55 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
-			String cidCurrent) {
+			String cidCurrent, String dataRecoveryProcessId,String employeeCode) {
 		
 		if (tableName != null) {
-			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
-			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
-			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
+			Integer x = 0;
+			try {
+				StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
+				COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+				COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+				x = (Integer) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
+				if (x > 1) {
+					String target            = employeeCode;
+					String errorContent      = null;
+					GeneralDate targetDate   = GeneralDate.today();
+					String contentSql        = COUNT_BY_TABLE_SQL.toString();
+					String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					// #9008_1
+				}
+			} catch (Exception e) {}
+			
+			return x;
+		}
+		return 0;
+	}
+	
+	@Override
+	public Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
+			String namePhysicalCid, String cidCurrent, String dataRecoveryProcessId,String employeeCode) {
+		if (tableName != null) {
+			Integer x = 0;
+			try {
+				StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
+				COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+				COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+				x = (Integer) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
+				if (x > 1) {
+					String target            = employeeCode;
+					String errorContent      = null;
+					GeneralDate targetDate   = GeneralDate.today();
+					String contentSql        = COUNT_BY_TABLE_SQL.toString();
+					String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					// #9008_1
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return x;
 		}
 		return 0;
 	}
@@ -150,63 +198,151 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteDataExitTableByVkey(List<Map<String, String>> listFiledWhere2, String tableName,
-			String namePhysicalCid, String cidCurrent) {
+			String namePhysicalCid, String cidCurrent, String employeeCode, String dataRecoveryProcessId) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			StringBuilder DELETE_DATA_TABLE_SQL = new StringBuilder("");
-			for (int i = 0; i < listFiledWhere2.size(); i++) {
-				StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-				DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
-				DELETE_BY_TABLE_SQL.append(makeWhereClause(listFiledWhere2.get(i), namePhysicalCid, cidCurrent));
-				
-				DELETE_DATA_TABLE_SQL.append(DELETE_BY_TABLE_SQL.toString() +"; ");
+			try {
+				for (int i = 0; i < listFiledWhere2.size(); i++) {
+					StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+					DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+					DELETE_BY_TABLE_SQL.append(makeWhereClause(listFiledWhere2.get(i), namePhysicalCid, cidCurrent));
+					
+					DELETE_DATA_TABLE_SQL.append(DELETE_BY_TABLE_SQL.toString() +"; ");
+				}
+				Query query = em.createNativeQuery(DELETE_DATA_TABLE_SQL.toString());
+				query.executeUpdate();
+			} catch (Exception e) {
+				if (employeeCode != null) {
+					String target            = employeeCode;
+					String errorContent      = e.getMessage();
+					GeneralDate targetDate   = GeneralDate.today();
+					String contentSql        = DELETE_DATA_TABLE_SQL.toString();
+					String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					throw e;
+					//#9008_2
+				} else {
+					String target            = null;
+					String errorContent      = e.getMessage();
+					GeneralDate targetDate   = null;
+					String contentSql        = DELETE_DATA_TABLE_SQL.toString();
+					String processingContent = "履歴データ削除   "+ TextResource.localize("CMF004_462") ; 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					throw e;
+					//#9010_2
+				}
 			}
-			Query query = em.createNativeQuery(DELETE_DATA_TABLE_SQL.toString());
-			query.executeUpdate();
 		}
 	}
 	
 	@Override
 	public void deleteTransactionDataExitTableByVkey(List<Map<String, String>> listFiledWhere2, String tableName, String namePhysicalCid,
-			String cidCurrent) {
+			String cidCurrent, String employeeCode, String dataRecoveryProcessId) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			StringBuilder DELETE_DATA_TABLE_SQL = new StringBuilder("");
-			for (int i = 0; i < listFiledWhere2.size(); i++) {
-				StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-				DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
-				DELETE_BY_TABLE_SQL.append(makeWhereClause(listFiledWhere2.get(i), namePhysicalCid, cidCurrent));
-
-				DELETE_DATA_TABLE_SQL.append(DELETE_BY_TABLE_SQL.toString() +"; ");
+			try {
+				for (int i = 0; i < listFiledWhere2.size(); i++) {
+					StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+					DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+					DELETE_BY_TABLE_SQL.append(makeWhereClause(listFiledWhere2.get(i), namePhysicalCid, cidCurrent));
+					DELETE_DATA_TABLE_SQL.append(DELETE_BY_TABLE_SQL.toString() + "; ");
+				}
+				Query query = em.createNativeQuery(DELETE_DATA_TABLE_SQL.toString());
+				query.executeUpdate();
+			} catch (Exception e) {
+				if (employeeCode != null) {
+					String target            = employeeCode;
+					String errorContent      = e.getMessage();
+					GeneralDate targetDate   = GeneralDate.today();
+					String contentSql        = DELETE_DATA_TABLE_SQL.toString();
+					String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					throw e;
+					//#9008_2
+				} else {
+					String target            = null;
+					String errorContent      = e.getMessage();
+					GeneralDate targetDate   = null;
+					String contentSql        = DELETE_DATA_TABLE_SQL.toString();
+					String processingContent = "履歴データ削除   "+ TextResource.localize("CMF004_462") ; 
+					saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+					throw e;
+					//#9010_2
+				}
 			}
-			Query query = em.createNativeQuery(DELETE_DATA_TABLE_SQL.toString());
-			query.executeUpdate();
 			
 		}
 	}
 	
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
-	public void insertDataTable( StringBuilder insertToTable) {
-		
-		EntityManager em = this.getEntityManager();
-		Query query = em.createNativeQuery(insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
-		query.executeUpdate();
+	public void insertDataTable( StringBuilder insertToTable,String employeeCode,String dataRecoveryProcessId) {
+		String logQuery = "";
+		try {
+			EntityManager em = this.getEntityManager();
+			Query query = em.createNativeQuery(insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+			logQuery = query.toString();
+			query.executeUpdate();
+		} catch (Exception e) {
+			if (employeeCode != null) {
+				String target            = employeeCode;
+				String errorContent      = e.getMessage();
+				GeneralDate targetDate   = GeneralDate.today();
+				String contentSql        = logQuery;
+				String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+				saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+				throw e;
+				//#9008_2
+			} else {
+				String target            = null;
+				String errorContent      = e.getMessage();
+				GeneralDate targetDate   = null;
+				String contentSql        = logQuery;
+				String processingContent = "履歴データ削除   "+ TextResource.localize("CMF004_462") ; 
+				saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+				throw e;
+				//#9010_2
+			}
+		}
 	}
 	
 	
 	@Override
-	public void insertTransactionDataTable(StringBuilder insertToTable) {
+	public void insertTransactionDataTable(StringBuilder insertToTable,String employeeCode,String dataRecoveryProcessId) {
 		
-		EntityManager em = this.getEntityManager();
-		Query query = em.createNativeQuery(insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
-		query.executeUpdate();
+		String logQuery = "";
+		try {
+			EntityManager em = this.getEntityManager();
+			Query query = em.createNativeQuery(insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+			query.executeUpdate();
+			
+		} catch (Exception e) {
+			if (employeeCode != null) {
+				String target            = employeeCode;
+				String errorContent      = e.getMessage();
+				GeneralDate targetDate   = GeneralDate.today();
+				String contentSql        = logQuery;
+				String processingContent = "データベース復旧処理  "+ TextResource.localize("CMF004_465"); 
+				saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+				throw e;
+				//#9008_2
+			} else {
+				String target            = null;
+				String errorContent      = e.getMessage();
+				GeneralDate targetDate   = null;
+				String contentSql        = logQuery;
+				String processingContent = "履歴データ削除   "+ TextResource.localize("CMF004_462") ; 
+				saveErrorLogDataRecover(dataRecoveryProcessId, target, errorContent, targetDate, processingContent, contentSql);
+				throw e;
+				//#9010_2
+			}
+		}
 	}
 	
 
@@ -231,7 +367,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		Map<String, List<TableList>> map = tableList.stream().collect(Collectors.groupingBy(TableList::getCategoryId));
 		map.forEach((k, v) -> {
 			if (v.size() > 1) {
-				lstTableListDuplicate.addAll(v.stream().filter(x -> x.getStorageRangeSaved() == StorageRangeSaved.EARCH_EMP).collect(Collectors.toList()));
+				lstTableListDuplicate.addAll(v.stream().filter(x -> x.getStorageRangeSaved() == StorageRangeSaved.ALL_EMP).collect(Collectors.toList()));
 			}
 		});
 		
@@ -243,25 +379,63 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
-	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
-
+	public void deleteEmployeeHis(TableList table, String whereCid, String whereSid, String cid, String employeeId) {
 		EntityManager em = this.getEntityManager();
+		if (table.getTableEnglishName() != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE t FROM  ");
+			DELETE_BY_TABLE_SQL.append(table.getTableEnglishName()).append(" t");
+			boolean hasParentTblFlg = false;
 
-		if (tableName != null) {
-			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
-			if (!StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
-				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
+			// アルゴリズム「親テーブルをJOINする」を実行する
+			if (table.getHasParentTblFlg() == NotUseAtr.USE && table.getParentTblName().isPresent()) {
+				hasParentTblFlg = true;
+				DELETE_BY_TABLE_SQL.append(" INNER JOIN ").append(table.getParentTblName().get()).append(" p ON ");
+
+				String[] parentFields = { table.getFieldParent1().orElse(""), table.getFieldParent2().orElse(""),
+						table.getFieldParent3().orElse(""), table.getFieldParent4().orElse(""),
+						table.getFieldParent5().orElse(""), table.getFieldParent6().orElse(""),
+						table.getFieldParent7().orElse(""), table.getFieldParent8().orElse(""),
+						table.getFieldParent9().orElse(""), table.getFieldParent10().orElse("") };
+
+				String[] childFields = { table.getFieldChild1().orElse(""), table.getFieldChild2().orElse(""),
+						table.getFieldChild3().orElse(""), table.getFieldChild4().orElse(""),
+						table.getFieldChild5().orElse(""), table.getFieldChild6().orElse(""),
+						table.getFieldChild7().orElse(""), table.getFieldChild8().orElse(""),
+						table.getFieldChild9().orElse(""), table.getFieldChild10().orElse("") };
+
+				boolean isFirstOnStatement = true;
+				for (int i = 0; i < parentFields.length; i++) {
+					if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+						if (!isFirstOnStatement) {
+							DELETE_BY_TABLE_SQL.append(" AND ");
+						}
+						isFirstOnStatement = false;
+						DELETE_BY_TABLE_SQL.append("p." + parentFields[i] + "=" + "t." + childFields[i]);
+					}
+				}
 			}
-			if (!StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
-				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
+
+			DELETE_BY_TABLE_SQL.append(" WHERE 1=1  ");
+
+			if (hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" p.").append(whereSid).append(" = '").append(employeeId)
+						.append("'");
+			} else if (!hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" t.").append(whereSid).append(" = '").append(employeeId)
+						.append("'");
 			}
+
+			if (hasParentTblFlg && !StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" p.").append(whereCid).append(" = '").append(cid)
+						.append("'");
+			} else if (!hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" t.").append(whereCid).append(" = '").append(cid)
+						.append("'");
+			}
+
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
-
 		}
-
 	}
 
 	public void addTargetEmployee(Target domain) {
@@ -333,39 +507,70 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
-			String namePhysicalCid, String cidCurrent) {
-		if (tableName != null) {
-			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
-			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
-			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
-		}
-		return 0;
-	}
-	@Override
 	public void addRestorationTarget(RestorationTarget domain) {
 		this.commandProxy().insert(SspmtRestorationTarget.toEntity(domain));
 
 	}
 
 	@Override
-	public void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid,
+	public void deleteTransactionEmployeeHis(TableList table, String whereCid, String whereSid, String cid,
 			String employeeId) {
 		EntityManager em = this.getEntityManager();
 
-		if (tableName != null) {
-			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
-			if (!StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
-				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
+		if (table.getTableEnglishName() != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE t FROM ");
+			DELETE_BY_TABLE_SQL.append(table.getTableEnglishName()).append(" t ");
+			boolean hasParentTblFlg = false;
+
+			// アルゴリズム「親テーブルをJOINする」を実行する
+			if (table.getHasParentTblFlg() == NotUseAtr.USE && table.getParentTblName().isPresent()) {
+				hasParentTblFlg = true;
+				DELETE_BY_TABLE_SQL.append(" INNER JOIN ").append(table.getParentTblName().get()).append(" p ON ");
+
+				String[] parentFields = { table.getFieldParent1().orElse(""), table.getFieldParent2().orElse(""),
+						table.getFieldParent3().orElse(""), table.getFieldParent4().orElse(""),
+						table.getFieldParent5().orElse(""), table.getFieldParent6().orElse(""),
+						table.getFieldParent7().orElse(""), table.getFieldParent8().orElse(""),
+						table.getFieldParent9().orElse(""), table.getFieldParent10().orElse("") };
+
+				String[] childFields = { table.getFieldChild1().orElse(""), table.getFieldChild2().orElse(""),
+						table.getFieldChild3().orElse(""), table.getFieldChild4().orElse(""),
+						table.getFieldChild5().orElse(""), table.getFieldChild6().orElse(""),
+						table.getFieldChild7().orElse(""), table.getFieldChild8().orElse(""),
+						table.getFieldChild9().orElse(""), table.getFieldChild10().orElse("") };
+
+				boolean isFirstOnStatement = true;
+				for (int i = 0; i < parentFields.length; i++) {
+					if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+						if (!isFirstOnStatement) {
+							DELETE_BY_TABLE_SQL.append(" AND ");
+						}
+						isFirstOnStatement = false;
+						DELETE_BY_TABLE_SQL.append("p." + parentFields[i] + "=" + "t." + childFields[i]);
+					}
+				}
 			}
-			if (!StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
-				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
+
+			DELETE_BY_TABLE_SQL.append(" WHERE 1=1  ");
+
+			if (hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" p.").append(whereSid).append(" = '").append(employeeId)
+						.append("'");
+			} else if (!hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" t.").append(whereSid).append(" = '").append(employeeId)
+						.append("'");
 			}
+
+			if (hasParentTblFlg && !StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" p.").append(whereCid).append(" = '").append(cid)
+						.append("'");
+			} else if (!hasParentTblFlg && !StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(" t.").append(whereCid).append(" = '").append(cid)
+						.append("'");
+			}
+
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
-
 		}
 	}
 	
@@ -387,5 +592,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			data = this.getEntityManager().createNativeQuery(SELECT_BY_TABLE_SQL.toString()).getResultList();
 		}
 		return data;
+	}
+	
+	private void saveErrorLogDataRecover(String recoveryProcessId, String target, String errorContent,
+			GeneralDate targetDate, String processingContent, String contentSql) {
+		int logSequenceNumber = repoDataRecoveryLog.getMaxSeqId(recoveryProcessId) + 1;
+		DataRecoveryLog dataRecoveryLog = new DataRecoveryLog(recoveryProcessId, target, errorContent, targetDate,
+				logSequenceNumber, processingContent, contentSql);
+		repoDataRecoveryLog.add(dataRecoveryLog);
 	}
 }

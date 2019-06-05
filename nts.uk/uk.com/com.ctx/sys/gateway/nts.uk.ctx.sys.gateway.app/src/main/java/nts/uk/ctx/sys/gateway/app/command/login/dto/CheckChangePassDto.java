@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login.dto;
 
+import lombok.Setter;
+
 /**
  * The Class CheckChangePassDto.
  */
@@ -19,7 +21,12 @@ public class CheckChangePassDto {
 	public boolean showContract;
 	
 	/** param for SystemSuspend */
+	@Setter
 	public String successMsg;
+	/**変更理由*/
+	public String changePassReason;
+	/**残り何日*/
+	public int spanDays;
 	
 	public CheckChangePassDto() {
 		super();
@@ -35,5 +42,15 @@ public class CheckChangePassDto {
 		this.showChangePass = showChangePass;
 		this.msgErrorId = msgErrorId;
 		this.showContract = showContract;
+	}
+	public CheckChangePassDto(String changePassReason) {
+		super();
+		this.showChangePass = true;
+		this.changePassReason = changePassReason;
+	}
+	public CheckChangePassDto(String msgErrorId, int spanDays) {
+		super();
+		this.msgErrorId = msgErrorId;
+		this.spanDays = spanDays;
 	}
 }

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -87,6 +88,8 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			EmployeeImportNew emp = signonData.employeeImportNew;
 			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
 			companyCode = com.getCompanyCode();
+			employeeId = em.getEmployeeId();
+			companyId = contractCode + "-" + companyCode;
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
@@ -110,7 +113,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					
 			// Get User by PersonalId
 			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
-			
+			//hoatt 2019.05.07 #107445
+			//EA修正履歴No.3369
+			//アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+			this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId, command.isSignOn());
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
@@ -127,7 +133,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			this.checkLimitTime(user, companyId,employeeCode);
 			employeeId = em.getEmployeeId();
 		}
-		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 		this.errorCheck2(companyId, contractCode, user.getUserId(), command.isSignOn(), employeeId);
 		
@@ -147,27 +152,22 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 				programID,
 				screenID);
 		if(systemSuspendOutput.isError()){
-			throw new BusinessException(systemSuspendOutput.getMsgContent());
+			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
-		
-		//アルゴリズム「ログイン記録」を実行する
-		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null,false);
-		}
-		
-		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
-		
-		if (command.isSignOn()) {
-			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
-		}
-		
+		//EA修正履歴3120
+		//hoatt 2019.03.27
+		Integer loginMethod = command.isSignOn() ? LoginMethod.SINGLE_SIGN_ON.value : LoginMethod.NORMAL_LOGIN.value;
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
-		
-		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
-		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
-		return checkChangePassDto;
+		//hoatt 2019.05.06
+		//EA修正履歴No.3373
+		//アルゴリズム「ログイン後チェック」を実行する
+		this.deleteLoginLog(user.getUserId());
+		//アルゴリズム「ログイン後チェック」を実行する
+		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
+		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
+		return checkChangePass;
 	}
 
 	/**

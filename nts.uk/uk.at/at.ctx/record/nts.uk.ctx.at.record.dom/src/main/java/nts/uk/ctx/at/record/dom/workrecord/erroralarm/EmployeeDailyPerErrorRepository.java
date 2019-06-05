@@ -24,6 +24,10 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate);
 	
+	List<EmployeeDailyPerError> finds(Map<String, List<GeneralDate>> param);
+	
+	List<EmployeeDailyPerError> findsWithLeftJoin(List<String> employeeID, DatePeriod processingDate);
+	
 	void removeParam(String sid, GeneralDate date);
 	
 	void removeParam(Map<String, List<GeneralDate>> param);
@@ -43,4 +47,5 @@ public interface EmployeeDailyPerErrorRepository {
 	 */
 	boolean checkErrorByPeriodDate(String companyID, String employeeID, GeneralDate strDate, GeneralDate endDate);
 	
+	List<EmployeeDailyPerError> getByEmpIDAndPeriod(List<String> employeeID, DatePeriod processingDate);
 }

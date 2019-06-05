@@ -23,7 +23,7 @@ module nts.uk.ui.koExtentions {
                         optionsText: 'text',
                         width: '60px',
                         enable: data.enable,
-                        name: _.size(source) == 13 ? (ko.toJS(data.name) + "の月") : (ko.toJS(data.name) + "の日"),
+                        name: _.size(source) == 13 ? (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の月") : (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の日"),
                         required: _.size(source) == 13 ? data.required : ko.computed(() => !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value))
                     });
                 },

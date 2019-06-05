@@ -63,4 +63,15 @@ public class JpaDisplayReasonRepository extends JpaRepository implements Display
 		}
 		return null;
 	}
+	/**
+	 * ドメインモデル「休暇申請」を取得する
+	 * @param 会社ID companyId
+	 * @param 休暇申請の種類 hdType
+	 * @return
+	 */
+	@Override
+	public Optional<DisplayReason> findByHdType(String companyId, int hdType) {
+		return this.queryProxy().find(new KrqstDisplayReasonPK(companyId, hdType), KrqstDisplayReason.class)
+				.map(c -> toDomain(c));
+	}
 }

@@ -1,6 +1,7 @@
 module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
     import ntsFile = nts.uk.request.file; 
+    import character = nts.uk.characteristics;
     
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
@@ -13,6 +14,9 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         displayButton: boolean;
         topPageCode: KnockoutObservable<string>;
         isStart: boolean;
+        dateSwitch: KnockoutObservableArray<any>;
+        selectedSwitch: KnockoutObservable<any>;
+        switchVisible: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.isStart = true;
@@ -28,6 +32,12 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 { id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage }
             ]);
             self.selectedTab = ko.observable(null);
+            self.dateSwitch = ko.observableArray([
+                                                    { code: '0', name: nts.uk.resource.getText('CCG008_14')},
+                                                    { code: '1', name: nts.uk.resource.getText('CCG008_15')}
+                                                ]);
+            self.selectedSwitch = ko.observable(0);
+            self.switchVisible = ko.observable(true);
             self.selectedTab.subscribe(function(codeChange) {
                 let time = 0;
                 if (self.isStart) {
@@ -45,6 +55,21 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     }
                 }, time);
             });
+            // ver4 current month or next month
+            self.selectedSwitch.subscribe(function(value){
+                character.save('currentOrNextMonth', value);
+                nts.uk.ui.windows.setShared('currentOrNextMonth', value);
+                var transferData = __viewContext.transferred.value;
+                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    if(self.selectedTab() == 'tab-1'){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
+                });
+            });
         }
         start(): JQueryPromise<any> {
             var self = this;
@@ -54,6 +79,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             //var fromScreen = "login"; 
             self.topPageCode(code);
+            character.restore('currentOrNextMonth').done((obj)=>{
+                if(!obj){
+                    self.selectedSwitch(0);   
+                }else{
+                    self.selectedSwitch(obj);                    
+                }
+                nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
+            })
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
                 self.dataSource(data);
@@ -88,11 +121,39 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         showToppage(data: model.LayoutForTopPageDto) {
             var self = this;
             self.buildLayout(data, model.TOPPAGE);
+            // ẩn hiện switch button
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
+            }else{
+                self.switchVisible(false);
+            }
         }
         //display my page
         showMypage(data: model.LayoutForMyPageDto) {
             var self = this;
             self.buildLayout(data, model.MYPAGE);
+            // ẩn hiện switch button
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
+            }else{
+                self.switchVisible(false);
+            }
         }
 
         /** Build layout for top page or my page **/
@@ -101,13 +162,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             if (!data) {
                 return;
             }
-
+            
             let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
                 return new model.Placement(item.placementID, item.placementPartDto.topPageName,
                     item.row, item.column,
                     item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.url,
                     item.placementPartDto.topPagePartID, item.placementPartDto.topPageCode ,item.placementPartDto.type, null);
             });
+            
 
             if (data.flowMenu != null) {
                 _.map(data.flowMenu, (items) => {
@@ -148,8 +210,13 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    self.showMypage(self.dataSource().myPage);
-                    self.showToppage(self.dataSource().topPage);
+//                    self.showMypage(self.dataSource().myPage);
+//                    self.showToppage(self.dataSource().topPage);
+                    if(self.selectedTab() == 'tab-1'){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
                 });
             });
         }

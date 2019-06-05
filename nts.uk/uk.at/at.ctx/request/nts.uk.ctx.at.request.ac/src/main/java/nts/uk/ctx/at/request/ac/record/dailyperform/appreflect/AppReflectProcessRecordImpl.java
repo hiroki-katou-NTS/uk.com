@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ac.record.dailyperform.appreflect;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,8 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.BreakTimePubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorktimeAppPubPara;
@@ -36,6 +40,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackRef
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
@@ -47,7 +52,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	@Inject
 	private RequestSettingRepository requestSetting;
 	@Override
-	public boolean appReflectProcessRecord(Application_New appInfor, boolean chkRecord) {
+	public boolean appReflectProcessRecord(Application_New appInfor, boolean chkRecord, ExecutionTypeExImport executionType) {
 		Optional<RequestSetting> settingData = requestSetting.findByCompany(appInfor.getCompanyID());
 		if(appInfor.getStartDate().isPresent() && appInfor.getEndDate().isPresent()) {
 			for(int i = 0; appInfor.getStartDate().get().daysTo(appInfor.getEndDate().get()) - i >= 0; i++){
@@ -65,7 +70,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 						EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
 						appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false,
 								chkRecord);
-				if(!recordPub.appReflectProcess(para)) {
+				if(!recordPub.appReflectProcess(para, EnumAdaptor.valueOf(executionType.value, ExecutionType.class))) {
 					return false;
 				}
 			}	
@@ -82,7 +87,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 					EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
 					appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false,
 							chkRecord);
-			return recordPub.appReflectProcess(para);
+			return recordPub.appReflectProcess(para, EnumAdaptor.valueOf(executionType.value, ExecutionType.class));
 		}
 		return true;
 	}
@@ -105,7 +110,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class),
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectPubAtr.class),
 				para.isScheReflectAtr(),
-				gobackPra);
+				gobackPra,
+				para.getExcLogId());
 		if(isPre) {
 			 return recordPub.preGobackReflect(pubPara);
 		} else {
@@ -137,12 +143,12 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isAutoClearStampFlg(), 
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class), 
 				para.isScheTimeOutFlg(), 
-				overtimePara);
+				overtimePara,
+				para.getExcLogId());
 		if(isPre) {
 			return recordPub.preOvertimeReflect(preOvertimePara);	
-		} else {
-			return recordPub.afterOvertimeReflect(preOvertimePara);
 		}
+		return true;
 	}
 
 	@Override
@@ -152,6 +158,12 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 
 	@Override
 	public boolean holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
+        Map<Integer, BreakTimePubPara> mapBreakTimeFrame = new HashMap<>();
+        para.getHolidayWorkPara().getMapBreakTime().forEach((a,b) -> {
+        	BreakTimePubPara breakTime = new BreakTimePubPara(b.getStartTime(), b.getEndTime());
+            mapBreakTimeFrame.put(a, breakTime);
+        });
+
 		HolidayWorktimeAppPubPara appPara = new HolidayWorktimeAppPubPara(para.getHolidayWorkPara().getWorkTypeCode(), 
 				para.getHolidayWorkPara().getWorkTimeCode(), 
 				para.getHolidayWorkPara().getMapWorkTimeFrame(), 
@@ -159,7 +171,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getHolidayWorkPara().getReflectedState().value, ReflectedStatePubRecord.class), 
 				para.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(para.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectDailyPubRecord.class),
 				para.getHolidayWorkPara().getStartTime(),
-				para.getHolidayWorkPara().getEndTime()); 
+				para.getHolidayWorkPara().getEndTime(),
+				mapBreakTimeFrame); 
 		HolidayWorkReflectPubPara pubPara = new HolidayWorkReflectPubPara(para.getEmployeeId(), 
 				para.getBaseDate(),
 				para.isHolidayWorkReflectFlg(),
@@ -167,7 +180,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheReflectFlg(), 
 				para.isHwRecordReflectTime(),
 				para.isHwRecordReflectBreak(),
-				appPara);
+				appPara,
+				para.getExcLogId());
 		
 		return recordPub.holidayWorkReflect(pubPara, isPre);		
 	}
@@ -187,7 +201,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getStartDate(),
 				para.getEndDate(),
 				para.getStartTime(),
-				para.getEndTime());
+				para.getEndTime(),
+				para.getExcLogId());
 		return pubPara;
 	}
 
