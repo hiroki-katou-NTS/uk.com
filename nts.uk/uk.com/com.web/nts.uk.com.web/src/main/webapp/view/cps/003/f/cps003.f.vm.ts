@@ -460,7 +460,12 @@ module cps003.f.vm {
                                     value.targetItem = [target, 'IS00187', 'IS00188', 'IS00190', 'IS00191'];
                                     break;
                             }
-                            value.replaceValue = [values.selectedWorkTimeCode, values.first.start, values.first.end, values.second.start, values.second.end];
+                            value.replaceValue = [
+                                values.selectedWorkTimeCode,
+                                values.first == undefined ? "" : values.first.start,
+                                values.first == undefined ? "" : values.first.end,
+                                values.second == undefined ? "" : values.second.start,
+                                values.second == undefined ? "" : values.second.end];
                             value.replaceFormat = REPLACE_FORMAT.VALUE;
                         } else {
                             value.mode = APPLY_MODE.SELECTION;
