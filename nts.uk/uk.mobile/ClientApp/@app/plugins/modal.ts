@@ -207,14 +207,14 @@ const modal = {
                                         this.hasTitle = hasTitle;
                                     }
                                 },
-                                mounted() {
-                                    this.show = true;
-
-                                    this.$mask('show', options.opacity);
-
-                                    dom.addClass(document.body, 'modal-open');
-                                },
                                 beforeMount() {
+                                    // show modal backdrop
+                                    if (document.querySelector('.modal-backdrop.show')) {
+                                        this.$mask('show', 0.01);
+                                    } else {
+                                        this.$mask('show', options.opacity);
+                                    }
+
                                     // remove all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
 
@@ -230,15 +230,17 @@ const modal = {
                                         }
                                     });
                                 },
+                                mounted() {
+                                    this.show = true;
+
+                                    dom.addClass(document.body, 'modal-open');
+                                },
                                 destroyed() {
+                                    // hide own mask layer
+                                    this.$mask('hide');
+
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
-
-                                    let $modals = document.querySelectorAll('.modal.show');
-                                    
-                                    if ($modals.length === 0) {
-                                        this.$mask('hide');
-                                    }
 
                                     // restore all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
