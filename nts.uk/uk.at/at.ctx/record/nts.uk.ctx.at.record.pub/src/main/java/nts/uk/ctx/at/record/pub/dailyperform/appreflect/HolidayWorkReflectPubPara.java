@@ -38,4 +38,5 @@ public class HolidayWorkReflectPubPara {
 	 * 休日出勤申請
 	 */
 	private HolidayWorktimeAppPubPara holidayWorkPara;
+	private String excLogId;
 }
