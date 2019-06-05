@@ -10,5 +10,5 @@ public interface CareerPathRepository {
 	
 	void updateCareerPath(CareerPath domain);
 	
-	void removeCareerPath();
+	void removeCareerPath(String companyId, String historyId);
 }

@@ -73,8 +73,12 @@ public class CareerPathRepositoryImpl extends JpaRepository implements CareerPat
 	}
 
 	@Override
-	public void removeCareerPath() {
-		
+	@Transactional
+	public void removeCareerPath(String companyId, String historyId) {
+		List<String> careerIds = this.getCareerId(companyId, historyId);
+		for (String careerId : careerIds) {
+			this.commandProxy().remove(JhcmtCareerPathCareer.class, new JhcmtCareerPathCareerPK(companyId, historyId, careerId));
+		}
 	}
 	
 	private JhcmtCareerPath getCareerPathEntity(String companyId, String historyId) {
