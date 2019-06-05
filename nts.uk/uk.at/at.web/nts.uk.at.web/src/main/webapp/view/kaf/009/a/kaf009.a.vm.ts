@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
@@ -260,10 +261,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     //Setting data works
                     //勤務種類
                     self.workTypeCd(settingData.dataWorkDto.selectedWorkTypeCd);
-                    self.workTypeName(settingData.dataWorkDto.selectedWorkTypeName);
+                    self.workTypeName(self.getName(settingData.dataWorkDto.selectedWorkTypeCd, settingData.dataWorkDto.selectedWorkTypeName));
                     //勤務種類
                     self.siftCD(settingData.dataWorkDto.selectedWorkTimeCd);
-                    self.siftName(settingData.dataWorkDto.selectedWorkTimeName);
+                    self.siftName(self.getName(settingData.dataWorkDto.selectedWorkTimeCd, settingData.dataWorkDto.selectedWorkTimeName));
                     //dataWorkDto
                     self.workTypeCodes = settingData.dataWorkDto.workTypeCodes;
                     self.workTimeCodes = settingData.dataWorkDto.workTimeCodes;
@@ -291,11 +292,21 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        getName(code, name) {
+            let result = "";
+            if (code) {
+                result = name || text("KAL003_120");
+            }
+            return result;
+        }
         /**
          * insert//登録ボタンをクリックする
          */
         insert() {
             let self = this;
+            $("#inputdate").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) { return; }
 //            if(self.requireTypicalReason()&&self.requiredReason()){
 //                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())&&nts.uk.util.isNullOrEmpty($('#inpReasonTextarea').val())){
 //                    $("#combo-box").ntsError('set', '定型理由を入力してください');   
@@ -315,7 +326,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }
-            self.checkBeforeInsert();
+            self.confirmInconsistency();
 
         }
 
@@ -389,15 +400,34 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
             let self = this;
-            let dfd = $.Deferred();
-            service.checkInsertGoBackDirect(self.getCommand()).done(function() {
+            let command = self.getCommand();
+            command.checkOver1Year = true;
+            service.checkInsertGoBackDirect(command).done(function() {
+                command.checkOver1Year = false;
                 self.registry();
-                dfd.resolve(true);
             }).fail(function(res: any) {
-                if (res.messageId == "Msg_297") {
+                if (res.messageId == "Msg_1518") {//confirm
+                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                        command.checkOver1Year = false;
+                        service.checkInsertGoBackDirect(command).done(function() {
+                            self.registry();
+                        }).fail(function(res: any) {
+                            self.checkRegFail(res);
+                        })
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }else{
+                    self.checkRegFail(res);
+                }
+            });
+        }
+
+    checkRegFail(res){
+        let self = this;
+        if (res.messageId == "Msg_297") {
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
                         self.registry();
-                        dfd.resolve(true);
                     }).ifNo(function() {
                         let showMsg: boolean = true;
                         nts.uk.ui.block.clear();
@@ -423,10 +453,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         if (showMsg) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                         }
-                        dfd.resolve(false);
                     });
                 } else if (res.messageId == "Msg_298") {
-                    dfd.reject();
                     nts.uk.ui.block.clear();
                     let showMsg: boolean = true;
                     if (self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())) {
@@ -461,10 +489,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     let rsTime2 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[1]));
                     nts.uk.ui.dialog.error({ messageId: res.parameterIds[0].split("=")[1], messageParams: [rsTime2] });    
                 }
-            })
-            return dfd.promise();
         }
-
         /**
          * アルゴリズム「直行直帰するチェック」を実行する
          */
@@ -553,7 +578,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let commandTotal = {
                 goBackCommand: goBackCommand,
                 appCommand: appCommand,
-                appApprovalPhaseCmds: self.approvalSource
+                appApprovalPhaseCmds: self.approvalSource,
+                checkOver1Year: false
             }
             return commandTotal;
 
@@ -684,8 +710,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         setRealData(data: any){
             let self = this;
             self.realTimeDate(data.achievementOutput.date);
-            self.realTimeWorkType(data.achievementOutput.workType.workTypeCode+"   "+data.achievementOutput.workType.name);
-            self.realTimeWorkTime(data.achievementOutput.workTime.workTimeCD+"   "+data.achievementOutput.workTime.workTimeName);
+            self.realTimeWorkType(data.achievementOutput.workType.workTypeCode + "   " + self.getName(data.achievementOutput.workType.workTypeCode, data.achievementOutput.workType.name));
+            self.realTimeWorkTime(data.achievementOutput.workTime.workTimeCD+ "    "+self.getName(data.achievementOutput.workTime.workTimeCD, data.achievementOutput.workTime.workTimeName));
             let startTime1 = data.achievementOutput.startTime1;
             let endTime1 = data.achievementOutput.endTime1;
             let startTime2 = data.achievementOutput.startTime2;
@@ -713,6 +739,29 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             } else {
                 return "";    
             }          
+        }
+        
+        confirmInconsistency(){
+            let self = this;
+            let command = self.getCommand();
+            service.confirmInconsistency(command).done((data1) => { 
+                if (!nts.uk.util.isNullOrEmpty(data1)) {
+                    dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {
+                        //登録処理を実行
+                        self.checkBeforeInsert();
+                    }).ifNo(() => {
+                        //終了状態：処理をキャンセル
+                        nts.uk.ui.block.clear();
+                        return;
+                    });
+                } else {
+                    //登録処理を実行
+                    self.checkBeforeInsert();
+                }   
+            }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });           
+            });    
         }
     }
 

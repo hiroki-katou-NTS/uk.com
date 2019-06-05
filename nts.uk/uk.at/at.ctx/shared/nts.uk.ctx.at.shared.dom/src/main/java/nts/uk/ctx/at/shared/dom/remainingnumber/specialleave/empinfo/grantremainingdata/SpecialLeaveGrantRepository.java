@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface SpecialLeaveGrantRepository {
 
@@ -52,5 +53,16 @@ public interface SpecialLeaveGrantRepository {
 	 * @return
 	 */
 	List<SpecialLeaveGrantRemainingData> getAllByListEmpID(List<String> listEmpID, int specialLeaveCD);
+
+	/**
+	 * 特別休暇付与残数データ
+	 * @param sid ・社員ID=INPUT．社員ID
+	 * @param speCode   ・特別休暇コード=INPUT．特別休暇コード
+	 * @param datePriod ・集計開始日 < 付与日 <= INPUT．集計終了日 
+	 * @param startDate ・集計開始日 <= 期限日
+	 * @param expirationStatus ・期限切れ状態 ＝ ”使用可能”
+	 * @return 
+	 */
+	List<SpecialLeaveGrantRemainingData> getByNextDate(String sid, int speCode, DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
 
 }

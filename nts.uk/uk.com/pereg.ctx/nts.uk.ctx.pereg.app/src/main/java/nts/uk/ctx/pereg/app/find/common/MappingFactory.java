@@ -92,19 +92,22 @@ public class MappingFactory {
 			// map data
 			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
 
-			String recordId = peregDto.getDomainDto().getRecordId();
-			
-			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
-				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-					
-					Object value = getValue(itemCodeValueMap, valueItem);
+		// map data
+		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+				Object value = getValue(itemCodeValueMap, valueItem);
+				if(recordId == null) {
+					valueItem.setValue(valueItem.getInitValue());
+				}else {
 					valueItem.setValue(value);
-					
-					// update 2018/02/22 bug 87560
-					valueItem.setShowColor(false);
-					
-					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
-					valueItem.setRecordId(recordId);
+				}
+				// update 2018/02/22 bug 87560
+				valueItem.setShowColor(false);
+				
+				// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+				valueItem.setRecordId(recordId);
 				}
 			}
 		}
@@ -121,14 +124,16 @@ public class MappingFactory {
 		if(peregDto != null) {
 			// map data
 			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-
-			
+			String recordId = peregDto.getDomainDto().getRecordId();
 			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
 				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 					
 					Object value = getValue(itemCodeValueMap, valueItem);
-					valueItem.setValue(value);
-					
+					if(recordId == null) {
+						valueItem.setValue(valueItem.getInitValue());
+					}else {
+						valueItem.setValue(value);
+					}					
 					// update 2018/02/22 bug 87560
 					valueItem.setShowColor(false);
 					
@@ -148,7 +153,7 @@ public class MappingFactory {
 			if(itemType == DataTypeValue.SELECTION.value || 
 					itemType == DataTypeValue.SELECTION_BUTTON.value || 
 					itemType == DataTypeValue.SELECTION_RADIO.value) {
-				value = value == null ? null : value.toString();
+				value = value == null ? valueItem.getInitValue() : value.toString();
 			}
 		}
 		

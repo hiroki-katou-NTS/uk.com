@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -85,7 +84,6 @@ public class HolidayWorkTimeSheet{
 			}
 			//枠追加
 			else {
-				
 				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
 										 holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime)
 										 );
@@ -151,7 +149,7 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * 
 	 */
-	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
+	public static Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
 													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない
@@ -256,7 +254,6 @@ public class HolidayWorkTimeSheet{
 	private List<HolidayWorkFrameTime> afterUpperControl(List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList,AutoCalSetting autoCalcSet) {
 		List<HolidayWorkFrameTime> returnList = new ArrayList<>();
 		for(HolidayWorkFrameTime loopHolidayTimeFrame:calcHolidayTimeWorkTimeList) {
-			
 			//時間の上限時間算出
 			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getTime());
 			//計算時間の上限算出
@@ -264,8 +261,7 @@ public class HolidayWorkTimeSheet{
 			//振替処理
 			loopHolidayTimeFrame = loopHolidayTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getTime():upperTime,
 //																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime)
-																															   loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime()));
-			
+																															   loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime()));			
 			returnList.add(loopHolidayTimeFrame);
 		}
 		return returnList;
@@ -293,7 +289,7 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * 
 	 */
-	public List<HolidayWorkFrameTime> transProcess(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
+	public static List<HolidayWorkFrameTime> transProcess(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
@@ -302,8 +298,10 @@ public class HolidayWorkTimeSheet{
 			return afterCalcUpperTimeList;
 		//代休振替設定判定
 		switch(useSettingAtr.get().getSubHolTransferSetAtr()) {
+			//一定時間を超えたら代休とする
 			case CERTAIN_TIME_EXC_SUB_HOL:
 				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList);
+			//指定した時間を代休とする
 			case SPECIFIED_TIME_SUB_HOL:
 				return transAllTime(useSettingAtr.get().getDesignatedTime().getOneDayTime(),
 								    useSettingAtr.get().getDesignatedTime().getHalfDayTime(),
@@ -319,11 +317,13 @@ public class HolidayWorkTimeSheet{
 	 * @param eachCompanyTimeSet　会社別代休設定
 	 * @return　代休振替設定
 	 */
-	private Optional<SubHolTransferSet> getTransSet(Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+	private static Optional<SubHolTransferSet> getTransSet(Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 										  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		//就業時間帯の振替設定参照
 		if(eachWorkTimeSet.isPresent() && eachWorkTimeSet.get().getSubHolTimeSet().isUseDivision()) {
 			return Optional.of(eachWorkTimeSet.get().getSubHolTimeSet());
 		}
+		//会社共通の振替設定参照
 		else {
 			if(eachCompanyTimeSet.isPresent()) {
 				if(eachCompanyTimeSet.get().getTransferSetting().isUseDivision()) {
@@ -342,7 +342,7 @@ public class HolidayWorkTimeSheet{
 	 * 一定時間の振替処理
 	 * @param 一定時間
 	 */
-	public List<HolidayWorkFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
+	public static List<HolidayWorkFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
 		/*振替可能時間の計算*/
 		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
@@ -359,7 +359,7 @@ public class HolidayWorkTimeSheet{
 	 * @param useTimeAtr 使用時間区分
 	 * @return 振替可能時間
 	 */
-	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
+	private static AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<HolidayWorkFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
 		int totalFrameTime =  useTimeAtr.isTime()
 								?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 								:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
@@ -372,7 +372,7 @@ public class HolidayWorkTimeSheet{
 	}
 
 	
-	public List<HolidayWorkFrameTime> trans(AttendanceTime restTransAbleTime, List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+	public static List<HolidayWorkFrameTime> trans(AttendanceTime restTransAbleTime, List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		List<HolidayWorkFrameTime> returnList = new ArrayList<>();
 		//振替時間
 		AttendanceTime transAbleTime = restTransAbleTime;
@@ -400,7 +400,7 @@ public class HolidayWorkTimeSheet{
 	 * @param transRestAbleTime
 	 * @return
 	 */
-	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
+	private static AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return holidayWorkFrameTime.getHolidayWorkTime().get().getTime().greaterThanOrEqualTo(transRestAbleTime)
 																		  ?transRestAbleTime
@@ -422,7 +422,7 @@ public class HolidayWorkTimeSheet{
 	 * @param transAbleTime　振替時間
 	 * @return 振替処理後の残業時間枠
 	 */
-	private HolidayWorkFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkTimeFrame,AttendanceTime holidayWorkTime, AttendanceTime transAbleTime){
+	private static HolidayWorkFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkTimeFrame,AttendanceTime holidayWorkTime, AttendanceTime transAbleTime){
 		if(useTimeAtr.isTime()) {
 			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTime , 
 																																  holidayWorkTimeFrame.getHolidayWorkTime().get().getCalcTime()));
@@ -442,7 +442,7 @@ public class HolidayWorkTimeSheet{
 	 * 指定時間の振替処理
 	 * @param prioritySet 優先設定
 	 */
-	public List<HolidayWorkFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
+	public static List<HolidayWorkFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList) {
 		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
 		/*振り替える*/
@@ -455,7 +455,7 @@ public class HolidayWorkTimeSheet{
 	 * 指定合計時間の計算
 	 * @param 指定時間クラス 
 	 */
-	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+	private static AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<HolidayWorkFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		int totalFrameTime = useTimeAtr.isTime()
 										?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 										:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));

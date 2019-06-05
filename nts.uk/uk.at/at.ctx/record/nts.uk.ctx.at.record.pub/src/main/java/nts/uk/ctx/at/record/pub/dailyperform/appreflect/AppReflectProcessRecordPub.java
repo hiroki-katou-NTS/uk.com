@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -15,7 +16,7 @@ public interface AppReflectProcessRecordPub {
 	 * @return True 反映する、
 	 * False：反映しない
 	 */
-	public boolean appReflectProcess(AppCommonPara para);
+	public boolean appReflectProcess(AppCommonPara para, ExecutionType reflectSetting);
 	/**
 	 * 事前申請の処理(Xử lý xin trước) 　直行直帰
 	 * @param para
@@ -35,12 +36,6 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public boolean preOvertimeReflect(PreOvertimePubParameter param);
-	/**
-	 * 勤務実績に反映: 事後残業申請処理
-	 * @param param
-	 * @return
-	 */
-	public boolean afterOvertimeReflect(PreOvertimePubParameter param);
 	/**
 	 * (休暇申請)
 	 * @param param

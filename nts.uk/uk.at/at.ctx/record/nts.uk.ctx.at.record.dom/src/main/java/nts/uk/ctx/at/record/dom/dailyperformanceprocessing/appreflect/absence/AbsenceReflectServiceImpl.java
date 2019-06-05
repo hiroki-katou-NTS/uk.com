@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.arc.time.GeneralDate;
+import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -50,26 +52,16 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			List<IntegrationOfDaily> lstDaily = this.getByAbsenceReflect(param, isPre);
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
-		} catch (Exception e) {
+		} catch (Exception ex) {
+            boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+            if(!isError) {
+                throw ex;
+            }
+            commonService.createLogError(param.getCommon().getEmployeeId(), param.getCommon().getBaseDate(), param.getCommon().getExcLogId());
+
 			return false;
 		}
-	}
-	public WorkInfoOfDailyPerformance reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect, WorkInfoOfDailyPerformance dailyInfor) {
-		//INPUT．予定勤務種類変更フラグをチェックする
-		if(!isReflect) {
-			return dailyInfor;
-		}
-		//予定開始終了時刻をクリアするかチェックする
-		//1日半日出勤・1日休日系の判定
-		if(basicScheService.checkWorkDay(workTypeCode) == WorkStyle.ONE_DAY_REST) {
-			//予定開始時刻の反映
-			//予定終了時刻の反映
-			TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, true, true);
-			dailyInfor = workTimeUpdate.updateScheStartEndTime(timeData, dailyInfor);
-			
-		}
-		return dailyInfor;
-	}
+	}	
 	@Override
 	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect,
 			IntegrationOfDaily dailyInfor) {
@@ -173,7 +165,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			//予定勤種の反映
 			if(dailyInfor.getScheduleInfo() == null 
 					|| dailyInfor.getScheduleInfo().getWorkTimeCode() == null
-					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, dailyInfor.getScheduleInfo().getWorkTimeCode().v())) {
+					|| commonService.checkReflectScheWorkTimeType(absencePara.isScheTimeReflectAtr(), absencePara.getScheAndRecordSameChangeFlg(),
+							isPre, dailyInfor.getScheduleInfo().getWorkTimeCode().v())) {
 				isRecordWorkType = true;
 				workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), true, 
 						integrationOfDaily);

@@ -386,25 +386,21 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							this.attendanceLeavingGateOfDailyRepo.removeByKey(employeeID, processingDate);
 							// 日別実績のPCログオン情報
 							this.pcLogOnInfoOfDailyRepo.removeByKey(employeeID, processingDate);
-							
-							// Watanabe want to edit
+
+							// 打刻を取得して反映する
 							WorkStyle workStyle = basicScheduleService
 									.checkWorkDay(workInfoOfDailyPerformance.get().getRecordInfo().getWorkTypeCode().v());
-							
-							// 打刻を取得して反映する
-							
 							if (workStyle != WorkStyle.ONE_DAY_REST) {
-								stampOutput = this.reflectStampDomainService.reflectStampInfo(companyID, employeeID,
-										processingDate, workInfoOfDailyPerformanceUpdate, null, empCalAndSumExecLogID,
-										reCreateAttr, Optional.ofNullable(calAttrOfDailyPerformance),
-										affiliationInforOfDailyPerfor, Optional.empty());
+							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyID, employeeID,
+									processingDate, workInfoOfDailyPerformanceUpdate, null, empCalAndSumExecLogID,
+									reCreateAttr, Optional.ofNullable(calAttrOfDailyPerformance),
+									affiliationInforOfDailyPerfor, Optional.empty());
 							}else {
 								 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyID,
-										 employeeID, processingDate, workInfoOfDailyPerformance, null, empCalAndSumExecLogID, reCreateAttr,
-										 Optional.ofNullable(calAttrOfDailyPerformance),affiliationInforOfDailyPerfor, Optional.empty());
+										 employeeID, processingDate, Optional.of(workInfoOfDailyPerformanceUpdate),
+										 null, empCalAndSumExecLogID, reCreateAttr,
+										 Optional.ofNullable(calAttrOfDailyPerformance), affiliationInforOfDailyPerfor, Optional.empty());
 							}
-							// ****
-							
 							if(stampOutput.getErrMesInfos().isEmpty()) {
 
 							DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory
@@ -467,12 +463,19 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 								TimeLeavingOfDailyPerformance timeLeavingOptional = stampBeforeReflection.getTimeLeavingOfDailyPerformance();
 								TimeLeavingOfDailyPerformance timeLeavingOptionalResult = this.inforService.createStamp(companyID, workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingOptional, employeeID, processingDate, null);
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(timeLeavingOptionalResult);
+//								if(stampOutput.getReflectStampOutput().getAttendanceLeavingGateOfDaily() == null && stampBeforeReflection.getAttendanceLeavingGateOfDaily() != null) {
+//									stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
+//								}
+//								
+//								if(stampOutput.getReflectStampOutput().getPcLogOnInfoOfDaily() == null && stampBeforeReflection.getPcLogOnInfoOfDaily() != null){
+//									stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
+//								}
 							}
-							
 							if(converter2.timeLeaving().isPresent()){
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
-								}
 							}
+							}
+							
 							//---------------
 
 //							if (!attItemIdStateOfTimeLeaving.isEmpty()) {

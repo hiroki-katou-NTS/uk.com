@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 
 import java.util.List;
 
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
+
 public interface AppDetailInfoRepository {
 
 	/**
@@ -82,4 +84,5 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public List<AppGoBackInfoFull> getListAppGoBackInfo(String companyID, List<String> lstAppId);
+	public AppCompltLeaveSync getCompltLeaveSync(String companyID, String appId);
 }

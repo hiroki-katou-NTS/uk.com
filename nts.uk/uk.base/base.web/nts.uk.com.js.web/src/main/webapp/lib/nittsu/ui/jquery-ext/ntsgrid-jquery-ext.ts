@@ -310,6 +310,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 $self.igGrid(options);
             }
+            
             // Window resize
             $(window).resize(function() {
                 if (options.autoFitWindow) {
@@ -4940,6 +4941,10 @@ module nts.uk.ui.jqueryExtentions {
                     let setting = $grid.data(internal.SETTINGS);
                     setting.pageSize = ui.newPageSize;
                     setting.pageIndex = 0;
+                    if ($grid.igGridPaging("option", "currentPageIndex") > 0) {
+                        $grid.igGridPaging("pageSize", setting.pageSize);
+                    }
+                    
                     let loader = $grid.data(internal.LOADER);
                     if (!loader) return;
                     let currentPageIndex = 0;

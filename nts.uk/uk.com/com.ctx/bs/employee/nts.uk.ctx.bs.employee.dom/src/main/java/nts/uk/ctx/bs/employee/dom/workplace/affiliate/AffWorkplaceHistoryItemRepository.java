@@ -56,4 +56,7 @@ public interface AffWorkplaceHistoryItemRepository {
 	 */
 	void updateAll(List<AffWorkplaceHistoryItem> domain);
 	
+	List<String> getHistIdLstBySidAndPeriod(String sid, DatePeriod period);
+	
+	List<String> getHistIdLstByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
 }

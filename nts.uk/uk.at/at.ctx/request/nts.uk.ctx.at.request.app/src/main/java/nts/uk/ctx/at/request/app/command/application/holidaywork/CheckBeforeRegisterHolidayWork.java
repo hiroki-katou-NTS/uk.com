@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.groupingBy;
 /*import java.lang.reflect.Array;*/
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,10 +29,11 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -46,6 +48,36 @@ public class CheckBeforeRegisterHolidayWork {
 	private HolidayThreeProcess holidayThreeProcess;
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
+	@Inject
+	private OvertimeService overtimeService;
+	
+	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
+		// 会社ID
+		String companyId = AppContexts.user().companyId();
+		// 申請ID
+		String appID = IdentifierUtil.randomUniqueId();
+
+		// Create Application
+		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+
+		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
+		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
+		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
+		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
+		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
+
+		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
+				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				 command.getOverTimeShiftNight(),
+				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
+
+		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isCheckOver1Year());
+	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -74,14 +106,12 @@ public class CheckBeforeRegisterHolidayWork {
 
 		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain);
 	}
-
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork) {
+	
+	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
-		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app,0);
+		newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		//03-06_計算ボタンチェック
@@ -95,15 +125,25 @@ public class CheckBeforeRegisterHolidayWork {
 		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
-			res = holidayThreeProcess.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
+			ColorConfirmResult colorConfirmResult = holidayThreeProcess.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
 					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, app.getEmployeeID());
-			if (res.getErrorCode() != 0) {
-				result.setErrorCode(res.getErrorCode());
-				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(AttendanceType.BREAKTIME.value);
-				return result;
+			if (colorConfirmResult.isConfirm()) {
+				return colorConfirmResult;
 			}
 		}
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+	}
+
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork) {
+		// 社員ID
+		String employeeId = AppContexts.user().employeeId();
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
+		// 03-01_事前申請超過チェック
+		Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
+				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
+		// Only check for [残業時間]
+		// 時間①～フレ超過時間 まで 背景色をピンク
+		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
 				app.getAppDate(),
@@ -129,13 +169,59 @@ public class CheckBeforeRegisterHolidayWork {
 		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
-		// 事前否認チェック
-		/*
-		res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), app.getInputDate(),
-		 		app.getPrePostAtr(),ApplicationType.BREAK_TIME_APPLICATION.value);
-		result.setConfirm(res.isConfirm());
-		*/
 		return result;
+	}
+	
+	public ColorConfirmResult checkBeforeUpdateColor(CreateHolidayWorkCommand command) {
+
+		// 会社ID
+		String companyId = AppContexts.user().companyId();
+		// 申請ID
+		String appID = IdentifierUtil.randomUniqueId();
+
+		// Create Application
+		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+
+		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
+		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
+		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
+		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
+		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
+
+		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
+				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				 command.getOverTimeShiftNight(),
+				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
+		// 社員ID
+		String employeeId = AppContexts.user().employeeId();
+		int calculateFlg = command.getCalculateFlag();
+		// 登録前エラーチェック
+		//勤務種類、就業時間帯チェックのメッセージを表示
+				this.overtimeService.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
+		// 計算ボタン未クリックチェック
+		beforeCheck.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
+				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+		// 事前申請超過チェック
+		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
+				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
+		// Only check for [残業時間]
+		// 時間①～フレ超過時間 まで 背景色をピンク
+		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
+		
+		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
+			ColorConfirmResult colorConfirmResult = holidayThreeProcess.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
+					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
+			if (colorConfirmResult.isConfirm()) {
+				return colorConfirmResult;
+			}
+		}
+		
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 	}
 	
 	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command) {
@@ -166,29 +252,12 @@ public class CheckBeforeRegisterHolidayWork {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
-		OvertimeCheckResult res = new OvertimeCheckResult();
-		int calculateFlg = command.getCalculateFlag();
-		// 登録前エラーチェック
-		// 計算ボタン未クリックチェック
-		beforeCheck.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
-				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
 		// 事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
-		
-		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
-			res = holidayThreeProcess.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
-			if (res.getErrorCode() != 0) {
-				result.setErrorCode(res.getErrorCode());
-				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(AttendanceType.BREAKTIME.value);
-				return result;
-			}
-		}
 		
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
@@ -219,10 +288,6 @@ public class CheckBeforeRegisterHolidayWork {
 		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
-		// 事前否認チェック
-		res = beforeCheck.preliminaryDenialCheck(appRoot.getCompanyID(), appRoot.getEmployeeID(), appRoot.getAppDate(), appRoot.getInputDate(),
-				appRoot.getPrePostAtr(),ApplicationType.BREAK_TIME_APPLICATION.value);
-		result.setConfirm(res.isConfirm());
 
 		return result;
 	}

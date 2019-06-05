@@ -188,5 +188,22 @@ public interface SyEmployeePub {
 	 */
 	List<TempAbsenceFrameExport> getTempAbsenceFrameByCid(String cid);
 	
+	/**
+	 * RequestList596 削除された社員を取り除く
+	 * @param sids
+	 * @return
+	 */
+	List<ResultRequest596Export> getEmpDeletedLstBySids(List<String> sids);
+	
+	/**
+	 * RequestList600 社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+	 * @param sids - 社員一覧　：　List＜社員ID＞
+	 * @param isDelete - 削除社員を取り除く：boolean
+	 * @param period -  期間：期間 
+	 * @param isGetAffCompany - 会社に所属していない社員を取り除く：boolean
+	 * @return
+	 */
+	List<ResultRequest600Export> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
+	
 	
 }

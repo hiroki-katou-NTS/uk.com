@@ -80,7 +80,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				EmploymentRootAtr.APPLICATION.value,
 				application_New.getAppID(), 
 				application_New.getPrePostAtr(), 
-				version);
+				version,
+				!goBackDirectly.getWorkTypeCD().isPresent() || goBackDirectly.getWorkTypeCD().get() == null ? null : goBackDirectly.getWorkTypeCD().get().v(),
+				!goBackDirectly.getSiftCD().isPresent() || goBackDirectly.getSiftCD().get() == null ? null : goBackDirectly.getSiftCD().get().v());
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する

@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -69,6 +71,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
@@ -269,7 +272,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
 
-	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE, DAILY_WORK_INFO_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
@@ -459,6 +462,18 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	public void handlerInsertAllMonth(List<IntegrationOfMonthly> lstMonthDomain, UpdateMonthDailyParam month) {
 		if(!lstMonthDomain.isEmpty() && month!= null && month.getDatePeriod() != null ) {
+//			month.getDomainMonth().ifPresent(current -> {
+				lstMonthDomain.stream().forEach(m -> {
+					long version = month.getVersion();
+					m.getAffiliationInfo().ifPresent(ma -> {
+						ma.setVersion(version);
+					});
+					m.getAttendanceTime().ifPresent(ma -> {
+						ma.setVersion(version);
+					});
+				});
+//			});
+		
 			updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		}
 		
@@ -576,27 +591,40 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 			List<String> mapped = command.itemValues().stream().map(c -> getGroup(c)).distinct()
 					.collect(Collectors.toList());
-
+			Set<String> layoutAll = new HashSet<>();
 			mapped.stream().filter(c -> !DOMAIN_CHANGED_BY_CALCULATE.contains(c)).forEach(c -> {
-				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
-				if (handler != null) {
-					handler.handle((T) command.getCommand(c));
-				}
+				layoutAll.add(c);
+				// CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
+				// if (handler != null) {
+				// handler.handle((T) command.getCommand(c));
+				// }
 			});
 
 			DOMAIN_CHANGED_BY_EVENT.entrySet().stream().filter(entry -> mapped.contains(entry.getKey()))
 					.map(entry -> entry.getValue()).flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
-						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-						if (handler != null) {
-							handler.handle((T) command.getCommand(layout));
-						}
+						layoutAll.add(layout);
+						// CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+						// if (handler != null) {
+						// handler.handle((T) command.getCommand(layout));
+						// }
 					});
+			layoutAll.forEach(layout -> {
+				CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+				if (handler != null) {
+					handler.handle((T) command.getCommand(layout));
+				}
+			});
 		});
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handleEditStates(boolean isUpdate, DailyRecordWorkCommand command) {
 		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_CODE, isUpdate);
+		List<ItemValue> itemValues = command.itemValues();
+		List<Integer> itemIds = itemValues.stream().map(x -> x.getItemId()).collect(Collectors.toList());
+		List<EditStateOfDailyPerformance> data = command.getEditState().getData().stream().filter(x -> itemIds.contains(x.getAttendanceItemId())).collect(Collectors.toList());
+		command.getEditState().getData().clear();
+		command.getEditState().updateDatas(data);
 		if (handler != null) {
 			handler.handle((T) command.getCommand(DAILY_EDIT_STATE_CODE));
 		}

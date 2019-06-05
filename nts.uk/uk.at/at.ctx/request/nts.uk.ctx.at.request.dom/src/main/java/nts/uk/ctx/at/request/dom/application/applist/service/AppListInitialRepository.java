@@ -116,4 +116,13 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public DatePeriod getInitPeriodApp(String companyId);
+	/**
+	 * 申請一覧リスト取得承認設定情報
+	 * @param companyId
+	 * @param wkpId
+	 * @param appType
+	 * @param date
+	 * @return
+	 */
+	public int detailSet(String companyId, String wkpId, Integer appType, GeneralDate date);
 }

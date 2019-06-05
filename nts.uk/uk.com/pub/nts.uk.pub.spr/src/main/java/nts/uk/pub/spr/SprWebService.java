@@ -11,10 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.google.common.base.Strings;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
@@ -93,7 +94,7 @@ public class SprWebService {
 						for (int i = 0; i < reason.length(); i++) {
 							reasonBytes[i] = (byte)(reason.codePointAt(i));
 						}
-						reasonReal = new String(reasonBytes, "sjis");
+						reasonReal = new String(reasonBytes, "Windows-31J");
 					}
 				}
 			}
@@ -148,9 +149,9 @@ public class SprWebService {
 					2,
 					"SPR001",
 					"A");
-			if(systemSuspendOutput.isError()){
-				throw new Exception(systemSuspendOutput.getMsgContent());
-			}
+//			if(systemSuspendOutput.isError()){
+//				throw new Exception(systemSuspendOutput.getMsgContent());
+//			}
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			loginService.loginRecord(
@@ -204,6 +205,8 @@ public class SprWebService {
 			paramsValue.put("roleID", "");
 			paramsValue.put("employeeID", loginUserContextSpr.getEmployeeID());
 			paramsValue.put("successMsg", systemSuspendOutput.getMsgID());
+	        String errMsg = systemSuspendOutput.getMsgContent().replaceAll("\\r\\n", "　").replaceAll("\\r", "　").replaceAll("\\n", "　");
+			paramsValue.put("errMsg", systemSuspendOutput.isError() ? StringEscapeUtils.escapeEcmaScript(errMsg) : "");
 			
 			val html = new StringBuilder()
 					.append("<!DOCTYPE html>")

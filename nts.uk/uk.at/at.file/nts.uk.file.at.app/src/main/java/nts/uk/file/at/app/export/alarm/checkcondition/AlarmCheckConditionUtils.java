@@ -216,7 +216,7 @@ public class AlarmCheckConditionUtils {
 			Map<Integer, AttendanceNameDivergenceDto> attendanceNameDivergenceDtos) {
 		StringBuffer condition = new StringBuffer("");
 		String targetAttendancesStr = targetAttendances.isPresent() ? getAttendanceStrFromTarget(targetAttendances.get(), attendanceNameDivergenceDtos, false) : "";
-		String attendanceItemStr = attendanceItem.isPresent() ? attendanceNameDivergenceDtos.get(attendanceItem.get()).getAttendanceItemName() : "";
+		String attendanceItemStr = attendanceItem.isPresent() ?(attendanceNameDivergenceDtos.get(attendanceItem.get()) == null ? "" :attendanceNameDivergenceDtos.get(attendanceItem.get()).getAttendanceItemName()) : "";
 		String startStr = start.isPresent() ? getValueWithConditionAtr(start.get(), conditionAtr.get()) : "";
 		String endStr = end.isPresent() ? getValueWithConditionAtr(end.get(), conditionAtr.get()) : "";
 		
