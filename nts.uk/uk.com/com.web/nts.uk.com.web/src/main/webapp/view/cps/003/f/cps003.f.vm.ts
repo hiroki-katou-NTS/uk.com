@@ -501,10 +501,12 @@ module cps003.f.vm {
                             }
                         } else { // 加減算（F1_027）が選択されている場合
                             if (value.replaceValue) {
-                                confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue1 > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue1)] }).ifYes(() => {
+                                confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue)] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
+                            }else{
+                                $('input:not([disabled])').trigger('validate');
                             }
                         }
                     } else {
