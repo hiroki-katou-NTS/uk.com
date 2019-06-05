@@ -140,9 +140,29 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             var i = 1;
         }
         
-        public remove(): void {
+        public setRequirementType(displayNumber: number, requirementType: any): void {
             let self = this;
-            var i = 1;
+            let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
+            careerMasters.setRequirementType(requirementType);
+        }
+        
+        public setYearType(displayNumber: number, yearType: any): void {
+            let self = this;
+            let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
+            careerMasters.setYearType(yearType);
+        }
+        
+        public setMasterType(displayNumber: number, masterType: any): void {
+            let self = this;
+            let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
+            careerMasters.removeListMasterItem();
+            careerMasters.setMasterType(masterType);
+        }
+        
+        public getValueAfterChangeMasterType(displayNumber: number): number {
+            let self = this;
+            let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
+            return careerMasters.getMasterType();
         }
 
         public backTopAScreen(): void {
@@ -207,52 +227,52 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 if (value.careerLevel == 1) {
                     self.nameLevel1(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 2) {
                     self.nameLevel2(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 3) {
                     self.nameLevel3(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 4) {
                     self.nameLevel4(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 5) {
                     self.nameLevel5(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 6) {
                     self.nameLevel6(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 7) {
                     self.nameLevel7(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 8) {
                     self.nameLevel8(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 9) {
                     self.nameLevel9(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 10) {
                     self.nameLevel10(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 }
                 self.level.push(value.careerLevel);
@@ -273,15 +293,15 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                         inputRequirement: '',
                     }
                     if (_.find(self.careerRequirementList(), { 'displayNumber': i, 'lever': value }) == undefined) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value));
+                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value, null));
                     }
                 });
-                self.careerOrderList.push(_.find(self.careerRequirementList(), { 'displayNumber': i }));
+                self.careerOrderList.push(new ScreenItem(ko.toJS(_.find(self.careerRequirementList(), { 'displayNumber': i })), i, true ));
                 self.career.push(new Career(_.filter(self.careerRequirementList(), { 'displayNumber': i }), i));
             }
 
         }
-        private validate(): void {
+        private validateData(): void {
             let self = this;
             let yearTypeListCheck = [];
             let masterTypeListCheck = [];
@@ -304,6 +324,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
     }
 
     class ScreenItem {
+        comfirmChangeMasterType: boolean;
         lever: number;
         displayNumber: number;
         requirementType: KnockoutObservable<number>;
@@ -313,8 +334,9 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         masterType: KnockoutObservable<string>;
         masterItemList: KnockoutObservableArray<any>;
         inputRequirement: KnockoutObservable<string>;
-        constructor(obj: any, careerLevel: number) {
+        constructor(obj: any, careerLevel: number, comfirmChangeMasterType: any) {
             var self = this;
+            self.comfirmChangeMasterType = comfirmChangeMasterType; 
             self.lever = careerLevel;
             self.displayNumber = obj.displayNumber;
             self.requirementType = ko.observable(obj.requirementType);
@@ -325,13 +347,25 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.masterItemList = ko.observableArray(obj.masterRequirement == null ? (obj.masterItemList == undefined ? [] : obj.masterItemList) : obj.masterRequirement.masterItemList);
             self.inputRequirement = ko.observable(obj.inputRequirement);
             self.masterType.subscribe(function(newValue) {
-                if (newValue != null) {
+                if (newValue != null && self.comfirmChangeMasterType == true) {
                     nts.uk.ui.dialog.confirmProceed({ messageId: "MsgJ_52" }).ifYes(() => {
-                        alert("YES!");
-                        __viewContext.vm.save();
+                        __viewContext.vm.setMasterType(self.displayNumber, newValue);
                     }).ifNo(() => {
-                        alert("NO!");
+                        self.comfirmChangeMasterType = false;
+                        self.masterType(__viewContext.vm.getValueAfterChangeMasterType(self.displayNumber));
                     });
+                }else if(self.comfirmChangeMasterType == false){
+                    self.comfirmChangeMasterType = true;
+                }
+            });
+            self.requirementType.subscribe(function(newValue) {
+                if (newValue != null && self.comfirmChangeMasterType == true) {
+                    __viewContext.vm.setRequirementType(self.displayNumber, newValue);
+                }
+            });
+            self.yearType.subscribe(function(newValue) {
+                if (newValue != null && self.comfirmChangeMasterType == true) {
+                    __viewContext.vm.setYearType(self.displayNumber, newValue);
                 }
             });
         }
@@ -359,6 +393,17 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         public setNameMasterItemList(masterRequirement: any): void {
             this.masterItemList(masterRequirement);
         }
+        
+        public setYearType(yearType: any): void {
+            this.yearType(yearType);
+        }
+        
+        public setMasterType(masterType: any): void {
+            this.masterType(masterType);
+        }
+        public getYearType(): any {
+            return this.yearType();
+        }
     }
     class ItemModel {
         code: string;
@@ -385,25 +430,25 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.displayNumber = displayNumber;
             _.forEach(obj, function(value) {
                 if (value.lever == 1) {
-                    self.lever1 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever1 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 2) {
-                    self.lever2 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever2 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 3) {
-                    self.lever3 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever3 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 4) {
-                    self.lever4 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever4 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 5) {
-                    self.lever5 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever5 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 6) {
-                    self.lever6 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever6 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 7) {
-                    self.lever7 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever7 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 8) {
-                    self.lever8 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever8 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 9) {
-                    self.lever9 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever9 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 } else if (value.lever == 10) {
-                    self.lever10 = ko.observable(new ScreenItem(ko.toJS(value), value.lever));
+                    self.lever10 = ko.observable(new ScreenItem(ko.toJS(value), value.lever, null));
                 }
             });
         }
@@ -430,6 +475,166 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             } else if (lever == 10) {
                 return self.lever10;
             }
+        }
+        
+        public removeListMasterItem(): void {
+            let self = this;
+            if (self.lever1 != undefined) {
+                self.lever1().setNameMasterItemList('');
+            }
+            if (self.lever2 != undefined) {
+                self.lever2().setNameMasterItemList('');
+            }
+            if (self.lever3 != undefined) {
+                self.lever3().setNameMasterItemList('');
+            }
+            if (self.lever4 != undefined) {
+                self.lever4().setNameMasterItemList('');
+            } 
+            if (self.lever5 != undefined) {
+                self.lever5().setNameMasterItemList('');
+            } 
+            if (self.lever6 != undefined) {
+                self.lever6().setNameMasterItemList('');
+            }
+            if (self.lever7 != undefined) {
+                self.lever7().setNameMasterItemList('');
+            }
+            if (self.lever8 != undefined) {
+                self.lever8().setNameMasterItemList('');
+            }
+            if (self.lever9 != undefined) {
+                self.lever9().setNameMasterItemList('');
+            } 
+            if (self.lever10 != undefined) {
+                self.lever10().setNameMasterItemList('');
+            } 
+        }
+        public setYearType(yearType: any): void {
+            let self = this;
+            if (self.lever1 != undefined) {
+                self.lever1().setYearType(yearType);
+            }
+            if (self.lever2 != undefined) {
+                self.lever2().setYearType(yearType);
+            }
+            if (self.lever3 != undefined) {
+                self.lever3().setYearType(yearType);
+            }
+            if (self.lever4 != undefined) {
+                self.lever4().setYearType(yearType);
+            } 
+            if (self.lever5 != undefined) {
+                self.lever5().setYearType(yearType);
+            } 
+            if (self.lever6 != undefined) {
+                self.lever6().setYearType(yearType);
+            }
+            if (self.lever7 != undefined) {
+                self.lever7().setYearType(yearType);
+            }
+            if (self.lever8 != undefined) {
+                self.lever8().setYearType(yearType);
+            }
+            if (self.lever9 != undefined) {
+                self.lever9().setYearType(yearType);
+            } 
+            if (self.lever10 != undefined) {
+                self.lever10().setYearType(yearType);
+            } 
+        }
+        
+        public setMasterType(masterType: any): void {
+            let self = this;
+            if (self.lever1 != undefined) {
+                self.lever1().setMasterType(masterType);
+            }
+            if (self.lever2 != undefined) {
+                self.lever2().setMasterType(masterType);
+            }
+            if (self.lever3 != undefined) {
+                self.lever3().setMasterType(masterType);
+            }
+            if (self.lever4 != undefined) {
+                self.lever4().setMasterType(masterType);
+            } 
+            if (self.lever5 != undefined) {
+                self.lever5().setMasterType(masterType);
+            } 
+            if (self.lever6 != undefined) {
+                self.lever6().setMasterType(masterType);
+            }
+            if (self.lever7 != undefined) {
+                self.lever7().setMasterType(masterType);
+            }
+            if (self.lever8 != undefined) {
+                self.lever8().setMasterType(masterType);
+            }
+            if (self.lever9 != undefined) {
+                self.lever9().setMasterType(masterType);
+            } 
+            if (self.lever10 != undefined) {
+                self.lever10().setMasterType(masterType);
+            } 
+        }
+        
+        public setRequirementType(requirementType: any): void {
+            let self = this;
+            if (self.lever1 != undefined) {
+                self.lever1().requirementType(requirementType);
+            }
+            if (self.lever2 != undefined) {
+                self.lever2().requirementType(requirementType);
+            }
+            if (self.lever3 != undefined) {
+                self.lever3().requirementType(requirementType);
+            }
+            if (self.lever4 != undefined) {
+                self.lever4().requirementType(requirementType);
+            } 
+            if (self.lever5 != undefined) {
+                self.lever5().requirementType(requirementType);
+            } 
+            if (self.lever6 != undefined) {
+                self.lever6().requirementType(requirementType);
+            }
+            if (self.lever7 != undefined) {
+                self.lever7().requirementType(requirementType);
+            }
+            if (self.lever8 != undefined) {
+                self.lever8().requirementType(requirementType);
+            }
+            if (self.lever9 != undefined) {
+                self.lever9().requirementType(requirementType);
+            } 
+            if (self.lever10 != undefined) {
+                self.lever10().requirementType(requirementType);
+            } 
+        }
+        
+        public getMasterType(): number {
+            let self = this;
+            if (self.lever1 != undefined) {
+                return self.lever1().masterType();
+            }else if (self.lever2 != undefined) {
+                return self.lever2().masterType();
+            }else if (self.lever3 != undefined) {
+                return self.lever3().masterType();
+            }else if (self.lever4 != undefined) {
+                return self.lever4().masterType();
+            }else if (self.lever5 != undefined) {
+                return self.lever5().masterType();
+            }else if (self.lever6 != undefined) {
+                return self.lever6().masterType();
+            }else if (self.lever7 != undefined) {
+                return self.lever7().masterType();
+            }else if (self.lever8 != undefined) {
+                return self.lever8().masterType();
+            }else if (self.lever9 != undefined) {
+                return self.lever9().masterType();
+            }else if (self.lever10 != undefined) {
+                return self.lever10().masterType();
+            }  
         }
     }
 
