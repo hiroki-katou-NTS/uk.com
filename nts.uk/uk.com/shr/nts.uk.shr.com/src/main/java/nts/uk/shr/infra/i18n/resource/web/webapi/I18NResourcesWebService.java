@@ -69,6 +69,34 @@ public class I18NResourcesWebService {
 		return resources;
 	}
 	
+	
+	@GET
+	@Path("mobile/get-item-name/{screen-id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Map<String, String> getMobileResouce1(@PathParam("screen-id") String screenId) {
+		Map<String, String> resources = new HashMap<String, String>();
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		
+		if (AppContexts.user().hasLoggedIn()) {
+			companyId = AppContexts.user().companyId();
+			languageId = AppContexts.user().language().basicLanguageId();
+		}
+
+		Map<String, String> itemNameMap = this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME); 
+		
+		if( !screenId.isEmpty()) {
+			String upScreenId = screenId.toUpperCase();
+			itemNameMap = itemNameMap.entrySet().stream()
+					.filter(entry -> entry.getKey().contains(upScreenId))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		}
+		
+		resources.putAll(itemNameMap);
+		
+		return resources;
+	}
+	
 	public static String getHtmlToLoadResources() {
 		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
 
