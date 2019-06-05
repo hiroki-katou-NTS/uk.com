@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -676,6 +677,56 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+	}
+
+	@Override
+	public Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids) {
+		Map<String, AffCompanyHist> result = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select h.PID, h.SID, h.HIST_ID, h.CID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE, "
+					+ " i.RECRUIMENT_CATEGORY_CD, i.ADOPTION_DATE, i.RETIREMENT_CALC_STR_D"
+					+ " from BSYMT_AFF_COM_HIST h"
+					+ " inner join BSYMT_AFF_COM_INFO i"
+					+ " on h.HIST_ID = i.HIST_ID"
+					+ " where h.CID = ?"
+					+ " and h.SID = IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffCompanyHist hist = new BsymtAffCompanyHist();
+					hist.bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk();
+					hist.bsymtAffCompanyHistPk.pId = r.getString("PID");
+					hist.bsymtAffCompanyHistPk.sId = r.getString("SID");
+					hist.bsymtAffCompanyHistPk.historyId = r.getString("HIST_ID");
+					hist.companyId = cid;
+					hist.destinationData = r.getInt("DESTINATION_DATA");
+					hist.startDate = r.getGeneralDate("START_DATE");
+					hist.endDate = r.getGeneralDate("END_DATE");
+					
+					BsymtAffCompanyInfo info = new BsymtAffCompanyInfo();
+					info.bsymtAffCompanyInfoPk = new BsymtAffCompanyInfoPk();
+					info.bsymtAffCompanyInfoPk.historyId = hist.bsymtAffCompanyHistPk.historyId;
+					info.recruitmentCategoryCode = r.getString("RECRUIMENT_CATEGORY_CD");
+					info.adoptionDate = r.getGeneralDate("ADOPTION_DATE");
+					info.retirementAllowanceCalcStartDate = r.getGeneralDate("RETIREMENT_CALC_STR_D");
+					
+					hist.bsymtAffCompanyInfo = info;
+					info.bpsdtAffCompanyHist = hist;
+					return hist;
+				});
+				
+				Map<String, List<BsymtAffCompanyHist>> affHistMap = lstBsymtAffCompanyHist.stream().collect(Collectors.groupingBy(c->c.bsymtAffCompanyHistPk.sId));
+				 affHistMap.entrySet().forEach(c ->{
+					 result.put(c.getKey(), toDomain(c.getValue()));
+				 });
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+		return result;
 	}
 
 }

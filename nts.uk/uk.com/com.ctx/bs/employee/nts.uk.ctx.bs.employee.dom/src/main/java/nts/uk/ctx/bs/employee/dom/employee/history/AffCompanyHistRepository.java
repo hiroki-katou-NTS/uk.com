@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -29,6 +30,14 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
 	
 	AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId);
+	
+	/**
+	 * đối ứng cho thuật toán [次回特休情報を取得する]
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
 	
