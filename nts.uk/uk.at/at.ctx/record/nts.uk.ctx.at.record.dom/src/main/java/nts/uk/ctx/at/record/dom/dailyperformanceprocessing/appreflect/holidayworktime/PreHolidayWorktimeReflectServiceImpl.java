@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
@@ -37,7 +39,12 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			List<IntegrationOfDaily> lstDaily = this.getIntegrationOfDaily(holidayWorkPara, isPre);
 			commonService.updateDailyAfterReflect(lstDaily);
 			return true;
-		} catch (Exception e) {
+		} catch (Exception ex) {
+			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+            if(!isError) {
+                throw ex;
+            }
+            commonService.createLogError(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getExcLogId());
 			return false;
 		}
 		

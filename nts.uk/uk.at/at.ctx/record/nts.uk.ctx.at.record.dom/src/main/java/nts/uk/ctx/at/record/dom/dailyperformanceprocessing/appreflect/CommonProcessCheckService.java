@@ -55,5 +55,6 @@ public interface CommonProcessCheckService {
 			GeneralDate ymd, boolean isOt);
 	
 	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
-	
+    public void createLogError(String sid, GeneralDate ymd, String excLogId);
+
 }
