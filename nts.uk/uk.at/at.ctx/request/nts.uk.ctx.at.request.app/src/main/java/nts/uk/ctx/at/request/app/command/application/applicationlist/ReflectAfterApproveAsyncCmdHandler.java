@@ -44,4 +44,8 @@ public class ReflectAfterApproveAsyncCmdHandler extends AsyncCommandHandler<List
 			}
 		}
 	}
+    @Override
+    public boolean keepsTrack(){
+        return false;
+    }
 }
