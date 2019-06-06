@@ -5,10 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.OptimisticLockException;
-
 import nts.arc.time.GeneralDate;
-import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
@@ -95,21 +92,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Override
-	public boolean overtimeReflect(OvertimeParameter param) {
-		try {
-			
-			List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-	
-		} catch (Exception ex) {
-			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-            if(!isError) {
-                throw ex;
-            }
-            commonService.createLogError(param.getEmployeeId(), param.getDateInfo(), param.getExcLogId());
-			return false;
-		}
+	public void overtimeReflect(OvertimeParameter param) {
+		List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 
 
