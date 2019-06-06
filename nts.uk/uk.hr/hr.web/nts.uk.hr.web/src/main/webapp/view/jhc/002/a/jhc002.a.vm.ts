@@ -104,7 +104,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            if(self.dataFromBScreen != undefined){
+            if(self.dataFromBScreen.historyId != undefined){
                 self.checkStartFromBScreen = true;
             }
             new service.getMaxClassLevel().done(function(data: any) {

@@ -113,4 +113,9 @@ public class CareerPathHistService {
 		}
 		
 	}
+	
+	//最新履歴の履歴IDの取得
+	public String getLatestCareerPathHist(String cId) {
+		return careerPathHistoryRepo.getLatestCareerPathHist(cId);
+	}
 }

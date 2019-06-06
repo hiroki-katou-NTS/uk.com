@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface CareerPathHistoryRepository {
 
-	CareerPathHistory getLatestCareerPathHist();
+	String getLatestCareerPathHist(String cId);
 	
 	Optional<CareerPathHistory> getCareerPathHist(String cId);
 	

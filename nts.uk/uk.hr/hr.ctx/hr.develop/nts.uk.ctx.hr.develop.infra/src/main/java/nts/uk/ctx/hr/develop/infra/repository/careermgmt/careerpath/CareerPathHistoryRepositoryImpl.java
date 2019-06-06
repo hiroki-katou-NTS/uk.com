@@ -24,9 +24,14 @@ public class CareerPathHistoryRepositoryImpl extends JpaRepository implements Ca
 	private static final String SELECT_BY_KEY = "SELECT c FROM JhcmtCareerPath c WHERE c.PK_JHCMT_CAREER_PATH.companyID = :cId AND c.PK_JHCMT_CAREER_PATH.histId = :HistId";
 	
 	@Override
-	public CareerPathHistory getLatestCareerPathHist() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getLatestCareerPathHist(String cId) {
+		List<JhcmtCareerPath> entity =  this.queryProxy().query(SELECT_BY_CID, JhcmtCareerPath.class)
+				.setParameter("cId", cId)
+				.getList();
+		if(entity.isEmpty()) {
+			return "";
+		}
+		return entity.stream().sorted((x, y) -> x.strD.compareTo(y.strD)*(-1)).collect(Collectors.toList()).get(0).PK_JHCMT_CAREER_PATH.histId;
 	}
 
 	@Override
