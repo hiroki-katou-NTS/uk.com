@@ -65,6 +65,10 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 				displayReason += System.lineSeparator();
 			}
 			displayReason += command.appCommand.getApplicationReason();
+		} else {
+			if(Strings.isBlank(typicalReason)){
+				displayReason += command.appCommand.getApplicationReason();
+			}
 		}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyId);
