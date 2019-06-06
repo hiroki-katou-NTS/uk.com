@@ -138,6 +138,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         public save(): void {
             let self = this;
             let checkData = true;
+            let result = [];
             if(self.validateData()){
                 _.forEach(self.career(), function(value) {
                     if(value.validate() == false){
@@ -146,7 +147,23 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     }
                 });
                 if(checkData){
-                    
+                    _.forEach(self.career(), function(value) {
+                        let data = value.collectData();
+                        if (data.length > 0) {
+                            result = _.concat(result,data);
+                        }
+                    });
+                    console.log(result);
+                    _.forEach(self.level(), function(value) {
+                        let index = _.findIndex(self.datatransfer.career,  { 'careerLevel': value, 'careerTypeItem': self.datatransfer.careerTypeId });
+                        self.datatransfer.career[index].careerRequirementList = _.filter(result, { 'lever': value});
+                    });
+                    nts.uk.characteristics.remove("DataShareCareerToAScreen").done(function() {
+                    parent.nts.uk.characteristics.save('DataShareCareerToAScreen', self.datatransfer).done(function() {
+                        parent.nts.uk.ui.block.clear();
+                        nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
+                    });
+                });
                 }
             }
         }
@@ -281,7 +298,6 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     }
                 });
             }
-
         }
 
         private checksShowLever(selected: any): void {
@@ -412,6 +428,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         public collectData(): any{
             let self = this;
             let result = {
+                lever: self.lever,
                 displayNumber: self.displayNumber,
                 inputRequirement: self.inputRequirement(),
                 masterRequirement: null,
@@ -429,6 +446,8 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             }else if(self.requirementType()==3 && self.inputRequirement() != ''){
                 result.inputRequirement = self.inputRequirement();
                 return result;
+            }else{
+                return null;    
             }
         }
 
@@ -721,35 +740,66 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             let self =  this;
             let result = [];
             if (self.lever1 != undefined) {
-                result = self.lever1().validate();
+                let data = self.lever1().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever2 != undefined) {
-                result = self.lever2().validate();
+            if (self.lever2 != undefined) {
+                let data = self.lever2().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever3 != undefined) {
-                result = self.lever3().validate();
+            if (self.lever3 != undefined) {
+                let data = self.lever3().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever4 != undefined) {
-                result = self.lever4().validate();
+            if (self.lever4 != undefined) {
+                let data = self.lever4().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever5 != undefined) {
-                result = self.lever5().validate();
+            if (self.lever5 != undefined) {
+                let data = self.lever5().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever6 != undefined) {
-                result = self.lever6().validate();
+            if (self.lever6 != undefined) {
+                let data = self.lever6().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever7 != undefined) {
-                result = self.lever7().validate();
+            if (self.lever7 != undefined) {
+                let data = self.lever7().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever8 != undefined) {
-                result = self.lever8().validate();
+            if (self.lever8 != undefined) {
+                let data = self.lever8().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever9 != undefined) {
-                result = self.lever9().validate();
+            if (self.lever9 != undefined) {
+                let data = self.lever9().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
-            if (result && self.lever10 != undefined) {
-                result = self.lever10().validate();
+            if (self.lever10 != undefined) {
+                let data = self.lever10().collectData();
+                if(data != null){
+                    result.push(data);    
+                }
             }
+            return result;
         }
     }
 
