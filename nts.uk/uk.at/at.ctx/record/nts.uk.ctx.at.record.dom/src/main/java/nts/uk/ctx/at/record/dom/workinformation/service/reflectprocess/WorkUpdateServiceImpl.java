@@ -436,9 +436,11 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		Optional<CompensatoryOccurrenceSetting> optOccurenceSetting = eachCompanyTimeSet.isEmpty() ? Optional.empty() : Optional.of(eachCompanyTimeSet.get(0));
 		String workTimeCode = "";
 		if(isPre) {
-			workTimeCode = dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode().v();
+			workTimeCode = dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null ? 
+					dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode().v() : "";
 		} else {
-			workTimeCode = dailyData.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+			workTimeCode = dailyData.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ?
+					dailyData.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : "";
 		}
 		Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, dailyData.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		if(!workTypeInfor.isPresent()) {
@@ -681,6 +683,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				lstItem.add(44);
 			}
 		}
+		dailyData.setAttendanceLeave(optTimeLeaving);
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), dailyData.getEditState(), lstItem);
 	}
 	@Override
@@ -932,6 +935,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				lstItem.add(44);
 			}
 		}
+		dailyData.setAttendanceLeave(optTimeLeaving);
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), dailyData.getEditState(), lstItem);
 	}
 

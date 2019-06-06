@@ -19,7 +19,7 @@ public interface AbsenceReflectService {
 	 * @param isPre: True - 事前申請の処理, False - 事後申請の処理
 	 * @return
 	 */
-	public boolean absenceReflect(WorkChangeCommonReflectPara absencePara, boolean isPre);
+	public void absenceReflect(WorkChangeCommonReflectPara absencePara, boolean isPre);
 	/**
 	 * 予定開始終了時刻の反映
 	 * @param employeeId
