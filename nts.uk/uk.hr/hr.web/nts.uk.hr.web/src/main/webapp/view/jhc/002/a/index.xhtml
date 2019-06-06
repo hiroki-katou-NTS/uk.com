@@ -20,7 +20,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1" data-bind="click: save, enable: selectedHistId() != '' ">#{i18n.getText('JHC002_A1_1')}</button>
+				<button class="proceed" tabindex="1"
+					data-bind="click: save, enable: selectedHistId() != '' &amp;&amp; selectedHistId() == latestCareerPathHist()">#{i18n.getText('JHC002_A1_1')}</button>
 				<button tabindex="2" data-bind="">#{i18n.getText('JHC002_A1_2')}</button>
 			</div>
 			<div id="contents-area">
@@ -61,7 +62,7 @@
 										<tbody data-bind="foreach: careerType">
 											<tr>
 												<td><span data-bind="text: name"></span>
-													<button class="small" data-bind="click: $parent.openDialogB">#{i18n.getText('JHC002_A222_10')}</button></td>
+													<button class="small" data-bind="click: $parent.openDialogB, enable: $parent.selectedHistId() == $parent.latestCareerPathHist()">#{i18n.getText('JHC002_A222_10')}</button></td>
 											</tr>
 										</tbody>
 									</table>
@@ -145,8 +146,7 @@
 														value: l1,
 														optionsText: 'name',
 														width: 160,
-														selectFirstIfNull: false,
-														dropDownAttachedToBody: true,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -159,6 +159,7 @@
 														value: l2,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -171,6 +172,7 @@
 														value: l3,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -183,6 +185,7 @@
 														value: l4,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -195,6 +198,7 @@
 														value: l5,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -207,6 +211,7 @@
 														value: l6,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -219,6 +224,7 @@
 														value: l7,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -231,6 +237,7 @@
 														value: l8,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -243,6 +250,7 @@
 														value: l9,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -255,6 +263,7 @@
 														value: l10,
 														optionsText: 'name',
 														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>

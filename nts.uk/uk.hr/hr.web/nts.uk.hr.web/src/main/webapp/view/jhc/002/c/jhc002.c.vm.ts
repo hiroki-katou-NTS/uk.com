@@ -1,7 +1,9 @@
 module nts.uk.com.view.jhc002.c.viewmodel {
 
     export class ScreenModel {
-        constructor() {}
+        constructor() {
+                
+        }
 
         isNotice() {
             nts.uk.ui.windows.setShared("isNotice", "true");

@@ -219,7 +219,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     let careerRequirementValueRefer = _.find(self.careerRequirementList(), { 'displayNumber': i});
                     let careerRequirementDefault = {
                         displayNumber: i,
-                        requirementType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.requirementType: '',
+                        requirementType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.requirementType: 1,
                         yearType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.yearType: '',
                         yearMinimumNumber: '',
                         yearStandardNumber: '',

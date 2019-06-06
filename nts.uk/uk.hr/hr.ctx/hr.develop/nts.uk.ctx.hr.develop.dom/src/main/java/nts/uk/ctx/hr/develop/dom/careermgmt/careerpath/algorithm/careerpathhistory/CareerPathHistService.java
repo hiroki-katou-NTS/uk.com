@@ -103,7 +103,7 @@ public class CareerPathHistService {
 		//checks validate
 		his.get().remove(his.get().getCareerPathHistory().stream().filter(x -> x.identifier().equals(hisId)).findFirst().get());
 		
-		careerPathRepo.removeCareerPath(cId, hisId);
+		//careerPathRepo.removeCareerPath(cId, hisId);
 		careerPathHistoryRepo.delete(cId, hisId);
 		
 		//UpdateEndDateItemBefore

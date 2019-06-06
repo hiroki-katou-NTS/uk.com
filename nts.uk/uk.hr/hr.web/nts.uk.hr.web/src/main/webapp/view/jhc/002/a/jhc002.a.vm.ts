@@ -18,7 +18,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         maxClassLevel: KnockoutObservable<number>;
         checkStartFromBScreen: boolean;
         dataFromBScreen: any;
-        latestCareerPathHist: string;
+        latestCareerPathHist: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -65,17 +65,21 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 if(self.checkStartFromBScreen){
                     self.selectedHistId(self.dataFromBScreen.historyId);    
                 }else{
-                    self.selectedHistId(self.latestCareerPathHist);
+                    self.selectedHistId(self.latestCareerPathHist());
                 }
             };
             self.afterAdd = () => {
-                //alert("Added");
+                new service.getLatestCareerPathHist().done(function(data: any) {
+                    self.latestCareerPathHist(data);
+                });
             };
             self.afterUpdate = () => {
                 //alert("Updated");
             };
             self.afterDelete = () => {
-                //alert("Deleted");
+                new service.getLatestCareerPathHist().done(function(data: any) {
+                    self.latestCareerPathHist(data);
+                });
             };
 
             //table 
@@ -90,7 +94,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
             self.maxClassLevel = ko.observable(0);
-            self.latestCareerPathHist = '';
+            self.latestCareerPathHist = ko.observable('');
             self.checkStartFromBScreen = false;
 
             //set width for table
@@ -112,7 +116,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 self.checkStartFromBScreen = true;
             }
             new service.getLatestCareerPathHist().done(function(data: any) {
-                self.latestCareerPathHist = data;
+                self.latestCareerPathHist(data);
             });
             new service.getMaxClassLevel().done(function(data: any) {
                 self.maxClassLevel(data);
