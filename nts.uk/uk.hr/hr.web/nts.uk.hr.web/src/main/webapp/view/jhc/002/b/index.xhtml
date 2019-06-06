@@ -126,68 +126,68 @@
 											</tr>
 											<tr>
 												<com:ko-if bind="_.includes(level(),1)">
-													<th class="ui-widget-header lever1" colspan="1" data-bind="text: nameLevel1()"></th>
+													<th class="ui-widget-header lever1" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 1 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),2)">
-													<th class="ui-widget-header lever2" colspan="1" data-bind="text: nameLevel2()"></th>
+													<th class="ui-widget-header lever2" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 2 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),3)">
-													<th class="ui-widget-header lever3" colspan="1" data-bind="text: nameLevel3()"></th>
+													<th class="ui-widget-header lever3" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 3 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),4)">
-													<th class="ui-widget-header lever4" colspan="1" data-bind="text: nameLevel4()"></th>
+													<th class="ui-widget-header lever4" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 4 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),5)">
-													<th class="ui-widget-header lever5" colspan="1" data-bind="text: nameLevel5()"></th>
+													<th class="ui-widget-header lever5" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 5 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),6)">
-													<th class="ui-widget-header lever6" colspan="1" data-bind="text: nameLevel6()"></th>
+													<th class="ui-widget-header lever6" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 6 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),7)">
-													<th class="ui-widget-header lever7" colspan="1" data-bind="text: nameLevel7()"></th>
+													<th class="ui-widget-header lever7" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 7 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),8)">
-													<th class="ui-widget-header lever8" colspan="1" data-bind="text: nameLevel8()"></th>
+													<th class="ui-widget-header lever8" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 8 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),9)">
-													<th class="ui-widget-header lever9" colspan="1" data-bind="text: nameLevel9()"></th>
+													<th class="ui-widget-header lever9" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 9 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),10)">
-													<th class="ui-widget-header lever10" colspan="1" data-bind="text: nameLevel10()"></th>
+													<th class="ui-widget-header lever10" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 10 }).careerClassItem)}).name"></th>
 												</com:ko-if>
 											</tr>
 										</thead>
 										<tbody >
 											<tr class="careerClassRole">
 												<com:ko-if bind="_.includes(level(),1)">
-													<td><textarea data-bind="ntsMultilineEditor: { value: _.find(itemList, {'careerLevel': 1}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRole1, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),2)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 2}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRole2, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),3)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 3}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole3, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),4)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 4}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole4, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),5)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 5}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole5, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),6)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 6}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole6, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),7)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 7}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole7, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),8)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 8}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole8, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),9)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 9}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole9, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 												<com:ko-if bind="_.includes(level(),10)">
-													<td><textarea data-bind="ntsMultilineEditor: { value:  _.find(itemList, {'careerLevel': 10}).careerClassRole, constraint: 'String_Any_100' }" /></td>
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole10, constraint: 'String_Any_100' }" /></td>
 												</com:ko-if>
 											</tr>
 										</tbody>
@@ -210,7 +210,11 @@
 										</thead>
 										<tbody data-bind="foreach: careerOrderList()">
 											<tr>
-												<td style="height:249px; vertical-align: text-bottom;">
+												<td style="height:269px; vertical-align: text-bottom;">
+													<div class="textOrder">
+														<span>#{i18n.getText('JHC002_B222_13')}</span>
+														<span data-bind="text: ($index() + 1)"></span>
+													</div>
 													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
 															options: $parent.requirementType,
 															optionsValue: 'value',
@@ -316,8 +320,7 @@
 											<tr class="careerClassRole">
 												<com:ko-if bind="_.includes($parent.level(),1)">
 													<td data-bind="with: lever1()">
-														<div class="inputTextYearType">
-															
+														<div class="inputTextYearType">	
 															<input data-bind="ntsNumberEditor: {
 																value: yearMinimumNumber,
 																constraint: 'Integer_0_99',
@@ -605,7 +608,7 @@
 																readonly: ko.observable(false)}" />
 														</div>
 														<div class="buttonMasterType">
-															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: $parents[1].updateCareer()">#{i18n.getText('JHC002_B222_25')}</button>
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
 															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
 														</div>
 														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3}" />

@@ -16,32 +16,34 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         requirementType: KnockoutObservableArray<any>;
         yearType: KnockoutObservableArray<any>;
 
-        nameLevel1: KnockoutObservable<any>;
-        nameLevel2: KnockoutObservable<any>;
-        nameLevel3: KnockoutObservable<any>;
-        nameLevel4: KnockoutObservable<any>;
-        nameLevel5: KnockoutObservable<any>;
-        nameLevel6: KnockoutObservable<any>;
-        nameLevel7: KnockoutObservable<any>;
-        nameLevel8: KnockoutObservable<any>;
-        nameLevel9: KnockoutObservable<any>;
-        nameLevel10: KnockoutObservable<any>;
+        careerClassRole1: KnockoutObservable<any>;
+        careerClassRole2: KnockoutObservable<any>;
+        careerClassRole3: KnockoutObservable<any>;
+        careerClassRole4: KnockoutObservable<any>;
+        careerClassRole5: KnockoutObservable<any>;
+        careerClassRole6: KnockoutObservable<any>;
+        careerClassRole7: KnockoutObservable<any>;
+        careerClassRole8: KnockoutObservable<any>;
+        careerClassRole9: KnockoutObservable<any>;
+        careerClassRole10: KnockoutObservable<any>;
 
         careerOrderList: KnockoutObservableArray<ScreenItem>;
         careerRequirementList: KnockoutObservableArray<ScreenItem>;
-        nameLevel: KnockoutObservable<DataLever>;
         career: KnockoutObservableArray<Career>;
         startDate: string;
 
         datatransfer: any;
+        params: any;
 
         constructor() {
             var self = this;
+            
+            self.params = getShared("DataShareCareerToBScreen") || { undefined };
             //table 
             self.itemList = [];
             $("#fixed-table").ntsFixedTable({ height: 197, width: 780 });
-            $("#fixed-table2").ntsFixedTable({ height: 275, width: 780 });
-            $("#fixed-table3").ntsFixedTable({ height: 252, width: 311 });
+            $("#fixed-table2").ntsFixedTable({ height: 294, width: 780 });
+            $("#fixed-table3").ntsFixedTable({ height: 272, width: 311 });
             var div1 = $("#fixed-table").closest(".nts-fixed-body-container");
             div1.css("overflow-x", "hidden");
             var div2 = $("#fixed-table2").closest(".nts-fixed-body-container");
@@ -84,16 +86,16 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.level = ko.observableArray([]);
             self.career = ko.observableArray([]);
 
-            self.nameLevel1 = ko.observable('');
-            self.nameLevel2 = ko.observable('');
-            self.nameLevel3 = ko.observable('');
-            self.nameLevel4 = ko.observable('');
-            self.nameLevel5 = ko.observable('');
-            self.nameLevel6 = ko.observable('');
-            self.nameLevel7 = ko.observable('');
-            self.nameLevel8 = ko.observable('');
-            self.nameLevel9 = ko.observable('');
-            self.nameLevel10 = ko.observable('');
+            self.careerClassRole1 = ko.observable('');
+            self.careerClassRole2 = ko.observable('');
+            self.careerClassRole3 = ko.observable('');
+            self.careerClassRole4 = ko.observable('');
+            self.careerClassRole5 = ko.observable('');
+            self.careerClassRole6 = ko.observable('');
+            self.careerClassRole7 = ko.observable('');
+            self.careerClassRole8 = ko.observable('');
+            self.careerClassRole9 = ko.observable('');
+            self.careerClassRole10 = ko.observable('');
 
             self.careerOrderList = ko.observableArray([]);
             self.careerRequirementList = ko.observableArray([]);
@@ -105,33 +107,23 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            nts.uk.characteristics.restore("DataShareCareerToBScreen").done((obj: any) => {
-                self.datatransfer = obj;
-                self.startDate = obj.startDate;
-                console.log(obj);
-                self.careerClass(obj.careerClass);
-                self.itemList = _.orderBy(_.filter(obj.career, ['careerTypeItem', obj.careerTypeId]), ['careerLevel'], ['asc']);
+            if(self.params != undefined){
+                self.datatransfer = self.params;
+                self.startDate = self.params.startDate;
+                console.log(self.params);
+                self.careerClass(self.params.careerClass);
+                self.itemList = _.orderBy(_.filter(self.params.career, ['careerTypeItem', self.params.careerTypeId]), ['careerLevel'], ['asc']);
                 console.log(self.itemList);
                 self.checksShowLever(self.itemList);
                 self.addDefaultCareer();
                 console.log(self.careerOrderList());
                 self.careerRequirementList(_.orderBy(self.careerRequirementList(), ['displayNumber'], ['asc']));
-                let param = {
-                    careerTypeItem: obj.careerTypeId,
-                    historyId: obj.historyId
-                }
-                new service.getCareerList(param).done(function(data: any) {
-                    console.log(data);
-                    dfd.resolve();
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.error({ messageId: error.messageId });
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }).fail(() => {
                 dfd.resolve();
                 block.clear();
-            });
+            }else{
+                nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
+                block.clear();
+            }
             return dfd.promise();
         }
 
@@ -155,15 +147,34 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     });
                     console.log(result);
                     _.forEach(self.level(), function(value) {
+                        let careerClassRole = '';
+                        if(value == 1){
+                            careerClassRole = self.careerClassRole1();
+                        }else if(value == 2){
+                            careerClassRole = self.careerClassRole2();
+                        }else if(value == 3){
+                            careerClassRole = self.careerClassRole3();
+                        }else if(value == 4){
+                            careerClassRole = self.careerClassRole4();
+                        }else if(value == 5){
+                            careerClassRole = self.careerClassRole5();
+                        }else if(value == 6){
+                            careerClassRole = self.careerClassRole6();
+                        }else if(value == 7){
+                            careerClassRole = self.careerClassRole7();
+                        }else if(value == 8){
+                            careerClassRole = self.careerClassRole8();
+                        }else if(value == 9){
+                            careerClassRole = self.careerClassRole9();
+                        }else if(value == 10){
+                            careerClassRole = self.careerClassRole10();
+                        }
                         let index = _.findIndex(self.datatransfer.career,  { 'careerLevel': value, 'careerTypeItem': self.datatransfer.careerTypeId });
+                        self.datatransfer.career[index].careerClassRole = careerClassRole;
                         self.datatransfer.career[index].careerRequirementList = _.filter(result, { 'lever': value});
                     });
-                    nts.uk.characteristics.remove("DataShareCareerToAScreen").done(function() {
-                    parent.nts.uk.characteristics.save('DataShareCareerToAScreen', self.datatransfer).done(function() {
-                        parent.nts.uk.ui.block.clear();
-                        nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
-                    });
-                });
+                    block.clear();
+                    nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml", self.datatransfer);
                 }
             }
         }
@@ -198,12 +209,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
 
         public backTopAScreen(): void {
             let self = this;
-            nts.uk.characteristics.remove("DataShareCareerToAScreen").done(function() {
-                parent.nts.uk.characteristics.save('DataShareCareerToAScreen', self.datatransfer).done(function() {
-                    parent.nts.uk.ui.block.clear();
-                    nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
-                });
-            });
+            nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml", self.datatransfer);
         }
         
         private addDefaultCareer(): void {
@@ -305,52 +311,52 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.levelNumber(selected.length);
             _.forEach(selected, function(value) {
                 if (value.careerLevel == 1) {
-                    self.nameLevel1(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole1(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 2) {
-                    self.nameLevel2(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole2(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 3) {
-                    self.nameLevel3(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole3(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 4) {
-                    self.nameLevel4(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole4(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 5) {
-                    self.nameLevel5(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole5(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 6) {
-                    self.nameLevel6(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole6(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 7) {
-                    self.nameLevel7(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole7(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 8) {
-                    self.nameLevel8(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole8(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 9) {
-                    self.nameLevel9(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole9(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });
                 } else if (value.careerLevel == 10) {
-                    self.nameLevel10(_.find(self.careerClass(), { 'id': value.careerClassItem }).name);
+                    self.careerClassRole10(_.find(self.itemList, { 'careerLevel': value.careerLevel }).careerClassRole);
                     _.forEach(value.careerRequirementList, function(careerRequirement) {
                         self.careerRequirementList.push(new ScreenItem(careerRequirement, value.careerLevel, null));
                     });

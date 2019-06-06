@@ -21,6 +21,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.dataFromBScreen = getShared("DataShareCareerToAScreen") || { undefined };
 
             // history component            
             self.height = ko.observable("200px");
@@ -87,7 +88,6 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.careerType = ko.observableArray([]);
             self.maxClassLevel = ko.observable(1);
             self.checkStartFromBScreen = false;
-            self.dataFromBScreen = null;
 
             //set width for table
             self.maxClassLevel.subscribe(function(newValue) {
@@ -104,13 +104,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            nts.uk.characteristics.restore("DataShareCareerToAScreen").done((obj: any) => {
-                if(obj != undefined){
-                    self.checkStartFromBScreen = true;
-                    self.dataFromBScreen = obj;
-                    nts.uk.characteristics.remove("DataShareCareerToAScreen");    
-                }
-            });
+            if(self.dataFromBScreen != undefined){
+                self.checkStartFromBScreen = true;
+            }
             new service.getMaxClassLevel().done(function(data: any) {
                 self.maxClassLevel(5);
                 dfd.resolve();
@@ -163,7 +159,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 startDate: moment(startDate).format("YYYY/MM/DD"),
                 career: __viewContext.vm.listCareer()
             }
-            let DataShareCareerToBScreen = {
+            let dataShareCareerToBScreen = {
                 careerTypeId: careerType.id,
                 careerTypeName: careerType.name,
                 historyId: self.selectedHistId(),
@@ -175,12 +171,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             if (careerType != '') {
                 block.grayout();
                 new service.checkDataCareer(command).done(function() {
-                    nts.uk.characteristics.remove("DataShareCareerToBScreen").done(function() {
-                        parent.nts.uk.characteristics.save('DataShareCareerToBScreen', DataShareCareerToBScreen).done(function() {
-                            parent.nts.uk.ui.block.clear();
-                            nts.uk.request.jump("hr", "/view/jhc/002/b/index.xhtml");
-                        });
-                    });
+                    parent.nts.uk.ui.block.clear();
+                    nts.uk.request.jump("hr", "/view/jhc/002/b/index.xhtml", dataShareCareerToBScreen);
                 }).fail(function(error) {
                     nts.uk.ui.dialog.error({ messageId: error.messageId });
                 }).always(function() {
