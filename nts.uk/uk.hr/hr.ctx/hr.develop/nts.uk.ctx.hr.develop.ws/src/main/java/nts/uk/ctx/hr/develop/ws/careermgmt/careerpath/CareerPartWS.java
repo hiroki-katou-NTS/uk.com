@@ -104,4 +104,11 @@ public class CareerPartWS {
 		return careerPathFinder.getCareerList(cId, command.getHistoryId(), command.getCareerTypeItem());
 	}
 	
+	@POST
+	@Path("/getLatestCareerPathHist")
+	public JavaTypeResult<String> getLatestCareerPathHist(){
+		String cId = AppContexts.user().companyId();
+		return new JavaTypeResult<String> (careerPathFinder.getLatestCareerPathHist(cId));
+	}
+	
 }

@@ -18,6 +18,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         maxClassLevel: KnockoutObservable<number>;
         checkStartFromBScreen: boolean;
         dataFromBScreen: any;
+        latestCareerPathHist: string;
 
         constructor() {
             var self = this;
@@ -63,6 +64,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 //alert("Load!");
                 if(self.checkStartFromBScreen){
                     self.selectedHistId(self.dataFromBScreen.historyId);    
+                }else{
+                    self.selectedHistId(self.latestCareerPathHist);
                 }
             };
             self.afterAdd = () => {
@@ -77,7 +80,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
 
             //table 
             self.listCareerType = ko.observableArray([]);
-            $("#fixed-table").ntsFixedTable({ height: 246, width: 990 });
+            $("#fixed-table").ntsFixedTable({ height: 209, width: 990 });
 
             self.selectedHistId.subscribe(function(newValue) {
                 self.getCarrerPart(newValue);
@@ -86,7 +89,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.listCareer = ko.observableArray([]);
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
-            self.maxClassLevel = ko.observable(1);
+            self.maxClassLevel = ko.observable(0);
+            self.latestCareerPathHist = '';
             self.checkStartFromBScreen = false;
 
             //set width for table
@@ -107,13 +111,16 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             if(self.dataFromBScreen.historyId != undefined){
                 self.checkStartFromBScreen = true;
             }
+            new service.getLatestCareerPathHist().done(function(data: any) {
+                self.latestCareerPathHist = data;
+            });
             new service.getMaxClassLevel().done(function(data: any) {
-                self.maxClassLevel(5);
-                dfd.resolve();
+                self.maxClassLevel(data);
             }).fail(function(error) {
                 nts.uk.ui.dialog.error({ messageId: error.messageId });
             }).always(function() {
-                nts.uk.ui.block.clear();
+                dfd.resolve();
+                block.clear();
             });
             return dfd.promise();
         }

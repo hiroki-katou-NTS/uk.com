@@ -88,4 +88,8 @@ public class CareerPathFinder {
 	public CareerListDto getCareerList(String cId, String hisId, String careerTypeItem) {
 		return new CareerListDto(careerPathService.getCareerPathRequirement(cId, hisId, careerTypeItem).stream().map(c -> new CareerDto(c)).collect(Collectors.toList()));
 	} 
+	
+	public String getLatestCareerPathHist(String cId) {
+		return careerPathHistService.getLatestCareerPathHist(cId);
+	} 
 }
