@@ -8,6 +8,10 @@ import javax.enterprise.inject.spi.CDI;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.layer.infra.data.log.RepositoryLogger;
 import nts.arc.layer.ws.exception.ServerError;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateTimeDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateTimeSerializer;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceDiagnose;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
@@ -23,6 +27,12 @@ public class ApplicationInitializer {
 		RequestPerformanceDiagnose.THRESHOLD_MILLISEC_TO_WARN = 500;
 		RepositoryLogger.ENABLE_LOGGING = false;
 		RepositoryLogger.THRESHOLD_MILLISECS_TO_WARN = 300;
+		
+		JsonMapping.MAPPER.registerModule(new SimpleModule()
+				.addSerializer(GeneralDate.class, new GeneralDateSerializer())
+				.addSerializer(GeneralDateTime.class, new GeneralDateTimeSerializer())
+				.addDeserializer(GeneralDate.class, new GeneralDateDeserializer())
+				.addDeserializer(GeneralDateTime.class, new GeneralDateTimeDeserializer()));
 		
 		this.executeAllInitializeWhenDeploy();
 
