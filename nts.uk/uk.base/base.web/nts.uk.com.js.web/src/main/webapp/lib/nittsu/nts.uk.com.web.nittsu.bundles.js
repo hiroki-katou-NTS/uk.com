@@ -324,7 +324,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -1756,7 +1756,7 @@ var nts;
                     var startEra = moment(i.start), endEraYear = moment(i.end);
                     if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
                         var diff = formatted.year() - startEra.year() + 1;
-                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
+                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
@@ -2377,6 +2377,7 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
+                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6233,9 +6234,11 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
+                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
+                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -8991,7 +8994,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) {
+                                    else if (makeup.textColor) { // Don't set textColor
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -15812,6 +15815,7 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
+                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -15842,6 +15846,7 @@ var nts;
                                     }
                                 }
                             })
+                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -15850,6 +15855,7 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
+                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -15869,6 +15875,7 @@ var nts;
                                     }
                                 }
                             })
+                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16167,6 +16174,7 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
+                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16179,6 +16187,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
+                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16198,7 +16207,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else {
+                                    else { // auto width
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -18010,405 +18019,328 @@ var nts;
                                 }
                             }
                         });
+                        var _rg = '__rg__', _kc = '__kcode_', _val = '__value_';
+                        $input.attr('type', 'text');
+                        $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
-                            var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
-                            // filter specs key
-                            if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
-                                // fix bug cannot press [.] on numpad
-                                if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
-                                    evt.preventDefault();
+                            var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
+                            $input.data(_kc, evt);
+                            $input.data(_rg, { start: start, end: end });
+                            $input.data(_val, target.value);
+                        });
+                        $input.on('paste', function (evt) {
+                            var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
+                            $input.select();
+                            setTimeout(function () {
+                                if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
+                                    if (constraint) {
+                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        if (primitive) {
+                                            var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
+                                            if (numb >= min && numb <= max) {
+                                                var m = str.match(/\.\d*$/);
+                                                if (!m) {
+                                                    $input.val(str);
+                                                }
+                                                else {
+                                                    if (m[0] === '.5' && primitive.valueType === 'HalfInt') {
+                                                        $input.val(str);
+                                                    }
+                                                    else if (m[0].length <= dlen + 1) {
+                                                        $input.val(str);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        var dl = (rd.option || {}).decimallength;
+                                        if (dl) {
+                                            var m = str.match(/\.\d*$/);
+                                            if (m && m[0].length <= dl + 1) {
+                                                $input.val(str);
+                                            }
+                                        }
+                                        else {
+                                            if (!str.match(/\.\d*$/)) {
+                                                $input.val(str);
+                                            }
+                                        }
+                                    }
+                                }
+                            }, 100);
+                            evt.preventDefault();
+                        });
+                        $input.on('input', function (evt) {
+                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = devt.originalEvent, ival = evt.target.value, dval = $input.data(_val);
+                            ival = ival
+                                .replace(/。/, '.')
+                                .replace(/ー/, '-')
+                                .replace(/０/, '0')
+                                .replace(/１/, '1')
+                                .replace(/２/, '2')
+                                .replace(/３/, '3')
+                                .replace(/４/, '4')
+                                .replace(/５/, '5')
+                                .replace(/６/, '6')
+                                .replace(/７/, '7')
+                                .replace(/８/, '8')
+                                .replace(/９/, '9')
+                                .replace(/./g, function (k) {
+                                if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
+                                    return '';
+                                }
+                                return k;
+                            });
+                            if (ival.match(/^0+$/)) {
+                                ival = '0';
+                            }
+                            // prevent multi . character
+                            if (ival.indexOf('.') != ival.lastIndexOf('.')) {
+                                var first_1 = true;
+                                ival = ival.replace(/\./g, function (k) {
+                                    if (!first_1) {
+                                        return '';
+                                    }
+                                    first_1 = false;
+                                    return k;
+                                });
+                            }
+                            // prevent multi - character
+                            if (ival.indexOf('-') != ival.lastIndexOf('-') || ival.indexOf('-') > 0) {
+                                ival = ival.replace(/\-/g, function (k, i) {
+                                    if (!!i) {
+                                        return '';
+                                    }
+                                    return k;
+                                });
+                            }
+                            // clear value of input
+                            $input.val('');
+                            if (ival) {
+                                if (ival.match(/^\.+$/)) {
+                                    ival = '0.';
+                                }
+                                if (dval) {
+                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
+                                        ival = ival;
+                                    }
+                                    else if (ival.match(/^\-+$/)) {
+                                        ival = '-';
+                                    }
+                                    else if (ival.match(/^\.+$/)) {
+                                        ival = '0.';
+                                    }
+                                    else if (ival.match(/^\-+(0*)\.+$/)) {
+                                        ival = '-0.';
+                                    }
+                                    else {
+                                        ival = ival;
+                                    }
+                                }
+                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
+                                    ival = ival;
+                                }
+                                if (constraint) {
+                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                    if (primitive) { // if primitive is avaiable
+                                        var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
+                                        switch (primitive.valueType) {
+                                            case 'String': // check length
+                                                if (maxL && ival.length > maxL) {
+                                                    ival = dval;
+                                                }
+                                                if (ival.match(/^0\d+$/)) {
+                                                    ival = ival.replace(/^0+/, '0');
+                                                    ival = Number(ival).toString();
+                                                }
+                                                ival = ival.replace(/./g, function (k) {
+                                                    if (k == '.' || k == '-') {
+                                                        return '';
+                                                    }
+                                                    return k;
+                                                });
+                                                $input.val(ival);
+                                                break;
+                                            default:
+                                            case 'Decimal':
+                                                var dcval = Number(ival), dmatch = ival.match(/\.+\d*$/);
+                                                if ((min >= 0 ? true : min <= dcval) && dcval <= max && (dmatch ? dmatch[0].length <= dlen + 1 : true)) {
+                                                    if (ival.match(/\.$/)) {
+                                                        if (dcval == max || dlen == 0) {
+                                                            ival = ival.replace(/\./g, '');
+                                                        }
+                                                    }
+                                                    if (ival.match(/^0\d+$/)) {
+                                                        ival = ival.replace(/^0+/, '0');
+                                                        ival = Number(ival).toString();
+                                                    }
+                                                    if (min >= 0) {
+                                                        ival = ival.replace(/\-/g, '');
+                                                        if (min >= 1) {
+                                                            ival = ival
+                                                                .replace(/^0+/, '')
+                                                                .replace(/^\.+/, '');
+                                                        }
+                                                    }
+                                                    else if (min == dval) {
+                                                        ival = ival.replace(/\.+$/, '');
+                                                    }
+                                                    $input.val(ival);
+                                                }
+                                                else if (min < 0 && ival == '-') {
+                                                    $input.val(ival);
+                                                }
+                                                else {
+                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
+                                                        ival = dval;
+                                                        $input.val(dval);
+                                                    }
+                                                    else { // delete event
+                                                        if (ival.match(/^0\d+$/)) {
+                                                            ival = ival.replace(/^0+/, '0');
+                                                            ival = Number(ival).toString();
+                                                        }
+                                                        $input.val(ival);
+                                                    }
+                                                }
+                                                break;
+                                            case 'HalfInt':
+                                                var hival = Number(ival), himatch = ival.match(/\.+\d*$/);
+                                                if ((min >= 0 ? true : min <= hival) && hival <= max && (himatch ? (himatch[0] === '.5' || himatch[0] === '.') : true)) {
+                                                    if (himatch && himatch[0] == '.') {
+                                                        if (hival == max) {
+                                                            ival = ival.replace(/\./g, '');
+                                                        }
+                                                    }
+                                                    if (ival.match(/^0\d+$/)) {
+                                                        ival = ival.replace(/^0+/, '0');
+                                                        ival = Number(ival).toString();
+                                                    }
+                                                    if (min >= 0) {
+                                                        ival = ival.replace(/\-/g, '');
+                                                        if (min >= 1) {
+                                                            ival = ival
+                                                                .replace(/^0+/, '')
+                                                                .replace(/^\.+/, '');
+                                                        }
+                                                    }
+                                                    else if (min == hival) {
+                                                        ival = ival.replace(/\.+$/, '');
+                                                    }
+                                                    $input.val(ival);
+                                                }
+                                                else if (min < 0 && ival == '-') {
+                                                    $input.val(ival);
+                                                }
+                                                else {
+                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
+                                                        ival = dval;
+                                                        $input.val(dval);
+                                                    }
+                                                    else { // delete event
+                                                        if (ival.match(/^0\d+$/)) {
+                                                            ival = ival.replace(/^0+/, '0');
+                                                            ival = Number(ival).toString();
+                                                        }
+                                                        $input.val(ival);
+                                                    }
+                                                }
+                                                break;
+                                            case 'Integer':
+                                                var value = Number(ival);
+                                                if ((min >= 0 ? true : min <= value) && value <= max && !ival.match(/\.+\d*$/)) {
+                                                    if (ival.match(/^0\d+$/)) {
+                                                        ival = ival.replace(/^0+/, '0');
+                                                        ival = Number(ival).toString();
+                                                    }
+                                                    if (min >= 0) {
+                                                        ival = ival.replace(/\-/g, '');
+                                                        if (min > 0) {
+                                                            ival = ival.replace(/^0+/, '');
+                                                        }
+                                                    }
+                                                    $input.val(ival);
+                                                }
+                                                else if (min < 0 && ival == '-') {
+                                                    $input.val(ival);
+                                                }
+                                                else {
+                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
+                                                        ival = dval;
+                                                        $input.val(dval);
+                                                    }
+                                                    else { // delete event
+                                                        if (ival.match(/^0\d+$/)) {
+                                                            ival = ival.replace(/^0+/, '0');
+                                                            ival = Number(ival).toString();
+                                                        }
+                                                        $input.val(ival);
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    else {
+                                        if (ival.match(/^0\d+$/)) {
+                                            ival = ival.replace(/^0+/, '0');
+                                            ival = Number(ival).toString();
+                                        }
+                                        $input.val(ival);
+                                    }
                                 }
                                 else {
-                                    // calc new value after keypress
-                                    if (ss == se) {
-                                        if (se == 0) {
-                                            val = evt.key + val;
+                                    // check length & decimal length
+                                    var dlen = rd.option.decimallength;
+                                    if (dlen) {
+                                        var match = ival.match(/\.\d+$/);
+                                        if (match && match[0].length > dlen + 1) {
+                                            ival = dval;
                                         }
-                                        else if (se == val.length) {
-                                            val += evt.key;
+                                    }
+                                    if (ival.match(/^0\d+$/)) {
+                                        ival = ival.replace(/^0+/, '0');
+                                        ival = Number(ival).toString();
+                                    }
+                                    $input.val(ival);
+                                }
+                                // set carret position
+                                setTimeout(function () {
+                                    if (dval === ival) {
+                                        if (ival.length == 1) {
+                                            targ.selectionStart = 1;
+                                            targ.selectionEnd = 1;
                                         }
                                         else {
-                                            val = val.substring(0, ss) + evt.key + val.substring(se, val.length);
+                                            targ.selectionStart = srg.start;
+                                            targ.selectionEnd = srg.end;
                                         }
                                     }
-                                    else {
-                                        val = val.replace(val.substring(ss, se), evt.key);
+                                    else if (ival.length - dval.length === 1) {
+                                        targ.selectionStart = srg.start + 1;
+                                        targ.selectionEnd = srg.end + 1;
                                     }
-                                    // fix bug cannot press [.] on numpad
-                                    val = val.replace(/Decimal/, '.');
-                                    // accept negative key only first press
-                                    if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
-                                        evt.preventDefault();
-                                        return;
-                                    }
-                                    // accept only one pointer
-                                    if (evt.key == '.' && target.value.indexOf('.') > -1) {
-                                        evt.preventDefault();
-                                        return;
-                                    }
-                                    // case has constraint check value by type
-                                    if (constraint) {
-                                        var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                        if (primitive) {
-                                            var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min)), mival = val, maval = val, dlen = primitive.mantissaMaxLength;
-                                            // accept negative key if min < 0
-                                            if (evt.key == '-' && min >= 0) {
-                                                evt.preventDefault();
-                                                return;
-                                            }
-                                            if (min < 1) {
-                                                // accept once 0 char
-                                                if (val.match(/(^0{2,})|(^-?0{2,})/)) {
-                                                    evt.preventDefault();
-                                                    return;
-                                                }
-                                            }
-                                            else {
-                                                // not accept char 0 offset = 0
-                                                if (val.match(/^0/)) {
-                                                    evt.preventDefault();
-                                                    return;
-                                                }
-                                            }
-                                            // calculate min & max value
-                                            if (max < 0) {
-                                                for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                    if (stmi[i] != undefined) {
-                                                        if (stmi[i].match(/\d/)) {
-                                                            mival += '9';
-                                                        }
-                                                        else {
-                                                            mival += stmi[i];
-                                                        }
-                                                    }
-                                                }
-                                                for (var i = maval.length - 1; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '0';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (min < 0) {
-                                                if (val.indexOf('-') > -1) {
-                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                        if (stmi[i] != undefined) {
-                                                            if (stmi[i].match(/\d/)) {
-                                                                mival += '9';
-                                                            }
-                                                            else {
-                                                                mival += stmi[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else {
-                                                    for (var i = maval.length; i < stma.length; i++) {
-                                                        if (stma[i] != undefined) {
-                                                            if (stma[i].match(/\d/)) {
-                                                                maval += '9';
-                                                            }
-                                                            else {
-                                                                maval += stma[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (var i = maval.length; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '9';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            // fix halfint max value
-                                            if (primitive.valueType == 'HalfInt') {
-                                                maval = maval.replace(/\.\d$/, '.5');
-                                            }
-                                            var nmin = Number(mival), nmax = Number(maval);
-                                            // clear decimal in constraint (sync) if option not has decimallength
-                                            if (rd.option && rd.option.decimallength < 1) {
-                                                primitive.valueType = 'Integer';
-                                            }
-                                            switch (primitive.valueType) {
-                                                case "String":
-                                                    var maxL = primitive.maxLength;
-                                                    if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    break;
-                                                case "Integer":
-                                                    if (evt.key == '.') {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    if (nmax < min || nmin > max) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    break;
-                                                case "HalfInt":
-                                                    var milen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
-                                                    if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    if (nmax < min || nmin > max) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    break;
-                                                case "Decimal":
-                                                    var mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
-                                                    if (mdlen > primitive.mantissaMaxLength) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    if (nmax < min || nmin > max) {
-                                                        evt.preventDefault();
-                                                        return;
-                                                    }
-                                                    break;
-                                            }
+                                    else if (dval.length - ival.length === 1) {
+                                        if (dorgi.keyCode === 46) {
+                                            targ.selectionStart = srg.start;
+                                            targ.selectionEnd = srg.end;
+                                        }
+                                        else if (dorgi.keyCode == 8) {
+                                            targ.selectionStart = srg.start - 1;
+                                            targ.selectionEnd = srg.end - 1;
                                         }
                                     }
-                                    else {
-                                        var dlen = rd.option.decimallength, mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
-                                        if (dlen < mdlen) {
-                                            evt.preventDefault();
-                                            return;
-                                        }
-                                    }
-                                }
+                                }, 0);
                             }
-                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) {
-                                var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                // if value after delete out of range, preventDefault
-                                if (primitive) {
-                                    var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min));
-                                    if (ss == se) {
-                                        if (evt.keyCode == 8) {
-                                            var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
-                                            // calculate min & max value
-                                            if (max < 0) {
-                                                for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                    if (stmi[i] != undefined) {
-                                                        if (stmi[i].match(/\d/)) {
-                                                            mival += '9';
-                                                        }
-                                                        else {
-                                                            mival += stmi[i];
-                                                        }
-                                                    }
-                                                }
-                                                for (var i = maval.length - 1; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '0';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (min < 0) {
-                                                if (val.indexOf('-') > -1) {
-                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                        if (stmi[i] != undefined) {
-                                                            if (stmi[i].match(/\d/)) {
-                                                                mival += '9';
-                                                            }
-                                                            else {
-                                                                mival += stmi[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else {
-                                                    for (var i = maval.length; i < stma.length; i++) {
-                                                        if (stma[i] != undefined) {
-                                                            if (stma[i].match(/\d/)) {
-                                                                maval += '9';
-                                                            }
-                                                            else {
-                                                                maval += stma[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (var i = maval.length; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '9';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            // fix halfint max value
-                                            if (primitive.valueType == 'HalfInt') {
-                                                maval = maval.replace(/\.\d$/, '.5');
-                                            }
-                                            var nmin = Number(mival), nmax = Number(maval);
-                                            if (nmax < min || nmin > max) {
-                                                evt.preventDefault();
-                                                return;
-                                            }
-                                        }
-                                        else {
-                                            var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
-                                            // calculate min & max value
-                                            if (max < 0) {
-                                                for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                    if (stmi[i] != undefined) {
-                                                        if (stmi[i].match(/\d/)) {
-                                                            mival += '9';
-                                                        }
-                                                        else {
-                                                            mival += stmi[i];
-                                                        }
-                                                    }
-                                                }
-                                                for (var i = maval.length - 1; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '0';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (min < 0) {
-                                                if (val.indexOf('-') > -1) {
-                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                        if (stmi[i] != undefined) {
-                                                            if (stmi[i].match(/\d/)) {
-                                                                mival += '9';
-                                                            }
-                                                            else {
-                                                                mival += stmi[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else {
-                                                    for (var i = maval.length; i < stma.length; i++) {
-                                                        if (stma[i] != undefined) {
-                                                            if (stma[i].match(/\d/)) {
-                                                                maval += '9';
-                                                            }
-                                                            else {
-                                                                maval += stma[i];
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (var i = maval.length; i < stma.length; i++) {
-                                                    if (stma[i] != undefined) {
-                                                        if (stma[i].match(/\d/)) {
-                                                            maval += '9';
-                                                        }
-                                                        else {
-                                                            maval += stma[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            // fix halfint max value
-                                            if (primitive.valueType == 'HalfInt') {
-                                                maval = maval.replace(/\.\d$/, '.5');
-                                            }
-                                            var nmin = Number(mival), nmax = Number(maval);
-                                            if (nmax < min || nmin > max) {
-                                                evt.preventDefault();
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    else {
-                                        var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
-                                        // calculate min & max value
-                                        if (max < 0) {
-                                            for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                if (stmi[i].match(/\d/)) {
-                                                    mival += '9';
-                                                }
-                                                else {
-                                                    mival += stmi[i];
-                                                }
-                                            }
-                                            for (var i = maval.length - 1; i < stma.length; i++) {
-                                                if (stma[i].match(/\d/)) {
-                                                    maval += '0';
-                                                }
-                                                else {
-                                                    maval += stma[i];
-                                                }
-                                            }
-                                        }
-                                        else if (min < 0) {
-                                            if (val.indexOf('-') > -1) {
-                                                for (var i = mival.length - 1; i < stmi.length; i++) {
-                                                    if (stmi[i].match(/\d/)) {
-                                                        mival += '9';
-                                                    }
-                                                    else {
-                                                        mival += stmi[i];
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (var i = maval.length; i < stma.length; i++) {
-                                                    if (stma[i].match(/\d/)) {
-                                                        maval += '9';
-                                                    }
-                                                    else {
-                                                        maval += stma[i];
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            for (var i = maval.length; i < stma.length; i++) {
-                                                if (stma[i].match(/\d/)) {
-                                                    maval += '9';
-                                                }
-                                                else {
-                                                    maval += stma[i];
-                                                }
-                                            }
-                                        }
-                                        // fix halfint max value
-                                        if (primitive.valueType == 'HalfInt') {
-                                            maval = maval.replace(/\.\d$/, '.5');
-                                        }
-                                        var nmin = Number(mival), nmax = Number(maval);
-                                        if (nmax < min || nmin > max) {
-                                            evt.preventDefault();
-                                            return;
-                                        }
-                                    }
-                                }
+                        });
+                        $input.on('blur', function (evt) {
+                            var value = $input.val();
+                            if (value.match(/\.$/)) {
+                                value = value.replace(/\.$/, '');
+                                // fix value if input en with [.]
+                                $input
+                                    .val(value)
+                                    .trigger('blur');
                             }
                         });
                     };
@@ -18878,7 +18810,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -19064,7 +18996,7 @@ var nts;
                                     _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
-                                    $grid.trigger("selectionchanged");
+                                    $grid.trigger("selectionchanged", [true]);
                                 }, 0);
                             }
                             return true;
@@ -19077,7 +19009,10 @@ var nts;
                                 $iselect.addClass("ui-igcheckbox-normal-on");
                             }
                         };
-                        $grid.bind('selectionchanged', function () {
+                        $grid.bind('selectionchanged', function (event, isUserAction) {
+                            if (isUserAction) {
+                                $grid.data('user-action', true);
+                            }
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected_1 = $grid.ntsGridList('getSelected');
@@ -19290,7 +19225,14 @@ var nts;
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
                         }
-                        _.defer(function () { $grid.ntsGridList("scrollToSelected"); });
+                        _.defer(function () {
+                            if ($grid.data('user-action')) {
+                                $grid.data('user-action', false);
+                            }
+                            else {
+                                $grid.ntsGridList("scrollToSelected");
+                            }
+                        });
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
@@ -25926,7 +25868,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -25959,7 +25901,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = 0; i < _mDesc.rows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28100,7 +28042,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) {
+                                if (val) { //&& check.getAttribute("checked") !== "checked") {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28109,7 +28051,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) {
+                                else if (!val) { // && check.getAttribute("checked") === "checked") {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -34642,7 +34584,10 @@ var nts;
                                 width += Number($(this).attr("width").replace(/px/gi, ''));
                             });
                             width++;
-                            if (nts.uk.util.isNullOrUndefined(viewWidth)) {
+                            if (options.autoResize) {
+                                viewWidth = Math.min(window.innerWidth - 60, width);
+                            }
+                            else if (nts.uk.util.isNullOrUndefined(viewWidth)) {
                                 viewWidth = width;
                             }
                             var $container = $("<div class='nts-fixed-table cf'/>");
@@ -34663,7 +34608,18 @@ var nts;
                             var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                             var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
                             var bodyHeight = "auto";
-                            if (setting.height !== "auto") {
+                            if (options.autoResize) {
+                                $bodyContainer.css("max-width", viewWidth);
+                                bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                                $(window).on("resize", function (evt) {
+                                    var tableWidth = Math.max(0, Math.min(width, window.innerWidth - 60));
+                                    $headerContainer.css("max-width", tableWidth);
+                                    $bodyContainer.css("max-width", tableWidth);
+                                    bodyHeight = window.innerHeight - $headerTable.find("thead").outerHeight() - 240;
+                                    $bodyWrapper.height(Math.max(0, bodyHeight));
+                                });
+                            }
+                            else if (setting.height !== "auto") {
                                 $bodyContainer.css("max-width", viewWidth);
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
@@ -34808,6 +34764,9 @@ var nts;
                     }
                     function scrollToSelect($grid) {
                         var row = null;
+                        if ($grid.data('igGrid') === undefined) {
+                            return;
+                        }
                         var selectedRows = $grid.igGrid("selectedRows");
                         if (selectedRows) {
                             row = selectedRows[0];
@@ -35021,7 +34980,7 @@ var nts;
                                 dragSelectRange = [];
                                 $(window).unbind('pointermove.NtsGridListDragging');
                                 if ($grid.data("selectUpdated") === true) {
-                                    $grid.triggerHandler('selectionchanged');
+                                    $grid.triggerHandler('selectionchanged', [true]);
                                 }
                                 //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
@@ -35062,7 +35021,7 @@ var nts;
                         $grid.bind('iggridselectioncellselectionchanging', function () {
                         });
                         $grid.bind('iggridselectionrowselectionchanged', function () {
-                            $grid.triggerHandler('selectionchanged');
+                            $grid.triggerHandler('selectionchanged', [true]);
                         });
                         //            $grid.on('mouseup', () => {
                         //                $grid.triggerHandler('selectionchanged');
@@ -35106,7 +35065,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -35273,7 +35232,7 @@ var nts;
                                     _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
-                                    $grid.trigger("selectionchanged");
+                                    $grid.trigger("selectionchanged", [true]);
                                 }, 0);
                             }
                             return true;
@@ -40515,7 +40474,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) {
+                            else if (loader.keys) { // Switch sheet
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -41278,7 +41237,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) {
+                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
                                     hide(control);
                                 }
                             });
@@ -44687,6 +44646,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
+                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -44714,7 +44674,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else {
+                            else { //employ the strategy of moving items
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
