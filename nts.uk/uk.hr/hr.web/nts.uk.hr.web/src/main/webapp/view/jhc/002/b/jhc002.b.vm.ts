@@ -77,6 +77,8 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 document.getElementsByClassName("fixed-table")[2].style.width = width + "px";
                 document.getElementsByClassName("nts-fixed-header-wrapper")[2].style.width = width + "px";
                 document.getElementsByClassName("nts-fixed-body-wrapper")[2].style.width = width + "px";
+                
+                document.getElementsByClassName("nts-fixed-body-container")[4].style.width = width + "px";
             });
 
             self.requirementType = ko.observable(__viewContext.enums.RequirementType);
