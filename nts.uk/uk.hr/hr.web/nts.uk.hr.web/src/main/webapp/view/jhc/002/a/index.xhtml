@@ -62,7 +62,7 @@
 										<tbody data-bind="foreach: careerType">
 											<tr>
 												<td><span data-bind="text: name"></span>
-													<button class="small" data-bind="click: $parent.openDialogB, enable: $parent.selectedHistId() == $parent.latestCareerPathHist()">#{i18n.getText('JHC002_A222_10')}</button></td>
+													<button class="small" data-bind="click: $parent.openDialogB, enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enable">#{i18n.getText('JHC002_A222_10')}</button></td>
 											</tr>
 										</tbody>
 									</table>
@@ -146,20 +146,19 @@
 														value: l1,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel1,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
 												<com:ko-if bind="$parent.maxClassLevel() &gt; 1">
-													<td><div id="combo-box"
-															data-bind="ntsComboBox: {
+													<td><div id="combo-box" data-bind="ntsComboBox: {
 														options: $parent.careerClass,
 														optionsValue: 'id',
 														visibleItemsCount: 5,
 														value: l2,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel2,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -172,7 +171,7 @@
 														value: l3,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel3,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -185,7 +184,7 @@
 														value: l4,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel4,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -198,7 +197,7 @@
 														value: l5,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel5,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -211,7 +210,7 @@
 														value: l6,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel6,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -224,7 +223,7 @@
 														value: l7,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel7,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -237,7 +236,7 @@
 														value: l8,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel8,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -250,7 +249,7 @@
 														value: l9,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel9,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>
@@ -263,7 +262,7 @@
 														value: l10,
 														optionsText: 'name',
 														width: 160,
-														enable: $parent.selectedHistId() == $parent.latestCareerPathHist(),
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel10,
 														columns: [ { prop: 'name', length: 4 },]}">
 														</div></td>
 												</com:ko-if>

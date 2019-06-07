@@ -3,6 +3,7 @@ module nts.uk.hr.view.jhc002.b {
     __viewContext.ready(function() {
         __viewContext.transferred.ifPresent(data => {
             setShared("DataShareCareerToBScreen", data);
+            nts.uk.sessionStorage.removeItem("nts.uk.request.STORAGE_KEY_TRANSFER_DATA");
         });
         var screenModel = __viewContext.vm = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {

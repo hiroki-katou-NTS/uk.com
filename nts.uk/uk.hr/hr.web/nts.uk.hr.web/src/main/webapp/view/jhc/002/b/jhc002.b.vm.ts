@@ -413,19 +413,19 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             });
             self.yearMinimumNumber.subscribe(function(newValue) {
                 if (newValue != '' && self.yearStandardNumber() != '' && newValue > self.yearStandardNumber()) {
-                    nts.uk.ui.dialog.error({ messageId: 'MsgJ-51' });
+                    nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 }
             });
             self.yearStandardNumber.subscribe(function(newValue) {
                 if (newValue != '' && self.yearMinimumNumber() != '' && newValue < self.yearMinimumNumber()) {
-                    nts.uk.ui.dialog.error({ messageId: 'MsgJ-51' });
+                    nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 }
             });
         }
         public validate(): boolean{
             let self = this;
             if (self.yearMinimumNumber() > self.yearStandardNumber()) {
-                nts.uk.ui.dialog.error({ messageId: 'MsgJ-51' });
+                nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 return false;
             }
             return true;

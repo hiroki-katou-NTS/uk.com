@@ -19,6 +19,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         checkStartFromBScreen: boolean;
         dataFromBScreen: any;
         latestCareerPathHist: KnockoutObservable<any>;
+        checkUpdateEnable: boolean;
 
         constructor() {
             var self = this;
@@ -87,6 +88,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 209, width: 990 });
 
             self.selectedHistId.subscribe(function(newValue) {
+                
                 self.getCarrerPart(newValue);
             });
 
@@ -106,7 +108,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 document.getElementsByClassName("fixed-table")[0].style.width = width + "px";
                 document.getElementsByClassName("fixed-table")[1].style.width = width + "px";
             });
-
+            self.checkUpdateEnable = false;
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -137,6 +139,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }
             if (hisId != '') {
                 block.grayout();
+                self.checkUpdateEnable = false; 
                 new service.getCareerPart(command).done(function(data: any) {
                     data.careerClass.add({ id: "", code: "", name: "" });
                     console.log(data);
@@ -146,13 +149,52 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     }
                     self.listCareer(data.career);
                     self.maxClassLevel(data.maxClassLevel);
-                    self.careerType(_.orderBy(data.careerType, ['code'], ['asc']));
+                    self.careerType([]);
+                    _.forEach(_.orderBy(data.careerType, ['code'], ['asc']), function(value) {
+                        self.careerType.push(new CareerType(value));
+                    });
+                    //self.careerType(_.orderBy(data.careerType, ['code'], ['asc']));
                     self.careerClass(_.orderBy(data.careerClass, ['code'], ['asc']));
                     let list = [];
                     _.forEach(data.careerType, function(value) {
                         list.push(new ScreenItem(value.code, _.filter(data.career, ['careerTypeItem', value.id])));
                     });
                     self.listCareerType(list);
+                    self.checkUpdateEnable = true;
+                    self.updateEnable();
+                    
+                    // tab
+                    $(document).on("keydown", function(evt) {
+                        if(evt.keyCode != 9) return;
+                        let activeElement = $(document.activeElement);
+                        let tbl = activeElement.closest("table");
+                        if (tbl.length > 0 && tbl.is(".rightTable")) {
+                            let indexLeflTbl = activeElement.closest("tr").index() + 1;
+                            let rightTbl = $(".nts-fixed-table");
+                            let rowrightTbl = rightTbl.find("tr:nth-child(" + indexLeflTbl +")").find("td").each(function(td){
+                                let div = $(this).find("div:first-child");
+                                if($(div[0]).attr("aria-disabled" ) !== 'true'){
+                                    div.focus();
+                                    evt.preventDefault();
+                                    return false;
+                                }                                
+                            });
+                        }
+                        if (tbl.length > 0 && tbl.is("#fixed-table")) {
+                            let rowSelectedRightTbl = activeElement.closest("tr");
+                            let index = rowSelectedRightTbl.index() + 1;
+                            let lastColSelectedRightTbl = rowSelectedRightTbl.find("td:last-child");
+                            if(lastColSelectedRightTbl[0] == activeElement.closest("td")[0]){
+                                let btnLeftTbl = $(".rightTable").find("tr:nth-child(" + (index + 1) +")").find("td:first-child").find("button")
+                                let btnLeftTblIsDis = btnLeftTbl.prop("disabled");
+                                if(!btnLeftTblIsDis){
+                                    btnLeftTbl.focus();
+                                    btnLeftTbl.select();
+                                    evt.preventDefault();
+                                }
+                            }
+                        }
+                    });
                     block.clear();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.error({ messageId: error.messageId });
@@ -233,6 +275,21 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             });
         }
         
+        public updateEnable(): void{
+            let self =  this;
+            if (self.checkUpdateEnable) {
+                _.forEach(ko.toJS(self.listCareerType()), function(value) {
+                    let index = _.findIndex(self.careerType(), { 'code': value.code });
+                    self.careerType()[index].enable(value.checkExistSelected(self.maxClassLevel()));
+                });
+                self.listCareerType()[0].setEnableCommon(self.listCareerType()[1], self.listCareerType()[2], self.listCareerType()[3], self.listCareerType()[4]);
+                self.listCareerType()[1].setEnable(self.listCareerType()[0]);
+                self.listCareerType()[2].setEnable(self.listCareerType()[0]);
+                self.listCareerType()[3].setEnable(self.listCareerType()[0]);
+                self.listCareerType()[4].setEnable(self.listCareerType()[0]);
+            }
+        }
+        
         private convertData(value: any, lever: number): void {
             let self = this;
             let typeInfo = _.filter(self.careerType(), ['code', value.code])[0];
@@ -299,6 +356,16 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         l8: KnockoutObservable<string> = ko.observable("");
         l9: KnockoutObservable<string> = ko.observable("");
         l10: KnockoutObservable<string> = ko.observable("");
+        enablel1: KnockoutObservable<boolean> = ko.observable(false);
+        enablel2: KnockoutObservable<boolean> = ko.observable(false);
+        enablel3: KnockoutObservable<boolean> = ko.observable(false);
+        enablel4: KnockoutObservable<boolean> = ko.observable(false);
+        enablel5: KnockoutObservable<boolean> = ko.observable(false);
+        enablel6: KnockoutObservable<boolean> = ko.observable(false);
+        enablel7: KnockoutObservable<boolean> = ko.observable(false);
+        enablel8: KnockoutObservable<boolean> = ko.observable(false);
+        enablel9: KnockoutObservable<boolean> = ko.observable(false);
+        enablel10: KnockoutObservable<boolean> = ko.observable(false);
         constructor(code: string, career: Array<any>) {
             var self2 = this;
             self2.code(code);
@@ -338,6 +405,64 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         break;
                 }
             });
+            self2.l1.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l2.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l3.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l4.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l5.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l6.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l7.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l8.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l9.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+            self2.l10.subscribe(function(newValue) {
+                __viewContext.vm.updateEnable();
+            });
+        }
+        
+        public setEnable(obj: ScreenItem): void {
+            let self =  this;
+            self.enablel1(obj.l1() == '');
+            self.enablel2(obj.l2() == '');
+            self.enablel3(obj.l3() == '');
+            self.enablel4(obj.l4() == '');
+            self.enablel5(obj.l5() == '');
+            self.enablel6(obj.l6() == '');
+            self.enablel7(obj.l7() == '');
+            self.enablel8(obj.l8() == '');
+            self.enablel9(obj.l9() == '');
+            self.enablel10(obj.l10() == '');
+        }
+        
+        public setEnableCommon(obj1: ScreenItem, obj2: ScreenItem, obj3: ScreenItem, obj4: ScreenItem): void {
+            let self =  this;
+            self.enablel1(obj1.l1() == '' && obj2.l1() == '' && obj3.l1() == '' && obj4.l1() == '');
+            self.enablel2(obj1.l2() == '' && obj2.l2() == '' && obj3.l2() == '' && obj4.l2() == '');
+            self.enablel3(obj1.l3() == '' && obj2.l3() == '' && obj3.l3() == '' && obj4.l3() == '');
+            self.enablel4(obj1.l4() == '' && obj2.l4() == '' && obj3.l4() == '' && obj4.l4() == '');
+            self.enablel5(obj1.l5() == '' && obj2.l5() == '' && obj3.l5() == '' && obj4.l5() == '');
+            self.enablel6(obj1.l6() == '' && obj2.l6() == '' && obj3.l6() == '' && obj4.l6() == '');
+            self.enablel7(obj1.l7() == '' && obj2.l7() == '' && obj3.l7() == '' && obj4.l7() == '');
+            self.enablel8(obj1.l8() == '' && obj2.l8() == '' && obj3.l8() == '' && obj4.l8() == '');
+            self.enablel9(obj1.l9() == '' && obj2.l9() == '' && obj3.l9() == '' && obj4.l9() == '');
+            self.enablel10(obj1.l10() == '' && obj2.l10() == '' && obj3.l10() == '' && obj4.l10() == '');
         }
         
         public checkExistSelected(maxLever: number): boolean {
@@ -374,6 +499,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }
             return false;
         }
+        
     }
     class ItemModel {
         code: string;
@@ -381,6 +507,17 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+    class CareerType {
+        id: string;
+        code: string;
+        name: string;
+        enable: KnockoutObservable<boolean> = ko.observable(false);
+        constructor(obj: any) {
+            this.id = obj.id
+            this.code = obj.code;
+            this.name = obj.name;
         }
     }
 }
