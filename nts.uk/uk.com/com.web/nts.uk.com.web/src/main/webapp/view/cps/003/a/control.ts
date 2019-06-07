@@ -746,6 +746,28 @@ module cps003 {
                 return dfd.promise();
             }
         },
+        STRING = {
+            CS00002_IS00003: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                dfd.resolve(spaceCheck(i, k, v, o));
+                return dfd.promise();
+            },
+            CS00002_IS00004: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                dfd.resolve(spaceCheck(i, k, v, o));
+                return dfd.promise();
+            },
+            CS00002_IS00015: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                dfd.resolve(spaceCheck(i, k, v, o));
+                return dfd.promise();
+            },
+            CS00002_IS00016: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                dfd.resolve(spaceCheck(i, k, v, o));
+                return dfd.promise();
+            }  
+        },
         dateRange = [
             {
                 ctgCode: "CS00003",
@@ -940,6 +962,18 @@ module cps003 {
                 end: "IS00191"
             }
         ];
+        
+        function spaceCheck(i, k, v, o) {
+            let $grid = $("#grid"), index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === o.id),
+                message = nts.uk.resource.getMessage("Msg_924"),
+                sIndex = _.indexOf(v, "　");
+            
+            if (!_.isNil(v) && (sIndex === -1 || sIndex === _.size(v) - 1)) {
+                $grid.mGrid("setErrors", [{ id: i, index: index, columnKey: k, message: message }]);
+            } else {
+                $grid.mGrid("clearErrors", [{ id: i, columnKey: k }]);
+            }
+        }
         
         function timeNumber(i, k, v, o, firstCode, secondCode, resultCode) {
             let dt = __viewContext.viewModel.dataTypes[firstCode], result = [];
@@ -1336,7 +1370,7 @@ module cps003 {
                         $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.start, message: message }]);
                     } else {
                         $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.end }]);
-                        if (!required || (!_.isNil(start._i) && start._i !== "")) {
+                        if (!required || (!_.isNil(start._i) && start._i !== "" && start.isValid())) {
                             $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }]);
                         }
                     }
@@ -1363,7 +1397,7 @@ module cps003 {
                             message = nts.uk.resource.getMessage("MsgB_21", ["期間"]);
                         $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: range.end, message: message }]);
                     } else {
-                        if (!_.isNil(start._i) && start._i !== "") {
+                        if (!_.isNil(start._i) && start._i !== "" && start.isValid()) {
                             $grid.mGrid("clearErrors", [{ id: data.id, columnKey: range.start }]);
                         }
                         
