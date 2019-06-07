@@ -91,7 +91,7 @@ public class MappingFactory {
 		if(peregDto != null) {
 			// map data
 			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-		String recordId = peregDto.getDomainDto().getRecordId();
+		String recordId = peregDto.getDomainDto() == null? null:  peregDto.getDomainDto().getRecordId();
 		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
 			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 				Object value = getValue(itemCodeValueMap, valueItem);
@@ -121,7 +121,7 @@ public class MappingFactory {
 		if(peregDto != null) {
 			// map data
 			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-			String recordId = peregDto.getDomainDto().getRecordId();
+			String recordId = peregDto.getDomainDto() == null? null:  peregDto.getDomainDto().getRecordId();
 			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
 				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 					
