@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 * 給与分類名称
 */
 
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class SalaryClassificationName extends StringPrimitiveValue<SalaryClassificationName>
 {
     
