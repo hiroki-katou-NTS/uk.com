@@ -35,6 +35,6 @@ public class CareerRequirementDto {
 				this.requirementType, 
 				this.yearRequirement == null? Optional.empty():Optional.of(this.yearRequirement.toDomain()), 
 				this.masterRequirement == null? Optional.empty():Optional.of(this.masterRequirement.toDomain()), 
-				Optional.ofNullable(inputRequirement));
+				Optional.ofNullable(inputRequirement.equals("")?null:inputRequirement));
 	}
 }
