@@ -6,6 +6,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
 
+        screenMode: KnockoutObservable<any>;
         masterId: KnockoutObservable<string>;
         histList: KnockoutObservableArray<any>;
         selectedHistId: KnockoutObservable<any>;
@@ -88,10 +89,16 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 209, width: 990 });
 
             self.selectedHistId.subscribe(function(newValue) {
-                
                 self.getCarrerPart(newValue);
             });
 
+            self.histList.subscribe(function(newValue) {
+                if(self.histList().length == 0){
+                    self.selectedHistId('');        
+                }
+            });
+
+            
             self.listCareer = ko.observableArray([]);
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
@@ -132,12 +139,12 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         }
         private getCarrerPart(hisId: string): void {
             var self = this;
-            let startDate = _.filter(self.histList(), ['histId', hisId])[0].startDate;
-            let command = {
-                historyId: hisId,
-                startDate: moment(startDate).format("YYYY/MM/DD")
-            }
             if (hisId != '') {
+                let startDate = _.filter(self.histList(), ['histId', hisId])[0].startDate;
+                let command = {
+                    historyId: hisId,
+                    startDate: moment(startDate).format("YYYY/MM/DD")
+                }
                 block.grayout();
                 self.checkUpdateEnable = false; 
                 new service.getCareerPart(command).done(function(data: any) {
@@ -201,6 +208,11 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
+            }else{
+                self.listCareer();
+                self.careerType([]);
+                self.listCareerType([]);
+                self.checkUpdateEnable = true;
             }
         }
         public openDialogB(careerType: any): void {
