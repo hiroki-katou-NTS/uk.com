@@ -20,8 +20,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1"
-					data-bind="click: save, enable: selectedHistId() != '' &amp;&amp; selectedHistId() == latestCareerPathHist()">#{i18n.getText('JHC002_A1_1')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: save, enable: selectedHistId() != '' &amp;&amp; selectedHistId() == latestCareerPathHist()">#{i18n.getText('JHC002_A1_1')}</button>
 				<button tabindex="2" data-bind="enable: selectedHistId() != '' &amp;&amp; selectedHistId() == latestCareerPathHist()">#{i18n.getText('JHC002_A1_2')}</button>
 			</div>
 			<div id="contents-area">

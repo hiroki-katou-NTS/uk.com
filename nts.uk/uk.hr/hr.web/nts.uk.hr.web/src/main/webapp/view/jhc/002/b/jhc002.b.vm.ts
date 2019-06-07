@@ -107,7 +107,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-            if(self.params != undefined){
+            if(self.params.careerTypeId != undefined){
                 self.datatransfer = self.params;
                 self.startDate = self.params.startDate;
                 console.log(self.params);
@@ -245,7 +245,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     if (!(_.includes(yearTypeListCheck, value.yearType()))) {
                         yearTypeListCheck.push(value.yearType());
                     } else {
-                        nts.uk.ui.dialog.error({ messageId: 'MsgJ-46' });
+                        nts.uk.ui.dialog.error({ messageId: 'MsgJ_46' });
                         result = false;
                         return false;
                     }
@@ -253,10 +253,23 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     if (!(_.includes(masterTypeListCheck, value.masterType()))) {
                         masterTypeListCheck.push(value.masterType());
                     } else {
-                        nts.uk.ui.dialog.error({ messageId: 'MsgJ-47' });
+                        nts.uk.ui.dialog.error({ messageId: 'MsgJ_47' });
                         result = false;
                         return false;
                     }
+                }
+            });
+            return result;
+        }
+        
+        public checkExitMasterItemList(displayNumber: number): boolean {
+            let self = this;
+            let result = false;
+            let tg = _.filter(self.career(), { 'displayNumber': displayNumber});
+            _.forEach(tg, function(value) {
+                result = value.checkExitMasterItemList();
+                if(result){
+                    return false;    
                 }
             });
             return result;
@@ -372,8 +385,8 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         displayNumber: number;
         requirementType: KnockoutObservable<number>;
         yearType: KnockoutObservable<string>;
-        yearMinimumNumber: KnockoutObservable<string>;
-        yearStandardNumber: KnockoutObservable<string>;
+        yearMinimumNumber: KnockoutObservable<number>;
+        yearStandardNumber: KnockoutObservable<number>;
         masterType: KnockoutObservable<string>;
         masterItemList: KnockoutObservableArray<any>;
         inputRequirement: KnockoutObservable<string>;
@@ -391,12 +404,16 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             self.inputRequirement = ko.observable(obj.inputRequirement);
             self.masterType.subscribe(function(newValue) {
                 if (newValue != null && self.comfirmChangeMasterType == true) {
-                    nts.uk.ui.dialog.confirmProceed({ messageId: "MsgJ_52" }).ifYes(() => {
-                        __viewContext.vm.setMasterType(self.displayNumber, newValue);
-                    }).ifNo(() => {
-                        self.comfirmChangeMasterType = false;
-                        self.masterType(__viewContext.vm.getValueAfterChangeMasterType(self.displayNumber));
-                    });
+                    if(__viewContext.vm.checkExitMasterItemList(self.displayNumber)){
+                        nts.uk.ui.dialog.confirmProceed({ messageId: "MsgJ_52" }).ifYes(() => {
+                            __viewContext.vm.setMasterType(self.displayNumber, newValue);
+                        }).ifNo(() => {
+                            self.comfirmChangeMasterType = false;
+                            self.masterType(__viewContext.vm.getValueAfterChangeMasterType(self.displayNumber));
+                        });                        
+                    }else{
+                        __viewContext.vm.setMasterType(self.displayNumber, newValue);    
+                    }
                 }else if(self.comfirmChangeMasterType == false){
                     self.comfirmChangeMasterType = true;
                 }
@@ -412,19 +429,19 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 }
             });
             self.yearMinimumNumber.subscribe(function(newValue) {
-                if (newValue != '' && self.yearStandardNumber() != '' && newValue > self.yearStandardNumber()) {
+                if (newValue != '' && self.yearStandardNumber() != '' && parseInt(newValue) > parseInt(self.yearStandardNumber())) {
                     nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 }
             });
             self.yearStandardNumber.subscribe(function(newValue) {
-                if (newValue != '' && self.yearMinimumNumber() != '' && newValue < self.yearMinimumNumber()) {
+                if (newValue != '' && self.yearMinimumNumber() != '' && parseInt(newValue) < parseInt(self.yearMinimumNumber())) {
                     nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 }
             });
         }
         public validate(): boolean{
             let self = this;
-            if (self.yearMinimumNumber() > self.yearStandardNumber()) {
+            if (self.requirementType() == 1 && self.yearMinimumNumber() > self.yearStandardNumber()) {
                 nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 return false;
             }
@@ -647,6 +664,32 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             if (self.lever10 != undefined) {
                 self.lever10().setMasterType(masterType);
             } 
+        }
+        
+        public checkExitMasterItemList(): boolean{
+            let self = this;
+            if (self.lever1 != undefined && self.lever1().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever2 != undefined && self.lever2().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever3 != undefined && self.lever3().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever4 != undefined && self.lever4().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever5 != undefined && self.lever5().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever6 != undefined && self.lever6().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever7 != undefined && self.lever7().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever8 != undefined && self.lever8().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever9 != undefined && self.lever9().getNameMasterItemList() != '') {
+                return true;
+            }else if (self.lever10 != undefined && self.lever10().getNameMasterItemList() != '') {
+                return true;
+            } 
+            return false;
         }
         
         public setRequirementType(requirementType: any): void {
