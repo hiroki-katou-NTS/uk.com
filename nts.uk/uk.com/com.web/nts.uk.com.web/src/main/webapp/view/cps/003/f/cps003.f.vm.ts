@@ -567,6 +567,8 @@ module cps003.f.vm {
                                 if(itemX.length > 0){
                                     valueText = itemX[0].optionText;
                                 }
+                            }else if(item.itemData.dataType == 5){
+                               valueText =  window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](value.matchValue).fullText;
                             }
                             confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
@@ -579,6 +581,8 @@ module cps003.f.vm {
                                 if (itemX.length > 0) {
                                     valueTextMatch = itemX[0].optionText;
                                 }
+                            }else if(item.itemData.dataType == 5){
+                               valueTextMatch =  window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](value.matchValue).fullText;
                             }else{
                                 valueTextMatch = value.matchValue;
                             }
