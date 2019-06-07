@@ -1756,7 +1756,7 @@ var nts;
                     var startEra = moment(i.start), endEraYear = moment(i.end);
                     if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
                         var diff = formatted.year() - startEra.year() + 1;
-                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
+                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
