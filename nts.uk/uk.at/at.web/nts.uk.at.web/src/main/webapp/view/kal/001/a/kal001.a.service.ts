@@ -22,11 +22,15 @@ module nts.uk.at.view.kal001.a.service {
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
             
-            let def = $.Deferred();
+            let def = $.Deferred(), toStopForWriteData = ko.observable(false);
             
             nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
                 nts.uk.deferred.repeat(conf => conf.task(() => {
-                    return nts.uk.request.asyncTask.getInfo(task.id).done(function(res: any) {
+                    return nts.uk.request.asyncTask.getInfo(task.id, !toStopForWriteData()).done(function(res: any) {
+                        let dataWriting = _.find(res.taskDatas, function(t){ return t.key === "dataWriting"; });
+                        if(dataWriting !== null && dataWriting !== undefined && dataWriting.valueAsBoolean === true) {
+                            toStopForWriteData(true);
+                        }
                         if(res.succeeded){
                             let data = {};
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
@@ -119,6 +123,11 @@ module nts.uk.at.view.kal001.a.service {
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
+                        } else if(p.categoryName=="36協定　複数月平均"){
+                            let sDate =p.dateValue().startDate + '/01';
+                            
+                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(sDate).momentObject.toISOString() ; 
                         } else{
                             let sDate =p.dateValue().startDate + '/01';
                             let eDate = p.dateValue().endDate;

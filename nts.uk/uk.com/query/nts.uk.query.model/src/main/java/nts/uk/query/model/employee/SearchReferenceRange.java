@@ -11,19 +11,20 @@ package nts.uk.query.model.employee;
 public enum SearchReferenceRange {
 	
 	/** The all employee. */
-	// 全社員
-	ALL_EMPLOYEE(0, "Enum_EmployeeReferenceRange_allEmployee", "全社員"),
+	// 参照可能範囲すべて
+	ALL_REFERENCE_RANGE(0, "Enum_SearchReferenceRange_allReferenceRange", "参照可能範囲すべて"),
 
 	/** The department and child. */
-	// 部門（配下含む）
-	DEPARTMENT_AND_CHILD(1, "Enum_EmployeeReferenceRange_departmentAndChild", "部門（配下含む）"),
+	// 所属と配下すべて
+	AFFILIATION_AND_ALL_SUBORDINATES(1, "Enum_SearchReferenceRange_affiliationAndAllSubordinates", "所属と配下すべて"),
 
 	/** The department only. */
-	// 部門（配下含まない）
-	DEPARTMENT_ONLY(2, "Enum_EmployeeReferenceRange_departmentOnly", "部門（配下含まない）"),
+	// 所属のみ
+	AFFILIATION_ONLY(2, "Enum_SearchReferenceRange_affiliationOnly", "所属のみ"),
+
 	//参照範囲を考慮しない
 	/** The do not consider reference range. */
-	DO_NOT_CONSIDER_REFERENCE_RANGE(3, "Enum_EmployeeReferenceRange_DO_NOT_CONSIDER_REFERENCE_RANGE", "");
+	DO_NOT_CONSIDER_REFERENCE_RANGE(3, "Enum_SearchReferenceRange_doNotConsiderReferenceRange", "参照範囲を考慮しない");
 
 	/** The value. */
 	public final int value;

@@ -29,13 +29,6 @@ public interface AbsenceReflectService {
 	 * @param isReflect
 	 */
 	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect, IntegrationOfDaily dailyInfor);
-	/**
-	 * 開始終了時刻の反映
-	 * @param employeeId
-	 * @param baseDate
-	 * @param workTypeCode
-	 */
-	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode);
 	
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, IntegrationOfDaily dailyInfor);
 	/**

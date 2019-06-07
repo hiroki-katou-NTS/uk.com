@@ -12,7 +12,9 @@ public enum PeriodAtrOfAgreement {
 	/** 1ヶ月 */
 	ONE_MONTH(2),
 	/** 1年間 */
-	ONE_YEAR(3);
+	ONE_YEAR(3),
+	/** 複数月平均 */
+	Months_Average(4);
 	
 	public int value;
 	private PeriodAtrOfAgreement(int value){

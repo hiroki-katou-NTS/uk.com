@@ -13,6 +13,8 @@ public class AppContextsConfig {
 	public static final String BEFORE_REQUEST_WEBAPI = "beforeRequestedWebAPI";
 	
 	public static final String WINS_ACCOUNT = "windowsAccount";
+	
+	public static final String DEVICE_INFO = "deviceInfo";
 
 	public static void setProgramId(String programId) {
 		RequestContextProvider.get().put(KEY_PROGRAM_ID, programId);
@@ -28,5 +30,9 @@ public class AppContextsConfig {
 	
 	public static void setWindowsAccount(WindowsAccount account) {
 		SessionContextProvider.get().put(WINS_ACCOUNT, account);
+	}
+	
+	public static void setDeviceInfo(DeviceInfo info) {
+		RequestContextProvider.get().put(DEVICE_INFO, info);
 	}
 }

@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -476,6 +477,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 											grantHdTbl.getLimitTimeHd());
 								}
 							}
+							else {
+								
+								// 次回年休付与．付与日数　←　0
+								nextAnnualGrantList.setGrantDays(new GrantDays(0.0));
+							}
 						}
 					}
 				}
@@ -549,13 +555,16 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				List<AnnualLeaveRemainingHistory> remainHistList = this.annualLeaveRemainHistRepo.getInfoBySidAndYM(
 						this.employeeId, yearMonthOpt.get());
 				if (remainHistList.size() > 0) {
-					remainHistList.sort((a, b) -> a.getClosureDate().getClosureDay().v()
-							.compareTo(b.getClosureDate().getClosureDay().v()));
-					
-					// 取得したドメインを年休付与残数データに変換
-					AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
-							AnnualLeaveGrantRemainingData.createFromHistory(remainHistList.get(0)));
-					remainingDatas.add(remainData);
+					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
+					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+					for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
+						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+						
+						// 取得したドメインを年休付与残数データに変換
+						AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
+								AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
+						remainingDatas.add(remainData);
+					}
 				}
 				
 				// 年休上限データを取得

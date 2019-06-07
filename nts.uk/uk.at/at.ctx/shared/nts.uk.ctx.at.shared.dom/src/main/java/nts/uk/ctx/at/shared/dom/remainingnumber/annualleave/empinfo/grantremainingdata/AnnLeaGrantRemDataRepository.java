@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnLeaGrantRemDataRepository {
 	
@@ -42,4 +44,13 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
 
+	List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate);
+	/**
+	 * ドメインモデル「年休付与残数データ」を取得	
+	 * @param sid 社員ID
+	 * @param expStatus 期限切れ状態
+	 * @param datePeriod INPUT．指定期間．開始日 <= 期限日 <= INPUT．指定期間．終了日
+	 * @return
+	 */
+	List<AnnualLeaveGrantRemainingData> findByExpStatus(String sid, LeaveExpirationStatus expStatus, DatePeriod datePeriod);
 }

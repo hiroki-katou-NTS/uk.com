@@ -258,15 +258,25 @@ public class AgreementOperationSetting extends AggregateRoot {
 	// 2019.2.28 ADD shuichi_ishida
 	public YearMonthPeriod getPeriodYear(GeneralDate criteria){
 		
-		// 開始年を計算
+		// 計算当年度を確認　（締め日未考慮の単純な年月計算）
 		int year = criteria.year();
 		if (criteria.month() < this.startingMonth.value + 1) year--;
 		
-		// 年月期間を計算
-		YearMonth startYm = YearMonth.of(year, this.startingMonth.value + 1);
-		YearMonth endYm = new YearMonth(startYm.v()).addMonths(11);
+		// 計算当年度について、年度から36協定の年月期間を取得する　→　年月期間から36協定期間を取得する
+		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(new Year(year));
+		Optional<DatePeriod> currentPeriodOpt = this.getAgreementPeriodByYMPeriod(currentYmPeriod);
 		
-		// 年月期間を返す
-		return new YearMonthPeriod(startYm, endYm);
+		// 計算当年度期間が確認できないか、計算当年度期間に指定年月日が含まれていれば、計算当年度期間を返す
+		if (!currentPeriodOpt.isPresent()) return currentYmPeriod;
+		DatePeriod currentPeriod = currentPeriodOpt.get();
+		if (currentPeriod.contains(criteria)) return currentYmPeriod;
+		
+		// 指定年月日が計算当年度期間より前なら、前年度期間を返す
+		if (criteria.before(currentPeriod.start())) {
+			return this.getYearMonthPeriod(new Year(year - 1));
+		}
+		
+		// 指定年月日が計算当年度より後なら、次年度期間を返す
+		return this.getYearMonthPeriod(new Year(year + 1));
 	}
 }

@@ -31,4 +31,6 @@ public class AttendanceRecordRequest {
 	
 	/** The file type. */
 	private int mode;
+	
+	private int closureId;
 }

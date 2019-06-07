@@ -39,7 +39,7 @@
                         data-bind="enable: false">#{i18n.getText('QMM016_3')}</button>
                 <!--A1_4 Excel出力-->
                 <button id="A1_4" tabindex="4"
-                        data-bind="enable: false">#{i18n.getText('QMM016_4')}</button>
+                        data-bind="click : exportExcel,enable: true">#{i18n.getText('QMM016_4')}</button>
                 <!--A1_5 資格グループの設定-->
                 <button id="A1_5" tabindex="5"
                         data-bind="click: settingQualificationGroup">#{i18n.getText('QMM016_5')}</button>

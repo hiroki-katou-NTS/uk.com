@@ -92,7 +92,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         block.clear();
                         dfd.resolve();
                     }).fail(function(res){
+                        nts.uk.ui.dialog.error({messageId: res.messageId, messageParams: res.parameterIds});
                         block.clear();
+                        dfd.resolve();
                     })
                 }).fail(function() {
                     block.clear();
@@ -117,13 +119,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
             $("#gridE").ntsGrid({
                 width: self.ntsGridWidthCal(),
-                height: '195px',
+                height: '629px',
                 dataSource: self.listWkpStatusConfirm,
                 primaryKey: 'code',
                 rowVirtualization: true,
                 virtualization: true,
                 hidePrimaryKey: true,
-                rows: 5,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('KAF018_52'), key: 'name', dataType: 'string', width: '210px', ntsControl: 'LinkLabel' },
@@ -136,11 +137,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         group:[{ headerText: getText('KAF018_56'), key: 'dayPrincipalUnconfirm', dataType: 'string', width: '100px' },
                                 { headerText: getText('KAF018_57'), key: 'dayPrincipalConfirm', dataType: 'string', width: '100px' }],
                         hidden: !self.useSetting.usePersonConfirm},
-                    { headerText: 'ID', key: 'code', dataType: 'string', width: '0px', ntsControl: 'Label'},
                     { headerText: getText('KAF018_58'), key: 'check', dataType: 'boolean', width: '120px', 
-                            showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden}
+                            showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
+                    { headerText: 'ID', key: 'code', dataType: 'string', width: '0px', ntsControl: 'Label'}
                 ],
-                features: [{ name: 'Resizing' },
+                features: [
                     {
                         name: 'Selection',
                         mode: 'row',

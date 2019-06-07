@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm016.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
     var paths = {
         getAllWageTable: "ctx/pr/core/wageprovision/wagetable/get-all-wagetable",
         getWageTable: "ctx/pr/core/wageprovision/wagetable/get-wagetable-by-code/{0}",
@@ -11,7 +12,8 @@ module nts.uk.pr.view.qmm016.a.service {
         createTwoDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-2d-wage-table",
         createThreeDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-3d-wage-table",
         getWageTableQualification: "ctx/pr/core/wageprovision/wagetable/get-wage-table-qualification/{0}/{1}",
-        getWageTableByThirdDimension: "ctx/pr/core/wageprovision/wagetable/get-wagetable-content-by-third-dimension"
+        getWageTableByThirdDimension: "ctx/pr/core/wageprovision/wagetable/get-wagetable-content-by-third-dimension",
+        exportFilePdf : "file/core/wageprovision/wagetable/exportExcel"
     };
 
     export function getAllWageTable(): JQueryPromise<any> {
@@ -52,6 +54,9 @@ module nts.uk.pr.view.qmm016.a.service {
     
     export function getWageTableByThirdDimension(data): JQueryPromise<any> {
         return ajax('pr', paths.getWageTableByThirdDimension, data);
+    }
+    export function exportExcel(data: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile( paths.exportFilePdf, data);
     }
 
 }

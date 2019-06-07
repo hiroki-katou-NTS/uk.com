@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -111,7 +112,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		
 		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
 		domain.cid = history.getCid();
-		domain.annLeavID = history.getAnnLeavID();
+		domain.annLeavID = IdentifierUtil.randomUniqueId();
 		domain.employeeId = history.getEmployeeId();
 		domain.grantDate = history.getGrantDate();
 		domain.deadline = history.getDeadline();

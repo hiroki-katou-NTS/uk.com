@@ -137,7 +137,12 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				sid, datePeriod, Optional.empty(), this.repositories));
 		proc.setCompanyId(cid);
 		proc.setEmployeeId(sid);
-		proc.setCompanySets(MonAggrCompanySettings.loadSettings(cid, this.repositories));
+		Optional<ComSubstVacation> absSettingOpt = repositories.getSubstVacationMng().findById(cid);
+		CompensatoryLeaveComSetting dayOffSetting = repositories.getCompensLeaveMng().find(cid);
+		MonAggrCompanySettings comSetting = new MonAggrCompanySettings();
+		comSetting.setAbsSettingOpt(absSettingOpt);
+		comSetting.setDayOffSetting(dayOffSetting);
+		proc.setCompanySets(comSetting);
 		proc.createDailyInterimRemainMngs(datePeriod);
 		return proc.getDailyInterimRemainMngs();
 	}	

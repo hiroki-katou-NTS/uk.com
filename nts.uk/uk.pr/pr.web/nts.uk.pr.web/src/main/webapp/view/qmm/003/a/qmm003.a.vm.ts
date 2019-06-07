@@ -107,7 +107,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                 ko.utils.extend(command, {
                     updateMode: self.updateMode()
                 });
-                service.register(command).done(() => {
+                nts.uk.pr.view.qmm003.a.service.register(command).done(() => {
                     self.startPage().done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             self.setSelectedCode(command.code);
@@ -135,7 +135,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                             nextSelectCode = self.listRsdTaxPayees[deletedIndex + 1].code;
                         }
                     }
-                    service.remove(self.selectedCode()).done(() => {
+                    nts.uk.pr.view.qmm003.a.service.remove(self.selectedCode()).done(() => {
                         self.startPage().done(() => {
                             info({ messageId: "Msg_16" }).then(() => {
                                 self.setSelectedCode(nextSelectCode);
@@ -183,6 +183,23 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                 self.selectedCode.valueHasMutated();
             else 
                 self.selectedCode(value);
+        }
+        // exportFilePdf
+        exportFilePdf(){
+            block.invisible();
+            service.exportFilePdf()
+                .done(function () {
+                    block.clear();
+
+                })
+                .fail(function (error) {
+                    dialog.alertError({messageId: error.messageId});
+                    block.clear();
+                })
+                .always(function () {
+                    block.clear();
+                });
+            ;
         }
 
     }
@@ -251,9 +268,9 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             let self = this;
             modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
                 let code: string = getShared("QMM003BResult");
-                if (code && code.length > 3) {
+                if (code) {
                     block.invisible()
-                    service.getResidentTaxPayeeZero(code).done(data => {
+                    nts.uk.pr.view.qmm003.a.service.getResidentTaxPayeeZero(code).done(data => {
                         self.setData(data);
                         let reportName = __viewContext.screenModel.listRsdTaxPayees.filter(d => {return d.code == self.reportCd()});
                         self.reportName(_.isEmpty(reportName) ? "" : reportName[0].name);
