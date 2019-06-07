@@ -20,7 +20,7 @@ module cps003.g.vm {
                 return {
                     empCd: a.empCd, empName: a.empName,
                     employeeId: a.employeeId, errorType: a.errorType == 0 ? nts.uk.resource.getText("CPS003_127") : nts.uk.resource.getText("CPS003_128"),
-                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message
+                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message, no: a.no
                 }
             }));
             $("#grid2").igGrid({
