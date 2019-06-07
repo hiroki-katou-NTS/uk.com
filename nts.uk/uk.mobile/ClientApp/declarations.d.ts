@@ -66,6 +66,7 @@ declare module "vue/types/options" {
             [lang: string]: string;
         };
         constraints?: Array<string>;
+        enums?: Array<string>;
     }
 }
 
@@ -86,7 +87,8 @@ declare module "vue/types/vue" {
             async: {
                 info: (taskId: string) => Promise<{}>;
                 cancel: (taskId: string) => Promise<{}>;
-            }
+            },
+            enum(): Promise<{}>;
         };
         $i18n: {
             (resr: string): string;
@@ -179,6 +181,7 @@ declare module "vue/types/vue" {
         };
         toJS: (value: any) => any;
         vmOf: (el: HTMLElement) => { [key: string]: any; };
+        enums?: any;
     }
 }
 

@@ -256,7 +256,14 @@ const WEB_APP_NAME = {
                                     console.log(reason);
                                 });
                             }.bind(self)
-                        }
+                        },
+                        enum: function() {
+                            if (self.$options.enums && self.$options.enums.length > 0) {
+                                return self.$http.post('/enums/map', self.$options.enums);
+                            } else {
+                                return new Promise( (resolve) => resolve([]));
+                            }
+                        }.bind(self)
                     }
                 });
             }
