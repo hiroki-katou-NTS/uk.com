@@ -837,6 +837,7 @@ module cps003.c.vm {
                 service.push.register(command).done((errorList) => {
                     info({ messageId: "Msg_15" }).then(() => {
                         unblock();
+                        setShared("CPS003C_REG_DONE", true);
                         self.close();
                     });
                 }).fail((res) => {

@@ -519,7 +519,9 @@ module cps003.a.vm {
                 if (sharedParam) {
                     setShared('CPS003B_PARAM', sharedParam);
                     modal("/view/cps/003/c/index.xhtml").onClosed(() => {
-                        
+                        if (getShared("CPS003C_REG_DONE")) {
+                            self.requestData();
+                        }
                     });
                 }
             });
