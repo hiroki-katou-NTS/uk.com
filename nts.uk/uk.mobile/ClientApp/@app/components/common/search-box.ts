@@ -8,15 +8,15 @@ import { Component } from 'vue-property-decorator';
     template: `
     <div class="time-range-search-box">
         <div class="form-control">
-            <span class="start time-input" v-on:click="selectStartTime">
+            <span class="start time-input" v-click:1000="selectStartTime">
                 {{displayStartTime}}
             </span> 
             <span class="connect-letter">～</span>
-            <span class="end time-input"v-on:click="selectEndTime">
+            <span class="end time-input" v-click:1000="selectEndTime">
                 {{ displayEndTime }}
             </span>   
 
-            <span class="search-button fas fa-search" v-on:click="emitSearch">
+            <span class="search-button fas fa-search" v-click:500"emitSearch">
             </span>
 
         </div>
