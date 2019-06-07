@@ -1,11 +1,12 @@
 import { obj, dom } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
-/*const style = dom.create('style', {
+const style = dom.create('style', {
     type: 'text/css',
     rel: 'stylesheet',
-    text: 'body { font-family: "Meryo UI"; }'
-});*/
+    text: 'body { font-family: "Meiryo UI"; }'
+});
+
 const resources: {
     [lang: string]: {
         [key: string]: string;
@@ -24,6 +25,7 @@ const resources: {
         'plz_wait': 'Vui lòng chờ trong giây lát...'
     }
 };
+
 const language = new Vue({
     data: {
         current: 'jp',
@@ -31,7 +33,7 @@ const language = new Vue({
         pgName: ''
     },
     watch: {
-        /*current: {
+        current: {
             immediate: true,
             handler(lg: string) {
                 if (lg === 'jp') {
@@ -40,7 +42,7 @@ const language = new Vue({
                     document.head.removeChild(style);
                 }
             }
-        },*/
+        },
         pgName(name: string) {
             let title = document.querySelector('head>title') as HTMLElement;
 
@@ -85,6 +87,7 @@ const language = new Vue({
         [].slice.call(this.watchers).forEach((w: Function) => w());
     }
 });
+
 const Language = {
     set pgName(name: string) {
         language.pgName = name;
@@ -110,6 +113,7 @@ const Language = {
         localStorage.setItem('lang_resources', JSON.stringify(resources[language.current]));
     }
 };
+
 const LanguageBar = {
     template: `
         <li class="nav-item dropdown">
@@ -130,6 +134,7 @@ const LanguageBar = {
         languages: () => Object.keys(resources)
     }
 };
+
 const i18n = {
     install(vue: VueConstructor<Vue>, lang: string) {
         language.current = lang || localStorage.getItem('lang') || 'jp';
@@ -151,6 +156,7 @@ const i18n = {
         });
     }
 };
+
 const getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
     let lng = Language.current,
         i18lang = resources[lng],
