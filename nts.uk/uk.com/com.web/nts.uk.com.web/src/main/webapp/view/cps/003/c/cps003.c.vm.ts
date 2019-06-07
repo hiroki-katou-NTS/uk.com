@@ -27,6 +27,7 @@ module cps003.c.vm {
         };
         
         gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
+        initDs: Array<Record>;
         dataTypes: any = {};
         
         constructor() {
@@ -51,6 +52,7 @@ module cps003.c.vm {
             if (paramB && paramB.headDatas) {
                 self.convertData(paramB).done(() => {
                     self.loadGrid();
+                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
                     let $grid = $("#grid");
                     $grid.mGrid("validate");
                     let errors = $grid.mGrid("errors");
@@ -660,6 +662,10 @@ module cps003.c.vm {
             }
             switch (controlType.dataTypeValue) {
                 case ITEM_SINGLE_TYPE.STRING:
+                    if (controlType.stringItemType === ITEM_STRING_TYPE.EMPLOYEE_CODE) {
+                        item.constraint = { primitiveValue: "EmployeeCode" };
+                    }
+                    
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     item.dataType = "number";
@@ -782,7 +788,7 @@ module cps003.c.vm {
                 let itemErrors = $grid.mGrid("errors");
                 if (itemErrors && itemErrors.length > 0) {
                     setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
-                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
                                  isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
                     modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                         
@@ -812,13 +818,16 @@ module cps003.c.vm {
                     }
                     
                     let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
-                    if (col) {
+                    if (col && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY_BUTTON && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
                         let val = item.value;
-                        if (item.value instanceof Date) {
-                            val = moment(item.value).format("YYYY/MM/DD");
+                        let text, defValue, defText, initData = _.find(self.initDs, initRec => initRec.id === item.rowId);
+                        if (initData) {
+                            text = self.getText(col.perInfoTypeState, val, item.rowId, col.key, $grid);
+                            defValue = initData[col.key];
+                            defText = self.getText(col.perInfoTypeState, defValue, item.rowId, col.key, $grid);
                         }
                         
-                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
                     }
                     
                     employees.push(regEmp);
@@ -837,6 +846,40 @@ module cps003.c.vm {
             }).ifNo(() => {});
         }
         
+        getText(perInfoTypeState: any, value: any, id: any, itemCode: any, $grid: any) {
+            if (!perInfoTypeState) return value;
+            switch (perInfoTypeState.dataTypeValue) {
+                case ITEM_SINGLE_TYPE.STRING:
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    return value;
+                case ITEM_SINGLE_TYPE.TIME:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                case ITEM_SINGLE_TYPE.DATE:
+                    if (value instanceof moment && !value.isValid()) {
+                        return { value: null, text: null };    
+                    }
+                    
+                    let date = moment(value).format("YYYY/MM/DD");
+                    return { value: date, text: date };
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    let optionItem = _.find($grid.mGrid("optionsList", id, itemCode), item => item.optionValue === value); 
+                    if (optionItem) {
+                        return optionItem.optionText;
+                    }
+                case ITEM_SINGLE_TYPE.READONLY:
+                case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    return value;
+                default:
+                    return value;
+            }
+        }
+        
         checkError() {
             let self = this, $grid = $("#grid");
             $grid.mGrid("validate");
@@ -847,7 +890,7 @@ module cps003.c.vm {
             }
             
             setShared("CPS003G_ERROR_LIST", _.map(errors, err => { 
-                return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
                          isDisplayRegister: false, errorType: 0, itemName: err.columnName, message: err.message }; }));
             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                 

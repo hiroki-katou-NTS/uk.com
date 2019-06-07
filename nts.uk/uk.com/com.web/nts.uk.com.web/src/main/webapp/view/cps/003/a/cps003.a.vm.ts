@@ -672,6 +672,7 @@ module cps003.a.vm {
         convertData(data: IRequestData, gridSettings: ISettingData) {
             let self = this, dfd = $.Deferred();
             if (data.headDatas) {
+                self.batchSettingItems = [];
                 data.headDatas.sort((a, b) => {
                     if (a.itemOrder === b.itemOrder) {
                         let cmp = a.itemParentCode.compareTo(b.itemParentCode);
@@ -1313,6 +1314,8 @@ module cps003.a.vm {
                         item.constraint = { primitiveValue: "EmployeeCode" };
                     }
                     
+                    let spaceCheck = cps003.control.STRING[self.category.catCode() + "_" + item.key];
+                    if (spaceCheck) item.inputProcess = spaceCheck;
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     self.batchSettingItems.push(item.itemId);
@@ -1649,7 +1652,7 @@ module cps003.a.vm {
                             }, (value, rec) => {
                                 let contractTime = groupByEmpId[rec.employeeId];
                                 if (!_.isNil(contractTime)) {
-                                    let replaced = nts.uk.time.parseTime(replaceValue.replaceValue * contractTime[0].contractTime * 60, true).format();
+                                    let replaced = nts.uk.time.parseTime(replaceValue.replaceValue * contractTime[0].contractTime, true).format();
                                     return replaced;
                                 } else return "";
                             });
