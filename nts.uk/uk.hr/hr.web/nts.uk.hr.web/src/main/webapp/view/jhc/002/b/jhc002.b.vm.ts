@@ -473,7 +473,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         }
         public validate(): boolean{
             let self = this;
-            if (self.requirementType() == 1 && self.yearMinimumNumber() > self.yearStandardNumber()) {
+            if (self.requirementType() == 1 && parseInt(self.yearMinimumNumber()) > parseInt(self.yearStandardNumber())) {
                 nts.uk.ui.dialog.error({ messageId: 'MsgJ_51' });
                 return false;
             }
