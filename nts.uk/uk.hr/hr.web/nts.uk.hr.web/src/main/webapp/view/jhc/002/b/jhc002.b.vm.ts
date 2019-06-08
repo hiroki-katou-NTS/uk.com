@@ -181,7 +181,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             }
         }
         
-        public setRequirementType(displayNumber: number, requirementType: any): void {
+        public setRequirementType(displayNumber: number, requirementType: number): void {
             let self = this;
             let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
             careerMasters.setRequirementType(requirementType);
@@ -206,37 +206,40 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         public getValueAfterChangeMasterType(displayNumber: number): number {
             let self = this;
             let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
-            return careerMasters.getMasterType();
+            return careerMasters.getModelInfor().masterType();
         }
-
-        public backTopAScreen(): void {
+        public getValueRequirementTypeAfterChangeMasterType(displayNumber: number): number {
             let self = this;
-            nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml", self.datatransfer);
+            let careerMasters = _.find(self.career(), {'displayNumber': displayNumber});
+            return careerMasters.getModelInfor().requirementType();
         }
         
-        private addDefaultCareer(): void {
+        public checkExitMasterItemList(displayNumber: number): boolean {
             let self = this;
-            for (let i = 1; i < 7; i++) {
-                _.forEach(self.level(), function(value) {
-                    let careerRequirementValueRefer = _.find(self.careerRequirementList(), { 'displayNumber': i});
-                    let careerRequirementDefault = {
-                        displayNumber: i,
-                        requirementType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.requirementType: 1,
-                        yearType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.yearType: '',
-                        yearMinimumNumber: '',
-                        yearStandardNumber: '',
-                        masterType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.masterType: '',
-                        masterItemList: [],
-                        inputRequirement: '',
-                    }
-                    if (_.find(self.careerRequirementList(), { 'displayNumber': i, 'lever': value }) == undefined) {
-                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value, null));
-                    }
-                });
-                self.careerOrderList.push(new ScreenItem(ko.toJS(_.find(self.careerRequirementList(), { 'displayNumber': i })), i, true ));
-                self.career.push(new Career(_.filter(self.careerRequirementList(), { 'displayNumber': i }), i));
-            }
+            let result = false;
+            let tg = _.filter(self.career(), { 'displayNumber': displayNumber});
+            _.forEach(tg, function(value) {
+                result = value.checkExitMasterItemList();
+                if(result){
+                    return false;    
+                }
+            });
+            return result;
         }
+        
+        public checkExitDataWhenChangeRequirementType(displayNumber: number): boolean {
+            let self = this;
+            let result = false;
+            let tg = _.filter(self.career(), { 'displayNumber': displayNumber});
+            _.forEach(tg, function(value) {
+                result = value.checkExitData();
+                if(result){
+                    return false;    
+                }
+            });
+            return result;
+        }
+        
         public validateData(): boolean {
             let self = this;
             let yearTypeListCheck = [];
@@ -263,20 +266,31 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             });
             return result;
         }
-        
-        public checkExitMasterItemList(displayNumber: number): boolean {
-            let self = this;
-            let result = false;
-            let tg = _.filter(self.career(), { 'displayNumber': displayNumber});
-            _.forEach(tg, function(value) {
-                result = value.checkExitMasterItemList();
-                if(result){
-                    return false;    
-                }
-            });
-            return result;
-        }
 
+        private addDefaultCareer(): void {
+            let self = this;
+            for (let i = 1; i < 7; i++) {
+                _.forEach(self.level(), function(value) {
+                    let careerRequirementValueRefer = _.find(self.careerRequirementList(), { 'displayNumber': i});
+                    let careerRequirementDefault = {
+                        displayNumber: i,
+                        requirementType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.requirementType: 1,
+                        yearType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.yearType: '',
+                        yearMinimumNumber: '',
+                        yearStandardNumber: '',
+                        masterType: careerRequirementValueRefer != undefined ? careerRequirementValueRefer.masterType: '',
+                        masterItemList: [],
+                        inputRequirement: '',
+                    }
+                    if (_.find(self.careerRequirementList(), { 'displayNumber': i, 'lever': value }) == undefined) {
+                        self.careerRequirementList.push(new ScreenItem(careerRequirementDefault, value, null));
+                    }
+                });
+                self.careerOrderList.push(new ScreenItem(ko.toJS(_.find(self.careerRequirementList(), { 'displayNumber': i })), i, true ));
+                self.career.push(new Career(_.filter(self.careerRequirementList(), { 'displayNumber': i }), i));
+            }
+        }
+        
         public openDiaLogMasterItem(selected: any): void {
             let self = this;
             let param = { isMultiple: true, showNoSelection: false, selectedCodes: selected.masterItemList(), baseDate: self.startDate }
@@ -319,6 +333,11 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                     }
                 });
             }
+        }
+        
+        public backTopAScreen(): void {
+            let self = this;
+            nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml", self.datatransfer);
         }
 
         private checksShowLever(selected: any): void {
@@ -422,7 +441,18 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             });
             self.requirementType.subscribe(function(newValue) {
                 if (newValue != null && self.comfirmChangeMasterType == true) {
-                    __viewContext.vm.setRequirementType(self.displayNumber, newValue);
+                    if(__viewContext.vm.checkExitDataWhenChangeRequirementType(self.displayNumber)){
+                        nts.uk.ui.dialog.confirmProceed({ messageId: "MsgJ_53" }).ifYes(() => {
+                            __viewContext.vm.setRequirementType(self.displayNumber, parseInt(newValue));
+                        }).ifNo(() => {
+                            self.comfirmChangeMasterType = false;
+                            self.requirementType(__viewContext.vm.getValueRequirementTypeAfterChangeMasterType(self.displayNumber));
+                        });                        
+                    }else{
+                        __viewContext.vm.setRequirementType(self.displayNumber, parseInt(newValue));    
+                    }
+                }else if(self.comfirmChangeMasterType == false){
+                    self.comfirmChangeMasterType = true;
                 }
             });
             self.yearType.subscribe(function(newValue) {
@@ -493,6 +523,30 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         }
         public getYearType(): any {
             return this.yearType();
+        }
+        
+        public removeDataByRequirementType(): void{
+            let self = this;
+            if(self.requirementType() == 1){
+                self.yearMinimumNumber('');
+                self.yearStandardNumber('');
+            }else if(self.requirementType() == 2){
+                self.masterItemList([]);
+            }else if(self.requirementType() == 3){
+                self.inputRequirement('');
+            }
+        }
+        
+        public checkExitData(): boolean{
+            let self = this;
+            if(self.requirementType() == 1 && (self.yearMinimumNumber() != '' || self.yearStandardNumber() != '')){
+                return true;
+            }else if(self.requirementType() == 2 && self.masterItemList().length > 0){
+                return true;
+            }else if(self.requirementType() == 3 && self.inputRequirement() != ''){
+                return true;
+            }
+            return false;
         }
     }
     class ItemModel {
@@ -694,62 +748,107 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             return false;
         }
         
+        public checkExitData(): boolean{
+            let self = this;
+            if (self.lever1 != undefined && self.lever1().checkExitData()) {
+                return true;
+            }
+            if (self.lever2 != undefined && self.lever2().checkExitData()) {
+                return true;
+            }
+            if (self.lever3 != undefined && self.lever3().checkExitData()) {
+                return true;
+            }
+            if (self.lever4 != undefined && self.lever4().checkExitData()) {
+                return true;
+            }
+            if (self.lever5 != undefined && self.lever5().checkExitData()) {
+                return true;
+            }
+            if (self.lever6 != undefined && self.lever6().checkExitData()) {
+                return true;
+            }
+            if (self.lever7 != undefined && self.lever7().checkExitData()) {
+                return true;
+            }
+            if (self.lever8 != undefined && self.lever8().checkExitData()) {
+                return true;
+            }
+            if (self.lever9 != undefined && self.lever9().checkExitData()) {
+                return true;
+            }
+            if (self.lever10 != undefined && self.lever10().checkExitData()) {
+                return true;
+            }
+            return false;
+        }
+        
         public setRequirementType(requirementType: any): void {
             let self = this;
             if (self.lever1 != undefined) {
+                self.lever1().removeDataByRequirementType();
                 self.lever1().requirementType(requirementType);
             }
             if (self.lever2 != undefined) {
+                self.lever2().removeDataByRequirementType();
                 self.lever2().requirementType(requirementType);
             }
             if (self.lever3 != undefined) {
+                self.lever3().removeDataByRequirementType();
                 self.lever3().requirementType(requirementType);
             }
             if (self.lever4 != undefined) {
+                self.lever4().removeDataByRequirementType();
                 self.lever4().requirementType(requirementType);
             } 
             if (self.lever5 != undefined) {
+                self.lever5().removeDataByRequirementType();
                 self.lever5().requirementType(requirementType);
             } 
             if (self.lever6 != undefined) {
+                self.lever6().removeDataByRequirementType();
                 self.lever6().requirementType(requirementType);
             }
             if (self.lever7 != undefined) {
+                self.lever7().removeDataByRequirementType();
                 self.lever7().requirementType(requirementType);
             }
             if (self.lever8 != undefined) {
+                self.lever8().removeDataByRequirementType();
                 self.lever8().requirementType(requirementType);
             }
             if (self.lever9 != undefined) {
+                self.lever9().removeDataByRequirementType();
                 self.lever9().requirementType(requirementType);
             } 
             if (self.lever10 != undefined) {
+                self.lever10().removeDataByRequirementType();
                 self.lever10().requirementType(requirementType);
             } 
         }
         
-        public getMasterType(): number {
+        public getModelInfor(): ScreenItem {
             let self = this;
             if (self.lever1 != undefined) {
-                return self.lever1().masterType();
+                return self.lever1();
             }else if (self.lever2 != undefined) {
-                return self.lever2().masterType();
+                return self.lever2();
             }else if (self.lever3 != undefined) {
-                return self.lever3().masterType();
+                return self.lever3();
             }else if (self.lever4 != undefined) {
-                return self.lever4().masterType();
+                return self.lever4();
             }else if (self.lever5 != undefined) {
-                return self.lever5().masterType();
+                return self.lever5();
             }else if (self.lever6 != undefined) {
-                return self.lever6().masterType();
+                return self.lever6();
             }else if (self.lever7 != undefined) {
-                return self.lever7().masterType();
+                return self.lever7();
             }else if (self.lever8 != undefined) {
-                return self.lever8().masterType();
+                return self.lever8();
             }else if (self.lever9 != undefined) {
-                return self.lever9().masterType();
+                return self.lever9();
             }else if (self.lever10 != undefined) {
-                return self.lever10().masterType();
+                return self.lever10();
             }  
         }
         public validate(): boolean {
@@ -787,6 +886,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             }
             return result;
         }
+        
         public collectData (): any {
             let self =  this;
             let result = [];
