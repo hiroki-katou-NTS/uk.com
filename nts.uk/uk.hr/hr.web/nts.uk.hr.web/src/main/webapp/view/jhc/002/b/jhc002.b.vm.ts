@@ -485,7 +485,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             let result = {
                 lever: self.lever,
                 displayNumber: self.displayNumber,
-                inputRequirement: '',
+                inputRequirement: null,
                 masterRequirement: null,
                 requirementType: self.requirementType(),
                 yearRequirement: null
