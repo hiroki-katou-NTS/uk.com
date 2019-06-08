@@ -75,12 +75,17 @@ public class CareerPathFinder {
 		return new CareerPartDto(false, maxClassLevel, listCareerType, listCareerClass, new ArrayList<>());
 	}
 	//画面Bを起動
-	public void checkDataCareer(String companyId, GeneralDate referenceDate, List<CareerDto> listCareer) {
-		//共通職務IDの取得
-		String careerTypeId = careerTypeService.getCommonCareerTypeId(companyId, referenceDate);
+	public void checkDataCareer(String careerTypeId, String companyId, GeneralDate referenceDate, List<CareerDto> listCareer) {
 		
 		Optional<CareerDto> career = listCareer.stream().filter(c-> c.getCareerTypeItem().equals(careerTypeId)).findFirst();
-		if(!career.isPresent()) {
+		if(career.isPresent()) {
+			return;
+		}
+		//共通職務IDの取得
+		String careerTypeCommonId = careerTypeService.getCommonCareerTypeId(companyId, referenceDate);
+		
+		Optional<CareerDto> careerCommom = listCareer.stream().filter(c-> c.getCareerTypeItem().equals(careerTypeCommonId)).findFirst();
+		if(!careerCommom.isPresent()) {
 			throw new BusinessException("MsgJ_48");
 		}
 	}

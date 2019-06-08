@@ -220,7 +220,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.updateCareer();
             let startDate = _.filter(self.histList(), ['histId', self.selectedHistId()])[0].startDate;
             let command = {
-                historyId: careerType.id,
+                careerTypeItem: careerType.id,
                 startDate: moment(startDate).format("YYYY/MM/DD"),
                 career: __viewContext.vm.listCareer()
             }

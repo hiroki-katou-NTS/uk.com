@@ -88,7 +88,7 @@ public class CareerPartWS {
 	@Path("/checkDataCareer")
 	public void checkDataCareer(CareerPartHistoryCommand command){
 		String cId = AppContexts.user().companyId();
-		careerPathFinder.checkDataCareer(cId, GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), command.getCareer());
+		careerPathFinder.checkDataCareer(command.getCareerTypeItem(), cId, GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), command.getCareer());
 	}
 	
 	@POST
