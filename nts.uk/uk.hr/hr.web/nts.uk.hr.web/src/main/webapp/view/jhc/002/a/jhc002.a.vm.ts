@@ -289,11 +289,11 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         
         public updateEnable(): void{
             let self =  this;
-            if (self.checkUpdateEnable) {
+            if (self.checkUpdateEnable && self.listCareerType().length > 0) {
                 _.forEach(ko.toJS(self.listCareerType()), function(value) {
                     let index = _.findIndex(self.careerType(), { 'code': value.code });
                     self.careerType()[index].enable(value.checkExistSelected(self.maxClassLevel()));
-                });
+                }); 
                 self.listCareerType()[0].setEnableCommon(self.listCareerType()[1], self.listCareerType()[2], self.listCareerType()[3], self.listCareerType()[4]);
                 self.listCareerType()[1].setEnable(self.listCareerType()[0]);
                 self.listCareerType()[2].setEnable(self.listCareerType()[0]);
