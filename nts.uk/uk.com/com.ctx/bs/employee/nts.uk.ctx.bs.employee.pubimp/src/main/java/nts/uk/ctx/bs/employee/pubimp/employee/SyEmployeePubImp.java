@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -136,7 +134,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<String> employeeIds = affWorkplaceHistories.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 
-		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
+		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId,
+				employeeIds.stream().distinct().collect(Collectors.toList()));
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
@@ -193,7 +192,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistoryItem::getEmployeeId)
 				.collect(Collectors.toList());
 
-		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
+		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId,
+				employeeIds.stream().distinct().collect(Collectors.toList()));
 
 		List<String> personIds = employeeList.stream().map(EmployeeDataMngInfo::getPersonId)
 				.collect(Collectors.toList());
@@ -279,7 +279,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIdsInput) {
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIdsInput);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo
+				.findByListEmployeeId(sIdsInput.stream().distinct().collect(Collectors.toList()));
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
@@ -422,7 +423,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return Collections.emptyList();
 		}
 		// Lấy toàn bộ domain「社員データ管理情報」
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo
+				.findByListEmployeeId(sIds.stream().distinct().collect(Collectors.toList()));
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
@@ -526,7 +528,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return Collections.emptyList();
 		}
 
-		List<String> lstpid = lstEmp.stream().map(m -> m.getPersonId()).collect(Collectors.toList());
+		List<String> lstpid = lstEmp.stream().map(m -> m.getPersonId()).distinct().collect(Collectors.toList());
 
 		Map<String, Person> personMap = personRepository.getPersonByPersonIds(lstpid).stream()
 				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
@@ -541,7 +543,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		});
 		return lstresult;
 	}
-
+	
 	@Override
 	public EmployeeBasicExport getEmpBasicBySId(String sId) {
 
@@ -596,7 +598,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		if (lstSid.isEmpty())
 			return new ArrayList<>();
 
-		List<EmployeeDataMngInfo> lstEmp = this.empDataMngRepo.findByListEmployeeId(lstSid);
+		List<EmployeeDataMngInfo> lstEmp = this.empDataMngRepo
+				.findByListEmployeeId(lstSid.stream().distinct().collect(Collectors.toList()));
 
 		if (lstEmp.isEmpty())
 			return new ArrayList<>();
@@ -732,7 +735,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				// (Lấy domain [AffCompanyHistByEmployee], chỉ filter employee đang làm tại thời
 				// điểm baseDate)
 				listAffComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeListAndBaseDate(
-					mngInfo.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()),
+					mngInfo.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList()),
 					baseDate);
 			}
 			if (!listAffComHist.isEmpty()) {
@@ -800,7 +803,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeIdCdPnameExport> getSidCdPnameBySIds(List<String> sIdsInput) {
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIdsInput);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo
+				.findByListEmployeeId(sIdsInput.stream().distinct().collect(Collectors.toList()));
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
@@ -847,7 +851,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<ResultRequest596Export> getEmpDeletedLstBySids(List<String> sids) {
 		List<ResultRequest596Export> result = new ArrayList<>();
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findBySidDel(sids);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo
+				.findBySidDel(sids.stream().distinct().collect(Collectors.toList()));
 		List<String> personLst = emps.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<Person> personDomainLst = personRepo.getPersonByPersonIds(personLst);
 		emps.parallelStream().forEach(c ->{
@@ -865,21 +870,22 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<String> personIds = new ArrayList<>();
 		List<EmployeeDataMngInfo> emps = new ArrayList<>();
 		List<ResultRequest600Export> result = new ArrayList<>();
+		List<String> sidsDistinct = sids.stream().distinct().collect(Collectors.toList());
 		
 		//Input「削除社員を取り除く」をチェックする
 		if(isDelete == true) {
 			//ドメインモデル「社員データ管理情報」を取得する
-			emps.addAll(this.empDataMngRepo.findBySidNotDel(sids));
+			emps.addAll(this.empDataMngRepo.findBySidNotDel(sidsDistinct));
 		}else {
 			//ドメインモデル「社員データ管理情報」を全て取得する
-			emps.addAll(this.empDataMngRepo.findByListEmployeeId(sids));
+			emps.addAll(this.empDataMngRepo.findByListEmployeeId(sidsDistinct));
 		}
 		
 		if(!CollectionUtil.isEmpty(emps)) {
 			//Input「会社に所属していない社員を取り除く」をチェックする
 			if(isGetAffCompany == true) {
 				//社員一覧を特定の会社に在籍している社員に絞り込む
-				List<AffCompanyHist> affComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, period);
+				List<AffCompanyHist> affComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sidsDistinct, period);
 				if(!CollectionUtil.isEmpty(affComHist)) {
 					personIds.addAll(affComHist.stream().map(c -> c.getPId()).collect(Collectors.toList()));
 				}
