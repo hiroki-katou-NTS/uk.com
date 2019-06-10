@@ -41,11 +41,10 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 				if(checkStop.get()) return;
 				/**アルゴリズム「指定社員の中間データを作成する」を実行する*/
 				AppRootInsContentFnImport appRootInsContentFnImport =  createDailyApproverAdapter.createDailyApprover(employeeID, 2, endDateClosure,endDateClosure);
-				
+				if(checkStop.get()) return;
 				boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue()==0?false:true;
 				String errorMessage = appRootInsContentFnImport.getErrorMsgID();
 				//取得したエラーフラグ != エラーなし
-				if(checkStop.get()) return;
 				if(flagError) {
 					/**ドメインモデル「承認中間データエラーメッセージ情報（月別実績）」を追加する*/
 					AppDataInfoMonthly appDataInfoMonthly = new AppDataInfoMonthly(employeeID, executionId, new ErrorMessageRC(TextResource.localize(errorMessage)));

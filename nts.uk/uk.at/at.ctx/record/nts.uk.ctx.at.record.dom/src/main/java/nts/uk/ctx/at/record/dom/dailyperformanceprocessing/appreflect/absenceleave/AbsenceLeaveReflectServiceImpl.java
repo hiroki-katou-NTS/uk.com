@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -58,15 +57,9 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
-	public boolean reflectAbsenceLeave(CommonReflectParameter param, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getByAbsenceLeave(param, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			
-			return true;
-		}catch (Exception e) {
-			return false;
-		}
+	public void reflectAbsenceLeave(CommonReflectParameter param, boolean isPre) {
+		List<IntegrationOfDaily> lstDaily = this.getByAbsenceLeave(param, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 
 	@Override

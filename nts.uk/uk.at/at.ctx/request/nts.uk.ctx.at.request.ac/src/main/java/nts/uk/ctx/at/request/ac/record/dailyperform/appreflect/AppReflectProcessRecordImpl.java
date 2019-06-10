@@ -44,7 +44,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
-
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	@Inject
@@ -93,7 +92,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	}
 
 	@Override
-	public boolean gobackReflectRecord(GobackReflectPara para, boolean isPre) {
+	public void gobackReflectRecord(GobackReflectPara para, boolean isPre) {
 		GobackAppPubParameter gobackPra = new GobackAppPubParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value,
 				ChangeAppGobackPubAtr.class), para.getGobackData().getWorkTimeCode(),
 				para.getGobackData().getWorkTypeCode(), 
@@ -110,16 +109,17 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class),
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectPubAtr.class),
 				para.isScheReflectAtr(),
-				gobackPra);
+				gobackPra,
+				para.getExcLogId());
 		if(isPre) {
-			 return recordPub.preGobackReflect(pubPara);
+			 recordPub.preGobackReflect(pubPara);
 		} else {
-			return recordPub.afterGobackReflect(pubPara);
+			recordPub.afterGobackReflect(pubPara);
 		}
 	}
 
 	@Override
-	public boolean overtimeReflectRecord(OvertimeReflectPara para, boolean isPre) {
+	public void overtimeReflectRecord(OvertimeReflectPara para, boolean isPre) {
 		OvertimeAppParameter overtimeInfo = para.getOvertimePara();
 		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(overtimeInfo.getReflectedState().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(overtimeInfo.getReasonNotReflect() == null ? 0 : overtimeInfo.getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
@@ -142,20 +142,20 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isAutoClearStampFlg(), 
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class), 
 				para.isScheTimeOutFlg(), 
-				overtimePara);
+				overtimePara,
+				para.getExcLogId());
 		if(isPre) {
-			return recordPub.preOvertimeReflect(preOvertimePara);	
+			recordPub.preOvertimeReflect(preOvertimePara);	
 		}
-		return true;
 	}
 
 	@Override
-	public boolean absenceReflectRecor(WorkChangeCommonReflectPara para, boolean isPre) {
-		return recordPub.absenceReflect(new WorkChangeCommonReflectPubPara(toPubPara(para.getCommonPara()), para.getExcludeHolidayAtr()), isPre);		
+	public void absenceReflectRecor(WorkChangeCommonReflectPara para, boolean isPre) {
+		recordPub.absenceReflect(new WorkChangeCommonReflectPubPara(toPubPara(para.getCommonPara()), para.getExcludeHolidayAtr()), isPre);		
 	}
 
 	@Override
-	public boolean holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
+	public void holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
         Map<Integer, BreakTimePubPara> mapBreakTimeFrame = new HashMap<>();
         para.getHolidayWorkPara().getMapBreakTime().forEach((a,b) -> {
         	BreakTimePubPara breakTime = new BreakTimePubPara(b.getStartTime(), b.getEndTime());
@@ -178,14 +178,15 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheReflectFlg(), 
 				para.isHwRecordReflectTime(),
 				para.isHwRecordReflectBreak(),
-				appPara);
+				appPara,
+				para.getExcLogId());
 		
-		return recordPub.holidayWorkReflect(pubPara, isPre);		
+		recordPub.holidayWorkReflect(pubPara, isPre);		
 	}
 
 	@Override
-	public boolean workChangeReflectRecord(WorkChangeCommonReflectPara para, boolean isPre) {		
-		return recordPub.workChangeReflect(new WorkChangeCommonReflectPubPara(this.toPubPara(para.getCommonPara()), para.getExcludeHolidayAtr()), isPre);		
+	public void workChangeReflectRecord(WorkChangeCommonReflectPara para, boolean isPre) {		
+		recordPub.workChangeReflect(new WorkChangeCommonReflectPubPara(this.toPubPara(para.getCommonPara()), para.getExcludeHolidayAtr()), isPre);		
 	}
 	
 	private CommonReflectPubParameter toPubPara(CommonReflectPara para) {
@@ -198,26 +199,23 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getStartDate(),
 				para.getEndDate(),
 				para.getStartTime(),
-				para.getEndTime());
+				para.getEndTime(),
+				para.getExcLogId());
 		return pubPara;
 	}
 
 	@Override
-	public boolean absenceLeaveReflectRecord(CommonReflectPara para, boolean isPre) {
-		return recordPub.absenceLeaveReflect(this.toPubPara(para), isPre);
+	public void absenceLeaveReflectRecord(CommonReflectPara para, boolean isPre) {
+		recordPub.absenceLeaveReflect(this.toPubPara(para), isPre);
 	}
 
 	@Override
-	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre) {
-		return recordPub.recruitmentReflect(this.toPubPara(para), isPre);
+	public void recruitmentReflectRecord(CommonReflectPara para, boolean isPre) {
+		recordPub.recruitmentReflect(this.toPubPara(para), isPre);
 	}
 
 	@Override
-	public boolean isRecordData(String employeeId, GeneralDate baseDate) {
-		// TODO Auto-generated method stub
-		return recordPub.isRecordData(employeeId, baseDate);
+	public void createLogError(String sid, GeneralDate ymd, String excLogId) {
+		recordPub.createLogError(sid, ymd, excLogId);
 	}
-	
-	
-
 }

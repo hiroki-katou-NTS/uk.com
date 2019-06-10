@@ -43,7 +43,7 @@ public class GetNumberOverrunByYMImpl implements GetNumberOverrunByYM {
 
 	// 年月を指定して、36協定期間の年度を取得する
 	private Year getYearAgreementPeriod(AgreementOperationSetting agreeOpSet, YearMonth yearMonth) {
-		if (yearMonth.month() < agreeOpSet.getStartingMonth().value)
+		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value + 1))
 			return new Year(yearMonth.year() -1);
 		return new Year(yearMonth.year());
 	}

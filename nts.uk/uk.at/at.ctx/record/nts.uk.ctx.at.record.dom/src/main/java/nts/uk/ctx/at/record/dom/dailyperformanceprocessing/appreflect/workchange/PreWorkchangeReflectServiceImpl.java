@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -28,14 +27,9 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
-	public boolean workchangeReflect(WorkChangeCommonReflectPara param, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDailys = this.getByWorkChange(param, isPre);
-			commonService.updateDailyAfterReflect(lstDailys);
-			return true;	
-		}catch (Exception e) {
-			return false;
-		}
+	public void workchangeReflect(WorkChangeCommonReflectPara param, boolean isPre) {
+		List<IntegrationOfDaily> lstDailys = this.getByWorkChange(param, isPre);
+		commonService.updateDailyAfterReflect(lstDailys);
 	}
 	@Override
 	public List<IntegrationOfDaily> getByWorkChange(WorkChangeCommonReflectPara param, boolean isPre) {

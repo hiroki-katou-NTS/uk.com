@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
@@ -45,14 +44,9 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
-	public boolean absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getByAbsenceReflect(param, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
+		List<IntegrationOfDaily> lstDaily = this.getByAbsenceReflect(param, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}	
 	@Override
 	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect,

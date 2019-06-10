@@ -29,16 +29,7 @@ public class JpaAppInterrupDailyRepository extends JpaRepository implements AppI
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AppInterrupDaily> getAppInterrupDailyByID(String executionId) {
-		String SEL_SELECT_APP_INTERRUP_DAILY_BY_ID_JDBC = "SELECT * FROM KRCMT_APP_INTERRUP_DAILY WHERE EXECUTION_ID = ? ";
-		try (PreparedStatement statement = this.connection().prepareStatement(SEL_SELECT_APP_INTERRUP_DAILY_BY_ID_JDBC)) {
-			statement.setString(1, executionId);
-			return new NtsResultSet(statement.executeQuery()).getSingle(rs -> {
-				return new AppInterrupDaily(rs.getString("EXECUTION_ID"), rs.getBoolean("SUSPENDED_STATE"));
-			});
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		return addAppInterrupDaily.getAppInterrupDailyByID(executionId);
 //		Optional<AppInterrupDaily> data = this.queryProxy().query(SELECT_APP_INTERRUP_DAILY_BY_ID,KrcmtAppInterrupDaily.class)
 //				.setParameter("executionId", executionId)
 //				.getSingle(c->c.toDomain());

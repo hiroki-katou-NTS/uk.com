@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -19,14 +18,9 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
-	public boolean gobackReflect(GobackReflectParameter para, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getByGoBack(para, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-		} catch(Exception ex) {
-			return false;
-		}
+	public void gobackReflect(GobackReflectParameter para, boolean isPre) {
+		List<IntegrationOfDaily> lstDaily = this.getByGoBack(para, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 	@Override
 	public List<IntegrationOfDaily> getByGoBack(GobackReflectParameter para, boolean isPre) {

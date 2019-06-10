@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -35,14 +34,9 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Override
-	public boolean recruitmentReflect(CommonReflectParameter param, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getByRecruitment(param, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+	public void recruitmentReflect(CommonReflectParameter param, boolean isPre) {
+		List<IntegrationOfDaily> lstDaily = this.getByRecruitment(param, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 
 	@Override
@@ -72,16 +66,12 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		boolean isStartTime = this.checkReflectRecordStartEndTime(param.getWorkTypeCode(), 1, true, param.getEmployeeId(), param.getBaseDate());
 		
 		boolean isEndTime = this.checkReflectRecordStartEndTime(param.getWorkTypeCode(), 1, false, param.getEmployeeId(), param.getBaseDate());
-
-		TimeLeavingOfDailyPerformance dailyPerformance = null;
 		if(isStartTime || isEndTime) {			
 			//開始時刻の反映
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), 
 					justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
 			workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, daily);
-			daily.setAttendanceLeave(Optional.of(dailyPerformance));
-			
 		}		
 		//休出時間振替時間をクリアする
 		daily = this.clearRecruitmenFrameTime(param.getEmployeeId(), param.getBaseDate(), daily); 

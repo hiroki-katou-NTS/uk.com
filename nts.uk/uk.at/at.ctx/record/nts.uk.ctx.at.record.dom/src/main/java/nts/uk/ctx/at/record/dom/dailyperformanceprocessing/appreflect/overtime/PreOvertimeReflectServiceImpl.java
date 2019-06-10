@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
@@ -93,16 +92,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Override
-	public boolean overtimeReflect(OvertimeParameter param) {
-		try {
-			
-			List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-	
-		} catch (Exception ex) {
-			return false;
-		}
+	public void overtimeReflect(OvertimeParameter param) {
+		List<IntegrationOfDaily> lstDaily = this.getByOvertime(param, true);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 
 

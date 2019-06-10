@@ -15,7 +15,7 @@ public interface PreGoBackReflectService {
 	 * @param para
 	 * @return
 	 */
-	public boolean gobackReflect(GobackReflectParameter para, boolean isPre);
+	public void gobackReflect(GobackReflectParameter para, boolean isPre);
 	
 	public List<IntegrationOfDaily> getByGoBack(GobackReflectParameter para, boolean isPre);
 }

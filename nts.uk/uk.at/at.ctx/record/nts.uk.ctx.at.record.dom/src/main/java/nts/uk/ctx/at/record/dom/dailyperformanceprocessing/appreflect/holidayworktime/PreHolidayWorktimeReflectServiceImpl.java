@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
@@ -32,15 +31,9 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private CommonProcessCheckService commonService;
 	
 	@Override
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getIntegrationOfDaily(holidayWorkPara, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-		
+	public void preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
+		List<IntegrationOfDaily> lstDaily = this.getIntegrationOfDaily(holidayWorkPara, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}
 	@Override
 	public IntegrationOfDaily createIntegrationOfDailyStart(String employeeId, GeneralDate baseDate
