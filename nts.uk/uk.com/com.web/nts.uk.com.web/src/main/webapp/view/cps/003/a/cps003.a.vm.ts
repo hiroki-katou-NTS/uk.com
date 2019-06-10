@@ -1701,9 +1701,9 @@ module cps003.a.vm {
                     }, () => replaceValue.replaceValue);
                 } else {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
-                    if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced)) {
+                    if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced) && replaced !== "") {
                         replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
-                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced)) {
+                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced) && replaced !== "") {
                         replaced = nts.uk.time.parseTime(replaced, true).format();
                     }
                     
