@@ -1,5 +1,5 @@
 `Enum`は自動的にサーバーから列挙型を取る機能である。  
-そうするためにまず`@Component`に`enums`属性を定義して`enum`の配列を追加してください。
+そうするためにまず`@Component`に`enums`属性を定義して列挙型名の配列を追加してください。
 ```javascript
 @component({
     ...
