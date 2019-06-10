@@ -32,7 +32,7 @@ export class DocumentsPluginsEnumsComponent extends Vue {
     }
 
     public mounted() {
-        this.$http.enum('nts.uk.ctx.sys.auth.dom.role.RoleType')
+        this.$http.enum(['nts.uk.ctx.sys.auth.dom.role.RoleType'])
         .then( (res: { data: Array<Object> }) => {
             console.log(res.data);
         }); 

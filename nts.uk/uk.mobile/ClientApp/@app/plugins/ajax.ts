@@ -257,10 +257,10 @@ const WEB_APP_NAME = {
                                 });
                             }.bind(self)
                         },
-                        enum: function(enumName: String) {
+                        enum: function(enumNames?: Array<String>) {
 
-                            if (enumName) {
-                                return self.$http.post('/enums/map', [enumName]);
+                            if (enumNames) {
+                                return self.$http.post('/enums/map', enumNames);
                             }
                             
                             if (self.$options.enums && self.$options.enums.length > 0) {
