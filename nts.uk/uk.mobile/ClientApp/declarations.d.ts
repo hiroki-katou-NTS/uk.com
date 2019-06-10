@@ -88,7 +88,7 @@ declare module "vue/types/vue" {
                 info: (taskId: string) => Promise<{}>;
                 cancel: (taskId: string) => Promise<{}>;
             },
-            enum(): Promise<{}>;
+            enum(enumName?: String): Promise<{}>;
         };
         $i18n: {
             (resr: string): string;

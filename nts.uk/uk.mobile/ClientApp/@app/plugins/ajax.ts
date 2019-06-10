@@ -257,12 +257,17 @@ const WEB_APP_NAME = {
                                 });
                             }.bind(self)
                         },
-                        enum: function() {
+                        enum: function(enumName: String) {
+
+                            if (enumName) {
+                                return self.$http.post('/enums/map', [enumName]);
+                            }
+                            
                             if (self.$options.enums && self.$options.enums.length > 0) {
                                 return self.$http.post('/enums/map', self.$options.enums);
-                            } else {
-                                return new Promise( (resolve) => resolve([]));
-                            }
+                            } 
+                                
+                            return new Promise( (resolve) => resolve([]));
                         }.bind(self)
                     }
                 });
