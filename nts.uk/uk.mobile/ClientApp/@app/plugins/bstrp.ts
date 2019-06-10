@@ -178,12 +178,16 @@ const bstrp = {
                         cards = accord.querySelectorAll('.card');
 
                     if (card && cards.length) {
-                        [].slice.call(cards)
-                            .forEach((element: HTMLElement) => {
-                                dom.removeClass(element, 'show');
-                            });
 
-                        if (!show) {
+                        if (show) {
+                            dom.removeClass(card, 'show');
+                        } else {
+                            if (dom.getAttr(accord, 'auto-close') === 'true') {
+                                [].slice.call(cards)
+                                    .forEach((element: HTMLElement) => {
+                                        dom.removeClass(element, 'show');
+                                    });
+                            }
                             dom.addClass(card, 'show');
                         }
                     }
