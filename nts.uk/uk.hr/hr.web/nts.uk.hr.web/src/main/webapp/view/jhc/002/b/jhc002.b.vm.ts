@@ -299,17 +299,15 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             let careerMaster = _.find(self.career(), { 'displayNumber': displayNumber });
             if (masterType == 'M00002') {
                 nts.uk.ui.windows.setShared('inputCDL008', param);
-                nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL008');
                     if (data) {
-                        if (data) {
-                            careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
-                        }
+                      careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
                     }
                 });
             } else if (masterType == 'M00003') {
                 nts.uk.ui.windows.setShared('CDL002Params', param);
-                nts.uk.ui.windows.sub.modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function() {
                     let data = getShared('CDL002Output');
                     if (data) {
                         careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
@@ -317,7 +315,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 });
             } else if (masterType == 'M00004') {
                 nts.uk.ui.windows.setShared('inputCDL003', param);
-                nts.uk.ui.windows.sub.modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('hr', '/view/jdl/0090/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL003');
                     if (data) {
                         careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
@@ -326,7 +324,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 nts.uk.ui.windows.getShared
             } else if (masterType == 'M00005') {
                 nts.uk.ui.windows.setShared('inputCDL004', param);
-                nts.uk.ui.windows.sub.modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('hr', '/view/jdl/0100/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL004');
                     if (data) {
                         careerMaster.getCareerbyLever(selected.lever)().setNameMasterItemList(data);
