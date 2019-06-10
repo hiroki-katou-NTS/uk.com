@@ -943,7 +943,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		//(return list employeeID của nhân viên đương nhiệm)
 		return result;
 	}
-
+	
 	@Override
 	public List<String> filterSidByCidAndPeriod(String cid, DatePeriod period) {
 		//ドメインモデル「社員データ管理情報」を取得する
