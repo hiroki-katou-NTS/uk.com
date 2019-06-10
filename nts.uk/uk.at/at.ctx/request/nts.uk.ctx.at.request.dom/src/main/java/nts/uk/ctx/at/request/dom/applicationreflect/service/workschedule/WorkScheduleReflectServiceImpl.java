@@ -11,11 +11,11 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 	@Inject
 	private AppReflectProcessRecord checkReflect;
 	@Override
-	public void workscheReflect(ReflectScheDto reflectParam) {
+	public boolean workscheReflect(ReflectScheDto reflectParam) {
 		Application_New application = reflectParam.getAppInfor();
 		//反映チェック処理(Xử lý check phản ánh)		
 		if(!checkReflect.appReflectProcessRecord(application, false, reflectParam.getExecutionType())) {
-			return;
+			return false;
 		}
 		switch(application.getAppType()) {
 		case GO_RETURN_DIRECTLY_APPLICATION:
@@ -39,9 +39,9 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			}
 			break;
 		default:
-			break;
+			return false;
 		}
-		
+		return true;
 	}
 
 }

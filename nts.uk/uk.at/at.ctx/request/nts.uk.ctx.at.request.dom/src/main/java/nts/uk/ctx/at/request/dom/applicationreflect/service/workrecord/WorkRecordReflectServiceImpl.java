@@ -12,13 +12,13 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	private AppReflectProcessRecord reflectRecord;
 
 	@Override
-	public void workRecordreflect(AppReflectRecordPara appRecordInfor) {
+	public boolean workRecordreflect(AppReflectRecordPara appRecordInfor) {
 		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
 		//事前チェック処理
 		boolean checkReflect = reflectRecord.appReflectProcessRecord(appRecordInfor.getRecordInfor().getAppInfor(), true,
 				appRecordInfor.getExecuTionType());
 		if (!checkReflect) {
-			return;
+			return false;
 		}
 		boolean isPre = recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT ? true : false;
 		//申請種類
@@ -53,7 +53,8 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			}
 			break;
 		default:
-			break;
+			return false;
 		}
+		return true;
 	}
 }
