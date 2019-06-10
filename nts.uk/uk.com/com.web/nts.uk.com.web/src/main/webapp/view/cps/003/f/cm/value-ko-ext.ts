@@ -180,7 +180,8 @@ module nts.custombinding {
                     textWtValue2: ko.observable(''),
                     itemOptions: ko.observableArray([]),
                     openDialog: () => {
-                        let itemData = ko.toJS(accessor.itemData);
+                        let itemData = ko.toJS(accessor.itemData),
+                            value = ko.toJS(accessor.value().value0);
 
                         if (['IS00131', 'IS00140',
                             'IS00158', 'IS00167',
@@ -191,7 +192,8 @@ module nts.custombinding {
                             'IS00185'].indexOf(itemData.itemCode) > -1) {
 
                             setShared("kml001multiSelectMode", false);
-                            setShared("kml001selectedCodeList", []);
+                            setShared("kml001selectedCodeList", _.isNil(value) ? [] : [value]);
+                            //setShared("kml001selectedCodeList", []);
                             setShared("kml001isSelection", true);
                             setShared("kml001selectAbleCodeList", itemData.selectionItems.map(x => x.optionValue), true);
 
@@ -204,7 +206,11 @@ module nts.custombinding {
 
                                         vm.value(data.selectedWorkTimeCode);
                                         vm.value1(data);
-                                        
+                                        if(data.selectedWorkTimeName == '選択なし'){
+                                            data.selectedWorkTimeName = '';
+                                            vm.textWtValue1('');
+                                            vm.textWtValue2('');
+                                        }
                                         vm.textValue(`${data.selectedWorkTimeCode} ${data.selectedWorkTimeName}`);
 
                                         if (data.first && data.first.start && data.first.end) {
@@ -230,7 +236,11 @@ module nts.custombinding {
                                 if (childData[0]) {
                                     vm.value(childData[0].code);
                                     vm.value1(childData[0]);
-                                    
+                                    if (childData[0].name == '選択なし') {
+                                        childData[0].name = '';
+                                        vm.value('');
+                                        vm.value1('');
+                                    }
                                     vm.textValue(`${childData[0].code} ${childData[0].name}`);
                                 }
                             });

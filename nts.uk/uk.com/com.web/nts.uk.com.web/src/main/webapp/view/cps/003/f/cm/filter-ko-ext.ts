@@ -67,7 +67,8 @@ module nts.custombinding {
                     textValue: ko.observable(''),
                     itemOptions: ko.observableArray([]),
                     openDialog: () => {
-                        let itemData = ko.toJS(accessor.itemData);
+                        let itemData = ko.toJS(accessor.itemData,
+                            value = ko.toJS(accessor.value());
 
                         if (['IS00131', 'IS00140',
                             'IS00158', 'IS00167',
@@ -78,7 +79,7 @@ module nts.custombinding {
                             'IS00185'].indexOf(itemData.itemCode) > -1) {
 
                             setShared("kml001multiSelectMode", false);
-                            setShared("kml001selectedCodeList", []);
+                            setShared("kml001selectedCodeList", _.isNil(value) ? [] : [value]);
                             setShared("kml001isSelection", true);
                             setShared("kml001selectAbleCodeList", itemData.selectionItems.map(x => x.optionValue), true);
 
@@ -90,6 +91,9 @@ module nts.custombinding {
                                         let data: any = childData[0];
 
                                         vm.value(data.selectedWorkTimeCode);
+                                        if(data.selectedWorkTimeName == "選択なし"){
+                                            data.selectedWorkTimeName = "";
+                                        }
                                         vm.textValue(`${data.selectedWorkTimeCode} ${data.selectedWorkTimeName}`);
                                     }
                                 }
@@ -106,7 +110,9 @@ module nts.custombinding {
 
                                 if (childData[0]) {
                                     vm.value(childData[0].code);
-
+                                        if(childData[0].name == "選択なし"){
+                                            childData[0].name = "";
+                                        }
                                     vm.textValue(`${childData[0].code} ${childData[0].name}`);
                                 }
                             });
