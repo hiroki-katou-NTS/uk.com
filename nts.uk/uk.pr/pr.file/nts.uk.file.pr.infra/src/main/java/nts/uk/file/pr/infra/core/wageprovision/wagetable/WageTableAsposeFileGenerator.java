@@ -18,6 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -294,7 +295,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
                 cells.get(rowStart, COLUMN_START + 8).setValue(e.getElementSet() == ElementSetting.ONE_DIMENSION.value ? "" : getR2_9(dataMasterName, e));
                 cells.get(rowStart, COLUMN_START + 9).setValue(e.getElementSet() == ElementSetting.THREE_DIMENSION.value
                         || e.getElementSet() == ElementSetting.FINE_WORK.value ? getR2_10(dataMasterName, e) : "");
-                cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? e.getPayAmount() : "");
+                cells.get(rowStart, COLUMN_START + 10).setValue(e.getPayAmount() != null ? new BigDecimal(e.getPayAmount()) : "");
                 cells.get(rowStart, COLUMN_START + 11).setValue(e.getElementSet() == ElementSetting.QUALIFICATION.value ? enumQualificationPaymentMethod(e,Integer.parseInt(e.getPayMethod())) : "");
                 rowStart++;
             }
