@@ -33,13 +33,10 @@ Vue.directive('float-action', {
                 if (!dom.hasClass(el, 'active')) {
                     $vm.$mask('hide');
                 } else {
-                    dom.addClass(document.body, 'modal-open');
-                    
                     $vm.$mask('show', 0.02)
                         .on(() => $vm.$mask('hide'), () => {
                             dom.removeAttr(ul, 'style');
                             dom.removeClass(el, 'active');
-                            dom.removeClass(document.body, 'modal-open');
                         });
 
                     dom.setAttr(ul, 'style', `height: ${57 * [].slice.call(ul.querySelectorAll('li.btn-floating')).length}px`);

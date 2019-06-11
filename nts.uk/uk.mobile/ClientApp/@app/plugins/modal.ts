@@ -188,12 +188,6 @@ const modal = {
 
                                         this.show = false;
                                     },
-                                    leave() {
-                                        // remove modal-open class
-                                        if (document.querySelectorAll('.modal').length == 1) {
-                                            dom.removeClass(document.body, 'modal-open');
-                                        }
-                                    },
                                     afterLeave() {
                                         // destroy modal app
                                         this.$destroy(true);
@@ -232,13 +226,8 @@ const modal = {
                                 },
                                 mounted() {
                                     this.show = true;
-
-                                    dom.addClass(document.body, 'modal-open');
                                 },
                                 destroyed() {
-                                    // hide own mask layer
-                                    this.$mask('hide');
-
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
 
@@ -261,6 +250,9 @@ const modal = {
                                     if (focused) {
                                         focused.focus();
                                     }
+                                    
+                                    // hide own mask layer
+                                    this.$mask('hide');
                                 },
                                 template: `<transition apear v-bind:name="animate" v-on:leave="leave" v-on:after-leave="afterLeave">
                                     <div class="modal show" v-show="show" v-on:touchmove="preventScroll">

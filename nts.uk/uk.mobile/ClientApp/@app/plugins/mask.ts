@@ -57,11 +57,6 @@ const vm = Vue.extend({
                 }
 
                 this.$destroy(true);
-                let modal = document.querySelectorAll('.modal.show, .modal-backdrop.show');
-
-                if (!modal.length) {
-                    dom.removeClass(document.body, 'modal-open');
-                }
             } else {
                 dom.addClass(document.body, 'modal-open');
             }
@@ -81,6 +76,10 @@ const vm = Vue.extend({
         let self = this;
 
         document.body.removeChild(self.$el);
+        
+        if (!document.querySelector('body>.modal.show, body>.modal-backdrop.show')) {
+            dom.removeClass(document.body, 'modal-open');
+        }
     }
 }), mask = {
     install(vue: VueConstructor<Vue>) {
