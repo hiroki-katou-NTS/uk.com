@@ -68,7 +68,7 @@ public class PayrollUnitPriceAsposeFileGenerator extends AsposeCellsReportGenera
 
         // Set header date
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
-        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
         HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 
         for(int i = 1; i < Math.ceil((float)exportData.size()/(float)MAX_LINE) ; i ++){
