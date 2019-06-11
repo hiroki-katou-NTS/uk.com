@@ -123,7 +123,7 @@ public class JpaWageTableExRepository extends JpaRepository implements WageTable
                         e[18] != null ? e[18].toString() : "",
                         e[19] != null ? e[19].toString() : "",
                         e[20] != null ? e[20].toString() : "",
-                        e[21] != null ? e[21].toString() : "",
+                        e[21] != null ? (BigDecimal) e[21] : null,
                         e[22] != null ? e[22].toString() : "0",
                         e[23] != null ? ((BigDecimal)e[23]).intValue() : 0,
                         e[24] != null ? ((BigDecimal)e[24]).intValue() : 0,
