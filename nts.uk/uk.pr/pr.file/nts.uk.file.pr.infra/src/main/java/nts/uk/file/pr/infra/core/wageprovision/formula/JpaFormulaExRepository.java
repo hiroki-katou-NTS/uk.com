@@ -117,7 +117,9 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
         sql.append("        '時給' AS NAME,");
         sql.append("         5 AS MASTER_USE) mc ");
         sql.append("  ON mc.MASTER_USE = b.MASTER_USE AND mc.CODE = c.MASTER_USE_CD");
-        sql.append("  ORDER BY f.FORMULA_CD, b.MASTER_USE, MASTER_USE_CD");
+        sql.append("  ORDER BY f.FORMULA_CD, b.MASTER_USE,");
+        sql.append("  CASE WHEN MASTER_USE_CD = '0000000000' THEN 0 ELSE 1 END , MASTER_USE_CD");
+
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql.toString())
                     .setParameter("cid", cid).setParameter("startDate", startDate)
