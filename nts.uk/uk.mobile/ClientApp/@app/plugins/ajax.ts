@@ -172,13 +172,20 @@ const WEB_APP_NAME = {
                         resolve({ data: {}, headers: parseHeaders(xhr) });
                     } else {
                         if (self) {
-                            self.$modal($dialog(), {
-                                message: xhr.response
-                            }, {
-                                    title: 'Business exception'
-                                }).then(() => {
-                                    reject(xhr);
-                                });
+                            if (xhr.status == 401) {
+                                // Unauthorize
+                                self.$goto('login');
+                            } else {
+                                self.$modal($dialog(),
+                                    {
+                                        message: xhr.response
+                                    }, {
+                                        title: 'Business exception'
+                                    })
+                                    .then(() => {
+                                        reject(xhr);
+                                    });
+                            }
                         } else {
                             reject(xhr);
                         }
