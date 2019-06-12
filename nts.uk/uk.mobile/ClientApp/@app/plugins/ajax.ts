@@ -118,7 +118,7 @@ const WEB_APP_NAME = {
                 xhr.open(opt.method, opt.url, true);
 
                 /** use CORS for develop */
-                // xhr.withCredentials = true;
+                xhr.withCredentials = true;
 
                 if (opt.data) {
                     opt.data = parseData();
