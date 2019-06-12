@@ -32,7 +32,7 @@ module nts.uk.com.view.jdl0110.a {
                 self.restrictionOfReferenceRange = true;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
-                    self.baseDate(inputCDL008.baseDate);
+                    self.baseDate(moment(inputCDL008.baseDate, "YYYY-MM-DD"));
                     self.isMultipleSelect = inputCDL008.isMultiple;
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
@@ -98,7 +98,14 @@ module nts.uk.com.view.jdl0110.a {
                 if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                let selected = [];
+                let dataList: UnitModel[] = $("#workplaceList").getDataList();
+                _.forEach(dataList, function(value) {
+                    if(_.includes(selectedCode, value.workplaceId)){
+                        selected.push(value);
+                    }
+                });
+                nts.uk.ui.windows.setShared('outputCDL008', selected);
                 nts.uk.ui.windows.setShared('baseDateCDL008', self.baseDate());
                 nts.uk.ui.windows.close();
             }

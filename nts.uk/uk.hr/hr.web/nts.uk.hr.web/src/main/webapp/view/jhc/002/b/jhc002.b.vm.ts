@@ -299,11 +299,20 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                 selectedCodes.push(value.masterItemCd);
                 if(value.masterItemId != null) masterItemId.push(value.masterItemId);;
             });
-            let param = { isMultiple: true, showNoSelection: false, selectedCodes: selectedCodes, masterItemId: masterItemId, baseDate: self.startDate, isShowBaseDate: true}
+            let param = { isMultiple: true, 
+                            showNoSelection: false, 
+                            selectedCodes: selectedCodes, 
+                            masterItemId: masterItemId, 
+                            baseDate: self.startDate, 
+                            isShowBaseDate: true, 
+                            isrestrictionOfReferenceRange: false,
+                            selectedSystemType: 1 // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                         }
             let displayNumber = selected.displayNumber;
             let masterType = _.find(self.careerOrderList(), { 'displayNumber': displayNumber }).masterType();
             let careerMaster = _.find(self.career(), { 'displayNumber': displayNumber });
             if (masterType == 'M00002') {
+                param.selectedCodes = masterItemId;
                 nts.uk.ui.windows.setShared('inputCDL008', param);
                 nts.uk.ui.windows.sub.modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function() {
                     let data = getShared('outputCDL008');
@@ -578,7 +587,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         masterItemCd: string;
         masterItemName: string;
         constructor(obj: any) {
-            this.masterItemId = obj.masterItemId != undefined? obj.masterItemId: (obj.id != undefined ? obj.id : null) ;
+            this.masterItemId = obj.masterItemId != undefined? obj.masterItemId: (obj.id != undefined ? obj.id : (obj.workplaceId != undefined ? obj.workplaceId :null));
             this.masterItemCd = obj.masterItemCd == undefined? obj.code: obj.masterItemCd;
             this.masterItemName = obj.masterItemName == undefined? obj.name: obj.masterItemName;
         }
