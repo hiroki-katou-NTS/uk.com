@@ -8,7 +8,7 @@
         position: relative;
         width: 64px;
         height: 64px;
-        margin: calc(100% - 64px) calc(50% - 32px);
+        margin: calc(50vh - 32px) calc(50vw - 32px);
         div {
           transform-origin: 32px 32px;
           animation: spinner 1.2s linear infinite;
