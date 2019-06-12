@@ -54,8 +54,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private static final int CALCULATION_FORMULA_ATR = 24;
     private static final int BASIC_CALCULATION_FORMULA = 25;
     private static final String UNIT = "丸め";
-    private static final String CODE_DEFAULT = "0000000000";
-
+    private static final String CODE_DEFAULT = "          ";
 
     @Override
     public void generate(FileGeneratorContext generatorContext, FormulaExportData exportData) {
