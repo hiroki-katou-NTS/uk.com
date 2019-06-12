@@ -18,7 +18,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
