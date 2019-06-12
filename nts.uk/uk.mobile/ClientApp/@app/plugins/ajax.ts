@@ -34,10 +34,11 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
-                    let hostName: string = window.location.origin;
+                    let env: { API_URL?: string } = process.env,
+                        hostName: string = window.location.origin;
 
                     $.extend(opt, {
-                        url: (`${hostName.indexOf(':3000') > -1 ? hostName.replace(/:3000/, ':8080') : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8080')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 
@@ -260,7 +261,7 @@ const WEB_APP_NAME = {
                         },
                         enum: function (enums?: Array<String>) {
                             enums = enums || self.$options.enums;
-                            
+
                             if (enums && enums.length > 0) {
                                 return self.$http.post('/enums/map', enums);
                             }

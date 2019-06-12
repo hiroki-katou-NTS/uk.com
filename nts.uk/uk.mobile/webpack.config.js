@@ -149,7 +149,13 @@ module.exports = (env) => {
                 warningsAsError: true,
                 files: ['./ClientApp/*.ts', './ClientApp/**/*.ts']
             }),
-            new PackageWarFile({ prod: env && env.prod })
+            new PackageWarFile({ prod: env && env.prod }),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'API_URL': JSON.stringify(env && env.api),
+                    'NODE_ENV': JSON.stringify('development')
+                }
+            }),
         ],
         devServer: {
             hot: true,
