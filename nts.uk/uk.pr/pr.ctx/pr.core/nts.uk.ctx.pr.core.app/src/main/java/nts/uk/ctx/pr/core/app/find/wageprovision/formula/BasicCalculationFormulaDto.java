@@ -46,7 +46,7 @@ public class BasicCalculationFormulaDto {
     public static BasicCalculationFormulaDto fromDomainToDto(BasicCalculationFormula domain){
         BasicCalculationFormulaDto dto = new BasicCalculationFormulaDto();
         dto.historyID = domain.getHistoryID();
-        dto. masterUseCode = domain.getMasterUseCode().v();
+        dto.masterUseCode = domain.getMasterUseCode().v();
         dto.calculationFormulaClassification = domain.getCalculationFormulaClassification().value;
         dto.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(null);
         if (!domain.getBasicCalculationForm().isPresent()) return dto;
