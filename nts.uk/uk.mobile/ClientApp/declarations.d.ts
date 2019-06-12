@@ -89,6 +89,7 @@ declare module "vue/types/vue" {
                 cancel: (taskId: string) => Promise<{}>;
             },
             enum(enumNames?: Array<String>): Promise<{}>;
+            readonly resources: Promise<{}>;
         };
         $i18n: {
             (resr: string): string;

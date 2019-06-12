@@ -9,7 +9,7 @@ interface IFetchOption {
     method: 'get' | 'post' | 'push' | 'patch' | 'delete';
     data?: any;
     headers?: any;
-    pg?: 'at' | 'pr' | 'com';
+    pg?: 'at' | 'pr' | 'com' | 'hr';
     responseType?: 'blob' | 'arraybuffer' | 'document' | 'json' | 'text' | null;
     prefixUrl?: 'webapi' | string;
 }
@@ -17,6 +17,7 @@ interface IFetchOption {
 const WEB_APP_NAME = {
     at: 'nts.uk.at.web',
     pr: 'nts.uk.pr.web',
+    hr: 'nts.uk.hr.web',
     com: 'nts.uk.com.web'
 }, ajax = {
     install(vue: VueConstructor<Vue>, prefixUrl: string) {
@@ -117,7 +118,7 @@ const WEB_APP_NAME = {
                 xhr.open(opt.method, opt.url, true);
 
                 /** use CORS for develop */
-                xhr.withCredentials = true;
+                // xhr.withCredentials = true;
 
                 if (opt.data) {
                     opt.data = parseData();
@@ -131,7 +132,7 @@ const WEB_APP_NAME = {
                 setHeaders({
                     'MOBILE': 'true',
                     'PG-Path': location.current().serialize(),
-                    'X-CSRF-TOKEN': csrf.getToken()
+                    //'X-CSRF-TOKEN': csrf.getToken()
                 });
 
                 if (opt.responseType) {
@@ -257,18 +258,28 @@ const WEB_APP_NAME = {
                                 });
                             }.bind(self)
                         },
-                        enum: function(enumNames?: Array<String>) {
-
-                            if (enumNames) {
-                                return self.$http.post('/enums/map', enumNames);
-                            }
+                        enum: function (enums?: Array<String>) {
+                            enums = enums || self.$options.enums;
                             
-                            if (self.$options.enums && self.$options.enums.length > 0) {
-                                return self.$http.post('/enums/map', self.$options.enums);
-                            } 
-                                
-                            return new Promise( (resolve) => resolve([]));
+                            if (enums && enums.length > 0) {
+                                return self.$http.post('/enums/map', enums);
+                            }
+
+                            return new Promise((resolve) => resolve([]));
                         }.bind(self)
+                    }
+                });
+
+                Object.defineProperty(self.$http, 'resources', {
+                    get() {
+                        let rapi: string = '/i18n/resources/mobile/get',
+                            https: Array<Promise<{}>> = [0, 1, 2, 3, 4].map((m: number) => self.$http.get(`${rapi}/${m}`));
+
+                        return new Promise((resolve) => {
+                            Promise.all(https).then((responses: any[]) => {
+                                resolve(Object.assign({}, ...responses.map((resp) => resp.data)));
+                            });
+                        });
                     }
                 });
             }

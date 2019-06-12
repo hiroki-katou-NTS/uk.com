@@ -64,25 +64,6 @@ const language = new Vue({
             }));
         }
     },
-    created() {
-        let self = this,
-            lg = localStorage.getItem('lang') || 'jp',
-            resor = localStorage.getItem('lang_resources'),
-            lang = JSON.parse(resor || '{}');
-
-        if (lang) {
-            let ob: { [key: string]: any } = {};
-
-            ob[lg] = lang;
-
-            obj.extend(window, { 'jp0': ob.jp });
-
-            obj.merge(resources, ob, true);
-
-            self.current = '';
-            self.current = lg;
-        }
-    },
     destroyed() {
         [].slice.call(this.watchers).forEach((w: Function) => w());
     }
@@ -109,8 +90,6 @@ const Language = {
     refresh() {
         language.current = '';
         language.current = localStorage.getItem('lang') || 'jp';
-
-        localStorage.setItem('lang_resources', JSON.stringify(resources[language.current]));
     }
 };
 

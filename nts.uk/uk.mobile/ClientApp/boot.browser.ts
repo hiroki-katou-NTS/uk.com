@@ -45,29 +45,33 @@ new Vue({
         }
     },
     beforeCreate() {
-        const self = this,
-            rapi = '/i18n/resources/mobile/get';
+        const self = this;
 
         self.$mask('show', { message: true, opacity: 0.75 });
+
         browser.private
             .then((prid: boolean) => {
                 if (browser.version === 'Safari 10' && prid) {
                     self.$modal.warn({ messageId: 'Msg_1533' });
                 }
-            }).then(() => {
-                self.$http.get(rapi)
-                    .then((resp: { data: any }) => {
-                        obj.merge(resources,
-                            {
-                                jp: resp.data
-                            }, true);
+            })
+            .then(() => {
+                self.$http.resources
+                    .then((resr: any) => {
+                        obj.merge(resources.jp, resr, true);
                     })
                     .then(() => {
                         Language.refresh();
                     })
                     .then(() => {
                         self.$mask('hide');
+                    })
+                    .catch(() => {
+                        self.$mask('hide');
                     });
+            })
+            .catch(() => {
+                self.$mask('hide');
             });
     }
 });
