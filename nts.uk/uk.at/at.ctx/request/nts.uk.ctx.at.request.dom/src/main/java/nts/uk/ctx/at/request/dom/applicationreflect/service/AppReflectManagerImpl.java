@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -197,7 +198,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				isScheReflect = scheReflect.workscheReflect(reflectScheParam);
 				if(isScheReflect) {
 					appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
-					appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));	
+					appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));
+					appInfor.getReflectionInformation().setDateTimeReflection(Optional.of(GeneralDateTime.now()));
 				}				
 			}
 			
@@ -215,6 +217,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(isRecordReflect) {
 				appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 				appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
+				appInfor.getReflectionInformation().setDateTimeReflectionReal(Optional.of(GeneralDateTime.now()));
 			}
 			if(isRecordReflect || isScheReflect) {
 				//暫定データの登録
