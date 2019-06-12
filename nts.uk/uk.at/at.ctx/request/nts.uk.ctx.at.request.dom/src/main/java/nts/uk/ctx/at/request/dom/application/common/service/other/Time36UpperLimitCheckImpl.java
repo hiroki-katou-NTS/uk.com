@@ -412,7 +412,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
 				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
 			// エラー情報一覧に「月間エラー」を追加
-			String realTime = agreeMonth.getActualTime().toString();
+			String realTime = Integer.toString(agreeMonth.getActualTime().v() + apptime.v());
 			String limitTime = "";
 			if(agreeMonth.getExceptionLimitErrorTime().isPresent()){	
 				limitTime = agreeMonth.getExceptionLimitErrorTime().get().toString();
@@ -448,7 +448,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		// [NO.545]36協定年間時間の状態チェック
 		AgreTimeYearStatusOfMonthly yearStatus = agreementTimeAdapter.timeYear(agreementTimeYear, requestTimeOpt);
 		if(yearStatus==AgreTimeYearStatusOfMonthly.EXCESS_LIMIT){
-			String realTime = agreeAnnual.getActualTime().toString();
+			String realTime = Integer.toString(agreeAnnual.getActualTime().v() + applicationTime.v());
 			String limitTime = agreeAnnual.getLimitTime().toString();
 			time36ErrorLst.add(new Time36ErrorOutput(Time36ErrorFlg.YEAR, realTime, limitTime, "", ""));
 		}
@@ -478,7 +478,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				Optional.empty());
 		if(maxTimeStatus==AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME){
 			// エラー情報一覧に「上限月間時間エラー」を追加
-			String realTime = agreeUpperLimitMonth.getOverTime().toString();
+			String realTime = Integer.toString(agreeUpperLimitMonth.getOverTime().v() + applicationTime.v());
 			String limitTime = agreeUpperLimitMonth.getUpperLimitTime().toString();
 			time36ErrorLst.add(new Time36ErrorOutput(Time36ErrorFlg.MAX_MONTH, realTime, limitTime, "", ""));
 		}
