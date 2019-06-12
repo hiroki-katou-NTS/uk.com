@@ -79,7 +79,14 @@ module nts.uk.com.view.jdl0100.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                     return;
                 }
-                nts.uk.ui.windows.setShared('outputCDL004', self.isMultiple ? self.selectedMulJobtitle() : self.selectedSelJobtitle());
+                let selected = [];
+                let dataList: UnitModel[] = $("#jobtitle").getDataList();
+                _.forEach(dataList, function(value) {
+                    if(_.includes(self.selectedMulJobtitle(), value.id)){
+                        selected.push(value);
+                    }
+                });
+                nts.uk.ui.windows.setShared('outputCDL004', self.isMultiple ? selected : self.selectedSelJobtitle());
                 nts.uk.ui.windows.close();   
             }
             

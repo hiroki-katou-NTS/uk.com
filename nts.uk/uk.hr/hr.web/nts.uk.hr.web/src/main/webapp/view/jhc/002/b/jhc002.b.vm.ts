@@ -293,7 +293,13 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         
         public openDiaLogMasterItem(selected: any): void {
             let self = this;
-            let param = { isMultiple: true, showNoSelection: false, selectedCodes: selected.masterItemList(), baseDate: self.startDate }
+            let selectedCodes = [];
+            let masterItemId = [];
+            _.forEach(selected.masterItemList(), function(value) {
+                selectedCodes.push(value.masterItemCd);
+                if(value.masterItemId != null) masterItemId.push(value.masterItemId);;
+            });
+            let param = { isMultiple: true, showNoSelection: false, selectedCodes: selectedCodes, masterItemId: masterItemId, baseDate: self.startDate, isShowBaseDate: true}
             let displayNumber = selected.displayNumber;
             let masterType = _.find(self.careerOrderList(), { 'displayNumber': displayNumber }).masterType();
             let careerMaster = _.find(self.career(), { 'displayNumber': displayNumber });
@@ -407,7 +413,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         yearMinimumNumber: KnockoutObservable<number>;
         yearStandardNumber: KnockoutObservable<number>;
         masterType: KnockoutObservable<string>;
-        masterItemList: KnockoutObservableArray<any>;
+        masterItemList: KnockoutObservableArray<MasterItem>;
         inputRequirement: KnockoutObservable<string>;
         constructor(obj: any, careerLevel: number, comfirmChangeMasterType: any) {
             var self = this;
@@ -505,11 +511,21 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
         }
 
         public getNameMasterItemList(): string {
-            return this.masterItemList().toString().replace(/\,/g, " + ");
+            let self = this;
+            let nameMasterItemList = '';
+            _.forEach(self.masterItemList(), function(value) {
+                nameMasterItemList = nameMasterItemList +(nameMasterItemList!=''?' + ':'')+ value.masterItemName + self.displayNumber.toString();
+            });
+            return nameMasterItemList;
         }
 
-        public setNameMasterItemList(masterRequirement: any): void {
-            this.masterItemList(masterRequirement);
+        public setNameMasterItemList(obj: any): void {
+            let self = this;
+            let masterItemDialogResult = [];
+            _.forEach(obj, function(value) {
+                masterItemDialogResult.push(new MasterItem(value));
+            });
+            this.masterItemList(masterItemDialogResult);
         }
         
         public setYearType(yearType: any): void {
@@ -547,6 +563,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             return false;
         }
     }
+    
     class ItemModel {
         code: string;
         name: string;
@@ -555,6 +572,18 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             this.name = name;
         }
     }
+    
+    class MasterItem {
+        masterItemId: string;
+        masterItemCd: string;
+        masterItemName: string;
+        constructor(obj: any) {
+            this.masterItemId = obj.masterItemId != undefined? obj.masterItemId: (obj.id != undefined ? obj.id : null) ;
+            this.masterItemCd = obj.masterItemCd == undefined? obj.code: obj.masterItemCd;
+            this.masterItemName = obj.masterItemName == undefined? obj.name: obj.masterItemName;
+        }
+    }
+    
     class Career {
         displayNumber: number;
         lever1: KnockoutObservable<ScreenItem>;

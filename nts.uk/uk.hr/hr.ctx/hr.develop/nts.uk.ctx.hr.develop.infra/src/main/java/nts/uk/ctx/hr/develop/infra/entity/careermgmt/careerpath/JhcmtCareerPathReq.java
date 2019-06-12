@@ -85,7 +85,7 @@ public class JhcmtCareerPathReq extends UkJpaEntity implements Serializable {
 		this.masterType = domain.getMasterRequirement().isPresent()?domain.getMasterRequirement().get().getMasterType():null;
 		this.inputReq = domain.getInputRequirement().isPresent()?domain.getInputRequirement().get().v():null;
 		this.masterItemList = domain.getMasterRequirement().isPresent()?
-				domain.getMasterRequirement().get().getMasterItemList().stream().map(c->new JhcmtCareerPathReqitem(companyID, careerId, domain.getDisplayNumber().v(), c.getMasterItem())).collect(Collectors.toList())
+				domain.getMasterRequirement().get().getMasterItemList().stream().map(c->new JhcmtCareerPathReqitem(companyID, careerId, domain.getDisplayNumber().v(), c.getMasterItemId().orElse(null), c.getMasterItemCd(),c.getMasterItemName())).collect(Collectors.toList())
 				:new ArrayList<>();
 	}
 	
@@ -96,7 +96,7 @@ public class JhcmtCareerPathReq extends UkJpaEntity implements Serializable {
 		}
 		Optional<MasterRequirement> masterReq = Optional.empty();
 		if(this.masterType != null) {
-			masterReq = Optional.ofNullable(new MasterRequirement(this.masterType, this.masterItemList.stream().map(c -> new MasterItem(c.masterItem)).collect(Collectors.toList())));
+			masterReq = Optional.ofNullable(new MasterRequirement(this.masterType, this.masterItemList.stream().map(c -> new MasterItem(Optional.ofNullable(c.masterItemId),c.masterItemCd,c.masterItemName)).collect(Collectors.toList())));
 		}
 		return CareerRequirement.createFromJavaType(
 				this.PK_JHCMT_CAREER_PATH_REQUIREMENT.dispNum, 

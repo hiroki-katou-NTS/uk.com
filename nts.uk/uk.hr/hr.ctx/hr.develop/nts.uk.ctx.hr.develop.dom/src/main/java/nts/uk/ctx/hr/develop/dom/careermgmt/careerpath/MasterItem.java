@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +9,10 @@ import lombok.Getter;
 @Getter
 public class MasterItem {
 	
-	private String masterItem;
+	private Optional<String> masterItemId;
+	
+	private String masterItemCd;
+	
+	private String masterItemName;
 
 }

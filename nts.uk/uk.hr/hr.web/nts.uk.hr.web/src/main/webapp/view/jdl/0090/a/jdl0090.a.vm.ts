@@ -59,12 +59,19 @@ module nts.uk.com.view.jdl0090.a {
                 var self = this;
                 var dataList: UnitModel[] = $("#classification").getDataList();
                 if(self.isMultiple){
-                    var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
-                    if(!selectedCodes || selectedCodes.length == 0){
+                    let selected = [];
+                    _.forEach(dataList, function(value) {
+                        if(_.includes(self.selectedMulClassification(), value.code)){
+                            selected.push(value);
+                        }
+                    });
+                    
+                    //var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
+                    if(selected.length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;
                     }
-                    nts.uk.ui.windows.setShared('outputCDL003', selectedCodes);
+                    nts.uk.ui.windows.setShared('outputCDL003', selected);
                     nts.uk.ui.windows.close();    
                 } else {
                     var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);

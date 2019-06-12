@@ -95,7 +95,14 @@ module nts.uk.com.view.jdl0080.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_640" });
                     return;
                 }
-                setShared('CDL002Output', self.isMultiSelect() ? self.selectedMulEmployment() : self.selectedSelEmployment());
+                let selected = [];
+                let dataList: UnitModel[] = $("#emp-component").getDataList()
+                _.forEach(dataList, function(value) {
+                    if(_.includes(self.selectedMulEmployment(), value.code)){
+                        selected.push(value);
+                    }
+                });
+                setShared('CDL002Output', self.isMultiSelect() ? selected : self.selectedSelEmployment());
                 close();
             }
             

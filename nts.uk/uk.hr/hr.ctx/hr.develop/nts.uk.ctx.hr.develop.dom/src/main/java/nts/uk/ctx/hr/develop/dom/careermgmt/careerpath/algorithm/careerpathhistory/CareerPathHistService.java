@@ -15,7 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathHistory;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathHistoryRepository;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -25,9 +24,6 @@ public class CareerPathHistService {
 
 	@Inject
 	private CareerPathHistoryRepository careerPathHistoryRepo;
-	
-	@Inject
-	private CareerPathRepository careerPathRepo; 
 	
 	//キャリアパスの履歴の取得
 	public List<DateHistoryItem> getCareerPathHistList(String cId) {

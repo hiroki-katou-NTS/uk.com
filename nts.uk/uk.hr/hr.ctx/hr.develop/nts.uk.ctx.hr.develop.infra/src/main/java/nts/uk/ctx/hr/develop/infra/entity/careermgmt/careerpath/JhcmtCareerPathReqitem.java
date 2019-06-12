@@ -33,8 +33,14 @@ public class JhcmtCareerPathReqitem extends UkJpaEntity implements Serializable 
 	@Column(name = "DISP_NUM")
 	public Integer dispNum;
 
-	@Column(name = "MASTER_ITEM")
-	public String masterItem;
+	@Column(name = "MASTER_ITEM_ID")
+	public String masterItemId;
+	
+	@Column(name = "MASTER_ITEM_CD")
+	public String masterItemCd;
+	
+	@Column(name = "MASTER_ITEM_NAME")
+	public String masterItemName;
 
 	@Override
 	public Object getKey() {
@@ -47,13 +53,15 @@ public class JhcmtCareerPathReqitem extends UkJpaEntity implements Serializable 
 			@JoinColumn(name = "DISP_NUM", referencedColumnName = "DISP_NUM", insertable = false, updatable = false) })
 	public JhcmtCareerPathReq masterItemList;
 
-	public JhcmtCareerPathReqitem(String companyID, String careerId, Integer dispNum, String masterItem) {
+	public JhcmtCareerPathReqitem(String companyID, String careerId, Integer dispNum, String masterItemId, String masterItemCd, String masterItemName) {
 		super();
 		this.PK_JHCMT_CAREER_PATH_REQITEM = new JhcmtCareerPathReqitemPK(IdentifierUtil.randomUniqueId());
 		this.companyID = companyID;
 		this.careerId = careerId;
 		this.dispNum = dispNum;
-		this.masterItem = masterItem;
+		this.masterItemId = masterItemId;
+		this.masterItemCd = masterItemCd;
+		this.masterItemName = masterItemName;
 	}
 
 }

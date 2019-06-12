@@ -17,17 +17,17 @@ public class MasterRequirementDto {
 
 	public String masterType;
 
-	public List<String> masterItemList;
+	public List<MasterItemDto> masterItemList;
 
 	public static MasterRequirementDto fromDomain(Optional<MasterRequirement> masterRequirement) {
 		if (!masterRequirement.isPresent()) {
 			return null;
 		}
 		return new MasterRequirementDto(masterRequirement.get().getMasterType(), 
-				masterRequirement.get().getMasterItemList().stream().map(c -> c.getMasterItem()).collect(Collectors.toList()));
+				masterRequirement.get().getMasterItemList().stream().map(c -> new MasterItemDto(c.getMasterItemId().orElse(null),c.getMasterItemCd(),c.getMasterItemName())).collect(Collectors.toList()));
 	}
 
 	public MasterRequirement toDomain() {
-		return new MasterRequirement(this.masterType, this.masterItemList.stream().map(c->new MasterItem(c)).collect(Collectors.toList()));
+		return new MasterRequirement(this.masterType, this.masterItemList.stream().map(c->new MasterItem(Optional.ofNullable(c.getMasterItemId()),c.getMasterItemCd(),c.getMasterItemName())).collect(Collectors.toList()));
 	}
 }
