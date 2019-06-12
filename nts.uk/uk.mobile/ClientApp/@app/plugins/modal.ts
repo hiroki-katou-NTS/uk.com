@@ -254,7 +254,7 @@ const modal = {
                                     // hide own mask layer
                                     this.$mask('hide');
                                 },
-                                template: `<transition apear v-bind:name="animate" v-on:leave="leave" v-on:after-leave="afterLeave">
+                                template: `<transition apear v-bind:name="animate" v-on:after-leave="afterLeave">
                                     <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
                                         <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
                                             <div class="modal-content">
