@@ -6,7 +6,7 @@ import { Page404Component } from '@app/components';
 
 const router = new VueRouter({
     mode: 'history',
-    base: process.env.BASE_URL,
+    base: document.querySelector('head>base').getAttribute('href'),
     routes: [{
         path: '*',
         name: 'page404',
