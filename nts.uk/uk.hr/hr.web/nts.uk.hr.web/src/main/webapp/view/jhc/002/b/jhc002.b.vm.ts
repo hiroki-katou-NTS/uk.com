@@ -112,13 +112,13 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             if(self.params.careerTypeId != undefined){
                 self.datatransfer = self.params;
                 self.startDate = self.params.startDate;
-                console.log(self.params);
+                //console.log(self.params);
                 self.careerClass(self.params.careerClass);
                 self.itemList = _.orderBy(_.filter(self.params.career, ['careerTypeItem', self.params.careerTypeId]), ['careerLevel'], ['asc']);
-                console.log(self.itemList);
+                //console.log(self.itemList);
                 self.checksShowLever(self.itemList);
                 self.addDefaultCareer();
-                console.log(self.careerOrderList());
+                //console.log(self.careerOrderList());
                 self.careerRequirementList(_.orderBy(self.careerRequirementList(), ['displayNumber'], ['asc']));
                 dfd.resolve();
                 block.clear();
@@ -147,7 +147,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
                             result = _.concat(result,data);
                         }
                     });
-                    console.log(result);
+                    //console.log(result);
                     _.forEach(self.level(), function(value) {
                         let careerClassRole = '';
                         if(value == 1){

@@ -149,7 +149,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 self.checkUpdateEnable = false; 
                 new service.getCareerPart(command).done(function(data: any) {
                     data.careerClass.add({ id: "", code: "", name: "" });
-                    console.log(data);
+                    //console.log(data);
                     if(self.checkStartFromBScreen && self.dataFromBScreen != null){
                         data.career = self.dataFromBScreen.career;
                         self.checkStartFromBScreen = false;
@@ -262,10 +262,10 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         career: self.listCareer(),
                         isNotice: isNotice
                     }
-                    console.log(command);
+                    //console.log(command);
                     block.grayout();
                     new service.saveCareer(command).done(function() {
-                        console.log('oki');
+                        //console.log('oki');
                     }).fail(function(error) {
                         nts.uk.ui.dialog.error({ messageId: error.messageId });
                     }).always(function() {
