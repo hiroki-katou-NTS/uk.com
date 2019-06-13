@@ -8213,6 +8213,11 @@ module nts.uk.ui.mgrid {
                         return;
                     }
                     
+                    if (khl._infobulle) {
+                        ti.remove(khl._infobulle);
+                        dkn.closeDD(khl._infobulle, true);
+                    }
+                    
                     return $td;
                 }
             };
