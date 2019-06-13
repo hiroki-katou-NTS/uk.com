@@ -51,7 +51,7 @@ public class CareerPathFinder {
 			//キャリアマスタリストの取得
 			List<MasterCareerDto> listCareerClass = careerClassService.getCareerPath(companyId, referenceDate).stream().map(c-> new MasterCareerDto(c.getCareerClassId(), c.getCareerClassCode().v(), c.getCareerClassName().v())).collect(Collectors.toList());
 			
-			return new CareerPartDto(false, maxClassLevel, listCareerType, listCareerClass, listCareer);
+			return new CareerPartDto(true, maxClassLevel, listCareerType, listCareerClass, listCareer);
 		}
 		//新規モードでキャリアパスを画面に表示する
 		return this.getCareerPartMaster(companyId, hisId);

@@ -20,7 +20,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         checkStartFromBScreen: boolean;
         dataFromBScreen: any;
         latestCareerPathHist: KnockoutObservable<any>;
-        checkUpdateEnable: boolean;
+        checkUpdateEnableControl: boolean;
+        historyModeUpdate: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -98,7 +99,6 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 }
             });
 
-            
             self.listCareer = ko.observableArray([]);
             self.careerClass = ko.observableArray([]);
             self.careerType = ko.observableArray([]);
@@ -115,7 +115,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 document.getElementsByClassName("fixed-table")[0].style.width = width + "px";
                 document.getElementsByClassName("fixed-table")[1].style.width = width + "px";
             });
-            self.checkUpdateEnable = false;
+            self.checkUpdateEnableControl = false;
+            self.historyModeUpdate = ko.observable(false);
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -146,8 +147,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     startDate: moment(startDate).format("YYYY/MM/DD")
                 }
                 block.grayout();
-                self.checkUpdateEnable = false; 
+                self.checkUpdateEnableControl = false; 
                 new service.getCareerPart(command).done(function(data: any) {
+                    self.historyModeUpdate(data.modeUpdate);
                     data.careerClass.add({ id: "", code: "", name: "" });
                     //console.log(data);
                     if(self.checkStartFromBScreen && self.dataFromBScreen != null){
@@ -167,7 +169,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         list.push(new ScreenItem(value.code, _.filter(data.career, ['careerTypeItem', value.id])));
                     });
                     self.listCareerType(list);
-                    self.checkUpdateEnable = true;
+                    self.checkUpdateEnableControl = true;
                     self.updateEnable();
                     
                     // tab
@@ -212,7 +214,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 self.listCareer();
                 self.careerType([]);
                 self.listCareerType([]);
-                self.checkUpdateEnable = true;
+                self.checkUpdateEnableControl = true;
+                self.historyModeUpdate(false);
             }
         }
         public openDialogB(careerType: any): void {
@@ -289,7 +292,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         
         public updateEnable(): void{
             let self =  this;
-            if (self.checkUpdateEnable && self.listCareerType().length > 0) {
+            if (self.checkUpdateEnableControl && self.listCareerType().length > 0) {
                 _.forEach(ko.toJS(self.listCareerType()), function(value) {
                     let index = _.findIndex(self.careerType(), { 'code': value.code });
                     self.careerType()[index].enable(value.checkExistSelected(self.maxClassLevel()));
