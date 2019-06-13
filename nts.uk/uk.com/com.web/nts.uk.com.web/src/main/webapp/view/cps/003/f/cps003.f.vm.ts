@@ -36,7 +36,7 @@ module cps003.f.vm {
 
             // sample data
             if (data.id) {
-                service.fetch.setting(data.id).done(resp => {
+                service.fetch.setting({categoryId : data.id, itemIds: data.itemsDefIds}).done(resp => {
                     let excs = resp.perInfoData.map(m => m.itemParentCD),
                         items = _(resp.perInfoData)
                             .filter(f => excs.indexOf(f.itemCD) == -1)
