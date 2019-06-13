@@ -18,6 +18,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.matrixdisplayset.MatrixDisplaySetFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.DisplayItemColumnSetFinder;
+import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.DisplayItemParam;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.adapter.ContractTimeEmployeeAdapter;
 import nts.uk.ctx.pereg.dom.adapter.ContractTimeEmployeeImport;
@@ -65,6 +66,17 @@ public class GridLayoutWebService extends WebService {
 
 	}
 
+	@POST
+	@Path("get-setting")
+	public Object getFixedSetting(DisplayItemParam params) {
+		return new Object() {
+			@SuppressWarnings("unused")
+			public final MatrixDisplaySetting matrixDisplay = mdsFinder.findByKey().orElse(null);
+			@SuppressWarnings("unused")
+			public final List<PersonInfoMatrixData> perInfoData = dicFinder.getData(params);
+		};
+	}
+	
 	@POST
 	@Path("get-setting/{categoryId}")
 	public Object getFixedSetting(@PathParam("categoryId") String categoryId) {

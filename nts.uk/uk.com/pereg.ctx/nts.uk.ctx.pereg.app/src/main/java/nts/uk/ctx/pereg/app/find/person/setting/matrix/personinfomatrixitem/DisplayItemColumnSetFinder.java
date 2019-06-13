@@ -29,4 +29,8 @@ public class DisplayItemColumnSetFinder {
 	public List<PersonInfoMatrixData> getData(String pInfoCategoryID) {
 		return repo.findInfoData(pInfoCategoryID);
 	}
+	
+	public List<PersonInfoMatrixData> getData(DisplayItemParam params) {
+		return repo.findInfoData(params.getCategoryId(), params.getItemIds());
+	}
 }
