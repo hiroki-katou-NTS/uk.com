@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.ws.layout;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,16 +15,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
+import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
+import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
-import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
-import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
 
 /**
  * @author sonnlb
@@ -39,8 +38,8 @@ public class LayoutWebService extends WebService {
 	@Inject
 	private PeregProcessor layoutProcessor;
 	
-	@Inject
-	private LayoutingProcessor layoutingProcessor;
+//	@Inject
+//	private LayoutingProcessor layoutingProcessor;
 
 	@Inject 
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
@@ -120,6 +119,25 @@ public class LayoutWebService extends WebService {
 	@Path("getSPHolidayGrantDate")
 	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation specialLeaveInfo){
 		return getSPHolidayNextGrantDate.getSPHolidayGrantDate(specialLeaveInfo);
+	}
+	
+	/**
+	 * Category Special Holiday CS00025 ~
+	 * 次回特休情報を取得する
+	 * @param 社員ID sid
+	 * @param 特別休暇コード specialCD
+	 * @param 特休付与基準日 referDate
+	 * @param 適用設定 appSet
+	 * @param 特休付与テーブルコード grantTableCD
+	 * @param 付与日数 grantedDays
+	 * @param 入社年月日 entryDate NULL
+	 * @param 年休付与基準日 year NULL
+	 * @return 次回付与日 grantDate
+	 */
+	@POST
+	@Path("getSPHolidayGrantDateBySids")
+	public Map<String, GeneralDate> getSPHolidayGrantDateBySids(List<SpecialleaveInformation> params){
+		return getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params);
 	}
 	
 	/*@Path("b")

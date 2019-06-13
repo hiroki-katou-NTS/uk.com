@@ -172,4 +172,10 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySid(cid,sid));
 		return importList;
 	}
+
+	@Override
+	public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sids) {
+		List<AffCompanyHistSharedImport> result =  this.syCompanyPub.getAffComHisBySids(cid, sids).stream().map(c -> convert(c)).collect(Collectors.toList());
+		return result;
+	}
 }
