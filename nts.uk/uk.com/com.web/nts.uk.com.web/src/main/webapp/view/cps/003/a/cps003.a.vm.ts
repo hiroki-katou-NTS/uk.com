@@ -446,7 +446,7 @@ module cps003.a.vm {
         }
         
         getText(perInfoTypeState: any, value: any, id: any, itemCode: any, $grid: any) {
-            if (!perInfoTypeState) return value;
+            if (!perInfoTypeState || value === "") return value;
             switch (perInfoTypeState.dataTypeValue) {
                 case ITEM_SINGLE_TYPE.STRING:
                 case ITEM_SINGLE_TYPE.NUMERIC:
@@ -454,7 +454,11 @@ module cps003.a.vm {
                 case ITEM_SINGLE_TYPE.TIME:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
-                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                    if (!_.isNil(value)) { 
+                        let res = { value: nts.uk.time.parseTime(value).toValue() };
+                        res.text = nts.uk.time.minutesBased.clock.dayattr.create(res.value).fullText;
+                        return res;
+                    }
                 case ITEM_SINGLE_TYPE.DATE:
                     if (value instanceof moment && !value.isValid()) {
                         return { value: null, text: null };    
