@@ -131,7 +131,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterName(dataRow));
                             break;
                         case FORMULA:
-                            cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data));
+                            cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data) );
                             break;
                         case REFERENCE_MONTH:
                             cells.get(rowStart, j+ startColumn).setValue(getReferenceMonth(dataRow, targetItem));
@@ -192,7 +192,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
         if(((BigDecimal) obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
-            return getSimpleFormula(obj, targetItem);
+            String formula = getSimpleFormula(obj, targetItem);
+            return ZERO.equals(formula) ? "" : formula;
         }
         if(((BigDecimal) obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FIXED_VALUE.value)) {
