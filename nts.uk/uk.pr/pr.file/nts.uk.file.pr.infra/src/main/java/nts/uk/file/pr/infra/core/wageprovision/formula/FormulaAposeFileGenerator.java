@@ -55,6 +55,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     private static final int BASIC_CALCULATION_FORMULA = 25;
     private static final String UNIT = "丸め";
     private static final String CODE_DEFAULT = "";
+    private static final String ZERO = "0";
 
     @Override
     public void generate(FileGeneratorContext generatorContext, FormulaExportData exportData) {
@@ -133,19 +134,19 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data));
                             break;
                         case REFERENCE_MONTH:
-                            cells.get(rowStart, j+ startColumn).setValue(getReferenceMonth(dataRow));
+                            cells.get(rowStart, j+ startColumn).setValue(getReferenceMonth(dataRow, targetItem));
                             break;
                         case ROUNDING_METHOD:
                             cells.get(rowStart, j+ startColumn).setValue(getValueRoundingMethod(dataRow, data, formula, targetItem));
                             break;
                         case ROUNDING_POSITION:
-                            cells.get(rowStart, j+ startColumn).setValue(getValueRoundingPosition(dataRow, data, formula));
+                            cells.get(rowStart, j+ startColumn).setValue(getValueRoundingPosition(dataRow, data, formula, targetItem));
                             break;
                         case ROUNDING_RESULT:
-                            cells.get(rowStart, j+ startColumn).setValue(getValueRounding(dataRow, data));
+                            cells.get(rowStart, j+ startColumn).setValue(getValueRounding(dataRow, data, targetItem));
                             break;
                         case ADJUSTMENT_ATR:
-                            cells.get(rowStart, j+ startColumn).setValue(getAdjustmentClassification(dataRow, data));
+                            cells.get(rowStart, j+ startColumn).setValue(getAdjustmentClassification(dataRow, data, targetItem));
                             break;
                         default:
                             cells.get(rowStart, j + startColumn).setValue(dataRow[j]);
@@ -172,11 +173,11 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         }
     }
 
-    private String getReferenceMonth(Object[] obj){
+    private String getReferenceMonth(Object[] obj, List<Object[]> targetItem){
         if( obj[REFERENCE_MONTH - 1] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
             return "";
         }
-        if(obj[FORMULA_TYPE] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value) {
+        if((obj[FORMULA_TYPE] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value) || ZERO.equals(getSimpleFormula(obj, targetItem)) ){
             return "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value) {
@@ -206,7 +207,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
 
     }
 
-    private String getAdjustmentClassification(Object[] obj, List<Object[]> objs){
+    private String getAdjustmentClassification(Object[] obj, List<Object[]> objs, List<Object[]> targetItem){
+        if(ZERO.equals(getSimpleFormula(obj, targetItem))) {
+            return "";
+        }
         if (((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value){
             return "調整しない";
         }
@@ -217,7 +221,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value)) {
             Object[] defaultValue = findDefault(objs, obj[CODE].toString());
-            return defaultValue != null ? getAdjustmentClassification(defaultValue, objs) : "";
+            return defaultValue != null ? getAdjustmentClassification(defaultValue, objs, targetItem) : "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
@@ -231,8 +235,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         return defaultValue.orElse(null);
     }
 
-    private String getValueRounding(Object[] obj, List<Object[]> objs){
-        if((obj[ROUNDING_RESULT - 1] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value)) {
+    private String getValueRounding(Object[] obj, List<Object[]> objs, List<Object[]> targetItem){
+        if((obj[ROUNDING_RESULT - 1] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) || ZERO.equals(getSimpleFormula(obj, targetItem))) {
             return "";
         }
         if (((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value){
@@ -245,7 +249,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value)) {
             Object[] defaultValue = findDefault(objs, obj[CODE].toString());
-            return defaultValue != null ? getValueRounding(defaultValue, objs) : "";
+            return defaultValue != null ? getValueRounding(defaultValue, objs, targetItem) : "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
@@ -254,8 +258,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         return "";
     }
 
-    private String getValueRoundingPosition(Object[] obj, List<Object[]> objs, List<Object[]> formula){
-        if(obj[11] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
+    private String getValueRoundingPosition(Object[] obj, List<Object[]> objs, List<Object[]> formula, List<Object[]> targetItem){
+        if( (obj[11] == null && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) || ZERO.equals(getSimpleFormula(obj, targetItem)) ) {
             return "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
@@ -268,7 +272,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.DEFINITION_FORMULA.value)) {
             Object[] defaultValue = findDefault(objs, obj[CODE].toString());
-            return defaultValue != null ? getValueRoundingPosition(defaultValue, objs, formula) : "";
+            return defaultValue != null ? getValueRoundingPosition(defaultValue, objs, formula, targetItem) : "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value && (obj[CALCULATION_FORMULA_ATR] != null
                 && ((BigDecimal)obj[CALCULATION_FORMULA_ATR]).intValue() == CalculationFormulaClassification.FORMULA.value)) {
@@ -278,7 +282,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private String getValueRoundingMethod(Object[] obj, List<Object[]> objs, List<Object[]> formula, List<Object[]> targetItem){
-        if((obj[10] == null) && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value){
+        if( ((obj[10] == null) && ((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.BASIC_SETTING.value) || ZERO.equals(getSimpleFormula(obj, targetItem))){
             return "";
         }
         if(((BigDecimal)obj[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value) {
