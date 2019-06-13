@@ -269,6 +269,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     block.grayout();
                     new service.saveCareer(command).done(function() {
                         //console.log('oki');
+                        self.historyModeUpdate(true);
                     }).fail(function(error) {
                         nts.uk.ui.dialog.error({ messageId: error.messageId });
                     }).always(function() {
