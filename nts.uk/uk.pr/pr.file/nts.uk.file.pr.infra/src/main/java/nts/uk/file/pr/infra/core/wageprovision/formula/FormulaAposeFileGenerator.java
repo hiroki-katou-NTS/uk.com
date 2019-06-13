@@ -301,12 +301,12 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         return "";
     }
 
-    private String getBaseTargetItem(List<Object[]> baseTarget, String formulaCode, BigDecimal amountCls){
+    private String getBaseTargetItem(List<Object[]> baseTarget, String formulaCode, BigDecimal amountCls, String masterCd){
         StringBuilder temp = new StringBuilder();
         int count = 0;
         for(int i = 0; i< baseTarget.size(); i++){
-            if(baseTarget.get(i)[0].toString().equals(formulaCode) && ((amountCls.intValue() == (Integer)baseTarget.get(i)[3])
-                    || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
+            if(baseTarget.get(i)[0].toString().equals(formulaCode) && baseTarget.get(i)[4].toString().equals(masterCd) &&
+                    ((amountCls.intValue() == (Integer)baseTarget.get(i)[3]) || amountCls.intValue() == 1 && (Integer)baseTarget.get(i)[3] == 0)) {
                 count++;
                 temp.append(getName((Integer) baseTarget.get(i)[3])).append("｛").append(baseTarget.get(i)[2]).append("｝").append("＋");
             }
@@ -376,7 +376,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             a.append(obj[STANDARD_FIXED_VALUE].toString());
         }
         if(((BigDecimal)obj[STANDARD_AMOUNT_ATR]).intValue() != StandardAmountClassification.FIXED_AMOUNT.value) {
-            a.append(getBaseTargetItem(targetItem, obj[CODE].toString(), (BigDecimal) obj[STANDARD_AMOUNT_ATR]));
+            a.append(getBaseTargetItem(targetItem, obj[CODE].toString(), (BigDecimal) obj[STANDARD_AMOUNT_ATR], obj[MASTER_USE_CD].toString()));
         }
         if(((BigDecimal)obj[COEFFICIENT_ATR]).intValue() == CoefficientClassification.FIXED_VALUE.value){
             e.append(obj[COEFFICIENT_FIXED_VALUE].toString());
