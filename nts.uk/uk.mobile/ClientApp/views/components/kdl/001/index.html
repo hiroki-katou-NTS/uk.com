@@ -1,0 +1,16 @@
+<div class="work-type">
+    <ul class="list-group list-group-single-select">
+        <li class="list-group-item" v-for="(item, k) in listItems" v-on:click="choose(item)" v-bind:class="selected(item)">
+            <div class="row">
+                <div class="col-2">{{item.code}}</div>
+                <div class="col-10">{{item.name}}</div>
+            </div>
+            <div>{{item.time}}</div>
+            <div>{{item.remark}}</div>
+        </li>
+    </ul>
+    <div class="modal-footer text-center">
+        <button class="btn btn-primary" v-on:click="pushData()">{{ 'choose' | i18n }}</button>
+        <button class="btn btn-secondary btn-sm" v-on:click="$close()">{{ 'cancel' | i18n }}</button>
+    </div>
+</div>

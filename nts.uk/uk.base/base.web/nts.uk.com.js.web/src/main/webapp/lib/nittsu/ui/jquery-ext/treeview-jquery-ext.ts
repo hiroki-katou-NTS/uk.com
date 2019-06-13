@@ -153,6 +153,9 @@ module nts.uk.ui.jqueryExtentions {
                 return values;
             } else {
                 let value: any = $tree.igTree("selectedNode");
+                if(_.isNil(value) || _.isNil(value.binding) || _.isNil(value.data)){
+                   return null;
+                }
                 if(!_.isNil(value)){
                     value["id"] = value.data[value.binding.valueKey];     
                 }
@@ -184,6 +187,7 @@ module nts.uk.ui.jqueryExtentions {
             if(_.isNil(target)){
                 return null;
             }
+            let binding = target.binding;
             let parent = $tree.igTree( "parentNode", $(target.element) );
             if(_.isNil(parent)){
                 let source = $tree.igTree("option", "dataSource").__ds, 
@@ -191,11 +195,11 @@ module nts.uk.ui.jqueryExtentions {
                 if(parentIndex <= 0){
                     return null;
                 }
-                let previous = $tree.igTree("nodesByValue", source[parentIndex][target.binding.valueKey]);
+                let previous = $tree.igTree("nodesByValue", source[parentIndex - 1][binding.valueKey]);
             
                 return $tree.igTree("nodeFromElement", previous);
             }
-            let binding = target.binding, parentData = $tree.igTree("nodeFromElement", parent).data;
+            let parentData = $tree.igTree("nodeFromElement", parent).data;
             let parentIndex = _.findIndex(parentData[binding.childDataProperty], (v) => v[binding.valueKey] === target.data[binding.valueKey]);
             if(parentIndex <= 0){
                 return null;

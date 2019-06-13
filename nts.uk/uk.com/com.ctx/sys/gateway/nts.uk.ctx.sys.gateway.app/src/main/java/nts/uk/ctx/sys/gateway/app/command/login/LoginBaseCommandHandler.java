@@ -406,7 +406,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the old password
 	 * @return true, if successful
 	 */
-	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
+	protected CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword) {
 		if (user.getPassStatus() != PassStatus.Reset.value) {
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
@@ -416,9 +416,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Event Check
 				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
-			return true;
+			return new CheckChangePassDto(false, null, false);
 		} else {
-			return false;
+			return new CheckChangePassDto(true, "Msg_283", false);
 		}
 	}
 
@@ -433,7 +433,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the old password
 	 * @return true, if successful
 	 */
-	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
+	protected CheckChangePassDto checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
 		// Check passwordPolicy isUse
 		if (passwordPolicy.isUse()) {
 			// Check Change Password at first login
@@ -441,7 +441,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Check state
 				if (user.getPassStatus() == PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					return false;
+					return new CheckChangePassDto(true, "Msg_282", false);
 				}
 			}
 
@@ -450,12 +450,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			if (mess.isError()) {
 				if (passwordPolicy.isLoginCheck()) {
-					return false;
+					return new CheckChangePassDto(true, "Msg_284", false);
 				}
-				return true;
+				return new CheckChangePassDto(false, null, false);
 			}
 		}
-		return true;
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**

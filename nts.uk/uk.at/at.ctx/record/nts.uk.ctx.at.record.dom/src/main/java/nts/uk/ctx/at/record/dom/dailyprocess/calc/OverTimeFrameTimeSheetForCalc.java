@@ -380,11 +380,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	}
         	
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
-        	
-        	/*ログ差し込み*/
-        	org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(OverTimeFrameTimeSheetForCalc.class);
-        	log.info("時間帯での法内への振替可能時間："+ ableRangeTime.valueAsMinutes()); 
-        	/*ログ差し込み*/
+        
         	
         	HolidayCalculation holidayCalculation = commonSetting.isPresent()?commonSetting.get().getHolidayCalculation():new HolidayCalculation(nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.USE);
         	if(ableRangeTime.greaterThan(0) && autoCalculationSet.getLegalOtTime().getCalAtr().isCalculateEmbossing())

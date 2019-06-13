@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UnitTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
@@ -81,10 +82,15 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 			scheAndWorkChange = requestSetting.getClassScheAchi();
 		}
 		//休出申請設定．事前反映設定．休出時間
-		boolean kyushutsu = true;
+		boolean isHwScheReflectHwTime = true;
+		boolean isHwRecordReflectTime = true;
+		boolean isHwRecordReflectBreak = true;
 		Optional<WithdrawalAppSet> optBreackOfWork = kyushutsuSetting.getWithDraw();
 		if(optBreackOfWork.isPresent()) {
-			kyushutsu = optBreackOfWork.get().getPrePerflex() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;
+			WithdrawalAppSet hwReflectSetting = optBreackOfWork.get();
+			isHwScheReflectHwTime = hwReflectSetting.getRestTime() == UnitTime.ONEMIN ? false : true;
+			isHwRecordReflectTime = hwReflectSetting.getWorkTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;
+			isHwRecordReflectBreak = hwReflectSetting.getBreakTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;			
 		}
 		return new InformationSettingOfEachApp(furikyuFurishutsu,
 				chokochoki,
@@ -95,7 +101,9 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 				workJikokuYusen,
 				jizenScheYusen,
 				scheAndWorkChange,
-				kyushutsu);
+				isHwScheReflectHwTime,
+				isHwRecordReflectTime,
+				isHwRecordReflectBreak);
 	}
 
 }
