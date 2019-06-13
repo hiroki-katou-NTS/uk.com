@@ -99,7 +99,7 @@ module nts.uk.com.view.jdl0110.a {
                     selectedCode = self.selectedSelWorkplace();
                 }
                 let selected = [];
-                let dataList: UnitModel[] = $("#workplaceList").getDataList();
+                let dataList: UnitModel[] = nts.uk.util.flatArray($("#workplaceList").getDataList(), 'childs');
                 _.forEach(dataList, function(value) {
                     if(_.includes(selectedCode, value.workplaceId)){
                         selected.push(value);
