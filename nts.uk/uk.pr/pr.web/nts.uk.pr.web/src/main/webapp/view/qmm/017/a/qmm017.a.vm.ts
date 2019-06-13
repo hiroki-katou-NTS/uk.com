@@ -94,8 +94,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         initFixedElement () {
             var self = this;
-            // fixed formula, master use code: 0000000000
-            self.masterBasicCalculationFormula().masterUseCode("0000000000");
+            // fixed formula, master use code: empty string => 10 space digits in db
+            self.masterBasicCalculationFormula().masterUseCode("");
         }
 
         initComponents () {
@@ -199,7 +199,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             };
             let basicCalculationFormula = [];
             if (command.settingMethod == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
-                let fixedMasterUseCode = "0000000000";
+                let fixedMasterUseCode = "";
                 basicCalculationFormula.push(ko.toJS(self.masterBasicCalculationFormula));
                 basicCalculationFormula[0].masterUseCode = fixedMasterUseCode;
                 if (formulaSettingCommand.basicFormulaSettingCommand.masterBranchUse == model.MASTER_BRANCH_USE.USE) {
@@ -412,7 +412,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         mapListCalculationToMasterUseItem(masterUseItem, basicCalculationFormula) {
             let self = this;
-            let fixedMasterUseCode = "0000000000";
+            let fixedMasterUseCode = "";
             self.masterBasicCalculationFormula(new model.BasicCalculationFormula(_.find(basicCalculationFormula, {masterUseCode: fixedMasterUseCode})));
             let formulas = masterUseItem.map(item => {
                 let currentFormula = _.find(basicCalculationFormula, {masterUseCode: item.code});

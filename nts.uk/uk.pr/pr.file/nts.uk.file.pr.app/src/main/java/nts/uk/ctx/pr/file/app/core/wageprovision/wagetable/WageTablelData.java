@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -54,7 +56,7 @@ public class WageTablelData {
 
     private String lowerLimit3;
 
-    private String payAmount;
+    private BigDecimal payAmount;
 
     private String payMethod;
 

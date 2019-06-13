@@ -296,7 +296,8 @@ public class JpaFormulaExRepository extends JpaRepository implements FormulaExRe
      sql.append("     a.FORMULA_CD,");
      sql.append("     CD,");
      sql.append("     NAME,");
-     sql.append("     STANDARD_AMOUNT_CLS");
+     sql.append("     STANDARD_AMOUNT_CLS,");
+     sql.append("     MASTER_USE_CD");
      sql.append("  FROM (");
      sql.append("      SELECT *");
      sql.append("      FROM QPBMT_BASIC_CAL_STD_AMOU ");
