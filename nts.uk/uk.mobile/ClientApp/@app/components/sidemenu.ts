@@ -7,7 +7,10 @@ import { component, Watch } from '@app/core/component';
 const _SideMenu = Vue.observable({
     show: false,
     items: [],
-    visible: true
+    visible: true,
+    empName: '',
+    warning: false,
+    reload: 0
 }), SideMenu = {
     get show() {
         return _SideMenu.show;
@@ -23,6 +26,18 @@ const _SideMenu = Vue.observable({
     },
     set visible(visible: boolean) {
         _SideMenu.visible = visible;
+    },
+    get visible() {
+        return _SideMenu.visible;
+    },
+    set warning(warning: boolean) {
+        _SideMenu.warning = warning;
+    },
+    get warning() {
+        return _SideMenu.warning;
+    },
+    reload() {
+        _SideMenu.reload++;
     }
 }, resize = () => {
     if (!browser.mobile) {
@@ -171,11 +186,3 @@ export class SideMenuBar extends Vue {
 }
 
 export { SideMenu };
-
-SideMenu.items = [{
-    url: '/',
-    title: 'home'
-}, {
-    url: '/ccg/007/b',
-    title: 'login'
-}];
