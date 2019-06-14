@@ -1,62 +1,79 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.input.YearKey
-   				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="qmm025.a.main.css" />
-			<com:scriptfile path="qmm025.a.start.js" />
-			<com:scriptfile path="qmm025.a.viewmodel.js" />
-			<com:scriptfile path="qmm025.a.service.js" />
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+            nts.uk.ctx.pr.core.dom.emprsdttaxinfo.amountinfo.ResidentTax
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm025.a.service.js"/>
+        <com:scriptfile path="qmm025.a.vm.js"/>
+        <com:scriptfile path="qmm025.a.start.js"/>
+        <com:stylefile path="qmm025.a.style.css"/>
 
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+    </ui:define>
 
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="A_BTN_001" class="proceed" data-bind="click:saveData">登録</button>
-				<button id="A_BTN_002">マスタ修正ログ</button>
-				<a id="A_BTN_005" data-bind="ntsLinkButton: {}">個人情報の登録へ</a>
-			</div>
-			<div id="contents-area">
-				<div class="left-content"></div>
-				<div class="right-content">
-					<div class="valign-center control-group">
-						<div id="A_LBL_001" data-bind="ntsFormLabel:{required: true}">対象年度</div>
-						<span id="A_INP_001"> <input
-							data-bind="ntsNumberEditor: {
-									value: yearKey,
-									constraint: 'YearKey',
-									option: {
-										grouplength: 0,
-										decimallength: 0,
-					                    placeholder: '',
-					                    width: '55px',
-					                    textalign: 'left'
-									},
-									required: true,
-									enable: true,
-									readonly: false}" /></span>
-						<a id="A_LBL_002">(<span data-bind="text: yearInJapanEmpire"></span>)
-						</a> <span id="A_LBL_003">年度</span>
-						<button id="A_BTN_003" data-bind="click: findAll">リスト表示ボタン</button>
-					</div>
-					<div class="bg-green config">
-						<button id="BTN_004" class="danger"
-							data-bind="click: remove, enable: isDeleteEnable">社員の住民税情報を削除</button>
-					</div>
-					<table id="grid"></table>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button tabindex="1" class="proceed" data-bind="click: registerAmount, enable: $root.errors.isEmpty">#{i18n.getText('QMM025_1')}</button>
+            <!--A1_2-->
+            <button tabindex="2" data-bind="enable: false">#{i18n.getText('QMM025_2')}</button>
+            <!--A1_3-->
+            <a class="goout" tabindex="3"
+               data-bind="ntsLinkButton: { action: jumpToCps001 }">#{i18n.getText('QMM025_3')}</a>
+        </div>
+        <div id="contents-area">
+            <!--A2_7-->
+            <div id="com-ccg001"/>
+            <div id="content-qmm">
+                <!--A2_1-->
+                <div id="A2_1" class="panel panel-frame">
+                    <div class="table">
+                        <div class="cell valign-center">
+                            <!--A2_2-->
+                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM025_4')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--A2_3-->
+                            <div id="A2_3" tabindex="4" data-bind="ntsDatePicker: {name: '#[QMM025_4]', value: year, required: true, dateFormat: 'YYYY'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--A2_4-->
+                            <div class="label" data-bind="text: japanYear()"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--A2_5-->
+                            <div class="label">#{i18n.getText('QMM025_5')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--A2_6-->
+                            <button id="A2_6" tabindex="5" class="small"
+                                    data-bind="click: getEmpAmount, enable: $root.errors.isEmpty">#{i18n.getText('QMM025_6')}</button>
+                        </div>
+                    </div>
+                </div>
+                <!--A2_8-->
+                <button id="A2_8" tabindex="7" class="danger"
+                        data-bind="click: deleteAmount, enable: $root.errors.isEmpty &amp;&amp; enableA2_8">#{i18n.getText('QMM025_7')}</button>
+                <!--A3_1-->
+                <div tabindex="8">
+                    <table id="grid"/>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

@@ -37,6 +37,9 @@ public interface DepartmentPub {
 	public List<DepartmentInforExport> getPastDepartmentInfor(String companyId, String depHistId,
 			List<String> listDepartmentId);
 
+	// for salary qmm016, 017
+    List<DepartmentExport> getDepartmentByCompanyIdAndBaseDate(String companyId, GeneralDate baseDate);
+    
 
     /**
      * [No.568]部門の下位部門を取得する

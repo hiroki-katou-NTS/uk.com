@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.SalaryUnitPrice
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qmm041.a.style.css"/>
+        <com:scriptfile path="qmm041.a.start.js"/>
+        <com:scriptfile path="qmm041.a.vm.js"/>
+        <com:scriptfile path="qmm041.a.service.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1 登録-->
+            <button class="proceed" tabindex="1" data-bind="click: register, enable: isRegistrable() &amp;&amp; $root.errors.isEmpty">
+                #{i18n.getText('QMM041_5')}
+            </button>
+            <!--A1_2 社員給与単価（項目別）-->
+            <a id="A1_2" class="goout" data-bind="ntsLinkButton: {action: toQmm042}" tabindex="11">
+                #{i18n.getText('QMM041_41')}
+            </a>
+        </div>
+        <div id="com-ccg001"/>
+        <div id="contents-area">
+            <div id="kcp" class="flex valign-center">
+                <!--A2_1 対象者-->
+                <div tabindex="2" id="emp-component"/>
+                <!--A2_2 単価の一覧を表示する-->
+                <button id="A2_2" class="small" tabindex="3" data-bind="click: displayScreenD">
+                    #{i18n.getText('QMM041_7')}
+                </button>
+            </div>
+            <!--A2_3 社員検索-->
+            <div class="fixed-flex-layout">
+                <div class="fixed-flex-layout-left left-content fixed-flex-layout">
+                    <div id="panels-group" class="fixed-flex-layout-left">
+                        <!--A3_1 項目選択パネル-->
+                        <div id="A3_1" class="cf"
+                             data-bind="ntsPanel:{width: 230, direction: 'bottom', showIcon: true}">
+                            <!--A3_3 検索-->
+                            <div tabindex="5" data-bind="ntsSearchBox: {
+                                searchMode: 'highlight',
+                                targetKey: 'code',
+                                comId: 'single-list',
+                                items: dataSource,
+                                selected: selectedCode,
+                                selectedKey: 'code',
+                                fields: ['name', 'code'],
+                                mode: 'igGrid'}"/>
+                            <!--A3_4 項目リスト-->
+                            <table tabindex="6" id="single-list" data-bind="ntsGridList: {
+                                rows: 8,
+                                width: 230,
+                                options: dataSource,
+                                optionsValue: 'code',
+                                multiple: false,
+                                value: selectedCode,
+                                name: '#[QMM041_8]',
+                                columns: [
+                                    {headerText: '#{i18n.getText('QMM041_8')}', key: 'code', width: 55},
+                                    {headerText: '#{i18n.getText('QMM041_9')}', key: 'name', formatter: _.escape}
+                                ]}"/>
+                        </div>
+                        <!--A4_1 履歴選択パネル-->
+                        <div id="A4_1" class="cf"
+                             data-bind="ntsPanel:{width: '287px', direction: 'none'}">
+                            <!--A4_2 履歴追加-->
+                            <button id="A4_2" tabindex="7" class="pull-left"
+                                    data-bind="click: displayScreenB, enable: isAddableHis">
+                                #{i18n.getText('QMM041_10')}
+                            </button>
+                            <!--A4_3 履歴編集-->
+                            <button id="A4_3" tabindex="8" class="pull-right"
+                                    data-bind="click: displayScreenC, enable: isEditableHis">
+                                #{i18n.getText('QMM041_11')}
+                            </button>
+                            <!--A4_4 履歴リスト-->
+                            <div class="history-box" id="list-box" tabindex="9" data-bind="ntsListBox: {
+                                    options: historyList,
+                                    optionsValue: 'historyId',
+                                    optionsText: 'period',
+                                    multiple: false,
+                                    value: selectedHistoryCode,
+                                    enable: true,
+                                    rows: 6,
+                                    columns: columns,
+                                    name: '#[QMM041_12]'}"/>
+                        </div>
+                    </div>
+                    <!--A4_7 キャレット-->
+                    <div class="flex valign-center fixed-flex-layout-right" id="custom-caret">
+                        <span class="caret-right"/>
+                    </div>
+                </div>
+                <div class="fixed-flex-layout-right right-content">
+                    <div class="control-group valign-center row">
+                        <!--A5_1 コード・名称-->
+                        <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM041_15')}</div>
+                        <!--A5_2 コード-->
+                        <span id="A5_2" onclick="$('#A4_2').focus()" class="label" data-bind="text: personalUnitPriceCode"/>
+                        <!--A5_3 名称-->
+                        <span id="A5_3" onclick="$('#A4_3').focus()" class="label" data-bind="text: personalUnitPriceShortName"/>
+                    </div>
+                    <div class="control-group valign-center row">
+                        <!--A5_4 期間-->
+                        <div id="A5_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM041_16')}</div>
+                        <!--A5_5 履歴開始年月-->
+                        <span class="label" data-bind="text: startYearMonth"/>
+                        <!--A5_6 ～-->
+                        <span class="label" data-bind="text: A5_6" />
+                        <!--A5_7 履歴開始年月-->
+                        <span class="label" data-bind="text: endYearMonth"/>
+                    </div>
+                    <div class="control-group valign-center row">
+                        <!--A5_8 金額-->
+                        <div id="A5_8" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM041_18')}</div>
+                        <!--A5_9 金額-->
+                        <input id="A5_9" tabindex="10" data-bind="ntsNumberEditor: {
+                            value: currencyValue,
+                            constraint: 'SalaryUnitPrice',
+                            required: true,
+                            name: '#[QMM041_18]',
+                            enable: currencyEnable,
+                            option: {
+                                grouplength: 3,
+                                decimallength: 2,
+                                currencyformat: 'JPY'
+                                }
+                            }"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

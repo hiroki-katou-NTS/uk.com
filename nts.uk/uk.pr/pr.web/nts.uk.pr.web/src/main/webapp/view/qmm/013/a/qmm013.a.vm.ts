@@ -1,448 +1,396 @@
-module qmm013.a.viewmodel {
-    export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        itemList: KnockoutObservableArray<any>;
-        currentItem: KnockoutObservable<PersonalUnitPrice>;
-        displayAll: KnockoutObservable<boolean>;
-        roundingRules: KnockoutObservableArray<any>;
-        isCompany: KnockoutObservable<boolean>;
-        SEL_004: KnockoutObservableArray<any>;
-        dirty: nts.uk.ui.DirtyChecker;
-        isCreated: KnockoutObservable<boolean>;
-        //check enable/disable delete button
-        isEnableDelete: KnockoutObservable<boolean>;
-        confirmDirty: boolean = false;
-        messages: KnockoutObservableArray<any>;
-        indexRow: KnockoutObservable<number>;
-        notLoop: KnockoutObservable<boolean>;
-        listItems: KnockoutObservableArray<any>;
-        isFirstGetData: KnockoutObservable<boolean>;
-        notCheckDirty: KnockoutObservable<boolean>;
+module nts.uk.pr.view.qmm013.a {
 
-        constructor() {
-            var self = this;
-            self.items = ko.observableArray([]);
-            self.currentItem = ko.observable(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
-            self.listItems = ko.observableArray([]);
-            self.currentCode = ko.observable();
-            self.displayAll = ko.observable(true);
-            self.isCreated = ko.observable(true);
-            self.isEnableDelete = ko.observable(true);
-            self.isFirstGetData = ko.observable(false);
-            self.notCheckDirty = ko.observable(false);
-            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
-            self.indexRow = ko.observable(0);
-            self.notLoop = ko.observable(false);
-            self.columns = ko.observableArray([
-                { headerText: 'コード', width: 100, key: 'code', formatter: _.escape },
-                { headerText: '名称', width: 150, key: 'name', formatter: _.escape },
-                { headerText: '廃止', width: 50, key: 'abolition', }
-            ]);
+    import model = qmm013.share.model;
+    import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
 
-            self.messages = ko.observableArray([
-                { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
-                { messageId: "ER001", message: "が入力されていません。" },
-                { messageId: "ER005", message: "入力したコードは既に存在しています。\r\nコードを確認してください。" },
-                { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
-                { messageId: "ER026", message: "更新対象のデータが存在しません。" },
-            ]);
-            self.itemList = ko.observableArray([
-                new BoxModel(0, '全員一律で指定する'),
-                new BoxModel(1, '給与約束形態ごとに指定する')
-            ]);
+    export module viewModel {
+        export class ScreenModel {
+            
+            // Also display abolition
+            isdisplayAbolition: KnockoutObservable<boolean> = ko.observable(true);
 
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '対象' },
-                { code: '0', name: '対象外' }
-            ]);
+            unitPriceNameList: KnockoutObservableArray<ISalaryPerUnitPriceName> = ko.observableArray([]);
+            unitPriceDataSelected: KnockoutObservable<SalaryPerUnitPriceData>;
+            currentCode: KnockoutObservable<string> = ko.observable(null);
+            checkCreate: KnockoutObservable<boolean> = ko.observable(false);
+            
+            // define gridColumns
+            gridColumns: any;
+            
+            constructor() {
+                let self = this;
+                
+                self.gridColumns = [
+                                        { headerText: getText('QMM013_8'), key: 'code', width: 70 , formatter: _.escape },
+                                        { headerText: getText('QMM013_9'), key: 'name', width: 220, formatter: _.escape },
+                                        { headerText: getText('QMM013_10'), key: 'abolition', width: 50, formatter: v => {
+                                            if (v == model.Abolition.ABOLISH) {
+                                                return '<div style="text-align: center; max-height: 18px;"><i class="ui-icon ui-icon-check"></i></div>';
+                                            }
+                                            return '';
+                                        } }
+                                   ];
 
-            self.SEL_004 = ko.observableArray([
-                { code: '0', name: '時間単価' },
-                { code: '1', name: '日額' },
-                { code: '2', name: 'その他' },
-            ]);
+                self.unitPriceDataSelected = ko.observable(new SalaryPerUnitPriceData(null));
 
-            self.currentCode.subscribe(function(newCode) {
-                if (!self.checkDirty()) {
-                    //in case first getData, no error so not jump clearError()
-                    if (self.isFirstGetData()) {
-                        self.clearError();
-                    }
-                    self.isFirstGetData(true);
-
-                    //don't allow checkDirty
-                    if (self.notCheckDirty()) {
-                        self.selectedUnitPrice(newCode);
-                        self.notCheckDirty(false);
-                        return;
-                        //end
-                    }
-                    self.selectedUnitPrice(newCode);
-                    self.isCreated(false);
-                    self.isEnableDelete(true);
-                }
-                else {
-                    //don't allow checkDirty
-                    if (self.notCheckDirty()) {
-                        self.selectedUnitPrice(newCode);
-                        self.notCheckDirty(false);
-                        return;
-                        //end
-                    }
-                    //don't loop subscribe function
-                    if (self.confirmDirty) {
-                        self.confirmDirty = false;
-                        self.isEnableDelete(true);
-                        return;
-                    }
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
-                        self.clearError();
-                        self.isFirstGetData(true);
-                        self.selectedUnitPrice(newCode);
-                        self.isCreated(false);
-                        self.isEnableDelete(true);
-                    }).ifCancel(function() {
-                        self.confirmDirty = true;
-                        self.currentCode(self.currentItem().personalUnitPriceCode())
-                    })
-                }
-            });
-
-            self.displayAll.subscribe(function(newValue) {
-                // don't loop subscribe function
-                // in case change data, change state button SEL_001 and choise 'NO'
-                if (self.notLoop()) {
-                    self.notLoop(false);
-                    return;
-                }
-                if (!self.checkDirty()) {
-                    self.getPersonalUnitPriceList().done(function() {
-                        //in case no dirty
-                        //if row is chose has column '廃止' is 'X', select first row in new list
-                        if (!self.currentItem().displaySet() && self.currentCode() != "") {
-                            var tmp = _.find(self.listItems(), function(x) {
-                                return x.personalUnitPriceCode === self.currentCode();
-                            });
-                            var tmp1 = new PersonalUnitPrice(
-                                tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true,
-                                null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily,
-                                tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
-                            self.currentItem(tmp1);
-                            self.dirty.reset();
-                        } else {
-                            self.selectedFirstUnitPrice();
-                        }
-                    });
-                } else {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
-                        .ifYes(function() {
-                            //self.notCheckDirty(true);
-                            self.getPersonalUnitPriceList().done(function() {
-                                //in case dirty
-                                if (self.currentCode() == "") {
-                                    self.notCheckDirty(true);
-                                    self.selectedFirstUnitPrice();
-                                }
-                                //if row is chose has column '廃止' is 'X', select first row in new list
-                                if (self.currentItem().displaySet()) {
-                                    self.notCheckDirty(true);
-                                    self.selectedFirstUnitPrice();
-                                } else {
-                                    //if row is chose has column '廃止' isn't 'X', keep the same position in new list
-                                    var tmp = _.find(self.listItems(), function(x) {
-                                        return x.personalUnitPriceCode === self.currentCode();
-                                    });
-                                    var tmp1 = new PersonalUnitPrice(
-                                        tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true,
-                                        null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily,
-                                        tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
-                                    self.currentItem(tmp1);
-                                    self.dirty.reset();
-                                }
-                            });
-                        })
-                        .ifCancel(function() {
-                            self.notLoop(true);
-                            self.displayAll(!self.displayAll());
+                self.isdisplayAbolition.subscribe(() => {
+                    let oldCode = self.currentCode();
+                    
+                    self.loadListData().done(function() {
+                        let matchData = _.filter(self.unitPriceNameList(), function(o: ISalaryPerUnitPriceName) {
+                            return o.code == oldCode;
                         });
-                }
-            });
-
-            /**
-             * paymentSettingType is number, convert to boolean type
-             */
-            self.isCompany = ko.computed(function() {
-                return !(self.currentItem().paymentSettingType() == 0);
-            });
-        }
-
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            self.getPersonalUnitPriceList().done(function() {
-                self.selectedFirstUnitPrice();
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * get data from data base to screen
-         */
-        getPersonalUnitPriceList(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getPersonalUnitPriceList(self.displayAll()).done(function(data) {
-                var items = _.map(data, function(item) {
-                    var abolition = item.displaySet == true ? "" : '<i class="icon icon-close"></i>';
-                    return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
-                });
-                self.listItems(data);
-                self.items(items);
-                dfd.resolve();
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
-
-        selectedUnitPrice(code): void {
-            var self = this;
-            if (!code) {
-                return;
-            }
-            service.getPersonalUnitPrice(code).done(function(res) {
-                self.currentItem(self.selectedFirst(res));
-                self.dirty.reset();
-            }).fail(function(res) {
-                alert(res.message);
-            });
-        }
-
-        selectedFirst(item): PersonalUnitPrice {
-            var self = this;
-            return new PersonalUnitPrice(
-                item.personalUnitPriceCode,
-                item.personalUnitPriceName,
-                item.personalUnitPriceShortName,
-                item.displaySet ? false : true,
-                item.uniteCode,
-                item.paymentSettingType,
-                item.fixPaymentAtr,
-                item.fixPaymentMonthly,
-                item.fixPaymentDayMonth,
-                item.fixPaymentDaily,
-                item.fixPaymentHoursly,
-                item.unitPriceAtr,
-                item.memo);
-        }
-
-        checkDirty(): boolean {
-            var self = this;
-            if (self.dirty.isDirty()) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        /**
-         * 新規(Clear form)
-         */
-        btn_001(): void {
-            var self = this;
-            if (self.isFirstGetData()) {
-                self.clearError();
-            }
-            if (!self.checkDirty() || self.notCheckDirty()) {
-                self.currentItem(new PersonalUnitPrice(null, null, null, false, "unitCode", 0, 1, 1, 1, 1, 1, 0, null));
-                self.dirty.reset();
-                self.currentCode("");
-                self.isCreated(true);
-                self.isEnableDelete(false);
-            } else {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
-                    self.currentItem(new PersonalUnitPrice(null, null, null, false, "unitCode", 0, 1, 1, 1, 1, 1, 0, null));
-                    self.dirty.reset();
-                    self.currentCode("");
-                    self.isCreated(true);
-                    self.isEnableDelete(false);
-                })
-                    .ifCancel(function() { })
-            }
-        }
-
-        closeDialog(): void {
-            var self = this;
-            if (!self.checkDirty()) {
-                nts.uk.ui.windows.close();
-            } else {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
-                    .ifYes(function() {
-                        nts.uk.ui.windows.close();
-                    })
-                    .ifCancel(function() { });
-            }
-        }
-
-        /**
-         * 登録(Add button)
-         */
-        btn_002(): void {
-            var self = this;
-            //self.confirmDirty = true;
-            //if input 0-9, auto insert '0' before
-            if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
-                self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
-            }
-            var PersonalUnitPrice = {
-                personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
-                personalUnitPriceName: self.currentItem().personalUnitPriceName(),
-                personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
-                displaySet: self.currentItem().displaySet() ? 0 : 1,
-                uniteCode: null,
-                paymentSettingType: self.currentItem().paymentSettingType(),
-                fixPaymentAtr: self.currentItem().fixPaymentAtr(),
-                fixPaymentMonthly: self.currentItem().fixPaymentMonthly(),
-                fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth(),
-                fixPaymentDaily: self.currentItem().fixPaymentDaily(),
-                fixPaymentHoursly: self.currentItem().fixPaymentHoursly(),
-                unitPriceAtr: self.currentItem().unitPriceAtr(),
-                memo: self.currentItem().memo()
-            };
-            service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function() {
-                self.getPersonalUnitPriceList();
-                //define update mode or insert mode
-                if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
-                    self.confirmDirty = true;
-                }
-                self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
-                self.isCreated(false);
-                self.dirty.reset();
-            }).fail(function(error) {
-                if (error.messageId == self.messages()[2].messageId) {
-                    $('#INP_002').ntsError('set', self.messages()[2].message);
-                } else if (error.messageId == self.messages()[1].messageId) {
-                    if (!PersonalUnitPrice.personalUnitPriceCode) {
-                        $('#INP_002').ntsError('set', self.messages()[1].message);
-                    }
-                    if (!PersonalUnitPrice.personalUnitPriceName) {
-                        $('#INP_003').ntsError('set', self.messages()[1].message);
-                    }
-                } else if (error.messageId == self.messages()[4].messageId) {
-                    nts.uk.ui.dialog.alert(self.messages()[4].message);
-                }
-            });
-        }
-
-        /**
-         * 削除(Delete button)
-         */
-        btn_004(): void {
-            var self = this;
-            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                var data = {
-                    personalUnitPriceCode: self.currentItem().personalUnitPriceCode()
-                };
-                self.indexRow(
-                    _.findIndex(self.items(), function(x) {
-                        return x.code === self.currentCode();
-                    })
-                );
-                service.removePersonalUnitPrice(data).done(function() {
-                    // reload list   
-                    self.getPersonalUnitPriceList().done(function() {
-                        self.notCheckDirty(true);
-                        if (self.items().length > self.indexRow()) {
-                            self.currentCode(self.items()[self.indexRow()].code);
-                        } else if (self.indexRow() == 0) {
-                            self.btn_001();
-                        } else if (self.items().length == self.indexRow() && self.indexRow() != 0) {
-                            self.currentCode(self.items()[self.indexRow() - 1].code);
+                        
+                        if(matchData.length > 0) {
+                            self.currentCode(oldCode);
+                        } else if(self.unitPriceNameList().length > 0) {
+                            self.currentCode(self.unitPriceNameList()[0].code);
                         }
                     });
-                }).fail(function(error) {
-                    alert(error.message);
                 });
-            }).ifCancel(function() { })
-        }
 
-        selectedFirstUnitPrice(): void {
-            var self = this;
-            if (self.items().length > 0) {
-                self.currentCode(self.items()[0].code);
-                self.selectedUnitPrice(self.items()[0].code);
-            } else {
-                self.btn_001();
+                self.currentCode.subscribe(x => {
+
+                    if(x && (x != "")) {
+                        let data: ISalaryPerUnitPriceName = _.filter(self.unitPriceNameList(), function(o: ISalaryPerUnitPriceName) {
+                            return o.code == x;
+                        })[0];
+
+                        if(data) {
+                            self.loadItemData(data.cid, data.code);
+                        } else {
+                            self.unitPriceDataSelected(new SalaryPerUnitPriceData(null));
+                            self.checkCreate(true);
+                            $("#A3_2").focus();
+                        }
+                    } else {
+                        self.unitPriceDataSelected(new SalaryPerUnitPriceData(null));
+                        self.checkCreate(true);
+                        $("#A3_2").focus();
+                    }
+
+                    nts.uk.ui.errors.clearAll();
+                });
+            }//end constructor
+
+            loadItemData(cid: string, code: string) {
+                let self = this;
+                block.invisible();
+
+                nts.uk.pr.view.qmm013.a.service.getUnitPriceData(cid, code).done(function (data: ISalaryPerUnitPriceData) {
+                    if(data) {
+                        self.unitPriceDataSelected(new SalaryPerUnitPriceData(data));
+                        self.checkCreate(false);
+
+                        setTimeout(function(){
+                            $("tr[data-id='" + code + "'] ").focus();
+                            $("#A3_3").focus();
+                        }, 200);
+                    } else {
+                        self.unitPriceDataSelected(new SalaryPerUnitPriceData(null));
+                        self.checkCreate(true);
+
+                        $("#A3_2").focus();
+                    }
+
+                    block.clear();
+                }).fail(error => {
+                    self.unitPriceDataSelected(new SalaryPerUnitPriceData(null));
+                    self.checkCreate(true);
+
+                    $("#A3_2").focus();
+
+                    block.clear();
+                });
+            }
+            
+            loadListData(): JQueryPromise<any> {
+                let self = this;
+                let deferred = $.Deferred();
+                block.invisible();
+
+                nts.uk.pr.view.qmm013.a.service.getAllUnitPriceName(self.isdisplayAbolition()).done(function (data: Array<ISalaryPerUnitPriceName>) {
+                    self.unitPriceNameList(data);
+                    
+                    if(self.unitPriceNameList().length <= 0) {
+                        self.currentCode(null);
+                        self.currentCode.valueHasMutated();
+                    }
+                    
+                    block.clear();
+                    deferred.resolve();
+                }).fail(error => {
+                    self.unitPriceNameList([]);
+                    self.currentCode(null);
+                    self.currentCode.valueHasMutated();
+                    
+                    block.clear();
+                    deferred.resolve();
+                });
+                
+                return deferred.promise();
+            }
+            
+            public create(): void {
+                let self = this;
+                
+                nts.uk.ui.errors.clearAll();
+                self.currentCode(null);
+            }
+            
+            public register(): void {
+                let self = this;
+                let listMessage: Array<string> = [];
+
+                $(".check-validate").trigger("validate");
+                
+                if(!nts.uk.ui.errors.hasError()) {
+                    let command = ko.toJS(self.unitPriceDataSelected);
+                    let oldCode = command.salaryPerUnitPriceName.code;
+
+                    command.checkCreate = self.checkCreate();
+                    command.salaryPerUnitPriceSetting.code = command.salaryPerUnitPriceName.code;
+
+                    if (_.isEmpty(command.salaryPerUnitPriceName.note)) {
+                        command.salaryPerUnitPriceName.note = null;
+                    }
+
+                    block.invisible();
+                    service.registerUnitPriceData(command).done(function() {
+                        block.clear();
+                        
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.loadListData().done(function() {
+                                let matchData = _.filter(self.unitPriceNameList(), function(o: ISalaryPerUnitPriceName) {
+                                    return o.code == oldCode;
+                                });
+
+                                if(matchData.length > 0) {
+                                    self.currentCode(oldCode);
+                                    self.currentCode.valueHasMutated();
+                                } else if(self.unitPriceNameList().length > 0) {
+                                    self.currentCode(self.unitPriceNameList()[0].code);
+                                }
+                            });
+                        });
+                    }).fail(err => {
+                        block.clear();
+                        
+                        if(err.messageId == "Msg_3") {
+                            $('#A3_2').ntsError('set', { messageId: "Msg_3" });
+                            $("#A3_2").focus();
+                        }
+                        
+                        if(err.messageId == "Msg_358") {
+                            $('#A3_3').ntsError('set', { messageId: "Msg_358" });
+                            $("#A3_3").focus();
+                        }
+                    });
+                }
+            }
+
+            public exportExcel(): void {
+                block.invisible();
+                nts.uk.pr.view.qmm013.a.service.exportExcel()
+                    .done(function () {
+                        block.clear();
+
+                    })
+                    .fail(function (error) {
+                        dialog.alertError({messageId: error.messageId});
+                        block.clear();
+                    })
+                    .always(function () {
+                        block.clear();
+                    });
+                ;
+            }
+            
+            public deleteItem(): void {
+                let self = this;
+                let nextCode = self.getNextCode();
+                
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    let command = ko.toJS(self.unitPriceDataSelected);
+                    
+                    block.invisible();
+                    service.removeUnitPriceData(command).done(function () {
+                        block.clear();
+                        
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.loadListData().done(function() {
+                                if(self.unitPriceNameList().length == 0) {
+                                    self.create();
+                                } else if(nextCode != null) {
+                                    self.currentCode(nextCode);
+                                }
+                            });
+                        });
+                    }).fail(err => {
+                        block.clear();
+                        $("#A3_3").focus();
+                    });
+                })
+            }
+            
+            public getNextCode(): string {
+                let self = this;
+                let nextItem: string = null;
+                let array: Array<string> = self.unitPriceNameList().map(x => x.code);
+                let value = self.currentCode();
+                
+                if(array.length > 0) {
+                    let index = array.indexOf(value);
+                    if(index >= 0) {
+                        if(index < (array.length - 1)) {
+                            nextItem = array[index + 1];
+                        } else if(index > 0){
+                            nextItem = array[index - 1];
+                        }
+                    }
+                }
+                
+                return nextItem;
             }
         }
 
-        clearError(): void {
-            $('#INP_002').ntsError('clear');
-            $('#INP_003').ntsError('clear');
-            $('#INP_004').ntsError('clear');
-            $('#INP_005').ntsError('clear');
+        export class SalaryPerUnitPriceData {
+            salaryPerUnitPriceName: KnockoutObservable<SalaryPerUnitPriceName> = ko.observable(null);
+            salaryPerUnitPriceSetting: KnockoutObservable<SalaryPerUnitPriceSetting> = ko.observable(null);
+
+            constructor(params: ISalaryPerUnitPriceData) {
+                this.salaryPerUnitPriceName(new SalaryPerUnitPriceName(params ? params.salaryPerUnitPriceName : null));
+                this.salaryPerUnitPriceSetting(new SalaryPerUnitPriceSetting(params ? params.salaryPerUnitPriceSetting : null));
+
+                nts.uk.ui.errors.clearAll();
+            }
         }
 
-    }
+        export class SalaryPerUnitPriceName {
+            cid: KnockoutObservable<string> = ko.observable(null);
+            code: KnockoutObservable<string> = ko.observable(null);
+            name: KnockoutObservable<string> = ko.observable(null);
+            abolition: KnockoutObservable<number> = ko.observable(null);
+            shortName: KnockoutObservable<string> = ko.observable(null);
+            integrationCode: KnockoutObservable<string> = ko.observable(null);
+            note: KnockoutObservable<string> = ko.observable(null);
 
-    class ItemModel {
-        code: string;
-        name: string;
-        abolition: string;
+            // Custom abolition from number to boolean
+            abolitionCustom: KnockoutObservable<boolean>;
 
-        constructor(code: string, name: string, abolition: string) {
-            this.code = code;
-            this.name = name;
-            this.abolition = abolition;
+            constructor(params: ISalaryPerUnitPriceName) {
+                let self = this;
+
+                this.cid(params ? params.cid : null);
+                this.code(params ? params.code : null);
+                this.name(params ? params.name : null);
+                this.abolition(params ? params.abolition : model.Abolition.NOT_ABOLISH);
+                this.shortName(params ? params.shortName : null);
+                this.integrationCode(params ? params.integrationCode : null);
+                this.note(params ? params.note : null);
+
+                self.abolitionCustom = ko.observable(self.abolition() == 1);
+                self.abolitionCustom.subscribe(x => {
+                    if (x) {
+                        self.abolition(1);
+                    } else {
+                        self.abolition(0);
+                    }
+                });
+            }
         }
-    }
 
-    class BoxModel {
-        id: number;
-        name: string;
+        export class SalaryPerUnitPriceSetting {
+            cid: KnockoutObservable<string> = ko.observable(null);
+            code: KnockoutObservable<string> = ko.observable(null);
+            unitPriceType: KnockoutObservable<number> = ko.observable(null);
+            settingAtr: KnockoutObservable<number> = ko.observable(null);
+            targetClassification: KnockoutObservable<number> = ko.observable(null);
+            monthlySalary: KnockoutObservable<number> = ko.observable(null);
+            monthlySalaryPerday: KnockoutObservable<number> = ko.observable(null);
+            dayPayee: KnockoutObservable<number> = ko.observable(null);
+            hourlyPay: KnockoutObservable<number> = ko.observable(null);
 
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
+            // Covered switch button
+            coveredList: KnockoutObservableArray<model.ItemModel>;
+
+            // settingAtr radio button
+            settingAtrList: KnockoutObservableArray<model.BoxModel>;
+
+            // unitPriceType switch button
+            unitPriceTypeList: KnockoutObservableArray<model.ItemModel>;
+
+            constructor(params: ISalaryPerUnitPriceSetting) {
+                let self = this;
+
+                if(params) {
+                    this.cid(params.cid ? params.cid : null);
+                    this.code(params.code ? params.code : null);
+                    this.unitPriceType(params.unitPriceType != null ? params.unitPriceType : model.PerUnitPriceType.HOUR);
+                    this.settingAtr(params.settingAtr != null ? params.settingAtr : model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
+                    this.targetClassification(params.targetClassification != null ? params.targetClassification : model.CoveredAtr.COVERED);
+                    this.monthlySalary(params.monthlySalary != null ? params.monthlySalary : model.CoveredAtr.COVERED);
+                    this.monthlySalaryPerday(params.monthlySalaryPerday != null ? params.monthlySalaryPerday : model.CoveredAtr.COVERED);
+                    this.dayPayee(params.dayPayee != null ? params.dayPayee : model.CoveredAtr.COVERED);
+                    this.hourlyPay(params.hourlyPay != null ? params.hourlyPay : model.CoveredAtr.COVERED);
+                } else {
+                    this.cid(null);
+                    this.code(null);
+                    this.unitPriceType(model.PerUnitPriceType.HOUR);
+                    this.settingAtr(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
+                    this.targetClassification(model.CoveredAtr.COVERED);
+                    this.monthlySalary(model.CoveredAtr.COVERED);
+                    this.monthlySalaryPerday(model.CoveredAtr.COVERED);
+                    this.dayPayee(model.CoveredAtr.COVERED);
+                    this.hourlyPay(model.CoveredAtr.COVERED);
+                }
+
+
+                self.coveredList = ko.observableArray([
+                    new model.ItemModel(model.CoveredAtr.COVERED.toString(), getText('QMM013_24')),
+                    new model.ItemModel(model.CoveredAtr.NOT_COVERED.toString(), getText('QMM013_25'))
+                ]);
+
+                self.settingAtrList = ko.observableArray([
+                    new model.BoxModel(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS, getText('QMM013_21')),
+                    new model.BoxModel(model.SettingClassification.DESIGNATE_FOR_EACH_SALARY_CONTRACT_TYPE, getText('QMM013_22'))
+                ]);
+
+                self.unitPriceTypeList = ko.observableArray([
+                    new model.ItemModel(model.PerUnitPriceType.HOUR.toString(), getText('QMM013_35')),
+                    new model.ItemModel(model.PerUnitPriceType.DAILY_AMOUNT.toString(), getText('QMM013_36')),
+                    new model.ItemModel(model.PerUnitPriceType.OTHER.toString(), getText('QMM013_37'))
+                ]);
+            }
         }
-    }
 
-    class PersonalUnitPrice {
-        personalUnitPriceCode: KnockoutObservable<string>;
-        personalUnitPriceName: KnockoutObservable<string>;
-        personalUnitPriceShortName: KnockoutObservable<string>;
-        displaySet: KnockoutObservable<boolean>;
-        uniteCode: KnockoutObservable<string>;
-        paymentSettingType: KnockoutObservable<number>;
-        fixPaymentAtr: KnockoutObservable<number>;
-        fixPaymentMonthly: KnockoutObservable<number>;
-        fixPaymentDayMonth: KnockoutObservable<number>;
-        fixPaymentDaily: KnockoutObservable<number>;
-        fixPaymentHoursly: KnockoutObservable<number>;
-        unitPriceAtr: KnockoutObservable<number>;
-        memo: KnockoutObservable<string>;
-
-        constructor(personalUnitPriceCode: string, personalUnitPriceName: string, personalUnitPriceShortName: string,
-            displaySet: boolean, uniteCode: string, paymentSettingType: number, fixPaymentAtr: number,
-            fixPaymentMonthly: number, fixPaymentDayMonth: number, fixPaymentDaily: number, fixPaymentHoursly: number,
-            unitPriceAtr: number, memo: string) {
-            this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
-            this.personalUnitPriceName = ko.observable(personalUnitPriceName);
-            this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
-            this.displaySet = ko.observable(displaySet);
-            this.uniteCode = ko.observable(uniteCode);
-            this.paymentSettingType = ko.observable(paymentSettingType);
-            this.fixPaymentAtr = ko.observable(fixPaymentAtr);
-            this.fixPaymentMonthly = ko.observable(fixPaymentMonthly);
-            this.fixPaymentDayMonth = ko.observable(fixPaymentDayMonth);
-            this.fixPaymentDaily = ko.observable(fixPaymentDaily);
-            this.fixPaymentHoursly = ko.observable(fixPaymentHoursly);
-            this.unitPriceAtr = ko.observable(unitPriceAtr);
-            this.memo = ko.observable(memo);
+        export interface ISalaryPerUnitPriceData {
+            salaryPerUnitPriceName: ISalaryPerUnitPriceName;
+            salaryPerUnitPriceSetting: ISalaryPerUnitPriceSetting;
         }
-    }
+
+        export interface ISalaryPerUnitPriceName {
+            cid: string;
+            code: string;
+            name: string;
+            abolition: number;
+            shortName: string;
+            integrationCode: string;
+            note: string;
+        }
+
+        export interface ISalaryPerUnitPriceSetting {
+            cid: string;
+            code: string;
+            unitPriceType: number;
+            settingAtr: number;
+            targetClassification: number;
+            monthlySalary: number;
+            monthlySalaryPerday: number;
+            dayPayee: number;
+            hourlyPay: number;
+        }
+    }  
 }

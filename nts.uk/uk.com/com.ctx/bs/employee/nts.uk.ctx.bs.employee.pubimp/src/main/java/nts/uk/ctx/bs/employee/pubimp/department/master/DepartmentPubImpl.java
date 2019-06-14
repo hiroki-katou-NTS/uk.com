@@ -6,8 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 
@@ -16,6 +19,9 @@ public class DepartmentPubImpl implements DepartmentPub {
 
 	@Inject
 	private DepartmentExportSerivce depExpService;
+	
+	@Inject
+    private AffDepartmentRepository affDepartmentRepository;
 
 	@Override
 	public List<DepartmentInforExport> getDepartmentInforByDepIds(String companyId, List<String> listDepartmentId,
@@ -44,6 +50,14 @@ public class DepartmentPubImpl implements DepartmentPub {
 						i.getDepartmentName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
 				.collect(Collectors.toList());
 	}
+	
+    // for salary qmm016, 017
+    @Override
+    public List<DepartmentExport> getDepartmentByCompanyIdAndBaseDate(String companyId, GeneralDate baseDate){
+        return affDepartmentRepository.getAllDepartmentByCompanyIdAndBaseDate(companyId, baseDate).stream().map(item -> {
+            return DepartmentExport.builder().companyId(item.getCompanyId().v()).depHistoryId(item.getDepHistoryId()).departmentId(item.getDepartmentId()).departmentCode(item.getDepartmentCode().v()).departmentName(item.getDepartmentName().v()).depDisplayName(item.getDepDisplayName().v()).depGenericName(item.getDepGenericName().v()).outsideDepCode(item.getOutsideDepCode().map(PrimitiveValueBase::toString)).build();
+        }).collect(Collectors.toList());
+    }
 
 	@Override
 	public List<String> getAllChildDepartmentId(String companyId, GeneralDate baseDate, String parentDepartmentId) {

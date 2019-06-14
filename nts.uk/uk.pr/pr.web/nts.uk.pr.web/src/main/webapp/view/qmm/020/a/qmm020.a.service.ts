@@ -1,37 +1,15 @@
-module qmm020.a.service {
-        //duong dan   
-        var paths = {
-            getAllotCompanySettingList: "pr/core/allot/findallcompanyallot"
-        }
-        
+module nts.uk.pr.view.qmm020.a {
+    export module service {
         /**
-         * Get list allot company
+         * define path to service
          */
-        export function getAllotCompanyList(): JQueryPromise<Array<model.CompanyAllotSettingDto>> {
-            var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getAllotCompanySettingList)
-                .done(function(res: Array<any>){
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise(); 
+        var path: any = {
+            getStateUseUnitSettingById: "core/wageprovision/statementbindingsetting/getStateUseUnitSettingById",
+        };
+
+        export function getStateUseUnitSettingById(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getStateUseUnitSettingById);
         }
-         
-        /**
-         * 
-         * 
-         */
-        export module model{
-         export class CompanyAllotSettingDto {
-                    companyCode: string;
-                    historyId: string;
-                    startYM: number;
-                    endYM:number;
-                    bonusStmtCode : string;
-                    payStmtCode:string;
-                }
-        
-        }
+
+    }
 }

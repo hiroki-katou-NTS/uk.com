@@ -7,116 +7,86 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 450, height: 400 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="qmm011.e.style.css" />
-			<com:scriptfile path="qmm011.e.start.js" />
-			<com:scriptfile path="../a/qmm011.a.service.js" />
-			<com:scriptfile path="qmm011.e.service.js" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.e.vm.js" />
-			<com:ValidatorScript>
-			    nts.uk.ctx.pr.core.dom.insurance.BusinessName
-			</com:ValidatorScript>
-			
+			<com:scriptfile path="qmm011.e.start.js" />
+			<com:scriptfile path="qmm011.e.service.js" />
+			<com:stylefile path="qmm011.e.style.css" />
 		</ui:define>
+
 		<ui:define name="content">
-			<div class="nameaction">
-				<label>事業種類を登録してください。</label>
-			</div>
-			<div class="nameaction">
-				<label>※全角10文字</label>
-			</div>
-			<br />
-			<center>
-				<table data-bind="with: insuranceBusinessTypeUpdateModel">
-					<tbody>
-						<tr>
-							<td class="bg-green">1</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz1St, 
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green">2</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz2Nd, 
-									option: $root.textEditorOption,
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">3</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz3Rd,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green">4</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz4Th,  
-									option: $root.textEditorOption, 
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">5</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz5Th,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">6</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz6Th,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">7</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz7Th,  
-									option: $root.textEditorOption, 
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">8</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz8Th,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green ">9</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz9Th,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-						<tr>
-							<td class="bg-green">10</td>
-							<td><input class="rate-input"
-								data-bind="ntsTextEditor: {value: bizNameBiz10Th,  
-									option: $root.textEditorOption, 
-									constraint: 'BusinessName',
-									enable: true}"></input></td>
-						</tr>
-					</tbody>
-				</table>
-			</center>
-			<br />
-			<hr />
-			<div id="this-functions-area" class="control-group halign-center">
-				<button class="btn-default proceed x-large"
-					id="btn_updateInsuranceBusinessType"
-					data-bind="click: updateInsuranceBusinessType">決定</button>
-				<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
+			<div id="contents-area">
+				<!-- E1 新たに作成する履歴 -->
+				<div id="title" style="margin: 10px 20px 10px 10px">
+					<span id="E1_1" class="label">#{i18n.getText('QMM011_43')}</span>
+				</div>
+				<!-- E1_2 名称 -->
+				<div id="E1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px">
+					<span class="label">#{i18n.getText('QMM011_44')}</span>
+					<!-- E2_3 保険名称 -->
+					<span id="E1_3" class="label" style="margin-left: 80px" data-bind = "text: insuranceName"></span>
+				</div>
+				<!-- E1_4 期間 -->
+				<div id="E1_4" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label">#{i18n.getText('QMM011_10')}</span>
+					<!-- E1_5 開始年月 -->
+					<div id = "E1_5"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM011_45')}',
+																value: startYearMonth, 
+																dateFormat: 'yearmonth',
+																valueFormat: 'YYYYMM',
+																required: true
+																}" tabindex="1"></div>
+					<!-- E1_6 ～ 9999/12 -->
+					<span id="E1_6" class="label" style="margin-left: 10px">#{i18n.getText('QMM011_46')}</span>
+				</div>
+				<!-- E1_7 履歴の引継ぎ -->
+
+				<com:ko-if bind="flag()">
+                    <div class=" table table-col-2">
+                        <div class ="cell valign-top">
+                            <div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					        <span class="label">#{i18n.getText('QMM011_47')}</span>
+						<!-- E1_8 履歴の引継ぎ -->
+                            </div>
+                        </div>
+                        <div class ="cell valign-top">
+							<div id="E1_8" class="control-group" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px"
+							 	data-bind="ntsRadioBoxGroup: {
+										value: takeOver,
+										options: listTakeOver,
+										optionsValue: 'code',
+										optionsText: 'name',
+										enable: true}" >
+							</div>
+                        </div>
+					</div>
+					</com:ko-if>
+					<com:ko-if bind="!flag()">
+                    <div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label" >#{i18n.getText('QMM011_47')}</span>
+						<div id = "E1_8" tabIndex = "2" style= "display: inline-block;text-align: left; margin-left:30px;">
+							<div id="E1_10"  class="cell"
+								data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+							</div>
+						</div>
+                    </div>
+					</com:ko-if>
+				</div>
+			<div id="functions-area-bottom">
+				<!-- E2_1 登録 -->
+				<button id="E2_1" tabindex="3" class="proceed large"
+					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM011_50')}</button>
+				<!-- E2_2 削除 -->
+				<button id="E2_2" tabindex="4"
+					data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -1,0 +1,193 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<div>
+    <div class="flex valign-center tab-row">
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+        <div style="width: 260px;" data-bind="with: selectedWageTable">
+            <div style="display: inline-block" data-bind="text: wageTableCode"></div>
+            <div class="limited-label" style="display: inline-block; margin-left: 10px; width: 190px; vertical-align: text-bottom;"
+                 data-bind="text: wageTableName"></div>
+        </div>
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
+        <div data-bind="with: selectedHistory">
+            <div style="display: inline-block" data-bind="text: displayStartMonth"></div>
+            <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
+            <div style="display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
+        </div>
+    </div>
+    <hr></hr>
+    <div class="tab-row">
+        <div style="width: 70px; vertical-align: top"
+             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
+        <div class="fixed-table-container">
+            <table class="custom-fixed-table normal-fixed-table">
+                <colgroup>
+                    <col width="30px"/>
+                    <col width="163px"/>
+                    <col width="360px"/>
+                    <col width="170px"/>
+                </colgroup>
+                <thead>
+	                <tr>
+	                    <th class="ui-widget-header"></th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+	                    <th class="ui-widget-header">
+	                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
+	                        <button tabindex="-1" style="display: inline-block"
+	                                data-bind="ntsHelpButton: {image: '../resource/＃QMM017_5.png', position: 'bottom left'}">?
+	                        </button>
+	                    </th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
+	                </tr>
+                </thead>
+                <tbody>
+	                <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_29')}</th>
+	                    <td>
+	                        <div data-bind="text: elementName"></div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+	                            <input tabindex="12" id="F2_8" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeLowerLimit', 
+	                            		value: rangeLowerLimit, 
+	                            		name: '#[QMM016_30]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                            <div>#{i18n.getText('QMM016_31')}</div>
+	                            <input tabindex="13" id="F2_10" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeUpperLimit', 
+	                            		value: rangeUpperLimit, 
+	                            		name: '#[QMM016_32]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                        </div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+	                            <input tabindex="14" id="F2_11" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'StepIncrement', 
+	                            		value: stepIncrement, 
+	                            		name: '#[QMM016_33]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_40')}</th>
+	                    <td>
+	                        <div data-bind="text: elementName"></div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+	                            <input tabindex="15" id="F2_15" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeLowerLimit', 
+	                            		value: rangeLowerLimit, 
+	                            		name: '#[QMM016_30]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                            <div>#{i18n.getText('QMM016_31')}</div>
+	                            <input tabindex="16" id="F2_17" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+	                            		constraint: 'RangeUpperLimit', 
+	                            		value: rangeUpperLimit, 
+	                            		name: '#[QMM016_32]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                        </div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+	                            <input tabindex="17" id="F2_18" data-bind="ntsNumberEditor: { 
+	                            		required: true, 
+                            			enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
+                            			constraint: 'StepIncrement', 
+                            			value: stepIncrement, 
+                            			name: '#[QMM016_33]', 
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_44')}</th>
+	                    <td>
+	                        #{i18n.getText('QMM016_53')}
+	                    </td>
+	                    <td style="text-align: center;">
+	                        #{i18n.getText('QMM016_34')}
+	                    </td>
+	                    <td style="text-align: center;">
+	                        #{i18n.getText('QMM016_34')}
+	                    </td>
+	                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+        <button tabindex="18" data-bind="click: $vm.createWorkLevelWageTable" style="width: 400px;"
+                class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
+    </div>
+    <div class="tab-row" style="margin-top: 40px;">
+        <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
+        <button tabindex="19" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
+    </div>
+    <hr></hr>
+    <div class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length > 0">
+        <table>
+			<thead>
+				<tr>
+					<td rowspan="2" style="border: none; width: 150px"><img src="../resource/＃QMM017_6.png"></img></td>
+					<td style="border: none; padding: 0 0px">
+						<div style="display: inline-block; background-color: #CFF1A5; border: 1px solid #CCC; font-weight: bold; color: #000;">
+							<div style="width: 150px; display: inline-block;">
+		                        <div>#{i18n.getText('QMM016_53')}</div>
+		                    </div>
+		                    <div style="vertical-align: middle;" id="combo-box" data-bind="ntsComboBox: {
+	                     		options: $vm.listThirdDimension,
+			                     optionsValue: 'value',
+			                     width: '150px',
+			                     visibleItemsCount: 5,
+			                     value: $vm.fakeSelectedValue,
+			                     optionsText: 'name',
+			                     selectFirstIfNull: true,
+			                     enable: true,
+			                     columns: [
+			                         { prop: 'fixed_length', length: 4 },
+			                         { prop: 'name', length: 10 },
+			                     ]}"></div>
+						</div>
+						<img src="../resource/＃QMM017_8.png"></img>
+	                </td>
+					<td style="border: none;"></td>
+				</tr>
+				<tr>
+					<th class="ui-widget-header" style="background-color: #CFF1A5; height: 32px">
+						<div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement">
+	                        <div data-bind="text: elementName"></div>
+	                    </div>
+	                </th>
+					<td style="border: none;"><img src="../resource/＃QMM017_7.png"></img></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<table id="grid2"></table>
+					</td>
+					<td style="border: none;"></td>
+				</tr>
+			</tbody>
+		</table>
+    </div>
+</div>
+</ui:composition>

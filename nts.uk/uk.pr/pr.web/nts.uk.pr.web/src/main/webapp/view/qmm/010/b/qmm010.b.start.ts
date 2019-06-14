@@ -1,8 +1,11 @@
-module nts.uk.pr.view.qmm010.b {
+module nts.uk.pr.view.qmm010.b{
     __viewContext.ready(function() {
-        var screenModel = new nts.uk.pr.view.qmm010.b.viewmodel.ScreenModel();
-        screenModel.startPage().done(function(res: nts.uk.pr.view.qmm010.b.viewmodel.ScreenModel) {
-            __viewContext.bind(res);
+        var viewmodel = new nts.uk.pr.view.qmm010.b.viewmodel.ScreenModel();
+        __viewContext.viewModel = viewmodel;
+
+        viewmodel.startPage().done(function() {
+            __viewContext.bind(__viewContext.viewModel);
+            $('#B2_1_container').focus();
         });
     });
 }

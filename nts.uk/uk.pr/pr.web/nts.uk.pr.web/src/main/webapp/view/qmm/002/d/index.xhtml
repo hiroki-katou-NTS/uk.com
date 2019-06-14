@@ -7,97 +7,84 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1100, height: 530 };</script>
-			<com:ValidatorScript>
-				     nts.uk.ctx.basic.dom.system.bank.BankCode
-				     nts.uk.ctx.basic.dom.system.bank.BankName
-					 nts.uk.ctx.basic.dom.system.bank.BankNameKana
-					 nts.uk.shr.com.primitive.Memo
-   		    </com:ValidatorScript>
+			<script>var dialogSize = { width: 900, height: 500 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm002.d.start.js" />
+			<com:scriptfile path="../a/qmm002.a.service.js" />
 			<com:scriptfile path="qmm002.d.vm.js" />
-			<com:scriptfile path="qmm002.d.service.js" />
-			<com:stylefile path="main.css" />
+			<com:ValidatorScript>
+		        nts.uk.ctx.pr.transfer.dom.bank.BankCode
+		        nts.uk.ctx.pr.transfer.dom.bank.BankName
+		        nts.uk.ctx.pr.transfer.dom.bank.BankNameKana
+		        nts.uk.shr.com.primitive.Memo
+		    </com:ValidatorScript>
+			<com:scriptfile path="qmm002.d.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_001" data-bind="click: cleanForm"
-					style="width: 80px; margin-left: 10px;">新規</button>
-				<button id="A_BTN_002" class="proceed" data-bind="click: addBank"
-					style="width: 80px; margin-left: 10px;">登録</button>
-				<button id="A_BTN_003" style="width: 80px; margin-left: 110px;"
-					data-bind="click: close">閉じる</button>
+				<button tabindex = "1" data-bind="click: createNew, enable: updateMode(), timeClick: 500">#{i18n.getText('QMM002_1')}</button>
+				<button tabindex = "2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM002_2')}</button>
+				<button tabindex = "3" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM002_23')}</button>
 			</div>
-			<div id="contents-area">
-				<div class="left-content">
-					<div id="LST_001" style="margin-left: 10px;">
-						<table id="single-list"
-							data-bind="ntsGridList: {
-							width: 300,
-							height: 400,
-							options: items,
-							optionsValue: 'codeDisplay',
-							columns: columns,
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left">
+					<table id="single-list" tabindex = "4"
+						data-bind="ntsGridList: {								
+							rows: 15,
+							name: '#[QMM002_31]',
+							dataSource: bankList,
+							primaryKey: 'code',
+							columns: [
+				                { headerText: 'code', key: 'code', hidden: true, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM002_11')}', key: 'displayText', width: 250, formatter: _.escape }
+				            ],
 							multiple: false,
-							value: currentCode
-					}"></table>
-					</div>
+							value: selectedCode
+						}"></table>
 				</div>
-				<div class="right-content" data-bind="with: currentItem">
-					<div class="right-content-left">
-						<div id="LBL_001"
-							data-bind="ntsFormLabel:{constraint: ['BankCode','BankName'],required: true}">銀行コード/名称</div>
-						<div id="LBL_002" data-bind="ntsFormLabel:{constraint: 'BankNameKana'}">銀行名称(カナ)</div>
-					</div>
-					<div class="right-content-right">
-						<div class="control-group">
-							<span style="margin-left: 4px;"> <input
-								data-name="銀行コード" id="INP_001" class="text-editor1"
-								data-bind="ntsTextEditor: {
-										value: code,
-										required: true,
-										constraint: 'BankCode',
-										enable: $parent.isCreated}" />
-							</span> <span  style="margin-left: 5px"> <input
-								data-name="名称" id="INP_002" class="text-editor2"
-								data-bind="ntsTextEditor: {
-										value: name,
-										required: true,
-										constraint: 'BankName'}" /></span>
+				<div class="fixed-flex-layout-right">
+					<div data-bind="with: selectedBank">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {  required: true, constraint: ['BankCode', 'BankName'] }">#{i18n.getText('QMM002_13')}</div>
+							<input tabindex="5" id="D3_2" data-bind="ntsTextEditor: {
+								name: '#[QMM002_32]',
+								value: code,
+								constraint: 'BankCode',
+								option: {width: '40px'},
+								required: true, enable: !$vm.updateMode()}" />
+							<input tabindex="6" id="D3_3" data-bind="ntsTextEditor: {
+								name: '#[QMM002_33]',
+								value: name,
+								constraint: 'BankName',
+								required: true}" />
 						</div>
-						<div class="control-group">
-							<span id="INP_003" style="margin-left: 5px"> <input
-								class="text-editor3"
-								data-bind="ntsTextEditor: {
-											value: nameKana,
-											constraint: 'BankNameKana',
-											enable: true,
-											readonly: false}" /></span>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { constraint: 'BankNameKana' }">#{i18n.getText('QMM002_15')}</div>
+							<input tabindex="7" data-bind="ntsTextEditor: {
+								name: '#[QMM002_15]',
+								value: kanaName,
+								constraint: 'BankNameKana',
+								required: false}" />
 						</div>
 					</div>
-				</div>
-				<hr style="width: 640px; float: left; margin-bottom: 15px" />
-				<div class="right-content" data-bind="with: currentItem">
-					<div class="right-content-left">
-						<div id="LBL_003" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
-					</div>
-					<div class="right-content-right">
-						<div class="control-group">
-							<span id="INP_004" style="margin-bottom: 15px; margin-left: 5px">
-								<textarea style="height: 130px; width: 400px;"
-									class="text-editor1"
-									data-bind="ntsMultilineEditor: {
-									value: memo,
-									constraint: 'Memo',
-									enable: true,
-									readonly: false}" />
-							</span>
+					<hr style="min-width: 550px"></hr>
+					<div data-bind="with: selectedBank">
+						<div class="valign-top control-group">
+							<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>
+							<textarea style="height: 164px" tabindex="8" data-bind="ntsMultilineEditor: {
+								value: memo,
+								name: '#[QMM002_14]',
+								constraint: 'Memo',
+								option: {width: '327px'},
+								readonly: false}" />
 						</div>
 					</div>
 				</div>
 			</div>
+			<style>
+				.form-label{width: 182px}
+				div.valign-center.control-group { width: 550px }
+				div.valign-top.control-group { width: 550px }
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

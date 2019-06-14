@@ -1,206 +1,211 @@
-module qmm012.j.viewmodel {
+module nts.uk.pr.view.qmm012.j.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import model = nts.uk.pr.view.qmm012.share.model;
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
+    import validation = nts.uk.ui.validation;
+
     export class ScreenModel {
-        //gridlist
-        dataSource: KnockoutObservableArray<qmm012.b.service.model.ItemMaster> = ko.observableArray([]);
-        columns: KnockoutObservableArray<any>;
-        updateSource: KnockoutObservableArray<qmm012.b.service.model.ItemMaster> = ko.observableArray([]);
-        currentGroupCode: KnockoutObservable<number> = ko.observable(0);
-        oldGroupCode: KnockoutObservable<number> = ko.observable(0);
-        columnSettings: KnockoutObservableArray<any>;
-        dirty: nts.uk.ui.DirtyChecker;
+        statementItems: Array<IDataScreen> = [];
+        currentCode: KnockoutObservable<string> = ko.observable('');
+
+        itemNameCd: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        shortName: KnockoutObservable<string> = ko.observable('');
+        englishName: KnockoutObservable<string> = ko.observable('');
+        otherLanguageName: KnockoutObservable<string> = ko.observable('');
+        categoryAtr: KnockoutObservable<number> = ko.observable(0);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+
+        englishNameValidator = new validation.StringValidator(getText("QMM012_120"), "EnglishName", { required: false });
+        otherLanguageNameValidator = new validation.StringValidator(getText("QMM012_121"), "OtherLanguageName", { required: false });
         constructor() {
             let self = this;
-            //gridlist
-            self.columns = ko.observableArray([
-                { headerText: "コード", key: "itemCode", dataType: "string", width: "40px" },
-                { headerText: "名称", key: "itemName", dataType: "string", width: "180px" },
-                { headerText: "略名", key: "itemAbName", dataType: "string", width: "160px" },
-                { headerText: "英語", key: "itemAbNameE", dataType: "string", width: "140px" },
-                { headerText: "略名多言語", key: "itemAbNameO", dataType: "string", width: "160px" }
-            ]);
-            self.columnSettings = ko.observableArray([
-                { columnKey: "itemCode", editorOptions: { type: "numeric", disabled: true } },
-                { columnKey: "itemName", editorOptions: { type: "string", disabled: true } },
-                { columnKey: "itemAbName", editorOptions: { type: "string", disabled: true } },
-                { columnKey: "itemAbNameE", validation: true },
-                { columnKey: "itemAbNameO", validation: true }
-            ]);
-            self.currentGroupCode.subscribe(function(newValue) {
-                $("#J_Lst_ItemList").igGridUpdating("endEdit", true, true);
-                if (newValue != self.oldGroupCode()) {
-                    self.activeDirty(
-                        function() {
-                            self.reLoadGridData();
-                            $(".title").text(self.genTitleText(newValue));
-                        },
-                        function() {
-                            self.reLoadGridData();
-                            $(".title").text(self.genTitleText(newValue));
-                        },
-                        function() {
-                            self.currentGroupCode(self.oldGroupCode());
-                            $("#sidebar").ntsSideBar("active", self.oldGroupCode());
-                        });
-                }
-            });
-            self.LoadGridData();
-        }
-
-        genTitleText(GroupCode) {
-            let result = ""
-            switch (GroupCode) {
-                case 0:
-                    result = "支給項目";
-                    break;
-                case 1:
-                    result = "控除項目";
-                    break;
-                case 2:
-                    result = "勤怠項目";
-                    break;
-                case 3:
-                    result = "記事項目";
-                    break;
-                case 9:
-                    result = "その他";
-                    break;
-            }
-            return result
-        }
-
-        reLoadGridData() {
-            let self = this;
-            service.findAllItemMasterByCategory(self.currentGroupCode()).done(function(MasterItems: Array<qmm012.b.service.model.ItemMaster>) {
-                self.dataSource(MasterItems);
-                $("#J_Lst_ItemList").igGrid("option", "dataSource", self.dataSource());
-                self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
-                self.oldGroupCode(self.currentGroupCode());
-            })
-        }
-
-        LoadGridData() {
-            let self = this;
-            service.findAllItemMasterByCategory(self.currentGroupCode()).done(function(MasterItems: Array<qmm012.b.service.model.ItemMaster>) {
-                self.dataSource(MasterItems);
-                self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
-                self.BindGrid();
-                self.oldGroupCode(self.currentGroupCode());
-            })
-        }
-
-        ChangeGroup(GroupCode) {
-            let self = this;
-            self.currentGroupCode(GroupCode);
-        }
-
-        BindGrid() {
-            let self = this;
-            $("#J_Lst_ItemList").igGrid({
-                primaryKey: "itemCode",
-                columns: self.columns(),
-                dataSource: self.dataSource(),
-                width: "760px",
-                height: "500px",
-                autoCommit: true,
-                features: [
-                    {
-                        name: "Updating",
-                        editCellEnding: self.saveData.bind(self),
-                        enableAddRow: false,
-                        editMode: "cell",
-                        enableDeleteRow: false,
-                        cancelTooltip: "Click to cancel",
-                        columnSettings: self.columnSettings(),
-                        editCellStarting: self.edited 
-                    }]
-            });
-        }
-        
-        edited(evt, ui){ 
-            window.setTimeout(function(){ 
-                $(".ui-iggrid-table").parent().scrollLeft(0);          
-            }, 0);
-//                $(".ui-iggrid-table").parent().scrollLeft(0);        
-//            }, 300);
-        }
-
-        saveData(evt, ui) {
-            let self = this;
-            if (ui.columnKey == "itemAbNameE" || ui.columnKey == "itemAbNameO") {
-                let item = _.find(self.dataSource(), function(ItemModel: qmm012.b.service.model.ItemMaster) {
-                    return ItemModel.itemCode == ui.rowID;
-                });
-                if (item) {
-                    if (self.validate(ui.value)) {
-                        let itemUpdate = _.find(self.updateSource(), function(ItemModel: qmm012.b.service.model.ItemMaster) {
-                            return ItemModel.itemCode == ui.rowID;
-                        });
-                        if (itemUpdate) {
-                            let index = self.updateSource().indexOf(itemUpdate);
-                            itemUpdate[ui.columnKey] = ui.value;
-                        } else {
-                            item[ui.columnKey] = ui.value;
-                            self.updateSource().push(item);
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-            }
-        }
-        validate(value) {
-            let result = true;
-            if (value != "") {
-                var n = 0;
-                $('#J_Lst_ItemList').ntsError('clear');
-                $('.ui-igedit').removeClass("errorValidate");
-                for (let char of value) {
-                    let p = value.charCodeAt(value.indexOf(char));
-                    if (p < 128) {
-                        n++;
-                    } else
-                        n += 2;
-                }
-                if (n > 12) {
-                    $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 12');
-                    $('.ui-igedit').addClass("errorValidate");
-                    result = false;
-                }
-            }
-            return result;
-        }
-
-        updateData() {
-            let self = this;
-            $("#J_Lst_ItemList").igGridUpdating("endEdit", true, true);
-            if (self.updateSource().length) {
-                service.updateNameItemMaster(self.updateSource()).done(function(res: any) {
-                    //after update, need clear array
-                    self.updateSource([]);
-                    self.reLoadGridData();
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alert(res);
-                });
-            }
-        }
-        activeDirty(MainFunction, YesFunction?, NoFunction?) {
-            let self = this;
-            if (self.dirty ? !self.dirty.isDirty() : true) {
-                MainFunction();
+            $("#J2_1").focus();
+            //Fixed table
+            if (/Edge/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
+            } else if (/Chrome/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 505, width: 825 });
             } else {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function() {
-                    if (YesFunction)
-                        YesFunction();
-                }).ifNo(function() {
-                    if (NoFunction)
-                        NoFunction();
-                })
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
             }
+            let categoryAtrScreenB = getShared('QMM012_B');
+            if (categoryAtrScreenB != null) {
+                self.categoryAtr(categoryAtrScreenB);
+            }
+            if (self.categoryAtr(0)) {
+                self.onSelectTabB();
+            } else if (self.categoryAtr(1)) {
+                self.onSelectTabC();
+            }
+            else if (self.categoryAtr(2)) {
+                self.onSelectTabD();
+            }
+            else if (self.categoryAtr(3)) {
+                self.onSelectTabE();
+            }
+            else if (self.categoryAtr(4)) {
+                self.onSelectTabF();
+            }
+            self.loadGrid();
         }
-        CloseDialog() {
+        onSelectTabB() {
             let self = this;
-            $("#J_Lst_ItemList").igGridUpdating("endEdit", true, true);
-            self.activeDirty(function() { nts.uk.ui.windows.close(); }, function() { nts.uk.ui.windows.close(); });
+            self.categoryAtr(0);
+            self.getData();
+        };
+        onSelectTabC() {
+            let self = this;
+            self.categoryAtr(1);
+            self.getData();
+        };
+        onSelectTabD() {
+            let self = this;
+            self.categoryAtr(2);
+            self.getData();
+        };
+        onSelectTabE() {
+            let self = this;
+            self.categoryAtr(3);
+            self.getData();
+        };
+        onSelectTabF() {
+            let self = this;
+            self.categoryAtr(4);
+            self.getData();
+        };
+        cancel() { 
+            nts.uk.ui.windows.close();
+        };
+
+        getData(): JQueryPromise<any> {
+            let self = this;
+            block.invisible();
+            nts.uk.ui.errors.clearAll();
+
+            service.getStatementItemAndStatementItemName(self.categoryAtr()).done(function(data: Array<IDataScreen>) {
+                self.statementItems = [];
+                $("#gridStatement").ntsGrid("destroy");
+                if (data && data.length > 0) {
+                    self.statementItems = _.sortBy(data, ["itemNameCd"]);
+                    self.currentCode(self.statementItems[0].itemNameCd);
+                    self.isNewMode(false);
+                }
+                else{
+                    self.currentCode(null);
+                    self.isNewMode(true);
+                }
+                self.loadGrid();
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
+
+        updateStatelmentItemName() {
+            let self = this;
+            let statementItems: Array<IDataScreen> = $("#gridStatement").igGrid("option", "dataSource")
+            // update
+            _.forEach(statementItems, (item: IDataScreen) => {
+                if (_.isEmpty(item.englishName)) {
+                    item.englishName = null;
+                }
+                if (_.isEmpty(item.otherLanguageName)) {
+                    item.otherLanguageName = null;
+                }
+            })
+            self.validateForm(statementItems);
+            if(nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            block.invisible();
+
+            service.updateStatementItemName(statementItems).done(() => {
+                self.getData();
+                dialog.info({messageId: "Msg_15"});
+            }).fail(function (error) {
+                alertError(error);
+            }).always(function () {
+                block.clear();
+            });
+        }
+
+        loadGrid(){
+            let self = this;
+            $("#gridStatement").ntsGrid({
+                width: '807px',
+                height: '459px',
+                dataSource: self.statementItems,
+                primaryKey: 'itemNameCd',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    {headerText: getText("QMM012_32"), key: 'itemNameCd', dataType: 'string', width: '50px'},
+                    {headerText: getText("QMM012_33"), key: 'name', dataType: 'string', width: '220px'},
+                    {headerText: getText("QMM012_35"), key: 'shortName', dataType: 'string', width: '140px'},
+                    {
+                        headerText: getText("QMM012_120"), key: 'englishName', dataType: 'string', width: '190px',
+                        ntsControl: 'TextEditor'
+                    },
+                    {
+                        headerText: getText("QMM012_121"), key: 'otherLanguageName', dataType: 'string', width: '207px',
+                        ntsControl: 'TextEditor'
+                    },
+                ],
+                features: [],
+                ntsControls: [
+                    {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
+                ],
+            });
+        }
+
+        validateForm(statementItems: Array<IDataScreen>){
+            let self = this,
+                check: any;
+            nts.uk.ui.errors.clearAll();
+            _.each(statementItems, (item: IDataScreen) => {
+                check = self.englishNameValidator.validate(item.englishName);
+                if(!check.isValid) {
+                    self.setErrorEnglishName(item.itemNameCd, check.errorCode, check.errorMessage)
+                }
+                check = self.otherLanguageNameValidator.validate(item.otherLanguageName);
+                if(!check.isValid) {
+                    self.setErrorOtherLanguageName(item.itemNameCd, check.errorCode, check.errorMessage)
+                }
+            })
+        }
+
+        setErrorEnglishName(id: string, messageId: any, message: any) {
+            $("#gridStatement").find(".nts-grid-control-englishName-" + id + " input").ntsError('set', {
+                messageId: messageId,
+                message: message
+            });
+        }
+
+        setErrorOtherLanguageName(id: string, messageId: any, message: any) {
+            $("#gridStatement").find(".nts-grid-control-otherLanguageName-" + id + " input").ntsError('set', {
+                messageId: messageId,
+                message: message
+            });
+        }
+    }
+
+    export interface IDataScreen {
+        categoryAtr: number;
+        itemNameCd: string;
+        defaultAtr: number;
+        valueAtr: number;
+        deprecatedAtr: number;
+        socialInsuaEditableAtr: number;
+        intergrateCd: string;
+        name: string;
+        shortName: string;
+        otherLanguageName: string;
+        englishName: string;
     }
 }

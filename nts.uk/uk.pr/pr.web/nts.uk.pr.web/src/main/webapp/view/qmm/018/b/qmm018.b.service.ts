@@ -1,20 +1,16 @@
-module qmm018.b.service {
-    var paths: any = {
-        itemSelect: "pr/core/item/findall/category/{0}"
-    }
-    
-    /**
-     * select items master by category
-     */
-    export function itemSelect(categoryAtr): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.itemSelect, categoryAtr))
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+module nts.uk.pr.view.qmm018.b {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
+    export module service {
+        
+        let paths = {
+            getStatementItemDataByCategory: "ctx/pr/core/averagewagecalculationset/getStatementItemDataByCategory/{0}"
+        }
+
+        export function getStatementItemDataByCategory(categoryAtr: number): JQueryPromise<any> {
+            let _path = format(paths.getStatementItemDataByCategory, categoryAtr);
+            return ajax('pr', _path);
+        }
     }
 }

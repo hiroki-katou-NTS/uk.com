@@ -1,6 +1,9 @@
-module qmm005.d {
-    __viewContext.ready(() => {
-        __viewContext["viewModel"] = new ViewModel();
-        __viewContext.bind(__viewContext["viewModel"]);
+module nts.uk.pr.view.qmm005.d {
+    __viewContext.ready(function() {
+        __viewContext['screenModel'] = new viewmodel.ScreenModel();
+        __viewContext['screenModel'].startPage().done(function() {
+            __viewContext.bind(__viewContext['screenModel']);
+             $("#D2_2").focus();
+        });
     });
 }

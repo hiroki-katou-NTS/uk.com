@@ -1,6 +1,9 @@
-__viewContext.ready(function() {
-    var screenModel = new nts.uk.pr.view.qmm002.b.viewmodel.ScreenModel();
-
-    screenModel.startPage();
-    this.bind(screenModel);
-});
+module nts.uk.pr.view.qmm002.b {
+    __viewContext.ready(function() {
+            var screenModel = new viewmodel.ScreenModel();
+            screenModel.startPage().done(function() {
+                __viewContext.bind(screenModel);
+                $("#B1_4_container").focus();
+            });
+    });
+}

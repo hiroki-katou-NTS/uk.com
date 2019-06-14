@@ -3523,8 +3523,8 @@ module nts.uk.ui.jqueryExtentions {
                                    .validate(value);
                         case "Currency":
                             let opts: any = new ui.option.CurrencyEditorOption();
-                            opts.grouplength = this.options.groupLength | 3;
-                            opts.decimallength = this.options.decimalLength | 2;
+                            opts.grouplength = !_.isNil(this.options.groupLength) ? this.options.groupLength : 3;
+                            opts.decimallength = !_.isNil(this.options.decimalLength) ? this.options.decimalLength : 2;
                             opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                             opts.required = this.options.required;
                             opts.min = this.options.min;
@@ -4127,8 +4127,8 @@ module nts.uk.ui.jqueryExtentions {
                                     }
                                 } else if (valueType === "Currency") { 
                                     let currencyOpts: any = new ui.option.CurrencyEditorOption();
-                                    currencyOpts.grouplength = constraint.groupLength | 3;
-                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.grouplength = !_.isNil(constraint.groupLength) ? constraint.groupLength : 3;
+                                    currencyOpts.decimallength = !_.isNil(constraint.decimalLength) ? constraint.decimalLength : 2;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     let groupSeparator = constraint.groupSeparator || ",";
                                     let rawValue = text.replaceAll(value, groupSeparator, "");
