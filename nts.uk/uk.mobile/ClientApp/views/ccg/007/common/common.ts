@@ -48,53 +48,49 @@ export class CCG007Login extends Vue {
 
         self.$mask('hide');
 
-        Promise.resolve()
-            .then(() => storage.local.setItem('companyCode', submitData.companyCode))
-            .then(() => storage.local.setItem('employeeCode', submitData.employeeCode))
-            .then(() => {
-                if (!_.isEmpty(data.msgErrorId) && data.msgErrorId === 'Msg_1517' && !submitData.loginDirect) {
-                    // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-                    self.$modal.confirm({ messageId: data.msgErrorId, messageParams: [data.spanDays.toString()] })
-                        .then((code) => {
-                            if (code === 'yes') {
-                                self.$goto({
-                                    name: 'changepass',
-                                    params: _.merge(submitData,
-                                        {
-                                            saveInfo,
-                                            oldPassword: submitData.password,
-                                            mesId: data.msgErrorId,
-                                            changePassReason: 'Msg_1523',
-                                            spanDays: data.spanDays
-                                        })
-                                });
-                            } else {
-                                submitData.loginDirect = true;
-                                this.login(submitData, resetForm, saveInfo);
-                            }
+        if (!_.isEmpty(data.msgErrorId) && data.msgErrorId === 'Msg_1517' && !submitData.loginDirect) {
+            // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+            self.$modal.confirm({ messageId: data.msgErrorId, messageParams: [data.spanDays.toString()] })
+                .then((code) => {
+                    if (code === 'yes') {
+                        self.$goto({
+                            name: 'changepass',
+                            params: _.merge(submitData,
+                                {
+                                    saveInfo,
+                                    oldPassword: submitData.password,
+                                    mesId: data.msgErrorId,
+                                    changePassReason: 'Msg_1523',
+                                    spanDays: data.spanDays
+                                })
                         });
-                } else {
-                    // check MsgError
-                    if ((!_.isEmpty(data.msgErrorId) && data.msgErrorId !== 'Msg_1517') || data.showChangePass) {
-                        if (data.showChangePass) {
-                            self.$goto({
-                                name: 'changepass', params: _.merge({},
-                                    submitData,
-                                    {
-                                        oldPassword: submitData.password, mesId: data.msgErrorId, saveInfo,
-                                        changePassReason: data.changePassReason
-                                    })
-                            });
-                        } else {
-                            resetForm();
-                            /** TODO: wait for dialog error method */
-                            self.$modal.error({ messageId: data.msgErrorId });
-                        }
                     } else {
-                        self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+                        submitData.loginDirect = true;
+                        this.login(submitData, resetForm, saveInfo);
                     }
+                });
+        } else {
+            // check MsgError
+            if ((!_.isEmpty(data.msgErrorId) && data.msgErrorId !== 'Msg_1517') || data.showChangePass) {
+                if (data.showChangePass) {
+                    self.$goto({
+                        name: 'changepass', params: _.merge({},
+                            submitData,
+                            {
+                                oldPassword: submitData.password, mesId: data.msgErrorId, saveInfo,
+                                changePassReason: data.changePassReason
+                            })
+                    });
+                } else {
+                    resetForm();
+                    /** TODO: wait for dialog error method */
+                    self.$modal.error({ messageId: data.msgErrorId });
                 }
-            });
+            } else {
+                self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+            }
+        }
+
     }
 }
 

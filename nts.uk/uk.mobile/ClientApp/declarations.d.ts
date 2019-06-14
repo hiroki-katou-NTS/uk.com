@@ -94,9 +94,10 @@ declare module "vue/types/vue" {
             login: (data: any) => Promise<{}>;
             logout: () => Promise<{}>;
             readonly user: Promise<{
-                employee: string;
+                employee: boolean;
                 companyId: string;
                 employeeId: string;
+                companyCode: string;
                 employeeCode: string;
                 constractCode: string;
                 role: {
