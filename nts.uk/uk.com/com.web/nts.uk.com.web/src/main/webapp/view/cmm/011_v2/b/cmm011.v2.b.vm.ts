@@ -15,12 +15,13 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         lstWpkHistory: KnockoutObservableArray<HistoryItem>;
         selectedHistoryId: KnockoutObservable<string>;
         bkHistoryId: string;
+        bkStartDate: string;
+        bkEndDate: string;
         selectedStartDateInput: KnockoutObservable<string>;
         selectedStartDateText: KnockoutObservable<string>;
         selectedEndDate: KnockoutObservable<string>;
         copyPreviousConfig: KnockoutObservable<boolean>;
         isLatestHistory: KnockoutObservable<boolean>;
-        deletedHistory: boolean = false;
         
         constructor() {
             let self = this, params = getShared("CMM011AParams");
@@ -64,6 +65,11 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
             service.getAllConfiguration(self.initMode()).done(data => {
                 if (data) {
                     self.lstWpkHistory(_.map(data, i => new HistoryItem(i)));
+                    let selectedHist = _.find(data, h => h.historyId == self.bkHistoryId);
+                    if (selectedHist && self.bkStartDate == null && self.bkEndDate == null) {
+                        self.bkStartDate = selectedHist.startDate;
+                        self.bkEndDate = selectedHist.endDate;
+                    }
                     if (self.selectedHistoryId() != null)
                         self.selectedHistoryId.valueHasMutated();
                     else
@@ -98,8 +104,6 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                 block.invisible();
                 let data = { historyId: self.selectedHistoryId(), initMode: self.initMode() };
                 service.deleteConfiguration(data).done(() => {
-                    if (data.historyId == self.bkHistoryId)
-                        self.deletedHistory = true;
                     self.startPage().done(() => {
                         self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                     });
@@ -200,12 +204,20 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
         
         cancel() {
             let self = this;
-            if (self.deletedHistory)
+            let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.bkHistoryId);
+            if (preSelectHist && (preSelectHist.startDate != self.bkStartDate || preSelectHist.endDate != self.bkEndDate)) {
+                setShared("CMM011BParams", { 
+                    historyId: preSelectHist.historyId, 
+                    startDate: preSelectHist.startDate, 
+                    endDate: preSelectHist.endDate 
+                });
+            } else {
                 setShared("CMM011BParams", { 
                     historyId: self.lstWpkHistory()[0].historyId, 
                     startDate: self.lstWpkHistory()[0].startDate, 
                     endDate: self.lstWpkHistory()[0].endDate 
                 });
+            }
             nts.uk.ui.windows.close();
         }
     }
