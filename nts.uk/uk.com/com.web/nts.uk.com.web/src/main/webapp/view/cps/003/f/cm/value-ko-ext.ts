@@ -29,9 +29,9 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
     const timewd = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'],
-        fetch = (codes?: string[]) => nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-item/name', { itemCodes: codes || ['IS00020', 'IS00279', 'IS00253'] });
+        fetch = (codes?: string[]) => nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-item/name', { itemCodes: codes || ['IS00020', 'IS00279', 'IS00253'] }),
+        fetch1= {checkFunctionNo: () => nts.uk.request.ajax(`ctx/pereg/functions/auth/find-with-role-person-info`)};
 
     export class ValueBoxControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: () => { itemData: KnockoutObservable<IItemData>; value: KnockoutObservable<any>; replacer: KnockoutObservable<string>; }, allBindingsAccessor: () => { settingChange: Function }, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -222,6 +222,34 @@ module nts.custombinding {
                                         }
                                     }
                                 }
+                            });
+                        } else if (['IS00084', 'IS00085'].indexOf(itemData.itemCode) > -1) {
+                            fetch1.checkFunctionNo().done(role => {
+                                let itemContraint = _.filter(__viewContext.primitiveValueConstraints, value =>{return value.itemCode == itemData.itemCode});
+                                setShared('inputCDL008', {
+                                    selectedCodes: [],
+                                    baseDate: __viewContext.viewModel.baseDate,
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: role.available,
+                                    showNoSelection: itemContraint.length > 0? !itemContraint[0].required: false,
+                                    isShowBaseDate: false
+                                }, true);
+
+                                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                    if (getShared('CDL008Cancel')) {
+                                        return;
+                                    }
+
+                                    let output = getShared('outputCDL008');
+                                    if (!_.isNil(output)) {
+                                         let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItems), value => { return value.optionValue == output; });
+                                         vm.value(output);  
+                                         vm.textValue(`${selectedValue.length > 0 ? selectedValue[0].optionText : ""}`);
+                                    }
+                                });
+
+
                             });
                         } else {
                             setShared("KDL002_isShowNoSelectRow", true);
@@ -562,7 +590,8 @@ module nts.custombinding {
                                 'IS00194', 'IS00203',
                                 'IS00212', 'IS00221',
                                 'IS00230', 'IS00239',
-                                'IS00185'].indexOf(itemData.itemCode) > -1) {
+                                'IS00185', 'IS00084', 
+                                'IS00085'].indexOf(itemData.itemCode) > -1) {
                                 ko.utils.setHtml(element, template.buttonWt);
                             } else {
                                 ko.utils.setHtml(element, template.button);
