@@ -121,8 +121,8 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(dataRow[j] != null ? EnumAdaptor.valueOf(((BigDecimal) dataRow[j]).intValue(), NestedUseCls.class).nameId : "");
                             break;
                         case MASTER_BRANCH_USE:
-                            cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null && ((BigDecimal) dataRow[j]).intValue() == 0 ?
-                                    TextResource.localize("Enum_MasterBranchUse_NOT_USE") : TextResource.localize("Enum_MasterBranchUse_USE"));
+                            cells.get(rowStart, j + startColumn).setValue(dataRow[j] != null && ((BigDecimal) dataRow[j]).intValue() == 1 ?
+                                    TextResource.localize("Enum_MasterBranchUse_USE") : TextResource.localize("Enum_MasterBranchUse_NOT_USE"));
                             break;
                         case MASTER_USE:
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterType(dataRow));
