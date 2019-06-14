@@ -23,4 +23,6 @@ public interface PersonInfoMatrixItemRepo {
 	void insertAll(List<PersonInfoMatrixItem> listNewSetting);
 
 	List<PersonInfoMatrixData> findInfoData(String pInfoCategoryID);
+	
+	List<PersonInfoMatrixData> findInfoData(String categoryId, List<String> itemIds);
 }
