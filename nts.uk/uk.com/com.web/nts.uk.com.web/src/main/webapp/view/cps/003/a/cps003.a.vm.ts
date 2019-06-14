@@ -1532,6 +1532,10 @@ module cps003.a.vm {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) {
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
+                            if (value instanceof Date) {
+                                return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;    
+                            }
+                            
                             return replaceValue.matchValue === value;
                         }, () => replaceValue.replaceValue);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.GRAND_DATE) { //　年休付与基準日
@@ -1542,6 +1546,10 @@ module cps003.a.vm {
                                 let groupByEmpId = _.groupBy(infos, "employeeId");
                                 $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                     if (replaceValue.replaceAll) return true;
+                                    if (value instanceof Date) {
+                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;
+                                    }
+                                    
                                     return replaceValue.matchValue === value;
                                 }, (value, rec) => {
                                     let holidayInfo: Array<AnnualLeaveEmpBasicInfo> = groupByEmpId[rec.employeeId];
@@ -1561,6 +1569,10 @@ module cps003.a.vm {
                                 
                                 $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                     if (replaceValue.replaceAll) return true;
+                                    if (value instanceof Date) {
+                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;
+                                    }
+                                    
                                     return replaceValue.matchValue === value;
                                 }, (value, rec) => {
                                     let histItem = groupByEmpId[rec.employeeId];
