@@ -211,7 +211,7 @@ module nts.uk.com.view.cmm011.v2.b.viewmodel {
                     startDate: preSelectHist.startDate, 
                     endDate: preSelectHist.endDate 
                 });
-            } else {
+            } else if (preSelectHist == null) {
                 setShared("CMM011BParams", { 
                     historyId: self.lstWpkHistory()[0].historyId, 
                     startDate: self.lstWpkHistory()[0].startDate, 
