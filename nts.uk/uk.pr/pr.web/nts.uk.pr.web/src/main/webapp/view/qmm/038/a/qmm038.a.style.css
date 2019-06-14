@@ -1,0 +1,17 @@
+#A2_3 {
+    width: 65px;
+}
+
+#gridStatement .mgrid-header td.left-align {
+    text-align: left;
+}
+
+#gridStatement .mgrid-free td.currency-symbol {
+    text-align: right;
+}
+
+#gridStatement .mgrid-free td.currency-symbol:before {
+    float: left;
+    padding-right: 0;
+    padding-left: 4px;
+}

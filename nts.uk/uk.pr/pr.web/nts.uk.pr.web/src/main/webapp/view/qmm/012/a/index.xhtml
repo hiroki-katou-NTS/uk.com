@@ -4,51 +4,66 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
-
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="qmm012.a.start.js" />
-			<com:stylefile path="main.css" />
+			<script type='text/javascript'>
+            var dialogSize = {
+                width: 550,
+                height: 400
+            };
+        </script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm012.a.start.js" />
 			<com:scriptfile path="qmm012.a.vm.js" />
-			<com:scriptfile path="qmm012.a.service.js" />
+			<com:stylefile path="qmm012.a.style.css" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="content-header">
-				<label id="A_LBL_Guide" class="displayBlock">新たに作成する項目名の、項目区分を選択してください。</label>
-				<div style="margin-top: 20px;">
-					<div class="floatLeft">
-						<label id="A_LBL_MainlyUsedItems" class="displayBlock">▼おもに使用する項目</label>
-						<div id="A_SEL_TypeItem" class="cf"
+
+			<div id="functions-area">
+				<!--A1_1-->
+				<div style="padding-left: 10px" class="label">#{i18n.getText('QMM012_12')}</div>
+			</div>
+
+			<div id="contents-area">
+				<div class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left padding-item"
+						style="width: 190px;">
+						<!--A2_1-->
+						<div class="label" style="margin-bottom: 15px; font-size: 21px;">#{i18n.getText('QMM012_13')}</div>
+						<!--A2_2-->
+						<div tabindex="1" id="A2_2"
+							style="margin-left: 70px; padding: 10px"
 							data-bind="ntsSwitchButton: {
-							options: roundingRules,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedRuleCode,
-							enable: enable }"></div>
-						<!-- <button id="A_BTN_001" class="proceed displayBlock">支給項目ボタン</button>
-						<button id="A_BTN_002" class="displayBlock">支給項目ボタン</button>
-						<button id="A_BTN_003" class="displayBlock">支給項目ボタン</button> -->
+													options:  categoryAtr,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedCategoryAtr,
+													required: true,
+													enable: true }"></div>
 					</div>
-					<div
-						style="margin-left: 20px; background-color: #f2f2f2; border-radius: 5px; height: 290px; width: 350px;"
-						class="floatLeft">
-						<label id="A_LBL_ItemDescription">項目説明 </label>
-						<hr style="margin-left: 15px;"></hr>
-						<label id="A_LBL_NavigationMessage"
-							data-bind="text:NavigationMessage">ナビゲーションメッセージ１</label>
+					<div class="fixed-flex-layout-right padding-item">
+						<div style="width: 300px">
+							<div style="height: 200px;" class="panel panel-gray-bg">
+								<!--A3_2-->
+								<div class="label">#{i18n.getText('QMM012_14')}</div>
+								<hr />
+								<div class="label" data-bind="text: item"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div id="contents-area">
-				<button id="A_BTN_Submit" class="x-large proceed"
-					data-bind="click: submitInfo">選択</button>
-				<button id="A_BTN_Close" class="large"
-					data-bind="click: closeDialog">キャンセル</button>
+
+			<div id="functions-area-bottom" style="height: 45px;">
+				<!--A4_1-->
+				<button class="large proceed" tabindex="2"
+					data-bind="click: saveData">#{i18n.getText('QMM012_18')}</button>
+				<!--A4_2-->
+				<button tabindex="3" data-bind="click: cancelSetting">#{i18n.getText('QMM012_19')}</button>
 			</div>
+
 		</ui:define>
 	</ui:composition>
 </body>

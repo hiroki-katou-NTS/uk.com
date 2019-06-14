@@ -1,0 +1,10 @@
+.dialog-title {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    min-width: 550px;
+}
+
+#I1_6 label:nth-child(2) {
+    margin-top: 90px;
+    display: block !important;
+}

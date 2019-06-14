@@ -5,105 +5,123 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
-				</com:ValidatorScript>
+			<script>var dialogSize = { width: 900, height: 630 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/constants.js"/>
+			<com:scriptfile path="qmm003.e.service.js" />
 			<com:scriptfile path="qmm003.e.vm.js" />
 			<com:scriptfile path="qmm003.e.start.js" />
-			<com:scriptfile path="qmm003.e.service.js" />
-			<com:stylefile path="main.css" />
-			<script>
-				var dialogSize = {
-					width : 710,
-					height : 630
-				};
-			</script>
 		</ui:define>
-
 		<ui:define name="content">
-			<div class="flex valign-center" style="margin-top: 5px">
-				<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
-			</div>
-			<div>
-				<div style="margin-left: 25px; height: 30px; margin-top:5px"
-					data-bind="ntsFormLabel: { required: true }" class="form-label flex">
-					<label id="E_LBL_004">対象年度</label>
-					<input id="E_INP_003" data-bind="ntsTextEditor: {value:year}" />
-				    <label id="E_LBL_005" data-bind="text: yearJapan()">対象年度</label>
-				</div>
-			</div>
-
-			<div id="contents-area" class="cf">
-
-				<div class="nts-left-content">
-					<div>
-						<label id="E_LBL_002">【統合元情報】</label>
+			<div id="contents-area">
+				<div style="width: 870px">
+					<div class="valign-center control-group">
+						<!-- E1_1 -->
+						<span class="label">#{i18n.getText('QMM003_29')}</span><br/>
 					</div>
-					<div class="caret-right caret-background">
-						<i class="icon icon-searchbox"></i>
-
-						<div style="margin-top: -11px; margin-left: 50px;" data-bind="ntsSearchBox: {items: treeLeft, selected: resiTaxCodeLeft, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-						<div>
-							<table id="treegrid21"
+					<div class="valign-center control-group">
+						<!-- E1_2 -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_30')}</div>
+						<!-- E1_3 -->
+						<div id="E1_3" tabindex="1"
+	                                 data-bind="ntsDatePicker: {
+	                                    name: '#[QMM016_16]',
+	                                    value: targetYm,
+	                                    dateFormat: 'yearmonth',
+	                                    valueFormat: 'YYYYMM',
+	                                    required: true,
+	                                    enable: true}"/>
+						<!-- E1_4 -->
+						<div style="margin-left: 10px; display: inline" id="E1_4" data-bind="text: displayJapanYm"/>
+					</div>
+					<div class="cf">
+						<div id="source" style="float: left">
+							<div class="valign-center control-group">
+								<!-- E2_1 -->
+								<span class="label">#{i18n.getText('QMM003_31')}</span>
+							</div>
+							<div class="valign-center control-group">
+								<!-- E2_2 -->
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<!-- E2_3 -->
+								<div tabindex="2" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'code', mode:'igTree', comId:'treegridsource', items: source, 
+									selected: sourceSelectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
+							</div>
+							<!-- E2_4 -->
+							<table id="treegridsource" tabindex="3"
 								data-bind="ntsTreeGridView:{
-								   	width: 310,
-									height: 360,
-									options: treeLeft,
-									selectedValues: resiTaxCodeLeft,
-									optionsValue: 'code',
-									optionsChild: 'childs',
-									optionsText: 'nodeText',
+									width: 400,
+									rows: 13,
+									name: '#[QMM003_32]',
+									dataSource: source,
+									selectedValues: sourceSelectedCodes,
+									headers: headers,
+									primaryKey: 'code',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
 									multiple: true,
 									enable: true,
-									showCheckBox: true}"
-								class="cf"></table>
+									showCheckBox: true}"></table>
 						</div>
-					</div>
-
-				</div>
-
-				<div class="nts-right-content">
-					<div>
-						<label id="E_LBL_003">【統合先情報】</label>
-					</div>
-
-					<div>
-						<i style="margin-left: 15px" class="icon icon-searchbox"></i>
-						<div style="margin-left: 80px; margin-top: -10px;"
-							data-bind="ntsSearchBox: {items: treeRight, selected: resiTaxCodeRight, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-						<div>
-							<table id="treegrid2"
+						<div id="midsec" style="float: left; width: 65px">
+							<!-- E1_5 -->
+							<hr width="1" size="390"/>
+							<!-- E1_6 -->
+							<span class="caret-right caret-inline"></span>
+						</div>
+						<div id="destination" style="float: left">
+							<div class="valign-center control-group">
+								<!-- E3_1 -->
+								<span class="label">#{i18n.getText('QMM003_33')}</span>
+							</div>
+							<div class="valign-center control-group">
+								<!-- E3_2 -->
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<!-- E3_3 -->
+								<div tabindex="4" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'code', mode:'igTree', comId:'treegriddestination', items: destination, 
+									selected: selectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
+							</div>
+							<!-- E3_4 -->
+							<table id="treegriddestination" tabindex="5"
 								data-bind="ntsTreeGridView:{
-								   	width: 300,
-									height: 360,
-									options: treeRight,
-									value: resiTaxCodeRight,
-									optionsValue: 'code',
-									optionsChild: 'childs',
-									optionsText: 'nodeText',
+									width: 400,
+									rows: 13,
+									name: '#[QMM003_34]',
+									dataSource: destination,
+									value: selectedCode,
+									headers: headers,
+									primaryKey: 'code',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
 									multiple: false,
-									enable: false,
-									showCheckBox: false}"
-								class="cf"></table>
+									enable: true,
+									showCheckBox: false}"></table>
 						</div>
 					</div>
+					
 				</div>
 			</div>
-			<hr />
-			<div>
-				<button id="E_BTN_001" style="margin-left: 250px;" class="proceed"
-					data-bind="click: clickButton">実行</button>
-				<button id="E_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+			<div id="functions-area-bottom">
+				<!-- E4_1 -->
+				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: enable() &amp;&amp; $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
+				<!-- E4_2 -->
+				<button tabindex="7" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>
+			<style>
+				#treegridsource_container, #treegriddestination_container{clear: both}
+				.caret-right.caret-inline:after {
+				    margin-left: 2.3em;
+				    margin-top: -31.7em;
+				    border-left: 1.7em solid;
+				    border-top: 6.7em solid transparent;
+				    border-bottom: 6.7em solid transparent;
+				}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>
 </html>
-
-
-
-

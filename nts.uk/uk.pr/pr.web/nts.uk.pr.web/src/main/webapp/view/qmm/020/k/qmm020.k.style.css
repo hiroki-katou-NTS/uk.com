@@ -1,0 +1,28 @@
+.table{
+    width: 283px;
+}
+#A{
+    margin-left: 100px;
+    margin-top: 8px;
+}
+#K1_3 {
+    padding-top: 6px !important;
+}
+.sidebar-content{
+    overflow:inherit !important;
+}
+.ntsRadioBox {
+    margin-bottom: 10px;
+    display: block !important;
+}
+#center {
+    margin: auto;
+    padding: 10px;
+}
+
+#table_K6_K7_K8, #K1_1 {
+    position: relative !important;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}

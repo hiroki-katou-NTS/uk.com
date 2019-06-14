@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -1756,7 +1759,7 @@ var nts;
                     var startEra = moment(i.start), endEraYear = moment(i.end);
                     if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
                         var diff = formatted.year() - startEra.year() + 1;
-                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
+                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
@@ -29637,9 +29640,24 @@ var nts;
                         };
                         var osht = function (inoth) {
                             _.forEach(_.keys(_mafollicle[SheetDef]), function (s) {
-                                if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns))
+                                if (s === _currentSheet)
                                     return;
-                                var t, formatted, disFormat, maf = _mafollicle[currentPage][s], errDetail;
+                                var maf = _mafollicle[currentPage][s];
+                                //                    if (maf && _.find(_fixedColumns, fc => fc.key === coord.columnKey)) {
+                                //                        if (maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                //                            && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
+                                //                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                //                            delete maf.dirties[id][coord.columnKey];
+                                //                        } else if (cellValue === origVal
+                                //                            && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                //                            delete maf.dirties[id][coord.columnKey];
+                                //                        }
+                                //                        
+                                //                        return;
+                                //                    }
+                                if (!some(_mafollicle[SheetDef][s].columns) && !_.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
+                                    return;
+                                var t, formatted, disFormat, errDetail;
                                 if (maf && maf.desc) {
                                     t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                                     if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
@@ -31001,7 +31019,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                                    if (data !== tDate && !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                                    if ( /*data !== tDate &&*/!d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);

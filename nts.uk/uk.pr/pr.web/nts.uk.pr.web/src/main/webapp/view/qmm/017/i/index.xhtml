@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 600, height: 520};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.i.service.js"/>
+        <com:scriptfile path="qmm017.i.vm.js"/>
+        <com:stylefile path="qmm017.i.style.css"/>
+        <com:scriptfile path="qmm017.i.start.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="margin-left: 20px;">
+            <div class="label dialog-title">#{i18n.getText('QMM017_160')}</div>
+            <div style="margin-top: 20px; min-width: 550px">
+                <div style="width: 130px; display: inline-block;"
+                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
+                <div style="display: inline-block;" data-bind="text: formulaCode"/>
+                <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
+                      data-bind="text: formulaName"/>
+            </div>
+            <div style="margin-top: 20px; min-width: 550px">
+                <div style="width: 130px;"
+                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_162')}</div>
+                <div style="width: 392px; display: inline-flex; position: absolute; left: 143px; top: 140px;">
+                    <div id="I1_6" tabindex="1" style="width: 400px; "
+                         data-bind="ntsRadioBoxGroup: {
+										value: modifyMethod,
+										enable: isLastHistory,
+										options: modifyItem,
+										optionsValue: 'value',
+										optionsText: 'name'}"/>
+
+                </div>
+                <span style="position: absolute; z-index: -1; margin-top: 37px; min-width: 393px; white-space: pre-line"
+                      class="label warning tab-row">#{i18n.getText('QMM017_164')}</span>
+                <div style="margin-top: 115px; margin-left: 150px;  min-width: 420px">
+                    <div style="width: 100px; display: inline-block"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_165')}</div>
+                    <div id="I1_11" style="display: inline-block"
+                         data-bind="ntsDatePicker: {
+							name: '#[QMM017_12]',
+							value: startMonth,
+							dateFormat: 'yearmonth',
+							valueFormat: 'YYYYMM',
+							required: true,
+							enable: modifyMethod() == 1}"
+                         tabindex="2"/>
+                    <div style="width: 115px; display: inline-block; margin-left: 5px;"
+                         data-bind="text: displayEndMonth"/>
+                </div>
+            </div>
+
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="3" class="x-large proceed "
+                    data-bind="click: editHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
+            <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

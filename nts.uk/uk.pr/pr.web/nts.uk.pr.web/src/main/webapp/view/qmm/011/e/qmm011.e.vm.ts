@@ -1,77 +1,81 @@
-module nts.uk.pr.view.qmm011.e {
-
-    import option = nts.uk.ui.option;
-    import InsuranceBusinessType = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessType;
-    import InsuBizRateItemDto = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItemDto;
-    import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccIRModel;
-    import InsuranceBusinessTypeDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeDto;
-
-    export module viewmodel {
-
-        export class ScreenModel {
-
-            insuranceBusinessTypeUpdateModel: KnockoutObservable<InsuranceBusinessTypeUpdateModel>;
-            textEditorOption: KnockoutObservable<option.TextEditorOption>;
-
-            constructor() {
-                var self = this;
-                self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                var insuranceBusinessTypeDto = nts.uk.ui.windows.getShared("InsuranceBusinessTypeDto");
-                self.insuranceBusinessTypeUpdateModel
-                    = ko.observable(new InsuranceBusinessTypeUpdateModel(insuranceBusinessTypeDto));
+module nts.uk.pr.view.qmm011.e.viewmodel {
+    import close = nts.uk.ui.windows.close;
+    import getText = nts.uk.resource.getText;
+    import dialog  = nts.uk.ui.dialog;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import model = qmm011.share.model;
+    import block = nts.uk.ui.block;
+    import error = nts.uk.ui.errors;
+    export class ScreenModel {
+        startYearMonth:              KnockoutObservable<number> = ko.observable();
+        takeOver:                    KnockoutObservable<number> = ko.observable(0);
+        startLastYearMonth:          KnockoutObservable<number> = ko.observable();
+        insuranceName:               KnockoutObservable<string> = ko.observable('');
+        listTakeOver:                KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
+        flag:                        KnockoutObservable<boolean> = ko.observable(false);
+        
+        constructor() {
+            block.invisible();
+            let self = this;
+            let params = getShared('QMM011_E_PARAMS_INPUT');
+            self.insuranceName(params.insuranceName);
+            if (params && params.startYearMonth) {
+                self.startLastYearMonth(params.startYearMonth);
+                self.startYearMonth(Number(self.startLastYearMonth()));
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM011_48', [self.convertMonthYearToString(self.startYearMonth())]));
+                self.flag(true);
+            } else {
+                self.takeOver(1);
+                self.flag(false);
             }
-
-            updateInsuranceBusinessType() {
-                var self = this;
-                var insuranceBusinessType: InsuranceBusinessTypeDto;
-                //set up data resquest
-                insuranceBusinessType =
-                    new InsuranceBusinessTypeDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz3Rd(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz4Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz5Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz6Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz7Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz8Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(),
-                        self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th(),
-                        self.insuranceBusinessTypeUpdateModel().version());
-                //call service update
-                service.updateInsuranceBusinessType(insuranceBusinessType).done(data => {
-                    nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateModel", self.insuranceBusinessTypeUpdateModel());
-                    nts.uk.ui.windows.close();
-                });
-            }
+            block.clear();
         }
 
-        export class InsuranceBusinessTypeUpdateModel {
-
-            bizNameBiz1St: KnockoutObservable<string>;
-            bizNameBiz2Nd: KnockoutObservable<string>;
-            bizNameBiz3Rd: KnockoutObservable<string>;
-            bizNameBiz4Th: KnockoutObservable<string>;
-            bizNameBiz5Th: KnockoutObservable<string>;
-            bizNameBiz6Th: KnockoutObservable<string>;
-            bizNameBiz7Th: KnockoutObservable<string>;
-            bizNameBiz8Th: KnockoutObservable<string>;
-            bizNameBiz9Th: KnockoutObservable<string>;
-            bizNameBiz10Th: KnockoutObservable<string>;
-            version: KnockoutObservable<number>;
-
-            constructor(insuranceBusinessTypeDto: InsuranceBusinessTypeDto) {
-                this.bizNameBiz1St = ko.observable(insuranceBusinessTypeDto.bizNameBiz1St);
-                this.bizNameBiz2Nd = ko.observable(insuranceBusinessTypeDto.bizNameBiz2Nd);
-                this.bizNameBiz3Rd = ko.observable(insuranceBusinessTypeDto.bizNameBiz3Rd);
-                this.bizNameBiz4Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz4Th);
-                this.bizNameBiz5Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz5Th);
-                this.bizNameBiz6Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz6Th);
-                this.bizNameBiz7Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz7Th);
-                this.bizNameBiz8Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz8Th);
-                this.bizNameBiz9Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz9Th);
-                this.bizNameBiz10Th = ko.observable(insuranceBusinessTypeDto.bizNameBiz10Th);
-                this.version = ko.observable(insuranceBusinessTypeDto.version);
+        register(){
+            let self = this;
+            if (self.validate()) {
+                return;
             }
+            setShared('QMM011_E_PARAMS_OUTPUT', {
+                startYearMonth: self.startYearMonth(),
+                transferMethod: self.takeOver()
+            });
+            close();
         }
+        
+        validate (){
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("#E1_5").trigger("validate");
+            if (self.startLastYearMonth() > self.startYearMonth() || self.startLastYearMonth() == self.startYearMonth()){
+                dialog.alertError({ messageId: "Msg_79" });
+                return true;
+            }
+            return error.hasError(); 
+        }
+        
+        cancel(){
+            close();
+        }
+        
+        convertMonthYearToString(yearMonth: any) {
+            let year: string, month: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            return year + "/" + month;
+        }
+
     }
+    
+
+    
+    export function getListtakeOver(): Array<model.ItemModel> {
+        return [
+            new model.ItemModel(0, getText('QMM011_48')),
+            new model.ItemModel(1, getText('QMM011_49'))
+        ];
+    }
+    
 }

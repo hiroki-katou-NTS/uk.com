@@ -1,0 +1,82 @@
+#functions-area {
+
+}
+
+#functions-area .ntsControl {
+    margin-left: 870px;
+}
+
+#content-qmm {
+    width: 1170px;
+    margin-left: 75px;
+}
+
+#A2_1 .cell {
+    padding-right: 10px;
+}
+
+#A2_1 .table {
+    width: 420px;
+}
+
+#A2_1 .table .cell:nth-child(1) {
+    width: 80px;
+}
+
+#A2_1 .table .cell:nth-child(2) {
+    width: 85px;
+}
+
+#A2_1 .table .cell:nth-child(3) {
+    width: 75px;
+}
+
+#A2_1 .table .cell:nth-child(4) {
+    width: 30px;
+}
+
+#A2_1 .table .cell:nth-child(5) {
+    width: 100px;
+}
+
+#A2_8 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#grid .ntsCheckBox {
+    padding: 2px 5px 3px 4px;
+}
+
+#grid .ntsCheckBox span.box {
+    height: 20px;
+}
+
+#grid .delete {
+    background-color: #ff0000;
+}
+
+#grid .mgrid-disable {
+    border-color: #AAB7B8;
+}
+
+#grid .mgrid-header .mgrid-fixed-table td.left-align {
+    text-align: left;
+    vertical-align: middle!important;
+    padding: 2px;
+}
+
+#grid .mgrid-header .mgrid-free-table td {
+    vertical-align: middle!important;
+}
+
+/*
+#grid .mgrid-free td.currency-symbol {
+    text-align: right;
+}
+
+#grid .mgrid-free td.currency-symbol:before {
+    float: left;
+    padding-right: 0px;
+    padding-left: 4px;
+}*/

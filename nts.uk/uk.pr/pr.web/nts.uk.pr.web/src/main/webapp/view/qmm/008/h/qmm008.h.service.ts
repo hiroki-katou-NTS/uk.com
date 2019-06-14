@@ -1,68 +1,40 @@
-module nts.uk.pr.view.qmm008.h {
-    export module service {
+module nts.uk.pr.view.qmm008.h.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    var paths = {
+        editHealthInsuranceHistory: "ctx/core/socialinsurance/healthinsurance/editHistory",
+        deleteHealthInsuranceHistory: "ctx/core/socialinsurance/healthinsurance/deleteHistory",
+        editWelfareInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/editHistory",
+        deleteWelfareInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/deleteHistory",
 
-        /**
-         *  Service paths
-         */
-        var paths: any = {
-            updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
-            findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
-            recalculateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/recalculate"
-        };
+        editContributionHistory: "ctx/core/socialinsurance/contributionrate/editHistory",
+        deleteContributionHistory: "ctx/core/socialinsurance/contributionrate/deleteHistory"
+    }
+    /**
+     * get all
+    */
+    export function editHealthInsuranceHistory(command): JQueryPromise<any> {
+        return ajax(paths.editHealthInsuranceHistory, command);
+    }
 
-        /**
-         *  Save List Health Insurance Average Earn
-         */
-        export function updateHealthInsuranceAvgearn(list: model.ListHealthInsuranceAvgEarnDto, officeCode: string): JQueryPromise<any> {
-            var data = {
-                listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto,
-                historyId: list.historyId,
-                officeCode: officeCode
-            };
-            return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
-        }
+    export function deleteHealthInsuranceHistory(command): JQueryPromise<any> {
+        return ajax(paths.deleteHealthInsuranceHistory, command);
+    }
 
-        // Re-calculate values
-        export function recalculateHealthInsuranceAvgearn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
-            var data = {
-                historyId: historyId,
-            };
+    export function editWelfareInsuranceHistory(command): JQueryPromise<any> {
+        return ajax(paths.editWelfareInsuranceHistory, command);
+    }
 
-            return nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data);
-        }
+    export function deleteWelfareInsuranceHistory(command): JQueryPromise<any> {
+        return ajax(paths.deleteWelfareInsuranceHistory, command);
+    }
 
-        /**
-         *  Find list HealthInsuranceAvgEarn by historyId
-         */
-        export function findHealthInsuranceAvgEarn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
-            return nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId);
-        }
+    //Screen I
+    export function editContributionHistory(command): JQueryPromise<any> {
+        return ajax(paths.editContributionHistory, command);
+    }
 
-        /**
-        * Model namespace.
-        */
-        export module model {
-
-            export interface HealthInsuranceAvgEarnValue {
-                healthGeneralMny: number;
-                healthNursingMny: number;
-                healthBasicMny: number;
-                healthSpecificMny: number;
-            }
-
-            export interface HealthInsuranceAvgEarnDto {
-                grade: number;
-                avgEarn: number;
-                upperLimit: number;
-                companyAvg: HealthInsuranceAvgEarnValue;
-                personalAvg: HealthInsuranceAvgEarnValue;
-            }
-
-            export interface ListHealthInsuranceAvgEarnDto {
-                historyId: string;
-                listHealthInsuranceAvgearnDto: HealthInsuranceAvgEarnDto[];
-            }
-
-        }
+    export function deleteContributionHistory(command): JQueryPromise<any> {
+        return ajax(paths.deleteContributionHistory, command);
     }
 }

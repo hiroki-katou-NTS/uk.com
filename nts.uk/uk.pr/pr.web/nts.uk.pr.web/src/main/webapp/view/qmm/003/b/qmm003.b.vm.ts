@@ -1,142 +1,94 @@
-module qmm003.b.viewmodel {
+module nts.uk.pr.view.qmm003.b.viewmodel {
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import setShared = nts.uk.ui.windows.setShared;
+    import constants = qmm003.share.constants;
+
     export class ScreenModel {
-        items: KnockoutObservableArray<RedensitalTaxNode>;
-        singleSelectedCode: KnockoutObservable<string>;
-        filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        japanLocation: Array<qmm003.b.service.model.RegionObject> = [];
-        precfecture: Array<RedensitalTaxNode> = [];
-        itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
-        currentNode: KnockoutObservable<service.model.ResidentialTax> = ko.observable(null);
-        yes: boolean = null;
+        
+        items2: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string>;
+        headers: any;
+        listRegions: Array<any> = constants.listRegions;
+        listPrefectures: Array<any>;
+        enable: any;
+
         constructor() {
             let self = this;
-            self.init();
-            self.singleSelectedCode.subscribe(function(newValue) {
-                if (newValue.length > 2) {
-                    self.processWhenCurrentCodeChange(newValue);
-                }
-            });
-
+            self.items2 = ko.observableArray([]);
+            self.selectedCode = ko.observable("");
+            self.headers = ko.observableArray([getText("QMM003_9")]);
+            self.listPrefectures = constants.listPrefectures;
+            self.enable = ko.computed(() => {
+                return self.selectedCode().length > 0 && self.selectedCode().indexOf("_") != 0;
+            }, this);
         }
-
-        // get Data khi currentCode thay đổi
-        processWhenCurrentCodeChange(newValue: string) {
-            let self = this;
-            service.getResidentialTaxDetail("0000", newValue).done(function(data: service.model.ResidentialTax) {
-                if (data) {
-                    self.currentNode(data);
-                    console.log(self.currentNode());
-                }
-            });
-        }
-
-        clickButton(): any {
-            let self = this;
-            self.yes = true;
-            nts.uk.ui.windows.setShared('yes', self.yes, true);
-            if (self.currentNode()) {
-                nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
-                nts.uk.ui.windows.close();
-            } else {
-                nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-            }
-        }
-
-        cancelButton(): void {
-            let self = this;
-            self.yes = false;
-            nts.uk.ui.windows.setShared('yes', self.yes, true);
-            nts.uk.ui.windows.close();
-        }
-
-        init(): void {
-            let self = this;
-            self.items = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable('');
-        }
-
-        //11.初期データ取得処理 11. Initial data acquisition processing
-        start(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
-            let self = this;
-            (qmm003.b.service.getResidentialTax()).done(function(data: Array<qmm003.b.service.model.ResidentialTaxDto>) {
-                if (data.length > 0) {
-                    self.residentalTaxList(data);
-                    console.log(data);
-                    (qmm003.b.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.itemPrefecture(self.precfecture);
-                        console.log(self.itemPrefecture());
-                        self.buildResidentalTaxTree();
-                        let node: Array<RedensitalTaxNode> = [];
-                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
-                        self.filteredData(node);
-                        self.items(self.nodeRegionPrefectures());
+        
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.getAllResidentTaxPayee().done((data: Array<any>) => {
+                let listNodes = [];
+                self.listRegions.forEach(r => {
+                    let regionNode = new Node(r.code, r.name, [], 0);
+                    let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
+                    let prefectureNodes = [];
+                    prefectures.forEach(pr => {
+                        let prefectureNode = new Node(pr.code < 10 ? "_0" + pr.code : "_" + pr.code, pr.name, [], 1);
+                        if (data.length > 0) {
+                            let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
+                            let residentNodes = _.map(residentTaxPayees, rs => {return new Node(rs.code, rs.name, [], 2)});
+                            prefectureNode.children = residentNodes;
+                        }
+                        prefectureNodes.push(prefectureNode);
                     });
-                }
-
-
+                    regionNode.children = prefectureNodes;
+                    listNodes.push(regionNode);
+                });
+                self.items2(listNodes);
                 dfd.resolve();
-
-            }).fail(function(res) {
-
+            }).fail(error => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
             });
-
             return dfd.promise();
         }
 
-        buildResidentalTaxTree() {
+        select() {
             let self = this;
-            var child = [];
-            let i = 0;
-            _.each(self.residentalTaxList(), function(objResi: service.model.ResidentialTaxDto) {
-                _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
-                    let isChild: boolean = false;
-                    let isPrefecture: boolean = false;
-                    _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
-                        if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                            _.each(self.nodeRegionPrefectures(), function(obj: RedensitalTaxNode) {
-                                if (obj.code === objRegion.regionCode) {
-                                    _.each(obj.childs, function(objChild: RedensitalTaxNode) {
-                                        if (objChild.code === objPrefecture.prefectureCode) {
-                                            objChild.childs.push(new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
-                                            isPrefecture = true;
-                                        }
-                                    });
-                                    if (isPrefecture === false) {
-                                        obj.childs.push(new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
-                                    }
-                                    isChild = true;
-                                }
-                            });
-                            if (isChild === false) {
-                                let chi = [];
-                                self.nodeRegionPrefectures.push(new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName, [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
-                            }
-                        }
-                    });
-                });
+            setShared("QMM003BResult", self.selectedCode());
+            nts.uk.ui.windows.close();
+        }
 
-            });
+        cancel() {
+            nts.uk.ui.windows.close();
         }
 
     }
-    export class RedensitalTaxNode {
+
+    class Node {
         code: string;
+        searchCode: string;
         name: string;
         nodeText: string;
-        custom: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<RedensitalTaxNode>) {
+        children: any;
+        level: number; //0: region, 1: prefecture, 2: resident
+        
+        constructor(code: string, name: string, children: Array<Node>, level?: number) {
             let self = this;
             self.code = code;
-            self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
+            self.searchCode = level == 2 ? code : "";
+            self.name = level == 2 ? name : "";
+            self.nodeText = level == 2 ? _.escape(code + ' ' + name) : _.escape(name);
+            self.children = children;
+            if (level != null) self.level = level;
         }
     }
+    
+}
 
 
-};
+

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {width: 535, height: 380};
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qmm041.c.style.css"/>
+        <com:scriptfile path="qmm041.c.start.js"/>
+        <com:scriptfile path="qmm041.c.service.js"/>
+        <com:scriptfile path="qmm041.c.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div style="width: 500px">
+                <!--C1_1 履歴編集-->
+                <div class="label dialog-title">
+                    #{i18n.getText('QMM041_27')}
+                </div>
+
+                <div style="margin-top: 20px; margin-left: 10px;">
+                    <!--C1_2 編集方法の選択-->
+                    <div id="C1_2" data-bind="ntsFormLabel: {required: false}">
+                        #{i18n.getText('QMM041_28')}
+                    </div>
+                    <div style="width: 200px; display: inline-flex">
+                        <!--C1_3 履歴編集方法-->
+                        <!--C1_4 履歴を削除する-->
+                        <!--C1_5 履歴を修正する-->
+                        <div id="C1_3" tabindex="1"
+                             data-bind="ntsRadioBoxGroup: {
+                                name : '#[QMM041_29]',
+                                value: modifyMethod,
+                                enable: isDeletable,
+                                options: modifyItem,
+                                optionsValue: 'value',
+                                optionsText: 'name'}"
+                        />
+                    </div>
+
+                    <div style="margin-top: 20px; margin-left: 150px;" class="flex valign-center">
+                        <!--C1_6 期間-->
+                        <div style="width: 70px; display: inline-block; margin-left: 35px;" data-bind="ntsFormLabel: {required: true}">
+                            #{i18n.getText('QMM041_16')}
+                        </div>
+                        <!--C1_7 期間-->
+                        <!--C1_8 期間開始-->
+                        <!--C1_9 期間終了-->
+                        <div tabindex="2"
+                             id="C1_8"
+                             data-bind="ntsDatePicker: {
+                                 value: startYearMonth,
+                                 dateFormat: 'yearmonth',
+                                 required: true,
+                                 name : '#[QMM041_42]',
+                                 enable: modifyMethod() == 1}"
+                        />
+                        <span style="padding:0 5px;">～</span>
+                        <span data-bind="text: endYearMonth"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <!--C2_1 実行-->
+            <button tabindex="3" class="x-large proceed" data-bind="click: editHistory, enable: $root.errors.isEmpty">
+                #{i18n.getText('QMM041_32')}
+            </button>
+            <!--C2_2 キャンセル-->
+            <button tabindex="4" class="large" data-bind="click: cancel">
+                #{i18n.getText('QMM041_33')}
+            </button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -1,47 +1,33 @@
-module qmm006.a.service {
-    var paths: any = {
-        saveData: "basic/system/bank/linebank/add",
-        findAll: "basic/system/bank/linebank/findAll",
-        update: "basic/system/bank/linebank/update",
-        remove: "basic/system/bank/linebank/remove",
-        findBankAll: "basic/system/bank/find/all",
-        checkExistBankAndBranch: "basic/system/bank/find/check"
+module nts.uk.pr.view.qmm006.a.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
+    let paths = {
+        getAllSourceBank: "ctx/pr/transfer/sourcebank/get-all-source-bank",
+        getSourceBank :"ctx/pr/transfer/sourcebank/get-source-bank/{0}",
+        register: "ctx/pr/transfer/sourcebank/reg-source-bank",
+        checkBeforeDelete: "ctx/pr/transfer/sourcebank/check-before-delete/{0}",
+        remove: "ctx/pr/transfer/sourcebank/del-source-bank/{0}"
+    };
+
+    export function getAllSourceBank(): JQueryPromise<any> {
+        return ajax('pr', paths.getAllSourceBank);
+    }
+    
+    export function getSourceBank(code: string) {
+        return ajax('pr', format(paths.getSourceBank, code));
     }
 
-    /**
-     * remove data (lineBank) in database
-     */
-    export function remove(command): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.remove, command);
+    export function register(data: any) {
+        return ajax('pr', paths.register, data);
     }
 
-    /**
-     * update or insert data (lineBank) in database
-     * define update mode or insert mode base-on isEnable property
-     */
-    export function saveData(isEnable, command): JQueryPromise<any> {
-        var path = isEnable ? paths.saveData : paths.update;
-        return nts.uk.request.ajax("com", path, command);
+    export function checkBeforeDelete(code: string) {
+        return ajax('pr', format(paths.checkBeforeDelete, code));
+    }
+    
+    export function remove(code: string) {
+        return ajax('pr', format(paths.remove, code));
     }
 
-    /**
-     * get data from database to screen
-     */
-    export function findAll(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("com", paths.findAll);
-    }
-
-    /**
-     * get data of Bank 
-     */
-    export function findBankAll(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("com", paths.findBankAll);
-    }
-
-    /**
-     * check exist data of Bank
-     */
-    export function checkExistBankAndBranch(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.checkExistBankAndBranch);
-    }
 }

@@ -1,0 +1,611 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.monthlysalary.payrolldata.DetailAmountType
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.CommonAmount
+        </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1250,
+                height: 670
+            };
+            var autoResize = false;
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="../share/qmm019.d-g.style.css"/>
+        <com:stylefile path="qmm019.d.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.d.service.js"/>
+        <com:scriptfile path="qmm019.d.vm.js"/>
+        <com:scriptfile path="qmm019.d.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="table table-origin">
+                <div class="cell valign-top">
+                    <!--D1_1-->
+                    <div data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                        <div class="table table-search">
+                            <div class="cell valign-center">
+                                <!--D1_2-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_105')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D1_3-->
+                                <div class="label">#{i18n.getText('QMM019_106')}</div>
+                            </div>
+                        </div>
+                        <div class="table table-search">
+                            <div class="cell valign-top">
+                                <!--D1_4-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
+                            </div>
+                            <div class="cell valign-top">
+                                <!--D1_5-->
+                                <div tabindex="1" style="width: 170px" data-bind="ntsSearchBox: {
+									searchMode: 'highlight',
+									targetKey: 'itemNameCd',
+									comId: 'D1_6',
+									items: itemNames,
+									selected: selectedSearchIitemName,
+									selectedKey: 'itemNameCd',
+									fields: ['itemNameCd', 'shortName'],
+									mode: 'igGrid'}"/>
+                            </div>
+                        </div>
+                        <!--D1_6-->
+                        <table id="D1_6" tabindex="2" data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM019_161]',
+                            dataSource: itemNames,
+                            primaryKey: 'itemNameCd',
+                            columns: [
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'shortName', width: 193, formatter: _.escape}
+                            ],
+                            multiple: false,
+                            value: codeSelected}"/>
+                        <!--D1_11-->
+                        <button id="btn-register" tabindex="3"
+                                data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                    </div>
+                </div>
+                <div class="cell valign-top" data-bind="with: dataScreen">
+                    <div class="table table-col-3">
+                        <div class="cell valign-center">
+                            <!--D2_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD2_2()">
+                                <!--D2_2-->
+                                <div class="label" data-bind="text: itemNameCode"/>
+                            </com:ko-if>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD2_3()">
+                                <!--D2_3-->
+                                <div class="label" data-bind="text: shortName"/>
+                            </com:ko-if>
+                        </div>
+                    </div>
+                    <div class="table table-col-2">
+                        <div class="cell valign-center">
+                            <!--D2_4-->
+                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_111')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--D2_5-->
+                            <div id="D2_5" tabindex="4" data-bind="ntsComboBox: {
+                                name: '#{i18n.getText('QMM019_111')}',
+                                options: $vm.totalObjAtrs,
+                                optionsValue: 'code',
+                                visibleItemsCount: 4,
+                                value: totalObject,
+                                optionsText: 'name',
+                                required: true,
+                                enable: $vm.screenControl().enableD2_5(),
+                                selectFirstIfNull: true,
+                                columns: [
+                                    { prop: 'name', length: 10 },
+                                ]}"/>
+                        </div>
+                    </div>
+                    <div class="table table-col-2">
+                        <div class="cell valign-center">
+                            <!--D2_7-->
+                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_112')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--D2_8-->
+                            <div id="D2_8" tabindex="5" data-bind="ntsComboBox: {
+                                name: '#{i18n.getText('QMM019_112')}',
+                                options: $vm.calcMethods,
+                                optionsValue: 'code',
+                                visibleItemsCount: 6,
+                                value: calcMethod,
+                                optionsText: 'name',
+                                required: true,
+                                enable: $vm.screenControl().enableD2_8(),
+                                selectFirstIfNull: true,
+                                columns: [
+                                    { prop: 'name', length: 10 },
+                                ]}"/>
+                        </div>
+                    </div>
+                    <hr/>
+                    <com:ko-if bind="$vm.screenControl().visibleD7()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D7_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_137')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_2-->
+                                <button id="D7_2"
+                                        data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_3-->
+                                <div class="label" data-bind="text: formulaCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_4-->
+                                <div class="label limited-label" data-bind="text: formulaName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD8()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D8_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_140')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_2-->
+                                <button id="D8_2"
+                                        data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_3-->
+                                <div class="label" data-bind="text: wageTableCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_4-->
+                                <div class="label limited-label" data-bind="text: wageTableName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.screenControl().visibleD9()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D9_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_143')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D9_2-->
+                                <input id="D9_2" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_143]',
+                                    value: commonAmount,
+                                    required: true,
+                                    option: $vm.option,
+                                    constraint: 'CommonAmount'}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.screenControl().visibleD5()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D5_1-->
+                                <div data-bind="ntsFormLabel: {  }">#{i18n.getText('QMM019_132')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D5_2-->
+                                <div id="D5_2" data-bind="ntsComboBox: {
+                                    name: '#[QMM019_132]',
+                                    options: $vm.workingAtrs,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 2,
+                                    value: workingAtr,
+                                    optionsText: 'name',
+                                    required: false,
+                                    selectFirstIfNull: false,
+                                    columns: [
+                                        { prop: 'name', length: 10 },
+                                    ]}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD6()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D6_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_133')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_2-->
+                                <button id="D6_2"
+                                        data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_3-->
+                                <div class="label" data-bind="text: perValCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_4-->
+                                <div class="label limited-label" data-bind="text: perValName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+
+
+                    <div class="table table-col-2">
+                        <div class="cell valign-center">
+                            <!--D3_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_114')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--D3_2-->
+                            <div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+                                name: '#[QMM019_115]',
+                                options: $vm.paymentProportionalAtrs,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: proportionalAtr,
+                                enable: $vm.screenControl().enableD3_2(),
+                                required: false}"/>
+                        </div>
+                    </div>
+                    <div class="table table-col-2">
+                        <div class="cell valign-center"/>
+                        <div class="cell valign-center">
+                            <!--D3_6-->
+                            <div id="D3_6" tabindex="7" data-bind="ntsComboBox: {
+                                name: '#[QMM019_119]',
+                                options: $vm.proportionalMethodAtrs,
+                                optionsValue: 'code',
+                                visibleItemsCount: 3,
+                                value: proportionalMethod,
+                                optionsText: 'name',
+                                required: false,
+                                enable: $vm.screenControl().enableD3_6(),
+                                selectFirstIfNull: false,
+                                columns: [
+                                    { prop: 'name', length: 10 },
+                                ]}"/>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm"
+                         data-bind="with: itemRangeSet">
+                        <div class="cell valign-center">
+                            <!--D3_8-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--D3_9-->
+                            <div tabindex="8" data-bind="ntsCheckBox: {
+                                checked: errorUpperLimitSetAtr,
+                                enable: $vm.screenControl().enableD3_9()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_10()">
+                                <!--D3_10-->
+                                <input id="D3_10" tabindex="9" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_121]',
+                                    value: errorUpRangeValAmount,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_10(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD3_11()">
+                                <!--D3_11-->
+                                <div class="label">#{i18n.getText('QMM019_122')}</div>
+                            </com:ko-if>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm"
+                         data-bind="with: itemRangeSet">
+                        <div class="cell valign-center"/>
+                        <div class="cell valign-center">
+                            <!--D3_12-->
+                            <div tabindex="10" data-bind="ntsCheckBox: {
+                                checked: errorLowerLimitSetAtr,
+                                enable: $vm.screenControl().enableD3_12()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_13()">
+                                <!--D3_13-->
+                                <input id="D3_13" tabindex="11" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_123]',
+                                    value: errorLoRangeValAmount,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_13(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD3_14()">
+                                <!--D3_14-->
+                                <div class="label">#{i18n.getText('QMM019_124')}</div>
+                            </com:ko-if>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm"
+                         data-bind="with: itemRangeSet">
+                        <div class="cell valign-center">
+                            <!--D3_15-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--D3_16-->
+                            <div tabindex="12" data-bind="ntsCheckBox: {
+                                checked: alarmUpperLimitSetAtr,
+                                enable: $vm.screenControl().enableD3_16()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_17()">
+                                <!--D3_17-->
+                                <input id="D3_17" tabindex="13" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_126]',
+                                    value: alarmUpRangeValAmount,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_17(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD3_18()">
+                                <!--D3_18-->
+                                <div class="label">#{i18n.getText('QMM019_127')}</div>
+                            </com:ko-if>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm"
+                         data-bind="with: itemRangeSet">
+                        <div class="cell valign-center"/>
+                        <div class="cell valign-center">
+                            <!--D3_19-->
+                            <div tabindex="14" data-bind="ntsCheckBox: {
+                                checked: alarmLowerLimitSetAtr,
+                                enable: $vm.screenControl().enableD3_19()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_20()">
+                                <!--D3_20-->
+                                <input id="D3_20" tabindex="15" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_128]',
+                                    value: alarmLoRangeValAmount,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_20(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
+                        </div>
+                        <div class="cell valign-center">
+                            <com:ko-if bind="$vm.screenControl().visibleD3_21()">
+                                <!--D3_21-->
+                                <div class="label">#{i18n.getText('QMM019_129')}</div>
+                            </com:ko-if>
+                        </div>
+                    </div>
+                    <com:ko-if bind="$vm.screenControl().visibleD3_22()">
+                        <!--D3_22-->
+                        <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD3_23()">
+                        <!--D3_23-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
+                    </com:ko-if>
+                </div>
+                <div class="cell valign-top">
+                    <!--D2_10-->
+                    <div data-bind="ntsAccordion: { enable: $vm.screenControl().enableD2_10() }">
+                        <h3>#{i18n.getText('QMM019_113')}</h3>
+                        <div class="acc-content">
+                            <!--D11_1-->
+                            <div class="ui-iggrid">
+                                <table class="acc-table" data-bind="with: paymentItemSet">
+                                    <colgroup>
+                                        <col width="90px"/>
+                                        <col width="207px"/>
+                                    </colgroup>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_2-->
+                                            <div class="label">#{i18n.getText('QMM019_148')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_16-->
+                                            <div class="label" data-bind="text: $vm.dataScreen().shortName"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_3-->
+                                            <div class="label">#{i18n.getText('QMM019_105')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_17-->
+                                            <div class="label" data-bind="text: $vm.categoryAtrText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_5-->
+                                            <div class="label">#{i18n.getText('QMM019_150')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_20-->
+                                            <div class="label" data-bind="text: taxAtrText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_6-->
+                                            <div class="label">#{i18n.getText('QMM019_151')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_21-->
+                                            <div class="label" data-bind="text: $vm.formatNumber(limitAmount())"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_7-->
+                                            <div class="label">#{i18n.getText('QMM019_152')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_22-->
+                                            <div class="label" data-bind="text: socialInsuranceCategoryText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_8-->
+                                            <div class="label">#{i18n.getText('QMM019_153')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_23-->
+                                            <div class="label" data-bind="text: laborInsuranceCategoryText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_9-->
+                                            <div class="label">#{i18n.getText('QMM019_154')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_24-->
+                                            <div class="label" data-bind="text: everyoneEqualSetText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_10-->
+                                            <div class="label">#{i18n.getText('QMM019_155')}</div>
+                                        </th>
+                                        <td>
+                                            <!--D11_25-->
+                                            <div class="label" data-bind="text: averageWageAtrText"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_12-->
+                                            <div class="label">#{i18n.getText('QMM019_120')}</div>
+                                            <!--D11_13-->
+                                            <div class="label">#{i18n.getText('QMM019_157')}</div>
+                                        </th>
+                                        <td data-bind="with: errorRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--D11_27-->
+                                                <span class="label" data-bind="text: $vm.formatNumber(upperLimitSetting.rangeValue())"/>
+                                                <!--D11_28-->
+                                                <span class="label">#{i18n.getText('QMM019_63')}</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--D11_29-->
+                                                <span class="label" data-bind="text: $vm.formatNumber(lowerLimitSetting.rangeValue())"/>
+                                                <!--D11_30-->
+                                                <span class="label">#{i18n.getText('QMM019_69')}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ui-widget-header">
+                                            <!--D11_14-->
+                                            <div class="label">#{i18n.getText('QMM019_125')}</div>
+                                            <!--D11_15-->
+                                            <div class="label">#{i18n.getText('QMM019_157')}</div>
+                                        </th>
+                                        <td data-bind="with: alarmRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--D11_31-->
+                                                <span class="label" data-bind="text: $vm.formatNumber(upperLimitSetting.rangeValue())"/>
+                                                <!--D11_32-->
+                                                <span class="label">#{i18n.getText('QMM019_63')}</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--D11_33-->
+                                                <span class="label" data-bind="text: $vm.formatNumber(lowerLimitSetting.rangeValue())"/>
+                                                <!--D11_34-->
+                                                <span class="label">#{i18n.getText('QMM019_69')}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" class="ui-widget-header">
+                                            <!--D11_35-->
+                                            <div class="label">#{i18n.getText('QMM019_158')}</div>
+                                        </th>
+                                    </tr>
+                                    <tr class="last-row">
+                                        <td colspan="2">
+                                            <!--D12_1-->
+                                            <table id="fixed-table">
+                                                <colgroup>
+                                                    <col width="70px"/>
+                                                    <col width="195px"/>
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <!--D12_2-->
+                                                    <th class="ui-widget-header">#{i18n.getText('QMM019_108')}</th>
+                                                    <!--D12_3-->
+                                                    <th class="ui-widget-header">#{i18n.getText('QMM019_109')}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody data-bind="foreach: $vm.breakdownItemSets">
+                                                <tr>
+                                                    <td>
+                                                        <div class="label" data-bind="text: breakdownItemCode"/>
+                                                    </td>
+                                                    <td>
+                                                        <div class="label" data-bind="text: breakdownItemName"/>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--D10_1-->
+            <div class="userguide-register" data-toggle="userguide-register" data-target="#btn-register"
+                 data-direction="right">
+                <div data-target="#btn-register" data-direction="right">
+                    #{i18n.getText('QMM019_145')}
+                </div>
+            </div>
+            <!--D10_2-->
+            <div class="userguide-exist" data-toggle="userguide-exist" data-target="#D1_6_container"
+                 data-direction="right">
+                <div data-target="#D1_6_container" data-direction="right">
+                    #{i18n.getText('QMM019_144')}
+                </div>
+            </div>
+            <!--D10_3-->
+            <div class="userguide-not-register" data-toggle="userguide-not-register" data-target="#D1_6_container"
+                 data-direction="right">
+                <div data-target="#D1_6_container" data-direction="right">
+                    #{i18n.getText('QMM019_146')}
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="16"
+                    data-bind="click: decide, enable: screenControl().enableD4_1() &amp;&amp; $root.errors.isEmpty"
+                    class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

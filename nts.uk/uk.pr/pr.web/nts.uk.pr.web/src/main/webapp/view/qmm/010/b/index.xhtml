@@ -7,41 +7,47 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="qmm010.b.style.css" />
+			<script>var dialogSize = { width: 520, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm010.b.start.js" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm010.b.service.js" />
 			<com:scriptfile path="qmm010.b.vm.js" />
+			<com:stylefile path="qmm010.b.style.css" />
+			<com:scriptfile path="qmm010.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div id="contents-left">
-					<div>読み込み対象社会保険事業所 を 選択 し て ください 。</div>
-					<i class="icon icon-searchbox iconlabor"></i>
-					<div class="searchSocialInsuranceOffice"
-						data-bind="ntsSearchBox: {comId: 'single-list', items: lstSocialInsuranceOffice, selected: selectLstSocialInsuranceOffice, selectedKey: 'code', fields: ['code','name']}" />
-					<div id="searchSocialInsuranceOffice">
-						<table id="single-list"
-							data-bind="ntsGridList: {
-									width: 380,
-									height: 400,
-									options: lstSocialInsuranceOffice,
-									optionsValue: 'code',
-									columns: columnsLstSocialInsuranceOffice,
-									multiple: false,
-									value: selectLstSocialInsuranceOffice,
-									enable: true
-							}"></table>
+			<div class="contents-area" style="margin-left: 40px;">
+				<div class="label dialog-title">#{i18n.getText('QMM010_30')}</div>
+				<div style="margin-top: 20px; min-width: 330px">
+                    <i id = "B1_2"></i>
+					<div style="width: 360px; margin-left: 40px;" tabindex="1"
+						 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'B2_1',
+                        items: socialInsuranceOfficeList, selected: selectedSocialInsuranceCode, selectedKey: 'code', fields: ['code', 'name'], mode: 'igGrid'}"/>
+					<div style = "margin-left: 40px;">
+					<table id="B2_1" tabindex="2"
+						   data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM010_31]',
+                            options: socialInsuranceOfficeList,
+                            optionsValue: 'code',
+                            columns: [
+								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'code', width: 120, formatter: _.escape},
+								{ headerText: '#{i18n.getText('QMM010_9')}', key: 'name', width: 230, formatter: _.escape }
+							],
+                            multiple: false,
+                            value: selectedSocialInsuranceCode
+                        }"></table>
 					</div>
 				</div>
-				<hr />
-				<div id="this-functions-area" class="control-group halign-center">
-					<button class="btn-default proceed x-large"
-						data-bind="click: importData">決定</button>
-					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
-				</div>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" class="x-large proceed "
+						data-bind="click: decideCloneData, enable: socialInsuranceOfficeList().length > 0">#{i18n.getText('QMM010_32')}</button>
+				<button tabindex="4" class="large" data-bind="click: cancelCloneData">#{i18n.getText('QMM010_33')}</button>
 			</div>
 		</ui:define>
+
 	</ui:composition>
 </body>
 </html>

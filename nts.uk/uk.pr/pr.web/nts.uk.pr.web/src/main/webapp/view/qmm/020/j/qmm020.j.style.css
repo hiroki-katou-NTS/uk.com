@@ -1,0 +1,40 @@
+#A{
+    margin-left: 100px;
+    margin-top: 8px;
+}
+
+.sidebar-content{
+    overflow:inherit !important;
+}
+.ntsRadioBox {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    padding-left: 15px;
+    width: 310px;
+}
+#center {
+    margin: auto;
+    padding: 10px;
+}
+#J7_1 {
+    float: left;
+}
+
+#J1_1 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}
+#J1_10 {
+    font-size: 14px;
+    margin: 10px 10px 10px 31px;
+    padding: 13px 12px 13px 15px;
+    white-space: pre;
+    width: 312px;
+}
+
+.J1_2_lable {
+    width: 80px !important;
+}

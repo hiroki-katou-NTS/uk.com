@@ -1,0 +1,305 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementCode
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.a.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.a.service.js"/>
+        <com:scriptfile path="qmm019.a.vm.js"/>
+        <com:scriptfile path="qmm019.a.start.js"/>
+        <!--<com:scriptfile path="knockout-sortable.min.js"/>-->
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- 新規レイアウト -->
+            <button id="A1_1" tabindex="1" class=""
+                    data-bind="click: create, enable: true">#{i18n.getText('QMM019_1')}</button>
+            <!-- 登録 -->
+            <button id="A1_2" tabindex="2" class="proceed"
+                    data-bind="click: registered, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM019_2')}</button>
+            <!-- Excel出力 -->
+            <button id="A1_3" tabindex="3" class=""
+                    data-bind="click: outputExcel, enable: true">#{i18n.getText('QMM019_3')}</button>
+            <!-- マスタ修正ログ -->
+            <button id="A1_4" tabindex="4" class=""
+                    data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM019_4')}</button>
+            <a id="A1_6" class="goout" tabindex="6"
+               data-bind="ntsLinkButton: { jump: '../../020/a/index.xhtml' }">#{i18n.getText('QMM019_6')}</a>
+            <a id="A1_5" class="goout" tabindex="5"
+               data-bind="ntsLinkButton: { jump: '../../017/a/index.xhtml' }">#{i18n.getText('QMM019_5')}</a>
+        </div>
+        <div id="contents-area">
+            <div class="table">
+                <div class="cell valign-top">
+                    <!-- マスタリスト選択パネル -->
+                    <div id="A2_1"
+                         data-bind="ntsPanel:{width: '270px', height: '600px', direction: 'right', showIcon: true, visible: true}">
+                        <!-- 検索 -->
+                        <div id="A2_3" style="width: 270px" tabindex="7"
+                             data-bind="ntsSearchBox: {
+                                        label: 'コード/名称',
+                                        targetKey: 'historyId',
+                                        mode:'igTree',
+                                        comId:'treegrid1',
+                                        items: statementLayoutList,
+                                        searchText: '検索',
+                                        selected: currentHistoryId,
+                                        selectedKey: 'historyId',
+                                        childField: 'history',
+                                        fields: ['nodeText']}"/>
+                        <div class="valign-center control-group">
+                            <!-- 履歴追加 -->
+                            <button id="A2_5" tabindex="9" class=""
+                                    data-bind="click: addHistory, enable: (statementLayoutHistData().statementCode != null) &amp;&amp; !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_11')}</button>
+                            <!-- 履歴編集 -->
+                            <button id="A2_6" tabindex="10" class=""
+                                    data-bind="click: editHistory, enable: (statementLayoutHistData().statementCode != null) &amp;&amp; !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_12')}</button>
+                        </div>
+                        <!-- 明細書レイアウト一覧 -->
+                        <table id="treegrid1" tabindex="11"
+                               data-bind="ntsTreeGridView:{
+                                        width: 270,
+                                        height: 505,
+                                        options: statementLayoutList,
+                                        value: currentHistoryId,
+                                        optionsValue: 'historyId',
+                                        optionsChild: 'history',
+                                        optionsText: 'nodeText',
+                                        multiple: false,
+                                        enable: true,
+                                        showCheckBox: false}">
+                        </table>
+                    </div>
+                </div>
+                <div class="cell valign-top panel-frame" style="width: 875px;" data-bind="with: statementLayoutHistData">
+                    <div class="panel panel-frame">
+                        <div class="valign-center control-group">
+                            <!-- コード/名称 -->
+                            <div id="A3_2" data-bind="ntsFormLabel: {required: true, constraint: ['StatementCode', 'StatementName']}">#{i18n.getText('QMM019_7')}</div>
+                            <!-- 明細書コード -->
+                            <label id="A3_3" data-bind="text: statementCode"></label>
+                            <!-- 明細書名称 -->
+                            <input id="A3_4" class="check-validate" tabindex="12"
+                                   data-bind="ntsTextEditor :{
+											name: '#[QMM019_16]',
+											value: statementName,
+											constraint: 'StatementName',
+											option: {width: '200px'},
+											required: true,
+											enable: true,
+											readonly: false}"/>
+                            <!-- 印刷情報 -->
+                            <label> （ </label>
+                            <label id="A3_5" data-bind="text: layoutPatternText"></label>
+                            <label> ） </label>
+                        </div>
+                        <div class="valign-center control-group">
+                            <!-- 有効期間 -->
+                            <div id="A3_6" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_17')}</div>
+                            <!-- 開始年月日 -->
+                            <label id="A3_7" data-bind="text: startMonthText"></label>
+                            <label>#{i18n.getText('QMM019_75')}</label>
+                            <!-- 終了年月日 -->
+                            <label id="A3_8" data-bind="text: endMonthText"></label>
+                        </div>
+                        <div class="valign-center control-group">
+                            <!-- 現在使用行数/最大行数 -->
+                            <div id="A3_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_20')}</div>
+                            <div style="display: inline-block; max-width: 590px;">
+                                <!-- 使用印字行数 --><!-- 使用未表示行数 -->
+                                <label id="A3_1011" data-bind="text: usedLines"></label>
+                                <label> / </label>
+                                <!-- 最大行数 -->
+                                <label id="A3_12" data-bind="text: layoutPatternContent"></label>
+                            </div>
+                        </div>
+                        <div class="valign-center control-group">
+                            <!-- 明細書レイアウト -->
+                            <div id="A3_13"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
+                            <!-- 印刷プレビュー -->
+                            <button id="A3_14" tabindex="13" class=""
+                                    data-bind="enable: false">#{i18n.getText('QMM019_22')}</button>
+                        </div>
+                        <hr/>
+                        <div id="statementLayoutSet" data-bind="with: statementLayoutSet">
+                            <!-- 支給 -->
+                            <div id="A4_1" class="panel panel-frame" data-bind="with: listSettingByCtg()[0]">
+                                <!-- 開始年月日 -->
+                                <label id="A4_2" class="category-text">#{i18n.getText('QMM019_23')}</label>
+                                <hr/>
+                                <div id="payment-table" class="drag-panel">
+                                    <div class="line-sort" data-bind="ntsSortable: {
+                                                                    data: listLineByLineSet,
+                                                                    isEnabled: true }">
+                                        <div class="form-group item-classification" data-bind="style: { background: printSet() == 1 ? '#E0F59E' : '#DDD'}">
+                                            <span class="caret-right"></span>
+                                            <button id="A4_4" class="" tabindex="14"
+                                                    data-bind="enable: !hasFixed(), click: editLine"></button>
+                                            <div class="item-sort" data-bind="ntsSortable: {
+                                                                        data: listSetByItem,
+                                                                        allowDrop: ko.observable('true'),
+                                                                        connectClass: 'item-sort',
+                                                                        beforeMove: preventStopSort}">
+                                                <div class="item" data-bind="
+                                                                    click: openSetting,
+                                                                    css: id,
+                                                                    style: { background: (itemId() == null) ? '#E0F59E' : isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                            color: isFixed() ? '#FFF' : '#404040'},
+                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}">
+                                                                    <span class="limited-label" data-bind="text: shortName, style: { width: shortName() == '＋' ? '100%' : '99%' }"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group">
+                                    <!-- 支給行追加 -->
+                                    <button id="A4_8" tabindex="17" class="add-line-btn"
+                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_24')}</button>
+                                </div>
+                            </div>
+                            <!-- 控除設定パネル -->
+                            <div id="A5_1" class="panel panel-frame" data-bind="with: listSettingByCtg()[1]">
+                                <!-- 控除 -->
+                                <label id="A5_2" class="category-text">#{i18n.getText('QMM019_25')}</label>
+                                <hr/>
+                                <div id="deduction-table" class="drag-panel">
+                                    <div class="line-sort" data-bind="ntsSortable: {
+                                                                    data: listLineByLineSet,
+                                                                    isEnabled: true }">
+                                        <div class="form-group item-classification" data-bind="style: { background: printSet() == 1 ? '#E0F59E' : '#DDD'}">
+                                            <span class="caret-right"></span>
+                                            <button id="A5_4" class="" tabindex="14"
+                                                    data-bind="enable: !hasFixed(), click: editLine"></button>
+                                            <div class="item-sort" data-bind="ntsSortable: {
+                                                                        data: listSetByItem,
+                                                                        allowDrop: ko.observable('true'),
+                                                                        connectClass: 'item-sort',
+                                                                        beforeMove: preventStopSort }">
+                                                <div class="item limited-label" data-bind="
+                                                                    text: shortName,
+                                                                    click: openSetting,
+                                                                    css: id,
+                                                                    style: { background: (itemId() == null) ? '#E0F59E' : isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                    color: isFixed() ? '#FFF' : '#404040'},
+                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}"> </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group">
+                                    <!-- 控除行追加 -->
+                                    <button id="A5_8" tabindex="17" class="add-line-btn"
+                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_26')}</button>
+                                </div>
+                            </div>
+                            <!-- 勤怠設定パネル -->
+                            <div id="A7_1" data-bind="with: listSettingByCtg()[2]">
+                                <div data-bind="visible: isShowCtg()" class="panel panel-frame">
+                                    <!-- 勤怠設定 -->
+                                    <button id="A7_2" tabindex="18" class=""
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6, click: editCategory"></button>
+                                    <!-- 勤怠 -->
+                                    <label id="A7_3" class="category-text">#{i18n.getText('QMM019_29')}</label>
+                                    <hr/>
+                                    <div id="attend-table" class="drag-panel">
+                                        <div class="line-sort" data-bind="ntsSortable: {
+                                                                        data: listLineByLineSet,
+                                                                        isEnabled: true }">
+                                            <div class="form-group item-classification" data-bind="style: { background: printSet() == 1 ? '#E0F59E' : '#DDD'}">
+                                                <span class="caret-right"></span>
+                                                <button id="A7_4" class="" tabindex="19"
+                                                        data-bind="enable: true, click: editLine"></button>
+                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                                            data: listSetByItem,
+                                                                            allowDrop: ko.observable('true'),
+                                                                            connectClass: 'item-sort',
+                                                                            beforeMove: preventStopSort }">
+                                                    <div class="item limited-label" tabindex="20" data-bind="
+                                                                        text: shortName,
+                                                                        click: openSetting,
+                                                                        css: id,
+                                                                        style: { background: (itemId() == null) ? '#E0F59E' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                        attr: { tabindex: (itemId() != null) ? '20' : '21'}}"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="valign-center control-group">
+                                        <!-- 勤怠行追加 -->
+                                        <button id="A7_9" tabindex="22" class="add-line-btn"
+                                                data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_30')}</button>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group" data-bind="visible: !isShowCtg()">
+                                    <!-- 勤怠エリア追加 -->
+                                    <button id="A6_1" tabindex="28" class="add-attend-btn"
+                                            data-bind="click: showCtg">#{i18n.getText('QMM019_27')}</button>
+                                </div>
+                            </div>
+                            <!-- 記事設定パネル -->
+                            <div id="A8_1" data-bind="with: listSettingByCtg()[3]">
+                                <div data-bind="visible: isShowCtg()" class="panel panel-frame">
+                                    <!-- 記事設定 -->
+                                    <button id="A8_2" tabindex="23" class=""
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6, click: editCategory"></button>
+                                    <!-- 記事 -->
+                                    <label id="A8_3" class="category-text">#{i18n.getText('QMM019_31')}</label>
+                                    <hr/>
+                                    <div id="other-table" class="drag-panel">
+                                        <div class="line-sort" data-bind="ntsSortable: {
+                                                                        data: listLineByLineSet,
+                                                                        isEnabled: true }">
+                                            <div class="form-group item-classification" data-bind="style: { background: printSet() == 1 ? '#E0F59E' : '#DDD'}">
+                                                <span class="caret-right"></span>
+                                                <button id="A8_4" class="" tabindex="24"
+                                                        data-bind="enable: true, click: editLine"></button>
+                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                                            data: listSetByItem,
+                                                                            allowDrop: ko.observable('true'),
+                                                                            connectClass: 'item-sort',
+                                                                            beforeMove: preventStopSort }">
+                                                    <div class="item limited-label" tabindex="25" data-bind="
+                                                                        text: shortName,
+                                                                        click: openSetting,
+                                                                        css: id,
+                                                                        style: { background: (itemId() == null) ? '#E0F59E' : deleted() ? '#EF7F7F' : '#FFFFFF'},
+                                                                        attr: { tabindex: (itemId() != null) ? '25' : '26'}"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="valign-center control-group">
+                                        <!-- 記事行追加 -->
+                                        <button id="A8_9" tabindex="27" class="add-line-btn"
+                                                data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_32')}</button>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group" data-bind="visible: !isShowCtg()">
+                                    <!-- 記事エリア追加 -->
+                                    <button id="A6_2" tabindex="29" class="add-report-btn"
+                                            data-bind="click: showCtg">#{i18n.getText('QMM019_28')}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

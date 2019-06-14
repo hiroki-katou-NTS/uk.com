@@ -7,53 +7,56 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<script>var dialogSize = { width: 510, height: 660 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm003.d.start.js" />
-			<com:scriptfile path="qmm003.d.vm.js" />
+			<com:scriptfile path="../share/constants.js"/>
 			<com:scriptfile path="qmm003.d.service.js" />
-			<script>
-				var dialogSize = {
-					width : 360,
-					height : 590
-				};
-			</script>
+			<com:scriptfile path="qmm003.d.vm.js" />
+			<com:scriptfile path="qmm003.d.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>
-					<label id="D_LBL_001">削除したい項目を選択してください。</label>
+				<div class="valign-center control-group">
+					<!-- D1_1 -->
+					<span class="label">#{i18n.getText('QMM003_27')}</span>
 				</div>
-				<div style="margin-left: 10px">
-					<label id="D_LBL_002"> 「※地方や県を選択している場合、紐付く住民税納付先マスタが </label>
-					削除対象となります。」を表示する。
+				<div class="valign-center control-group">
+					<!-- D1_2 -->
+					<span class="label">#{i18n.getText('QMM003_28')}</span>
 				</div>
-				<i class="icon icon-searchbox"></i>
-				<div id="D_SCH_001" style="margin-top: -11px; margin-left: 50px;"
-					data-bind="ntsSearchBox: {items: items, selected: selectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-				<div>
-					<table id="treegrid2"
-						data-bind="ntsTreeGridView:{
-											   	width: 320,
-												height: 360,
-												options: items,
-												selectedValues: selectedCode,
-												optionsValue: 'code',
-												optionsChild: 'childs',
-												optionsText: 'nodeText',
-												multiple: true,
-												enable: true,
-												showCheckBox: true}"
-						class="cf"></table>
+				<div class="valign-center control-group cf" style="width: 400px; margin-left: 45px; margin-bottom: 0px">
+					<!-- D1_3 -->
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<!-- D1_4 -->
+					<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'code', mode:'igTree', comId:'D2_1', items: items2, 
+						selected: selectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
 				</div>
+				<!-- D2_1 -->
+				<table id="D2_1" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 400,
+						rows: 15,
+						name: '#[QMM003_8]',
+						dataSource: items2,
+						selectedValues: selectedCodes,
+						headers: headers,
+						primaryKey: 'code',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: true,
+						enable: true,
+						showCheckBox: true}"></table>
 			</div>
-			<hr />
-			<div>
-				<button id="D_BTN_001" class="danger" data-bind="click: clickButton">決定</button>
-				<button id="D_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+			<div id="functions-area-bottom">
+				<!-- D3_1 -->
+				<button tabindex="3" class="x-large danger" data-bind="enable: selectedCodes().length > 0, click: deleteList, timeClick: 500">#{i18n.getText('QMM003_6')}</button>
+				<!-- D3_2 -->
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>
-
+			<style>
+				#D2_1_container{clear: both; margin-left: 45px}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

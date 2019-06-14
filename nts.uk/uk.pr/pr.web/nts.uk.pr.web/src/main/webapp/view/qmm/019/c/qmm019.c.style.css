@@ -1,0 +1,50 @@
+#contents-area {
+    padding-left: 20px !important;
+    padding-top: 20px !important;
+}
+
+#C1_1, #C1_6 {
+    width: 120px;
+}
+
+#C1_3 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#C1_7, #right-item {
+    display: inline-block;
+}
+
+#C1_7 {
+    margin-right: 20px;
+    float: left;
+}
+
+#C1_7 .ntsRadioBox {
+    display: block !important;
+}
+
+#C1_7 .ntsRadioBox:first-child {
+    margin-bottom: 17px;
+}
+
+#C1_10 {
+    background-color: #FED3C6;
+}
+
+#C1_12 {
+    margin-right: 10px;
+}
+
+#contents-area>.valign-center {
+    width: 640px;
+}
+
+#right-item {
+    width: 350px;
+}
+
+#right-item .control-group:first-child {
+    margin-bottom: 14px;
+}

@@ -1,75 +1,53 @@
-module nts.uk.pr.view.qmm007 {
+module nts.uk.pr.view.qmm007.a {
     export module service {
         /**
-         *  Service paths
+         * define path to service
          */
-        var paths: any = {
-            getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
-            createUnitPriceHistory: "pr/proto/unitprice/create",
-            updateUnitPriceHistory: "pr/proto/unitprice/update"
+        var path: any = {
+            getPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHis/{0}",
+            getPayrollUnitPriceHistoryByCidCode: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHistoryByCidCode/{0}",
+            register: "core/wageprovision/companyuniformamount/register",
+            getAllPayrollUnitPriceByCID: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByCID",
+            getPayrollUnitPriceSettingById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceSettingById/{0}",
+            getPayrollUnitPriceById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceById/{0}",
+            getPayrollUnitPriceHisById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHisById/{0}/{1}",
+            getAllHistoryById: "core/wageprovision/companyuniformamount/getAllHistoryById",
+            exportExcel: "core/wageprovision/companyuniformamount/export"
         };
 
-        /**
-         * Normal service.
-         */
-        export class Service extends base.simplehistory.service.BaseService<model.UnitPrice, model.UnitPriceHistory> {
-            constructor(path: base.simplehistory.service.Path) {
-                super(path);
-            }
-
-            /**
-             * Find history by id.
-             */
-            findHistoryByUuid(id: string): JQueryPromise<model.UnitPriceHistoryDto> {
-                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id);
-            }
-
-            /**
-             * Create unit price and first history.
-             */
-            create(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<model.UnitPriceHistory> {
-                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceDto);
-            }
-
-            /**
-             * Create unit price and first history.
-             */
-            update(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<void> {
-                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceDto);
-            }
+        export  function getAllHistoryById() : JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getAllHistoryById);
+        }
+        export  function getPayrollUnitPriceHisById(code: string, hisId: string) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getPayrollUnitPriceHisById, code,hisId);
+            return nts.uk.request.ajax("pr", _path);
         }
 
-        /**
-         * Service intance.
-         */
-        export var instance = new Service({
-            historyMasterPath: 'pr/proto/unitprice/masterhistory',
-            createHisotyPath: 'pr/proto/unitprice/history/create',
-            deleteHistoryPath: 'pr/proto/unitprice/history/delete',
-            updateHistoryStartPath: 'pr/proto/unitprice/history/update/start'
-        });
+        export  function getPayrollUnitPriceById(param: any) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getPayrollUnitPriceById, param);
+            return nts.uk.request.ajax("pr", _path);
+        }
 
-        /**
-        * Model namespace.
-        */
-        export module model {
-            export interface UnitPrice extends base.simplehistory.model.MasterModel<UnitPriceHistory> {};
-            export interface UnitPriceHistory extends base.simplehistory.model.HistoryModel {}
-            export interface UnitPriceHistoryDto {
-                id: string;
-                unitPriceCode: string;
-                unitPriceName: string;
-                startMonth: number;
-                endMonth: number;
-                budget: number;
-                fixPaySettingType: string;
-                fixPayAtr: string;
-                fixPayAtrMonthly: string;
-                fixPayAtrDayMonth: string;
-                fixPayAtrDaily: string;
-                fixPayAtrHourly: string;
-                memo: string;
-            }
+        export  function getPayrollUnitPriceSettingById(param: any) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getPayrollUnitPriceSettingById, param);
+            return nts.uk.request.ajax("pr", _path);
+        }
+
+        export  function getAllPayrollUnitPriceByCID() : JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getAllPayrollUnitPriceByCID);
+        }
+
+        export  function getPayrollUnitPriceHistoryByCidCode(param: any) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getPayrollUnitPriceHistoryByCidCode, param);
+            return nts.uk.request.ajax("pr", _path);
+        }
+
+        export  function register(data: any) : JQueryPromise<any> {
+            return nts.uk.request.ajax(path.register, data);
+        }
+
+        export function exportExcel(data: any): JQueryPromise<any>{
+            return nts.uk.request.exportFile(path.exportExcel, data);
         }
     }
 }

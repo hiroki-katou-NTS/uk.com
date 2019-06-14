@@ -1,47 +1,55 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html>
-<body>
-	<div class="contents-area">
-		<div class="left-content">
-			<div class="bg-green caret-right caret-background">
-				<div class= "C_BTN_34">
-					<button id="C_BTN_003" data-bind="click:openJDialog">履歴追加ボタン</button>
-					<button id="C_BTN_004" data-bind="click:openKDialog">履歴編集ボタン</button>
-				</div>
-				<div id="C_LST_002"
-					data-bind="ntsListBox: {
-						options: itemHeaderList,
-						optionsValue: 'id',
-						optionsText: 'startEnd',
-						value: selectedCode,
-						enable: isEnable(),
-						rows:5,
-						required: true,
-						columns: [
-							{ prop: 'startEnd', length: 12 }
-						]}">
-				</div>
-			</div>
-		</div>
-		<div class="right-content">
-			<div class="form-label">
-				<label id="LBL_004">鬮ｮ�ｿｽ騾包ｽｨ邵ｺ�ｽｫ隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ郢ｧ蝣､�ｽｴ闊娯�邵ｺ莉｣�ｽ�</label>
-				<hr />
-			</div>
-			<div>
-				<div class="searchBox"
-					data-bind="ntsSearchBox: {
-											mode: 'igGrid', 
-											comId: 'C_LST_001', 
-											items: dataSource, 
-											selected: selectedList, 
-											selectedKey: 'ID', 
-											fields: ['Name', 'ID']}" />
-				<table id="C_LST_001" class="cf"></table>
-				<br />
-			</div>
-		</div>
-	</div>
-</body>
-</html>
+<div>
+    <div class="sidebar-content-header" style = "min-width: 1000px;">
+            <span class = "title">#{i18n.getText('QMM020_6')}</span>
+            <button style="margin-left:48px" id="A1_1" tabindex="1" class="proceed"
+                    data-bind="click: registerStateCorrelationHisDeparment, enable: $root.errors.isEmpty() &amp;&amp; enableRegisterButton()">#{i18n.getText('QMM020_1')}</button>
+
+            <button id="A1_3" tabindex="3"
+                    data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
+
+            <button id="A1_4" tabindex="4"
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
+    </div>
+    <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+        <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 0px !important;">
+            <div >
+                <i id="img-calendar" class="image image-calendar"/>
+            </div>
+            <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="C1_3" tabindex="5" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">#{i18n.getText('QMM020_13')}</button>
+
+                    <button id="C1_4" tabindex="6" data-bind="click: openScreenK, enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table  id="C1_5" tabindex="7" data-bind="ntsGridList: {
+                                            height: 165,
+                                            rows:6,
+                                            name: '#{i18n.getText('QMM020_23')}',
+                                            dataSource: listStateCorrelationHis,
+                                            primaryKey: 'hisId',
+                                            columns: [
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: currentSelectedHis
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right">
+            <div class="control-group" style="">
+                <div style="margin-bottom: 10px;" id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
+            </div>
+            <div style="border-bottom: #CCCCCC 1px solid; width: 840px; margin-top:-10px; margin-bottom: 10px"></div>
+            <div>
+                <div id="C2_3" style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, enable: enableSearchButton, selectedKey: 'id', fields: ['employeeCode','employeeName']}"></div>
+                <table id="grid2"></table>
+
+
+            </div>
+        </div>
+    </div>
+</div>

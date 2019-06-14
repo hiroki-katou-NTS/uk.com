@@ -7,63 +7,51 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 520, height: 600 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
-			<com:stylefile path="qmm006.b.main.css" />
-			<com:scriptfile path="qmm006.b.start.js" />
-			<com:scriptfile path="qmm006.b.viewmodel.js" />
-			<com:scriptfile path="qmm006.b.service.js" />
+			<script>var dialogSize = { width: 420, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
-
+			<com:scriptfile path="qmm006.b.service.js" />
+			<com:scriptfile path="qmm006.b.vm.js" />
+			<com:scriptfile path="qmm006.b.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="content-1">
-					<div>
-						<label>支店情報を選択してください。</label>
-					</div>
-					<br />
-					<div class="cf">
-						<div style="float: left">
-							<i class="icon icon-searchbox"
-								style="margin-top: 50px; margin-left: 38px"></i>
-							<div style="width: 400px; margin-left: 42px; margin-bottom: 10px"
-								data-bind="ntsSearchBox: {
-									comId: 'treegrid1',
-									items: dataSource, 
-									selected: singleSelectedCode, 
-									selectedKey: 'treeCode', 
-									childField: 'childs', 
-									fields: ['name', 'code']}" />
-							<table id="treegrid1"
-								data-bind="ntsTreeGridView:{
-									width: 450,
-									height: 390,
-									options: dataSource,
-									value: singleSelectedCode,								
-									optionsValue: 'treeCode',
-									optionsChild: 'childs',
-									optionsText: 'nodeText',
-									multiple: false,
-									enable: true,										
-									showCheckBox: false}"
-								class="cf">
-							</table>
-						</div>
-					</div>
+				<div class="valign-center control-group">
+					<!-- B1_1 -->
+					<span class="label">#{i18n.getText('QMM006_36')}</span>
 				</div>
-				<hr></hr>
-				<div>
-					<button class="x-large proceed" data-bind="click: transferData"
-						id="btn_decide">決定</button>
-					<button class="large" id="btn_cancel" data-bind="click: closeDialog">キャンセル</button>
-					<br />
+				<div class="valign-center control-group" style="width: 400px">
+					<!-- B1_2 -->
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<!-- B1_3 -->
+					<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'id', mode:'igTree', comId:'B1_4', items: bankBranchList, 
+						selected: selectedCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 				</div>
-
+				<!-- B1_4 -->
+				<table id="B1_4" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 400,
+						name: '#[QMM006_37]',
+						dataSource: bankBranchList,
+						value: selectedCode,
+						headers: headers,
+						primaryKey: 'id',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: false,
+						enable: true,
+						rows: 15,
+						showCheckBox: false}"></table>
 			</div>
+			<div id="functions-area-bottom">
+				<!-- C3_1 -->
+				<button tabindex="3" class="x-large proceed" data-bind="enable: selectedCode().length > 4, click: select, timeClick: 500">#{i18n.getText('QMM006_38')}</button>
+				<!-- C3_2 -->
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM006_39')}</button>
+			</div>
+			<style>
+				#B1_4_container{clear: both}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

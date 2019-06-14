@@ -1,0 +1,11 @@
+
+.ntsSearchBox nts-editor ntsSearchBox_Component{
+	width: 338px;
+}
+
+.guide-content {
+	font-size: 20px;
+	white-space: pre;
+	padding: 20px !important;
+	line-height: 30px !important;
+}

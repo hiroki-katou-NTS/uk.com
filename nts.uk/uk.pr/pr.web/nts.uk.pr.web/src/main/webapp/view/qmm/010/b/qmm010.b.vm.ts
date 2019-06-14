@@ -1,66 +1,46 @@
-module nts.uk.pr.view.qmm010.b {
-
-    import option = nts.uk.ui.option;
-    import SocialInsuranceOfficeImportDto = service.model.SocialInsuranceOfficeImportDto;
-
-    export module viewmodel {
-        export class ScreenModel {
-
-            textSearch: any;
-            lstSocialInsuranceOffice: KnockoutObservableArray<SocialInsuranceOfficeImportDto>;
-            selectLstSocialInsuranceOffice: KnockoutObservable<string>;
-            columnsLstSocialInsuranceOffice: KnockoutObservableArray<any>;
-
-            constructor() {
-                var self = this;
-                self.selectLstSocialInsuranceOffice = ko.observable('');
-                self.columnsLstSocialInsuranceOffice = ko.observableArray([
-                    { headerText: 'コード', prop: 'code', width: 100 },
-                    { headerText: '名称', prop: 'name', width: 150 }
-                ]);
-            }
-
-            //start page
-            startPage(): JQueryPromise<this> {
-                var self = this;
-                var dfd = $.Deferred<this>();
-                self.findAllInsuranceOffice().done(data => {
-                    dfd.resolve(self);
-                });
-                return dfd.promise();
-            }
-
-            //Connection service find All InsuranceOffice
-            findAllInsuranceOffice(): JQueryPromise<this> {
-                var self = this;
-                var dfd = $.Deferred<this>();
-                var data = nts.uk.ui.windows.getShared("dataInsuranceOffice");
-                self.lstSocialInsuranceOffice = ko.observableArray<SocialInsuranceOfficeImportDto>(data);
-                dfd.resolve(self);
-                return dfd.promise();
-            }
-
-            //Find code data lst by check import data
-            private findCode(code: string): SocialInsuranceOfficeImportDto {
-                var self = this;
-                for (var itemOfLst of self.lstSocialInsuranceOffice()) {
-                    if (itemOfLst.code === code) {
-                        return itemOfLst;
-                    }
+module nts.uk.pr.view.qmm010.b.viewmodel {
+    import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
+    import model = nts.uk.pr.view.qmm010.share.model;
+    import service = nts.uk.pr.view.qmm010.b.service;
+    export class ScreenModel {
+        socialInsuranceOfficeList: KnockoutObservableArray<model.ISocialInsuranceOffice> = ko.observableArray([]);
+        selectedSocialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
+        constructor() {
+            let self = this;
+        }
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.findAllSocialOffice().done(function(data) {
+                self.socialInsuranceOfficeList(data);
+                if (data.length == 0) {
+                    dialog.alertError({messageId: 'Msg_37'}).then(function(){
+                        $('#B2_1_container').focus();
+                    });
+                } else {
+                    self.selectedSocialInsuranceCode(data[0].code);
                 }
-                return null;
-            }
+                block.clear();
+                dfd.resolve();
+            }).fail(function(err) {
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        decideCloneData () {
+            let self = this;
+            let selectedInsuranceOffice = _.find(ko.toJS(self.socialInsuranceOfficeList), {code: self.selectedSocialInsuranceCode()});
+            let socialOfficeInfo = _.pick(selectedInsuranceOffice, ['address1', 'address2', 'addressKana1', 'addressKana2', 'postalCode', 'phoneNumber', 'representativeName', 'representativePosition']);
+            setShared('QMM010_A_PARAMS', {socialOfficeInfo: socialOfficeInfo});
+            nts.uk.ui.windows.close();
+        }
 
-            //check dulicate code
-            private importData() {
-                var self = this;
-                if (self.selectLstSocialInsuranceOffice() != null) {
-                    var socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto;
-                    socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
-                    nts.uk.ui.windows.setShared('importData', socialInsuranceOfficeImport);
-                    nts.uk.ui.windows.close();
-                }
-            }
+        cancelCloneData () {
+            nts.uk.ui.windows.close();
         }
     }
 }
+

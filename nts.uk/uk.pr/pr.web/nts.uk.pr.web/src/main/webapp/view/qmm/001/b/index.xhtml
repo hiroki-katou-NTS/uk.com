@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 600, height: 380 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm001.b.vm.js" />
+			<com:scriptfile path="qmm001.b.start.js" />
+			<com:stylefile path="qmm001.b.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- B1 新たに作成する履歴の、作成情報を入力してください。 -->
+				<div id="title" style="margin: 10px 20px 10px 10px">
+					<span id="B1_1" class="label">#{i18n.getText('QMM001_28')}</span>
+				</div>
+				<!-- B1_2 コード/名称 -->
+				<div id="B1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px">
+					<span class="label">#{i18n.getText('QMM001_14')}</span>
+					<!-- B2_3 会社単価コード -->
+					<span id="B1_3" class="label" style="margin-left: 50px" data-bind = "text: code"></span>
+					<!-- B1_4 会社単価名称 -->
+					<span id="B1_4" class="label" style="margin-left: 15px" data-bind = "text: name"></span>
+				</div>
+				<!-- B1_5 期間 -->
+				<div id="B1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label">#{i18n.getText('QMM001_29')}</span>
+					<!-- B1_6 開始年月 -->
+					<com:ko-if bind ="historyAtr() == 1">
+					<div id = "B1_7"  style="margin-left: 82px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM001_30')}',
+																value: startYearMonth, 
+																dateFormat: 'yearmonth',
+																valueFormat: 'YYYYMM',
+																required: true
+																}" tabindex="2"></div>
+					</com:ko-if>
+					<!-- B1_7 開始年月和暦 -->
+					<com:ko-if bind ="historyAtr() == 0"><!-- B1_7 開始年月和暦 -->
+					<div id = "B1_6"  style="margin-left: 82px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM001_30')}',
+																value: startYearMonthDay,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" tabindex="1"></div>
+					</com:ko-if>
+
+					<!-- B1_8 9999/12 -->
+					<span class="label" data-bind =" text: end"></span>
+				</div>
+				<!-- B1_9 開始年月和暦 -->
+				<div class=" table table-col-2" id="B1_9" >
+					<div class ="cell valign-top">
+						<div data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+							<span class="label" >#{i18n.getText('QMM001_32')}</span>
+						</div>
+					</div>
+					<div class ="cell valign-top" style="">
+						<com:ko-if bind="!isFisrtHistory()">
+							<div id="B1_10" class="cell valign-top" tabIndex="-1"
+								 style="display: inline-block;text-align: left;margin-left: 5px;width: 300px;">
+								<div class="cell" tabindex="3"
+									 data-bind="ntsRadioBoxGroup:  {
+										value: takeOver,
+										options: listTakeOver(),
+										optionsValue: 'code',
+										optionsText: 'name'}">
+								</div>
+							</div>
+						</com:ko-if>
+						<com:ko-if bind="isFisrtHistory()">
+							<div  class="cell" tabindex="3" style= "display: inline-block;text-align: left; margin-left:5px;"
+								  data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+							</div>
+						</com:ko-if>
+					</div>
+				</div>
+
+
+
+			</div>
+			<div id="functions-area-bottom" style="z-index: auto;">
+				<!-- B2_1 登録 -->
+			<div id="center">
+				<button id="B2_1" tabindex="4" class="proceed large"
+					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_35')}</button>
+				<!-- B2_2 削除 -->
+				<button id="B2_2" tabindex="5"
+					data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
+			</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
