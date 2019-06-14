@@ -650,7 +650,7 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
-                            if (value.matchValue || value.replaceValue) {
+                            if ((_.isNil(value.replaceValue) || value.matchValue) && mode == 0) {
                                 if (mode == 0) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
