@@ -63,17 +63,24 @@ public class ViewContextService {
 		String contractCode;
 		String companyId;
 		String companyCode;
+		
 		boolean employee;
+		
 		String employeeId;
 		String employeeCode;
+		
 		Role role;
 		Language selectedLanguage;
 		
 		public String getConstractCode() { return this.contractCode;}
 		public String getCompanyId() { return this.companyId;}
+		public String getCompanyCode() { return this.companyCode;}
+		
 		public boolean isEmployee() { return this.employee;}
+		
 		public String getEmployeeId() { return this.employeeId;}
 		public String getEmployeeCode() { return this.employeeCode;}
+		
 		public Role getRole() { return this.role;} 
 		public Language getSelectedLanguage() { return this.selectedLanguage;}
 	}
