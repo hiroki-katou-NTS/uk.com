@@ -7,7 +7,7 @@ export const auth = {
     get token(): string | null {
         return storage.local.getItem('csrf') as string;
     },
-    get user(): {
+    get user(): null | {
         employee: boolean;
         companyId: string;
         employeeId: string;
