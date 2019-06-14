@@ -2,7 +2,7 @@ import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
 import { CCG007Login } from '../common/common';
-import { characteristics } from '@app/utils/storage';
+import { storage } from '@app/utils';
 
 @component({
     route: '/ccg/007/c',
@@ -20,7 +20,7 @@ import { characteristics } from '@app/utils/storage';
                 required: true
             }
         }
-    }, 
+    },
     name: 'changepass'
 })
 export class ChangePassComponent extends CCG007Login {
@@ -52,35 +52,37 @@ export class ChangePassComponent extends CCG007Login {
 
     public created() {
         let self = this;
-        self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) : 
-                        _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId) 
-                                                                : self.$i18n(self.params.changePassReason);
-        Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode), 
-                    this.$http.post(servicePath.getUserName, {  contractCode: self.params.contractCode, 
-                                                                employeeCode: self.params.employeeCode, 
-                                                                companyCode: self.params.companyCode })])
-                .then((values: Array<any>) => {
-            let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data, complex = [];
-            self.model.userName = user.userName;
-            self.policy.lowestDigits = policy.lowestDigits.toString();
-            self.policy.alphabetDigit = policy.alphabetDigit.toString();
-            self.policy.numberOfDigits = policy.numberOfDigits.toString();
-            self.policy.symbolCharacters = policy.symbolCharacters.toString();
-            self.policy.historyCount = policy.historyCount.toString();
-            self.policy.validPeriod = policy.validityPeriod.toString();
-            self.policy.isUse  = policy.isUse;
-            self.userId = user.userId;
-            if (policy.alphabetDigit > 0) {
-                complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
-            }
-            if (policy.numberOfDigits > 0) {
-                complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
-            }
-            if (policy.symbolCharacters > 0) {
-                complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
-            }
-            self.policy.complex = complex.join('、');
-        });
+        self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) :
+            _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId)
+                : self.$i18n(self.params.changePassReason);
+        Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode),
+        this.$http.post(servicePath.getUserName, {
+            contractCode: self.params.contractCode,
+            employeeCode: self.params.employeeCode,
+            companyCode: self.params.companyCode
+        })])
+            .then((values: Array<any>) => {
+                let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data, complex = [];
+                self.model.userName = user.userName;
+                self.policy.lowestDigits = policy.lowestDigits.toString();
+                self.policy.alphabetDigit = policy.alphabetDigit.toString();
+                self.policy.numberOfDigits = policy.numberOfDigits.toString();
+                self.policy.symbolCharacters = policy.symbolCharacters.toString();
+                self.policy.historyCount = policy.historyCount.toString();
+                self.policy.validPeriod = policy.validityPeriod.toString();
+                self.policy.isUse = policy.isUse;
+                self.userId = user.userId;
+                if (policy.alphabetDigit > 0) {
+                    complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
+                }
+                if (policy.numberOfDigits > 0) {
+                    complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
+                }
+                if (policy.symbolCharacters > 0) {
+                    complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
+                }
+                self.policy.complex = complex.join('、');
+            });
     }
 
     public mounted() {
@@ -98,25 +100,26 @@ export class ChangePassComponent extends CCG007Login {
     public changePass() {
         this.$validate();
         if (!this.$valid) {
-            return;                   
+            return;
         }
 
-        let self = this, 
-            command: ChangePasswordCommand = new ChangePasswordCommand(self.model.currentPassword, 
-                                                                        self.model.newPassword, 
-                                                                        self.model.newPasswordConfirm,
-                                                                        self.userId);
+        let self = this,
+            command: ChangePasswordCommand = new ChangePasswordCommand(self.model.currentPassword,
+                self.model.newPassword,
+                self.model.newPasswordConfirm,
+                self.userId);
 
         self.$mask('show');
-        
+
         // submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            super.login(CCG007Login.SUBMIT_LOGIN, {    companyCode : self.params.companyCode,
-                                    employeeCode: self.params.employeeCode,
-                                    password: command.newPassword,
-                                    contractCode : self.params.contractCode,
-                                    contractPassword : self.params.contractPassword,
-                                    loginDirect: true
+            super.login({
+                companyCode: self.params.companyCode,
+                employeeCode: self.params.employeeCode,
+                password: command.newPassword,
+                contractCode: self.params.contractCode,
+                contractPassword: self.params.contractPassword,
+                loginDirect: true
             }, () => {
                 self.model.currentPassword = '';
                 self.model.newPassword = '';
@@ -131,24 +134,14 @@ export class ChangePassComponent extends CCG007Login {
 
     public loginOnly() {
         let self = this;
-        characteristics.remove('companyCode')
-                        .then(() => characteristics.save('companyCode', self.params.companyCode))
-                        .then(() => characteristics.remove('employeeCode'))
-                        .then(() => {
-                            if (self.params.saveInfo) {
-                                characteristics.save('employeeCode', self.params.employeeCode);
-                            }
-                        }).then(() => this.toHomePage(self));
-        // ccg007.login(servicePath.loginWithNoChangePass , this, {    companyCode : self.params.companyCode,
-        //                                             employeeCode: self.params.employeeCode,
-        //                                             password: self.params.oldPassword,
-        //                                             contractCode : self.params.contractCode,
-        //                                             contractPassword : self.params.contractPassword
-        //                                 }, () => {
-        //                                     self.model.currentPassword = '';
-        //                                     self.model.newPassword = '';
-        //                                     self.model.newPasswordConfirm = '';
-        //                                 }, self.params.saveInfo);
+
+        storage.local.setItem('companyCode', self.params.companyCode);
+
+        if (self.params.saveInfo) {
+            storage.local.setItem('employeeCode', self.params.employeeCode);
+        }
+
+        self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
     }
 
     public showMessageError(res: any) {
@@ -179,7 +172,7 @@ class ChangePasswordCommand {
     public newPassword: string;
     public confirmNewPassword: string;
     public userId: string;
-    
+
     constructor(oldPassword: string, newPassword: string, confirmNewPassword: string, userId: string) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
@@ -205,5 +198,5 @@ interface PassWordPolicy {
     validityPeriod: number;
     numberOfDigits: number;
     symbolCharacters: number;
-    alphabetDigit: number; 
+    alphabetDigit: number;
 }

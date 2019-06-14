@@ -1,4 +1,4 @@
-import { $, location, csrf, obj } from '@app/utils';
+import { $, obj, auth } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
 import { $dialog } from '@app/plugins';
@@ -132,8 +132,8 @@ const WEB_APP_NAME = {
                 // authentication 
                 setHeaders({
                     'MOBILE': 'true',
-                    'PG-Path': location.current().serialize(),
-                    //'X-CSRF-TOKEN': csrf.getToken()
+                    'PG-Path': window.location.pathname,
+                    'X-CSRF-TOKEN': auth.token
                 });
 
                 if (opt.responseType) {
@@ -278,6 +278,7 @@ const WEB_APP_NAME = {
                     }
                 });
 
+                // get all resources on serve
                 Object.defineProperty(self.$http, 'resources', {
                     get() {
                         let rapi: string = '/i18n/resources/mobile/get',

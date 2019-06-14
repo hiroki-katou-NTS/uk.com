@@ -1,6 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { characteristics } from '@app/utils/storage';
+import { storage } from '@app/utils';
 import { SideMenu, NavMenu } from '@app/services';
 
 @component({
@@ -56,7 +56,7 @@ export class ForgetPassComponent extends Vue {
             if (!_.isNil(self.params.employeeCode)) {
                 return Promise.resolve(self.params.employeeCode);
             } else {
-                return characteristics.restore('employeeCode');
+                return storage.local.getItem('employeeCode');
             }
         }).then((empCode: string) => {
             if (!_.isNil(empCode)) {
@@ -66,7 +66,7 @@ export class ForgetPassComponent extends Vue {
             if (!_.isNil(self.params.companyCode)) {
                 return Promise.resolve(self.params.companyCode);
             } else {
-                return characteristics.restore('companyCode');
+                return storage.local.getItem('companyCode');
             }
         }).then((compCode: string) => {
             if (!_.isNil(compCode)) {

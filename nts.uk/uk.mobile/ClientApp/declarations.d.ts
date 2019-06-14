@@ -1,5 +1,4 @@
 import Vue, { ComponentOptions } from "vue";
-import { WebAppId } from '@app/utils/request';
 import { ErrorHandler } from "vue-router/types/router";
 
 declare interface Window {
@@ -76,9 +75,9 @@ declare module "vue/types/vue" {
         readonly $valid: boolean;
         $http: {
             get(url: string): Promise<{}>;
-            get(pg: WebAppId, url: string): Promise<{}>;
+            get(pg: 'at' | 'pr' | 'hr' | 'com', url: string): Promise<{}>;
             post(url: string, data?: any): Promise<{}>;
-            post(pg: WebAppId, url: string, data?: any): Promise<{}>;
+            post(pg: 'at' | 'pr' | 'hr' | 'com', url: string, data?: any): Promise<{}>;
             file: {
                 live: (fileId: string) => string;
                 upload: (form: FormData) => Promise<{}>;
@@ -90,6 +89,28 @@ declare module "vue/types/vue" {
             },
             enum(enumNames?: Array<String>): Promise<{}>;
             readonly resources: Promise<{}>;
+        };
+        $auth: {
+            login: (data: any) => Promise<{}>;
+            logout: () => Promise<{}>;
+            readonly user: Promise<{
+                employee: string;
+                companyId: string;
+                employeeId: string;
+                employeeCode: string;
+                constractCode: string;
+                role: {
+                    payroll: string;
+                    personnel: string;
+                    attendance: string;
+                    systemAdmin: string;
+                    companyAdmin: string;
+                    personalInfo: string;
+                    officeHelper: string;
+                    groupCompanyAdmin: string;
+                }
+            }>;
+            readonly token: Promise<string>;
         };
         $i18n: {
             (resr: string): string;

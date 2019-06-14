@@ -1,98 +1,101 @@
-import { characteristics } from '@app/utils/storage';
+import { storage } from '@app/utils';
 import { Vue, _ } from '@app/provider';
 
 export class CCG007Login extends Vue {
-
-    protected login(servicePath: string, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected login(submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
         let self = this;
 
         self.$validate();
+
         if (!self.$valid) {
             return;
         }
-        
+
         self.$mask('show');
-        self.$http.post(servicePath, submitData).then((res: { data: CheckChangePass }) => {
-            if (res.data.showContract) {
-                this.authenticateContract(self);
-            } else {
-                if (!_.isEmpty(res.data.successMsg)) {
-                    self.$modal.info({ messageId: res.data.successMsg }).then(() => {
-                        this.processAfterLogin(res, self, submitData, resetForm, saveInfo);
-                    });
+
+        self.$auth.login(submitData)
+            .then((data: CheckChangePass) => {
+                if (data.showContract) {
+                    self.$goto('contractAuthentication');
                 } else {
-                    this.processAfterLogin(res, self, submitData, resetForm, saveInfo);
+                    if (!_.isEmpty(data.successMsg)) {
+                        self.$modal.info({ messageId: data.successMsg })
+                            .then(() => {
+                                self.processAfterLogin(data, submitData, resetForm, saveInfo);
+                            });
+                    } else {
+                        self.processAfterLogin(data, submitData, resetForm, saveInfo);
+                    }
                 }
-            }
-        }).catch((res: any) => {
-            // Return Dialog Error
-            self.$mask('hide');
-            if (!_.isEqual(res.message, 'can not found message id')) {
-                if (_.isEmpty(res.messageId)) {
-                    self.$modal.error(res.message);
+            }).catch((res: any) => {
+                // Return Dialog Error
+                self.$mask('hide');
+
+                if (!_.isEqual(res.message, 'can not found message id')) {
+                    if (_.isEmpty(res.messageId)) {
+                        self.$modal.error(res.message);
+                    } else {
+                        self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    }
                 } else {
-                    self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    self.$modal.error(res.messageId);
                 }
-            } else {
-                self.$modal.error(res.messageId);
-            }
-        });
+            });
     }
 
-    protected processAfterLogin(res: any, self: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected processAfterLogin(data: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+        let self = this;
+
         self.$mask('hide');
-        characteristics.remove('companyCode')
-                    .then(() => characteristics.save('companyCode', submitData.companyCode))
-                    .then(() => characteristics.remove('employeeCode'))
-                    .then(() => {
-                        if (saveInfo) {
-                            characteristics.save('employeeCode', submitData.employeeCode);
-                        }
-                    }).then(() => {
-                        if (!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId === 'Msg_1517' && !submitData.loginDirect) {
-                            // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-                            self.$modal.confirm({ messageId: res.data.msgErrorId, messageParams: [res.data.spanDays.toString()]}).then((code) => {
-                                if (code === 'yes') {
-                                    self.$goto({ name: 'changepass', params: _.merge({}, 
-                                        submitData, 
-                                        { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, changePassReason: 'Msg_1523', spanDays: res.data.spanDays }) 
-                                    });
-                                } else {
-                                    submitData.loginDirect = true;
-                                    this.login(CCG007Login.SUBMIT_LOGIN, submitData, resetForm, saveInfo);
-                                }
+
+        Promise.resolve()
+            .then(() => storage.local.setItem('companyCode', submitData.companyCode))
+            .then(() => storage.local.setItem('employeeCode', submitData.employeeCode))
+            .then(() => {
+                if (!_.isEmpty(data.msgErrorId) && data.msgErrorId === 'Msg_1517' && !submitData.loginDirect) {
+                    // 確認メッセージ（Msg_1517）を表示する{0}【残り何日】
+                    self.$modal.confirm({ messageId: data.msgErrorId, messageParams: [data.spanDays.toString()] })
+                        .then((code) => {
+                            if (code === 'yes') {
+                                self.$goto({
+                                    name: 'changepass',
+                                    params: _.merge(submitData,
+                                        {
+                                            saveInfo,
+                                            oldPassword: submitData.password,
+                                            mesId: data.msgErrorId,
+                                            changePassReason: 'Msg_1523',
+                                            spanDays: data.spanDays
+                                        })
+                                });
+                            } else {
+                                submitData.loginDirect = true;
+                                this.login(submitData, resetForm, saveInfo);
+                            }
+                        });
+                } else {
+                    // check MsgError
+                    if ((!_.isEmpty(data.msgErrorId) && data.msgErrorId !== 'Msg_1517') || data.showChangePass) {
+                        if (data.showChangePass) {
+                            self.$goto({
+                                name: 'changepass', params: _.merge({},
+                                    submitData,
+                                    {
+                                        oldPassword: submitData.password, mesId: data.msgErrorId, saveInfo,
+                                        changePassReason: data.changePassReason
+                                    })
                             });
                         } else {
-                            // check MsgError
-                            if ((!_.isEmpty(res.data.msgErrorId) && res.data.msgErrorId !== 'Msg_1517') || res.data.showChangePass) {
-                                if (res.data.showChangePass) {
-                                    self.$goto({ name: 'changepass', params: _.merge({}, 
-                                                submitData, 
-                                                { oldPassword: submitData.password, mesId: res.data.msgErrorId, saveInfo, 
-                                                    changePassReason: res.data.changePassReason }) 
-                                            });
-                                } else {
-                                    resetForm();
-                                    /** TODO: wait for dialog error method */
-                                    self.$modal.error({ messageId: res.data.msgErrorId });
-                                }
-                            } else {
-                                this.toHomePage(self);
-                            }
+                            resetForm();
+                            /** TODO: wait for dialog error method */
+                            self.$modal.error({ messageId: data.msgErrorId });
                         }
-                    });
+                    } else {
+                        self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+                    }
+                }
+            });
     }
-
-    protected toHomePage(self) {
-        self.$mask('hide');
-        self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
-    }
-
-    protected authenticateContract(self) {
-        self.$goto({ name: 'contractAuthentication' });
-    }
-    
-    protected static readonly SUBMIT_LOGIN: string =  'ctx/sys/gateway/login/submit/mobile';
 }
 
 interface CheckChangePass {

@@ -1,4 +1,4 @@
-import { obj, dom } from '@app/utils';
+import { obj, dom, storage } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
 const style = dom.create('style', {
@@ -55,7 +55,7 @@ const language = new Vue({
         change(lang: string) {
             this.current = lang;
 
-            localStorage.setItem('lang', lang);
+            storage.local.setItem('lang', lang);
         },
         watch(callback: Function) {
             let self = this;
@@ -79,7 +79,7 @@ const Language = {
     set current(lang: string) {
         language.current = lang;
 
-        localStorage.setItem('lang', lang);
+        storage.local.setItem('lang', lang);
     },
     i18n(resource: string, params?: { [key: string]: string }) {
         return getText(resource, params);
@@ -89,7 +89,7 @@ const Language = {
     },
     refresh() {
         language.current = '';
-        language.current = localStorage.getItem('lang') || 'jp';
+        language.current = (storage.local.getItem('lang') as string) || 'jp';
     }
 };
 
@@ -116,7 +116,7 @@ const LanguageBar = {
 
 const i18n = {
     install(vue: VueConstructor<Vue>, lang: string) {
-        language.current = lang || localStorage.getItem('lang') || 'jp';
+        language.current = lang || (storage.local.getItem('lang') as string) || 'jp';
 
         vue.filter('i18n', getText);
         vue.prototype.$i18n = getText;

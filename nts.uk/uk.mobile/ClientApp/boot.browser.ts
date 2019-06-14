@@ -7,6 +7,7 @@ import {
     tojs,
     bstrp,
     ajax,
+    auth,
     resources,
     i18n,
     mask,
@@ -23,6 +24,8 @@ import { SideMenuBar, NavMenuBar, SideMenu } from '@app/components';
 
 // use ajax request
 Vue.use(ajax, 'webapi');
+// use aut
+Vue.use(auth);
 
 Vue.use(tojs);
 Vue.use(bstrp);
@@ -58,8 +61,7 @@ new Vue({
         }
     },
     beforeCreate() {
-        const self = this,
-            tapi: string = '/ctx/sys/gateway/login/mobile/token';
+        const self = this;
 
         self.$mask('show', { message: true, opacity: 0.75 });
 
@@ -70,13 +72,9 @@ new Vue({
                 }
             })
             .then(() => {
-                self.$http.get(tapi)
-                    .then((v: { data: string | any }) => {
-                        if (typeof v.data !== 'string') {
-                            self.$goto('login');
-                        } else {
-                            localStorage.setItem('csrf', v.data);
-
+                self.$auth.token
+                    .then((tk: string | null) => {
+                        if (tk) {
                             // xử lý các hàm lấy dữ liệu cần thiết ở đây
                             SideMenu.reload();
                         }

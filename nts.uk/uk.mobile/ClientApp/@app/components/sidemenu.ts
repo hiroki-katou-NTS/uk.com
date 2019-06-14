@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { Language } from '@app/plugins';
-import { dom, browser } from '@app/utils';
+import { dom, browser, storage } from '@app/utils';
 import { component, Watch } from '@app/core/component';
 
 // tslint:disable-next-line: variable-name
@@ -131,7 +131,7 @@ export class SideMenuBar extends Vue {
         super();
 
         if (browser.width >= 992) {
-            let shoow = localStorage.getItem('__sidebar__');
+            let shoow = storage.local.getItem('sidebar');
             SideMenu.show = shoow === undefined ? true : shoow === 'show';
         }
     }
@@ -173,7 +173,7 @@ export class SideMenuBar extends Vue {
             dom.addClass(document.body, 'show-side-bar');
         }
 
-        localStorage.setItem('__sidebar__', show ? 'show' : '');
+        storage.local.setItem('sidebar', show ? 'show' : 'hide');
     }
 
     public created() {

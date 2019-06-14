@@ -1,6 +1,6 @@
 import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { characteristics } from '@app/utils/storage';
+import { storage } from '@app/utils';
 import { NavMenu, SideMenu } from '@app/services';
 import { CCG007Login } from '../common/common';
 
@@ -23,7 +23,7 @@ import { CCG007Login } from '../common/common';
         }
     },
     name: 'login',
-    constraints: [ 'nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode' ]
+    constraints: ['nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode']
 })
 export class LoginComponent extends CCG007Login {
 
@@ -45,39 +45,46 @@ export class LoginComponent extends CCG007Login {
 
     public created() {
         let self = this;
+
         if (!_.isNil(self.params.contractCode)) {
             self.contractCode = self.params.contractCode;
             self.contractPass = self.params.contractPass;
             self.checkEmpCodeAndCompany();
         } else {
-            characteristics.restore('contractInfo').then((value: any) => {
-                if (!_.isNil(value)) {
-                    self.contractCode = value.contractCode;
-                    self.contractPass = value.contractPassword;
-                }
-            }).then(() => {
-                return this.$http.post(servicePath.checkContract, { contractCode: self.contractCode, contractPassword: self.contractPass });
-            }).then((rel: { data: any }) => {
-                if (rel.data.onpre) {
-                    self.contractCode = self.defaultContractCode;
-                    self.contractPass = null;
-                    characteristics.remove('contractInfo')
-                        .then(() => characteristics.save('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass }));
-                } else {
-                    if (rel.data.showContract && !rel.data.onpre) {
-                        this.authenticateContract(self);
+            Promise.resolve()
+                .then(() => storage.local.getItem('contractInfo'))
+                .then((value: any) => {
+                    if (!_.isNil(value)) {
+                        self.contractCode = value.contractCode;
+                        self.contractPass = value.contractPassword;
                     }
-                }
-            }).then(() => {
-                self.checkEmpCodeAndCompany();
-            }).catch((res) => {
+                }).then(() => {
+                    return this.$http.post(servicePath.checkContract, {
+                        contractCode: self.contractCode || self.defaultContractCode,
+                        contractPassword: self.contractPass
+                    });
+                }).then((rel: { data: any }) => {
+                    if (rel.data.onpre) {
+                        self.contractCode = self.defaultContractCode;
+                        self.contractPass = null;
 
-            });
+                        storage.local.setItem('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass });
+                    } else {
+                        if (rel.data.showContract && !rel.data.onpre) {
+                            self.$goto({ name: 'contractAuthentication' });
+                        }
+                    }
+                }).then(() => {
+                    self.checkEmpCodeAndCompany();
+                }).catch((res) => {
+
+                });
         }
 
-        this.$http.post(servicePath.ver).then((response: { data: any }) => {
-            self.model.ver = response.data.ver;
-        });
+        this.$http.post(servicePath.ver)
+            .then((response: { data: any }) => {
+                self.model.ver = response.data.ver;
+            });
     }
 
     public mounted() {
@@ -87,7 +94,10 @@ export class LoginComponent extends CCG007Login {
     }
 
     public checkEmpCodeAndCompany() {
-        let self = this, companyCode = '', employeeCode = '';
+        let self = this,
+            companyCode = '',
+            employeeCode = '';
+
         Promise.resolve().then(() => {
             if (!_.isEmpty(self.params.companies)) {
                 return { data: self.params.companies };
@@ -95,35 +105,35 @@ export class LoginComponent extends CCG007Login {
                 return this.$http.post(servicePath.getAllCompany + self.contractCode);
             }
         }).then((response: { data: Array<ICompany> }) => self.companies = response.data)
-        .then(() => {
-            if (!_.isNil(self.params.employeeCode)) {
-                return Promise.resolve(self.params.employeeCode);
-            } else {
-                return characteristics.restore('employeeCode');
-            }
-        }).then((empCode: string) => {
-            if (!_.isNil(empCode)) {
-                employeeCode = empCode;
-            }
-        }).then(() => {
-            if (!_.isNil(self.params.companyCode)) {
-                return Promise.resolve(self.params.companyCode);
-            } else {
-                return characteristics.restore('companyCode');
-            }
-        }).then((compCode: string) => {
-            if (!_.isNil(compCode)) {
-                companyCode = compCode;
-            }
-        }).then(() => {
-            if (_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))) {
-                self.model.comp = self.companies[0].companyCode;
-                self.model.employeeCode = '';
-            } else {
-                self.model.comp = companyCode;
-                self.model.employeeCode = employeeCode;
-            }
-        });
+            .then(() => {
+                if (!_.isNil(self.params.employeeCode)) {
+                    return Promise.resolve(self.params.employeeCode);
+                } else {
+                    return storage.local.getItem('employeeCode');
+                }
+            }).then((empCode: string) => {
+                if (!_.isNil(empCode)) {
+                    employeeCode = empCode;
+                }
+            }).then(() => {
+                if (!_.isNil(self.params.companyCode)) {
+                    return Promise.resolve(self.params.companyCode);
+                } else {
+                    return storage.local.getItem('companyCode');
+                }
+            }).then((compCode: string) => {
+                if (!_.isNil(compCode)) {
+                    companyCode = compCode;
+                }
+            }).then(() => {
+                if (_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))) {
+                    self.model.comp = self.companies[0].companyCode;
+                    self.model.employeeCode = '';
+                } else {
+                    self.model.comp = companyCode;
+                    self.model.employeeCode = employeeCode;
+                }
+            });
     }
 
     public destroyed() {
@@ -135,24 +145,27 @@ export class LoginComponent extends CCG007Login {
     public login() {
         let self = this;
 
-        super.login(CCG007Login.SUBMIT_LOGIN, {    companyCode : self.model.comp,
-                                employeeCode: self.model.employeeCode,
-                                password: self.model.password,
-                                contractCode : self.contractCode,
-                                contractPassword : self.contractPass, 
-                                loginDirect: false
-                            }, () => self.model.password = '', 
-                            self.model.autoLogin[0]);
+        super.login({
+            companyCode: self.model.comp,
+            employeeCode: self.model.employeeCode,
+            password: self.model.password,
+            contractCode: self.contractCode,
+            contractPassword: self.contractPass,
+            loginDirect: false
+        }, () => self.model.password = '',
+            self.model.autoLogin[0]);
     }
 
     public forgetPass() {
-        this.$goto({ name: 'forgetPass', params: {
-            contractCode: this.contractCode,
-            contractPass: this.contractPass,
-            companyCode: this.model.comp,
-            employeeCode: this.model.employeeCode,
-            companies: this.companies
-        }});
+        this.$goto({
+            name: 'forgetPass', params: {
+                contractCode: this.contractCode,
+                contractPass: this.contractPass,
+                companyCode: this.model.comp,
+                employeeCode: this.model.employeeCode,
+                companies: this.companies
+            }
+        });
 
     }
 }

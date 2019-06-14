@@ -1,6 +1,7 @@
 export * from '@app/plugins/bstrp';
 
 export * from '@app/plugins/ajax';
+export * from '@app/plugins/auth';
 export * from '@app/plugins/validate';
 export * from '@app/plugins/i18n';
 
