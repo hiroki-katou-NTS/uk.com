@@ -1521,6 +1521,7 @@ module cps003.a.vm {
 
             setShared('CPS003F_PARAM', {
                 id: id,
+                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(),
                 // push list ids of item show in grid
                 itemsDefIds: self.batchSettingItems
             });
