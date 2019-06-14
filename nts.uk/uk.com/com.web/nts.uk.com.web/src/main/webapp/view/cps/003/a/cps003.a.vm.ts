@@ -1324,7 +1324,7 @@ module cps003.a.vm {
                     if (spaceCheck) item.inputProcess = spaceCheck;
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     item.dataType = "number";
@@ -1333,7 +1333,7 @@ module cps003.a.vm {
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     sort.type = "Number";
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
                     item.columnCssClass = "halign-right";
@@ -1358,7 +1358,7 @@ module cps003.a.vm {
                     }
                     
                     item.ntsControl = name;
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.TIME:
                     item.columnCssClass = "halign-right";
@@ -1367,7 +1367,7 @@ module cps003.a.vm {
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     sort.type = "Time";
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;    
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     item.columnCssClass = "halign-right";
@@ -1378,7 +1378,7 @@ module cps003.a.vm {
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     sort.type = "Time";
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -1394,7 +1394,7 @@ module cps003.a.vm {
                     item.ntsControl = name; 
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
                     name = "ReferButton" + item.key;
@@ -1406,7 +1406,7 @@ module cps003.a.vm {
                     item.ntsControl = name;
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
-                    self.batchSettingItems.push(item.itemId);
+                    if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.READONLY:
                     item.ntsControl = "Label";
@@ -1480,7 +1480,11 @@ module cps003.a.vm {
                 _.forEach(self.settings.perInfoData(), (itemInfo: IPersonInfoSetting) => {
                     if (_.find(columns, itemId => itemId === itemInfo.perInfoItemDefID)) {
                         $grid.mGrid("showColumn", itemInfo.itemCD, true);
-                        if (!_.find(self.batchSettingItems, batchItem => batchItem === itemInfo.perInfoItemDefID)) {
+                        let item = _.find(self.gridOptions.columns, column => column.key === itemInfo.itemCD);
+                        if (!_.find(self.batchSettingItems, batchItem => batchItem === itemInfo.perInfoItemDefID)
+                            && item && item.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY
+                            && item.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY
+                            && item.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.NUMBERIC_BUTTON) {
                             self.batchSettingItems.push(itemInfo.perInfoItemDefID);
                         }
                     } else {

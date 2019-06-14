@@ -637,8 +637,8 @@ module cps003 {
             },
             CS00024_IS00279: (v, o) => {
                 if (!o) return;
-                let empId = o.employeeId, standardDate = o.IS00279, grantTable = o.IS00280, hireDate, startWork, endWork, conTime, $grid = $("#grid");
-                if (!v || !grantTable) {
+                let empId = o.employeeId, standardDate = moment(v), grantTable = o.IS00280, hireDate, startWork, endWork, conTime, $grid = $("#grid");
+                if (!v || !standardDate.isValid() || !grantTable) {
                     $grid.mGrid("updateCell", o.id, "IS00281", "");
                     $grid.mGrid("updateCell", o.id, "IS00282", "");
                     $grid.mGrid("updateCell", o.id, "IS00283", "");
@@ -647,16 +647,16 @@ module cps003 {
                 
                 fetch.get_ro_data({
                     employeeId: empId,
-                    standardDate: moment(standardDate).format('YYYY/MM/DD'),
+                    standardDate: standardDate.format('YYYY/MM/DD'),
                     grantTable: grantTable,
                     entryDate: hireDate,
                     startWorkCond: startWork,
                     endWorkCond: endWork,
                     contactTime: conTime
                 }).done(result => {
-                    $grid.mGrid("updateCell", o.id, "IS00281", result.nextTimeGrantDate);
-                    $grid.mGrid("updateCell", o.id, "IS00282", result.nextTimeGrantDays);
-                    $grid.mGrid("updateCell", o.id, "IS00283", result.nextTimeMaxTime);
+                    $grid.mGrid("updateCell", o.id, "IS00281", _.isNil(result.nextTimeGrantDate) ? "" : result.nextTimeGrantDate);
+                    $grid.mGrid("updateCell", o.id, "IS00282", _.isNil(result.nextTimeGrantDays) ? "" : result.nextTimeGrantDays);
+                    $grid.mGrid("updateCell", o.id, "IS00283", _.isNil(result.nextTimeMaxTime) ? "" : result.nextTimeMaxTime);
                 });
             },
             CS00025_IS00295: (v, o) => {
