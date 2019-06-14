@@ -569,7 +569,7 @@ module cps003.f.vm {
                                     valueText = itemX[0].optionText;
                                 }
                             }else if(item.itemData.dataType == 5){
-                               valueText =  window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](value.matchValue).fullText;
+                               valueText =  parseTimeWidthDay(value.matchValue).fullText;
                             }
                             confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
@@ -583,7 +583,7 @@ module cps003.f.vm {
                                     valueTextMatch = itemX[0].optionText;
                                 }
                             }else if(item.itemData.dataType == 5){
-                               valueTextMatch =  window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](value.matchValue).fullText;
+                               valueTextMatch =  parseTimeWidthDay(value.matchValue).fullText;
                             }else{
                                 valueTextMatch = value.matchValue;
                             }
@@ -650,7 +650,7 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
-                            if (value.matchValue) {
+                            if (value.matchValue || value.replaceValue) {
                                 if (mode == 0) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
