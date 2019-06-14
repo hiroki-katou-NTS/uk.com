@@ -1608,7 +1608,7 @@ module cps003.a.vm {
                                         let histItem = groupByEmpId[rec.employeeId];
                                         if (!_.isNil(histItem)) {
                                             let month = Math.floor(replaceValue.replaceValue[1] / 100),
-                                                day = replaceValue.replaceValue[1] % 100;
+                                                day = replaceValue.replaceValue[1] % 100,
                                                 year = moment(histItem[0].startDate).year() - 1,
                                                 date = moment([ year, month - 1, day ]);
                                             
