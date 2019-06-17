@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
