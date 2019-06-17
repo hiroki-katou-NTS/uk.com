@@ -27,12 +27,16 @@ module cps003.f.vm {
             itemData: ko.observable({ itemCode: '', dataType: 0, amount: 0 }),
             textView: ko.observable('')
         };
+        
+        baseDate: any;
 
         dataSources: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this,
                 data: IModelDto = getShared('CPS003F_PARAM') || { id: '', baseDate: '', itemsDefIds: [] };
+            
+            self.baseDate = data.baseDate;
 
             // sample data
             if (data.id) {
@@ -563,7 +567,7 @@ module cps003.f.vm {
                     if (mode == null) {
                         if (value.replaceValue) {
                             let valueText = value.matchValue;
-                            if(item.itemData.dataType == 6){
+                            if(item.itemData.dataType == 6 || item.itemData.dataType == 8){
                                let itemX = _.filter(item.itemData.selectionItems, function(x){return x.optionValue == value.matchValue});
                                 if(itemX.length > 0){
                                     valueText = itemX[0].optionText;
@@ -577,7 +581,7 @@ module cps003.f.vm {
                             });
                         } else {
                             let valueTextMatch = item.replacer;
-                            if (item.itemData.dataType == 6) {
+                            if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
                                 let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
                                 if (itemX.length > 0) {
                                     valueTextMatch = itemX[0].optionText;

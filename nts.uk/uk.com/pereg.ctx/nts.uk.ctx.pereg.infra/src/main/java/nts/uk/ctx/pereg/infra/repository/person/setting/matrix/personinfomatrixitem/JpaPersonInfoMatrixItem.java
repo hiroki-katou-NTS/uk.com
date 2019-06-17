@@ -198,6 +198,25 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 
 		return items;
 	}
+	
+	/**
+	 * Update regular (first load) for all required item
+	 * @param items
+	 * @return
+	 */
+	private List<PersonInfoMatrixData> updateRegularVer1(List<PersonInfoMatrixData> items) {
+		items.stream().forEach(f -> {
+			if (!f.isRegulationAtr()) {
+				if (!f.getItemParentCD().isEmpty()) {
+					f.setRegulationAtr(getRegularVer1(items, f.getItemParentCD()));
+				} else {
+					f.setRegulationAtr(f.isRequired());
+				}
+			}
+		});
+
+		return items;
+	}
 
 	/**
 	 * get RegularAtr from parent or grandParent;
@@ -221,6 +240,27 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 			}
 		}
 
+		return false;
+	}
+	
+	/**
+	 * get RegularAtr from parent or grandParent;
+	 * @param items
+	 * @param itemCode
+	 * @return
+	 */
+	private boolean getRegularVer1(List<PersonInfoMatrixData> items, String itemCode) {
+		Optional<PersonInfoMatrixData> item = items.stream()
+				.filter(f -> f.getItemCD().equals(itemCode) || f.getItemParentCD().equals(itemCode)).findFirst();
+
+		if (item.isPresent()) {
+			PersonInfoMatrixData _item = item.get();
+			if(_item.isRequired()) {
+				return true;
+			}else {
+				return _item.isRegulationAtr();
+			}
+		}
 		return false;
 	}
 
@@ -274,7 +314,7 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 				throw new RuntimeException(e);
 			}
 		});
-		return updateRegular(result);
+		return updateRegularVer1(result);
 	}
 	/**
 	 * 
