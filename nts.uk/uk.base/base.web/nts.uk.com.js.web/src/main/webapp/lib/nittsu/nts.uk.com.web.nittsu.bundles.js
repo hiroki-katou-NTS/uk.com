@@ -31043,6 +31043,10 @@ var nts;
                                     khl.set(cell, result.errorMessage);
                                     return;
                                 }
+                                if (khl._infobulle) {
+                                    ti.remove(khl._infobulle);
+                                    dkn.closeDD(khl._infobulle, true);
+                                }
                                 return $td;
                             }
                         };
@@ -33799,7 +33803,7 @@ var nts;
                             });
                         }.bind(self);
                     },
-                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
+                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
                 });
                 function observableOrDefault(val, def) {
                     return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
@@ -39334,8 +39338,8 @@ var nts;
                                             .validate(value);
                                     case "Currency":
                                         var opts = new ui.option.CurrencyEditorOption();
-                                        opts.grouplength = this.options.groupLength | 3;
-                                        opts.decimallength = this.options.decimalLength | 2;
+                                        opts.grouplength = !_.isNil(this.options.groupLength) ? this.options.groupLength : 3;
+                                        opts.decimallength = !_.isNil(this.options.decimalLength) ? this.options.decimalLength : 2;
                                         opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                                         opts.required = this.options.required;
                                         opts.min = this.options.min;
@@ -39924,8 +39928,8 @@ var nts;
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();
-                                                currencyOpts.grouplength = constraint.groupLength | 3;
-                                                currencyOpts.decimallength = constraint.decimalLength | 2;
+                                                currencyOpts.grouplength = !_.isNil(constraint.groupLength) ? constraint.groupLength : 3;
+                                                currencyOpts.decimallength = !_.isNil(constraint.decimalLength) ? constraint.decimalLength : 2;
                                                 currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                                 var groupSeparator = constraint.groupSeparator || ",";
                                                 var rawValue = uk.text.replaceAll(value, groupSeparator, "");
@@ -43269,8 +43273,8 @@ var nts;
                         //                weekStart: 0
                         //            });
                         self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
                         self.getMessage = nts.uk.resource.getMessage;
                         ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
                             return self.createStartBinding(data);
@@ -43391,25 +43395,23 @@ var nts;
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.startName ? self.startName : parentBinding.name,
+                            name: self.startName,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,endDate: self.endValue 
                         };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.endName ? self.endName : parentBinding.name,
+                            name: self.endName,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,startDate: self.startValue 
                         };
                     };
                     return DateRangeHelper;
