@@ -616,6 +616,8 @@ module cps003.f.vm {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
+                                }else{
+                                     $('input:not([disabled])').trigger('validate');
                                 }
                             }
                         } else {
