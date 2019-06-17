@@ -158,8 +158,8 @@ module nts.uk.ui.koExtentions {
 //            });
             
             self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-            self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
-            self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+            self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+            self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
             self.getMessage = nts.uk.resource.getMessage;
             
             ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function() {
@@ -290,26 +290,24 @@ module nts.uk.ui.koExtentions {
         public createStartBinding(parentBinding: any, name, format: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.startName ? self.startName : parentBinding.name, 
+                     name: self.startName, 
                      value: self.startValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
                      disabled: parentBinding.disabled 
-                     //,endDate: self.endValue 
                    };
         }
         
         public createEndBinding(parentBinding: any, name: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.endName ? self.endName : parentBinding.name, 
+                     name: self.endName, 
                      value: self.endValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
                      disabled: parentBinding.disabled 
-                     //,startDate: self.startValue 
                    };
         }
     }
