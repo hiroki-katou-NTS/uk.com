@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerRequirement;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterItem;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.MasterRequirement;
+import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.RequirementType;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearRequirement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -91,11 +92,10 @@ public class JhcmtCareerPathReq extends UkJpaEntity implements Serializable {
 	
 	public CareerRequirement toDomain() {
 		Optional<YearRequirement> yearReq = Optional.empty();
-		if(this.yearType!=null && this.yearMinNum!=null && this.yearStdNum!=null) {
-			yearReq = Optional.ofNullable(YearRequirement.createFromJavaType(this.yearType, this.yearMinNum, this.yearStdNum));
-		}
 		Optional<MasterRequirement> masterReq = Optional.empty();
-		if(this.masterType != null) {
+		if(this.reqType == RequirementType.YEARS.value) {
+			yearReq = Optional.ofNullable(YearRequirement.createFromJavaType(this.yearType, this.yearMinNum, this.yearStdNum));
+		}else if(this.reqType == RequirementType.SELECT_FROM_MASTER.value) {
 			masterReq = Optional.ofNullable(new MasterRequirement(this.masterType, this.masterItemList.stream().map(c -> new MasterItem(Optional.ofNullable(c.masterItemId),c.masterItemCd,c.masterItemName)).collect(Collectors.toList())));
 		}
 		return CareerRequirement.createFromJavaType(

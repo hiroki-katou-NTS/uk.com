@@ -523,7 +523,7 @@ module nts.uk.hr.view.jhc002.b.viewmodel {
             let self = this;
             let nameMasterItemList = '';
             _.forEach(self.masterItemList(), function(value) {
-                nameMasterItemList = nameMasterItemList +(nameMasterItemList!=''?' + ':'')+ value.masterItemName + self.displayNumber.toString();
+                nameMasterItemList = nameMasterItemList +(nameMasterItemList!=''?' + ':'')+ value.masterItemName;
             });
             return nameMasterItemList;
         }
