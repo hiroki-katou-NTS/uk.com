@@ -744,7 +744,7 @@ module cps003.a.vm {
                     ]};
                 
                 self.headDatas = data.headDatas;
-                _.forEach(data.headDatas, (d: IDataHead) => {
+                forEach(data.headDatas, (d: IDataHead) => {
                     let controlType = d.itemTypeState.dataTypeState;
                     if (controlType) {
                         let name;
@@ -826,7 +826,7 @@ module cps003.a.vm {
                 self.gridOptions.features = [{ name: "Resizing" }, { name: "ColumnMoving" }, { name: "Copy" }, { name: "Tooltip", error: true }, { name: "WidthSaving", reset: true }];
                 // TODO: Get fixed columns
                 let columnFixing = { name: "ColumnFixing", columnSettings: [] };
-                _.forEach([ "rowNumber", "register", "print", "showControl", "employeeCode", "employeeName", 
+                forEach([ "rowNumber", "register", "print", "showControl", "employeeCode", "employeeName", 
                             "rowAdd", "deptName", "workplaceName", "positionName", "employmentName", "className" ], f => {
                     columnFixing.columnSettings.push({ columnKey: f, isFixed: true });
                 });
@@ -839,14 +839,14 @@ module cps003.a.vm {
             if (data.bodyDatas) {
                 self.gridOptions.dataSource = [];
                 let states = [], workTimeCodes = [], nullWorkTimeCodes = [], workTimeItems = [], nullWorkTimeItems = [], codes = {}, displayItems = [];
-                _.forEach(self.gridOptions.columns, (column, i) => {
+                forEach(self.gridOptions.columns, (column, i) => {
                     if (i < 11) return;
                     displayItems.push(column.key);
                 });
                 
-                _.forEach(data.bodyDatas, (d: IDataBody, ri: any) => {
+                forEach(data.bodyDatas, (d: IDataBody, ri: any) => {
                     let record = new Record(d, ri), disItems = _.cloneDeep(displayItems);
-                    _.forEach(d.items, (item: IColumnData, i: number) => {
+                    forEach(d.items, (item: IColumnData, i: number) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
                         if (!dt) return;
                         if (_.isNil(item.recordId)) {
@@ -900,15 +900,27 @@ module cps003.a.vm {
                             dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
                             if (cps003.control.WORK_TIME[item.itemCode]) {
                                 if (!_.isNil(item.value)) {
-                                    workTimeCodes.push(item.value);
-                                    workTimeItems.push(item.itemCode);
-                                } else {
+                                    if (_.isNil(find(workTimeItems, wt => wt === item.itemCode))) {
+                                        workTimeCodes.push(item.value);
+                                        workTimeItems.push(item.itemCode);
+                                    }
+                                } else if (_.isNil(find(nullWorkTimeItems, nw => nw === item.itemCode))) {
                                     nullWorkTimeCodes.push(item.value);
                                     nullWorkTimeItems.push(item.itemCode);
                                 }
                                 
                                 if (_.has(codes, item.value)) {
-                                    codes[item.value].push(item.recordId);
+                                    let codeArr = codes[item.value], found;
+                                    for (let k = 0; k < codeArr.length; k++) {
+                                        if (codeArr[k] === item.recordId) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (!found) {
+                                        codes[item.value].push(item.recordId);
+                                    }
                                 } else {
                                     codes[item.value] = [ item.recordId ];
                                 }
@@ -916,40 +928,40 @@ module cps003.a.vm {
                         }
                     });
                     
-                    _.forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
+                    forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
                     self.gridOptions.dataSource.push(record);
                 });
                 
                 if (workTimeCodes.length > 0) {
                     cps003.control.fetch.check_mt_se({ workTimeCodes: workTimeCodes }).done(mt => {
-                        _.forEach(workTimeCodes, (c, i) => {
+                        forEach(workTimeCodes, (c, i) => {
                             let head = _.find(mt, f => f.workTimeCode === c),
                                 itemCode = workTimeItems[i],
                                 workTime = cps003.control.WORK_TIME[itemCode];
                             if (head) {
                                 if (workTime.firstTimes && !head.startEnd) {
-                                    _.forEach(codes[c], r => {
+                                    forEach(codes[c], r => {
                                         states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
                                         states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
                                     });
                                 }
                                 
                                 if (workTime.secondTimes && (!head.startEnd || !head.multiTime)) {
-                                    _.forEach(codes[c], r => {
+                                    forEach(codes[c], r => {
                                         states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
                                         states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
                                     });
                                 }
                             } else {
                                 if (workTime.firstTimes) {
-                                    _.forEach(codes[c], r => {
+                                    forEach(codes[c], r => {
                                         states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
                                         states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
                                     });
                                 }
                                 
                                 if (workTime.secondTimes) {
-                                    _.forEach(codes[c], r => {
+                                    forEach(codes[c], r => {
                                         states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
                                         states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
                                     });
@@ -961,18 +973,18 @@ module cps003.a.vm {
                     });
                 } else dfd.resolve();
                 
-                _.forEach(nullWorkTimeCodes, (c, i) => {
+                forEach(nullWorkTimeCodes, (c, i) => {
                     let itemCode = nullWorkTimeItems[i],
                         workTime = cps003.control.WORK_TIME[itemCode];    
                     if (workTime.firstTimes) {
-                        _.forEach(codes[c], r => {
+                        forEach(codes[c], r => {
                             states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
                             states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
                         });
                     }
                     
                     if (workTime.secondTimes) {
-                        _.forEach(codes[c], r => {
+                        forEach(codes[c], r => {
                             states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
                             states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
                         });
@@ -1741,6 +1753,22 @@ module cps003.a.vm {
                     }, () => replaced);
                 }
             });
+        }
+    }
+    
+    function find(arr, jb) {
+        if (!arr) return;
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i)) return arr[i];
+        }
+        
+        return null;
+    }
+    
+    function forEach(arr, jb) {
+        if (!arr) return;
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i) === false) break;
         }
     }
 
