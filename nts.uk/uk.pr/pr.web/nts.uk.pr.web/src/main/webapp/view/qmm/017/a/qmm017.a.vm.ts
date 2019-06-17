@@ -375,10 +375,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (identifier.length > 36) {
                 selectedHistoryID = identifier.substring(3, identifier.length);
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
-                if ((self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && selectedFormula.history[1].historyID == selectedHistoryID) || selectedFormula.history.length <= 1) selectedHistory.endMonth = 999912;
+                if ((self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && selectedFormula.history.length > 1 && selectedFormula.history[1].historyID == selectedHistoryID) || selectedFormula.history.length <= 1) selectedHistory.endMonth = 999912;
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                if (self.isCompleteChangeMode) self.showFormulaSettingByHistory(selectedHistory, true, null);
+                if (self.isCompleteChangeMode) self.showFormulaSettingByHistory(selectedHistory, true, null, selectedHistory.startMonth);
                 self.changeToUpdateMode();
             }
             else {
@@ -390,7 +390,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             }
         };
-        showFormulaSettingByHistory(history , withSetting: boolean, masterUse: number) {
+        showFormulaSettingByHistory(history, withSetting: boolean, masterUse: number, startMonth: string) {
             let self = this;
             let setting = {historyID: history.historyID, withSetting: withSetting, masterUse: masterUse};
             block.invisible();
@@ -399,9 +399,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 if (withSetting) {
                     self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
                     self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
-                    if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.DETAIL_SETTING)
-                        self.screenDViewModel.getFormulaElements(history.startMonth);
                 }
+                if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.DETAIL_SETTING)
+                    self.screenDViewModel.getFormulaElements(startMonth);
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 self.selectedTab.valueHasMutated();
             }).fail(function (err) {
@@ -477,13 +477,20 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.convertToTreeList(formulaList, selectedFormula.formulaCode + historyID);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
-                        self.showFormulaSettingByHistory(history[1], true, null);
+                        self.showFormulaSettingByHistory(history[1], true, null, params.startMonth);
                     } else {
-                        self.showFormulaSettingByHistory(history[1], false, params.masterUse);
+                        self.showFormulaSettingByHistory(history[1], false, params.masterUse, params.startMonth);
                         self.basicFormulaSetting(new model.BasicFormulaSetting({
                             masterUse: params.masterUse,
                             masterBranchUse: params.masterBranchUse,
                             historyID: historyID
+                        }));
+                        self.detailFormulaSetting(new model.DetailFormulaSetting({
+                            roundingMethod: 0,
+                            roundingPosition: 0,
+                            referenceMonth: 0,
+                            detailCalculationFormula: [],
+                            historyId: historyID
                         }));
                     }
                     self.isCompleteChangeMode = true;
