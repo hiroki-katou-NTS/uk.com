@@ -30975,6 +30975,10 @@ var nts;
                                     khl.set(cell, result.errorMessage);
                                     return;
                                 }
+                                if (khl._infobulle) {
+                                    ti.remove(khl._infobulle);
+                                    dkn.closeDD(khl._infobulle, true);
+                                }
                                 return $td;
                             }
                         };
@@ -42883,8 +42887,8 @@ var nts;
                         //                weekStart: 0
                         //            });
                         self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
                         self.getMessage = nts.uk.resource.getMessage;
                         ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
                             return self.createStartBinding(data);
@@ -43005,25 +43009,23 @@ var nts;
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.startName ? self.startName : parentBinding.name,
+                            name: self.startName,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,endDate: self.endValue 
                         };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.endName ? self.endName : parentBinding.name,
+                            name: self.endName,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,startDate: self.startValue 
                         };
                     };
                     return DateRangeHelper;

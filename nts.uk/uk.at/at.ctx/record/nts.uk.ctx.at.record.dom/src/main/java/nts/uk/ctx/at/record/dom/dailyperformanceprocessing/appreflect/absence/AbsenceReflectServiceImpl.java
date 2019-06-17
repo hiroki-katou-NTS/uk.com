@@ -7,14 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.OptimisticLockException;
-
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.arc.time.GeneralDate;
-import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -47,20 +44,9 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
-	public boolean absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
-		try {
-			List<IntegrationOfDaily> lstDaily = this.getByAbsenceReflect(param, isPre);
-			commonService.updateDailyAfterReflect(lstDaily);
-			return true;
-		} catch (Exception ex) {
-            boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-            if(!isError) {
-                throw ex;
-            }
-            commonService.createLogError(param.getCommon().getEmployeeId(), param.getCommon().getBaseDate(), param.getCommon().getExcLogId());
-
-			return false;
-		}
+	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
+		List<IntegrationOfDaily> lstDaily = this.getByAbsenceReflect(param, isPre);
+		commonService.updateDailyAfterReflect(lstDaily);
 	}	
 	@Override
 	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect,

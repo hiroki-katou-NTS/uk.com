@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfS
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.shr.com.context.AppContexts;
-
+//
 /**
  * 特別休暇残数計算
  * @author shuichi_ishida

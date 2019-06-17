@@ -1203,7 +1203,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.overtimeHoursPre.removeAll();
             if(data.preAppOvertimeDto.overTimeInputsPre != null){
                 for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
-                    if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != -1){
+                    if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != null){
                         if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
                             self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
                         data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
@@ -1211,7 +1211,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
                         data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
                         data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                        data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
+                        data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == null ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
                         }
                     }else{
                         continue;    
@@ -1219,8 +1219,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     
                 }
             }
-             self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
-             self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+             self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
+             self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == null ? null : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
             }
         }
         convertAppOvertimeReferDto(data :any){
@@ -1251,12 +1251,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
                             data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
                             data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                            data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
+                            data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == null ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
                             }
                     }
                 }
-                 self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
-                 self.flexExessTimeRefer(data.appOvertimeReference.flexExessTimeRefer == -1? null : self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
+                 self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == null ? null : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
+                 self.flexExessTimeRefer(data.appOvertimeReference.flexExessTimeRefer == null ? null : self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
             }
         }
         

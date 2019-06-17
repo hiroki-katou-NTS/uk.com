@@ -17,7 +17,7 @@ public interface PreHolidayWorktimeReflectService {
 	 * @param holidayWorkPara
 	 * @return
 	 */
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre);
+	public void preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre);
 	/**
 	 * create IntegrationOfDaily
 	 * @param employeeId

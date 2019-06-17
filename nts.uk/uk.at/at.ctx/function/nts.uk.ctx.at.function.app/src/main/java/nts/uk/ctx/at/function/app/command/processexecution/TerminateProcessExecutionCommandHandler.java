@@ -24,10 +24,10 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class TerminateProcessExecutionCommandHandler extends CommandHandler<TerminateProcessExecutionCommand> {
 
@@ -205,6 +205,10 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 //					break;
 				}
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.APP_ROUTE_U_DAI.value) {
+				if(statusStop !=null) {
+					appUpdateSuspension.updateSuspension(execId, true);
+					statusStop = task.getProcExecTask();
+				}
 				if (task.getStatus() == null || !task.getStatus().isPresent()) {
 					if(taskTerminate!=null && !"".equals(taskTerminate)){
 						service.requestToCancel(taskTerminate);
@@ -213,6 +217,10 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 					statusStop = task.getProcExecTask();
 				}
 			}else if (task.getProcExecTask().value == ProcessExecutionTask.APP_ROUTE_U_MON.value) {
+				if(statusStop !=null && statusStop != ProcessExecutionTask.APP_ROUTE_U_DAI) {
+					appUpdateSuspension.updateSuspension(execId, false); //if monthly
+					statusStop = task.getProcExecTask();
+				}
 				if (task.getStatus() == null || !task.getStatus().isPresent()) {
 					if(taskTerminate!=null && !"".equals(taskTerminate)){
 						service.requestToCancel(taskTerminate);
