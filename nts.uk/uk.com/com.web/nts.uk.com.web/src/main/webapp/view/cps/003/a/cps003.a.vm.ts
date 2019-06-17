@@ -1724,12 +1724,19 @@ module cps003.a.vm {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
                     if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced) && replaced !== "") {
                         replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
+                        if (!replaceValue.replaceAll && !_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
+                            replaceValue.matchValue = nts.uk.time.minutesBased.clock.dayattr.create(replaceValue.matchValue).shortText;
+                        }
                     } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced) && replaced !== "") {
                         replaced = nts.uk.time.parseTime(replaced, true).format();
+                        if (!replaceValue.replaceAll && !_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
+                            replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
+                        }
                     }
                     
                     $grid.mGrid("replace", replaceValue.targetItem, (value) => {
-                        if (replaceValue.replaceAll) return true;
+                        if (replaceValue.replaceAll 
+                            || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))) return true;
                         return replaceValue.matchValue === value;
                     }, () => replaced);
                 }
