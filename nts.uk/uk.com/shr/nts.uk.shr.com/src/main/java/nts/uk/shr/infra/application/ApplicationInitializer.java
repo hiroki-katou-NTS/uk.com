@@ -10,7 +10,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.layer.infra.data.log.RepositoryLogger;
 import nts.arc.layer.ws.exception.ServerError;
+import nts.arc.layer.ws.json.serializer.EnumDeserializer;
+import nts.arc.layer.ws.json.serializer.EnumSerializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
 import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateTimeDeserializer;
 import nts.arc.layer.ws.json.serializer.GeneralDateTimeSerializer;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceDiagnose;
 import nts.arc.time.GeneralDate;
@@ -33,7 +37,11 @@ public class ApplicationInitializer {
 		
 		JsonMapping.MAPPER.registerModule(new SimpleModule()
 				.addSerializer(GeneralDate.class, new GeneralDateSerializer())
-				.addSerializer(GeneralDateTime.class, new GeneralDateTimeSerializer()));
+				.addSerializer(GeneralDateTime.class, new GeneralDateTimeSerializer())
+				.addSerializer(Enum.class, new EnumSerializer())
+				.addDeserializer(GeneralDate.class, new GeneralDateDeserializer())
+				.addDeserializer(GeneralDateTime.class, new GeneralDateTimeDeserializer())
+				.addDeserializer(Enum.class, new EnumDeserializer()));
 		
 		this.executeAllInitializeWhenDeploy();
 
