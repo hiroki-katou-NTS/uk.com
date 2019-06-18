@@ -76,6 +76,8 @@ export class TimeWithDayHelper {
             }
             
         }
+
+        picker.title = TimeWithDay.fromObject(picker.selects).toString();
     }
 }
 
@@ -155,7 +157,7 @@ export class TimePointHelper {
      * [60 61 62 63 64 65 66 67 68 69]
      * [70 71                        ]
      */
-    public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { dataSources: any, selects: any }) {
+    public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { title: string, dataSources: any, selects: any }) {
         let pickerSelect = picker.selects;
 
         if (!newSelect.positive) {
@@ -215,6 +217,8 @@ export class TimePointHelper {
                 }
             }
         }
+
+        picker.title = TimePoint.fromObject(pickerSelect).toString();
     }
 }
 
@@ -290,7 +294,7 @@ export class TimeDurationHelper {
      * [60 61 62 63 64 65 66 67 68 69]
      * [70 71                        ]
      */
-    public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { dataSources: any, selects: any }) {
+    public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { title: string, dataSources: any, selects: any }) {
         let pickerSelect = picker.selects;
 
         if (!newSelect.positive) {
@@ -344,6 +348,8 @@ export class TimeDurationHelper {
                 }
             }
         }
+
+        picker.title = TimeDuration.fromObject(pickerSelect).toString();
     }
     
 }

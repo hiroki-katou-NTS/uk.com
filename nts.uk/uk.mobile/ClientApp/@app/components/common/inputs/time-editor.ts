@@ -54,6 +54,7 @@ export class TimeComponent extends InputComponent {
     }
 
     public click() {
+        
         let helper = null;
         let utils = null;
         switch (this.timeInputType) {
@@ -72,7 +73,10 @@ export class TimeComponent extends InputComponent {
                 break;
         }
 
-        this.$picker(helper.computeSelecteds(this.value), helper.getDataSource(this.value), helper.onSelect)
+        this.$picker(helper.computeSelecteds(this.value), 
+            helper.getDataSource(this.value), 
+            helper.onSelect, 
+            { title : utils.toString(this.value)})
         .then((select: any) => {
             if (select !== undefined) {
                 this.$emit('input', utils.fromObject(select).value);
