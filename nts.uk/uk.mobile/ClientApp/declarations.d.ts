@@ -155,9 +155,15 @@ declare module "vue/types/vue" {
             }
         };
         $modal: {
-            (name: string, params?: any, options?: IModalOptions): Promise<{}>;
-            (component: VueConstructor<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
-            (component: ComponentOptions<Vue>, params?: any, options?: IModalOptions): Promise<{}>;
+            (name: string): Promise<{}>;
+            (name: string, params: any): Promise<{}>;
+            (name: string, params: any, options: IModalOptions): Promise<{}>;
+            (component: VueConstructor<Vue>): Promise<{}>;
+            (component: VueConstructor<Vue>, params: any): Promise<{}>;
+            (component: VueConstructor<Vue>, params: any, options: IModalOptions): Promise<{}>;
+            (component: ComponentOptions<Vue>): Promise<{}>;
+            (component: ComponentOptions<Vue>, params: any): Promise<{}>;
+            (component: ComponentOptions<Vue>, params: any, options: IModalOptions): Promise<{}>;
             warn: {
                 (msg: string): Promise<{}>;
                 (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
@@ -222,7 +228,6 @@ declare module "vue/types/vue" {
         };
         toJS: (value: any) => any;
         vmOf: (el: HTMLElement) => { [key: string]: any; };
-        enums?: any;
     }
 }
 
