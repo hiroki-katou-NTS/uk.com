@@ -24,6 +24,52 @@ const modal = {
                             }, onComplete, onAbort);
                         }
                     });
+
+                    obj.extend(self.$goto, {
+                        home(params?: any) {
+                            self.$goto('ccg008a', params);
+                        },
+                        login(params?: any) {
+                            self.$goto('ccg007b', params);
+                        },
+                        password: {
+                            change(params?: any) {
+                                self.$goto('ccg007c', params);
+                            },
+                            forget(params?: any) {
+                                self.$goto('ccg007d', params);
+                            },
+                            reset(params?: any) {
+                                self.$goto('ccg007e', params);
+                            },
+                            mail(params?: any) {
+                                self.$goto('ccg007f', params);
+                            }
+                        }
+                    });
+
+                    obj.extend(self.$router.goto, {
+                        home(params?: any) {
+                            self.$goto.home(params);
+                        },
+                        login(params?: any) {
+                            self.$goto.login(params);
+                        },
+                        password: {
+                            change(params?: any) {
+                                self.$goto.password.change(params);
+                            },
+                            forget(params?: any) {
+                                self.$goto.password.forget(params);
+                            },
+                            reset(params?: any) {
+                                self.$goto.password.reset(params);
+                            },
+                            mail(params?: any) {
+                                self.$goto.password.mail(params);
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -250,7 +296,7 @@ const modal = {
                                     if (focused) {
                                         focused.focus();
                                     }
-                                    
+
                                     // hide own mask layer
                                     this.$mask('hide');
                                 },

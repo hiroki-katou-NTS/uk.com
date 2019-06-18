@@ -174,7 +174,7 @@ const WEB_APP_NAME = {
                         if (self) {
                             if (xhr.status == 401) {
                                 // Unauthorize
-                                self.$goto('login');
+                                self.$goto.login();
                             } else {
                                 self.$modal($dialog(),
                                     {

@@ -63,7 +63,7 @@ export const auth = {
                                 // clear cookie cache (client)
                                 .then(clearAuthentication)
                                 // go to login page
-                                .then(() => self.$goto('login'));
+                                .then(() => self.$goto.login());
                         }
                     }
                 });
@@ -76,8 +76,10 @@ export const auth = {
 
                             if (!token) {
                                 resolve(null);
-
-                                self.$goto('login');
+                                
+                                if (!location.href.match(/\/documents\//)) {
+                                    self.$goto.login();
+                                }
                             } else {
                                 resolve(token);
                             }
@@ -93,8 +95,8 @@ export const auth = {
 
                             if (!user) {
                                 resolve(null);
-                                
-                                self.$goto('login');
+
+                                self.$goto.login();
                             } else {
                                 resolve(user);
                             }

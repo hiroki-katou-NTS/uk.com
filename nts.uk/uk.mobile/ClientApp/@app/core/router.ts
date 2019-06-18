@@ -22,7 +22,7 @@ const router = new VueRouter({
 
 router.beforeEach((to: Route, from: Route, next: (to?: string) => void) => {
     // if login or documents page
-    if (to.path.indexOf('ccg/007') >= 0 || to.path.indexOf('/documents/') === 0) {
+    if (to.path.indexOf('ccg/007') >= 0 || to.path.match(/\/documents/)) {
         next();
     } else {
         if (auth.valid) {

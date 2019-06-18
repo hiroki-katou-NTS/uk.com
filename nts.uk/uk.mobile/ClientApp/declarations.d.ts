@@ -133,8 +133,25 @@ declare module "vue/types/vue" {
             };
         };
         $goto: {
-            (name: string, params?: { [key: string]: any; }, onComplete?: Function, onAbort?: ErrorHandler): void;
+            (name: string): void;
+            (name: string, params: { [key: string]: any; }): void;
+            (name: string, params: { [key: string]: any; }, onComplete: Function): void;
+            (name: string, params: { [key: string]: any; }, onComplete: Function, onAbort: ErrorHandler): void;
             (location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
+            home(): void;
+            home(params: any): void;
+            login(): void;
+            login(params: any): void;
+            password: {
+                change(): void;
+                change(params: any): void;
+                forget(): void;
+                forget(params: any): void;
+                reset(): void;
+                reset(params: any): void;
+                mail(): void;
+                mail(params: any): void;
+            }
         };
         $modal: {
             (name: string, params?: any, options?: IModalOptions): Promise<{}>;
@@ -210,7 +227,25 @@ declare module "vue/types/vue" {
 
 declare module "vue-router/types/router" {
     export interface VueRouter {
-        goto: (location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) => void;
+        goto: {
+            (location: { name: string; params: { [key: string]: any } }): void;
+            (location: { name: string; params: { [key: string]: any } }, onComplete: Function): void;
+            (location: { name: string; params: { [key: string]: any } }, onComplete: Function, onAbort: ErrorHandler): void;
+            home(): void;
+            home(params: any): void;
+            login(): void;
+            login(params: any): void;
+            password: {
+                change(): void;
+                change(params: any): void;
+                forget(): void;
+                forget(params: any): void;
+                reset(): void;
+                reset(params: any): void;
+                mail(): void;
+                mail(params: any): void;
+            }
+        }
     }
 }
 
