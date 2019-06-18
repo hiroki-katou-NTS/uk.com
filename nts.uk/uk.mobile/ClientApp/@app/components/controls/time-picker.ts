@@ -52,6 +52,12 @@ export class TimeWithDayHelper {
         return TimeWithDay.toObject(value);
     }
 
+    /**
+     * 前日   [                                    12 13 14 15 16 17 18 19 20 21 22 23 24]
+     * 今日   [00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
+     * 翌日   [00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
+     * 翌々日 [00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
+     */
     public static onSelect(value: any, picker: { title: string, dataSources: any, selects: any }) {
         if (value.day === -1) {
 
@@ -135,6 +141,20 @@ export class TimePointHelper {
         }
     }
 
+    /**
+     * NEGATIVE h1 = [1, 2], h2 = [2, 3, 4, 5, 6, 7, 8, 9] || [0, 1, 2, 3]
+     * 
+     * [        -12 -13 -14 -15 -16 -17 -18 -19]
+     * [-20 -21 -22 -23                        ]
+     * 
+     * POSITIVE h1 = [0, 1, 2, 3, 4, 5, 6, 7], h2 = [0, 1] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     * [00 01 02 03 04 05 06 07 08 09]
+     * [10 11 12 13 14 15 16 17 18 19]
+     * [20 21 22 23 24 25 26 27 28 29]
+     * ..
+     * [60 61 62 63 64 65 66 67 68 69]
+     * [70 71                        ]
+     */
     public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { dataSources: any, selects: any }) {
         let pickerSelect = picker.selects;
 
@@ -144,8 +164,11 @@ export class TimePointHelper {
                 picker.dataSources.h1 = TimePointHelper.H1_1_2;
             }
 
-            if ( Array.of(1, 2).indexOf(newSelect.h1) === -1) {
+            // re-select h1
+            if ( pickerSelect.h1 < 1) {
                 pickerSelect.h1 = 1;
+            } else if (pickerSelect.h1 > 2) {
+                pickerSelect.h1 = 2;
             }
 
             // filter h2 with h1
@@ -153,7 +176,8 @@ export class TimePointHelper {
                 if (picker.dataSources.h2.length !== 8) {
                     picker.dataSources.h2 = TimePointHelper.H2_2_9;
 
-                    if (Array.of(2, 3, 4, 5, 6, 7, 8, 9).indexOf(pickerSelect.h2) === -1) {
+                    // re-select h2
+                    if ( pickerSelect.h2 < 2) {
                         pickerSelect.h2 = 2;
                     }
                 }
@@ -161,8 +185,9 @@ export class TimePointHelper {
                 if (picker.dataSources.h2.length !== 4) {
                     picker.dataSources.h2 = TimePointHelper.H2_0_3;
 
-                    if ( Array.of( 4, 5, 6, 7, 8, 9).indexOf(pickerSelect.h2) !== -1) {
-                        pickerSelect.h2 = 0;
+                    // re-select h2
+                    if ( pickerSelect.h2 > 3 ) {
+                        pickerSelect.h2 = 3;
                     }
                 }
             }
@@ -180,8 +205,8 @@ export class TimePointHelper {
                     picker.dataSources.h2 = TimePointHelper.H2_0_1;
                 }
 
-                if (Array.of(0, 1).indexOf(pickerSelect.h2) === -1) {
-                    pickerSelect.h2 = 0;
+                if ( pickerSelect.h2 > 1) {
+                    pickerSelect.h2 = 1;
                 }
 
             } else  {
@@ -252,6 +277,19 @@ export class TimeDurationHelper {
         }
     }
 
+    /**
+     * NEGATIVE h1 = [0, 1], h2 = [0, 1, 2] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     * [                             -12 -11 -10]
+     * [ -09 -08 -07 -06 -05 -04 -03 -02 -01 -00]
+     * 
+     * POSITIVE h1 = [0, 1, 2, 3, 4, 5, 6, 7], h2 = [0, 1] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     * [00 01 02 03 04 05 06 07 08 09]
+     * [10 11 12 13 14 15 16 17 18 19]
+     * [20 21 22 23 24 25 26 27 28 29]
+     * ..
+     * [60 61 62 63 64 65 66 67 68 69]
+     * [70 71                        ]
+     */
     public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { dataSources: any, selects: any }) {
         let pickerSelect = picker.selects;
 
@@ -260,8 +298,9 @@ export class TimeDurationHelper {
             if (picker.dataSources.h1.length !== 2) {
                 picker.dataSources.h1 = TimeDurationHelper.H1_0_1;
             }
-
-            if ( Array.of(1, 0).indexOf(newSelect.h1) === -1) {
+            
+            // re-select h1
+            if ( pickerSelect.h1 > 1) {
                 pickerSelect.h1 = 1;
             }
 
@@ -270,7 +309,8 @@ export class TimeDurationHelper {
                 if (picker.dataSources.h2.length !== 3) {
                     picker.dataSources.h2 = TimeDurationHelper.H2_0_2;
 
-                    if (Array.of(2, 1, 0).indexOf(pickerSelect.h2) === -1) {
+                    // re-select h2
+                    if ( pickerSelect.h2 > 2) {
                         pickerSelect.h2 = 2;
                     }
                 }
@@ -293,8 +333,9 @@ export class TimeDurationHelper {
                     picker.dataSources.h2 = TimeDurationHelper.H2_0_1;
                 }
 
-                if (Array.of(0, 1).indexOf(pickerSelect.h2) === -1) {
-                    pickerSelect.h2 = 0;
+                // re-select h2
+                if ( pickerSelect.h2 > 1) {
+                    pickerSelect.h2 = 1;
                 }
 
             } else  {
