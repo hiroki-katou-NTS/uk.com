@@ -5,7 +5,7 @@ import { SideMenu, NavMenu } from '@app/services';
 @component({
     route: '/ccg/007/e',
     style: require('./style.scss'),
-    template: require('./index.html'),
+    template: require('./index.vue'),
     validations: {
         model: {
             newPassword: {
@@ -15,10 +15,10 @@ import { SideMenu, NavMenu } from '@app/services';
                 required: true
             }
         }
-    }, 
-    name: 'resetPass'
+    },
+    name: 'ccg007e'
 })
-export class ResetPassComponent extends Vue {
+export class Ccg007eComponent extends Vue {
 
     // @Prop({ default: '' })
     // id!: string;
@@ -49,36 +49,36 @@ export class ResetPassComponent extends Vue {
         self.id = self.$route.query.id as string;
 
         self.$http.post(servicePath.getUserName + self.id)
-        .then((res: { data: LoginInfor}) => {
-            let user: LoginInfor = res.data;
-            self.model.userName = user.userName;
-            self.model.contractCode = user.contractCode;
-            self.model.loginId = user.loginId;
-            self.model.userId = user.userId;
+            .then((res: { data: LoginInfor }) => {
+                let user: LoginInfor = res.data;
+                self.model.userName = user.userName;
+                self.model.contractCode = user.contractCode;
+                self.model.loginId = user.loginId;
+                self.model.userId = user.userId;
 
-            return user;
-        }).then((user) => {
-            return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);
-        }).then((res: { data: PassWordPolicy}) => {
-            let policy: PassWordPolicy = res.data, complex = [];
-            self.policy.lowestDigits = policy.lowestDigits.toString();
-            self.policy.alphabetDigit = policy.alphabetDigit.toString();
-            self.policy.numberOfDigits = policy.numberOfDigits.toString();
-            self.policy.symbolCharacters = policy.symbolCharacters.toString();
-            self.policy.historyCount = policy.historyCount.toString();
-            self.policy.validPeriod = policy.validityPeriod.toString();
-            self.policy.isUse  = policy.isUse;
-            if (policy.alphabetDigit > 0) {
-                complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
-            }
-            if (policy.numberOfDigits > 0) {
-                complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
-            }
-            if (policy.symbolCharacters > 0) {
-                complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
-            }
-            self.policy.complex = complex.join('、');
-        });
+                return user;
+            }).then((user) => {
+                return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);
+            }).then((res: { data: PassWordPolicy }) => {
+                let policy: PassWordPolicy = res.data, complex = [];
+                self.policy.lowestDigits = policy.lowestDigits.toString();
+                self.policy.alphabetDigit = policy.alphabetDigit.toString();
+                self.policy.numberOfDigits = policy.numberOfDigits.toString();
+                self.policy.symbolCharacters = policy.symbolCharacters.toString();
+                self.policy.historyCount = policy.historyCount.toString();
+                self.policy.validPeriod = policy.validityPeriod.toString();
+                self.policy.isUse = policy.isUse;
+                if (policy.alphabetDigit > 0) {
+                    complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
+                }
+                if (policy.numberOfDigits > 0) {
+                    complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
+                }
+                if (policy.symbolCharacters > 0) {
+                    complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
+                }
+                self.policy.complex = complex.join('、');
+            });
     }
 
     public mounted() {
@@ -95,18 +95,21 @@ export class ResetPassComponent extends Vue {
 
     public changePass() {
         this.$validate();
+
         if (!this.$valid) {
-            return;                   
+            return;
         }
 
-        let self = this, 
-            command: ResetPasswordCommand = { embeddedId: self.id,
-                                                newPassword: self.model.newPassword,
-                                                confirmNewPassword: self.model.newPasswordConfirm,
-                                                userId: self.model.userId };
+        let self = this,
+            command: ResetPasswordCommand = {
+                embeddedId: self.id,
+                newPassword: self.model.newPassword,
+                confirmNewPassword: self.model.newPasswordConfirm,
+                userId: self.model.userId
+            };
 
         self.$mask('show');
-        
+
         // submitChangePass
         self.$http.post(servicePath.changePass, command).then(() => {
             return {
@@ -116,14 +119,14 @@ export class ResetPassComponent extends Vue {
                 contractPassword: null
             };
         }).then((loginData) => self.$http.post(servicePath.submitLogin, loginData))
-        .then((messError: any) => {
-            // Remove LoginInfo
-            self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
-        }).catch((res) => {
-            // Return Dialog Error
-            self.$mask('hide');
-            self.showMessageError(res);
-        });
+            .then((messError: any) => {
+                // Remove LoginInfo
+                self.$goto.home({ screen: 'login' });
+            }).catch((res) => {
+                // Return Dialog Error
+                self.$mask('hide');
+                self.showMessageError(res);
+            });
     }
 
     public showMessageError(res: any) {
@@ -131,6 +134,7 @@ export class ResetPassComponent extends Vue {
         if (!res.businessException) {
             return;
         }
+        
         /** TODO: show error message */
         if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
             // nts.uk.ui.dialog.bundledErrors(res);
@@ -180,5 +184,5 @@ interface PassWordPolicy {
     validityPeriod: number;
     numberOfDigits: number;
     symbolCharacters: number;
-    alphabetDigit: number; 
+    alphabetDigit: number;
 }

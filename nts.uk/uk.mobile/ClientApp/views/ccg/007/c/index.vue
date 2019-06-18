@@ -1,32 +1,46 @@
-<div id="reset-pass">
-        <div class="text-center page-title">{{ 'CCGS07_18' | i18n }}</div>
+<template>
+    <div id="change-pass">
+        <div class="text-center page-title">{{ 'CCGS07_8' | i18n }}</div>
         <div class="text-left page-info alert-light alert">
             <div>{{ 'CCGS07_9' | i18n(model.userName) }}</div>
-            <div>{{ 'CCGS07_19' | i18n }}</div>
+            <div>{{ mesId }}</div>
         </div>
         <fieldset class="login-form">
             <nts-input-password
                 tabindex='1'
-                class="control-label-inline"
+                v-bind:inline-title="true"
+                v-model="model.currentPassword"
+                v-bind:show-constraint="false"
+                name='CCGS07_21'
+                v-bind:disabled="disabled"
+                v-bind:show-title="true"
+                v-bind:constraint="validations.model.currentPassword"
+                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+
+            <nts-input-password
+                tabindex='2'
+                v-bind:inline-title="true"
                 v-model="model.newPassword"
+                v-bind:show-constraint="false"
                 name='CCGS07_11'
                 v-bind:disabled="disabled"
                 v-bind:show-title="true"
                 v-bind:constraint="validations.model.newPassword"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
-    
+
             <form v-submit="changePass">
                 <nts-input-password
-                    tabindex='2'
-                    class="control-label-inline"
+                    tabindex='3'
+                    v-bind:inline-title="true"
                     v-model="model.newPasswordConfirm"
+                    v-bind:show-constraint="false"
                     name='CCGS07_12'
                     v-bind:disabled="disabled"
                     v-bind:show-title="true"
                     v-bind:constraint="validations.model.newPasswordConfirm"
                     v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
             </form>
-    
+
             <div class="accordion" v-if="policy.isUse">
                 <div class="card">
                     <div class="card-header">
@@ -64,5 +78,9 @@
             <div class="mb-2">
                 <button class="btn btn-primary btn-lg btn-block" v-click:500="changePass">{{ 'CCGS07_38' | i18n }}</button>
             </div>
+            <!--<div class="mb-2" v-if="params.spanDays > 0">
+                <button class="btn btn-secondary btn-block" v-click:500="loginOnly">{{ 'CCGS07_39' | i18n }}</button>
+            </div>-->
         </fieldset>
     </div>
+</template>

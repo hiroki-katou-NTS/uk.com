@@ -1,13 +1,13 @@
 import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { NavMenu, SideMenu } from '@app/services';
-import { CCG007Login } from '../common/common';
+import { CCG007Login } from '../common/ccg007base';
 import { storage } from '@app/utils';
 
 @component({
     route: '/ccg/007/c',
     style: require('./style.scss'),
-    template: require('./index.html'),
+    template: require('./index.vue'),
     validations: {
         model: {
             currentPassword: {
@@ -21,9 +21,9 @@ import { storage } from '@app/utils';
             }
         }
     },
-    name: 'changepass'
+    name: 'ccg007c'
 })
-export class ChangePassComponent extends CCG007Login {
+export class Ccg007CComponent extends CCG007Login {
 
     @Prop({ default: () => ({}) })
     public params!: any;

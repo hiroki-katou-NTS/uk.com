@@ -1,4 +1,3 @@
-import { storage } from '@app/utils';
 import { Vue, _ } from '@app/provider';
 
 export class CCG007Login extends Vue {
@@ -16,7 +15,8 @@ export class CCG007Login extends Vue {
         self.$auth.login(submitData)
             .then((data: CheckChangePass) => {
                 if (data.showContract) {
-                    self.$goto('contractAuthentication');
+                    // goto Contract authentication
+                    self.$goto('ccg007a');
                 } else {
                     if (!_.isEmpty(data.successMsg)) {
                         self.$modal.info({ messageId: data.successMsg })
@@ -87,7 +87,7 @@ export class CCG007Login extends Vue {
                     self.$modal.error({ messageId: data.msgErrorId });
                 }
             } else {
-                self.$goto({ name: 'HomeComponent', params: { screen: 'login' } });
+                self.$goto.home({ screen: 'login' });
             }
         }
 

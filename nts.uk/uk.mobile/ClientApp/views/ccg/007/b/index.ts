@@ -2,12 +2,12 @@ import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
 import { NavMenu, SideMenu } from '@app/services';
-import { CCG007Login } from '../common/common';
+import { CCG007Login } from '../common/ccg007base';
 
 @component({
     route: '/ccg/007/b',
     style: require('./style.scss'),
-    template: require('./index.html'),
+    template: require('./index.vue'),
     validations: {
         model: {
             comp: {
@@ -22,10 +22,10 @@ import { CCG007Login } from '../common/common';
             }
         }
     },
-    name: 'login',
+    name: 'ccg007b',
     constraints: ['nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode']
 })
-export class LoginComponent extends CCG007Login {
+export class Ccg007BComponent extends CCG007Login {
 
     @Prop({ default: () => ({}) })
     public params!: any;
@@ -71,7 +71,7 @@ export class LoginComponent extends CCG007Login {
                         storage.local.setItem('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass });
                     } else {
                         if (rel.data.showContract && !rel.data.onpre) {
-                            self.$goto({ name: 'contractAuthentication' });
+                            self.$goto('ccg007a');
                         }
                     }
                 }).then(() => {
@@ -157,16 +157,15 @@ export class LoginComponent extends CCG007Login {
     }
 
     public forgetPass() {
-        this.$goto({
-            name: 'forgetPass', params: {
+        this.$goto
+            .password
+            .forget({
                 contractCode: this.contractCode,
                 contractPass: this.contractPass,
                 companyCode: this.model.comp,
                 employeeCode: this.model.employeeCode,
                 companies: this.companies
-            }
-        });
-
+            });
     }
 }
 

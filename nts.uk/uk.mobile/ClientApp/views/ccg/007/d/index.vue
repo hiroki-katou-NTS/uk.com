@@ -1,4 +1,5 @@
-<div id="forget-pass">
+<template>
+    <div id="forget-pass">
         <div class="text-center page-title">{{ 'CCGS07_14' | i18n }}</div>
         <div class="text-left page-info alert-light alert">
             <ul>
@@ -18,7 +19,7 @@
                 v-bind:constraint="validations.companyCode"
                 v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }">
                 <option value="">--- Choose options ---</option>
-                <option v-for="(comp,k) in companies" :value="comp.companyCode">
+                <option v-for="(comp, k) in companies" :value="comp.companyCode" v-bind:key="k">
                     {{comp.companyCode}}&nbsp;&nbsp;&nbsp;{{comp.companyName}}
                 </option>
             </nts-dropdown>
@@ -44,3 +45,4 @@
             </div>
         </fieldset>
     </div>
+</template>
