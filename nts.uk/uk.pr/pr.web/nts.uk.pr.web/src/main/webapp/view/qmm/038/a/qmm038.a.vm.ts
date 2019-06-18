@@ -19,7 +19,7 @@ module nts.uk.pr.view.qmm038.a {
                 // CCG001
                 self.ccg001ComponentOption = <GroupOption>{
                     /** Common properties */
-                    systemType: 1,
+                    systemType: 3,
                     showEmployeeSelection: true,
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
@@ -46,7 +46,8 @@ module nts.uk.pr.view.qmm038.a {
 
                     /** Advanced search properties */
                     showEmployment: true,
-                    showWorkplace: true,
+                    showDepartment: true,
+                    showWorkplace: false,
                     showClassification: false,
                     showJobTitle: false,
                     showWorktype: false,
@@ -234,7 +235,7 @@ module nts.uk.pr.view.qmm038.a {
             this.employeeCode = param.employeeCode;
             this.businessName = param.businessName;
             this.departmentName = param.departmentName;
-            this. employmentName = param.employmentName;
+            this.employmentName = param.employmentName;
             this.averageWage = param.averageWage.toString();
         }
     }
@@ -269,6 +270,7 @@ module nts.uk.pr.view.qmm038.a {
 
         /** Advanced search properties */
         showEmployment?: boolean; // 雇用条件
+        showDepartment?: boolean; // 部門条件
         showWorkplace?: boolean; // 職場条件
         showClassification?: boolean; // 分類条件
         showJobTitle?: boolean; // 職位条件
