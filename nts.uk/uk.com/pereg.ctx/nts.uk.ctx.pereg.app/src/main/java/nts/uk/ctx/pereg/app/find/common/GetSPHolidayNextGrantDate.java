@@ -125,6 +125,7 @@ public class GetSPHolidayNextGrantDate {
 	 * @return
 	 */
 	public Map<String, GeneralDate> getAllSPHolidayGrantDateBySids(List<SpecialleaveInformation> params){
+		if(params.isEmpty()) return new HashMap<>();
 		String cid = AppContexts.user().companyId();
 		Map<String, GeneralDate> result = new HashMap<>();
 		List<String> sids = params.stream().map(c -> c.getSid()).collect(Collectors.toList());
