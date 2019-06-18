@@ -14,8 +14,10 @@ export class YearMonthComponent extends InputComponent {
 
     public editable: boolean = false;
 
-    private years = this.generateArray(this.MIN_YEAR, this.MAX_YEAR);
-    private months = this.generateArray(1, 12);
+    private dataSource = {
+        year: this.generateArray(this.MIN_YEAR, this.MAX_YEAR),
+        month: this.generateArray(1, 12)
+    };
 
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
@@ -31,25 +33,18 @@ export class YearMonthComponent extends InputComponent {
 
     // Hooks
 
-    public created() {
-        let self = this;
-        this.picker.has = true;
-
-        this.picker.onFinish = () => {
-            let newValue = this.picker.select.year + TimeWithDay.leftpad(this.picker.select.month);
-            self.$emit('input', newValue);
-        };
-
-        this.picker.onRemove = () => {
-            self.$emit('input', null);
-        };
-    }
-
     public mounted() {
         this.icons.after = 'far fa-calendar-alt';
     }
 
     // Functions
+
+    get selected() {
+        return {
+            year: this.getYear() || this.getCurrentYear(),
+            month: this.getMonth() || this.getCurrentMonth()
+        };
+    }
 
     get rawValue() {
         if (this.value == null || this.value == undefined) {
@@ -66,20 +61,14 @@ export class YearMonthComponent extends InputComponent {
     }
 
     public click() {
-        this.picker.options = {
-            text: 'text',
-            value: 'value',
-            required: this.constraint.required
-        };
-        this.picker.dataSources = {
-            year: this.years,
-            month: this.months
-        };
-        this.picker.select = {
-            year: this.getYear() || this.getCurrentYear(),
-            month: this.getMonth() || this.getCurrentMonth()
-        };
-        this.picker.show = true;
+        let self = this;
+        this.$picker(self.selected, self.dataSource)
+        .then( (select: any) => {
+            if ( select != undefined) {
+                self.$emit('input', select.year + TimeWithDay.leftpad(select.month));
+            }
+            
+        });
     }
 
     private getYear(): Number {
