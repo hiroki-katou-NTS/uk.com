@@ -60,10 +60,7 @@ export class TimeRangeSearchBoxComponent extends Vue {
 
     public selectStartTime() {
 
-        this.$picker(TimeWithDayHelper.computeSelecteds(this.startTime),
-            TimeWithDayHelper.getDataSource(this.startTime),
-            TimeWithDayHelper.onSelect,
-            { title: '開始' })
+        this.showPicker(this.startTime)
             .then((value: any) => {
                 if (value !== undefined) {
                     this.startTime = TimeWithDay.fromObject(value).value;
@@ -73,15 +70,22 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 
     public selectEndTime() {
-        this.$picker(TimeWithDayHelper.computeSelecteds(this.endTime),
-            TimeWithDayHelper.getDataSource(this.endTime),
-            TimeWithDayHelper.onSelect,
-            { title: '終了' })
+        this.showPicker(this.endTime)
             .then((value: any) => {
                 if (value !== undefined) {
                     this.endTime = TimeWithDay.fromObject(value).value;
                 }
             });
+    }
+
+    private showPicker(value: number): Promise<{}> {
+        let selected = TimeWithDayHelper.computeSelecteds(value);
+        let title = TimeWithDay.fromObject(selected).toString();
+
+        return this.$picker(selected,
+            TimeWithDayHelper.getDataSource(value),
+            TimeWithDayHelper.onSelect,
+            { title });
     }
 
     public emitSearch() {

@@ -38,7 +38,7 @@ export class TimeWithDayHelper {
     }
 
 
-    public static computeSelecteds(value: number): Object {
+    public static computeSelecteds(value: number): { day: number, hour: number, minute: number} {
 
         if (value === null) {
 
@@ -94,7 +94,7 @@ export class TimePointHelper {
     public static M1_LIST: Array<Object> = TimePointHelper.generateArray(0, 5);
     public static M2_LIST: Array<Object> = TimePointHelper.generateArray(0, 9);
 
-    public static computeSelecteds(value: number): Object {
+    public static computeSelecteds(value: number): { positive: boolean, h1: number, h2: number, m1: number, m2: number} {
 
         if (value === null) {
 
@@ -240,7 +240,7 @@ export class TimeDurationHelper {
 
     }
 
-    public static computeSelecteds(value: number): Object {
+    public static computeSelecteds(value: number): { positive: boolean, h1: number, h2: number, m1: number, m2: number} {
 
         if (value === null) {
 
