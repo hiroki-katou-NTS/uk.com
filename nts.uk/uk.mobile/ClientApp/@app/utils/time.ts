@@ -402,6 +402,17 @@ export class TimeDuration {
         return new TimeDuration(value);
     }
 
+    public static fromObject(value: { positive: boolean, h1: number, h2: number, m1: number, m2: number }) {
+        let newMinutes = 0;
+        if ( value.positive) {
+            newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
+        } else {
+            newMinutes = 0 - (60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2));
+        }
+        
+        return new TimeDuration(newMinutes);
+    }
+
     public static toString(value: number) {
         return new TimeDuration(value).toString();
     }
@@ -429,6 +440,26 @@ export class TimeDuration {
 
     public toLocalString() {
         return this.toString();
+    }
+
+    public static toObject(value: number) {
+
+        if ( value === null || value === undefined) {
+
+            return null;
+        }
+
+        let timeDuration = TimeDuration.from(value);
+        let hour = timeDuration.hour;
+        let minute = timeDuration.minute;
+        
+        return {
+            positive: !timeDuration.isNegative,
+            h1: Math.floor(hour / 10),
+            h2: Math.floor(hour % 10),
+            m1: Math.floor(minute / 10),
+            m2: Math.floor(minute % 10)
+        };
     }
 
     get isNegative() {
@@ -459,12 +490,43 @@ export class TimePoint {
         return new TimePoint(value);
     }
 
+    public static fromObject(value: { positive: boolean, h1: number, h2: number, m1: number, m2: number }) {
+        let newMinutes = 0;
+        if ( value.positive) {
+            newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
+        } else {
+            newMinutes = -1440 + 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
+        }
+        
+        return new TimePoint(newMinutes);
+    }
+
     public static toString(value: number) {
         return new TimePoint(value).toString();
     }
 
     public toString() {
         return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    }
+
+    public static toObject(value: number) {
+
+        if ( value === null || value === undefined) {
+
+            return null;
+        }
+
+        let timePoint = TimePoint.from(value);
+        let hour = timePoint.hour;
+        let minute = timePoint.minute;
+        
+        return {
+            positive: !timePoint.isNegative,
+            h1: Math.floor(hour / 10),
+            h2: Math.floor(hour % 10),
+            m1: Math.floor(minute / 10),
+            m2: Math.floor(minute % 10)
+        };
     }
 
     get isNegative() {
