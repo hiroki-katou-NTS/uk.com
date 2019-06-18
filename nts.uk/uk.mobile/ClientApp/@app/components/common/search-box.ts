@@ -16,7 +16,7 @@ import { Component } from 'vue-property-decorator';
                 {{ displayEndTime }}
             </span>   
 
-            <span class="search-button fas fa-search" v-click:500"emitSearch">
+            <span class="search-button fas fa-search" v-click:500="emitSearch">
             </span>
 
         </div>
