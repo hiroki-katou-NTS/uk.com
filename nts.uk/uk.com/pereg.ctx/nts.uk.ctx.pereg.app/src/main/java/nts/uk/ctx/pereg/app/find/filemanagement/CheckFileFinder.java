@@ -650,81 +650,83 @@ public class CheckFileFinder {
 			switch (itemValueType) {
 			case STRING:
 				itemDto.setValue(value == null? null: value.toString());
-				StringConstraint stringContraint = (StringConstraint) contraint;
+				//StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value == null) {
 						itemDto.setError(true);
 						break;
 					} else {
-						Optional<String> string = stringContraint.validateString(value.toString());
-						validateItemOfCS0002(itemDto, value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+//						Optional<String> string = stringContraint.validateString(value.toString());
+//						validateItemOfCS0002(itemDto, value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+						break;
 					}
 				} else {
 					if (value != null) {
-						Optional<String> string = stringContraint.validateString(value.toString());
-						validateItemOfCS0002(itemDto, value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+//						Optional<String> string = stringContraint.validateString(value.toString());
+//						validateItemOfCS0002(itemDto, value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+						break;
 					}
 				}
 				break;
 			case NUMERIC:
 			case NUMBERIC_BUTTON:
 				itemDto.setValue(value == null ? null : new BigDecimal(value.toString()));
-				NumericConstraint numberContraint = (NumericConstraint) contraint;
-				if (gridHead.isRequired()) {
-					if (value == null) {
-						itemDto.setError(true);
-						break;
-					} else {
-						Optional<String> string = numberContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
-					}
-				} else {
-					if (value != null && value != "") {
-						Optional<String> string = numberContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
-					}
-				}
+//				NumericConstraint numberContraint = (NumericConstraint) contraint;
+//				if (gridHead.isRequired()) {
+//					if (value == null) {
+//						itemDto.setError(true);
+//						break;
+//					} else {
+//						Optional<String> string = numberContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				} else {
+//					if (value != null && value != "") {
+//						Optional<String> string = numberContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				}
 				break;
 			case DATE:
 				itemDto.setValue(value == null || value == "" ? null : value.toString());
-				DateConstraint dateContraint = (DateConstraint) contraint;
-				if (gridHead.isRequired()) {
-					if (value == null || value == "") {
-						itemDto.setError(true);
-						break;
-					} else {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
-					}
-				} else {
-					if (value != null && value != "") {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
-					}
-				}
+//				DateConstraint dateContraint = (DateConstraint) contraint;
+//				if (gridHead.isRequired()) {
+//					if (value == null || value == "") {
+//						itemDto.setError(true);
+//						break;
+//					} else {
+//						Optional<String>  string = dateContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				} else {
+//					if (value != null && value != "") {
+//						Optional<String>  string = dateContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				}
 				break;
 			case TIME:
-				TimeConstraint timeContraint = (TimeConstraint) contraint;
+				//TimeConstraint timeContraint = (TimeConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value == null) {
 						itemDto.setError(true);
@@ -740,12 +742,12 @@ public class CheckFileFinder {
 						}else {
 							itemDto.setValue(value.toString());
 						}
-						
-						Optional<String> string = timeContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+						break;
+//						Optional<String> string = timeContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
 					}
 				} else {
 					if (value != null && value != "") {
@@ -759,35 +761,37 @@ public class CheckFileFinder {
 						}else {
 							itemDto.setValue(value.toString());
 						}
-						Optional<String> string = timeContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+//						Optional<String> string = timeContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
 					}
 				}
 				break;
 			case TIMEPOINT:
-				TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
+				//TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value.toString()));
-						Optional<String> string = timePointContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+//						Optional<String> string = timePointContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
 					} else {
 						itemDto.setError(true);
 					}
+					break;
 				} else {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value.toString()));
-						Optional<String> string = timePointContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							break;
-						}
+//						Optional<String> string = timePointContraint.validateString(value.toString());
+//						if (string.isPresent()) {
+//							itemDto.setError(true);
+//							break;
+//						}
+						break;
 					}
 				}
 				break;
