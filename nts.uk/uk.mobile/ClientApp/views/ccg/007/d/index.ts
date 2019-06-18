@@ -31,27 +31,31 @@ export class Ccg007dComponent extends Vue {
         let self = this,
             params: any = self.params;
 
-        // get contract code from param or storage
-        if (params.contractCode) {
-            self.contractCode = params.contractCode;
-        } else {
-            self.$auth.contract
-                .then((v: { code: string }) => {
-                    self.contractCode = v && v.code || '000000000000';
-                });
-        }
+        Promise.resolve()
+            .then(() => {
+                // get contract code from param or storage
+                if (params.contractCode) {
+                    self.contractCode = params.contractCode;
+                } else {
+                    self.$auth.contract
+                        .then((v: { code: string }) => {
+                            self.contractCode = v && v.code || '000000000000';
+                        });
+                }
 
-        // get contract password from param or storage
-        if (params.contractPass) {
-            self.contractPass = params.contractPass;
-        } else {
-            self.$auth.contract
-                .then((v: { password: string }) => {
-                    self.contractPass = v && v.password || '';
-                });
-        }
-
-        self.checkEmpCodeAndCompany();
+                // get contract password from param or storage
+                if (params.contractPass) {
+                    self.contractPass = params.contractPass;
+                } else {
+                    self.$auth.contract
+                        .then((v: { password: string }) => {
+                            self.contractPass = v && v.password || '';
+                        });
+                }
+            })
+            .then(() => {
+                self.checkEmpCodeAndCompany();
+            });
     }
 
     public mounted() {

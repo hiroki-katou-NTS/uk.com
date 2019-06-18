@@ -100,13 +100,15 @@ export class Ccg007BComponent extends CCG007Login {
             companyCode = '',
             employeeCode = '';
 
-        Promise.resolve().then(() => {
-            if (!_.isEmpty(self.params.companies)) {
-                return { data: self.params.companies };
-            } else {
-                return this.$http.post(servicePath.getAllCompany + self.contractCode);
-            }
-        }).then((response: { data: Array<ICompany> }) => self.companies = response.data)
+        Promise.resolve()
+            .then(() => {
+                if (!_.isEmpty(self.params.companies)) {
+                    return { data: self.params.companies };
+                } else {
+                    return this.$http.post(servicePath.getAllCompany + self.contractCode);
+                }
+            })
+            .then((response: { data: Array<ICompany> }) => self.companies = response.data)
             .then(() => {
                 if (!_.isNil(self.params.employeeCode)) {
                     return Promise.resolve(self.params.employeeCode);
@@ -159,15 +161,17 @@ export class Ccg007BComponent extends CCG007Login {
     }
 
     public forgetPass() {
-        this.$goto
+        let self = this,
+            params: any = _.pick(self, ['contractCode', 'contractPass', 'companies']);
+
+        _.extend(params, {
+            companyCode: self.model.comp,
+            employeeCode: self.model.employeeCode
+        });
+
+        self.$goto
             .password
-            .forget({
-                contractCode: this.contractCode,
-                contractPass: this.contractPass,
-                companyCode: this.model.comp,
-                employeeCode: this.model.employeeCode,
-                companies: this.companies
-            });
+            .forget(params);
     }
 }
 
