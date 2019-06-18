@@ -758,7 +758,7 @@ module cps003.a.vm {
                         }
                         
                         let colSetting = _.remove(columnSettings, s => s.itemCD === d.itemCode);
-                        item = { headerText: name, itemId: d.itemId, itemName: d.itemName, key: d.itemCode, required: d.required, parentCode: d.itemParentCode, dataType: "string", width: colSetting.length > 0 ? colSetting[0].width + "px" : "100px", perInfoTypeState: controlType };
+                        item = { headerText: name, itemId: d.itemId, itemName: d.itemName, key: d.itemCode, required: d.required, parentCode: d.itemParentCode, dataType: "string", width: colSetting.length > 0 ? colSetting[0].width + "px" : "200px", perInfoTypeState: controlType };
                         if (gridSettings) {
                              colSetting = [ _.find(gridSettings.perInfoData, itemInfo => itemInfo.itemCD === d.itemCode) ];
                         }
@@ -1546,7 +1546,7 @@ module cps003.a.vm {
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
                             if (value instanceof Date) {
-                                return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;    
+                                return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;    
                             }
                             
                             return replaceValue.matchValue === value;
@@ -1560,7 +1560,7 @@ module cps003.a.vm {
                                 $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
-                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;
+                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
                                     }
                                     
                                     return replaceValue.matchValue === value;
@@ -1583,7 +1583,7 @@ module cps003.a.vm {
                                 $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
-                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.getDate()}`;
+                                        return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
                                     }
                                     
                                     return replaceValue.matchValue === value;
@@ -1707,24 +1707,28 @@ module cps003.a.vm {
                         }, () => replaceValue.replaceValue);
                     }
                 } else if (_.find(self.specialItems.workplace, it => it === replaceValue.targetItem)) {
-                    let wpName = {};
+                    let wpName = {}, promises = [], dates = [];
                     _.forEach($grid.mGrid("dataSource"), ds => {
                         let dateStr = moment.utc(ds["IS00082"]).toISOString();
                         if (!_.isNil(wpName[dateStr])) return;
-                        service.fetch.workplaceInfo({ baseDate: dateStr, listWorkplaceID: [ replaceValue.replaceValue ]}).done(wp => {
-                            if (wp && wp.length > 0) {
-                                wpName[dateStr] = wp[0].workplaceName;
-                            }
-                        });    
+                        promises.push(service.fetch.workplaceInfo({ baseDate: dateStr, listWorkplaceID: [ replaceValue.replaceValue ]}));   
+                        dates.push(dateStr);
                     });
                     
-                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
-                        if (replaceValue.replaceAll) return true;
-                        return replaceValue.matchValue === value;
-                    }, (value, rec) => {
-                        // TODO: Get workplace name
-                        let dateStr = moment.utc(ds["IS00082"]).toISOString();
-                        return wpName[dateStr];
+                    $.when.apply($, promises).done(() => {
+                        for (let i = 0; i < arguments.length; i++) {
+                            if (arguments[i] && arguments[i].length > 0) {
+                                wpName[dates[i]] = arguments[i][0].workplaceId;
+                            }
+                        }
+                        
+                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            if (replaceValue.replaceAll) return true;
+                            return replaceValue.matchValue === value;
+                        }, (value, rec) => {
+                            let dateStr = moment.utc(rec["IS00082"]).toISOString();
+                            return wpName[dateStr] || null;
+                        });
                     });
                 } else if (_.find(self.specialItems.department, it => it === replaceValue.targetItem)) {
                 } else if (replaceValue.mode === APPLY_MODE.SELECTION) {
@@ -1749,7 +1753,12 @@ module cps003.a.vm {
                     $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                         if (replaceValue.replaceAll 
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))) return true;
-                        return replaceValue.matchValue === value;
+                        
+                        if (value instanceof Date) {
+                            return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;    
+                        }
+                        
+                        return (_.isString(replaceValue.matchValue) && _.trim(replaceValue.matchValue) === value) || replaceValue.matchValue === value;
                     }, () => replaced);
                 }
             });
