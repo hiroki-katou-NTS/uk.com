@@ -6,6 +6,7 @@ module cps003.f.vm {
     import parseTime = nts.uk.time.parseTime;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import validation = validationcps003f;
 
     const __viewContext: any = window['__viewContext'] || {},
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
@@ -88,10 +89,12 @@ module cps003.f.vm {
                                 itemCode: item.itemCode,
                                 dataType: dts.dataTypeValue,
                                 amount: !!dts.numericItemAmount,
+                                required: !!item.isRequired,
                                 decimalLength: dts.decimalPart,
                                 selectionItems: []
                             }, command = {
                                 itemId: item.id,
+                                required: !!item.isRequired,
                                 baseDate: moment.utc().toISOString()
                             }, constraint: any = {
                                 itemName: item.itemName,
@@ -300,9 +303,10 @@ module cps003.f.vm {
                     replaceValue: undefined,
                     replaceFormat: undefined
                 };
-
-           // $('input:not([disabled])').trigger('validate');
-
+           nts.uk.ui.errors.clearAll();
+           $('input:not([disabled])').trigger('validate');
+           validation.initCheckError(self.currentItem);
+           validation.checkError(self.currentItem);
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -515,8 +519,6 @@ module cps003.f.vm {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
-                            }else{
-                                $('input:not([disabled])').trigger('validate');
                             }
                         }
                     } else {
@@ -616,8 +618,6 @@ module cps003.f.vm {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
-                                }else{
-                                     $('input:not([disabled])').trigger('validate');
                                 }
                             }
                         } else {
@@ -786,6 +786,7 @@ module cps003.f.vm {
         itemCode: string;
         dataType: number;
         amount?: number;
+        required?: boolean;
         decimalLength?: number;
         selectionItems?: Array<any>;
     }

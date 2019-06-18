@@ -148,16 +148,16 @@ module nts.custombinding {
                                 value: value,
                                 optionsText: 'optionText',
                                 editable: false,
-                                required: false,
-                                selectFirstIfNull: true,
+                                required: required,
+                                selectFirstIfNull: required,
                                 enable: true,
                                 columns: [
                                     { prop: 'optionText', length: 10 },
                                 ]}"></div>
                             <button data-bind="ntsHelpButton: { textId: 'CPS003_118', position: 'bottom right' }">？</button>`,
-                    button: `<button data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
+                    button: `<button id="button-value" data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
                              <label class="value-text readonly" data-bind="html: textValue"></label>`,
-                    buttonWt: `<button data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
+                    buttonWt: `<button id="buttonWt-value" data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
                                <div class="worktime">
                                  <label class="value-text readonly" data-bind="html: textValue"></label>
                                  <label class="value-text readonly" data-bind="html: textWtValue1"></label>
@@ -179,6 +179,7 @@ module nts.custombinding {
                     textWtValue1: ko.observable(''),
                     textWtValue2: ko.observable(''),
                     itemOptions: ko.observableArray([]),
+                    required:false,
                     openDialog: () => {
                         let itemData = ko.toJS(accessor.itemData),
                             value = ko.toJS(accessor.value().value0);
@@ -225,14 +226,13 @@ module nts.custombinding {
                             });
                         } else if (['IS00084', 'IS00085'].indexOf(itemData.itemCode) > -1) {
                             fetch1.checkFunctionNo().done(role => {
-                                let itemContraint = _.filter(__viewContext.primitiveValueConstraints, value =>{return value.itemCode == itemData.itemCode});
                                 setShared('inputCDL008', {
                                     selectedCodes: [],
                                     baseDate: __viewContext.viewModel.baseDate,
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                     isrestrictionOfReferenceRange: role.available,
-                                    showNoSelection: itemContraint.length > 0? !itemContraint[0].required: false,
+                                    showNoSelection: !itemData.required,
                                     isShowBaseDate: false
                                 }, true);
 
@@ -252,7 +252,7 @@ module nts.custombinding {
 
                             });
                         } else {
-                            setShared("KDL002_isShowNoSelectRow", true);
+                            setShared("KDL002_isShowNoSelectRow", !itemData.required);
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
                             setShared("KDL002_SelectedItemId", [vm.value()], true);
@@ -515,6 +515,7 @@ module nts.custombinding {
                     vm.textWtValue2('');
 
                     vm.constraint = itemData.constraint;
+                    vm.required = itemData.required;
 
                     // bind items to dropdownList (if avaiable)
                     vm.itemOptions(itemData.selectionItems || []);

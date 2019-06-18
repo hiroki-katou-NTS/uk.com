@@ -51,14 +51,14 @@ module nts.custombinding {
                                 value: value,
                                 optionsText: 'optionText',
                                 editable: false,
-                                required: false,
-                                selectFirstIfNull: true,
+                                required: required,
+                                selectFirstIfNull: required,
                                 enable: enable,
                                 columns: [
                                     { prop: 'optionText', length: 10 }
                                 ]}"></div>`,
-                    button: `<button data-bind="text: i18n('CPS001_106'), enable: enable, click: openDialog"></button>
-                             <label class="value-text readonly" data-bind="html: textValue"></label>`
+                    button: `<button id="button-filter" data-bind="text: i18n('CPS001_106'), enable: enable, click: openDialog"></button>
+                             <label id="button-filter-value" class="value-text readonly" data-bind="html: textValue"></label>`
                 }, vm = {
                     i18n: nts.uk.resource.getText,
                     value: ko.observable(),
@@ -69,6 +69,7 @@ module nts.custombinding {
                     },
                     enable: ko.observable(false),
                     textValue: ko.observable(''),
+                    required:false,
                     itemOptions: ko.observableArray([]),
                     openDialog: () => {
                         let itemData = ko.toJS(accessor.itemData),
@@ -111,7 +112,7 @@ module nts.custombinding {
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                     isrestrictionOfReferenceRange: role.available,
-                                    showNoSelection: itemContraint.length > 0? !itemContraint[0].required: false,
+                                    showNoSelection: !itemData.required,
                                     isShowBaseDate: false
                                 }, true);
 
@@ -129,8 +130,26 @@ module nts.custombinding {
 
 
                             });
-                        }else {
-                            setShared("KDL002_isShowNoSelectRow", true);
+ //                       }
+//                             else if (['IS00130', 'IS00139'].indexOf(self.itemCode()) > - 1) {
+//                        let objShare: any = {
+//                                workTypeCodes: workType && _.map(self.selection(), x => x.optionValue),
+//                                selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+//                                workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
+//                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+//                            };
+//                        setShared('parentCodes', objShare, true);
+//
+//                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+//                            let childData: IChildData = getShared('childData');
+//                            self.setValueOfCS00020(childData, isWorkType, isWorkTime,
+//                                workType, workTime,
+//                                itemWorkTime, itemWorkType, true);
+//                        });
+
+                    } else {
+                            
+                            setShared("KDL002_isShowNoSelectRow", !itemData.required);
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
                             setShared("KDL002_SelectedItemId", [vm.value()], true);
@@ -210,6 +229,7 @@ module nts.custombinding {
                     vm.value('');
 
                     vm.constraint = itemData.constraint;
+                    vm.required = itemData.required;
 
                     // bind items to dropdownList (if avaiable)
                     vm.itemOptions(itemData.selectionItems || []);
