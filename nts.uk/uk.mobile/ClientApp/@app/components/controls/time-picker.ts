@@ -33,7 +33,7 @@ export class TimeWithDayHelper {
 
     public static generateArray(min: number, max: number): Array<Object> {
 
-        return _.range(min, max).map((m: number) => ({ text: _.padStart(`${m}`, 2, '0'), value: m }));
+        return _.range(min, max + 1).map((m: number) => ({ text: _.padStart(`${m}`, 2, '0'), value: m }));
 
     }
 
