@@ -3,6 +3,7 @@ import { component, Prop } from '@app/core/component';
 import { TimeWithDay, DAYS } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
 import { Component } from 'vue-property-decorator';
+import { TimeWithDayHelper } from '@app/components/controls/time-picker';
 @component({
     template: `
     <div class="time-range-search-box">
@@ -59,9 +60,9 @@ export class TimeRangeSearchBoxComponent extends Vue {
 
     public selectStartTime() {
 
-        this.$picker(TimeWithDayPicker.computeSelecteds(this.startTime),
-            TimeWithDayPicker.getDataSource(this.startTime),
-            TimeWithDayPicker.onSelect,
+        this.$picker(TimeWithDayHelper.computeSelecteds(this.startTime),
+            TimeWithDayHelper.getDataSource(this.startTime),
+            TimeWithDayHelper.onSelect,
             { title: '開始' })
             .then((value: any) => {
                 if (value !== undefined) {
@@ -72,9 +73,9 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 
     public selectEndTime() {
-        this.$picker(TimeWithDayPicker.computeSelecteds(this.endTime),
-            TimeWithDayPicker.getDataSource(this.endTime),
-            TimeWithDayPicker.onSelect,
+        this.$picker(TimeWithDayHelper.computeSelecteds(this.endTime),
+            TimeWithDayHelper.getDataSource(this.endTime),
+            TimeWithDayHelper.onSelect,
             { title: '終了' })
             .then((value: any) => {
                 if (value !== undefined) {
@@ -111,77 +112,6 @@ export class TextSearchBox extends Vue {
 
     public emitSearch() {
         this.$emit('search', this.value);
-    }
-}
-
-class TimeWithDayPicker {
-
-    public static getDataSource(value: number) {
-
-        return {
-            day: TimeWithDayPicker.Days, 
-            hour: value < 0 ? TimeWithDayPicker.HoursFrom12 : TimeWithDayPicker.HoursFrom0, 
-            minute: TimeWithDayPicker.Minutes
-        };
-    }
-
-    public static Days: Array<Object> = [
-        {
-            text: DAYS.TheDayBefore,
-            value: -1
-        }, {
-            text: DAYS.Today,
-            value: 0
-        }, {
-            text: DAYS.NextDay,
-            value: 1
-        }, {
-            text: DAYS.TwoDaysLater,
-            value: 2
-        }
-    ];
-    public static HoursFrom0: Array<Object> = TimeWithDayPicker.generateArray(0, 24);
-    public static HoursFrom12: Array<Object> = TimeWithDayPicker.generateArray(12, 24);
-    public static Minutes: Array<Object> = TimeWithDayPicker.generateArray(0, 60);
-
-    public static generateArray(min: number, max: number): Array<Object> {
-
-        return _.range(min, max).map((m: number) => ({ text: _.padStart(`${m}`, 2, '0'), value: m }));
-
-    }
-
-    public static computeSelecteds(value: number): Object {
-
-        if (value === null) {
-
-            return {
-                day: 0,
-                hour: 8,
-                minute: 0
-            };
-        }
-
-        return TimeWithDay.toObject(value);
-    }
-
-    public static onSelect(value: any, picker: { title: string, dataSources: any, selects: any }) {
-        if (value.day === -1) {
-
-            if (picker.dataSources.hour.length !== 12) {
-                picker.dataSources.hour = TimeWithDayPicker.HoursFrom12;
-            }
-
-            if (value.hour < 12) {
-                picker.selects.hour = 12;
-            }
-
-        } else {
-
-            if (picker.dataSources.hour.length !== 24) {
-                picker.dataSources.hour = TimeWithDayPicker.HoursFrom0;
-            }
-            
-        }
     }
 }
 
