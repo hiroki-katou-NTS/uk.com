@@ -13,13 +13,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
+import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
@@ -78,7 +82,23 @@ public class GridPeregProcessor {
 	
 	@Inject 
 	private PerInfoCategoryFinder ctgFinder;
-
+	
+	@Inject
+	private GetSPHolidayNextGrantDate getSPHolidayNextGrantDate;
+	
+	private static final List<String>  specialCode = Arrays.asList("CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
+			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
+			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058");
+	//特別休暇付与基準日
+	private static final List<String> grantDateLst =  Arrays.asList("IS00295","IS00302","IS00309","IS00316","IS00323","IS00330","IS00337","IS00344","IS00351","IS00358","IS00559","IS00566","IS00573","IS00580","IS00587","IS00594","IS00601","IS00608","IS00615","IS00622");
+	//付与設定
+	private static final List<String> appSetLst = Arrays.asList("IS00297","IS00304","IS00311","IS00318","IS00325","IS00332","IS00339","IS00346","IS00353","IS00360","IS00561","IS00568","IS00575","IS00582","IS00589","IS00596","IS00603","IS00610","IS00617","IS00624");
+	//付与日数
+	private static final List<String> grantDayLst = Arrays.asList("IS00298","IS00305","IS00312","IS00319","IS00326","IS00333","IS00340","IS00347","IS00354","IS00361","IS00562","IS00569","IS00576","IS00583","IS00590","IS00597","IS00604","IS00611","IS00618","IS00625");
+	//特休付与テーブルコード
+	private static final List<String> grantTableLst = Arrays.asList("IS00299","IS00306","IS00313","IS00320","IS00327","IS00334","IS00341","IS00348","IS00355","IS00362","IS00563","IS00570","IS00577","IS00584","IS00591","IS00598","IS00605","IS00612","IS00619","IS00626");
+	//次回付与日
+	private static final List<String> nextGrantDateLst = Arrays.asList("IS00300","IS00307","IS00314","IS00321","IS00328","IS00335","IS00342","IS00349","IS00356","IS00363","IS00564","IS00571","IS00578","IS00585","IS00592","IS00599","IS00606","IS00613","IS00620","IS00627");
 	public GridEmployeeDto getGridLayout(PeregGridQuery query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
@@ -123,6 +143,43 @@ public class GridPeregProcessor {
 					personDatas.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 			
 			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+			
+			if(specialCode.contains(query.getCategoryCode())) {
+				List<SpecialleaveInformation> params = layouts.stream().map(c ->  {
+					GeneralDate grantDate =null;
+					int appSet = 0;
+					Double grantDays = null;
+					String grantTable = null;
+					Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
+					Optional<GridEmpBody> appSetOpt = c.getItems().stream().filter(item -> appSetLst.contains(item.getItemCode())).findFirst();
+					Optional<GridEmpBody> grantDayOpt = c.getItems().stream().filter(item -> grantDayLst.contains(item.getItemCode())).findFirst();
+					Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
+					if(grantDateOpt.isPresent()) {
+						grantDate = (GeneralDate) grantDateOpt.get().getValue();
+					}
+					
+					if(appSetOpt.isPresent()) {
+						appSet = Integer.valueOf((String) appSetOpt.get().getValue()).intValue();
+					}
+					
+					if(grantDayOpt.isPresent()) {
+						grantDays = (Double) grantDayOpt.get().getValue();
+					}
+					if(grantTableOpt.isPresent()) {
+						grantTable = (String) grantTableOpt.get().getValue();
+					}
+					return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
+				}).collect(Collectors.toList());
+				Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params);
+				layouts.stream().forEach(c ->{
+					//nextGrantDateLst
+					Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
+					GeneralDate nextGrantDateOpt = nextGrantDateMap.get(c.getEmployeeId());
+					if(grantDateOpt.isPresent()) {
+						grantDateOpt.get().setValue(nextGrantDateOpt == null? null: nextGrantDateOpt.toString());
+					}
+				});
+			}
 						
 			if (!CollectionUtil.isEmpty(layouts)) {
 				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
@@ -214,11 +271,95 @@ public class GridPeregProcessor {
 			SingleItemDto sidto = (SingleItemDto) item.getItemTypeState();
 			SelectionItemDto slidto = (SelectionItemDto) sidto.getDataTypeState();
 
-			return cbxFactory.getComboBox(slidto, null, query.getBaseDate(), false,
+			return cbxFactory.getComboBox(slidto, null, query.getBaseDate(), query.isRequired(),
 					EnumAdaptor.valueOf(ctgItem.getPersonEmployeeType(), PersonEmployeeType.class), true,
 					ctgItem.getCategoryCode(), null, true);
 		} catch (Exception ex) {
 			return Arrays.asList();
 		}
+	}
+	
+	private int getSpecialCode(String categoryCode) {
+		if(categoryCode.equals("CS00025")) {
+			return 1;
+		}
+			
+		if(categoryCode.equals("CS00026")) {
+			return 2;
+		}
+		
+		if(categoryCode.equals("CS00027")) {
+			return 3;
+		}
+		
+		if(categoryCode.equals("CS00028")) {
+			return 4;
+		}
+		
+		if(categoryCode.equals("CS00029")) {
+			return 5;
+		}
+		
+		if(categoryCode.equals("CS00030")) {
+			return 6;
+		}
+		
+		if(categoryCode.equals("CS00031")) {
+			return 7;
+		}
+		
+		if(categoryCode.equals("CS00032")) {
+			return 8;
+		}
+		
+		if(categoryCode.equals("CS00033")) {
+			return 9;
+		}
+		
+		if(categoryCode.equals("CS00034")) {
+			return 10;
+		}
+		
+		if(categoryCode.equals("CS00049")) {
+			return 11;
+		}
+		
+		if(categoryCode.equals("CS00050")) {
+			return 12;
+		}
+		
+		if(categoryCode.equals("CS00051")) {
+			return 13;
+		}
+		
+		if(categoryCode.equals("CS00052")) {
+			return 14;
+		}
+		
+		if(categoryCode.equals("CS00053")) {
+			return 15;
+		}
+		
+		if(categoryCode.equals("CS00054")) {
+			return 16;
+		}
+		
+		if(categoryCode.equals("CS00055")) {
+			return 17;
+		}
+		
+		if(categoryCode.equals("CS00056")) {
+			return 18;
+		}
+		
+		if(categoryCode.equals("CS00057")) {
+			return 19;
+		}
+		
+		if(categoryCode.equals("CS00058")) {
+			return 20;
+		}
+		
+		return 0;
 	}
 }

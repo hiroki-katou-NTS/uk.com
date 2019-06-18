@@ -702,7 +702,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 					+ " inner join BSYMT_AFF_COM_INFO i"
 					+ " on h.HIST_ID = i.HIST_ID"
 					+ " where h.CID = ?"
-					+ " and h.SID = IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					+ " and h.SID  IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {

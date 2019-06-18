@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -214,6 +215,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public Map<String, List<ElapseYear>> findElapseByGrantDateCdLst(String companyId, int specialHolidayCode, List<String> grantDateCode) {
+		if(grantDateCode.isEmpty()) return new HashMap<>();
 		List<ElapseYear> result = this.queryProxy().query(SELECT_ELAPSE_BY_GDCD_LST_QUERY, Object[].class)
 					.setParameter("companyId", companyId)
 					.setParameter("specialHolidayCode", specialHolidayCode)

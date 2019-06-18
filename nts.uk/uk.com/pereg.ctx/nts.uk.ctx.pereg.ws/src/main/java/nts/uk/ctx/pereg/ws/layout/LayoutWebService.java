@@ -139,10 +139,4 @@ public class LayoutWebService extends WebService {
 	public Map<String, GeneralDate> getSPHolidayGrantDateBySids(List<SpecialleaveInformation> params){
 		return getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params);
 	}
-	
-	/*@Path("b")
-	@POST
-	public List<PeregDto> getB(List<PeregQuery> query){
-		return layoutingProcessor.findAllData(query);
-	}*/
 }

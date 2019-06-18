@@ -385,9 +385,10 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			SpecialHoliday speHoliday) {
 		String cid = AppContexts.user().companyId();
 		Map<String, GrantDaysInforByDates> result = new HashMap<>();
+		
 		Map<String, List<ElapseYear>>  elapseYearMap = grantTblRepos.findElapseByGrantDateCdLst(cid,
 				speHoliday.getSpecialHolidayCode().v(),
-				param.stream().map(c -> c.getGrantTblCd().get()).collect(Collectors.toList()));
+				param.stream().filter(c -> c.getGrantTblCd().isPresent()== true).map(c -> c.getGrantTblCd().get()).collect(Collectors.toList()));
 		Optional<GrantDateTbl> optGranDateTbl = grantTblRepos.findByCodeAndIsSpecified(cid,
 				speHoliday.getSpecialHolidayCode().v());
 		List<ElapseYear> elapseYear = new ArrayList<>();

@@ -13,4 +13,5 @@ import nts.arc.time.GeneralDate;
 public class GridComboBoxSettingQuery {
 	private String itemId;
 	private GeneralDate baseDate;
+	private boolean required;
 }
