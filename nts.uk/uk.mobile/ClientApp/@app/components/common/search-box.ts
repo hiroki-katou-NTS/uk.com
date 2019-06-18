@@ -1,6 +1,5 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeWDPickerComponent } from '@app/components';
 import { TimeWithDay, DAYS } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
 import { Component } from 'vue-property-decorator';
@@ -24,7 +23,6 @@ import { Component } from 'vue-property-decorator';
     `,
     components: {
         'picker': MobilePicker,
-        'time-with-day-picker': TimeWDPickerComponent
     }
 })
 export class TimeRangeSearchBoxComponent extends Vue {

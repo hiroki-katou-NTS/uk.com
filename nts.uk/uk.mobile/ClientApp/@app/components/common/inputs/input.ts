@@ -3,7 +3,6 @@ import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Watch } from '@app/core/component';
 import { MobilePicker } from '@app/components/picker';
-import { TimeWDPickerComponent, TimePointPickerComponent, TimeDurationPickerComponent } from '@app/components';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
@@ -89,10 +88,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         </div>
     </div>`,
     components: {
-        'picker': MobilePicker,
-        'time-point-picker': TimePointPickerComponent,
-        'time-duration-picker': TimeDurationPickerComponent,
-        'time-with-day-picker': TimeWDPickerComponent
+        'picker': MobilePicker
     },
     resource: {
         vi: {
