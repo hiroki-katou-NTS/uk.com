@@ -4,19 +4,19 @@
 
     <nts-time-editor
       v-model="timeWithDay"
-      :name="'Time-With-Day'"
+      name='日区分付き時刻　(Time-With-Day)'
       time-input-type="time-with-day"
     />
 
     <nts-time-editor
       v-model="timePoint"
-      :name="'Time-Point'"
+      name='時刻  (Time-Point)'
       time-input-type="time-point"
     />
 
     <nts-time-editor
       v-model="timeDuration"
-      :name="'Time-Duration'"
+      name='時間  (Time-Duration)'
       time-input-type="time-duration"
     />
 
