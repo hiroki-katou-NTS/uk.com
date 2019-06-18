@@ -189,6 +189,7 @@ declare module "vue/types/vue" {
                     value?: string;
                     title?: string;
                     required?: boolean;
+                    className?: 'clock' | 'time' | 'time-day';
                     onSelect?: (selects: { [key: string]: any }, pkr: { title: string; dataSources: { [key: string]: any[] } }) => void;
                 }): Promise<{}>;
             (value: { [key: string]: any },
@@ -199,6 +200,7 @@ declare module "vue/types/vue" {
                     value?: string;
                     title?: string;
                     required?: boolean;
+                    className?: 'clock' | 'time' | 'time-day';
                 }): Promise<{}>;
         };
         $errors: {

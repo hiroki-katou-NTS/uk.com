@@ -49,7 +49,8 @@ export const MobilePicker = {
             default: () => ({
                 text: 'text',
                 value: 'value',
-                required: false
+                required: false,
+                className: ''
             })
         }
     },
@@ -108,7 +109,7 @@ export const MobilePicker = {
             return !this.options.required && !!obj.keys(obj.cloneObject(this.value)).length;
         },
         className() {
-            return '';
+            return this.options.className;
         }
     },
     methods: {

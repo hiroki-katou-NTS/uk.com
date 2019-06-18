@@ -15,7 +15,7 @@ const vm = Vue
         },
         computed: {
             className() {
-                return 'plugin';
+                return `plugin ${this.options.className}`.trim();
             }
         }
     }), picker = {
