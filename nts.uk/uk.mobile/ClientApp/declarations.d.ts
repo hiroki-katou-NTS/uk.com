@@ -93,7 +93,7 @@ declare module "vue/types/vue" {
         $auth: {
             login: (data: any) => Promise<{}>;
             logout: () => Promise<{}>;
-            readonly user: Promise<{
+            readonly user: Promise<null | {
                 employee: boolean;
                 companyId: string;
                 employeeId: string;
@@ -112,6 +112,7 @@ declare module "vue/types/vue" {
                 }
             }>;
             readonly token: Promise<string>;
+            readonly contract: Promise<null | { code: string; password: string }>;
         };
         $i18n: {
             (resr: string): string;

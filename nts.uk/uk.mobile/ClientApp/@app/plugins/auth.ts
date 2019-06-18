@@ -76,7 +76,7 @@ export const auth = {
 
                             if (!token) {
                                 resolve(null);
-                                
+
                                 if (!location.href.match(/\/documents\//)) {
                                     self.$goto.login();
                                 }
@@ -101,6 +101,13 @@ export const auth = {
                                 resolve(user);
                             }
                         });
+                    }
+                });
+
+                // get constract info
+                Object.defineProperty(self.$auth, 'contract', {
+                    get() {
+                        return Promise.resolve(authentication.contract);
                     }
                 });
             }

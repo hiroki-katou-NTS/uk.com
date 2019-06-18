@@ -4,6 +4,8 @@ import { storage } from '@app/utils';
 import { NavMenu, SideMenu } from '@app/services';
 import { CCG007Login } from '../common/ccg007base';
 
+const DEFAULT_CONTRACT: string = '000000000000';
+
 @component({
     route: '/ccg/007/b',
     style: require('./style.scss'),
@@ -32,7 +34,6 @@ export class Ccg007BComponent extends CCG007Login {
 
     public companies: Array<ICompany> = [];
     public contractCode: string = '';
-    public defaultContractCode: string = '000000000000';
     public contractPass: string = '';
 
     public model = {
@@ -51,24 +52,24 @@ export class Ccg007BComponent extends CCG007Login {
             self.contractPass = self.params.contractPass;
             self.checkEmpCodeAndCompany();
         } else {
-            Promise.resolve()
-                .then(() => storage.local.getItem('contractInfo'))
+            self.$auth.contract
                 .then((value: any) => {
                     if (!_.isNil(value)) {
-                        self.contractCode = value.contractCode;
-                        self.contractPass = value.contractPassword;
+                        self.contractCode = value.code;
+                        self.contractPass = value.password;
                     }
                 }).then(() => {
-                    return this.$http.post(servicePath.checkContract, {
-                        contractCode: self.contractCode || self.defaultContractCode,
-                        contractPassword: self.contractPass
-                    });
+                    return this.$http
+                        .post(servicePath.checkContract, {
+                            contractCode: self.contractCode || DEFAULT_CONTRACT,
+                            contractPassword: self.contractPass
+                        });
                 }).then((rel: { data: any }) => {
                     if (rel.data.onpre) {
-                        self.contractCode = self.defaultContractCode;
+                        self.contractCode = DEFAULT_CONTRACT;
                         self.contractPass = null;
 
-                        storage.local.setItem('contractInfo', { contractCode: self.contractCode, contractPassword: self.contractPass });
+                        storage.local.setItem('contract', { code: self.contractCode, password: self.contractPass });
                     } else {
                         if (rel.data.showContract && !rel.data.onpre) {
                             self.$goto('ccg007a');
@@ -81,7 +82,8 @@ export class Ccg007BComponent extends CCG007Login {
                 });
         }
 
-        this.$http.post(servicePath.ver)
+        this.$http
+            .post(servicePath.ver)
             .then((response: { data: any }) => {
                 self.model.ver = response.data.ver;
             });
