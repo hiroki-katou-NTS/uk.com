@@ -750,10 +750,10 @@ module cps003.a.vm {
                         let name;
                         
                         if (_.isNil(d.itemParentCode) || d.itemParentCode === "") {
-                            parent[d.itemCode] = d.itemName + d.itemCode;
-                            name = d.itemName + d.itemCode;
+                            parent[d.itemCode] = d.itemName /*+ d.itemCode*/;
+                            name = d.itemName /*+ d.itemCode*/;
                         } else {
-                            name = parent[d.itemParentCode] + "-" + d.itemName + d.itemCode;
+                            name = parent[d.itemParentCode] + "-" + d.itemName /*+ d.itemCode*/;
                             parent[d.itemCode] = name;
                         }
                         
@@ -819,7 +819,7 @@ module cps003.a.vm {
                             });
                         }
                     } else {
-                        parent[d.itemCode] = d.itemName + d.itemCode;
+                        parent[d.itemCode] = d.itemName /*+ d.itemCode*/;
                     }
                 });
                 
