@@ -141,7 +141,7 @@ export const InfinityPicker = {
             }
         },
         marginTop() {
-            return `${this.$mtNumber}px`;
+            return `${this.$mtNumber - 2}px`;
         },
         transform() {
             let self = this,
