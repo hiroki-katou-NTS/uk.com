@@ -46,5 +46,13 @@ export const auth = {
                 groupCompanyAdmin: role.groupCompanyAdmin
             }
         };
+    },
+    get contract(): { code: string, password: string } {
+        let contract: any = storage.local.getItem('contract');
+
+        return contract && {
+            code: contract.code,
+            password: contract.password
+        };
     }
 };

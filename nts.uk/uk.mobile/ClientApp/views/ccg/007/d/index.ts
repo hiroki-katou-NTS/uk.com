@@ -28,10 +28,28 @@ export class Ccg007dComponent extends Vue {
     public employeeCode: string = '';
 
     public created() {
-        let self = this;
+        let self = this,
+            params: any = self.params;
 
-        self.contractCode = self.params.contractCode;
-        self.contractPass = self.params.contractPass;
+        // get contract code from param or storage
+        if (params.contractCode) {
+            self.contractCode = params.contractCode;
+        } else {
+            self.$auth.contract
+                .then((v: { code: string }) => {
+                    self.contractCode = v && v.code || '000000000000';
+                });
+        }
+
+        // get contract password from param or storage
+        if (params.contractPass) {
+            self.contractPass = params.contractPass;
+        } else {
+            self.$auth.contract
+                .then((v: { password: string }) => {
+                    self.contractPass = v && v.password || '';
+                });
+        }
 
         self.checkEmpCodeAndCompany();
     }
@@ -102,7 +120,8 @@ export class Ccg007dComponent extends Vue {
 
         self.$mask('show');
 
-        self.$http.post(servicePath.sendMail, submitData)
+        self.$http
+            .post(servicePath.sendMail, submitData)
             .then((result: { data: Array<SendMailReturn> }) => {
                 self.$mask('hide');
 
@@ -133,14 +152,10 @@ export class Ccg007dComponent extends Vue {
     }
 
     public goBack() {
-        this.$goto
-            .login({
-                companyCode: this.companyCode,
-                employeeCode: this.employeeCode,
-                contractCode: this.contractCode,
-                contractPass: this.contractPass,
-                companies: this.companies
-            });
+        let self = this,
+            params: any = _.pick(self, ['companyCode', 'employeeCode', 'contractCode', 'contractPass', 'companies']);
+
+        self.$goto.login(params);
     }
 }
 
