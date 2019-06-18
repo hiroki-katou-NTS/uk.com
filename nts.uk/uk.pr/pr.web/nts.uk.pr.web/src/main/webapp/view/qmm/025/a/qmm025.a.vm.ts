@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
             self.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
-                systemType: 1,
+                systemType: 3,
                 showEmployeeSelection: true,
                 showQuickSearchTab: false,
                 showAdvancedSearchTab: true,
@@ -69,7 +69,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: true,
                 showJobTitle: true,
                 showWorktype: true,

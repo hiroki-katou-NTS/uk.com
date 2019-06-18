@@ -150,7 +150,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: SystemType.PERSONAL_INFORMATION,
+                systemType: SystemType.SALARY,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -177,7 +177,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
