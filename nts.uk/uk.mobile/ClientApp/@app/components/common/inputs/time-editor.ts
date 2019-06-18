@@ -1,7 +1,9 @@
 import { Vue } from '@app/provider';
-import { TimeInputType, time } from '@app/utils';
+import { TimeInputType, TimeWithDay, TimePoint, TimeDuration } from '@app/utils';
 import { input, InputComponent } from './input';
 import { Prop, Emit } from '@app/core/component';
+import { TimeWithDayHelper, TimePointHelper, TimeDurationHelper } from '@app/components/controls/time-picker';
+
 @input()
 export class TimeComponent extends InputComponent {
     public type: string = 'string';
@@ -20,12 +22,13 @@ export class TimeComponent extends InputComponent {
 
         switch (this.timeInputType) {
             case TimeInputType.TimeWithDay:
-                return time.timewd.toString(this.value);
+                return TimeWithDay.toString(this.value);
+
             case TimeInputType.TimePoint:
-                return time.timept.toString(this.value);
+                return TimePoint.toString(this.value);
             case TimeInputType.TimeDuration:
-            default: 
-                return time.timedr.toString(this.value);
+            default:
+                return TimeDuration.toString(this.value);
         }
     }
 
@@ -35,7 +38,7 @@ export class TimeComponent extends InputComponent {
 
     @Emit()
     public input() {
-        let value = ( this.$refs.input as HTMLInputElement).value;
+        let value = (this.$refs.input as HTMLInputElement).value;
 
         if (value) {
             let numb = Number(value);
@@ -51,35 +54,32 @@ export class TimeComponent extends InputComponent {
     }
 
     public click() {
-        let picker = 'time-with-day-picker';
+        let helper = null;
+        let utils = null;
         switch (this.timeInputType) {
             case TimeInputType.TimeWithDay:
-                picker = 'time-with-day-picker';
+                helper = TimeWithDayHelper;
+                utils = TimeWithDay;
                 break;
             case TimeInputType.TimePoint:
-                picker = 'time-point-picker';
+                helper = TimePointHelper;
+                utils = TimePoint;
                 break;
             case TimeInputType.TimeDuration:
-            default: 
-                picker = 'time-duration-picker';
+            default:
+                helper = TimeDurationHelper;
+                utils = TimeDuration;
                 break;
         }
 
-        this
-            .$modal(picker, {
-                value: this.value,
-                minValue: this.constraint.minValue,
-                maxValue: this.constraint.maxValue,
-            }, {
-                    type: 'popup',
-                    title: this.name,
-                    animate: 'down'
-                })
-            .then((v) => {
-                if (v !== undefined) {
-                    this.$emit('input', v);
-                }
-            });
+        this.$picker(helper.computeSelecteds(this.value), helper.getDataSource(this.value), helper.onSelect)
+        .then((value: any) => {
+            if (value !== undefined) {
+                this.$emit('input', utils.fromObject(value).value);
+            }
+        });
+
+        
     }
 }
 
