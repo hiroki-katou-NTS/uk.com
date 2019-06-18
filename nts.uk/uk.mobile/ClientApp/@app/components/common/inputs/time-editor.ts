@@ -73,9 +73,9 @@ export class TimeComponent extends InputComponent {
         }
 
         this.$picker(helper.computeSelecteds(this.value), helper.getDataSource(this.value), helper.onSelect)
-        .then((value: any) => {
-            if (value !== undefined) {
-                this.$emit('input', utils.fromObject(value).value);
+        .then((select: any) => {
+            if (select !== undefined) {
+                this.$emit('input', utils.fromObject(select).value);
             }
         });
 
