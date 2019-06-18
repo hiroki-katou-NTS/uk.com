@@ -62,13 +62,22 @@ export class YearMonthComponent extends InputComponent {
 
     public click() {
         let self = this;
-        this.$picker(self.selected, self.dataSource)
+        this.$picker(self.selected, self.dataSource, self.onSelect, {
+            title: self.displayYearMonth(self.selected.year, self.selected.month)
+        } )
         .then( (select: any) => {
             if ( select != undefined) {
                 self.$emit('input', select.year + TimeWithDay.leftpad(select.month));
             }
             
         });
+    }
+
+    public onSelect(value: any, pkr: { title: string}) {
+        let self = this;
+        if (value.year !== undefined && value.month !== undefined) {
+            pkr.title = self.displayYearMonth(value.year, value.month);
+        }
     }
 
     private getYear(): Number {
@@ -88,6 +97,7 @@ export class YearMonthComponent extends InputComponent {
     }
 
     private displayYearMonth(year: Number, month: Number) {
+
         return year + '年' + TimeWithDay.leftpad(month) + '月';
     }
 
