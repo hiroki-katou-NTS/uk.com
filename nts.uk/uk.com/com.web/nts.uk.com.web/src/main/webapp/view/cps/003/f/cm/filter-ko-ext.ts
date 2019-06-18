@@ -127,27 +127,8 @@ module nts.custombinding {
                                         vm.textValue(`${selectedValue.length > 0? selectedValue[0].optionText: ""}`);
                                     }
                                 });
-
-
                             });
- //                       }
-//                             else if (['IS00130', 'IS00139'].indexOf(self.itemCode()) > - 1) {
-//                        let objShare: any = {
-//                                workTypeCodes: workType && _.map(self.selection(), x => x.optionValue),
-//                                selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
-//                                workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
-//                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
-//                            };
-//                        setShared('parentCodes', objShare, true);
-//
-//                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-//                            let childData: IChildData = getShared('childData');
-//                            self.setValueOfCS00020(childData, isWorkType, isWorkTime,
-//                                workType, workTime,
-//                                itemWorkTime, itemWorkType, true);
-//                        });
-
-                    } else {
+                          } else {
                             
                             setShared("KDL002_isShowNoSelectRow", !itemData.required);
                             setShared("KDL002_Multiple", false, true);
