@@ -57,26 +57,33 @@ export class TimeComponent extends InputComponent {
         
         let helper = null;
         let utils = null;
+        let className = null;
         switch (this.timeInputType) {
             case TimeInputType.TimeWithDay:
                 helper = TimeWithDayHelper;
                 utils = TimeWithDay;
+                className = 'time-day';
                 break;
             case TimeInputType.TimePoint:
                 helper = TimePointHelper;
                 utils = TimePoint;
+                className = 'clock';
                 break;
             case TimeInputType.TimeDuration:
             default:
                 helper = TimeDurationHelper;
                 utils = TimeDuration;
+                className = 'time';
                 break;
         }
 
         this.$picker(helper.computeSelecteds(this.value), 
             helper.getDataSource(this.value), 
             helper.onSelect, 
-            { title : utils.toString(this.value)})
+            { 
+                title : utils.toString(this.value), 
+                className
+            })
         .then((select: any) => {
             if (select !== undefined) {
                 this.$emit('input', utils.fromObject(select).value);
