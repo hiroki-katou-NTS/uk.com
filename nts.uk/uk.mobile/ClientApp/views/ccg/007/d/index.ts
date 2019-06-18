@@ -1,4 +1,3 @@
-import { storage } from '@app/utils';
 import { Vue, _ } from '@app/provider';
 import { SideMenu, NavMenu } from '@app/services';
 import { component, Prop } from '@app/core/component';
@@ -62,14 +61,20 @@ export class Ccg007dComponent extends Vue {
         if (params.companyCode) {
             self.companyCode = params.companyCode;
         } else {
-            self.companyCode = storage.local.getItem('companyCode') as string;
+            self.$auth.user
+                .then((user: null | { companyCode: string }) => {
+                    self.companyCode = user && user.companyCode;
+                });
         }
 
         // get emplCode from param or storage
         if (params.employeeCode) {
             self.employeeCode = params.employeeCode;
         } else {
-            self.employeeCode = storage.local.getItem('employeeCode') as string;
+            self.$auth.user
+                .then((user: null | { employeeCode: string }) => {
+                    self.employeeCode = user && user.employeeCode;
+                });
         }
     }
 
