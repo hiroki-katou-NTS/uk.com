@@ -134,7 +134,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 		String updScd = insScd;
 		String updPg =  insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
@@ -167,7 +167,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 		String updScd = AppContexts.user().employeeCode();
 		String updPg =  AppContexts.programId();
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			String sql = UP_SQL;
 			
 			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");

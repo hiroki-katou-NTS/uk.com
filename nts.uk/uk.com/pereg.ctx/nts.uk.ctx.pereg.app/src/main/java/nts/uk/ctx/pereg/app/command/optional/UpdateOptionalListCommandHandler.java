@@ -39,11 +39,11 @@ implements PeregUserDefListUpdateCommandHandler{
 		
 		List<PeregUserDefUpdateCommand> errorLst = new ArrayList<>();
 		List<PeregUserDefUpdateCommand> addLst = new ArrayList<>();
-		List<String> itemIds = command.get(0).getItems().parallelStream().map(item  -> item.definitionId()).collect(Collectors.toList());
+		List<String> itemIds = command.get(0).getItems().stream().map(item  -> item.definitionId()).collect(Collectors.toList());
 		List<String> recordIds = new ArrayList<>();
 		// do itemId của các employee trong cung một công ty giống nhau  - ta sẽ lấy nhân viên đầu tiên để lấy ra được itemId
 		
-		command.parallelStream().forEach(c -> {
+		command.stream().forEach(c -> {
 			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
@@ -76,9 +76,9 @@ implements PeregUserDefListUpdateCommandHandler{
 		List<PersonInfoItemData> insertLst = new ArrayList<>();
 		List<PersonInfoItemData> updateLst = new ArrayList<>();
 		
-		addLst.parallelStream().forEach(c -> {
-			c.getItems().parallelStream().forEach(item -> {
-				Optional<PersonInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(insert -> insert.getPerInfoItemDefId().equals(item.definitionId())).findFirst();
+		addLst.stream().forEach(c -> {
+			c.getItems().stream().forEach(item -> {
+				Optional<PersonInfoItemData> itemUpdateOpt = itemUpdates.stream().filter(insert -> insert.getPerInfoItemDefId().equals(item.definitionId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
@@ -109,9 +109,9 @@ implements PeregUserDefListUpdateCommandHandler{
 		List<EmpInfoItemData> itemUpdateLst = new ArrayList<>();
 		List<EmpInfoItemData> itemInsertLst = new ArrayList<>();
 		
-		addLst.parallelStream().forEach(c -> {
-			c.getItems().parallelStream().forEach(item -> {
-				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.parallelStream().filter(update -> update.getPerInfoDefId().equals(item.definitionId()) && update.getRecordId().equals(c.getRecordId())).findFirst();
+		addLst.stream().forEach(c -> {
+			c.getItems().stream().forEach(item -> {
+				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.stream().filter(update -> update.getPerInfoDefId().equals(item.definitionId()) && update.getRecordId().equals(c.getRecordId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
