@@ -35,4 +35,27 @@
             border-top-width: 0px;
         }
     }
+    &-selection {
+        width: 100%;
+        display: block;
+        cursor: pointer;
+        text-align: left;
+        position: relative;
+        border: 1px solid $input-border-color !important;
+        &:after {
+            content: "\f054";
+            font-weight: 600;
+            font-family: "Font Awesome 5 Free";
+            position: absolute;
+            top: calc(50% - 10px);
+            right: 15px;
+            color: #aaa;
+        }
+        .badge {
+            top: 0;
+            font-size: 100%;
+            font-weight: 600;
+        }
+    }
 }
+

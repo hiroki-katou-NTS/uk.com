@@ -99,6 +99,30 @@
 ```html
 <button type="button" class="btn btn-primary btn-block">Block level button</button>
 ```
+---
+##### Selection button (full width)
+<button type="button" class="btn btn-selection">
+    <span class="badge badge-secondary">0001</span>
+    <span>Name of selection</span>
+</button>
+<button type="button" class="btn btn-selection mt-2 mb-2">
+    <span class="badge badge-secondary">0001</span>
+    <span>Name of selection</span>
+    <span class="d-block mt-1">2010~2019</span>
+</button>
+
+##### Code
+```html
+<button type="button" class="btn btn-selection">
+    <span class="badge badge-secondary">0001</span>
+    <span>Name of selection</span>
+</button>
+<button type="button" class="btn btn-selection">
+    <span class="badge badge-secondary">0001</span>
+    <span>Name of selection</span>
+    <span class="d-block mt-1">2010~2019</span>
+</button>
+```
 ##### Checkbox group
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
