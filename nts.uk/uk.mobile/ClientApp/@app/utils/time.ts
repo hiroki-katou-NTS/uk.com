@@ -41,6 +41,11 @@ export class TimeWithDay {
     }
 
     public static fromObject(value: { day: number, hour: number, minute: number }) {
+
+        if (_.isEmpty(value)) {
+            return undefined;
+        }
+        
         let newMinutes = 0;
         switch (value.day) {
             case -1:
@@ -72,8 +77,8 @@ export class TimeWithDay {
 
     public static toObject(value: number) {
 
-        if (_.isEmpty(value)) {
-            return undefined;
+        if ( value === null || value === undefined) {
+            return null;
         }
 
         let timeWithDay = TimeWithDay.from(value);
