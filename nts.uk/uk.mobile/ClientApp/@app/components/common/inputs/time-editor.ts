@@ -1,5 +1,5 @@
-import { Vue } from '@app/provider';
-import { TimeInputType, TimeWithDay, TimePoint, TimeDuration } from '@app/utils';
+import { Vue, moment } from '@app/provider';
+import { TimeInputType, TimeWithDay, TimePoint, TimeDuration, obj } from '@app/utils';
 import { input, InputComponent } from './input';
 import { Prop, Emit } from '@app/core/component';
 import { TimeWithDayHelper, TimePointHelper, TimeDurationHelper } from '@app/components/controls/time-picker';
@@ -16,7 +16,9 @@ export class TimeComponent extends InputComponent {
     public timeInputType: TimeInputType;
 
     get rawValue() {
-        if (this.value == null || this.value == undefined) {
+
+
+        if (obj.isNil(this.value)) {
             return '';
         }
 
@@ -77,20 +79,47 @@ export class TimeComponent extends InputComponent {
                 break;
         }
 
-        this.$picker(helper.computeSelecteds(this.value), 
-            helper.getDataSource(this.value), 
+        let value = this.computeValue();
+
+        this.$picker(helper.computeSelecteds(value), 
+            helper.getDataSource(value), 
             helper.onSelect, 
             { 
-                title : utils.toString(this.value), 
+                title : utils.toString(value), 
+                required: this.constraints.required,
                 className
             })
         .then((select: any) => {
-            if (select !== undefined) {
+            if (select === undefined) {
+                //
+            } else if (select === null) {
+                this.$emit('input', null);
+            } else {
                 this.$emit('input', utils.fromObject(select).value);
             }
         });
+    }
 
-        
+    private computeValue(): number {
+        let value = this.value;
+        if (obj.isNil(value)) {
+            switch (this.timeInputType) {
+
+                // default value of time-with-day and time-point is current time
+                case TimeInputType.TimeWithDay:
+                case TimeInputType.TimePoint:
+                    value = moment().hour() * 60 + moment().minute();
+                    break;
+
+                // default value time-duration is 0
+                case TimeInputType.TimeDuration:
+                default:
+                    value = 0;
+                    break;
+            }
+        }
+
+        return value;
     }
 }
 

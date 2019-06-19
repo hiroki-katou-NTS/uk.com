@@ -36,11 +36,11 @@ import { component } from '@app/core/component';
 })
 export class DocumentsControlsInputTimeComponent extends Vue {
 
-    public timeWithDay: number = 10;
+    public timeWithDay: number = null;
 
-    public timePoint: number = 10;
+    public timePoint: number = null;
 
-    public timeDuration: number = 10;
+    public timeDuration: number = 360;
     
 
 }

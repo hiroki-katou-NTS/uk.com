@@ -1,5 +1,5 @@
 import { TimeWithDay, TimePoint, TimeDuration, DAYS } from '@app/utils/time';
-import { _ } from '@app/provider';
+import { _, moment } from '@app/provider';
 
 export class TimeWithDayHelper {
 
@@ -41,12 +41,7 @@ export class TimeWithDayHelper {
     public static computeSelecteds(value: number): { day: number, hour: number, minute: number} {
 
         if (value === null) {
-
-            return {
-                day: 0,
-                hour: 8,
-                minute: 0
-            };
+            value = moment().hour() + moment().minute();
         }
 
         return TimeWithDay.toObject(value);
@@ -102,14 +97,7 @@ export class TimePointHelper {
     public static computeSelecteds(value: number): { positive: boolean, h1: number, h2: number, m1: number, m2: number} {
 
         if (value === null) {
-
-            return {
-                positive: true,
-                h1: 0,
-                h2: 8,
-                m1: 0,
-                m2: 0
-            };
+            value = moment().hour() * 60 + moment().minute();
         }
 
         return TimePoint.toObject(value);
@@ -252,14 +240,7 @@ export class TimeDurationHelper {
     public static computeSelecteds(value: number): { positive: boolean, h1: number, h2: number, m1: number, m2: number} {
 
         if (value === null) {
-
-            return {
-                positive: true,
-                h1: 0,
-                h2: 8,
-                m1: 0,
-                m2: 0
-            };
+            value = 0;
         }
 
         return TimeDuration.toObject(value);
