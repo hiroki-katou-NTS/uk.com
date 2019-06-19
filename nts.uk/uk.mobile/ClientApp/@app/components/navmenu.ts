@@ -28,7 +28,7 @@ const _NavMenu = Vue.observable({
 };
 
 @component({
-    template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible && items && items.length">
+    template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible">
         <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
@@ -112,11 +112,3 @@ export class NavMenuBar extends Vue {
 }
 
 export { NavMenu };
-
-NavMenu.items = [{
-    url: '/',
-    title: 'home'
-}, {
-    url: '/documents',
-    title: 'documents'
-}];
