@@ -1,6 +1,5 @@
-import { Vue, moment } from '@app/provider';
+import { Vue, moment, _ } from '@app/provider';
 import { input, InputComponent } from './input';
-import { TimeWithDay } from '@app/utils/time';
 
 @input()
 export class YearMonthComponent extends InputComponent {
@@ -9,27 +8,31 @@ export class YearMonthComponent extends InputComponent {
 
     private MIN_YEAR: number = 1900;
     private MAX_YEAR: number = 2100;
-
-    public type: string = 'string';
-
-    public editable: boolean = false;
-
+    private currentYear: Number = moment.utc().year();
+    private currentMonth: Number = moment.utc().month() + 1;
+    private emptyDisplay: String = '- - - - 年 - -月';
+    private currentDisplay: String = this.currentYear + '年' + this.padStart2(this.currentMonth) + '月';
     private dataSource = {
         year: this.generateArray(this.MIN_YEAR, this.MAX_YEAR),
         month: this.generateArray(1, 12)
     };
-
     private generateArray(min: number, max: number): Array<Object> {
         let result = [];
         for (let value = min; value <= max; value++) {
             result.push({
-                text : TimeWithDay.leftpad(value), 
+                text: this.padStart2(value),
                 value
             });
         }
 
         return result;
     }
+
+
+    public type: string = 'string';
+    public editable: boolean = false;
+
+    
 
     // Hooks
 
@@ -39,71 +42,58 @@ export class YearMonthComponent extends InputComponent {
 
     // Functions
 
+    private get year(): Number {
+        return this.value ? +this.value.slice(0, 4) : null;
+    }
+
+    private get month(): Number {
+        return this.value ? +this.value.slice(4, 6) : null;
+    }
+
     get selected() {
         return {
-            year: this.getYear() || this.getCurrentYear(),
-            month: this.getMonth() || this.getCurrentMonth()
+            year: this.year || this.currentYear,
+            month: this.month || this.currentMonth
         };
     }
 
     get rawValue() {
         if (this.value == null || this.value == undefined) {
-            if (this.constraint.required) {
-                let today = moment.utc();
-
-                return this.displayYearMonth(today.year(), today.month() + 1);
-            } else {
-                return this.displayEmpty();
-            }
+            return this.constraint.required ? this.currentDisplay : this.emptyDisplay;
         }
 
-        return this.displayYearMonth(this.getYear(), this.getMonth());
+        return this.displayYearMonth(this.year, this.month);
     }
 
     public click() {
         let self = this;
         this.$picker(self.selected, self.dataSource, self.onSelect, {
             title: self.displayYearMonth(self.selected.year, self.selected.month)
-        } )
-        .then( (select: any) => {
-            if ( select != undefined) {
-                self.$emit('input', select.year + TimeWithDay.leftpad(select.month));
-            }
-            
-        });
+        })
+            .then((select: any) => {
+                if (select != undefined) {
+                    self.$emit('input', select.year + this.padStart2(select.month));
+                }
+
+            });
     }
 
-    public onSelect(value: any, pkr: { title: string}) {
+    public onSelect(value: any, pkr: { title: string }) {
         let self = this;
         if (value.year !== undefined && value.month !== undefined) {
             pkr.title = self.displayYearMonth(value.year, value.month);
         }
     }
 
-    private getYear(): Number {
-        return this.value ? +this.value.slice(0, 4) : null;
-    }
-
-    private getCurrentYear(): Number {
-        return moment.utc().year();
-    }
-
-    private getMonth(): Number {
-        return this.value ? +this.value.slice(4, 6) : null;
-    }
-
-    private getCurrentMonth(): Number {
-        return moment.utc().month() + 1;
-    }
-
     private displayYearMonth(year: Number, month: Number) {
 
-        return year + '年' + TimeWithDay.leftpad(month) + '月';
+        return year + '年' + this.padStart2(month) + '月';
     }
 
-    private displayEmpty() {
-        return '- - - - 年 - -月';
+    private padStart2(value: any): string {
+        return _.padStart(value, 2, '0');
     }
+
 }
 
 Vue.component('nts-year-month', YearMonthComponent);
