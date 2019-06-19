@@ -232,10 +232,11 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 					"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
 					"ON cd.SID = i.SID AND cd.CID = CID_VAL",
 					"WHERE i.SID IN (",  NtsStatement.In.createParamsString(subList) + ")");
+			sql = sql.replace("CID_VAL", "'"+ cid + "'");
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				stmt.setString(1, cid);
+				//stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(2 + i, subList.get(i));
+					stmt.setString(1 + i, subList.get(i));
 				}
 
 				List<CareLeaveDataInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
