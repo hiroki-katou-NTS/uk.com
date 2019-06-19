@@ -4,9 +4,8 @@ import { input, InputComponent } from '@app/components/common/inputs/input';
 
 @input('textarea')
 export class TextArea extends InputComponent {
-
-    @Prop({ default: () => 3 })
-    public readonly rows: number;
+    @Prop()
+    public readonly rows: number | string | null;
 
     get rawValue() {
         return (this.value || '');

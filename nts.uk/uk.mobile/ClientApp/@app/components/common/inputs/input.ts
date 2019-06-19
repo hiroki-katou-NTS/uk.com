@@ -50,7 +50,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                             always: !!errorsAlways,
                             errors: ($errors || errorsAlways || {})
                         }"
-                        v-bind:rows="rows"
+                        v-bind:rows="rows || ${tagName === 'textarea' ? 3 : undefined}"
                         v-bind:disabled="disabled"
                         v-bind:readonly="!editable"
                         v-bind:value="rawValue"
@@ -94,7 +94,7 @@ export class InputComponent extends Vue {
     public click() { }
 
     public type: string = '';
-    public rows: number | null = null;
+    public rows: number | string | null = null;
 
     public editable: boolean = true;
 
