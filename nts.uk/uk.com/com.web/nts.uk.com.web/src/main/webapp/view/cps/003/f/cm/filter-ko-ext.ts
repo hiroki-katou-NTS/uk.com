@@ -38,7 +38,7 @@ module nts.custombinding {
             let accessor = valueAccessor(),
                 itemData: IItemData = ko.toJS(accessor.itemData),
                 template = {
-                    str: `<input data-bind="ntsTextEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,enable: enable, required: false }" />`,
+                    str: `<input id="string-filter" data-bind="ntsTextEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,enable: enable, required: false }" />`,
                     numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false, option: options }" />`,
                     date: `<div data-bind="ntsDatePicker: { name: i18n('CPS003_78'), constraint: constraint,value: value, enable: enable, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
                     time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,inputFormat: 'time', mode: 'time', enable: enable, required: false }" />`,
