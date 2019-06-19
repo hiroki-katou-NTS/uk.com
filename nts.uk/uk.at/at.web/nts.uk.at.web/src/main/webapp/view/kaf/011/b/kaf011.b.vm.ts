@@ -268,8 +268,20 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.employeeID(data.employeeID || null);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().setWkTypes(data.recWkTypes || []);
-                self.absWk().setWkTypes(data.absWkTypes || []);
+                let lstWkRec = [];
+                if(data.masterUnregRec){
+                    lstWkRec.push({workTypeCode: data.recApp.workTypeCD, name: data.recApp.workTypeCD + '　' + 'マスタ未登録'});
+                }
+                let a: common.IWorkType = data.recWkTypes || [];
+                lstWkRec.push(a);
+                self.recWk().setWkTypes(lstWkRec);
+                let lstWkAbs = [];
+                if(data.masterUnregRec){
+                    lstWkAbs.push({workTypeCode: data.absApp.workTypeCD, name: data.absApp.workTypeCD + '　' + 'マスタ未登録'});
+                }
+                let b: common.IWorkType = data.absWkTypes || [];
+                lstWkAbs.push(b);
+                self.absWk().setWkTypes(lstWkAbs);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
