@@ -40,7 +40,12 @@ export class DocumentsControlsInputTimeComponent extends Vue {
 
     public timePoint: number = null;
 
-    public timeDuration: number = 360;
+    public timeDuration: number = null;
+
+    public validate() {
+        this.$validate();
+
+    }
     
 
 }

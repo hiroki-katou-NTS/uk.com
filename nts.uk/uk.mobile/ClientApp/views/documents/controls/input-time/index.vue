@@ -2,6 +2,9 @@
   <div class="documentscontrolsinput-time">
     <h5>1. {{'sample' | i18n}}</h5>
 
+    <button v-on:click="validate" class="btn btn-secondary">Validate</button>
+    <br/>
+
     <nts-time-editor
       v-model="timeWithDay"
       name='日区分付き時刻　(Time-With-Day)'
