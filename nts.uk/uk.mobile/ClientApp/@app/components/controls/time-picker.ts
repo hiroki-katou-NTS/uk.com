@@ -41,7 +41,7 @@ export class TimeWithDayHelper {
     public static computeSelecteds(value: number): { day: number, hour: number, minute: number} {
 
         if (value === null) {
-            value = moment().hour() + moment().minute();
+            value = moment().hour() * 60 + moment().minute();
         }
 
         return TimeWithDay.toObject(value);
