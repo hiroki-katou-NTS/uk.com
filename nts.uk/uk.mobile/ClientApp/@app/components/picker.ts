@@ -25,6 +25,10 @@ export const MobilePicker = {
                         </div>
                         <div class="ipkr-navbar">
                             <a class="ipkr-navbar-btn" ref="close" v-on:click="close">{{'cancel' | i18n}}</a>
+                            <template v-if="deleteAble" v-bind:key="'deleteAble'">
+                                <a class="ipkr-navbar-btn" v-on:click="remove">{{'remove' | i18n}}</a>
+                            </template>
+                            <template v-else v-bind:key="'notDeleteAble'" />
                             <a class="ipkr-navbar-btn" v-on:click="finish">{{'accept' | i18n}}</a>
                         </div>
                     </div>
