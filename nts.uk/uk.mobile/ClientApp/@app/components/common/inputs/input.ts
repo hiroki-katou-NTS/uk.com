@@ -2,7 +2,6 @@ import { obj } from '@app/utils';
 import { Vue } from '@app/provider';
 import { IRule } from 'declarations';
 import { component, Prop, Watch } from '@app/core/component';
-import { MobilePicker } from '@app/components/picker';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
@@ -73,23 +72,8 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         }
                 <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
-            <template v-if="picker.has" key="showpicker">
-                <picker v-model="picker.select" 
-                        v-bind:title="name" 
-                        v-bind:show="picker.show" 
-                        v-bind:data-sources="picker.dataSources" 
-                        v-bind:options="picker.options"
-                        v-on:close="picker.show = false" 
-                        v-on:select="picker.onSelect"
-                        v-on:finish="picker.onFinish"
-                        v-on:remove="picker.onRemove" />
-            </template>
-            <template v-else key="hidepicker"></template>
         </div>
     </div>`,
-    components: {
-        'picker': MobilePicker
-    },
     resource: {
         vi: {
             before_today: 'Hôm qua',
@@ -113,26 +97,6 @@ export class InputComponent extends Vue {
     public rows: number | null = null;
 
     public editable: boolean = true;
-
-    public readonly picker: {
-        has: boolean;
-        show: boolean;
-        select: { [key: string]: any };
-        dataSources: { [key: string]: any[] };
-        options: { [key: string]: any };
-        onSelect: (value: { [key: string]: any }) => void;
-        onFinish: () => void;
-        onRemove: () => void;
-    } = {
-            has: false,
-            show: false,
-            select: {},
-            dataSources: {},
-            options: {},
-            onSelect(v) { },
-            onFinish() { },
-            onRemove() { }
-        };
 
     @Prop({ default: () => '' })
     public readonly name: string;
