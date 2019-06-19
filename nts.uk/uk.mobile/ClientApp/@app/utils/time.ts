@@ -72,9 +72,8 @@ export class TimeWithDay {
 
     public static toObject(value: number) {
 
-        if ( value === null || value === undefined) {
-
-            return null;
+        if (_.isEmpty(value)) {
+            return undefined;
         }
 
         let timeWithDay = TimeWithDay.from(value);
@@ -213,6 +212,11 @@ export class TimeDuration {
     }
 
     public static fromObject(value: { positive: boolean, h1: number, h2: number, m1: number, m2: number }) {
+
+        if (_.isEmpty(value)) {
+            return undefined;
+        }
+
         let newMinutes = 0;
         if ( value.positive) {
             newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
@@ -301,6 +305,11 @@ export class TimePoint {
     }
 
     public static fromObject(value: { positive: boolean, h1: number, h2: number, m1: number, m2: number }) {
+
+        if (_.isEmpty(value)) {
+            return undefined;
+        }
+
         let newMinutes = 0;
         if ( value.positive) {
             newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);

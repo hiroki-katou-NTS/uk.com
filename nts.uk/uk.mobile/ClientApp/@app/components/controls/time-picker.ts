@@ -59,6 +59,11 @@ export class TimeWithDayHelper {
      * 翌々日 [00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
      */
     public static onSelect(value: any, picker: { title: string, dataSources: any, selects: any }) {
+
+        if (_.isEmpty(picker.selects))  {
+            return;
+        }
+
         if (value.day === -1) {
 
             if (picker.dataSources.hour.length !== 12) {
@@ -158,6 +163,10 @@ export class TimePointHelper {
      * [70 71                        ]
      */
     public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { title: string, dataSources: any, selects: any }) {
+        if (_.isEmpty(picker.selects)) {
+            return;
+        }
+
         let pickerSelect = picker.selects;
 
         if (!newSelect.positive) {
@@ -295,6 +304,11 @@ export class TimeDurationHelper {
      * [70 71                        ]
      */
     public static onSelect(newSelect: { positive: boolean, h1: number, h2: number, m1: number, m2: number}, picker: { title: string, dataSources: any, selects: any }) {
+
+        if (_.isEmpty(picker.selects))  {
+            return;
+        }
+        
         let pickerSelect = picker.selects;
 
         if (!newSelect.positive) {
