@@ -785,32 +785,37 @@ module cps003.c.vm {
             
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
                 $grid.mGrid("validate");
-                let itemErrors = $grid.mGrid("errors");
+                let itemErrors = $grid.mGrid("errors"), errObj = {}, dataToG;
                 if (itemErrors && itemErrors.length > 0) {
-                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
-                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
-                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
-                    modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                    dataToG = _.map(itemErrors, err => {
+                        if (_.has(errObj, err.rowId)) {
+                            errObj[err.rowId].push(err.columnKey);
+                        } else {
+                            errObj[err.rowId] = [ err.columnKey ];
+                        }
                         
+                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
                     });
-                    
-                    return;
                 }
                 
                 let updates = $("#grid").mGrid("updatedCells");
                 if (updates.length === 0) return;
                 block();
-                _.forEach($("#grid").mGrid("dataSource"), d => recId[d.id] = d);
-                let cateName, cateType, regId = {};
+                let dataSource = $("#grid").mGrid("dataSource"); 
+                _.forEach(dataSource, d => recId[d.id] = d);
+                let cateName, cateType, regId = {}, updateDone = [];
                 if (self.category.cate()) {
                     cateName = self.category.cate().categoryName;
                     cateType = self.category.cate().categoryType;
                 }
                 
                 _.forEach(updates, item => {
-                    if (item.columnKey === "register") return;
+                    if (item.columnKey === "register"
+                        || _.find(errObj[item.rowId], it => it === item.columnKey)) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
+                    updateDone.push(item);
                     if (!regEmp) {
                         regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                         regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
@@ -835,11 +840,28 @@ module cps003.c.vm {
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
                 service.push.register(command).done((errorList) => {
-                    info({ messageId: "Msg_15" }).then(() => {
-                        unblock();
-                        setShared("CPS003C_REG_DONE", true);
-                        self.close();
-                    });
+                    if (dataToG && dataToG.length > 0) {
+                        setShared("CPS003G_ERROR_LIST", dataToG);
+                        let msgId = _.keys(errObj).length === dataSource.length ? "Msg_1462" : "Msg_1461";
+                        alertError({ messageId: msgId }).then(() => {
+                            forEach(updateDone, d => {
+                                $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                } 
+                            });
+                            
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                                
+                            });
+                        });
+                    } else {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            unblock();
+                            setShared("CPS003C_REG_DONE", true);
+                            self.close();
+                        });
+                    }
                 }).fail((res) => {
                     unblock();
                     alert(res.message);
@@ -900,6 +922,13 @@ module cps003.c.vm {
         
         close() {
             nts.uk.ui.windows.close();
+        }
+    }
+    
+    function forEach(arr: any, jb: any) {
+        if (!arr) return;
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i) === false) break;
         }
     }
     

@@ -1,6 +1,7 @@
 module cps003.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import text = nts.uk.resource.getText;
     import format = nts.uk.text.format;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -323,17 +324,19 @@ module cps003.a.vm {
             
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
                 $grid.mGrid("validate");
-                let itemErrors = $grid.mGrid("errors");
+                let itemErrors = $grid.mGrid("errors"), errObj = {}, dataToG;
                 if (itemErrors && itemErrors.length > 0) {
                     self.hasError(true);
-                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { 
+                    dataToG = _.map(itemErrors, err => {
+                        if (_.has(errObj, err.rowId)) {
+                            errObj[err.rowId].push(err.columnKey);
+                        } else {
+                            errObj[err.rowId] = [ err.columnKey ];
+                        }
+                        
                         return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
-                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; }));
-                    modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
-                    
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
                     });
-                    
-                    return;
                 }
                 
                 block();
@@ -344,7 +347,7 @@ module cps003.a.vm {
                     cateType = self.category.cate().categoryType;
                 }
                 
-                let updates = $grid.mGrid("updatedCells");
+                let updates = $grid.mGrid("updatedCells"), updateDone = [];
                 if (self.updateMode() === 2) {
                     let dataSource = $grid.mGrid("dataSource");
                     _.forEach($grid.mGrid("insertions"), i => {
@@ -358,9 +361,11 @@ module cps003.a.vm {
                 }
                 
                 _.forEach(updates, item => {
-                    if (item.columnKey === "register") return;
+                    if (item.columnKey === "register"
+                        || _.find(errObj[item.rowId], it => it === item.columnKey)) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
+                    updateDone.push(item);
                     if (!regEmp) {
                         regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                         regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData instanceof Record ? recData.id : null, delete: false, items: [] };
@@ -389,17 +394,34 @@ module cps003.a.vm {
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
                 service.push.register(command).done((errorList) => {
-                    if (!errorList || errorList.length === 0) {
-                        info({ messageId: "Msg_15" }).then(() => {
-                            unblock();
-                            self.requestData();
+                    if (dataToG && dataToG.length > 0) {
+                        setShared("CPS003G_ERROR_LIST", dataToG);
+                        let msgId = _.keys(errObj).length === dataSource.length ? "Msg_1462" : "Msg_1461";
+                        alertError({ messageId: msgId }).then(() => {
+                            forEach(updateDone, d => {
+                                $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                } 
+                            });
+                            
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                            
+                            });
                         });
                     } else {
-                        let errLst = _.map(errorList, e => e);
-                        setShared("CPS003G_ERROR_LIST", errLst);
-                        modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
-                            
-                        });
+                        if (!errorList || errorList.length === 0) {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                unblock();
+                                self.requestData();
+                            });
+                        } else {
+                            let errLst = _.map(errorList, e => e);
+                            setShared("CPS003G_ERROR_LIST", errLst);
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                                
+                            });
+                        }
                     }
                 }).fail((res) => {
                     unblock();
@@ -879,7 +901,7 @@ module cps003.a.vm {
                             record[item.itemCode] = item.value;
                         }
                         
-                        if (item.actionRole === ACTION_ROLE.VIEW_ONLY && !disabled) {
+                        if (item.actionRole === ACTION_ROLE.VIEW_ONLY && dt.cls.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && !disabled) {
                             states.push(new State(record.id, item.itemCode, ["mgrid-disable"]));
                         }
                         _.remove(disItems, itm => itm === item.itemCode);
@@ -1023,29 +1045,29 @@ module cps003.a.vm {
                             break;
                         case "IS00123":
                             if (item.value === "0") {
-                                _.remove(states, s => s.columnKey === "IS00124" || s.columnKey === "IS00125" || s.columnKey === "IS00126");
-                                if (!_.find(states, s => s.columnKey === "IS00127")) {
+                                _.remove(states, s => s.rowId === id && (s.columnKey === "IS00124" || s.columnKey === "IS00125" || s.columnKey === "IS00126"));
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
                                 }
                             } else if (item.value === "1") {
-                                if (!_.find(states, s => s.columnKey === "IS00124")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00125")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
-                                _.remove(states, s => s.columnKey === "IS00126" || s.columnKey === "IS00127");
+                                _.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
                             } else if (item.value === "2") {
-                                if (!_.find(states, s => s.columnKey === "IS00124")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00125")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00126")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00126")) {
                                     states.push(new State(id, "IS00126", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00127")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
                                 }   
                             }
