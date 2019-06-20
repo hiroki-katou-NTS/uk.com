@@ -293,7 +293,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 			String INS_SQL1 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				Leave leave = (Leave) c;
 				String sql = INS_SQL1;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -319,7 +319,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, MULTIPLE_VAL); ";
 			String INS_SQL2 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				MidweekClosure midweek = (MidweekClosure) c;
 				String sql = INS_SQL2;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -346,7 +346,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID_VAL); ";
 			String INS_SQL3 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				AfterChildbirth childBirth = (AfterChildbirth) c;
 				String sql = INS_SQL3;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -373,7 +373,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, CREATE_DATE_VAL, SPOUSE_IS_LEAVE_VAL); ";
 			String INS_SQL4 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				ChildCareHoliday childCare = (ChildCareHoliday) c;
 				String sql = INS_SQL4;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -401,7 +401,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY_VAL, SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID_VAL); ";
 			String INS_SQL5 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				CareHoliday careLeave = (CareHoliday) c;
 				String sql = INS_SQL5;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -430,7 +430,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 			String INS_SQL6 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				SickLeave sickLeave = (SickLeave) c;
 				String sql = INS_SQL6;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -460,7 +460,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 					+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 			String INS_SQL = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				SickLeave sickLeave = (SickLeave) c;
 				String sql = INS_SQL;
 				sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -506,7 +506,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
 			//HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL
 			String INS_SQL1 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				Leave leave = (Leave) c;
 				String sql = INS_SQL1;
 
@@ -527,7 +527,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, MULTIPLE = MULTIPLE_VAL " + _WHERE;
 
 			String INS_SQL2 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				MidweekClosure midweek = (MidweekClosure) c;
 				String sql = INS_SQL2;
 				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -547,7 +547,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 3:
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID = FAMILY_MEMBER_ID_VAL " + _WHERE;
 			String INS_SQL3 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				AfterChildbirth childBirth = (AfterChildbirth) c;
 				String sql = INS_SQL3;
 
@@ -568,7 +568,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 4:
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, CREATE_DATE = CREATE_DATE_VAL, SPOUSE_IS_LEAVE = SPOUSE_IS_LEAVE_VAL " + _WHERE;
 			String INS_SQL4 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				ChildCareHoliday childCare = (ChildCareHoliday) c;
 				String sql = INS_SQL4;
 				
@@ -591,7 +591,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY = SAME_FAMILY_VAL, SAME_FAMILY_DAYS = SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID = FAMILY_MEMBER_ID_VAL " + _WHERE;
 			String INS_SQL5 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				CareHoliday careLeave = (CareHoliday) c;
 				String sql = INS_SQL5;
 				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -613,7 +613,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 6:
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
 			String INS_SQL6 = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				SickLeave sickLeave = (SickLeave) c;
 				String sql = INS_SQL6;
 
@@ -637,7 +637,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 10:
 			INTER = INTER + "REMARKS = REMARKS_VAL, SO_INS_PAY_CATEGORY = SO_INS_PAY_CATEGORY_VAL " + _WHERE;
 			String INS_SQL = INTER;
-			domains.parallelStream().forEach(c ->{
+			domains.stream().forEach(c ->{
 				AnyLeave anyLeave = (AnyLeave) c;
 				String sql = INS_SQL;
 				sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");

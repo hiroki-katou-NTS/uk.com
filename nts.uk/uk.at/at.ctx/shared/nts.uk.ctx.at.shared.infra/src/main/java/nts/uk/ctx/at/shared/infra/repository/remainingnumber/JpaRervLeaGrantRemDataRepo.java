@@ -183,7 +183,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");

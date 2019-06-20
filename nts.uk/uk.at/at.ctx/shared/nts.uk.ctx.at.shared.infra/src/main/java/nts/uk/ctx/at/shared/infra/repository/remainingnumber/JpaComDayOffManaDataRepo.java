@@ -294,9 +294,9 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 					return entity;
 			
 				});
-				Map<String, List<KrcmtComDayoffMaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
-				dataMap.entrySet().parallelStream().forEach(c ->{
-					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.remainDays).sum());
+				Map<String, List<KrcmtComDayoffMaData>> dataMap = data.stream().collect(Collectors.groupingBy(c -> c.sID));
+				dataMap.entrySet().stream().forEach(c ->{
+					result.put(c.getKey(), c.getValue().stream().mapToDouble(i -> i.remainDays).sum());
 				});
 			
 			}
@@ -356,7 +356,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");

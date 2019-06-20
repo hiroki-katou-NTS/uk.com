@@ -47,16 +47,16 @@ implements PeregAddListCommandHandler<AddWorkingConditionCommand>{
 		List<AddWorkingConditionCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
 		List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
 		List<WorkingCondition> workingCondInserts = new ArrayList<>();
 		List<WorkingConditionItem> workingCondItems = new ArrayList<>();
 		List<PeregAddCommandResult> result = new ArrayList<>();
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			String histId = IdentifierUtil.randomUniqueId();
 			WorkingCondition workingCond = new WorkingCondition(cid, c.getEmployeeId(),new ArrayList<DateHistoryItem>());
-			Optional<WorkingCondition> workingConditionOpt = listHistBySid.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			Optional<WorkingCondition> workingConditionOpt = listHistBySid.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 			if(workingConditionOpt.isPresent()) {
 				workingCond = workingConditionOpt.get();
 			}

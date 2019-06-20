@@ -138,7 +138,7 @@ public class OtherHolidayInfoService {
 		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
        
-        otherHolidayInfos.entrySet().parallelStream().forEach(c ->{
+        otherHolidayInfos.entrySet().stream().forEach(c ->{
         	pubHDLst.add(c.getValue().getPubHD());
         	exLeavLst.add(c.getValue().getExLeav());
         	remainNumberMap.put(c.getKey(), c.getValue().getRemainNumber());
@@ -154,7 +154,7 @@ public class OtherHolidayInfoService {
 		Map<String, BigDecimal> remainLeftFinalMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberFinalMap = new HashMap<>();
        
-		checkEnableLeaveMap.entrySet().parallelStream().forEach(c ->{
+		checkEnableLeaveMap.entrySet().stream().forEach(c ->{
 			if(c.getValue()!= null) {
 				if(c.getValue().booleanValue()) {
 					BigDecimal remainNumber = remainNumberMap.get(c.getKey());
@@ -166,7 +166,7 @@ public class OtherHolidayInfoService {
 		});
 		
 		// Item IS00368
-		checkEnablePayoutMaP.entrySet().parallelStream().forEach(c ->{
+		checkEnablePayoutMaP.entrySet().stream().forEach(c ->{
 			if(c.getValue()!= null) {
 				if(c.getValue().booleanValue()) {
 					BigDecimal remainLeft = remainLeftMap.get(c.getKey());
@@ -205,7 +205,7 @@ public class OtherHolidayInfoService {
 		// IS00368
 		Map<String, BigDecimal> remainNumberBigZero = new HashMap<>();
 		Map<String, BigDecimal> remainNumberSmallZero = new HashMap<>();
-		remainLeftMaps.entrySet().parallelStream().forEach(c ->{
+		remainLeftMaps.entrySet().stream().forEach(c ->{
 			// IS00368
 			if (c.getValue().compareTo(ZERO) > 0) {
 				remainNumberBigZero.put(c.getKey(), c.getValue());
@@ -263,7 +263,7 @@ public class OtherHolidayInfoService {
 	 */
 	private void remainLeftIsBiggerThanZero(String cid, Map<String, BigDecimal> remainLeftMaps) {
 		List<PayoutManagementData> payoutLst = new ArrayList<>();
-		remainLeftMaps.entrySet().parallelStream().forEach(c ->{
+		remainLeftMaps.entrySet().stream().forEach(c ->{
 			BigDecimal remainLeftTpm = c.getValue();
 			String newID = null;
 			PayoutManagementData payout = null;
@@ -328,7 +328,7 @@ public class OtherHolidayInfoService {
 	 */
 	private void remainLeftIsSmallerThanZero(String cid, Map<String, BigDecimal> remainLeftMaps) {
 		List<SubstitutionOfHDManagementData> subOfHDLst = new ArrayList<>();
-		remainLeftMaps.entrySet().parallelStream().forEach(c ->{
+		remainLeftMaps.entrySet().stream().forEach(c ->{
 			String newID = null;
 			// 振休作成数=-1*パラメータ「振休残数」
 			BigDecimal remainLeftTpm = c.getValue().multiply(new BigDecimal(-1));
@@ -369,7 +369,7 @@ public class OtherHolidayInfoService {
 	private void setRemainNumber(String cid, Map<String, BigDecimal> remainNumberMap) {
 		Map<String, BigDecimal> remainNumberBigZero = new HashMap<>();
 		Map<String, BigDecimal> remainNumberSmallZero = new HashMap<>();
-		remainNumberMap.entrySet().parallelStream().forEach(c ->{
+		remainNumberMap.entrySet().stream().forEach(c ->{
 			// IS00368
 			if (c.getValue().compareTo(ZERO) > 0) {
 				remainNumberBigZero.put(c.getKey(), c.getValue());
@@ -431,7 +431,7 @@ public class OtherHolidayInfoService {
 		
 		Map<String, DesignatedTime> commonSetMap = getWorkTimeSetting(cid, new ArrayList<>(remainNumberMap.keySet()));
 		List<LeaveManagementData> leaveManaLst = new ArrayList<>();
-		remainNumberMap.entrySet().parallelStream().forEach(c ->{
+		remainNumberMap.entrySet().stream().forEach(c ->{
 			BigDecimal remainNumberTpm = c.getValue();
 			LeaveManagementData leaveMana = null;
 			// 1日相当時間←指定時間．1日の時間
@@ -499,7 +499,7 @@ public class OtherHolidayInfoService {
 	 */
 	private void remainNumberIsSmallerThanZero(String cid, Map<String, BigDecimal> remainNumber) {
 		List<CompensatoryDayOffManaData> comDayOffLst = new ArrayList<>();
-		remainNumber.entrySet().parallelStream().forEach(c ->{
+		remainNumber.entrySet().stream().forEach(c ->{
 			String newID = null;
 			// 振休作成数=-1*パラメータ「振休残数」
 			BigDecimal remainNumberTpm = c.getValue().multiply(new BigDecimal(-1));
@@ -597,8 +597,8 @@ public class OtherHolidayInfoService {
 		
 		List<WorkingCondition> workingCondLst = workingConditionRepository.getBySidsAndCid(cid, sids);
 
-		sids.parallelStream().forEach(c ->{
-			Optional<WorkingCondition> workingCondOpt = workingCondLst.parallelStream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
+		sids.stream().forEach(c ->{
+			Optional<WorkingCondition> workingCondOpt = workingCondLst.stream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
 			if (!workingCondOpt.isPresent() || workingCondOpt.get().getDateHistoryItem().isEmpty()) {
 				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
 				return;
@@ -612,8 +612,8 @@ public class OtherHolidayInfoService {
 		DesignatedTime designatedTimeCid = getCompanySet(cid);
 		List<WorkingConditionItem> workingCondItemLst  = workingConditionItemRepository.getByListHistoryID(histIds);
 		
-		sids.parallelStream().forEach(c ->{
-			Optional<WorkingConditionItem> workingCondItemOpt = workingCondItemLst.parallelStream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
+		sids.stream().forEach(c ->{
+			Optional<WorkingConditionItem> workingCondItemOpt = workingCondItemLst.stream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
 			if (!workingCondItemOpt.isPresent()) {
 				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
 				return;
@@ -628,13 +628,13 @@ public class OtherHolidayInfoService {
 			workTimes.put(c, workTimeCD.get().v());
 		});
 		
-		List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(cid, workTimes.values().parallelStream().collect(Collectors.toList()));
+		List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(cid, workTimes.values().stream().collect(Collectors.toList()));
 		List<String> flexTimes = new ArrayList<>();
 		List<String> fixedWorks = new ArrayList<>();
 		List<String> flowWorks = new ArrayList<>();
 		List<String> diffTimeWorks = new ArrayList<>();
-		workTimes.entrySet().parallelStream().forEach(c ->{
-			Optional<WorkTimeSetting>  workTimeSettingOpt = workTimeSettings.parallelStream().filter(item -> item.getWorktimeCode().v().equals(c.getValue())).findFirst();
+		workTimes.entrySet().stream().forEach(c ->{
+			Optional<WorkTimeSetting>  workTimeSettingOpt = workTimeSettings.stream().filter(item -> item.getWorktimeCode().v().equals(c.getValue())).findFirst();
 			if (!workTimeSettingOpt.isPresent()) {
 				result.put(c.getKey(), designatedTimeCid);
 				return;
@@ -662,9 +662,9 @@ public class OtherHolidayInfoService {
 		});
 
 		if(!flexTimes.isEmpty()) {
-			List<String> flexFilterTimes = flexTimes.parallelStream().distinct().collect(Collectors.toList());
+			List<String> flexFilterTimes = flexTimes.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> flexDesignatedTime = getFlexTime(cid, flexFilterTimes);
-			workTimes.entrySet().parallelStream().forEach(c ->{
+			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flexTime = flexDesignatedTime.get(c.getValue());
 				result.put(c.getKey(), flexTime);
 				
@@ -672,9 +672,9 @@ public class OtherHolidayInfoService {
 		}
 		
 		if(!fixedWorks.isEmpty()) {
-			List<String> fixedFilterWorks = fixedWorks.parallelStream().distinct().collect(Collectors.toList());
+			List<String> fixedFilterWorks = fixedWorks.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> fixedFilterWork = getFixedWork(cid, fixedFilterWorks);
-			workTimes.entrySet().parallelStream().forEach(c ->{
+			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime fixedWork = fixedFilterWork.get(c.getValue());
 				result.put(c.getKey(), fixedWork);
 				
@@ -682,9 +682,9 @@ public class OtherHolidayInfoService {
 		}
 		
 		if(!flowWorks.isEmpty()) {
-			List<String> flowFilterWorks = flowWorks.parallelStream().distinct().collect(Collectors.toList());
+			List<String> flowFilterWorks = flowWorks.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> flowFilterWork = getFlowWork(cid, flowFilterWorks);
-			workTimes.entrySet().parallelStream().forEach(c ->{
+			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flowWork = flowFilterWork.get(c.getValue());
 				result.put(c.getKey(), flowWork);
 				
@@ -692,9 +692,9 @@ public class OtherHolidayInfoService {
 		}
 		
 		if(!diffTimeWorks.isEmpty()) {
-			List<String> diffTimeFilterWorks = diffTimeWorks.parallelStream().distinct().collect(Collectors.toList());
+			List<String> diffTimeFilterWorks = diffTimeWorks.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> diffTimeWorksMap = getDiffTimeWork(cid, diffTimeFilterWorks);
-			workTimes.entrySet().parallelStream().forEach(c ->{
+			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flowWork = diffTimeWorksMap.get(c.getValue());
 				result.put(c.getKey(), flowWork);
 			});
@@ -742,9 +742,9 @@ public class OtherHolidayInfoService {
 		DesignatedTime designatedTimeCid = getCompanySet(cid);
 		Map<String, DesignatedTime> result = new HashMap<>();
 		List<FlexWorkSetting> flexWorks = flexWorkSettingRepository.getAllByCidAndWorkCodes(cid, workTimeCDs);
-		workTimeCDs.parallelStream().forEach(c -> {
+		workTimeCDs.stream().forEach(c -> {
 			
-			Optional<FlexWorkSetting> flexWorkOpt = flexWorks.parallelStream()
+			Optional<FlexWorkSetting> flexWorkOpt = flexWorks.stream()
 					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
 			
 			if (!flexWorkOpt.isPresent()) {
@@ -844,9 +844,9 @@ public class OtherHolidayInfoService {
 		Map<String, DesignatedTime> result = new HashMap<>();
 		List<FixedWorkSetting> fixedWorks = fixedWorkSettingRepository.findByCidAndWorkTimeCodes(cid, workTimeCDs);
 		DesignatedTime designatedTimeCid = getCompanySet(cid);
-		workTimeCDs.parallelStream().forEach(c -> {
+		workTimeCDs.stream().forEach(c -> {
 
-			Optional<FixedWorkSetting> fixedWorkOpt = fixedWorks.parallelStream()
+			Optional<FixedWorkSetting> fixedWorkOpt = fixedWorks.stream()
 					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
 			if (!fixedWorkOpt.isPresent()) {
 				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
@@ -916,8 +916,8 @@ public class OtherHolidayInfoService {
 		Map<String, DesignatedTime> result = new HashMap<>();
 		List<FlowWorkSetting> flowWorks = flowWorkSettingRepository.findByCidAndWorkCodes(cid, workTimeCDs);
 		DesignatedTime designatedTimeCid = getCompanySet(cid);
-		workTimeCDs.parallelStream().forEach(c -> {
-			Optional<FlowWorkSetting> flowWorkOpt = flowWorks.parallelStream()
+		workTimeCDs.stream().forEach(c -> {
+			Optional<FlowWorkSetting> flowWorkOpt = flowWorks.stream()
 					.filter(item -> item.getWorkingCode().v().equals(c)).findFirst();
 			if (!flowWorkOpt.isPresent()) {
 				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
@@ -988,8 +988,8 @@ public class OtherHolidayInfoService {
 		Map<String, DesignatedTime> result = new HashMap<>();
 		List<DiffTimeWorkSetting> diffTimes = diffTimeWorkSettingRepository.findByCidAndWorkCodes(cid, workTimeCDs);
 		DesignatedTime designatedTimeCid = getCompanySet(cid);
-		workTimeCDs.parallelStream().forEach(c -> {
-			Optional<DiffTimeWorkSetting> diffTimeOpt = diffTimes.parallelStream()
+		workTimeCDs.stream().forEach(c -> {
+			Optional<DiffTimeWorkSetting> diffTimeOpt = diffTimes.stream()
 					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
 
 			if (!diffTimeOpt.isPresent()) {
@@ -1028,7 +1028,7 @@ public class OtherHolidayInfoService {
 		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
        
-        otherHolidayInfos.entrySet().parallelStream().forEach(c ->{
+        otherHolidayInfos.entrySet().stream().forEach(c ->{
         	pubHDLst.add(c.getValue().getPubHD());
         	exLeavLst.add(c.getValue().getExLeav());
         	remainNumberMap.put(c.getKey(), c.getValue().getRemainNumber());
@@ -1044,7 +1044,7 @@ public class OtherHolidayInfoService {
 		Map<String, BigDecimal> remainLeftFinalMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberFinalMap = new HashMap<>();
 		// Item IS00366
-		checkEnableLeaveMap.entrySet().parallelStream().forEach(c ->{
+		checkEnableLeaveMap.entrySet().stream().forEach(c ->{
 			if(c.getValue()!= null) {
 				if(c.getValue().booleanValue()) {
 					BigDecimal remainNumber = remainNumberMap.get(c.getKey());
@@ -1056,7 +1056,7 @@ public class OtherHolidayInfoService {
 		});
 		
 		// Item IS00368
-		checkEnablePayoutMaP.entrySet().parallelStream().forEach(c ->{
+		checkEnablePayoutMaP.entrySet().stream().forEach(c ->{
 			if(c.getValue()!= null) {
 				if(c.getValue().booleanValue()) {
 					BigDecimal remainLeft = remainLeftMap.get(c.getKey());
@@ -1126,9 +1126,9 @@ public class OtherHolidayInfoService {
 	public Map<String, Boolean> checkEnableLeaveMan(List<String> sids) {
 		Map<String, Boolean> result = new HashMap<>();
 		String cid = AppContexts.user().companyId();
-		Map<String, List<CompensatoryDayOffManaData>> comDayOffMap = comDayOffManaDataRepository.getBySidsAndCid(cid,  sids).parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-		Map<String, List<LeaveManagementData>> leaveManaMap = leaveManaDataRepository.getBySidsAndCid(cid,  sids).parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-		sids.parallelStream().forEach(c ->{
+		Map<String, List<CompensatoryDayOffManaData>> comDayOffMap = comDayOffManaDataRepository.getBySidsAndCid(cid,  sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<LeaveManagementData>> leaveManaMap = leaveManaDataRepository.getBySidsAndCid(cid,  sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		sids.stream().forEach(c ->{
 			List<CompensatoryDayOffManaData> comDayOff = comDayOffMap.get(c);
 			List<LeaveManagementData> leaveMana = leaveManaMap.get(c);
 			if((comDayOff == null || comDayOff.isEmpty()) && (leaveMana == null || leaveMana.isEmpty())) {
@@ -1165,9 +1165,9 @@ public class OtherHolidayInfoService {
 	public Map<String, Boolean> checkEnablePayout(List<String> sids) {
 		String cid = AppContexts.user().companyId();
 		Map<String, Boolean> result = new HashMap<>();
-		Map<String, List<SubstitutionOfHDManagementData>> substitutionOfHDManaDataMap = substitutionOfHDManaDataRepository.getBySidsAndCid(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-		Map<String, List<PayoutManagementData>> payoutManagementDataMap =  payoutManagementDataRepository.getBySidsAndCid(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-		sids.parallelStream().forEach(c ->{
+		Map<String, List<SubstitutionOfHDManagementData>> substitutionOfHDManaDataMap = substitutionOfHDManaDataRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<PayoutManagementData>> payoutManagementDataMap =  payoutManagementDataRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		sids.stream().forEach(c ->{
 			List<SubstitutionOfHDManagementData> substitutionOfHDManaData = substitutionOfHDManaDataMap.get(c);
 			List<PayoutManagementData> payoutManagementData = payoutManagementDataMap.get(c);
 			if((substitutionOfHDManaData == null || substitutionOfHDManaData.isEmpty()) && (payoutManagementData == null || payoutManagementData.isEmpty())) {

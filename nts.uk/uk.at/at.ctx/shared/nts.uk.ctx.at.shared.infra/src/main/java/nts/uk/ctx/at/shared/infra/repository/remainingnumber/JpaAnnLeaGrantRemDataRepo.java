@@ -246,12 +246,12 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			}
 		});
 		
-		Map<String, List<AnnualLeaveGrantRemainingData>> remainDataMap = remainDataLst.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		Map<String, List<AnnualLeaveGrantRemainingData>> remainDataMap = remainDataLst.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		Map<String, List<AnnualLeaveGrantRemainingData>> result = new HashMap<>();
 		
-		emp.entrySet().parallelStream().forEach(c ->{
+		emp.entrySet().stream().forEach(c ->{
 			List<AnnualLeaveGrantRemainingData> remainDataBySids = remainDataMap.get(c.getKey());
-			List<AnnualLeaveGrantRemainingData> remainDataByGrantDate = remainDataBySids.parallelStream().filter(item -> item.getGrantDate().equals(c.getValue())).collect(Collectors.toList());
+			List<AnnualLeaveGrantRemainingData> remainDataByGrantDate = remainDataBySids.stream().filter(item -> item.getGrantDate().equals(c.getValue())).collect(Collectors.toList());
 			if(!remainDataByGrantDate.isEmpty()) {
 				result.put(c.getKey(), remainDataByGrantDate);
 			}
@@ -366,7 +366,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");

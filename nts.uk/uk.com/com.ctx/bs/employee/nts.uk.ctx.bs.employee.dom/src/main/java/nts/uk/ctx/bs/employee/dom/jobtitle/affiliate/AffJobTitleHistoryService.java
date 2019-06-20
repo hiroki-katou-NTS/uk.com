@@ -40,7 +40,7 @@ public class AffJobTitleHistoryService {
 	public void addAll(List<AffJobTitleHistory> domains){
 		Map<String, DateHistoryItem> itemsMap = new HashMap<>();
 		List<AffJobTitleHistoryImmediately> immedidately = new ArrayList<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			if (c.getHistoryItems().isEmpty()) {
 				return;
 			}	
@@ -74,7 +74,7 @@ public class AffJobTitleHistoryService {
 	 * @param domain
 	 */
 	public void updateAll(List<AffJobTitleHistoryImmediately> immedidately){
-		affJobTitleHistoryRepository.updateAll(immedidately.parallelStream().map(c -> c.getItem()).collect(Collectors.toList()));
+		affJobTitleHistoryRepository.updateAll(immedidately.stream().map(c -> c.getItem()).collect(Collectors.toList()));
 		// Update item before
 		updateAllItemBefore(immedidately);
 	}
@@ -112,7 +112,7 @@ public class AffJobTitleHistoryService {
 	 */
 	private void updateAllItemBefore(List<AffJobTitleHistoryImmediately> immedidately){
 		List<DateHistoryItem> items = new ArrayList<>();
-		immedidately.parallelStream().forEach(c ->{
+		immedidately.stream().forEach(c ->{
 			Optional<DateHistoryItem> itemToBeUpdated = c.getDomain().immediatelyBefore(c.getItem());
 			if (itemToBeUpdated.isPresent()){
 				items.add(itemToBeUpdated.get());

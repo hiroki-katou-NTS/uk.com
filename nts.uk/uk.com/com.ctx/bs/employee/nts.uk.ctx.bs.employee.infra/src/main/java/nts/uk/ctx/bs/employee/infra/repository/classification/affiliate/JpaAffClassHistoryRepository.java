@@ -287,7 +287,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getPeriods().get(0);
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
@@ -323,7 +323,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");

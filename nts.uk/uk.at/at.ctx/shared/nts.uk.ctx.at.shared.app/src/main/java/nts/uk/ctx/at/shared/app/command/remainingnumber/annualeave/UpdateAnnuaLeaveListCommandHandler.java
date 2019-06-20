@@ -44,12 +44,12 @@ implements PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>{
 		List<AnnualLeaveEmpBasicInfo>  insertEmpBasic = new ArrayList<>();
 		List<AnnualLeaveEmpBasicInfo>  updateEmpBasic = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<AnnualLeaveMaxData> aLeaveMaxData = maxDataRepo.getAll(cid, sids);
 		List<AnnualLeaveEmpBasicInfo> aLeaveEmpBasicInfo =  annLeaBasicInfoRepo.getAll(cid, sids);
 		
-		cmd.parallelStream().forEach(c ->{
-			Optional<AnnualLeaveEmpBasicInfo> basicOpt = aLeaveEmpBasicInfo.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+		cmd.stream().forEach(c ->{
+			Optional<AnnualLeaveEmpBasicInfo> basicOpt = aLeaveEmpBasicInfo.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 			AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
 					c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
 			if(basicOpt.isPresent()) {
@@ -59,7 +59,7 @@ implements PeregUpdateListCommandHandler<UpdateAnnuaLeaveCommand>{
 				insertEmpBasic.add(basicInfo);
 			}
 			
-			Optional<AnnualLeaveMaxData> maxOpt = aLeaveMaxData.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			Optional<AnnualLeaveMaxData> maxOpt = aLeaveMaxData.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 
 			if(maxOpt.isPresent()) {
 				AnnualLeaveMaxData maxData = maxOpt.get();

@@ -35,7 +35,7 @@ public class SpLeaInfoCommandHandler {
 	 */
 	public List<PeregAddCommandResult> addAllHandler(List<SpecialLeaveBasicInfo> domains){
 		specialLeaveBasicInfoRepository.addAll(domains);
-		return domains.parallelStream().map(c ->{ return new PeregAddCommandResult(c.getSID());}).collect(Collectors.toList());
+		return domains.stream().map(c ->{ return new PeregAddCommandResult(c.getSID());}).collect(Collectors.toList());
 	}
 	
 	/**

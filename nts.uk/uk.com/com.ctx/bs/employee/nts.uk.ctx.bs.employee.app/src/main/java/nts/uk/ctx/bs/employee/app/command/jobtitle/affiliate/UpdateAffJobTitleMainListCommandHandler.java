@@ -52,11 +52,11 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		List<AffJobTitleHistoryImmediately> immedidately = new ArrayList<>();
 		List<AffJobTitleHistoryItem> histItems = new ArrayList<>();
-		List<String> sids = command.parallelStream().map(c -> c.getSid()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getSid()).collect(Collectors.toList());
 
 		Map<String, List<AffJobTitleHistory>> existHistMap = affJobTitleHistoryRepository.getListBySids(cid, sids)
-				.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		command.parallelStream().forEach(c ->{
+				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		command.stream().forEach(c ->{
 			if (c.getStartDate() != null){
 				List<AffJobTitleHistory> affJobTitleHistoryLst = existHistMap.get(c.getSid());
 				if(affJobTitleHistoryLst != null) {

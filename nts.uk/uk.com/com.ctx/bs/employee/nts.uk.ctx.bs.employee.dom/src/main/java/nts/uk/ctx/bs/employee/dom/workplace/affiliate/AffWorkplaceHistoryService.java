@@ -41,7 +41,7 @@ public class AffWorkplaceHistoryService {
 	public void addAll(List<AffWorkplaceHistory> domains){
 		Map<String, DateHistoryItem> historyItemsMap = new HashMap<>();
 		List<AffWorkplaceHistoryIntermediate> intermediates = new ArrayList<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			if (c.getHistoryItems().isEmpty()){
 				return;
 			}
@@ -88,7 +88,7 @@ public class AffWorkplaceHistoryService {
 	 * @param domain
 	 */
 	public void updateAll(List<AffWorkplaceHistoryIntermediate> domains){
-		List<DateHistoryItem> dateHistItems = domains.parallelStream().map(c -> c.getItem()).collect(Collectors.toList());
+		List<DateHistoryItem> dateHistItems = domains.stream().map(c -> c.getItem()).collect(Collectors.toList());
 		if(!dateHistItems.isEmpty()) {
 			affWorkplaceHistoryRepository.updateAll(dateHistItems);
 		}
@@ -117,7 +117,7 @@ public class AffWorkplaceHistoryService {
 	 */
 	private void updateAllItemBefore(List<AffWorkplaceHistoryIntermediate> domains){
 		List<DateHistoryItem> dateHistItem = new ArrayList<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			Optional<DateHistoryItem> itemToBeUpdated = c.getDomain().immediatelyBefore(c.getItem());
 			if (!itemToBeUpdated.isPresent()){
 				return;

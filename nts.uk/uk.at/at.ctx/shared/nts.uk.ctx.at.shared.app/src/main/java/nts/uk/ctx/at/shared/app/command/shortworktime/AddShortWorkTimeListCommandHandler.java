@@ -48,9 +48,9 @@ implements PeregAddListCommandHandler<AddShortWorkTimeCommand>{
 		Map<String, DateHistoryItem> histItemMap = new HashMap<>();
 		List<ShortWorkTimeHistoryItem> histItems = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		Map<String, List<ShortWorkTimeHistory>> existHistMap = sWorkTimeHistoryRepository.getBySidsAndCid(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		cmd.parallelStream().forEach(c ->{
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		Map<String, List<ShortWorkTimeHistory>> existHistMap = sWorkTimeHistoryRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		cmd.stream().forEach(c ->{
 			String newHist = IdentifierUtil.randomUniqueId();
 			c.setHistoryId(newHist);
 			DateHistoryItem dateItem = new DateHistoryItem(c.getHistoryId(), new DatePeriod(c.getStartDate()!=null?c.getStartDate():GeneralDate.min(), c.getEndDate()!= null? c.getEndDate():  GeneralDate.max()));

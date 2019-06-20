@@ -81,17 +81,17 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
 			List<LeaveForCareInfo> leaveCareInfoInsert, List<LeaveForCareInfo> leaveCareInfoUpdate) {
 		String cid = AppContexts.user().companyId();
-		List<String> sids = cmd.parallelStream().map(c -> c.getSId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getSId()).collect(Collectors.toList());
 		List<ChildCareLeaveRemainingData> checkChildCareDatailsLst = childCareDataRepo.getChildCareByEmpIds(cid, sids);
 		List<ChildCareLeaveRemainingInfo> checkChildCareInfoLst = childCareInfoRepo.getChildCareByEmpIdsAndCid(cid, sids);
 		List<LeaveForCareInfo> checkCareInfoLst = careInfoRepo.getCareByEmpIdsAndCid(cid, sids);
 		List<LeaveForCareData> checkCareDatailsLst = careDataRepo.getCareByEmpIds(cid, sids);
 
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			// child-care-data
 			ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(c.getSId(),
 					c.getChildCareUsedDays() == null ? 0.0 : c.getChildCareUsedDays().doubleValue());
-			Optional<ChildCareLeaveRemainingData> childCareDetailsOpt= checkChildCareDatailsLst.parallelStream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+			Optional<ChildCareLeaveRemainingData> childCareDetailsOpt= checkChildCareDatailsLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 			if (childCareDetailsOpt.isPresent()) {
 				childCareDataUpdate.add(childCareData);
 			} else {
@@ -102,7 +102,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 			// care-data
 			LeaveForCareData careData = LeaveForCareData.getCareHDRemaining(c.getSId(),
 					c.getCareUsedDays() == null ? 0.0 : c.getCareUsedDays().doubleValue());
-			Optional<LeaveForCareData> careDataOpt = checkCareDatailsLst.parallelStream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+			Optional<LeaveForCareData> careDataOpt = checkCareDatailsLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 
 			if (careDataOpt.isPresent()) {
 				leaveCareDataUpdate.add(careData);
@@ -118,7 +118,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 							: c.getChildCareUpLimSet().intValue(),
 					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().doubleValue(),
 					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().doubleValue());
-			Optional<ChildCareLeaveRemainingInfo> childCareInfoOpt = checkChildCareInfoLst.parallelStream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+			Optional<ChildCareLeaveRemainingInfo> childCareInfoOpt = checkChildCareInfoLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 			if (childCareInfoOpt.isPresent()) {
 				childCareLeaveInfoUpdate.add(childCareInfo);
 			} else {
@@ -132,7 +132,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 							: c.getCareUpLimSet().intValue(),
 					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().doubleValue(),
 					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().doubleValue());
-			Optional<LeaveForCareInfo> careInfoOpt = checkCareInfoLst.parallelStream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+			Optional<LeaveForCareInfo> careInfoOpt = checkCareInfoLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 			if (careInfoOpt.isPresent()) {
 				leaveCareInfoUpdate.add(careInfo);
 			} else {

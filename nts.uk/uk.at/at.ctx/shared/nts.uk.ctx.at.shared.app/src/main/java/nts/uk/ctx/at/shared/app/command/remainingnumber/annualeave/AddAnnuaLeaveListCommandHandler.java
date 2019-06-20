@@ -39,7 +39,7 @@ implements PeregAddListCommandHandler<AddAnnuaLeaveCommand>{
 		List<AnnualLeaveEmpBasicInfo> basicInfoLst = new ArrayList<>();
 		List<AnnualLeaveMaxData> maxDataLst = new ArrayList<>();
 		
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			basicInfoLst.add(AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
 				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate()));
 			maxDataLst.add(AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
@@ -53,7 +53,7 @@ implements PeregAddListCommandHandler<AddAnnuaLeaveCommand>{
 			maxDataRepo.addAll(maxDataLst);
 		}
 		
-		return cmd.parallelStream().map(c -> {return new PeregAddCommandResult(c.getEmployeeId());}).collect(Collectors.toList());
+		return cmd.stream().map(c -> {return new PeregAddCommandResult(c.getEmployeeId());}).collect(Collectors.toList());
 	}
 
 }

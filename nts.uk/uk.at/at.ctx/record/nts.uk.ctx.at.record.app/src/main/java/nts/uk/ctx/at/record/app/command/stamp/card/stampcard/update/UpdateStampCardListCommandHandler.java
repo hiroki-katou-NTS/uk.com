@@ -36,8 +36,8 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateStampCardCommand>> context) {
 		List<UpdateStampCardCommand> cmd = context.getCommand();
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
-		List<UpdateStampCardCommand> stampCardNotNull = cmd.parallelStream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
-		Map<String, String> cardQuery = stampCardNotNull.parallelStream().collect(Collectors.toMap(UpdateStampCardCommand::getStampNumber, UpdateStampCardCommand::getEmployeeId));
+		List<UpdateStampCardCommand> stampCardNotNull = cmd.stream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
+		Map<String, String> cardQuery = stampCardNotNull.stream().collect(Collectors.toMap(UpdateStampCardCommand::getStampNumber, UpdateStampCardCommand::getEmployeeId));
 		List<String> empErrors = new ArrayList<>();
 		// check duplicate cardNo trong cùng 1 contractCode
 		if(!stampCardNotNull.isEmpty()) {
@@ -45,8 +45,8 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 			String contractCode = AppContexts.user().contractCode();
 			Map<String, StampCard> stampCardByCardNoMaps = this.stampCardRepo.getByCardNoAndContractCode(cardQuery, contractCode);
 			Map<String, List<StampCard>> stampCardByIdMaps = this.stampCardRepo.getByStampCardId(contractCode,
-					stampCardNotNull.parallelStream().map(c -> c.getStampNumberId()).collect(Collectors.toList()));
-			stampCardNotNull.parallelStream().forEach(c ->{
+					stampCardNotNull.stream().map(c -> c.getStampNumberId()).collect(Collectors.toList()));
+			stampCardNotNull.stream().forEach(c ->{
 				StampCard stampCardByCardNo = stampCardByCardNoMaps.get(c.getEmployeeId());
 				List<StampCard> stampCardById = stampCardByIdMaps.get(c.getEmployeeId());
 				if (stampCardByCardNo != null && stampCardById!= null && stampCardById.get(0).getStampNumber() != stampCardByCardNo.getStampNumber()) {

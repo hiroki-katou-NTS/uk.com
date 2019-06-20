@@ -30,13 +30,13 @@ implements PeregAddListCommandHandler<AddPerContactCommand>{
 	@Override
 	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddPerContactCommand>> context) {
 		List<AddPerContactCommand> cmd = context.getCommand();
-		List<PersonContact> domains = cmd.parallelStream().map(c ->{ return new PersonContact(c.getPersonId(), c.getCellPhoneNumber(),
+		List<PersonContact> domains = cmd.stream().map(c ->{ return new PersonContact(c.getPersonId(), c.getCellPhoneNumber(),
 				c.getMailAdress(), c.getMobileMailAdress(), c.getMemo1(), c.getContactName1(),
 				c.getPhoneNumber1(), c.getMemo2(), c.getContactName2(), c.getPhoneNumber2());}).collect(Collectors.toList());
 		if(!domains.isEmpty()) {
 			personContactRepository.addAll(domains);
 		}
-		return cmd.parallelStream().map(c -> {return new PeregAddCommandResult(c.getPersonId());}).collect(Collectors.toList());
+		return cmd.stream().map(c -> {return new PeregAddCommandResult(c.getPersonId());}).collect(Collectors.toList());
 	}
 
 }

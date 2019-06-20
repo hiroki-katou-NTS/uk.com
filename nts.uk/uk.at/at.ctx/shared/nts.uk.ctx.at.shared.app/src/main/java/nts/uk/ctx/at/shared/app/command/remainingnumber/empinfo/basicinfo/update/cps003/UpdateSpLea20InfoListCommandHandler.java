@@ -38,7 +38,7 @@ public class UpdateSpLea20InfoListCommandHandler extends CommandHandlerWithResul
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateSpecialleave20informationCommand>> context) {
 		String cid = AppContexts.user().companyId();
 		List<UpdateSpecialleave20informationCommand> cmd = context.getCommand();
-		List<SpecialLeaveBasicInfo> domains = cmd.parallelStream().map(c ->{return new SpecialLeaveBasicInfo(cid, c.getSID(), SpecialLeaveCode.CS00058.value,
+		List<SpecialLeaveBasicInfo> domains = cmd.stream().map(c ->{return new SpecialLeaveBasicInfo(cid, c.getSID(), SpecialLeaveCode.CS00058.value,
 				c.getUseAtr(), c.getAppSet(), c.getGrantDate(),
 				c.getGrantDays() != null ? c.getGrantDays().intValue() : null, c.getGrantTable());}).collect(Collectors.toList());
 		updateSpLeaInfoCommandHandler.updateAllHandler(domains);

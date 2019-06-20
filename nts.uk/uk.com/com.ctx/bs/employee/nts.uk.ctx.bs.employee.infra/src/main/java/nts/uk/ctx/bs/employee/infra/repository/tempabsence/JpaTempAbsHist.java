@@ -342,7 +342,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		dateHistItemsMap.entrySet().parallelStream().forEach(c ->{
+		dateHistItemsMap.entrySet().stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getValue();
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -380,7 +380,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		items.parallelStream().forEach(c ->{
+		items.stream().forEach(c ->{
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");

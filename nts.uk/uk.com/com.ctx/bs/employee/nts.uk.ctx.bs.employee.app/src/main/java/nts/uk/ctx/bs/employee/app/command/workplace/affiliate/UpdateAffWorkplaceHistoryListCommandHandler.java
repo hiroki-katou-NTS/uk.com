@@ -56,15 +56,15 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 		List<AffWorkplaceHistoryIntermediate> affWorkplaceHistories = new ArrayList<>();
 		Map<String, List<AffWorkplaceHistory>> existHistMap = new HashMap<>();
 		// sidsPidsMap
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		UpdateAffWorkplaceHistoryCommand updateFirst = command.get(0);
 		if(updateFirst != null) {
 			Map<String, List<AffWorkplaceHistory>> existHistMaps = affWorkplaceHistoryRepository.getBySidsAndCid(cid, sids)
-					.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+					.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 			existHistMap.putAll(existHistMaps);
 		}
 
-		command.parallelStream().forEach(c -> {
+		command.stream().forEach(c -> {
 			
 			if (c.getStartDate() != null) {
 				List<AffWorkplaceHistory> affWorkplaceHistoryLst = existHistMap.get(c.getEmployeeId());

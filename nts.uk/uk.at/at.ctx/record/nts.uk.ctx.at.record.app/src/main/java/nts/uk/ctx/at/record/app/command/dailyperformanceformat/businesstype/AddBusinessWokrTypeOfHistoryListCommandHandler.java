@@ -53,15 +53,15 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 		List<BusinessTypeOfEmployee> bTypeOfEmployeeLst = new ArrayList<>();
 		List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHistoryLst = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHistLst = typeEmployeeOfHistoryRepos.findByEmployeeDesc(cid,sids);
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			String historyId = IdentifierUtil.randomUniqueId();
 			// update in case of startDate is null set to minDate
 			GeneralDate startDate = c.getStartDate() != null ? c.getStartDate() : GeneralDate.min();
 			// update in case of endDate is null set to maxDate
 			GeneralDate endDate = c.getEndDate() != null ? c.getEndDate() : GeneralDate.max();
-			Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistLst.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistLst.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 			List<DateHistoryItem> history = new ArrayList<DateHistoryItem>();
 			BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory(cid, history, c.getEmployeeId());
 			if(optional.isPresent()) {

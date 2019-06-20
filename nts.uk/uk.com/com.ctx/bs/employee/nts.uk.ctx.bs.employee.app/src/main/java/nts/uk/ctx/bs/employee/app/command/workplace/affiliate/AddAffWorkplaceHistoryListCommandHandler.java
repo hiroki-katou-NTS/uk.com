@@ -48,13 +48,13 @@ implements PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>{
 	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddAffWorkplaceHistoryCommand>> context) {
 		List<AddAffWorkplaceHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<AffWorkplaceHistoryItem> histItems = new ArrayList<>();
 		List<AffWorkplaceHistory> affJobTitleHistoryLst = new ArrayList<>();
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		Map<String, List<AffWorkplaceHistory>> existHistMap = affWorkplaceHistoryRepository.getBySidsAndCid(cid, sids)
-				.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		command.parallelStream().forEach(c -> {
+				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		command.stream().forEach(c -> {
 			String histId = IdentifierUtil.randomUniqueId();
 			List<AffWorkplaceHistory> affJobTitleHistory = existHistMap.get(c.getEmployeeId());
 			AffWorkplaceHistory itemtoBeAdded = new AffWorkplaceHistory(cid, c.getEmployeeId(), new ArrayList<>());

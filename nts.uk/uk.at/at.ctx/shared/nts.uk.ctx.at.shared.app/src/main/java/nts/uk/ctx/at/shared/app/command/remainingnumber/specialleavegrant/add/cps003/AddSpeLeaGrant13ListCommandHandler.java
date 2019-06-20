@@ -44,7 +44,7 @@ public class AddSpeLeaGrant13ListCommandHandler
 		String cid = AppContexts.user().companyId();
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		List<SpecialLeaveGrantRemainingData> insertLst = new ArrayList<>();
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			String specialId = IdentifierUtil.randomUniqueId();
 			SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
 					c.getSid(), 13,

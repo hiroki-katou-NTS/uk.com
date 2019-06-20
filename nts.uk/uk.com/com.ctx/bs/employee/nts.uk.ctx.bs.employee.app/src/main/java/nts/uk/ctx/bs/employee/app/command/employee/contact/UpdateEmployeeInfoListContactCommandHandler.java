@@ -33,7 +33,7 @@ implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateEmployeeInfoContactCommand>> context) {
 		List<UpdateEmployeeInfoContactCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<EmployeeInfoContact> domains = cmd.parallelStream().map(c ->{return new EmployeeInfoContact(cid, c.getSid(), c.getMailAddress(),
+		List<EmployeeInfoContact> domains = cmd.stream().map(c ->{return new EmployeeInfoContact(cid, c.getSid(), c.getMailAddress(),
 				c.getSeatDialIn(), c.getSeatExtensionNo(), c.getPhoneMailAddress(),
 				c.getCellPhoneNo());}).collect(Collectors.toList());
 		if(domains.isEmpty()) {

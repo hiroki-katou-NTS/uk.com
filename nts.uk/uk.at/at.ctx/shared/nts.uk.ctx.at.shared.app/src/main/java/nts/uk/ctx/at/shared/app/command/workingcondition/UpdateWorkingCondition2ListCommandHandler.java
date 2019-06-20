@@ -48,7 +48,7 @@ implements PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>{
 		
 		UpdateWorkingCondition2Command updateFirst = cmd.get(0);
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<String> errorLst = new ArrayList<>();
 		List<WorkingCondition> listHistBySids = new ArrayList<>();
 		List<WorkingCondition> workingCondInserts = new ArrayList<>();
@@ -58,9 +58,9 @@ implements PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>{
 			List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
 			listHistBySids.addAll(listHistBySid);
 		}
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			if(c.getStartDate() != null) {
-				Optional<WorkingCondition> workingCondOpt =  listHistBySids.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+				Optional<WorkingCondition> workingCondOpt =  listHistBySids.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 				if(!workingCondOpt.isPresent()) {
 					errorLst.add(c.getEmployeeId());
 					return;

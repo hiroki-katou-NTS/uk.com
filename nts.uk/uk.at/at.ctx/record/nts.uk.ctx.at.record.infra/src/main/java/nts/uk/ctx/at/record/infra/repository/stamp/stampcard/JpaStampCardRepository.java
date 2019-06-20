@@ -232,7 +232,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 					return toDomain(e);
 				});
 
-				stampCards.putAll(subResults.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId())));
+				stampCards.putAll(subResults.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId())));
 
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
@@ -240,9 +240,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		});
 
 		if (!stampCards.isEmpty()) {
-			stampCards.entrySet().parallelStream().forEach(c -> {
+			stampCards.entrySet().stream().forEach(c -> {
 				if (cardNos.containsKey(c.getKey())) {
-					Optional<StampCard> opt = c.getValue().parallelStream()
+					Optional<StampCard> opt = c.getValue().stream()
 							.filter(item -> item.getStampNumber().v().equals(cardNos.get(c.getKey()))).findFirst();
 					if (opt.isPresent()) {
 						result.put(c.getKey(), opt.get());
@@ -271,7 +271,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -306,7 +306,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = UP_SQL;
 
 			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -353,7 +353,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 					return toDomain(e);
 				});
 
-				stampCards.putAll(subResults.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId())));
+				stampCards.putAll(subResults.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId())));
 
 			} catch (SQLException e) {
 				throw new RuntimeException(e);

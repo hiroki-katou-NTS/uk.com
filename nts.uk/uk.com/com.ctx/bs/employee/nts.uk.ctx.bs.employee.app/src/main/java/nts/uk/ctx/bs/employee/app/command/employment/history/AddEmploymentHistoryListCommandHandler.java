@@ -50,11 +50,11 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 		List<PeregAddCommandResult> historyIds = new ArrayList<>();
 		List<EmploymentHistoryIntermediate> domains = new ArrayList<>();
 		List<EmploymentHistoryItem> employmentHistoryItems = new ArrayList<>();
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		Map<String, List<EmploymentHistory>> histBySidsMap = employmentHistoryRepository.getAllByCidAndSids(cid, sids)
-				.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
-		command.parallelStream().forEach(c -> {
+		command.stream().forEach(c -> {
 			String newHistID = IdentifierUtil.randomUniqueId();
 			DateHistoryItem dateItem = new DateHistoryItem(newHistID,
 					new DatePeriod(c.getStartDate() != null ? c.getStartDate() : ConstantUtils.minDate(),

@@ -43,11 +43,11 @@ implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		List<AnnualLeaveGrantRemainingData> insertLst = new ArrayList<>();
 
-		Map<String, GeneralDate> emps = cmd.parallelStream().collect(Collectors.toMap(
+		Map<String, GeneralDate> emps = cmd.stream().collect(Collectors.toMap(
 				AddAnnLeaGrantRemnNumPeregCommand::getEmployeeId, AddAnnLeaGrantRemnNumPeregCommand::getGrantDate));
 		Map<String, List<AnnualLeaveGrantRemainingData>> empErrors = annLeaRepo.checkConditionUniqueForAdd(cid, emps);
 
-		cmd.parallelStream().forEach(c -> {
+		cmd.stream().forEach(c -> {
 			if (!empErrors.containsKey(c.getEmployeeId())) {
 				boolean check = AnnualLeaveGrantRemainingData.validate(c.getGrantDate(), c.getDeadline(),
 						c.getGrantDays(), c.getUsedDays(), c.getRemainingDays(), c.grantDateItemName,

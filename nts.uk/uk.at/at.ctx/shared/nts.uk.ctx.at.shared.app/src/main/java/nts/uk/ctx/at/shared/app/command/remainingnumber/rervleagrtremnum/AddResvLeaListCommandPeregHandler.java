@@ -38,7 +38,7 @@ implements PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>{
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		List<ReserveLeaveGrantRemainingData> insertLst = new ArrayList<>();
 
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			boolean check = ReserveLeaveGrantRemainingData.validate(c.getGrantDate(), c.getDeadline(), c.getGrantDays(),
 					c.getUseDays(), c.getRemainingDays() , c.grantDateItemName , c.deadlineDateItemName);
 			if (check) {

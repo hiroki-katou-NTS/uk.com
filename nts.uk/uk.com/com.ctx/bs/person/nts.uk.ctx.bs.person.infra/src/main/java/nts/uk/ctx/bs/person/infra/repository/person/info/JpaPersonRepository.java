@@ -323,7 +323,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
@@ -332,6 +332,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			
 			sql = sql.replace("BIRTHDAY_VAL", "'" + c.getBirthDate() +"'");
 			sql = sql.replace("BLOOD_TYPE_VAL", c.getBloodType() == null? "null": "" + c.getBloodType().value +"");
+			System.out.println(c.getGender());
 			sql = sql.replace("GENDER_VAL",  c.getGender() == null? "": "" + c.getGender().value +"");
 			
 			if(c.getPersonNameGroup() == null) {
@@ -367,7 +368,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", personName.getTodokedeFullName().getFullNameKana() == null? "null": "'" + personName.getTodokedeFullName().getFullNameKana().v()+"'");
 				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullName().v() +"'");
 				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", personName.getPersonalNameMultilingual() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullNameKana().v() +"'");
-				
 			}
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");
 			sb.append(sql);

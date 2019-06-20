@@ -328,7 +328,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			
 		});
 
-		return result.parallelStream()
+		return result.stream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()));
 
 	}
@@ -476,9 +476,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 					result.addAll(query.getResultList());
 				});
 
-				return result.parallelStream()
+				return result.stream()
 						.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
-						.values().parallelStream()
+						.values().stream()
 						.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 						.collect(Collectors.toList());
 	}
@@ -526,9 +526,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			result.addAll(query.getResultList());
 		});
 
-		return result.parallelStream()
+		return result.stream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
-				.values().parallelStream()
+				.values().stream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -572,9 +572,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			result.addAll(query.getResultList());
 		});
 
-		return result.parallelStream()
+		return result.stream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
-				.values().parallelStream()
+				.values().stream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -584,10 +584,10 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		String cid = workingConditions.get(0).getCompanyId();
 		List<KshmtWorkingCond> insertLst = new ArrayList<>();
 		List<KshmtWorkingCond> deleteLst = new ArrayList<>();
-		List<String> sids = workingConditions.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = workingConditions.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		Map<String, List<KshmtWorkingCond>> entityMaps = this.findBy(cid, sids);
 		
-		workingConditions.parallelStream().forEach(c ->{
+		workingConditions.stream().forEach(c ->{
 			List<KshmtWorkingCond> entities = entityMaps.get(c.getEmployeeId());
 			List<KshmtWorkingCond> newWorkingCondition = new ArrayList<>(entities);
 			c.saveToMemento(new JpaWorkingConditionSetMemento(newWorkingCondition));

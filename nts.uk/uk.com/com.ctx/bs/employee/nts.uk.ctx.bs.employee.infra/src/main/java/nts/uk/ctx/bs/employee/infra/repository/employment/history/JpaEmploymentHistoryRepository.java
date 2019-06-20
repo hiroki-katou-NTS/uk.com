@@ -386,8 +386,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				throw new RuntimeException(e);
 			}
 		});
-		Map<String, List<BsymtEmploymentHist>> employmentHistMap = entities.parallelStream().collect(Collectors.groupingBy(c -> c.sid));
-		List<EmploymentHistory> result = employmentHistMap.entrySet().parallelStream().map(c -> {return toEmploymentHistory(c.getValue());}).collect(Collectors.toList());
+		Map<String, List<BsymtEmploymentHist>> employmentHistMap = entities.stream().collect(Collectors.groupingBy(c -> c.sid));
+		List<EmploymentHistory> result = employmentHistMap.entrySet().stream().map(c -> {return toEmploymentHistory(c.getValue());}).collect(Collectors.toList());
 		return result;
 	}
 
@@ -408,7 +408,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		employmentHistories.parallelStream().forEach(c ->{
+		employmentHistories.stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getHistoryItems().get(0);
 			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
@@ -453,7 +453,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		employmentHists.entrySet().parallelStream().forEach(c ->{
+		employmentHists.entrySet().stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getValue();
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -492,7 +492,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		itemToBeUpdateds.parallelStream().forEach(c ->{
+		itemToBeUpdateds.stream().forEach(c ->{
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");

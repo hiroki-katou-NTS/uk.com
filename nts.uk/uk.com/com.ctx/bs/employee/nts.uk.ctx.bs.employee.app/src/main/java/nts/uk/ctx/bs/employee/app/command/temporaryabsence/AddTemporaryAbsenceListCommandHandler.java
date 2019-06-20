@@ -52,9 +52,9 @@ implements PeregAddListCommandHandler<AddTemporaryAbsenceCommand>{
 		List<TempAbsenceHisItem> temporaryAbsenceLst = new ArrayList<>();
 		List<TempAbsenceHistory> tempAbsenceHistoryLst = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		Map<String, List<TempAbsenceHistory>> existHistMap = temporaryAbsenceHistRepository.getBySidsAndCid(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		command.parallelStream().forEach(c ->{
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		Map<String, List<TempAbsenceHistory>> existHistMap = temporaryAbsenceHistRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		command.stream().forEach(c ->{
 			String newHistID = IdentifierUtil.randomUniqueId();
 			DateHistoryItem dateItem = new DateHistoryItem(newHistID,
 					new DatePeriod(c.getStartDate() != null ? c.getStartDate() : ConstantUtils.minDate(),

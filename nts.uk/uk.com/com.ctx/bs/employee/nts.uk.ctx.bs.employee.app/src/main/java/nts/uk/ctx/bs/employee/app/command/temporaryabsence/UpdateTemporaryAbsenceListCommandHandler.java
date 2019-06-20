@@ -57,14 +57,14 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 		List<TempAbsenceHisItem> histItems = new ArrayList<>();
 		List<String> errorLst = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		if (updateFirst.getStartDate() != null){
 			List<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getBySidsAndCid(cid, sids);
 			existHistLst.addAll(existHist);
 		}
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			if(c.getStartDate() != null) {
-				Optional<TempAbsenceHistory> existHistOpt = existHistLst.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+				Optional<TempAbsenceHistory> existHistOpt = existHistLst.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 				if (!existHistOpt.isPresent()) {
 					errorLst.add(c.getEmployeeId());
 					return;

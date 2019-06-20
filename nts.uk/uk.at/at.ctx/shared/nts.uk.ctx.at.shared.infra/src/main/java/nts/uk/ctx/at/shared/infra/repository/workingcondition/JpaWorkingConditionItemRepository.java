@@ -1016,7 +1016,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	@Override
 	public void addAll(List<WorkingConditionItem> items) {
 		List<KshmtWorkingCondItem> entities = new ArrayList<>();
-		items.parallelStream().forEach(c ->{
+		items.stream().forEach(c ->{
 			KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
 			c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 			entities.add(entity);
@@ -1029,12 +1029,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	@Override
 	public void updateAll(List<WorkingConditionItem> items) {
-		List<String> histIds = items.parallelStream().map(c -> c.getHistoryId()).collect(Collectors.toList());
+		List<String> histIds = items.stream().map(c -> c.getHistoryId()).collect(Collectors.toList());
 		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
 		if(!histIds.isEmpty()) {
 			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
-			items.parallelStream().forEach(c ->{
-				KshmtWorkingCondItem entity = entities.parallelStream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
+			items.stream().forEach(c ->{
+				KshmtWorkingCondItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
 				c.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
 				updateLst.add(entity);
 				
@@ -1048,12 +1048,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	@Override
 	public void updateAllWorkCond2(List<WorkingConditionItem> items) {
-		List<String> histIds = items.parallelStream().map(c -> c.getHistoryId()).collect(Collectors.toList());
+		List<String> histIds = items.stream().map(c -> c.getHistoryId()).collect(Collectors.toList());
 		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
 		if(!histIds.isEmpty()) {
 			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
-			items.parallelStream().forEach(c ->{
-				KshmtWorkingCondItem entity = entities.parallelStream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
+			items.stream().forEach(c ->{
+				KshmtWorkingCondItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
 				c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 				updateLst.add(entity);
 				

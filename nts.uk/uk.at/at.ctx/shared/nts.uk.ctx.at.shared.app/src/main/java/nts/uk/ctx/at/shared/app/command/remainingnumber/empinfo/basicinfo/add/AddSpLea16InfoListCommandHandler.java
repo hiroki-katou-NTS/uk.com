@@ -35,7 +35,7 @@ implements PeregAddListCommandHandler<AddSpecialleave16informationCommand>{
 			CommandHandlerContext<List<AddSpecialleave16informationCommand>> context) {
 		String cid = AppContexts.user().companyId();
 		List<AddSpecialleave16informationCommand> cmd = context.getCommand();
-		List<SpecialLeaveBasicInfo> domains = cmd.parallelStream().map(c ->{return new SpecialLeaveBasicInfo(cid, c.getSID(), SpecialLeaveCode.CS00054.value,
+		List<SpecialLeaveBasicInfo> domains = cmd.stream().map(c ->{return new SpecialLeaveBasicInfo(cid, c.getSID(), SpecialLeaveCode.CS00054.value,
 				c.getUseAtr(), c.getAppSet(), c.getGrantDate(),
 				c.getGrantDays() != null ? c.getGrantDays().intValue() : null, c.getGrantTable());}).collect(Collectors.toList());
 		return addSpLeaInfoCommandHandler.addAllHandler(domains);

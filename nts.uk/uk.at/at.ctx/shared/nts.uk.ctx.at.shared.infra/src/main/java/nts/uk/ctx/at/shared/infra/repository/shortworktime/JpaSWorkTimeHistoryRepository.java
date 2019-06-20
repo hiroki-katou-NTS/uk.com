@@ -368,7 +368,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		histItem.entrySet().parallelStream().forEach(c ->{
+		histItem.entrySet().stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getValue();
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -406,7 +406,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		histItem.entrySet().parallelStream().forEach(c ->{
+		histItem.entrySet().stream().forEach(c ->{
 			String sql = UP_SQL;
 			DateHistoryItem dateItem = c.getValue();
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");

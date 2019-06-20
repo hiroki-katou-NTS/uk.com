@@ -37,7 +37,7 @@ public class AffCompanyHistService {
 	public void addAll(Map<String, AffCompanyHistByEmployee> domainMaps){
 		List<AffCompanyHistCustom> affComHistCustom = new ArrayList<>();
 		// Insert last item
-		domainMaps.entrySet().parallelStream().forEach(c ->{
+		domainMaps.entrySet().stream().forEach(c ->{
 			// Insert last item
 			AffCompanyHistItem itemToBeAdded = c.getValue().getLstAffCompanyHistoryItem().get(c.getValue().getLstAffCompanyHistoryItem().size() -1);
 			affComHistCustom.add(new AffCompanyHistCustom(c.getKey(), c.getValue().getSId(), itemToBeAdded));

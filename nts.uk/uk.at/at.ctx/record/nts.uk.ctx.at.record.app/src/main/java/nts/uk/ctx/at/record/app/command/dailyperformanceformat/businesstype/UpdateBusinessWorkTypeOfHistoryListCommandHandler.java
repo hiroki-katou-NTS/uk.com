@@ -55,8 +55,8 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHistory = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		List<String> histIds = cmd.parallelStream().map(c -> c.getHistoryId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> histIds = cmd.stream().map(c -> c.getHistoryId()).collect(Collectors.toList());
 		List<BusinessTypeOfEmployee> bTypeOfEmployee = typeOfEmployeeRepos.findAllByHistIds(histIds);
 		
 		if(updateFirst.getStartDate()!= null) {
@@ -64,9 +64,9 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 			bTypeOfEmployeeHistory.addAll(bTypeEmpHistLst);
 		}
 		
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			if(c.getStartDate()!= null) {
-				Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistory.parallelStream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+				Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistory.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 				if (!optional.isPresent()) {
 					errorLst.add(c.getEmployeeId());
 					return;
@@ -81,7 +81,7 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 				bEmployeeHistory.changeSpan(optionalHisItem.get(), new DatePeriod(c.getStartDate(), c.getEndDate()));
 				bTypeOfEmployeeHistoryInterLst.add(new BusinessTypeOfEmployeeHistoryInter(bEmployeeHistory, optionalHisItem.get()));
 			}
-			Optional<BusinessTypeOfEmployee> bTypeOfEmp = bTypeOfEmployee.parallelStream().filter(emp -> emp.getHistoryId().equals(c.getHistoryId())).findFirst();
+			Optional<BusinessTypeOfEmployee> bTypeOfEmp = bTypeOfEmployee.stream().filter(emp -> emp.getHistoryId().equals(c.getHistoryId())).findFirst();
 			// update typeof employee
 			if (!bTypeOfEmp.isPresent()) {
 				errorLst.add(c.getEmployeeId());

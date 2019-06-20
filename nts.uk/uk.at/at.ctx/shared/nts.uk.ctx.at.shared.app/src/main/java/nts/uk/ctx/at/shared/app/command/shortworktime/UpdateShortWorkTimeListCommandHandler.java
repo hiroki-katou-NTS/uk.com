@@ -45,7 +45,7 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 		List<UpdateShortWorkTimeCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		// sidsPidsMap
-		List<String> sids = cmd.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		UpdateShortWorkTimeCommand updateFirst = cmd.get(0);
 		List<ShortWorkTimeHistory> existHistMaps = new ArrayList<>();
 		List<ShortWorkTimeHistoryItem> histItems = new ArrayList<>();
@@ -58,10 +58,10 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 			existHistMaps.addAll(existHistMap);
 		}
 		
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			if(c.getStartDate() != null) {
 				DateHistoryItem dateItem = new DateHistoryItem(c.getHistoryId(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  GeneralDate.max()));
-				Optional<ShortWorkTimeHistory> existHistOpt = existHistMaps.parallelStream()
+				Optional<ShortWorkTimeHistory> existHistOpt = existHistMaps.stream()
 						.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();						
 				if (!existHistOpt.isPresent()) {
 					errorLst.add(c.getEmployeeId());

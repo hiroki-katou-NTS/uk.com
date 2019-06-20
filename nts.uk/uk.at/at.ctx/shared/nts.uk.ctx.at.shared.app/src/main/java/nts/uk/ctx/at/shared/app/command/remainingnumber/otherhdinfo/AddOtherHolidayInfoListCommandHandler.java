@@ -40,7 +40,7 @@ implements PeregAddListCommandHandler<AddOtherHolidayInfoCommand>{
 		
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, c.getEmployeeId(),
 					c.getPubHdremainNumber());
 			ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, c.getEmployeeId(),

@@ -295,7 +295,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		dateHistItems.entrySet().parallelStream().forEach(c ->{
+		dateHistItems.entrySet().stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getValue();
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -333,7 +333,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		dateHistItems.entrySet().parallelStream().forEach(c ->{
+		dateHistItems.entrySet().stream().forEach(c ->{
 			DateHistoryItem dateHistItem = c.getValue();
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");

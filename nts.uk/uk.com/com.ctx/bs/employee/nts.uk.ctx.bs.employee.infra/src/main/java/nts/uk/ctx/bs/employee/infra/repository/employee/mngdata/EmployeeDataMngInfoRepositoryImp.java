@@ -742,7 +742,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");

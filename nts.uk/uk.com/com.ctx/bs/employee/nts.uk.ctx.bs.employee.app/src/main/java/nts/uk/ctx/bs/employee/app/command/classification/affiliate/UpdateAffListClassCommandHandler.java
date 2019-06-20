@@ -58,7 +58,7 @@ public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<L
 		List<String> errors = new ArrayList<>();
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
 		// một công ty nên tất item của các nhân viên được hiển thị giống nhau
 		// vì vậy mà mình sẽ kiểm tra startDate của nhân viên đầu tiên trong list để
@@ -66,15 +66,15 @@ public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<L
 		UpdateAffClassificationCommand updateFirst = command.get(0);
 		if (updateFirst.getStartDate() != null) {
 			Map<String, List<AffClassHistory>> affClassHisMap = affClassHistoryRepo.getBySidsWithCid(cid, sids)
-					.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+					.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 			affClassHisMaps.putAll(affClassHisMap);
 			}
-			command.parallelStream().forEach(c -> {
+			command.stream().forEach(c -> {
 			if (c.getStartDate() != null) {
 				List<AffClassHistory> affClassHistLst = affClassHisMaps.get(c.getEmployeeId());
 				if (affClassHistLst != null) {
 					AffClassHistory historyOption = affClassHistLst.get(0);
-					Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().parallelStream()
+					Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().stream()
 							.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
 					if (itemToBeUpdateOpt.isPresent()) {
 						historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),

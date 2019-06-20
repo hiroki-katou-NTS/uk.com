@@ -51,11 +51,11 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 		List<String> sidErrorLst = new ArrayList<>();
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		// sidsPidsMap
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<EmploymentHistoryIntermediate> domainIntermediates = new ArrayList<>();
 		List<EmploymentHistoryItem> employmentHistoryItems = new ArrayList<>();
-			Map<String, List<EmploymentHistory>> existHistMap = employmentHistoryRepository.getAllByCidAndSids(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-			command.parallelStream().forEach(c ->{
+			Map<String, List<EmploymentHistory>> existHistMap = employmentHistoryRepository.getAllByCidAndSids(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			command.stream().forEach(c ->{
 				// In case of date period are exist in the screen,
 				if(c.getStartDate() != null) {
 					List<EmploymentHistory> existHistLst = existHistMap.get(c.getEmployeeId());

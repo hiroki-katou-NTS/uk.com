@@ -37,8 +37,8 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddStampCardCommand>> context) {
 		List<AddStampCardCommand> cmd = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
-		List<AddStampCardCommand> cardNotNull = cmd.parallelStream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
-		Map<String, String> cardQuery = cardNotNull.parallelStream().collect(Collectors.toMap(AddStampCardCommand::getEmployeeId, AddStampCardCommand::getStampNumber));
+		List<AddStampCardCommand> cardNotNull = cmd.stream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
+		Map<String, String> cardQuery = cardNotNull.stream().collect(Collectors.toMap(AddStampCardCommand::getEmployeeId, AddStampCardCommand::getStampNumber));
 		Map<String, StampCard> empErrors = new HashMap<>();
 		if(!cardQuery.isEmpty()) {
 			Map<String, StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(cardQuery, contractCode);
@@ -48,7 +48,7 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 		}
 		
 		List<StampCard> insertLst = new ArrayList<>();
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			if(!empErrors.containsKey(c.getEmployeeId())) {
 				// create new domain and add
 				String stampCardId = IdentifierUtil.randomUniqueId();

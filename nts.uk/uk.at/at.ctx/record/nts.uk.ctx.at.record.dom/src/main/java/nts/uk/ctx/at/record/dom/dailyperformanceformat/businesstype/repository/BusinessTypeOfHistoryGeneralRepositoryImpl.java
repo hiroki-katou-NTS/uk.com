@@ -67,7 +67,7 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	@Override
 	public void addAll(List<BusinessTypeOfEmployeeHistory> domains) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			List<DateHistoryItem> history = c.getHistory();
 			DateHistoryItem item = history.get(history.size() - 1);
 			dateHistItemMaps.put(c.getEmployeeId(), item);
@@ -87,7 +87,7 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	@Override
 	public void updateAll(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domainsInter.parallelStream().forEach(c ->{
+		domainsInter.stream().forEach(c ->{
 			dateHistItemMaps.put(c.getBEmployeeHistory().getEmployeeId(), c.getItem());
 			
 		});
@@ -105,7 +105,7 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	 */
 	public void updateAllItemsBefore(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domainsInter.parallelStream().forEach(c -> {
+		domainsInter.stream().forEach(c -> {
 			Optional<DateHistoryItem> optinal = c.getBEmployeeHistory().immediatelyBefore(c.getItem());
 
 			if (optinal.isPresent()) {

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -67,9 +66,6 @@ public class ItemDefFinder {
 	
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
-	
-	@Inject
-	private ManagedParallelWithContext parallel;
 	// hàm này dùng cho màn cps001
 	public List<ItemValue> getFullListItemDef(PeregQuery query){
 		// app context
@@ -118,7 +114,7 @@ public class ItemDefFinder {
 		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllPerInfoItemDefByCategoryId(perInfoCtg.getPersonInfoCategoryId(), contractCd);
 
 		if(!gridPeregDto.isEmpty()) {
-			parallel.forEach(gridPeregDto, m -> {
+			gridPeregDto.stream().forEach(m ->{
 				PeregEmpInfoQuery empQuery = new PeregEmpInfoQuery(m.getEmployeeId(), m.getPersonId(), m.getPeregDto() == null? null:  m.getPeregDto().getDomainDto().getRecordId());
 				List<ItemValue> lstItemDef = getItemDefFromDomain(lstPerInfoDef);
 				empLst.put(m.getEmployeeId(), new PeregMatrixByEmp(lstItemDef, empQuery, m.getPeregDto()));

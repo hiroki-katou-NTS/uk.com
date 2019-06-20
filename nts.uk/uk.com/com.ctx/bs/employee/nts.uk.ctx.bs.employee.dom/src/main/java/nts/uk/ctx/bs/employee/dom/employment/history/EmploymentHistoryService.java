@@ -38,7 +38,7 @@ public class EmploymentHistoryService {
 	 */
 	public void addAll(List<EmploymentHistoryIntermediate> domains){
 		Map<String, DateHistoryItem> employmentHistMap = new HashMap<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			EmploymentHistory domain = c.getDomain();
 			if(domain.getHistoryItems().isEmpty()) {
 				return;
@@ -70,7 +70,7 @@ public class EmploymentHistoryService {
 	 * @param itemToBeUpdated
 	 */
 	public void updateAll(List<EmploymentHistoryIntermediate> domains){
-		List<DateHistoryItem> itemToBeUpdateds = domains.parallelStream().map(c -> c.getItemToBeUpdated()).collect(Collectors.toList());
+		List<DateHistoryItem> itemToBeUpdateds = domains.stream().map(c -> c.getItemToBeUpdated()).collect(Collectors.toList());
 		employmentHistoryRepository.updateAll(itemToBeUpdateds);
 		// Update item before
 		updateItemBefore(domains);
@@ -110,7 +110,7 @@ public class EmploymentHistoryService {
 	 */
 	private void updateItemBefore(List<EmploymentHistoryIntermediate> domains){
 		List<DateHistoryItem> itemToBeUpdatedLst = new ArrayList<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			Optional<DateHistoryItem> itemToBeUpdated = c.getDomain().immediatelyBefore(c.getItemToBeUpdated());
 			if(itemToBeUpdated.isPresent()) {
 				itemToBeUpdatedLst.add(itemToBeUpdated.get());

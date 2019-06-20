@@ -40,7 +40,7 @@ implements PeregUpdateListCommandHandler<UpdateOtherHolidayInfoCommand>{
 		 Map<String, OtherHolidayInfoInter> otherHolidayInfos = new HashMap<>();
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			//公休付与残数データ
 			PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, c.getEmployeeId(),
 					c.getPubHdremainNumber());

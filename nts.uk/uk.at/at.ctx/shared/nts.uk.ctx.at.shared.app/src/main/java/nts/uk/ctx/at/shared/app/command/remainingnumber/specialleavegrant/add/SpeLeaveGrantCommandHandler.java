@@ -31,7 +31,7 @@ public class SpeLeaveGrantCommandHandler {
 	
 	public List<PeregAddCommandResult> addHandler(List<SpecialLeaveGrantRemainingData> domains){
 		repo.addAll(domains);
-		return domains.parallelStream().map(c -> new PeregAddCommandResult(c.getEmployeeId())).collect(Collectors.toList());
+		return domains.stream().map(c -> new PeregAddCommandResult(c.getEmployeeId())).collect(Collectors.toList());
 	}
 
 }

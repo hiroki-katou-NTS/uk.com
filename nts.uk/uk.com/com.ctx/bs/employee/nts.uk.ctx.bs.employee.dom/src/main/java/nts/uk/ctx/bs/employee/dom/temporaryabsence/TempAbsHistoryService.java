@@ -33,7 +33,7 @@ public class TempAbsHistoryService {
 	 */
 	public void addAll(List<TempAbsenceHistory> domains){
 		Map<String, DateHistoryItem> dateHistItem = new HashMap<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			if (c.getDateHistoryItems().isEmpty()) {
 				return;
 			}	

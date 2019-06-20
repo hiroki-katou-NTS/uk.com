@@ -55,11 +55,11 @@ implements PeregAddListCommandHandler<AddAffClassificationCommand>{
 		List<PeregAddCommandResult> result = new ArrayList<>();
 		List<AffClassHistItem> histItemDomains = new ArrayList<>();
 		List<AffClassHistory> affClassHistDomains = new ArrayList<>();
-		List<String> sids = command.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
-		Map<String, List<AffClassHistory>> historiesMap = affClassHistoryRepo.getBySidsWithCid(cid, sids).parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		Map<String, List<AffClassHistory>> historiesMap = affClassHistoryRepo.getBySidsWithCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		
-		command.parallelStream().forEach(c ->{
+		command.stream().forEach(c ->{
 			// add history
 			String newHistoryId = IdentifierUtil.randomUniqueId();
 			AffClassHistory history = new AffClassHistory(cid, c.getEmployeeId(), new ArrayList<>());

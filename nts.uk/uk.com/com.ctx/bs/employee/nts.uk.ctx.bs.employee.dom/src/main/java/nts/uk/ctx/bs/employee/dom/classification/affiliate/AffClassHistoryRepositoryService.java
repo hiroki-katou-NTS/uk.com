@@ -83,7 +83,7 @@ public class AffClassHistoryRepositoryService {
 	 */
 	public void addAll(List<AffClassHistory> history){
 		List<AffClassHistory> historiesInsertLst = new ArrayList<>();
-		history.parallelStream().forEach(c ->{
+		history.stream().forEach(c ->{
 			if (c.getPeriods().isEmpty()) {
 				return;
 			}
@@ -106,7 +106,7 @@ public class AffClassHistoryRepositoryService {
 	private void updateAllItemBefore(List<AffClassHistory> histories) {
 		List<DateHistoryItem> dateHistItem = new ArrayList<>();
 		// Update item before
-		histories.parallelStream().forEach(c ->{
+		histories.stream().forEach(c ->{
 			DateHistoryItem historyItem  = c.getPeriods().get(0);
 			Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
 			if (!beforeItemOpt.isPresent()) {
@@ -126,12 +126,12 @@ public class AffClassHistoryRepositoryService {
 	 * @param history
 	 */
 	public void updateAll(List<MidAffClass> midAffClass){
-		List<DateHistoryItem> dateHistItems = midAffClass.parallelStream().map(c -> c.getItem()).collect(Collectors.toList());
+		List<DateHistoryItem> dateHistItems = midAffClass.stream().map(c -> c.getItem()).collect(Collectors.toList());
 		affClassHistoryRepo.updateAll(dateHistItems);
 		// Update item before and after
 		
 		List<AffClassHistory> historiesInsertLst = new ArrayList<>();
-		midAffClass.parallelStream().forEach(c ->{
+		midAffClass.stream().forEach(c ->{
 			historiesInsertLst.add(new AffClassHistory(c.getHistory().getCompanyId(), c.getHistory().getEmployeeId(), Arrays.asList(c.getItem())));
 		});
 		if(!historiesInsertLst.isEmpty()) {

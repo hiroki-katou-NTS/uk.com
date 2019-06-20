@@ -53,13 +53,13 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 		List<AddAffCompanyHistoryCommand> command = context.getCommand();
 		List<PeregAddCommandResult> recordIds = new ArrayList<>();
 		//sidsPidsMap
-		List<String> sids = command.parallelStream().map(c -> c.getSId()).collect(Collectors.toList());
+		List<String> sids = command.stream().map(c -> c.getSId()).collect(Collectors.toList());
 		Map<String, List<AffCompanyHist>> histLstMap = this.affCompanyHistRepository
-				.getAffCompanyHistoryOfEmployees(sids).parallelStream()
+				.getAffCompanyHistoryOfEmployees(sids).stream()
 				.collect(Collectors.groupingBy(c -> c.getPId()));
 		Map<String, AffCompanyHistByEmployee> itemToBeAddedMap = new HashMap<>();
 		List<AffCompanyInfo> affCompanyInfoLst = new ArrayList<>();
-		command.parallelStream().forEach(c ->{
+		command.stream().forEach(c ->{
 			AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(c.getSId(), new ArrayList<>());
 			List<AffCompanyHist> listHist = histLstMap.get(c.getSId());
 			if(listHist != null) {

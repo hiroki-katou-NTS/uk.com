@@ -45,7 +45,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert = new ArrayList<>();
 		List<LeaveForCareInfo> leaveCareInfoInsert = new ArrayList<>();
-		cmd.parallelStream().forEach(c ->{
+		cmd.stream().forEach(c ->{
 			// child-care-data
 			if (c.getChildCareUsedDays() != null) {
 				ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(

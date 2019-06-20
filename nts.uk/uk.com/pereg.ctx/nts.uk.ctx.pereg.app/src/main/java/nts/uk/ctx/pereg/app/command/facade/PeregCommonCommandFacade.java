@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
@@ -169,12 +170,15 @@ public class PeregCommonCommandFacade {
 	}
 	
 	public List<MyCustomizeException> registerHandler(List<PeregInputContainerCps003> inputContainerLst, int modeUpdate, GeneralDate baseDate) {
+		if(CollectionUtil.isEmpty(inputContainerLst)) return new ArrayList<>();
 		List<MyCustomizeException> result = new ArrayList<MyCustomizeException>();
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, -33, () -> {
 			List<PersonCorrectionLogParameter> target  = new ArrayList<>();
 			Map<String, String> mapSidPid = inputContainerLst.stream().filter(distinctByKey(PeregInputContainerCps003::getPersonId)).collect(Collectors.toMap(PeregInputContainerCps003::getEmployeeId, PeregInputContainerCps003::getPersonId));
+			
 			Map<String, List<UserAuthDto>> userMaps = this.userFinder.getByListEmp(new ArrayList<>(mapSidPid.keySet())).stream().collect(Collectors.groupingBy(c -> c.getEmpID()));
-			userMaps.entrySet().parallelStream().forEach(c ->{
+			if(userMaps.isEmpty()) return;
+			userMaps.entrySet().stream().forEach(c ->{
 				List<UserAuthDto> userLst = c.getValue();
 				if(userLst != null) {
 					target.add(new PersonCorrectionLogParameter(userLst.get(0).getUserID(), c.getKey(),
@@ -247,7 +251,7 @@ public class PeregCommonCommandFacade {
 		Map<String, List<ItemValue>> itemsDefaultLstBySid = facadeUtils.getListDefaultItem(itemFirstByCtg.getCategoryCd(),
 				listItemCodeInScreen, itemsByCtgId.get(itemFirstByCtg.getCategoryId()), employees);
 
-		containerAdds.parallelStream().forEach(c -> {
+		containerAdds.stream().forEach(c -> {
 			ItemsByCategory itemByCtg = c.getInputs();
 			List<ItemValue> itemDefaultLst = itemsDefaultLstBySid.get(c.getEmployeeId());
 			if (itemDefaultLst != null) {
@@ -269,7 +273,7 @@ public class PeregCommonCommandFacade {
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
 			val result = handler.handlePeregCommand(containerAdds);
 		    // xử lí cho những item optional
-			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.parallelStream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
+			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
 		}
 
@@ -293,10 +297,12 @@ public class PeregCommonCommandFacade {
 			}
 			
 		});
+		try {
+
 		if(containerAdds.size() > 0) {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			// đoạn này viết log
-			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER,() -> {
+			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
 			});
 
@@ -312,20 +318,24 @@ public class PeregCommonCommandFacade {
 				result.addAll(handler.handlePeregCommand(containerAdds));
 			}
 
-			val commandForUserDef = container.parallelStream().map(c -> {
+			val commandForUserDef = container.stream().map(c -> {
 				return new PeregUserDefUpdateCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs());
 			}).collect(Collectors.toList());
 			
 			this.userDefUpdate.handle(commandForUserDef);
 		}
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		throw e;
+	}
 		return result;
 	}
 
 	//update input for case ADD
 	private void updateInputForAdd(List<PeregInputContainerCps003> containerLst) {
 		// Add item invisible to list
-		
-		containerLst.parallelStream().forEach(c ->{
+		containerLst.stream().forEach(c ->{
 			c.getInputs().getItems().stream().forEach(item -> {
 				item.setValueBefore(null);
 				item.setContentBefore(null);
@@ -350,171 +360,185 @@ public class PeregCommonCommandFacade {
 			PeregInputContainerCps003 firstEmp = containerLst.get(0);
 			List<DateRangeDto> ctgCodes = this.ctgRepo.dateRangeCode();
 			List<PeregEmpInfoQuery> empInfos = new ArrayList<>();
-			containerLst.parallelStream().forEach(c ->{
+			containerLst.stream().forEach(c ->{
 				empInfos.add(new PeregEmpInfoQuery(c.getPersonId(),  c.getEmployeeId(), c.getInputs().getRecordId()));
 			});
 			PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(firstEmp.getInputs().getCategoryId(), firstEmp.getInputs().getCategoryCd(), standardDate, empInfos);
 			Map<String, List<ItemValue>> itemValueBySids = this.getItemInvisiblesCPS003(queryByListEmp, firstEmp.getInputs() , isAdd);
 			
-			containerLst.parallelStream().forEach(c ->{
-				String stringKey = null;
-				CategoryType ctgType = null;
-				ReviseInfo reviseInfo = null;
-				DateRangeDto dateRange = null;
-				ItemsByCategory input = c.getInputs();
-				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),c.getEmployeeId(), c.getPersonId());
-				query.setCategoryId(c.getInputs().getCategoryId());
+			containerLst.stream().forEach(c ->{
 				
-				List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
-				List<ItemValue> invisibles = itemValueBySids.get(c.getEmployeeId());
-				ctgType = EnumAdaptor.valueOf(firstEmp.getInputs().getCategoryType(), CategoryType.class);
-				Optional<DateRangeDto> dateRangeOp = ctgCodes.stream().filter(ctgCode -> ctgCode.getCtgCode().equals(input.getCategoryCd())).findFirst();
-				boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
-						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+				try {
+					String stringKey = null;
+					CategoryType ctgType = null;
+					ReviseInfo reviseInfo = null;
+					DateRangeDto dateRange = null;
+					ItemsByCategory input = c.getInputs();
+					List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
+					PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),c.getEmployeeId(), c.getPersonId());
+					query.setCategoryId(c.getInputs().getCategoryId());
+					
+					List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
+					List<ItemValue> invisibles = itemValueBySids.get(c.getEmployeeId());
+					if(CollectionUtil.isEmpty(invisibles)) return;
+					ctgType = EnumAdaptor.valueOf(firstEmp.getInputs().getCategoryType(), CategoryType.class);
+					Optional<DateRangeDto> dateRangeOp = ctgCodes.stream().filter(ctgCode -> ctgCode.getCtgCode().equals(input.getCategoryCd())).findFirst();
+					boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
+							|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 
-				if(input.getCategoryCd().equals("CS00003")) {
-					dateRange = new DateRangeDto(c.getInputs().getCategoryCd(), "IS00020", "IS00021");
-				} else {
-					dateRange = isHistory == true? dateRangeOp.get(): null;
-				}
-				List<ItemValue> itemLogs = input.getItems() == null ?
-						new ArrayList<>() :   input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
-				for (ItemValue item : invisibles) {
-					switch (ctgType) {
-					case SINGLEINFO:
-					case MULTIINFO:
-						if (specialItemCode.contains(item.itemCode())) {
-							itemLogs.add(item);
-						}
-						break;
-					case DUPLICATEHISTORY:
-					case CONTINUOUSHISTORY:
-					case NODUPLICATEHISTORY:
-					case CONTINUOUS_HISTORY_FOR_ENDDATE:
-						if (item.itemCode().equals(dateRange.getStartDateCode())) {
-							itemLogs.add(item);
-						}
-						break;
-					default:
-						break;
+					if(input.getCategoryCd().equals("CS00003")) {
+						dateRange = new DateRangeDto(c.getInputs().getCategoryCd(), "IS00020", "IS00021");
+					} else {
+						dateRange = isHistory == true? dateRangeOp.get(): null;
 					}
-				}
-				
-				InfoOperateAttr info = InfoOperateAttr.ADD;
-				for (ItemValue item : itemLogs) {
-					// kiểm tra các item của  category nghỉ đặc biệt, employee, lịch sử 
-					switch(ctgType) {
-					case SINGLEINFO:
-						if (specialItemCode.contains(item.itemCode())) {
-							stringKey = item.valueAfter();
+					List<ItemValue> itemLogs = input.getItems() == null ?
+							new ArrayList<>() :   input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
+					for (ItemValue item : invisibles) {
+						switch (ctgType) {
+						case SINGLEINFO:
+						case MULTIINFO:
+							if (specialItemCode.contains(item.itemCode())) {
+								itemLogs.add(item);
+							}
+							break;
+						case DUPLICATEHISTORY:
+						case CONTINUOUSHISTORY:
+						case NODUPLICATEHISTORY:
+						case CONTINUOUS_HISTORY_FOR_ENDDATE:
+							if (item.itemCode().equals(dateRange.getStartDateCode())) {
+								itemLogs.add(item);
+							}
+							break;
+						default:
+							break;
 						}
-						break;
-						
-					case MULTIINFO:						
-					case CONTINUOUSHISTORY:
-					case CONTINUOUS_HISTORY_FOR_ENDDATE:
-					case DUPLICATEHISTORY:
-					case NODUPLICATEHISTORY:
-						if(specialItemCode.contains(item.itemCode()) || (isHistory == true && item.itemCode().equals(dateRange.getStartDateCode()))) {
-							stringKey = item.valueAfter();
-						}
-						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
-								|| ctgType == CategoryType.DUPLICATEHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY) {
-							// trường hợp category lịch sử không có history nào
-							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
-							if(historyLst.size() == 1) {
-								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals(category21)) == true ? valueEndate: item.valueAfter());
-									item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals(category21))== true? valueEndate: item.valueAfter());
-								}
-								
-							}else {									
-								// trường hợp tạo mới hoàn toàn category
-								for (ComboBoxObject combox : historyLst) {
-									if (combox.getOptionValue() != null) {
-										// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
-										String[] history = combox.getOptionText().split("~");
-										switch (isAdd) {
-										case ADD:
-											info = InfoOperateAttr.ADD_HISTORY;
-											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
-											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.valueAfter());
-												item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.contentAfter());
-											}else {
-												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
-													if(item.itemCode().equals(dateRange.getStartDateCode())) {
-														reviseInfo = new ReviseInfo(nameEndate,
-															Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-															Optional.empty(), Optional.empty());
-													}
-												}
-											}
-											break;
-											
-										case UPDATE:
-											info = InfoOperateAttr.UPDATE;
-											if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
-												if(item.itemCode().equals(dateRange.getStartDateCode())) {
-													if (!history[1].equals(" ")) {
-														GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-														GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
-														if (oldStart.addDays(-1).equals(oldEnd)) {
+					}
+					
+					InfoOperateAttr info = InfoOperateAttr.ADD;
+					for (ItemValue item : itemLogs) {
+						// kiểm tra các item của  category nghỉ đặc biệt, employee, lịch sử 
+						switch(ctgType) {
+						case SINGLEINFO:
+							if (specialItemCode.contains(item.itemCode())) {
+								stringKey = item.valueAfter();
+							}
+							break;
+							
+						case MULTIINFO:						
+						case CONTINUOUSHISTORY:
+						case CONTINUOUS_HISTORY_FOR_ENDDATE:
+						case DUPLICATEHISTORY:
+						case NODUPLICATEHISTORY:
+							if(specialItemCode.contains(item.itemCode()) || (isHistory == true && item.itemCode().equals(dateRange.getStartDateCode()))) {
+								stringKey = item.valueAfter();
+							}
+							if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
+									|| ctgType == CategoryType.DUPLICATEHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY) {
+								// trường hợp category lịch sử không có history nào
+								boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
+								if(historyLst.size() == 1) {
+									if (item.itemCode().equals(dateRange.getEndDateCode())) {
+										item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals(category21)) == true ? valueEndate: item.valueAfter());
+										item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals(category21))== true? valueEndate: item.valueAfter());
+									}
+									
+								}else {									
+									// trường hợp tạo mới hoàn toàn category
+									for (ComboBoxObject combox : historyLst) {
+										if (combox.getOptionValue() != null) {
+											// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
+											String[] history = combox.getOptionText().split("~");
+											switch (isAdd) {
+											case ADD:
+												info = InfoOperateAttr.ADD_HISTORY;
+												//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
+												if (item.itemCode().equals(dateRange.getEndDateCode())) {
+													item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.valueAfter());
+													item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.contentAfter());
+												}else {
+													if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
+														if(item.itemCode().equals(dateRange.getStartDateCode())) {
 															reviseInfo = new ReviseInfo(nameEndate,
-																	Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-																	Optional.empty(), Optional.empty());
+																Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+																Optional.empty(), Optional.empty());
 														}
 													}
 												}
+												break;
+												
+											case UPDATE:
+												info = InfoOperateAttr.UPDATE;
+												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
+													if(item.itemCode().equals(dateRange.getStartDateCode())) {
+														if (!history[1].equals(" ")) {
+															GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
+															GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
+															if (oldStart.addDays(-1).equals(oldEnd)) {
+																reviseInfo = new ReviseInfo(nameEndate,
+																		Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+																		Optional.empty(), Optional.empty());
+															}
+														}
+													}
+												}
+												break;
+
+											default:
+												break;
 											}
-											break;
 
-										default:
-											break;
 										}
-
 									}
 								}
 							}
+							break;
+							
+							default: break;
 						}
-						break;
 						
-						default: break;
+						if (ItemValue.filterItem(item) != null) {
+							input.getItems().stream().forEach(itemMid ->{
+								if(item.itemCode().equals(itemMid.itemCode())) {
+									ItemValue convertItem = ItemValue.setContentForCPS001(item);
+									lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
+								}
+							});
+							
+						}
+					}
+
+					// Add category correction data
+					PersonCategoryCorrectionLogParameter ctgTarget = null;
+					
+					if (isAdd == PersonInfoProcessAttr.ADD) {
+						ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info);
+					} else {
+						ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info != InfoOperateAttr.ADD ? info: InfoOperateAttr.UPDATE);
 					}
 					
-					if (ItemValue.filterItem(item) != null) {
-						input.getItems().stream().forEach(itemMid ->{
-							if(item.itemCode().equals(itemMid.itemCode())) {
-								ItemValue convertItem = ItemValue.setContentForCPS001(item);
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
-							}
-						});
-						
+					if (ctgTarget != null && lstItemInfo.size() > 0) {
+						Optional<PersonCorrectionLogParameter> perLog = targets.stream().filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+						if(perLog.isPresent()) {
+							PersonCorrectionLogInter inter = new PersonCorrectionLogInter(perLog.get(), ctgTarget);
+							matrixLogs.add(inter);
+						}
+;
 					}
+					stringKey = null;
+					reviseInfo = null;
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw e;
 				}
-				
-
-				// Add category correction data
-				PersonCategoryCorrectionLogParameter ctgTarget = null;
-				
-				if (isAdd == PersonInfoProcessAttr.ADD) {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info);
-				} else {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info != InfoOperateAttr.ADD ? info: InfoOperateAttr.UPDATE);
-				}
-				
-				if (ctgTarget != null && lstItemInfo.size() > 0) {
-					PersonCorrectionLogParameter perLog = targets.parallelStream().filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst().get();
-					PersonCorrectionLogInter inter = new PersonCorrectionLogInter(perLog, ctgTarget);
-					matrixLogs.add(inter);
-				}
-				stringKey = null;
-				reviseInfo = null;
 			
 			});
 			if(!matrixLogs.isEmpty()) {
-				DataCorrectionContext.setParameter(new MatrixPersonCorrectionLogParams(matrixLogs));
+				try {
+					DataCorrectionContext.setParameter(new MatrixPersonCorrectionLogParams(matrixLogs));
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw e;
+				}
 			}
 		}
 	}
@@ -581,15 +605,17 @@ public class PeregCommonCommandFacade {
 		// Do thông tin của categoryId, categoryCode, standardDate của các nhân viên giống nhau
 		// nên mình sẽ lấy nhân viên đầu tiên
 		PeregInputContainerCps003 inputContainer = containerLst.get(0);
-		List<PeregEmpInfoQuery> empInfos = new ArrayList<>();
-		containerLst.parallelStream().forEach(c ->{
-			empInfos.add(new PeregEmpInfoQuery(c.getPersonId(),  c.getEmployeeId(), c.getInputs().getRecordId()));
-		});
-		PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(inputContainer.getInputs().getCategoryId(), inputContainer.getInputs().getCategoryCd(), standardDate, empInfos);
+		List<PeregEmpInfoQuery> empInfos = containerLst.stream()
+				.map(c -> new PeregEmpInfoQuery(c.getPersonId(), c.getEmployeeId(), c.getInputs().getRecordId()))
+				.collect(Collectors.toList());
+		PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(
+				inputContainer.getInputs().getCategoryId(), inputContainer.getInputs().getCategoryCd(), standardDate,
+				empInfos);
 		// Add item invisible to list
 		Map<String, List<ItemValue>> invisibles = this.getItemInvisiblesCPS003(queryByListEmp, inputContainer.getInputs() , PersonInfoProcessAttr.UPDATE);
-		containerLst.parallelStream().forEach(c ->{
+		containerLst.stream().forEach(c ->{
 			List<ItemValue> items = invisibles.get(c.getEmployeeId());
+			if(CollectionUtil.isEmpty(items)) return;
 			c.getInputs().getItems().addAll(items);
 		});
 	}
@@ -609,7 +635,7 @@ public class PeregCommonCommandFacade {
 			List<String> visibleItemCodes = itemFirst.getItems().stream().map(ItemValue::itemCode)
 					.collect(Collectors.toList());
 			Map<String, List<ItemValue>> fullItems = itemDefFinder.getFullListItemDefCPS003(query);
-			fullItems.entrySet().parallelStream().forEach(c ->{
+			fullItems.entrySet().stream().forEach(c ->{
 				List<ItemValue> items = c.getValue().stream().filter(i -> {
 					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
 				}).collect(Collectors.toList());
