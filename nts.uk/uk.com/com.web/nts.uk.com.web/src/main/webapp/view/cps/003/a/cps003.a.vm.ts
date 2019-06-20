@@ -323,8 +323,14 @@ module cps003.a.vm {
             }
             
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
-                $grid.mGrid("validate");
-                let itemErrors = $grid.mGrid("errors"), errObj = {}, dataToG;
+                $grid.mGrid("validate", false, data => data.register);
+                let errObj = {}, dataToG,
+                    dataSource = $grid.mGrid("dataSource"),
+                    itemErrors = _.filter($grid.mGrid("errors"), e => {
+                        let d = dataSource[e.index];
+                        return d && d.register;
+                    });
+                
                 if (itemErrors && itemErrors.length > 0) {
                     self.hasError(true);
                     dataToG = _.map(itemErrors, err => {
@@ -507,8 +513,13 @@ module cps003.a.vm {
         
         checkError() {
             let self = this, $grid = $("#grid");
-            $grid.mGrid("validate");
-            let errors = $grid.mGrid("errors");
+            $grid.mGrid("validate", false, data => data.register);
+            let dataSource = $grid.mGrid("dataSource"),
+                errors = _.filter($grid.mGrid("errors"), e => {
+                    let d = dataSource[e.index];
+                    return d && d.register;
+                });
+            
             if (errors.length === 0) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_1463" });
                 return;
