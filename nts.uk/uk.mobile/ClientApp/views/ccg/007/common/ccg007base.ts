@@ -1,7 +1,7 @@
 import { Vue, _ } from '@app/provider';
 
 export class CCG007Login extends Vue {
-    protected login(submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected login(submitData: LoginParam, resetForm: Function) {
         let self = this;
 
         self.$validate();
@@ -21,10 +21,10 @@ export class CCG007Login extends Vue {
                     if (!_.isEmpty(data.successMsg)) {
                         self.$modal.info({ messageId: data.successMsg })
                             .then(() => {
-                                self.processAfterLogin(data, submitData, resetForm, saveInfo);
+                                self.processAfterLogin(data, submitData, resetForm);
                             });
                     } else {
-                        self.processAfterLogin(data, submitData, resetForm, saveInfo);
+                        self.processAfterLogin(data, submitData, resetForm);
                     }
                 }
             }).catch((res: any) => {
@@ -43,7 +43,7 @@ export class CCG007Login extends Vue {
             });
     }
 
-    protected processAfterLogin(data: any, submitData: LoginParam, resetForm: Function, saveInfo: boolean) {
+    protected processAfterLogin(data: any, submitData: LoginParam, resetForm: Function) {
         let self = this;
 
         self.$mask('hide');
@@ -57,7 +57,6 @@ export class CCG007Login extends Vue {
                             name: 'changepass',
                             params: _.merge(submitData,
                                 {
-                                    saveInfo,
                                     oldPassword: submitData.password,
                                     mesId: data.msgErrorId,
                                     changePassReason: 'Msg_1523',
@@ -66,7 +65,7 @@ export class CCG007Login extends Vue {
                         });
                     } else {
                         submitData.loginDirect = true;
-                        this.login(submitData, resetForm, saveInfo);
+                        this.login(submitData, resetForm);
                     }
                 });
         } else {
@@ -77,7 +76,9 @@ export class CCG007Login extends Vue {
                         name: 'changepass', params: _.merge({},
                             submitData,
                             {
-                                oldPassword: submitData.password, mesId: data.msgErrorId, saveInfo,
+                                oldPassword: submitData.password,
+                                mesId: data.msgErrorId,
+                                saveInfo: submitData.saveInfo,
                                 changePassReason: data.changePassReason
                             })
                     });
@@ -104,6 +105,7 @@ interface CheckChangePass {
 }
 
 interface LoginParam {
+    saveInfo: boolean;
     companyCode: string;
     employeeCode: string;
     password: string;

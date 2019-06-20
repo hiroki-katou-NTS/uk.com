@@ -55,6 +55,7 @@ export class Ccg007CComponent extends CCG007Login {
         self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) :
             _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId)
                 : self.$i18n(self.params.changePassReason);
+
         Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode),
         this.$http.post(servicePath.getUserName, {
             contractCode: self.params.contractCode,
@@ -113,7 +114,8 @@ export class Ccg007CComponent extends CCG007Login {
 
         // submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            super.login({
+            super.login({                
+                saveInfo: self.params.autoLogin,
                 companyCode: self.params.companyCode,
                 employeeCode: self.params.employeeCode,
                 password: command.newPassword,
@@ -124,7 +126,7 @@ export class Ccg007CComponent extends CCG007Login {
                 self.model.currentPassword = '';
                 self.model.newPassword = '';
                 self.model.newPasswordConfirm = '';
-            }, self.params.saveInfo);
+            });
         }).catch((res) => {
             // Return Dialog Error
             self.$mask('hide');

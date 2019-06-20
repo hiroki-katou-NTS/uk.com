@@ -23,7 +23,7 @@ const router = new VueRouter({
 router.beforeEach((to: Route, from: Route, next: (to?: string) => void) => {
     if (to.path.match(/^\/$/)) {
         next('/ccg/008/a');
-    } else if (to.path.indexOf('ccg/007') >= 0 || to.path.match(/\/documents/)) {
+    } else if (to.path.match(/(\/documents)|(\/ccg\/007\/)/)) {
         // if login or documents page
         next();
     } else {

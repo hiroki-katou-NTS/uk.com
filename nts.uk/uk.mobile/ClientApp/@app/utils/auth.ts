@@ -7,6 +7,17 @@ export const auth = {
     get token(): string | null {
         return storage.local.getItem('csrf') as string;
     },
+    get remember(): {
+        companyCode: string,
+        employeeCode: string
+    } {
+        let remb: any = storage.local.getItem('remember');
+
+        return remb && {
+            companyCode: remb.companyCode,
+            employeeCode: remb.employeeCode
+        };
+    },
     get user(): null | {
         employee: boolean;
         companyId: string;

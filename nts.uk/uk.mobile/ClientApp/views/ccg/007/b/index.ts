@@ -1,6 +1,6 @@
 import { _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { storage } from '@app/utils';
+import { storage, auth } from '@app/utils';
 import { NavMenu, SideMenu } from '@app/services';
 import { CCG007Login } from '../common/ccg007base';
 
@@ -40,7 +40,7 @@ export class Ccg007BComponent extends CCG007Login {
         comp: '',
         employeeCode: '',
         password: '',
-        autoLogin: [true],
+        autoLogin: true,
         ver: ''
     };
 
@@ -97,8 +97,8 @@ export class Ccg007BComponent extends CCG007Login {
 
     public checkEmpCodeAndCompany() {
         let self = this,
-            companyCode = '',
-            employeeCode = '';
+            params = self.params,
+            remb = auth.remember;
 
         Promise.resolve()
             .then(() => {
@@ -110,32 +110,16 @@ export class Ccg007BComponent extends CCG007Login {
             })
             .then((response: { data: Array<ICompany> }) => self.companies = response.data)
             .then(() => {
-                if (!_.isNil(self.params.employeeCode)) {
-                    return Promise.resolve(self.params.employeeCode);
-                } else {
-                    return storage.local.getItem('employeeCode');
+                if (params.companyCode) {
+                    self.model.comp = params.companyCode;
+                } else if (remb) {
+                    self.model.comp = remb.companyCode;
                 }
-            }).then((empCode: string) => {
-                if (!_.isNil(empCode)) {
-                    employeeCode = empCode;
-                }
-            }).then(() => {
-                if (!_.isNil(self.params.companyCode)) {
-                    return Promise.resolve(self.params.companyCode);
-                } else {
-                    return storage.local.getItem('companyCode');
-                }
-            }).then((compCode: string) => {
-                if (!_.isNil(compCode)) {
-                    companyCode = compCode;
-                }
-            }).then(() => {
-                if (_.isEmpty(self.companies) || _.isNil(_.find(self.companies, (com: ICompany) => com.companyCode === companyCode))) {
-                    self.model.comp = self.companies[0].companyCode;
-                    self.model.employeeCode = '';
-                } else {
-                    self.model.comp = companyCode;
-                    self.model.employeeCode = employeeCode;
+                
+                if (params.employeeCode) {
+                    self.model.employeeCode = params.employeeCode;
+                } else if (remb) {
+                    self.model.employeeCode = remb.employeeCode;
                 }
             });
     }
@@ -150,14 +134,14 @@ export class Ccg007BComponent extends CCG007Login {
         let self = this;
 
         super.login({
+            saveInfo: self.model.autoLogin,
             companyCode: self.model.comp,
             employeeCode: self.model.employeeCode,
             password: self.model.password,
             contractCode: self.contractCode,
             contractPassword: self.contractPass,
             loginDirect: false
-        }, () => self.model.password = '',
-            self.model.autoLogin[0]);
+        }, () => self.model.password = '');
     }
 
     public forgetPass() {

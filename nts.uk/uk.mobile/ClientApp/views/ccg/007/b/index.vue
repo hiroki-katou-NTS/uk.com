@@ -51,7 +51,7 @@
                         v-bind:value="true"
                         v-bind:disabled="false">
                         {{ 'CCGS07_4' | i18n }}
-                        </nts-checkbox>
+                    </nts-checkbox>
 
                     <div class="mt-3">
                         <button class="btn btn-primary btn-block" v-click:500="login"> {{'CCGS07_5' | i18n}}</button>

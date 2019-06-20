@@ -29,6 +29,15 @@ export const auth = {
                             return self.$http
                                 .post(lapi, data)
                                 .then((resp: { data: any }) => {
+                                    if (data.saveInfo) {
+                                        storage.local.setItem('remember', {
+                                            companyCode: data.companyCode,
+                                            employeeCode: data.employeeCode
+                                        });
+                                    } else {
+                                        storage.local.removeItem('remember');
+                                    }
+
                                     self.$http.get('/ctx/sys/gateway/login/mobile/token')
                                         .then((v: { data: string | any }) => {
                                             if (typeof v.data !== 'string') {
@@ -77,7 +86,7 @@ export const auth = {
                             if (!token) {
                                 resolve(null);
 
-                                if (!location.href.match(/\/documents\//)) {
+                                if (!location.href.match(/(\/documents)|(\/ccg\/007\/)/)) {
                                     self.$goto.login();
                                 }
                             } else {
@@ -96,7 +105,10 @@ export const auth = {
                             if (!user) {
                                 resolve(null);
 
-                                self.$goto.login();
+
+                                if (!location.href.match(/(\/documents)|(\/ccg\/007\/)/)) {
+                                    self.$goto.login();
+                                }
                             } else {
                                 resolve(user);
                             }
