@@ -7,43 +7,43 @@ const charTypes: {
         viewName: string;
     }
 } = {
-        AnyHalfWidth: {
-            width: 0.5,
-            viewName: '半角'
-        },
-        AlphaNumeric: {
-            width: 0.5,
-            viewName: '半角英数字'
-        },
-        Alphabet: {
-            width: 0.5,
-            viewName: '半角英字'
-        },
-        Numeric: {
-            width: 0.5,
-            viewName: '半角数字'
-        },
-        Any: {
-            width: 1,
-            viewName: '全角'
-        },
-        Kana: {
-            width: 1,
-            viewName: 'カナ'
-        },
-        HalfInt: {
-            width: 0.5,
-            viewName: '半整数'
-        },
-        WorkplaceCode: {
-            width: 0.5,
-            viewName: '半角英数字'
-        },
-        EmployeeCode: {
-            width: 0.5,
-            viewName: '半角英数字'
-        }
-    };
+    AnyHalfWidth: {
+        width: 0.5,
+        viewName: '半角'
+    },
+    AlphaNumeric: {
+        width: 0.5,
+        viewName: '半角英数字'
+    },
+    Alphabet: {
+        width: 0.5,
+        viewName: '半角英字'
+    },
+    Numeric: {
+        width: 0.5,
+        viewName: '半角数字'
+    },
+    Any: {
+        width: 1,
+        viewName: '全角'
+    },
+    Kana: {
+        width: 1,
+        viewName: 'カナ'
+    },
+    HalfInt: {
+        width: 0.5,
+        viewName: '半整数'
+    },
+    WorkplaceCode: {
+        width: 0.5,
+        viewName: '半角英数字'
+    },
+    EmployeeCode: {
+        width: 0.5,
+        viewName: '半角英数字'
+    }
+};
 
 export const constraint = {
     html(prmitive: IRule) {
@@ -60,10 +60,19 @@ export const constraint = {
                 $content += `${char.viewName}${constraint.getCharLength(prmitive)}文字`;
                 break;
             case 'Date':
+                break;
             case 'Time':
+                $content += constraint.getTimeMinMax(prmitive);
+                break;
             case 'Clock':
+                $content += constraint.getTimeMinMax(prmitive);
+                break;
             case 'Duration':
+                $content += constraint.getTimeMinMax(prmitive);
+                break;
             case 'TimePoint':
+                $content += constraint.getTimeMinMax(prmitive);
+                break;
             case 'Decimal':
             case 'Integer':
                 // $content += $content.length > 0 ? "/" : "";
@@ -77,6 +86,10 @@ export const constraint = {
     },
     getMinMax(prmitive: IRule): string {
         return `${prmitive.min}～${prmitive.max}`;
+    },
+    getTimeMinMax(prmitive: IRule): string {
+        // Thêm đoạn convert từ number sang time
+        return '';
     },
     getCharLength(prmitive: IRule): number {
         let char = charTypes[prmitive.charType] || charTypes.Any;
