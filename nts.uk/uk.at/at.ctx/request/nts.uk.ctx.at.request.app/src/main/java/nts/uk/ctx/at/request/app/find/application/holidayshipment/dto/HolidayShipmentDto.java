@@ -129,4 +129,6 @@ public class HolidayShipmentDto {
 	List<EmployeeInfoImport> employees;
 	
 	public double absRecMng;
+	private boolean masterUnregRec;
+	private boolean masterUnregAbs;
 }
