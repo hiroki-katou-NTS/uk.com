@@ -29,7 +29,8 @@ import { component } from '@app/core/component';
             'filters': 'Bộ lọc (Filter)',
             'controls': 'Các điều khiển (Control)',
             'directives': 'Các chỉ định (Directive)',
-            'important_document': 'Những mục tài liệu quan trọng'
+            'important_document': 'Những mục tài liệu quan trọng',
+            'sample': 'Ví dụ'
         },
         jp: {
             documents: 'Documents',
@@ -40,7 +41,8 @@ import { component } from '@app/core/component';
             'filters': ' (Filter)',
             'controls': ' (Control)',
             'directives': ' (Directive)',
-            'important_document': 'Important documents'
+            'important_document': 'Important documents',
+            'sample': 'サンプル'
         }
     }
 })
