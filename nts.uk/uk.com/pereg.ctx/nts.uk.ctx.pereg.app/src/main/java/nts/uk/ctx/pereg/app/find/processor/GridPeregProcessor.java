@@ -185,9 +185,10 @@ public class GridPeregProcessor {
 				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
 				query.getLstEmployee().stream().forEach(c ->{
-					Optional<EmpMainCategoryDto> layoutOpt = layouts.parallelStream().filter(x -> x.getEmployeeId().equals(c)).findFirst();
-					if(layoutOpt.isPresent()) {
-						personDatas.stream().filter(p -> p.getEmployeeId().equals(layoutOpt.get().getEmployeeId())).findFirst()
+					List<EmpMainCategoryDto> layoutOpt = layouts.parallelStream().filter(x -> x.getEmployeeId().equals(c)).collect(Collectors.toList());
+					if(CollectionUtil.isEmpty(layoutOpt)) return;
+					layoutOpt.stream().forEach(l ->{
+						personDatas.stream().filter(p -> p.getEmployeeId().equals(l.getEmployeeId())).findFirst()
 						.ifPresent(dto -> {
 							GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
 									dto.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
@@ -197,13 +198,13 @@ public class GridPeregProcessor {
 									new CodeName(dto.getPositionCode(), dto.getPositionName()),
 									new CodeName(dto.getEmploymentCode(), dto.getEmploymentName()),
 									new CodeName(dto.getClassificationCode(), dto.getClassificationName()),
-									layoutOpt.get().getItems());
+									l.getItems());
 
 							resultsSync.add(syncDto);
 						});
-					}
+					});
 				});	
-
+				
 				geDto.setBodyDatas(new ArrayList<>(resultsSync));
 			}
 		}

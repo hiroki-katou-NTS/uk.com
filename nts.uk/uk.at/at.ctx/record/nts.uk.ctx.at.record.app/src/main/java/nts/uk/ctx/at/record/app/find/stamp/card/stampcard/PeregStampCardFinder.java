@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.stamp.card.stampcard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -67,8 +69,8 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 		List<String> sids = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		List<StampCard> domains = stampCardRepo.getLstStampCardByLstSid(sids);
-		
-		return domains.stream().map(d -> {
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		List<GridPeregDomainDto> resultDataExist = domains.stream().map(d -> {
 			String pid = query.getEmpInfos().stream()
 					.filter(f -> f.getEmployeeId().equals(d.getEmployeeId()))
 					.findFirst()
@@ -77,6 +79,17 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 			
 			return new  GridPeregDomainDto(d.getEmployeeId(), pid, PeregStampCardDto.createFromDomain(d));
 		}).collect(Collectors.toList());
+		
+		if(!CollectionUtil.isEmpty(resultDataExist)) result.addAll(resultDataExist);
+		query.getEmpInfos().stream().forEach(c ->{
+			Optional<GridPeregDomainDto> gridDto = resultDataExist.stream().filter(r ->r.getEmployeeId().equals(c)).findFirst();
+			if(!gridDto.isPresent()) {
+				GridPeregDomainDto dto = new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null);
+				result.add(dto);
+			}
+		});
+		
+		return result;
 	}
 
 }
