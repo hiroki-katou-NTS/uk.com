@@ -56,7 +56,8 @@ module cps003.g.vm {
             _.each(dataGroup, c => {
                 let em = { employeeId: c[0].employeeId, employeeCd: c[0].empCd, employeeName: c[0].empName, order: c[0].no, errorLst: [] };
                 _.each(c, i => {
-                    let item = { itemName: i.itemName, message: i.message, errorType: i.errorType};
+                    // 0 - ERROR, 1 - WARNING
+                    let item = { itemName: i.itemName, message: i.message, errorType: 0};
                         em.errorLst.push(item);
                 });
                 result.push(em);
