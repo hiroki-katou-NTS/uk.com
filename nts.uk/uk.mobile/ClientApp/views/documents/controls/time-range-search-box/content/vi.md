@@ -25,3 +25,5 @@ export class ViewModel extends Vue {
     *
 }
 ```
+
+Tạo bởi:　**Phạm Văn Dân**

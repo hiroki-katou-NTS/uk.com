@@ -23,3 +23,5 @@ export class ViewModel extends Vue {
     *
 }
 ```
+
+著者： Pham Van Dan
