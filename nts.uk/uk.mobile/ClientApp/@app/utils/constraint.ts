@@ -1,5 +1,6 @@
 import { obj } from '@app/utils';
 import { IRule } from 'declarations';
+import { TimeWithDay, TimePoint, TimeDuration} from '@app/utils/time';
 
 const charTypes: {
     [key: string]: {
@@ -46,37 +47,37 @@ const charTypes: {
 };
 
 export const constraint = {
-    html(prmitive: IRule) {
+    html(primitive: IRule) {
         let $content = '';
 
-        if (obj.isEmpty(prmitive)) {
+        if (obj.isEmpty(primitive)) {
             return $content;
         }
 
-        switch (prmitive.valueType) {
+        switch (primitive.valueType) {
             case 'String':
-                let char = charTypes[prmitive.charType] || charTypes.Any;
+                let char = charTypes[primitive.charType] || charTypes.Any;
 
-                $content += `${char.viewName}${constraint.getCharLength(prmitive)}文字`;
+                $content += `${char.viewName}${constraint.getCharLength(primitive)}文字`;
                 break;
             case 'Date':
                 break;
             case 'Time':
-                $content += constraint.getTimeMinMax(prmitive);
+                $content += constraint.getTimeMinMax(primitive);
                 break;
             case 'Clock':
-                $content += constraint.getTimeMinMax(prmitive);
+                $content += constraint.getTimeMinMax(primitive);
                 break;
             case 'Duration':
-                $content += constraint.getTimeMinMax(prmitive);
+                $content += constraint.getTimeMinMax(primitive);
                 break;
             case 'TimePoint':
-                $content += constraint.getTimeMinMax(prmitive);
+                $content += constraint.getTimeMinMax(primitive);
                 break;
             case 'Decimal':
             case 'Integer':
                 // $content += $content.length > 0 ? "/" : "";
-                $content += constraint.getMinMax(prmitive);
+                $content += constraint.getMinMax(primitive);
                 break;
             default:
                 break;
@@ -84,17 +85,28 @@ export const constraint = {
 
         return $content;
     },
-    getMinMax(prmitive: IRule): string {
-        return `${prmitive.min}～${prmitive.max}`;
+    getMinMax(primitive: IRule): string {
+        return `${primitive.min}～${primitive.max}`;
     },
-    getTimeMinMax(prmitive: IRule): string {
-        // Thêm đoạn convert từ number sang time
-        return '';
-    },
-    getCharLength(prmitive: IRule): number {
-        let char = charTypes[prmitive.charType] || charTypes.Any;
+    getTimeMinMax(primitive: IRule): string {
+        switch (primitive.valueType) {
+            case 'Time':
+                return 'not found!';
+            case 'Clock':
+                return `${TimeWithDay.toString(primitive.min as number)}～${TimeWithDay.toString(primitive.max as number)}`;
+            case 'Duration':
+                return `${TimeDuration.toString(primitive.min as number)}～${TimeDuration.toString(primitive.max as number)}`;
+            case 'TimePoint':
+                return `${TimePoint.toString(primitive.min as number)}～${TimePoint.toString(primitive.max as number)}`;
+            default:
+                return 'not found';
+        }
 
-        return Math.floor(prmitive.maxLength / (char.width * 2));
+    },
+    getCharLength(primitive: IRule): number {
+        let char = charTypes[primitive.charType] || charTypes.Any;
+
+        return Math.floor(primitive.maxLength / (char.width * 2));
     },
     charTypes
 };
