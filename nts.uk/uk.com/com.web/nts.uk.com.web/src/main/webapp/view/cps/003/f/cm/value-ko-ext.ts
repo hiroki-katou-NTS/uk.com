@@ -38,7 +38,7 @@ module nts.custombinding {
             let accessor = valueAccessor(),
                 itemData: IItemData = ko.toJS(accessor.itemData),
                 template = {
-                    str: `<input data-bind="ntsTextEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false }" />`,
+                    str: `<input id="string-value" data-bind="ntsTextEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false }" />`,
                     numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_81'), value: value, constraint: constraint, enable: true, required: false, option: options }" />`,
                     amount: `<div class='number-group-box' data-bind="let: { m1: ko.computed(function() { return mode() == '0'; }), m2: ko.computed(function() { return mode() == '1'; }) }">
                                 <div class="grant-selection-group" data-bind="ntsRadioBoxGroup: {

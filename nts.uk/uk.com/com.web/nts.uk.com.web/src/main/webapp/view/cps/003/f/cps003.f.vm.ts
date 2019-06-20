@@ -104,7 +104,6 @@ module cps003.f.vm {
 
                         // set name for display on F2_004
                         self.currentItem.name(item.itemName);
-
                         // generate primitive value
                         if (dts) {
                             switch (dts.dataTypeValue) {
@@ -215,6 +214,10 @@ module cps003.f.vm {
                                 self.currentItem.itemData(itemData);
                                 //self.currentItem.filter.valueHasMutated();
                             });
+                        }
+                        
+                        if (["IS00003", "IS00004", "IS00015", "IS00015"].indexOf(self.currentItem.itemData().itemCode) > -1) {
+                                validation.initCheckErrorSpecialItem(self.currentItem);             
                         }
                     } else {
                         self.currentItem.itemData({ itemCode: '', dataType: 0, amount: 0, selectionItems: [] });

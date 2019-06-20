@@ -54,7 +54,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		val command = context.getCommand();
 		List<PeregUserDefAddCommand> errorLst = new ArrayList<>();
 		List<PeregUserDefAddCommand> addLst = new ArrayList<>();
-		command.parallelStream().forEach(c -> {
+		command.stream().forEach(c -> {
 			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
@@ -83,18 +83,18 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 	}
 	
 	private void insertPerson(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst) {
-		Map<String, String> recordIds = addLst.parallelStream().collect(
+		Map<String, String> recordIds = addLst.stream().collect(
 				Collectors.toMap(PeregUserDefAddCommand::getPersonId, PeregUserDefAddCommand::getRecordId));
 
 		// In case of optional category
-		recordIds.entrySet().parallelStream().forEach(c -> {
+		recordIds.entrySet().stream().forEach(c -> {
 			if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
 				c.setValue(IdentifierUtil.randomUniqueId());
 			}
 		});
 
 		// Insert category data
-		List<PerInfoCtgData> ctgData = recordIds.entrySet().parallelStream().map(c -> {
+		List<PerInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
 			return new PerInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
 		}).collect(Collectors.toList());
 		
@@ -104,9 +104,9 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		
 		List<PersonInfoItemData> items = new ArrayList<>();
 		
-		addLst.parallelStream().forEach(c -> {
+		addLst.stream().forEach(c -> {
 			String recordId = recordIds.get(c.getPersonId());
-			c.getItems().parallelStream().forEach(item -> {
+			c.getItems().stream().forEach(item -> {
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
@@ -125,18 +125,18 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 	}
 	
 	private void insertEmployee(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst) {
-		Map<String, String> recordIds = addLst.parallelStream().collect(
+		Map<String, String> recordIds = addLst.stream().collect(
 				Collectors.toMap(PeregUserDefAddCommand::getEmployeeId, PeregUserDefAddCommand::getRecordId));
 		
 		// In case of optional category
-		recordIds.entrySet().parallelStream().forEach(c -> {
+		recordIds.entrySet().stream().forEach(c -> {
 			if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
 				c.setValue(IdentifierUtil.randomUniqueId());
 			}
 		});
 		
 		// Insert category data
-		List<EmpInfoCtgData> ctgData = recordIds.entrySet().parallelStream().map(c -> {
+		List<EmpInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
 			return new EmpInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
 		}).collect(Collectors.toList());
 		
@@ -148,9 +148,9 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		// Add item data
 		List<EmpInfoItemData> items = new ArrayList<>();
 		
-		addLst.parallelStream().forEach(c -> {
+		addLst.stream().forEach(c -> {
 			String recordId = recordIds.get(c.getPersonId());
-			c.getItems().parallelStream().forEach(item -> {
+			c.getItems().stream().forEach(item -> {
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
