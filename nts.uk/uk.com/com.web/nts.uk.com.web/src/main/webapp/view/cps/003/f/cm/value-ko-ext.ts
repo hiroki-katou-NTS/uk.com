@@ -227,7 +227,7 @@ module nts.custombinding {
                         } else if (['IS00084', 'IS00085'].indexOf(itemData.itemCode) > -1) {
                             fetch1.checkFunctionNo().done(role => {
                                 setShared('inputCDL008', {
-                                    selectedCodes: [],
+                                    selectedCodes: _.isNil(value) ? [] : [value],
                                     baseDate: __viewContext.viewModel.baseDate,
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者

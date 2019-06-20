@@ -85,21 +85,27 @@ module cps003.f.vm {
                         let dts = item.itemTypeState.dataTypeState,
                             itemData: IItemData = {
                                 constraint: '',
+                                constraint_filter:'',
                                 itemName: item.itemName,
                                 itemCode: item.itemCode,
                                 dataType: dts.dataTypeValue,
                                 amount: !!dts.numericItemAmount,
                                 required: !!item.isRequired,
                                 decimalLength: dts.decimalPart,
-                                selectionItems: []
+                                selectionItems: [],
+                                selectionItem_filters: []
                             }, command = {
                                 itemId: item.id,
-                                required: !!item.isRequired,
+                                required: false,
                                 baseDate: moment.utc().toISOString()
                             }, constraint: any = {
                                 itemName: item.itemName,
                                 itemCode: item.itemCode,
                                 required: !!item.isRequired// !!x.isRequired
+                            }, constraint_filter: any = {
+                                itemName: item.itemName,
+                                itemCode: item.itemCode + "_filter",
+                                required : false
                             };
 
                         // set name for display on F2_004
@@ -112,95 +118,132 @@ module cps003.f.vm {
                                     constraint.valueType = "String";
                                     constraint.maxLength = dts.stringItemLength || dts.maxLength;
                                     constraint.stringExpression = /(?:)/;
-
+                                    constraint_filter.valueType = "String";
+                                    constraint_filter.maxLength = dts.stringItemLength || dts.maxLength;
+                                    constraint_filter.stringExpression = /(?:)/;
                                     switch (dts.stringItemType) {
                                         default:
                                         case ITEM_STRING_TYPE.ANY:
                                             constraint.charType = 'Any';
+                                            constraint_filter.charType = 'Any';
                                             break;
                                         case ITEM_STRING_TYPE.CARDNO:
                                             constraint.itemCode = 'StampNumber';
                                             constraint.charType = 'AnyHalfWidth';
                                             constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
+                                            constraint_filter.itemCode = 'StampNumber';
+                                            constraint_filter.charType = 'AnyHalfWidth';
+                                            constraint_filter.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;                                            
                                             break;
                                         case ITEM_STRING_TYPE.EMPLOYEE_CODE:
                                             constraint.itemCode = 'EmployeeCode';
                                             constraint.charType = 'AnyHalfWidth';
+                                            constraint_filter.itemCode = 'EmployeeCode';
+                                            constraint_filter.charType = 'AnyHalfWidth';                                            
                                             break;
                                         case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                             constraint.charType = 'AnyHalfWidth';
+                                            constraint_filter.charType = 'AnyHalfWidth';
                                             break;
                                         case ITEM_STRING_TYPE.ALPHANUMERIC:
                                             constraint.charType = 'AlphaNumeric';
+                                            constraint_filter.charType = 'AlphaNumeric';
                                             break;
                                         case ITEM_STRING_TYPE.NUMERIC:
                                             constraint.charType = 'Numeric';
+                                            constraint_filter.charType = 'Numeric';
                                             break;
                                         case ITEM_STRING_TYPE.KANA:
                                             constraint.charType = 'Kana';
+                                            constraint_filter.charType = 'Kana';
                                             break;
                                     }
                                     break;
                                 case ITEM_SINGLE_TYPE.NUMERIC:
                                 case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                     constraint.charType = 'Numeric';
+                                    constraint_filter.charType = 'Numeric';
                                     if (dts.decimalPart == 0) {
                                         constraint.valueType = "Integer";
+                                        constraint_filter.valueType = "Integer";
                                     } else {
                                         constraint.valueType = "Decimal";
                                         constraint.mantissaMaxLength = dts.decimalPart;
+                                        constraint_filter.valueType = "Decimal";
+                                        constraint_filter.mantissaMaxLength = dts.decimalPart;                                        
                                     }
-
+                                    
                                     let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
                                     constraint.min = dts.numericItemMin || 0;
                                     constraint.max = dts.numericItemMax || max;
+                                    constraint_filter.min = dts.numericItemMin || 0;
+                                    constraint_filter.max = dts.numericItemMax || max;                                    
                                     break;
                                 case ITEM_SINGLE_TYPE.DATE:
                                     constraint.valueType = "Date";
                                     constraint.max = parseTime(dts.max, true).format() || '';
                                     constraint.min = parseTime(dts.min, true).format() || '';
+                                    constraint_filter.valueType = "Date";
+                                    constraint_filter.max = parseTime(dts.max, true).format() || '';
+                                    constraint_filter.min = parseTime(dts.min, true).format() || '';                                    
                                     break;
                                 case ITEM_SINGLE_TYPE.TIME:
                                     constraint.valueType = "Time";
                                     constraint.max = parseTime(dts.max, true).format();
                                     constraint.min = parseTime(dts.min, true).format();
+                                    constraint_filter.valueType = "Time";
+                                    constraint_filter.max = parseTime(dts.max, true).format();
+                                    constraint_filter.min = parseTime(dts.min, true).format();                                    
                                     break;
                                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                                     constraint.valueType = "Clock";
                                     constraint.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
                                     constraint.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
+                                    constraint_filter.valueType = "Clock";
+                                    constraint_filter.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
+                                    constraint_filter.min = parseTimeWidthDay(dts.timePointItemMin).shortText;                                    
                                     break;
                                 case ITEM_SINGLE_TYPE.SELECTION:
                                     constraint.valueType = "Selection";
+                                    constraint_filter.valueType = "Selection";
                                     break;
                                 case ITEM_SINGLE_TYPE.SEL_RADIO:
                                     constraint.valueType = "Radio";
+                                    constraint_filter.valueType = "Radio";
                                     break;
                                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
                                     constraint.valueType = "Button";
+                                    constraint_filter.valueType = "Button";
                                     break;
                                 case ITEM_SINGLE_TYPE.READONLY:
                                     constraint.valueType = "READONLY";
+                                    constraint_filter.valueType = "READONLY";
                                     break;
                                 case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                                     constraint.valueType = "RELATE_CATEGORY";
+                                    constraint_filter.valueType = "RELATE_CATEGORY";
                                     break;
                                 case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                                     constraint.valueType = "READONLY_BUTTON";
+                                    constraint_filter.valueType = "READONLY_BUTTON";
                                     break;
                             }
                         }
 
                         // update constraint for filter, value control
                         itemData.constraint = constraint.itemCode;
-
+                        itemData.constraint_filter = constraint_filter.itemCode;
                         if (constraint.itemCode == 'EmployeeCode') {
                             _.extend(constraint, {
                                 formatOption: __viewContext.primitiveValueConstraints.EmployeeCode.formatOption
                             });
+                             _.extend(constraint_filter, {
+                                formatOption: __viewContext.primitiveValueConstraints.EmployeeCode.formatOption
+                            });                           
                         }
 
                         writeConstraint(constraint.itemCode, constraint);
+                        writeConstraint(constraint_filter.itemCode, constraint_filter);
 
                         // if dataType isn't selection item
                         if ([ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON]
@@ -210,7 +253,13 @@ module cps003.f.vm {
                         } else {
                             // get selection options
                             service.fetch.getCbxOptions(command).done(items => {
-                                itemData.selectionItems = items;
+                                itemData.selectionItem_filters =  items;
+                                if(!!item.isRequired  == true){
+                                   itemData.selectionItems =  _.filter(items, function(value){ return value.optionValue !="";})
+                                }else{
+                                   itemData.selectionItems = items; 
+                                }
+
                                 self.currentItem.itemData(itemData);
                                 //self.currentItem.filter.valueHasMutated();
                             });
@@ -785,6 +834,7 @@ module cps003.f.vm {
 
     interface IItemData {
         constraint?: string;
+        constraint_filter?: string;
         itemName?: string;
         itemCode: string;
         dataType: number;
@@ -792,6 +842,7 @@ module cps003.f.vm {
         required?: boolean;
         decimalLength?: number;
         selectionItems?: Array<any>;
+        selectionItem_filters?: Array<any>;
     }
 
     interface ICurrentItem {

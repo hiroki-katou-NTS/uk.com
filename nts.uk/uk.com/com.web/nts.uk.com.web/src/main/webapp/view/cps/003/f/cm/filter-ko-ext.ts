@@ -23,6 +23,7 @@ module nts.custombinding {
         amount: number;
         decimalLength?: number;
         selectionItems: Array<any>;
+        selectionItem_filters: Array<any>;
     }
 
     import modal = nts.uk.ui.windows.sub.modal;
@@ -38,11 +39,11 @@ module nts.custombinding {
             let accessor = valueAccessor(),
                 itemData: IItemData = ko.toJS(accessor.itemData),
                 template = {
-                    str: `<input id="string-filter" data-bind="ntsTextEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,enable: enable, required: false }" />`,
-                    numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false, option: options }" />`,
-                    date: `<div data-bind="ntsDatePicker: { name: i18n('CPS003_78'), constraint: constraint,value: value, enable: enable, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
-                    time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,inputFormat: 'time', mode: 'time', enable: enable, required: false }" />`,
-                    timep: `<input data-bind="ntsTimeWithDayEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false }" />`,
+                    str: `<input id="string-filter" data-bind="ntsTextEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint_filter,enable: enable, required: false }" />`,
+                    numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint_filter, enable: enable, required: false, option: options }" />`,
+                    date: `<div data-bind="ntsDatePicker: { name: i18n('CPS003_78'), constraint: constraint_filter,value: value, enable: enable, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
+                    time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint_filter,inputFormat: 'time', mode: 'time', enable: enable, required: false }" />`,
+                    timep: `<input data-bind="ntsTimeWithDayEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint_filter, enable: enable, required: false }" />`,
                     radio: `<div id="combo-box" data-bind="ntsComboBox: {
                                 name: i18n('CPS003_78'), 
                                 options: itemOptions,
@@ -51,8 +52,8 @@ module nts.custombinding {
                                 value: value,
                                 optionsText: 'optionText',
                                 editable: false,
-                                required: required,
-                                selectFirstIfNull: required,
+                                required: false,
+                                selectFirstIfNull: false,
                                 enable: enable,
                                 columns: [
                                     { prop: 'optionText', length: 10 }
@@ -63,6 +64,7 @@ module nts.custombinding {
                     i18n: nts.uk.resource.getText,
                     value: ko.observable(),
                     constraint: '',
+                    constraint_filter:'',
                     options: {
                         grouplength: 0,
                         decimallength: 0
@@ -86,7 +88,7 @@ module nts.custombinding {
                             setShared("kml001multiSelectMode", false);
                             setShared("kml001selectedCodeList", _.isNil(value) ? [] : [value]);
                             setShared("kml001isSelection", true);
-                            setShared("kml001selectAbleCodeList", itemData.selectionItems.map(x => x.optionValue), true);
+                            setShared("kml001selectAbleCodeList", itemData.selectionItem_filters.map(x => x.optionValue), true);
 
                             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('kml001selectedTimes');
@@ -104,10 +106,9 @@ module nts.custombinding {
                                 }
                             });
                         } else if (['IS00084', 'IS00085'].indexOf(itemData.itemCode) > -1) {
-                             let itemContraint = _.filter(__viewContext.primitiveValueConstraints, value =>{return value.itemCode == itemData.itemCode});
                             fetch.checkFunctionNo().done(role => {
                                 setShared('inputCDL008', {
-                                    selectedCodes: [],
+                                    selectedCodes: _.isNil(value) ? [] : [value],
                                     baseDate: __viewContext.viewModel.baseDate,
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
@@ -123,7 +124,7 @@ module nts.custombinding {
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
                                         vm.value(output);
-                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItems), value => {return value.optionValue == output;}); 
+                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItem_filters), value => {return value.optionValue == output;}); 
                                         vm.textValue(`${selectedValue.length > 0? selectedValue[0].optionText: ""}`);
                                     }
                                 });
@@ -134,7 +135,7 @@ module nts.custombinding {
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
                             setShared("KDL002_SelectedItemId", [vm.value()], true);
-                            setShared("KDL002_AllItemObj", itemData.selectionItems.map(x => x.optionValue), true);
+                            setShared("KDL002_AllItemObj", itemData.selectionItem_filters.map(x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
@@ -213,7 +214,7 @@ module nts.custombinding {
                     vm.required = itemData.required;
 
                     // bind items to dropdownList (if avaiable)
-                    vm.itemOptions(itemData.selectionItems || []);
+                    vm.itemOptions(itemData.selectionItem_filters || []);
 
                     // clean binding
                     ko.cleanNode(element);

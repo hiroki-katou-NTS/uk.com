@@ -33,11 +33,11 @@ module validationcps003f {
                     break;
                 
                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                    rmError($element_filter, "MsgB_1") || rmError($element_filter, "MsgB_2");
+                    //rmError($element_filter, "MsgB_1") || rmError($element_filter, "MsgB_2");
 
                     rmError($element_value, "MsgB_1") || rmError($element_value, "MsgB_2");
                     
-                    currentItem.filter.subscribe(d => { !nou(d) && rmError($element_filter, "MsgB_2"); })
+                    //currentItem.filter.subscribe(d => { !nou(d) && rmError($element_filter, "MsgB_2"); })
 
                     currentItem.value.subscribe(d => { !nou(d) && rmError($element_value, "MsgB_2"); })
                     break;
@@ -95,14 +95,14 @@ module validationcps003f {
 
         switch (currentItem.itemData().dataType) {
             case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                if (currentItem.applyFor() == "match") {
-                    if (currentItem.itemData().required && (_.isNil(currentItem.filter()) || _.isEmpty(currentItem.filter()))) {
-                        $element_filter.ntsError('set', {
-                            messageId: "MsgB_2",
-                            messageParams: [text("CPS003_87")]
-                        });
-                    }
-                }
+//                if (currentItem.applyFor() == "match") {
+//                    if (currentItem.itemData().required && (_.isNil(currentItem.filter()) || _.isEmpty(currentItem.filter()))) {
+//                        $element_filter.ntsError('set', {
+//                            messageId: "MsgB_2",
+//                            messageParams: [text("CPS003_87")]
+//                        });
+//                    }
+//                }
 
                 if (currentItem.itemData().required && (_.isNil(currentItem.value().value2) || _.isEmpty(currentItem.value().value2)) && (_.isNil(currentItem.value().value0) || _.isEmpty(currentItem.value().value0)) && (_.isNil(currentItem.value().value1) || _.isEmpty(currentItem.value().value1))) {
                     $element_value.ntsError('set', {
