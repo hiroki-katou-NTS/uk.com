@@ -407,6 +407,8 @@ public class CheckFileFinder {
 	
 	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
 			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, String startCode) {
+
+
 		// lấy emloyeeCode, employeeName
 		if (header.equals(TextResource.localize("CPS003_28"))) {
 			// employeeId
@@ -428,6 +430,24 @@ public class CheckFileFinder {
 		} else if (header.equals(TextResource.localize("CPS003_29"))) {
 			employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
 		} else {
+			String value = null;
+			if(cell.getValue() != null) {
+				switch(cell.getValue().getType()) {
+				case TEXT:
+					value = cell.getValue().getText();
+					break;
+				case NUMBER:
+					value = String.valueOf(cell.getValue().getDecimal());
+					break;
+				case DATE:
+					value = cell.getValue().getDate().toString();
+					break;
+				case DATETIME:
+					value = cell.getValue().getDateTime().toString();
+					break;
+				default: break;
+				}
+			}
 
 			// lấy dữ liệu của itemName
 			boolean isSelectionCode = headerTemp.contains("（コード）");
@@ -448,18 +468,18 @@ public class CheckFileFinder {
 				// trường hợp lấy ra baseDate theo file import, lấy startDate
 				if(headerGrid.getItemCode().equals(startCode)) {
 					DateConstraint dateContraint = (DateConstraint) contraint;
-					Optional<String> error = dateContraint.validateString(cell.getValue() == null ? "" : cell.getValue().getText());
+					Optional<String> error = dateContraint.validateString(value == null ? "" : value);
 					if (category.isHistoryCategory()) {
 						if (error.isPresent()) {
 							valueStartCode = GeneralDate.today();
 						}
 						valueStartCode = cell.getValue() == null ? GeneralDate.today()
-								: GeneralDate.fromString(cell.getValue().getText(), "yyyy/MM/dd");
+								: GeneralDate.fromString(value, "yyyy/MM/dd");
 					}
 				}
 				ItemRowDto empBody = new ItemRowDto();
 				if (isSelectionCode) {
-					String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
+					String selectionCode = value == null ? "" : value;
 					empBody.setItemCode(headerGrid.getItemCode());
 					empBody.setItemName(headerGrid.getItemName());
 					empBody.setItemOrder(headerGrid.getItemOrder());
@@ -495,7 +515,7 @@ public class CheckFileFinder {
 						empBody.setItemName(headerGrid.getItemName());
 						empBody.setItemOrder(headerGrid.getItemOrder());
 						convertValue(empBody, headerGrid,
-								cell.getValue() == null ? null : cell.getValue().getText(), contraint);
+								cell.getValue() == null ? null : value, contraint);
 						empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
 						items.add(empBody);
 					}
