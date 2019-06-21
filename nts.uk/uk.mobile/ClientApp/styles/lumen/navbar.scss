@@ -5,6 +5,8 @@ body {
         padding-left: 35px;
         transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
         cursor: pointer;
+        background-color: $bg-menu-color;
+        border-bottom-color: darken($color: $bg-menu-color, $amount: 5);
 
         .navbar-toggler {
             outline: none;
@@ -21,7 +23,7 @@ body {
 
         .collapse.navbar-collapse {
             &.show {
-                border-top: 2px solid darken($color: $primary, $amount: 5);
+                border-top: 2px solid darken($color: $bg-menu-color, $amount: 5);
             }
         }
 
@@ -30,7 +32,7 @@ body {
             margin-right: 0;
             padding-left: 15px;
             padding-right: 15px;
-            border-right: 2px solid darken($color: $primary, $amount: 5);
+            border-right: 2px solid darken($color: $bg-menu-color, $amount: 5);
             transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
 
             &:not([href]):not([tabindex]) {
