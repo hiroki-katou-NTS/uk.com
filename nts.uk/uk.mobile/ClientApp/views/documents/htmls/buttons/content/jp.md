@@ -1,4 +1,4 @@
-##### Common
+##### 1. 一般的なボタン
 <button type="button" class="btn btn-primary">Primary</button>
 <button type="button" class="btn btn-secondary">Secondary</button>
 <button type="button" class="btn btn-success">Success</button>
@@ -6,12 +6,9 @@
 <button type="button" class="btn btn-warning">Warning</button>
 <button type="button" class="btn btn-danger">Danger</button>
 <button type="button" class="btn btn-link">Link</button>
-
-<ol class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Home</li>
-</ol>
-
-##### Code
+<br><br>
+UK Mobileでよく使っているボタンである。  
+これを作るためにボタンの種類によって`btn btn-...`というクラスを追加してください。
 ```html
 <button type="button" class="btn btn-primary">Primary</button>
 <button type="button" class="btn btn-secondary">Secondary</button>
@@ -22,7 +19,7 @@
 <button type="button" class="btn btn-link">Link</button>
 ```
 ---
-##### Disabled
+##### 2. 無効のボタン
 <button type="button" class="btn btn-primary" disabled>Primary</button>
 <button type="button" class="btn btn-secondary" disabled>Secondary</button>
 <button type="button" class="btn btn-success" disabled>Success</button>
@@ -30,36 +27,26 @@
 <button type="button" class="btn btn-warning" disabled>Warning</button>
 <button type="button" class="btn btn-danger" disabled>Danger</button>
 <button type="button" class="btn btn-link" disabled>Link</button>
-
-##### Code
+<br><br>
+ボタンを無効にするために`disabled`という属性を追加してください。
 ```html
 <button type="button" class="btn btn-primary" disabled>Primary</button>
-<button type="button" class="btn btn-secondary" disabled>Secondary</button>
-<button type="button" class="btn btn-success" disabled>Success</button>
-<button type="button" class="btn btn-info" disabled>Info</button>
-<button type="button" class="btn btn-warning" disabled>Warning</button>
-<button type="button" class="btn btn-danger" disabled>Danger</button>
-<button type="button" class="btn btn-link" disabled>Link</button>
 ```
 ---
-##### Outline
+##### 3. Outline
 <button type="button" class="btn btn-outline-primary">Primary</button>
 <button type="button" class="btn btn-outline-secondary">Secondary</button>
 <button type="button" class="btn btn-outline-success">Success</button>
 <button type="button" class="btn btn-outline-info">Info</button>
 <button type="button" class="btn btn-outline-warning">Warning</button>
 <button type="button" class="btn btn-outline-danger">Danger</button>
-##### Code
+<br><br>
+アウトラインのボタンを作るために`"btn btn-outline-..."`というクラス使ってください。
 ```html
 <button type="button" class="btn btn-outline-primary">Primary</button>
-<button type="button" class="btn btn-outline-secondary">Secondary</button>
-<button type="button" class="btn btn-outline-success">Success</button>
-<button type="button" class="btn btn-outline-info">Info</button>
-<button type="button" class="btn btn-outline-warning">Warning</button>
-<button type="button" class="btn btn-outline-danger">Danger</button>
 ```
 ---
-##### Dropdown buttons
+##### 4. Dropdown buttons
 <div class="btn-group mb-3">
     <button type="button" class="btn btn-primary">Primary</button>
     <div class="btn-group">
@@ -71,7 +58,6 @@
     </div>
 </div>
 
-##### Code
 ```html
 <div class="btn-group">
     <button type="button" class="btn btn-primary">Primary</button>
@@ -85,49 +71,66 @@
 </div>
 ```
 ---
-##### Button size
+##### 5. Button size
 <button type="button" class="btn btn-primary btn-lg">Large button</button>
 <button type="button" class="btn btn-primary">Default button</button>
 <button type="button" class="btn btn-primary btn-sm">Small button</button>
+<br><br>
+ボタンを大きくするために`btn-lg`というクラスを追加してください。  
+ボタンを小さくするために`btn-sm`というクラスを追加してください。   
+```html
+<button type="button" class="btn btn-primary btn-lg">Large button</button>
+<button type="button" class="btn btn-primary">Default button</button>
+<button type="button" class="btn btn-primary btn-sm">Small button</button>
+```
+---
+##### 6. Block button (full width)
+<button type="button" class="btn btn-primary btn-block">Block level button</button>
+<br>
+幅が全画面に表示されるボタンを作るために`btn-block`というクラスを追加してください。
+```html
+<button type="button" class="btn btn-primary btn-block">Block level button</button>
+```
+---
+##### 7. Selection button (full width)
 
-##### Code
-```html
-<button type="button" class="btn btn-primary btn-lg">Large button</button>
-<button type="button" class="btn btn-primary">Default button</button>
-<button type="button" class="btn btn-primary btn-sm">Small button</button>
-```
----
-##### Block button (full width)
-<button type="button" class="btn btn-primary btn-block">Block level button</button>
-##### Code
-```html
-<button type="button" class="btn btn-primary btn-block">Block level button</button>
-```
----
-##### Selection button (full width)
 <button type="button" class="btn btn-selection">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
 </button>
+<br>
+
+これはUK Mobileの特殊なボタンです。<br>
+こんなボタンを作るため、まず`btn btn-selection`というを使ってください。<br>
+ボタンの中にある<b>コード</b>部分を作るために`badge badge-secondary`というクラスを使ってください。<br>
+
+```html
+<button type="button" class="btn btn-selection">
+    <span class="badge badge-secondary">0001</span>
+    <span>Name of selection</span>
+</button>
+```
+---
+
 <button type="button" class="btn btn-selection mt-2 mb-2">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
     <span class="d-block mt-1">2010~2019</span>
 </button>
 
-##### Code
+このボタンは`2010～2019`など制約区分があるからこれを作るために`d-block mt-1`というクラスを持つ`span`タグを追加してください。
+
+
 ```html
-<button type="button" class="btn btn-selection">
-    <span class="badge badge-secondary">0001</span>
-    <span>Name of selection</span>
-</button>
 <button type="button" class="btn btn-selection">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
     <span class="d-block mt-1">2010~2019</span>
 </button>
 ```
-##### Checkbox group
+
+---
+##### 8. Checkbox group
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
         <input type="checkbox" checked autocomplete="off"> Active
@@ -154,8 +157,8 @@
     </label>
 </div>
 ```
-
-##### Switch button
+---
+##### 9. Switch button
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
         <input type="radio" name="options" autocomplete="off" checked /> Active
@@ -182,8 +185,8 @@
     </label>
 </div>
 ```
-
-##### Tool bar (group buttons)
+---
+##### 10. Tool bar (group buttons)
 <div class="btn-toolbar">
     <div class="btn-group mr-4 mb-3">
         <button type="button" class="btn btn-secondary">New</button>
