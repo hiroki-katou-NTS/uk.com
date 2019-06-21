@@ -49,27 +49,37 @@
 ```
 ---
 ##### 4. Dropdown buttons
-<div class="btn-group mb-3">
-    <button type="button" class="btn btn-primary">Primary</button>
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle"></button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-        </div>
-    </div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-primary dropdown-toggle"></button>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item">New</li>
+        <li class="dropdown-item bg-red-500">Remove</li>
+    </ul>
 </div>
+
+`DropDown Buttons` phục vụ cho việc nhóm một số các button lại thành một nhóm.   
+Nó chỉ hiển thị button quan trọng nhất, các button còn lại được nhóm thành một dropdown.
+
+Để tạo dropdown-buttons, trước tiên tạo khối DIV với class là `"btn-group"`.  
+Trong khối div tạo 2 button:   
+- button chính, hiển thị bên ngoài. Khai báo giống như common-button bình thường.
+- button-dropdown, hiển thị mũi tên xuống. Hãy thêm class `dropdown-toggle` vào button này.   
+
+Ở đây, button chính và button-dropdown nên có cùng class. Ví dụ trong trường hợp này, nó đều có class là `btn btn-primary`.  
+
+Tiếp tục, tạo thẻ ul với class là `dropdown-menu`. Bên trong thẻ này, tạo các thẻ li với class `dropdown-item`.  
+Các thẻ li này chính là các button bên trong dropdown list. Hãy thêm `v-click` để gắn event cho nó.
 
 ```html
 <div class="btn-group">
-    <button type="button" class="btn btn-primary">Primary</button>
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle"></button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-        </div>
-    </div>
+    <button type="button" class="btn btn-primary" v-click:500="saveData">Save</button>
+    <button type="button" class="btn btn-primary dropdown-toggle"></button>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item" v-click="createNew">New</li>
+        <li class="dropdown-item bg-red-500" v-click:500="deleteData">Delete</li>
+    </ul>
 </div>
 ```
 ---
@@ -127,17 +137,20 @@ Button thứ 2 có phần constraint(2010~2019). Để tạo nó hãy sử dụn
 ##### 8. Checkbox group
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
-        <input type="checkbox" checked autocomplete="off"> Active
+        <input type="checkbox" checked> Active
     </label>
     <label class="btn btn-primary">
-        <input type="checkbox" autocomplete="off"> Check
+        <input type="checkbox"> Check
     </label>
     <label class="btn btn-primary" >
-        <input type="checkbox" autocomplete="off"> Check
+        <input type="checkbox"> Check
     </label>
 </div>
 
-##### Code
+Để tạo `Checkbox Group`, trước tiên hãy tạo khối DIV với class là `btn-group btn-group-toggle`.  
+Trong khối div này, hãy định nghĩa từng checkbox bằng thẻ label với class là `btn btn-...`.  
+Bên trong thẻ label, hãy tạo thẻ input với type="checkbox".
+
 ```html
 <div class="btn-group btn-group-toggle">
     <label class="btn btn-primary" >
@@ -165,7 +178,9 @@ Button thứ 2 có phần constraint(2010~2019). Để tạo nó hãy sử dụn
     </label>
 </div>
 
-##### Code
+Tạo `Switch Button` tương tự với `Checkbox Group`.  
+Tuy nhiên thẻ input ở đây để type="radio".
+
 ```html
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
@@ -228,3 +243,5 @@ Button thứ 2 có phần constraint(2010~2019). Để tạo nó hãy sử dụn
     </div>
 </div>
 ```
+
+Tạo bởi: Nguyễn Văn Vương

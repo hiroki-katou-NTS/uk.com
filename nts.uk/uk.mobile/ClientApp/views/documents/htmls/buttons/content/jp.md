@@ -47,27 +47,35 @@ UK Mobileでよく使っているボタンである。
 ```
 ---
 ##### 4. Dropdown buttons
-<div class="btn-group mb-3">
-    <button type="button" class="btn btn-primary">Primary</button>
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle"></button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-        </div>
-    </div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary">登録</button>
+    <button type="button" class="btn btn-primary dropdown-toggle"></button>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item">新規</li>
+        <li class="dropdown-item bg-red-500">削除</li>
+    </ul>
 </div>
+
+`DropDown Buttons`は各ボタンを集めるものです。  
+大切なボタンだけを表示するが、他のボタンが選択肢に集まられる。
+
+`DropDown Buttons`を作るためにまず`btn-group`というクラスを持つDIVタグを作ってください。  
+`btn-group`DIVのなかにはボタンを２作ってください:
+- `マインボタン`: 一般的なボタンのように作ってください。
+- `選択ボタン`: 下向きの矢印があるボタンである. `dropdown-toggle`というクラスをつけてください。  
+
+次は`dropdown-menu`というクラスを持つULタグを作って中に`dropdown-item`というクラスを持つLIタグを追加してください。  
+この各LIタグは選択肢にあるボタンである。
 
 ```html
 <div class="btn-group">
-    <button type="button" class="btn btn-primary">Primary</button>
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle"></button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-            <a class="dropdown-item" href="javascript:void(0)">Dropdown link</a>
-        </div>
-    </div>
+    <button type="button" class="btn btn-primary" v-click:500="saveData">Save</button>
+    <button type="button" class="btn btn-primary dropdown-toggle"></button>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item" v-click="createNew">New</li>
+        <li class="dropdown-item bg-red-500" v-click:500="deleteData">Delete</li>
+    </ul>
 </div>
 ```
 ---
@@ -101,7 +109,7 @@ UK Mobileでよく使っているボタンである。
 <br>
 
 これはUK Mobileの特殊なボタンです。<br>
-こんなボタンを作るため、まず`btn btn-selection`というを使ってください。<br>
+こんなボタンを作るため、まず`btn btn-selection`というクラスを使ってください。<br>
 ボタンの中にある<b>コード</b>部分を作るために`badge badge-secondary`というクラスを使ってください。<br>
 
 ```html
@@ -234,3 +242,5 @@ UK Mobileでよく使っているボタンである。
     </div>
 </div>
 ```
+
+著者： Nguyen Van Vuong
