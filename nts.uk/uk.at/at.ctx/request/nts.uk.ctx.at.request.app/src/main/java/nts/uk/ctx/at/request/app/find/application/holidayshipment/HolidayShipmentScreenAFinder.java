@@ -509,7 +509,7 @@ public class HolidayShipmentScreenAFinder {
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する abs
 			WorkTypeKAF011 wkTypeAbs = this.getWorkTypeFor(companyID, employmentCD, absWkTimeCD, appCommonSet, BreakOutType.HOLIDAY);
 			output.setMasterUnregAbs(wkTypeAbs.isMasterUnreg());
-			output.setAbsWkTypes(wkTypeRec.getLstWorkType().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
+			output.setAbsWkTypes(wkTypeAbs.getLstWorkType().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 			// アルゴリズム「振休用勤務種類の取得」を実行する
 			setWkTimeInfoForAbsApp(companyID, absWkTimeCD, output);
 
@@ -672,9 +672,14 @@ public class HolidayShipmentScreenAFinder {
 		boolean masterUnregistered = true;
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		boolean isWkTypeNotExistedInList = WkTypeOpt.isPresent() && !wkTypes.contains((WkTypeOpt.get()));
+		boolean isInList = false;
+		if(WkTypeOpt.isPresent()){
+			  isInList = wkTypes.stream()
+					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
+					.collect(Collectors.toList()).isEmpty();
+		}
 
-		if (isWkTypeNotExistedInList) {
+		if (isInList) {
 			wkTypes.add(WkTypeOpt.get());
 
 			masterUnregistered = false;
