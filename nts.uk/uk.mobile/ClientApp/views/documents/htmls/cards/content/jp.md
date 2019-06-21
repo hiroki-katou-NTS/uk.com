@@ -5,7 +5,7 @@
   <h5 class="card-header">Main-Label</h5>
   <div class="card-body">
     <h5 class="card-title">Sub-Label</h5>
-    <p class="card-text">ここでは何の追加できる</p>
+    <p class="card-text">ここでは何も追加できる</p>
     <a href="javascript:void(0)" class="btn btn-primary">サンプルボタン</a>
   </div>
 </div>
