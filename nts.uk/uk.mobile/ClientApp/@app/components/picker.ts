@@ -71,7 +71,9 @@ export const MobilePicker = {
                     defaultData = self.value;
 
                 if (!show) {
-                    dom.removeClass(document.body, 'modal-open');
+                    if (!document.querySelector('body>.modal.show, body>.modal-backdrop.show')) {
+                        dom.removeClass(document.body, 'modal-open');
+                    }
                 } else {
                     dom.addClass(document.body, 'modal-open');
 
