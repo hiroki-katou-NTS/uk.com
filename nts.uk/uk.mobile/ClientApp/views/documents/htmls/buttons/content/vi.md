@@ -154,13 +154,13 @@ Bên trong thẻ label, hãy tạo thẻ input với type="checkbox".
 ```html
 <div class="btn-group btn-group-toggle">
     <label class="btn btn-primary" >
-        <input type="checkbox" checked autocomplete="off" /> Active
+        <input type="checkbox" checked/> Active
     </label>
     <label class="btn btn-primary">
-        <input type="checkbox" autocomplete="off" /> Check
+        <input type="checkbox"/> Check
     </label>
     <label class="btn btn-primary">
-        <input type="checkbox" autocomplete="off" /> Check
+        <input type="checkbox"/> Check
     </label>
 </div>
 ```
@@ -168,13 +168,13 @@ Bên trong thẻ label, hãy tạo thẻ input với type="checkbox".
 ##### 9. Switch button
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
-        <input type="radio" name="options" autocomplete="off" checked /> Active
+        <input type="radio" name="options" checked /> Active
     </label>
     <label class="btn btn-primary">
-        <input type="radio" name="options" /> Radio
+        <input type="radio" name="options"/> Radio
     </label>
     <label class="btn btn-primary">
-        <input type="radio" name="options" autocomplete="off" /> Radio
+        <input type="radio" name="options"/> Radio
     </label>
 </div>
 
@@ -184,13 +184,13 @@ Tuy nhiên thẻ input ở đây để type="radio".
 ```html
 <div class="btn-group btn-group-toggle mb-3">
     <label class="btn btn-primary">
-        <input type="radio" name="options" autocomplete="off" checked /> Active
+        <input type="radio" name="options" checked/> Active
     </label>
     <label class="btn btn-primary">
         <input type="radio" name="options" /> Radio
     </label>
     <label class="btn btn-primary">
-        <input type="radio" name="options" autocomplete="off" /> Radio
+        <input type="radio" name="options"/> Radio
     </label>
 </div>
 ```
