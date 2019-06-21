@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.app.find.stamp.card.stampcard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -81,8 +85,9 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 		}).collect(Collectors.toList());
 		
 		if(!CollectionUtil.isEmpty(resultDataExist)) result.addAll(resultDataExist);
+		List<GridPeregDomainDto> resultDistinct = resultDataExist.stream().filter(distinctByKey(GridPeregDomainDto::getEmployeeId)).collect(Collectors.toList());
 		query.getEmpInfos().stream().forEach(c ->{
-			Optional<GridPeregDomainDto> gridDto = resultDataExist.stream().filter(r ->r.getEmployeeId().equals(c)).findFirst();
+			Optional<GridPeregDomainDto> gridDto = resultDistinct.stream().filter(r ->r.getEmployeeId().equals(c)).findFirst();
 			if(!gridDto.isPresent()) {
 				GridPeregDomainDto dto = new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null);
 				result.add(dto);
@@ -90,6 +95,16 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 		});
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @param keyExtractor
+	 * @return
+	 */
+	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
 
 }
