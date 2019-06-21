@@ -16,13 +16,19 @@ const resources: {
         'jp': '日本',
         'vi': 'Tiếng Việt',
         'app_name': '勤次郎',
-        'plz_wait': 'お待ちください'
+        'plz_wait': 'お待ちください',
+        'cancel': 'キャンセル',
+        'remove': '削除',
+        'accept': '設定'
     },
     vi: {
         'jp': '日本',
         'vi': 'Tiếng Việt',
         'app_name': 'UK Mobile',
-        'plz_wait': 'Vui lòng chờ trong giây lát...'
+        'plz_wait': 'Vui lòng chờ trong giây lát...',
+        'cancel': 'Hủy bỏ',
+        'remove': 'Xóa',
+        'accept': 'Đồng ý'
     }
 };
 
