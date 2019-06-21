@@ -1,6 +1,9 @@
 .modal {
   //-webkit-overflow-scrolling: touch;
   &-backdrop {
+    &.modal-frontdrop {
+      z-index: 1050;
+    }
     &.show {
       opacity: 0.05;
       .spinner {

@@ -10,9 +10,10 @@ const vm = Vue.extend({
         },
         color: null,
         message: false,
-        opacity: null
+        opacity: null,
+        className: ''
     }),
-    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-on:touchmove="preventTouch" v-on:click="onClick">
+    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-bind:class="className" v-on:touchmove="preventTouch" v-on:click="onClick">
         <template v-if="message">
             <div ref="spinner" class="spinner">
                 <div></div>
@@ -76,7 +77,7 @@ const vm = Vue.extend({
         let self = this;
 
         document.body.removeChild(self.$el);
-        
+
         if (!document.querySelector('body>.modal.show, body>.modal-backdrop.show')) {
             dom.removeClass(document.body, 'modal-open');
         }
@@ -96,6 +97,10 @@ const vm = Vue.extend({
                 if (!self.$$mask) {
                     self.$$mask = new vm();
                     self.$$mask.$mount(dom.create('div'));
+
+                    if (dom.hasClass(self.$el, 'modal-body')) {
+                        self.$$mask.className = 'modal-frontdrop';
+                    }
 
                     self.$$mask.show = true;
 
