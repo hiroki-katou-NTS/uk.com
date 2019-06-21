@@ -1,9 +1,9 @@
 <template>
-    <div id="login" class="pt-4">
+    <div id="login" class="pt-5">
         <div class="row justify-content-md-center">
             <div class="col-lg-4 col-md-6">
                 <div class="text-center page-title">UniversalK</div>
-                <fieldset class="login-form mt-2">
+                <fieldset class="login-form mt-5">
                     <nts-dropdown
                         id="companyCode"
                         class="justify-content-end"
