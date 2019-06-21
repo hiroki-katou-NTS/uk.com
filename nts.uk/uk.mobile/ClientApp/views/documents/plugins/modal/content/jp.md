@@ -49,7 +49,7 @@ declare interface IModalOptions {
 <span style="color: #1ba4d6">**information**</span>, 
 <span style="color: #ffaa00">**warning**</span>, 
 <span style="color: #ff1c30">**error**</span>, 
-**confirm**など特別なモーダルをこんなように作ってください。
+**confirm**など特別なモーダルをこのように作ってください。
 ``` typescript
 $modal.info('メッセージ内容');
 $modal.warn('メッセージ内容');
