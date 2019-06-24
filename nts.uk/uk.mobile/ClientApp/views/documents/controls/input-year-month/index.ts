@@ -13,6 +13,17 @@ import { component } from '@app/core/component';
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
+    },
+    validations: {
+        yearMonth1: {
+            required: true
+        },
+        yearMonth2: {
+            required: false
+        },
+        yearMonth3: {
+            required: true
+        }
     }
 })
 export class DocumentsControlsInputYearMonthComponent extends Vue {
@@ -21,4 +32,8 @@ export class DocumentsControlsInputYearMonthComponent extends Vue {
     public yearMonth2: string = null;
 
     public yearMonth3: string = null;
+
+    public validate(): void {
+        this.$validate();
+    }
 }
