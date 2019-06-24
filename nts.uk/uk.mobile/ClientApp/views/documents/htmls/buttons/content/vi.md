@@ -146,6 +146,11 @@ Button thứ 2 có phần constraint(2010~2019). Để tạo nó hãy sử dụn
         <input type="checkbox"> Check
     </label>
 </div>
+<div class="popover fade show bs-popover-bottom" style="transform: translate3d(15px, 3000px, 0px);">
+    <div class="arrow" style="left: 12px"></div>
+    <h3 class="popover-header">Popover title</h3>
+    <div class="popover-body">And here's some amazing content. It's very engaging. Right?</div>
+</div>
 
 Để tạo `Checkbox Group`, trước tiên hãy tạo khối DIV với class là `btn-group btn-group-toggle`.  
 Trong khối div này, hãy định nghĩa từng checkbox bằng thẻ label với class là `btn btn-...`.  
