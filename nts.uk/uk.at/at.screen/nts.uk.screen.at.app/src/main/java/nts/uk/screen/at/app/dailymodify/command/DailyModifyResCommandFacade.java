@@ -283,9 +283,11 @@ public class DailyModifyResCommandFacade {
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
 		boolean hasErrorRow = false;
-		boolean errorBeforeCalc = false, errorAfterCalc = false, errorMonthAfterCalc = false;
+		boolean errorMonthAfterCalc = false;
 		boolean flagTempCalc = dataParent.isFlagCalculation();
 		dataParent.setFlagCalculation(false);
+		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
+				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
@@ -331,7 +333,6 @@ public class DailyModifyResCommandFacade {
 			int sizeAllAfter = dataParent.getDailyEdits().size();
 			if(sizeAll > sizeAllAfter) {
 				hasErrorRow = true;
-				errorBeforeCalc = true;
 			}
 		}
 		
@@ -413,7 +414,6 @@ public class DailyModifyResCommandFacade {
 					if(!itemInputErors.isEmpty()) errorTemp.put(TypeError.COUPLE.value, itemInputErors);
 					if(!itemInputError28.isEmpty()) errorTemp.put(TypeError.ITEM28.value, itemInputError28);
 					if(!itemInputWorkType.isEmpty()) errorTemp.put(TypeError.NOT_FOUND_WORKTYPE.value, itemInputWorkType);
-					errorBeforeCalc = true;
 					lstResultTemp.put(x.getKey(), new ResultReturnDCUpdateData(x.getKey().getLeft(), x.getKey().getRight(), errorTemp));
 				}
 //			});
@@ -515,15 +515,16 @@ public class DailyModifyResCommandFacade {
 			
 			if (resultIU != null) {
 				
+				List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
 				if(!dataParent.isFlagCalculation()) {
 					//計算後エラーチェック
 					ErrorAfterCalcDaily errorCheck = checkErrorAfterCalcDaily(resultIU, monthParam, resultOlds, dataParent.getMode(), dataParent.getMonthValue(), 
 							                                                  dataParent.getDateRange(), 
 							                                                  dataParent.getDailyEdits().stream().filter(x -> !lstResultReturnDailyError.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList()), 
 							                                                  dataParent.getItemValues().stream().filter(x -> !lstResultReturnDailyError.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList()));
+					errorMonthHoliday.addAll(errorCheck.getErrorMonth());
 					boolean hasError = errorCheck.getHasError();
 					if(hasError) {
-						errorAfterCalc = true;
 						resultErrorMonth = errorCheck.getResultErrorMonth();
 						lstResultReturnDailyError.putAll(errorCheck.getResultError());
 						dataResultAfterIU.setErrorMap(resultErrorMonth);
@@ -597,12 +598,26 @@ public class DailyModifyResCommandFacade {
 				
 				//processCalcMonth
 				RCDailyCorrectionResult resultMonth = this.handler.processCalcMonth(commandNew, commandOld, resultIU.getLstDailyDomain(), dailyItems, true, monthParam, dataParent.getMode());
-				
-				ErrorAfterCalcDaily errorMonth = checkErrorAfterCalcMonth(resultMonth, monthParam, resultOlds, dataParent.getMode(), dataParent.getMonthValue(), dataParent.getDateRange());
-				
+
+				ErrorAfterCalcDaily errorMonth = checkErrorAfterCalcMonth(resultMonth, monthParam, resultOlds,
+						dataParent.getMode(), dataParent.getMonthValue(), dataParent.getDateRange(),
+						editFlex ? errorMonthHoliday : new ArrayList<>());
+				//map error holiday into result
+				List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth().get(TypeError.ERROR_MONTH.value);
+				if(lstItemErrorMonth != null) {
+					List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap().get(TypeError.ERROR_MONTH.value);
+					if(itemErrorMonth == null) {
+						//dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+						resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+					}else {
+						lstItemErrorMonth.addAll(itemErrorMonth);
+						//dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+						resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+					}
+				}
 				//月次登録処理
 				errorMonthAfterCalc = errorMonth.getHasError();
-				if(!errorBeforeCalc && !errorAfterCalc && !errorMonthAfterCalc) this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
+				if(!errorMonthAfterCalc) this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
 				//dataResultAfterIU.setErrorMap(errorMonth.getResultError());
 				dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
 				
@@ -1121,22 +1136,26 @@ public class DailyModifyResCommandFacade {
 	    Map<Integer, List<DPItemValue>> errorMonth = validatorDataDaily.errorMonthNew(pairError.getErrorMonth());
 		// val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(),
 		// monthParam);
-	    List<EmployeeMonthlyPerError> errorYearHoliday = pairError.getErrorMonth().stream().filter(x -> x.getAnnualHoliday().isPresent()).collect(Collectors.toList());
+	    List<EmployeeMonthlyPerError> errorYearHoliday = pairError.getErrorMonth().stream().collect(Collectors.toList());
 	    Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
-		if (!errorMonth.isEmpty() && (!pairError.isOnlyErrorOldDb() || (mode == 0 && !errorYearHoliday.isEmpty() && monthValue.getItems() != null && !monthValue.getItems().isEmpty()))) {
+		if (!errorMonth.isEmpty() && !pairError.isOnlyErrorOldDb()) {
 			resultErrorMonth.putAll(errorMonth);
 			detailEmployeeError.addAll(pairError.getDetailEmployeeError());
 			hasError =  true;
 		}
 			
-		return new ErrorAfterCalcDaily(hasError, resultErrorMonth, detailEmployeeError, resultErrorDaily, dataResultAfterIU.getFlexShortage());
+		return new ErrorAfterCalcDaily(hasError, resultErrorMonth, detailEmployeeError, resultErrorDaily, dataResultAfterIU.getFlexShortage(), errorYearHoliday);
 	}
 	
-	public ErrorAfterCalcDaily checkErrorAfterCalcMonth(RCDailyCorrectionResult resultIU, UpdateMonthDailyParam monthlyParam, List<DailyModifyResult> resultOlds, int mode, DPMonthValue monthValue, DateRange range) {
+	//集計後エラーチェック
+	public ErrorAfterCalcDaily checkErrorAfterCalcMonth(RCDailyCorrectionResult resultIU, UpdateMonthDailyParam monthlyParam, List<DailyModifyResult> resultOlds, int mode, DPMonthValue monthValue, DateRange range, List<EmployeeMonthlyPerError> errorMonths) {
 		Map<Integer, List<DPItemValue>> resultErrorMonth = new HashMap<>();
 		boolean hasError = false;
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
-		if (mode == 0 && monthlyParam.getHasFlex() != null && monthlyParam.getHasFlex()) {
+		boolean editFlex = (mode == 0 && monthValue != null
+				&& !CollectionUtil.isEmpty(monthValue.getItems())); 
+		if (editFlex) {
+			//フレックス繰越時間が正しい範囲で入力されているかチェックする
 			val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
 					monthlyParam);
 			if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
@@ -1146,8 +1165,16 @@ public class DailyModifyResCommandFacade {
 			flexShortageRCDto.setVersion(monthValue.getVersion());
 			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
 		}
-		
-		return new ErrorAfterCalcDaily(hasError, resultErrorMonth, new HashSet<>(),  new HashMap<>(), dataResultAfterIU.getFlexShortage());
+		//フレ補填によって年休残数のエラーが発生していないかチェックする
+		if(mode == 0) {
+			List<EmployeeMonthlyPerError> errorHoliday = errorMonths.stream()
+					.filter(x -> x.getAnnualHoliday().isPresent()).collect(Collectors.toList());
+			if (!errorHoliday.isEmpty()) {
+				resultErrorMonth.putAll(validatorDataDaily.errorMonthNew(errorHoliday));
+				hasError = true;
+			}
+		}
+		return new ErrorAfterCalcDaily(hasError, resultErrorMonth, new HashSet<>(),  new HashMap<>(), dataResultAfterIU.getFlexShortage(), new ArrayList<>());
 	}
 	
 	public ErrorAfterCalcDaily checkErrorAfterCalc(RCDailyCorrectionResult resultIU, UpdateMonthDailyParam monthlyParam, List<DailyModifyResult> resultOlds, int mode, DPMonthValue monthValue, DateRange range, List<DailyRecordDto> dailyEditAll, List<DPItemValue> lstItemEdits) {
@@ -1185,7 +1212,7 @@ public class DailyModifyResCommandFacade {
 			hasError = true;
 		}
 		
-		return new ErrorAfterCalcDaily(hasError, resultError, detailEmployeeError, resultErrorDaily, dataResultAfterIU.getFlexShortage());
+		return new ErrorAfterCalcDaily(hasError, resultError, detailEmployeeError, resultErrorDaily, dataResultAfterIU.getFlexShortage(), new ArrayList<>());
 	}
 	
 	private List<IntegrationOfDaily> unionDomain(List<IntegrationOfDaily> parent, List<IntegrationOfDaily> child){
