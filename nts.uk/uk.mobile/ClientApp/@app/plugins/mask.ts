@@ -78,7 +78,7 @@ const vm = Vue.extend({
 
         document.body.removeChild(self.$el);
 
-        if (!document.querySelector('body>.modal.show, body>.modal-backdrop.show')) {
+        if (!dom.modals.length) {
             dom.removeClass(document.body, 'modal-open');
         }
     }

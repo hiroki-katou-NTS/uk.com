@@ -171,6 +171,9 @@ const dom = {
 
         return side === 'top' ? element.scrollTop : element.scrollLeft;
     },
+    get modals() {
+        return document.querySelectorAll('body>.modal.show, body>.modal-backdrop.show');
+    },
     parent: (element: HTMLElement) => {
         return element.parentNode as HTMLElement;
     },
