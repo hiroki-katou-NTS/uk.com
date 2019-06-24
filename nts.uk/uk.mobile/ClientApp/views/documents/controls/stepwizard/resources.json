@@ -1,12 +1,17 @@
 {
     "jp": {
         "documentscontrolsstepwizard": "Step wizard",
-        "step_1": "Step 1",
-        "step_2": "Step 2",
-        "step_3": "Step 3",
-        "step_4": "Step 4",
-        "step_back": "Back",
-        "step_forward": "Next"
+        "step_1": "勤務情報",
+        "step_2": "申請時間",
+        "step_3": "確認",
+        "step_4": "完了",
+        "forward_in_1": "計算して次へ", 
+        "forward_in_2": "次へ", 
+        "forward_in_3": "申請する",
+        "forward_in_4": "登録した申請を確認する",
+        "back_in_2": "戻る1",
+        "back_in_3": "戻る2",
+        "back_in_4": "申請一覧へ"
     },
     "vi": {
         "documentscontrolsstepwizard": "Step wizard",
@@ -14,7 +19,12 @@
         "step_2": "Bước 2",
         "step_3": "Bước 3",
         "step_4": "Bước 4",
-        "step_back": "Quay lại",
-        "step_forward": "Bước tiếp"
+        "forward_in_1": "Tới bước 2", 
+        "forward_in_2": "Tới bước 3", 
+        "forward_in_3": "Xác nhận",
+        "forward_in_4": "Xong",
+        "back_in_2": "Quay lại",
+        "back_in_3": "Quay lại",
+        "back_in_4": "Xem danh sách"
     }
 }
