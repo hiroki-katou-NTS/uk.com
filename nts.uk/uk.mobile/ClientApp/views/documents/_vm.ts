@@ -36,11 +36,11 @@ import { component } from '@app/core/component';
             documents: 'Documents',
             MarkdownComponent: 'Markdown',
             'html': 'HTML',
-            'plugins': ' (Plugin)',
-            'components': '(Component)',
-            'filters': ' (Filter)',
-            'controls': ' (Control)',
-            'directives': ' (Directive)',
+            'plugins': 'Plugin',
+            'components': 'Component',
+            'filters': 'Filter',
+            'controls': 'Control',
+            'directives': 'Directive',
             'important_document': 'Important documents',
             'sample': 'サンプル'
         }
