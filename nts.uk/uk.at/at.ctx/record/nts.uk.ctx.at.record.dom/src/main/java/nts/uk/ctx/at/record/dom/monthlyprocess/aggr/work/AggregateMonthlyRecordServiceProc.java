@@ -812,11 +812,6 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthResult));
 		}
-
-		// 計画所定労働日数（任意項目69：大塚カスタマイズ）
-		AnyItemAggrResult anyItem69Result = this.getPredWorkingDays(monthPeriod);
-		this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
-				this.employeeId, this.yearMonth, this.closureId, this.closureDate, anyItem69Result));
 	}
 	
 	/**
@@ -850,6 +845,14 @@ public class AggregateMonthlyRecordServiceProc {
 		// 任意項目を取得
 		for (val optionalItem : this.companySets.getOptionalItemMap().values()){
 			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
+
+			// 計画所定労働日数（任意項目69：大塚カスタマイズ）
+			if (optionalItemNo == 69) {
+				AnyItemAggrResult anyItem69Result = this.getPredWorkingDays(period);
+				anyItems.add(AnyItemOfMonthly.of(
+						this.employeeId, this.yearMonth, this.closureId, this.closureDate, anyItem69Result));
+				continue;
+			}
 
 			// 利用条件の判定
 			Optional<EmpCondition> empCondition = Optional.empty();
