@@ -12,3 +12,4 @@ import './checkbox';
 import './switchbox';
 import './text-search-box';
 import './time-range-search-box';
+import './stepwizard';
