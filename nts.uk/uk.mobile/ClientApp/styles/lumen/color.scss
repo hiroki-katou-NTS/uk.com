@@ -1,3 +1,9 @@
+$uk-hover-colors: (
+    hover: #F2F2F2,
+    danger-hover: #FEC0AD,
+    process-hover: #79E68B,
+);
+
 $uk-bg-colors: (
     green: #E0F59E,
     yellow: #F7EFD4,
@@ -5,11 +11,8 @@ $uk-bg-colors: (
     link-button: #E0F59E,
     checkbox: #2FCC71,
     radio: #97D155,
-    hover: #F2F2F2,
     danger: #FED3C6,
-    danger-hover: #FEC0AD,
     process: #A4EEB0,
-    process-hover: #79E68B,
     disable: #D9D9D9,
     daily-alter-self: #94B7FE,
     daily-alter-other: #030303,
@@ -118,26 +121,90 @@ $uk-colors: (
 
 @each $color-name, $hex-value in $uk-bg-colors {
     .uk-bg-#{$color-name} {        
-        background-color: #{$hex-value};
+        background-color: #{$hex-value} !important;
+        &.uk-color-swatch {
+            &:before {
+                content: '#{$hex-value}';
+                float: right;
+                font-family: monospace;
+                text-transform: uppercase;
+                position: absolute;
+                top: 0px;
+                right: 3px;
+            }
+        }
+    }
+    .uk-bg-#{$color-name}:hover {        
+        background-color: lighten($color: $hex-value, $amount: 10%);
+    }
+}
+
+@each $color-name, $hex-value in $uk-hover-colors {
+    .uk-bg-#{$color-name}:hover {        
+        background-color: #{$hex-value} !important;
     }    
 }
 
 @each $color-name, $hex-value in $uk-fg-colors {
     .uk-text-#{$color-name} {        
-        background-color: #{$hex-value};
+        color: #{$hex-value} !important;
+        &.uk-color-swatch {
+            &:before {
+                content: '#{$hex-value}';
+                float: right;
+                font-family: monospace;
+                text-transform: uppercase;
+                position: absolute;
+                top: 0px;
+                right: 3px;
+            }
+        }
     }    
 }
 
 @each $color-name, $hex-value in $uk-colors {
     .uk-text-#{$color-name} {
-        color: #{$hex-value};
+        color: #{$hex-value} !important;
+        &.uk-color-swatch {
+            &:before {
+                content: '#{$hex-value}';
+                float: right;
+                font-family: monospace;
+                text-transform: uppercase;
+                position: absolute;
+                top: 0px;
+                right: 3px;
+            }
+        }
     }
 
     .uk-bg-#{$color-name} {        
         background-color: #{$hex-value};
+        &.uk-color-swatch {
+            &:before {
+                content: '#{$hex-value}';
+                float: right;
+                font-family: monospace;
+                text-transform: uppercase;
+                position: absolute;
+                top: 0px;
+                right: 3px;
+            }
+        }
     }
 
     .uk-border-#{$color-name} {
         border-color: #{$hex-value};
+        &.uk-color-swatch {
+            &:before {
+                content: '#{$hex-value}';
+                float: right;
+                font-family: monospace;
+                text-transform: uppercase;
+                position: absolute;
+                top: 0px;
+                right: 3px;
+            }
+        }
     }
 }
