@@ -62,17 +62,24 @@ export class TimeRangeSearchBoxComponent extends Vue {
 
         this.showPicker(this.startTime)
             .then((value: any) => {
-                if (value !== undefined) {
+                if (value === undefined) {
+                    // do nothing
+                } else if (value === null) {
+                    this.startTime = null;
+                } else {
                     this.startTime = TimeWithDay.fromObject(value).value;
                 }
-
             });
     }
 
     public selectEndTime() {
         this.showPicker(this.endTime)
             .then((value: any) => {
-                if (value !== undefined) {
+                if (value === undefined) {
+                    // do nothing
+                } else if (value === null) {
+                    this.endTime = null;
+                } else {
                     this.endTime = TimeWithDay.fromObject(value).value;
                 }
             });
