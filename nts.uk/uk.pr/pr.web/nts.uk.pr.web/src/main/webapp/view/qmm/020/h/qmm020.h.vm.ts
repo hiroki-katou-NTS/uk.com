@@ -222,6 +222,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.mode(model.MODE.UPDATE);
                 } else {
                     self.listStateCorrelationHis([]);
+					self.hisIdSelected(null);
                     self.clearStateLinkSettingMasterIndividual();
                     self.mode(model.MODE.NO_REGIS);
                 }
