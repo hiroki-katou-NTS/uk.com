@@ -263,8 +263,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             });
         }
 
-        showSettingDataByValue(identifier: string) {
-            let self = this;
+        showSettingDataByValue(identifier: string): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             if ($("#grid2").data("igGrid")) {
                 $("#grid2").igGrid("option", "dataSource", []);
             }
@@ -283,6 +283,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         $("#A3_1").focus();
                     }).always(() => {
                         block.clear();
+                        dfd.resolve();
                     });
                 } else {
                     service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)).done((contentData) => {
@@ -342,9 +343,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         dialog.alertError(error);
                     }).always(() => {
                         block.clear();
+                        dfd.resolve();
                     });
                 }
+            } else {
+                dfd.resolve();
             }
+            return dfd.promise();
         }
 
         cacheGridData(i) {
@@ -678,9 +683,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(newHistory));
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 0) {
-                        self.showSettingDataByValue(selectedWageTable.wageTableCode + latestHistoryID);
-                        self.wageTableContent().historyID("");
-                        self.elementRangeSetting().historyID("");
+                        // get previous history's wage table and set brandNew = true
+                        self.showSettingDataByValue(selectedWageTable.wageTableCode + latestHistoryID).done(() => {
+                            self.wageTableContent().brandNew = true;
+                        });
                     } else {
                         self.elementRangeSetting(new model.ElementRangeSetting(null));
                         self.wageTableContent(new WageTableContent(null));
