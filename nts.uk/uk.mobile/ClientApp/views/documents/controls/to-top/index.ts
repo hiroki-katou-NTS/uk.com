@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
+import { TotopComponent } from '@app/components/totop';
 
 @component({
     name: 'documentscontrolsto-top',
@@ -12,6 +13,9 @@ import { component } from '@app/core/component';
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
+    },
+    components: {
+        'to-top': TotopComponent
     }
 })
 export class DocumentsControlsToTopComponent extends Vue { }
