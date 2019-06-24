@@ -11,7 +11,6 @@ export class YearMonthComponent extends InputComponent {
     private currentYear: Number = moment.utc().year();
     private currentMonth: Number = moment.utc().month() + 1;
     private emptyDisplay: String = '- - - - 年 - -月';
-    private currentDisplay: String = this.currentYear + '年' + this.padStart2(this.currentMonth) + '月';
     private dataSource = {
         year: this.generateArray(this.MIN_YEAR, this.MAX_YEAR),
         month: this.generateArray(1, 12)
@@ -59,7 +58,7 @@ export class YearMonthComponent extends InputComponent {
 
     get rawValue() {
         if (this.value == null || this.value == undefined) {
-            return this.constraint.required ? this.currentDisplay : this.emptyDisplay;
+            return this.emptyDisplay;
         }
 
         return this.displayYearMonth(this.year, this.month);
@@ -68,7 +67,8 @@ export class YearMonthComponent extends InputComponent {
     public click() {
         let self = this;
         this.$picker(self.selected, self.dataSource, self.onSelect, {
-            title: self.displayYearMonth(self.selected.year, self.selected.month)
+            title: self.displayYearMonth(self.selected.year, self.selected.month),
+            required: this.constraints.required
         })
             .then((select: any) => {
                 if (select != undefined) {

@@ -16,7 +16,7 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputYearMonthComponent extends Vue {
-    public yearMonth1: string = '201905';
+    public yearMonth1: string = null;
 
     public yearMonth2: string = null;
 
