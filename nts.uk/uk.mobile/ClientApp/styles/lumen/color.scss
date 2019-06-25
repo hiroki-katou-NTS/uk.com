@@ -224,7 +224,8 @@ $uk-status-color: (
     $bd-color: nth($list: $color-pallet, $n: 2);
     $bg-color: nth($list: $color-pallet, $n: 3);
 
-    .apply-#{$class-name} {
+    .apply-#{$class-name},
+    .uk-apply-#{$class-name} {
         color: $fg-color;
         border: 1px solid $bd-color;
         background-color: $bg-color;

@@ -6,7 +6,8 @@
         <div class="mb-2 mr-2 p-2" v-bind:class="'apply-' + item">
           {{item}}
         </div>
-        <pre>{{'apply-' + item }}</pre>
+        <pre class="m-0">{{'apply-' + item }}</pre>
+        <pre class="m-0">{{'uk-apply-' + item }}</pre>
       </div>
     </div>
     <div class="row mb-3">
