@@ -1,11 +1,14 @@
-> `to-top` là một control hỗ trợ hiển thị một nút cuộn nhanh về đầu trang mỗi khi trang được cuộn xuống dưới. Để sử dụng control này, ta cần import `TotopComponent` từ `@app/components` vào `component` hoặc `viewmodel` mà mọi người cần sử dụng theo ví dụ dưới đây.
-
+Kéo xuống dưới, button như này sẽ hiện ra ở góc màn hình. Nhấn vào nó để trở lại đầu trang.
 <div class="totop show mb-2" style="position: unset;"><i class="fas fa-arrow-up"></i></div>
 
-###### 2.1 Typescript
+###### 2. Giải thích
+`to-top` là một control hỗ trợ hiển thị một nút cuộn nhanh về đầu trang mỗi khi trang được cuộn xuống dưới.   
+
+
+###### 3 ViewModel
+
+Để sử dụng control này, trước tiên cần import `TotopComponent` từ `@app/components`, sau đó khai báo nó trong 'components' của `@Component` như sau.
 ```typescript
-import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
 // import component
 import { TotopComponent } from '@app/components/totop';
 
@@ -15,13 +18,15 @@ import { TotopComponent } from '@app/components/totop';
         'to-top': TotopComponent
     }
 })
-export class SampleViewModel extends Vue {
+export class ViewModel extends Vue {
 
 }
 ```
-###### 2.2 Html
+###### 4. HTML
+Cuối cùng, thêm thẻ `to-top` vừa khái báo ở `@Component` vào file HTML.
+
 ```html
-<div class="view-of-dev">
+<div class="app">
     <!-- sử dụng virtual dom đã khai báo ở view model-->
     <to-top />
 </div>
