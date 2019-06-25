@@ -1,6 +1,7 @@
 .list-group {
     &-selection {
         .list-group-item {
+            &.active,
             &.selected {
                 color: #fff;
                 background-color: $primary;
@@ -25,7 +26,8 @@
                 top: calc(50% - 10px);
                 right: 15px;
                 color: #aaa;
-            }            
+            }
+            &.active,    
             &.selected {
                 color: #fff;
                 background-color: $primary;
