@@ -1,6 +1,5 @@
 <template>
-    <div class="documentsdirectivestoolbar">
-
+    <div>
         <markdown />
     </div>
 </template>
