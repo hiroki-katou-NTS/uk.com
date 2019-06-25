@@ -621,7 +621,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                         && !((currentChar == self.HALF_SIZE_COMMA_CHAR || currentChar == self.COMMA_CHAR) && (nextChar == self.SUBTRACT || nextChar == self.HALF_SIZE_SUBTRACT))) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
-                    if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
+                    if ((currentChar == self.DIVIDE || currentChar == self.PROGRAMING_DIVIDE) && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
                 }
                 if (nextChar == self.OPEN_BRACKET && !currentChar.contains(self.FUNCTION) && currentChar.slice(-1) == '}') {
                     self.setErrorToFormula('MsgQ_255', []);
