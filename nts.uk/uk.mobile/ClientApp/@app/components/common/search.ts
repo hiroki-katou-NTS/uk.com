@@ -3,17 +3,23 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div class="form-group mb-1">
-    <div class="input-group input-group-transparent input-group-search">
+    <div class="input-group input-group-transparent input-group-search" v-bind:class="className">
         <div class="input-group-append" v-on:click="filterEvent">
             <span class="input-group-text fa fa-search"></span>
         </div>
-        <input ref="input" v-bind:placeholder="description" v-bind:value="value" type="text" class="form-control" v-on:keyup="$emit('input', $refs.input.value)" />
+        <input ref="input" v-bind:class="classInput" v-bind:placeholder="description" v-bind:value="value" type="text" class="form-control" v-on:keyup="$emit('input', $refs.input.value)" />
     </div>
 </div>`
 })
 class SearchComponent extends Vue {
     @Prop({ default: '' })
     public readonly value!: string;
+
+    @Prop({ default: '' })
+    public readonly classInput!: string;
+
+    @Prop({ default: '' })
+    public readonly classContainer!: string;
 
     @Prop({ default: '' })
     public readonly placeholder!: string;
