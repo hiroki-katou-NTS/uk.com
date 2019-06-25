@@ -3,7 +3,7 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div class="form-group mb-1">
-    <div class="input-group input-group-transparent input-group-search" v-bind:class="className">
+    <div class="input-group input-group-transparent input-group-search" v-bind:class="classContainer">
         <div class="input-group-append" v-on:click="filterEvent">
             <span class="input-group-text fa fa-search"></span>
         </div>
