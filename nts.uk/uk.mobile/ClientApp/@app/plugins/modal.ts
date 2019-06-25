@@ -323,7 +323,7 @@ const modal = {
                                                     <div class="modal-header" v-bind:key="hasTitle">
                                                         <h4 class="modal-title">
                                                             <template v-if="brsize" key="'mobilesize'">
-                                                                <i class="fas fa-angle-left close mr-1" v-on:click="show = false"></i>
+                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false"></i>
                                                             </template>
                                                             <template v-else key="'mobilesizedesktopsize_2'"></template>
                                                             <span>{{title | i18n}}</span>

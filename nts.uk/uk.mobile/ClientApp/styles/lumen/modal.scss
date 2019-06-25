@@ -95,6 +95,13 @@
 
     .modal-dialog {
       &.modal-info {
+        .modal-header {
+          .modal-title {
+            .fas {
+              display: none;
+            }
+          }
+        }
         &.type {
           &-info {
             .modal-content {

@@ -3,7 +3,7 @@
     <h5>1. {{'sample' | i18n}}</h5>
     <div class="mb-2">
       <h6>{{ 'modal' | i18n }}({{ 'message' | i18n }})</h6>
-      <button class="btn btn-info" v-click="showModal.bind(this, 'modal')"> Show modal</button> 
+      <button class="btn btn-info mr-2" v-click="showModal.bind(this, 'modal')"> Show modal</button> 
       <button class="btn btn-secondary" v-click="showModal.bind(this, 'dropback')"> Show dropback</button> 
       
     </div>
