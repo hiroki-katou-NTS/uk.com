@@ -53,7 +53,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 new model.ItemModel(1, getText('KWR008_38')),
                 new model.ItemModel(2, getText('KWR008_39'))
             ]);
-            self.rule36CalculationName = getText('KWR008_32');
+            self.rule36CalculationName = getText('KWR008_71');
             self.rule36CalculationAverageName = getText('KWR008_70');
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i,
@@ -475,7 +475,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     new OperationCondition(
                         202, //attendanceItemId
                         1, // operation
-                        getText('KWR008_32')
+                        getText('KWR008_71')
                     )
                 );
             }
