@@ -1,6 +1,43 @@
-> `nts-search-box` hay `text-search-box` là `control` phục vụ cho các sự kiện liên quan tới tìm kiếm dữ liệu trong danh sách. Control này chỉ xử lý từ khóa (`keyword`) và đẩy từ khóa này ra thông qua 2 `event` là `input` và `search`. Event `input` được thực thi liên tục mỗi khi có ký tự mới được nhập vào `search-box`, event `search` được thực thi mỗi khi người dùng chạm/nhấp chuột vào icon <span class="fa fa-search"></span>.
+##### 2. Giải thích
+`text-search-box` là component được sử dụng ở các màn hình tìm kiếm dữ liệu theo danh sách.  
+Nó là công cụ để nhập vào text và đẩy ra thông qua 2 event là `input` và `search`.  
+- input: được đẩy ra mỗi khi giá trị trong khung nhập thay đổi.
+- search: được đẩy ra khi người dùng click vào icon searh <span class="fa fa-search"></span>.
 
-**Các prop binding** được hỗ trợ trong `nts-search-box`.
+
+##### 2. Code HTML
+Ở HTML, tạo thẻ `text-search-box` với attribute v-on:search ứng với tên 1 function trong file ts
+trong trường hợp này là hàm searchList.  
+
+```html
+<text-search-box 
+    v-on:input="inputEvent"
+    v-on:search="searchEvent"/>
+```
+##### 3. ViewModel
+Tại file ts, tạo hàm có tên giống với tên đã khai báo trong file html.   
+Hàm này có nhiệm vụ xử lý sự kiện khi người dùng click vào button search hoặc 'enter' của component.
+
+```typescript
+@component({
+})
+export class ViewModel extends Vue {
+
+    // xử lý khi input thay đổi
+    public inputEvent(value: string) {
+        
+    }
+
+    // xử lý khi người dùng click vào icon search
+    public searchEvent(value: string) {
+        
+    }
+}
+```
+> **Chú ý**: Chỉ sử dụng một trong 2 event `search` hoặc `input` tùy vào thiết kế màn hình.
+
+##### 4. Thông tin bổ xung
+Ngoài ra, bạn có thể truyền thêm vào component một số các tham số sau.
 
 | Tên Thuộc tính| Type | Mặc định | Mô tả |
 | --------------|------| -------- | ------|
@@ -8,43 +45,4 @@
 | class-input | string | '' | Class css sẽ gắn vào thẻ input |
 | class-container | string | '' | Class css sẽ gắn vào container/thẻ bao của thẻ input |
 
-##### 2. Code
-**View**:
-```html
-<nts-search-box
-    placeholder="勤務種類コード/勤務種類名称"
-    v-bind:class-input=""
-    v-bind:class-container=""
-    v-on:input="inputEvent"
-    v-on:search="searchEvent"/>
-```
-hoặc
-```html
-<text-search-box 
-    placeholder="勤務種類コード/勤務種類名称"
-    v-bind:class-input=""
-    v-bind:class-container=""
-    v-on:input="inputEvent"
-    v-on:search="searchEvent"/>
-```
-
-**View model**:
-```typescript
-import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
-
-@component({
-})
-export class SampleViewModel extends Vue {
-    // xử lý event search khi nhập xong một ký tự bất kỳ tại đây
-    public inputEvent(value: string) {
-        // process the event 'search'
-    }
-
-    // xử lý event search khi click vào icon search tại đây
-    public searchEvent(value: string) {
-        // process the event 'search'
-    }
-}
-```
-> **Chú ý**: Chỉ sử dụng một trong 2 event `search` hoặc `input` tùy vào yêu cầu của thuật toán (`đã giải thích ý nghĩa event ở trên`).
+**Tạo bởi:** Phạm Văn Dân

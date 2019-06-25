@@ -1,15 +1,11 @@
 ##### 2. ビューでの定義
 
 ```html
-    <text-search-box 
-        placeholder="勤務種類コード/勤務種類名称"
-        v-on:search="searchList"/>
+<text-search-box v-on:search="searchList"/>
 ```
 
 HTMLでは`v-on:search="searchList"`がある`text-search-box`のタグを作ってください。  
 `searchList`はビューモデルにある関数である。  
-
-良かったら`placeholder`の属性を追加してください。`placeholder`の初期値は空白。
 
 ##### 3. ビューモデルでの定義
 
@@ -27,3 +23,13 @@ export class ViewModel extends Vue {
     *
 }
 ```
+
+##### 4. 補足情報
+
+| 属性名　| 種類 | 初期値 | 説明 |
+| --------------|------| -------- | ------|
+| placeholder | string | '' | インプットのヒント |
+| class-input | string | '' | インプットに適用するクラス |
+| class-container | string | '' | コンポネントに適用するクラス |
+
+著者：　Pham Van Dan
