@@ -3,12 +3,6 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div class="modal-component">
-        <div class="modal-header">
-            <h4 class="modal-title">
-                <i class="fa fa-arrow-left btn-close text-dark mr-2" v-on:click="$close()"></i>
-                <span>{{'title' | i18n}}</span>
-            </h4>
-        </div>
         <div>Hello {{params.name | i18n}} component!</div>
         <div class="modal-footer">
             <button class="btn btn-link" v-click="acceptEvent">{{'accept' | i18n}}</button>

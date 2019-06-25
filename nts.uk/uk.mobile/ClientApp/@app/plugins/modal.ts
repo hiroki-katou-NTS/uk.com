@@ -192,7 +192,7 @@ const modal = {
                                 components: {
                                     'nts-dialog': component
                                 },
-                                data: () => ({ name: 'nts-dialog', params, show: false, hasTitle: true }),
+                                data: () => ({ name: 'nts-dialog', params, show: false, hasTitle: true, brsize: true }),
                                 computed: {
                                     title() {
                                         return options.title || (typeof name === 'string' ? name : 'nts-dialog');
@@ -271,11 +271,23 @@ const modal = {
                                     });
                                 },
                                 mounted() {
-                                    this.show = true;
+                                    let self = this,
+                                        resize = () => {
+                                            self.brsize = browser.mobile;
+                                        };
+
+                                    resize();
+                                    self.show = true;
+
+                                    dom.data.set(self.$el, '__wzeri', resize);
+
+                                    window.addEventListener('resize', resize);
                                 },
                                 destroyed() {
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
+
+                                    window.removeEventListener('resize', dom.data.get(self.$el, '__wzeri'));
 
                                     // restore all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
@@ -307,9 +319,16 @@ const modal = {
                                                 <template v-if="hasTitle">
                                                     <div class="modal-header" v-bind:key="hasTitle">
                                                         <h4 class="modal-title">
+                                                            <template v-if="brsize" key="'mobilesize'">
+                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false"></i>
+                                                            </template>
+                                                            <template v-else key="'mobilesizedesktopsize_2'"></template>
                                                             <span>{{title | i18n}}</span>
                                                         </h4>
-                                                        <button tabindex="-1" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
+                                                        <template v-if="!brsize" key="'desktopsize'">
+                                                            <button tabindex="-1" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
+                                                        </template>
+                                                        <template v-else key="'desktopsize_2'"></template>
                                                     </div>
                                                 </template>
                                                 <template v-else></template>
