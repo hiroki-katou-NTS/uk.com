@@ -154,7 +154,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     service.getSalGenParaYearMonthHistory(dataSelected.paraNo).done((itemList: Array<ISalGenParaYearMonthHistory>) => {
                         self.modeHistory(MODEHISTORY.YEARMONTH);
                         if (itemList && itemList.length > 0) {
-                            // self.listHistory(SalGenParaYearMonthHistory.convertToDisplayHis(itemList));
+                            self.listHistory(SalGenParaYearMonthHistory.convertToDisplayHis([]));
                             // self.selectedSalGenParaHistory(null);
                             // self.selectedSalGenParaHistory(self.listHistory()[indexFocus].historyId);
                             self.modeScreen(MODESCREEN.UPDATE);
