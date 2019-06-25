@@ -1,22 +1,30 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeWithDay, DAYS } from '@app/utils/time';
+import { TimeWithDay } from '@app/utils/time';
 import { MobilePicker } from '@app/components/picker';
-import { Component } from 'vue-property-decorator';
 import { TimeWithDayHelper } from '@app/components/controls/time-picker';
 @component({
-    template: `<div class="form-group mb-1">
-        <div class="input-group input-group-time">
-            <div class="form-control">
+    template: `<div class="form-group mb-0">
+        <div class="input-group input-group-time">             
+            <template v-if="iconsClass.before" key="show" v-click:500="emitSearch">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" v-bind:class="iconsClass.before">{{ !iconsClass.before ? icons.before : '' }}</span>
+                </div>
+            </template>
+            <div class="form-control" v-bind:class="{ 'is-invalid': invalid }">
                 <div class="row m-0">
-                    <div class="col-5 text-center" v-click:1000="selectStartTime">{{displayStartTime}}</div>
-                    <div class="col-2 text-center">～</div>
-                    <div class="col-5 text-center" v-click:1000="selectEndTime">{{displayEndTime}}</div>
+                    <div class="col-5 p-0 text-center" v-click:1000="selectStartTime">{{displayStartTime}}</div>
+                    <div class="col-2 p-0 text-center">～</div>
+                    <div class="col-5 p-0 text-center" v-click:1000="selectEndTime">{{displayEndTime}}</div>
                 </div>
             </div>
-            <div class="input-group-append" v-click:500="emitSearch">
-                <span class="input-group-text" v-bind:class="icon"></span>
-            </div>
+            <template v-else key="hide"></template>
+            <template v-if="iconsClass.after" key="show">
+                <div class="input-group-append" v-click:500="emitSearch">
+                    <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
+                </div>
+            </template>
+            <template v-else key="hide"></template>
         </div>
     </div>`,
     components: {
@@ -28,11 +36,20 @@ export class TimeRangeSearchBoxComponent extends Vue {
     @Prop({ default: 'fa fa-search' })
     public readonly icon!: string;
 
+    @Prop({ default: false })
+    public readonly invalid!: boolean;
+
+    @Prop({ default: false })
+    public readonly required!: boolean;
+
     @Prop()
     public defaultStartTime: number;
 
     @Prop()
     public defaultEndTime: number;
+
+    @Prop({ default: () => ({ before: '', after: 'fa fa-search' }) })
+    public readonly icons!: { before: string; after: string };
 
     //========================================= data and computed ====================================================
     private startTime: number = this.defaultStartTime || null;
@@ -47,6 +64,19 @@ export class TimeRangeSearchBoxComponent extends Vue {
         return this.displayTime(this.endTime);
     }
 
+    get iconsClass() {
+        let self = this,
+            classess = ['fa', 'fas', 'fab'],
+            isClass = (icon: string) => {
+                return !!classess.filter((f) => (icon || '').indexOf(f) > -1).length;
+            };
+
+        return {
+            before: (isClass(self.icons.before) ? self.icons.before + (self.invalid ? ' is-invalid' : '') : '').trim(),
+            after: (isClass(self.icons.after) ? self.icons.after + (self.invalid ? ' is-invalid' : '') : '').trim()
+        };
+    }
+
     // ====================================== method =========================================================
 
     private displayTime(value: number) {
@@ -59,7 +89,6 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 
     public selectStartTime() {
-
         this.showPicker(this.startTime)
             .then((value: any) => {
                 if (value === undefined) {
@@ -71,9 +100,7 @@ export class TimeRangeSearchBoxComponent extends Vue {
                 }
             }).then(() => {
                 // emit value to model binding
-                if (this.startTime && this.endTime) {
-                    this.$emit('input', { start: this.startTime, end: this.endTime });
-                }
+                this.$emit('input', { start: this.startTime, end: this.endTime });
             });
     }
 
@@ -89,9 +116,7 @@ export class TimeRangeSearchBoxComponent extends Vue {
                 }
             }).then(() => {
                 // emit value to model binding
-                if (this.startTime && this.endTime) {
-                    this.$emit('input', { start: this.startTime, end: this.endTime });
-                }
+                this.$emit('input', { start: this.startTime, end: this.endTime });
             });
     }
 
@@ -102,7 +127,7 @@ export class TimeRangeSearchBoxComponent extends Vue {
         return this.$picker(selected,
             TimeWithDayHelper.getDataSource(value),
             TimeWithDayHelper.onSelect,
-            { title });
+            { title, required: this.required });
     }
 
     public emitSearch() {

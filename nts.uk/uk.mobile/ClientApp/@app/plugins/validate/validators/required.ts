@@ -1,4 +1,7 @@
-const required = function (value: any, checkOr: boolean) {
+import { _ } from '@app/provider';
+import { IRule } from 'declarations';
+
+const required = function (value: any, checkOr: boolean, rule: IRule) {
     let msg = false;
 
     if (Array.isArray(value)) {
@@ -11,7 +14,14 @@ const required = function (value: any, checkOr: boolean) {
         // invalid date won't pass
         msg = isNaN(value.getTime());
     } else if (typeof value === 'object') {
-        msg = Object.keys(value).length === 0;
+        switch (rule.valueType) {
+            case 'TimeRange':
+                msg = _.isNil(value.start) || _.isNil(value.end);
+                break;
+            default:
+                msg = Object.keys(value).length === 0;
+                break;
+        }
     } else {
         msg = String(value).length === 0;
     }

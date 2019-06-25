@@ -121,7 +121,7 @@ export class InputComponent extends Vue {
         let self = this,
             classess = ['fa', 'fas', 'fab'],
             isClass = (icon: string) => {
-                return !!classess.filter((f) => icon.indexOf(f) > -1).length;
+                return !!classess.filter((f) => (icon || '').indexOf(f) > -1).length;
             };
 
         return {
