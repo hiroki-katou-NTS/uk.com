@@ -446,7 +446,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1, // システム区分
+                systemType: 3, // システム区分
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -474,6 +474,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 /** Advanced search properties */
                 showEmployment: false,
                 showWorkplace: false,
+                showDepartment: false,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
