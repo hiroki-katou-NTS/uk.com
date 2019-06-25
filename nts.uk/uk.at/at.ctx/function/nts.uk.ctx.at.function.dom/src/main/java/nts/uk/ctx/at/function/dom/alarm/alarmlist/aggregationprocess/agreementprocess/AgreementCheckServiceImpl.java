@@ -14,9 +14,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.TransactionSynchronizationRegistry;
-
-import org.apache.log4j.Logger;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -37,6 +34,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRe
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -64,9 +62,10 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void check(List<AlarmCheckConditionByCategory> agreementErAl, List<PeriodByAlarmCategory> periodAlarms,
 			Optional<AgreementOperationSettingImport> agreementSetObj, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result, List<String> empIds,
+			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result,
 			Map<String, Integer> empIdToClosureId, List<Closure> closureList,
 			Map<String, EmployeeSearchDto> mapEmployee, List<String> employeeIds) {
+		String companyId = AppContexts.user().companyId();
 		for (AlarmCheckConditionByCategory alarmCheck : agreementErAl) {
 			// 36協定のアラームチェック条件
 			AlarmChkCondAgree36 alarmChkCon36 = alarmCheck.getAlarmChkCondAgree36();
@@ -80,6 +79,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 						return;
 					}
 				}
+				Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(companyId, employeeIds, new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
 
 				// 抽出条件に対応する期間を取得する
 				// List<36協定エラーアラームのチェック条件>
@@ -97,7 +97,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 								List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter
 										.checkArgreementResult(employeeIds,
 												new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()),
-												agreeConditionError, agreementSetObj, closureList, empIdToClosureId);
+												agreeConditionError, agreementSetObj, closureList, empIdToClosureId,objCheckAgreement);
 								if (!CollectionUtil.isEmpty(checkAgreementsResult)) {
 									result.addAll(generationValueExtractAlarm(mapEmployee, checkAgreementsResult,
 											agreeConditionError, optAgreeName));
@@ -108,7 +108,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 				if (Period.Yearly.value == periodAlarm.getPeriod36Agreement()) {
 					List<DatePeriod> periodsYear = new ArrayList<>();
 					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
-					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(empIds,
+					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds,
 							periodsYear, alarmChkCon36.getListCondOt());
 					for (CheckedOvertimeImport check : checkOvertimes) {
 

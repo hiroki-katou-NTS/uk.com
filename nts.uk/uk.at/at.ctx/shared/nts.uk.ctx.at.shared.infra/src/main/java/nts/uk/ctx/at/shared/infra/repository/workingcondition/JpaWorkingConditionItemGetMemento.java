@@ -48,6 +48,9 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity) {
 		super();
 		this.entity = entity;
+		this.perDayWeek = entity.getKshmtPersonalDayOfWeeks();
+		this.perWorkCat = entity.getKshmtPerWorkCats();
+		this.method = entity.getKshmtScheduleMethod();
 	}
 	
 	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, List<KshmtPerWorkCat> perWorkCat, 
