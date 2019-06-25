@@ -33,5 +33,9 @@ class SearchComponent extends Vue {
     }
 }
 
+// //deprecate
 Vue.component('nts-search-box', SearchComponent);
 Vue.component('text-search-box', SearchComponent);
+
+// recommended
+Vue.component('nts-text-search', SearchComponent);

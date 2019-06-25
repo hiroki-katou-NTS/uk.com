@@ -1,11 +1,13 @@
 ##### 2. Khai báo trong index.html
 
 ```html
-<time-range-search-box v-on:search="searchList" />
+<nts-time-range-search v-on:search="searchList" />
 ```
 
-Ở HTML, tạo thẻ <time-range-search-box> với attribute v-on:search ứng với tên 1 function trong file ts
+Ở HTML, tạo thẻ <nts-time-range-search> với attribute v-on:search ứng với tên 1 function trong file ts
 trong trường hợp này là hàm searchList.
+
+> Ghi chú: tên `time-range-search-box` đã cũ, không nên dùng.
 
 ##### 3. Khai báo trong index.ts
 

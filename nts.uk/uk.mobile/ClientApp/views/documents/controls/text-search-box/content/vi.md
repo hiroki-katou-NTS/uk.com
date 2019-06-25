@@ -1,16 +1,17 @@
 ##### 2. Giải thích
-`text-search-box` là component được sử dụng ở các màn hình tìm kiếm dữ liệu theo danh sách.  
+`nts-text-search` là component được sử dụng ở các màn hình tìm kiếm dữ liệu theo danh sách.  
 Nó là công cụ để nhập vào text và đẩy ra thông qua 2 event là `input` và `search`.  
 - input: được đẩy ra mỗi khi giá trị trong khung nhập thay đổi.
 - search: được đẩy ra khi người dùng click vào icon searh <span class="fa fa-search"></span>.
 
+> Ghi chú: tên `nts-search-box` và `text-search-box` đã cũ, không nên sử dụng.
 
 ##### 2. Code HTML
-Ở HTML, tạo thẻ `text-search-box` với attribute v-on:search ứng với tên 1 function trong file ts
+Ở HTML, tạo thẻ `nts-text-search` với attribute v-on:search ứng với tên 1 function trong file ts
 trong trường hợp này là hàm searchList.  
 
 ```html
-<text-search-box 
+<nts-text-search 
     v-on:input="inputEvent"
     v-on:search="searchEvent"/>
 ```

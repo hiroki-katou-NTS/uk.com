@@ -110,4 +110,8 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 }
 
+//deprecate
 Vue.component('time-range-search-box', TimeRangeSearchBoxComponent);
+
+// recommended
+Vue.component('nts-time-range-search', TimeRangeSearchBoxComponent);

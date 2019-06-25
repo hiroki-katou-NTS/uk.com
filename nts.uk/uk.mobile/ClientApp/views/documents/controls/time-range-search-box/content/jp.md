@@ -1,9 +1,9 @@
 ##### 2. ビューでの定義
 
 ```html
-<time-range-search-box v-on:search="searchList" />
+<nts-time-range-search v-on:search="searchList" />
 ```
-HTMLでは`v-on:search="searchList"`がある`time-range-search-box`のタグを作ってください。  
+HTMLでは`v-on:search="searchList"`がある`nts-time-range-search`のタグを作ってください。  
 `searchList`はビューモデルにある関数である。  
 
 ##### 3. ビューモデルでの定義

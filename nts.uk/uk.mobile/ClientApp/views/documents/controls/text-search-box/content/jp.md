@@ -1,10 +1,10 @@
 ##### 2. ビューでの定義
 
 ```html
-<text-search-box v-on:search="searchList"/>
+<nts-text-search v-on:search="searchList"/>
 ```
 
-HTMLでは`v-on:search="searchList"`がある`text-search-box`のタグを作ってください。  
+HTMLでは`v-on:search="searchList"`がある`nts-text-search`のタグを作ってください。  
 `searchList`はビューモデルにある関数である。  
 
 ##### 3. ビューモデルでの定義
