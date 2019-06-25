@@ -825,6 +825,7 @@ module cps003.c.vm {
                         regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                         regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
                         regId[recData.id] = regEmp;
+                        employees.push(regEmp);
                     }
                     
                     let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
@@ -839,8 +840,6 @@ module cps003.c.vm {
                         
                         regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
                     }
-                    
-                    employees.push(regEmp);
                 });
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
