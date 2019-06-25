@@ -119,6 +119,16 @@ $uk-colors: (
     alice-blue:#c6d9f1
 );
 
+$uk-status-color: (
+    reflected : (#333, #c3d69b, #e4f2c9),
+    approved : (#333, #93cddd, #d7f2ff),
+    //processing : (#fff, transparent, #fddd9b),
+    denial : (#DC474B, #999, #eeeeee),
+    return : (#333, #ffcc88, #f9f0ac),
+    cancel : (#333, #999, #eeeeee),
+    unapproved : (#DC474B, #999, #fff)
+);
+
 @each $color-name, $hex-value in $uk-bg-colors {
     .uk-bg-#{$color-name} {        
         background-color: #{$hex-value} !important;
@@ -194,7 +204,7 @@ $uk-colors: (
     }
 
     .uk-border-#{$color-name} {
-        border-color: #{$hex-value};
+        border-color: #{$hex-value} !important;
         &.uk-color-swatch {
             &:before {
                 content: '#{$hex-value}';
@@ -205,6 +215,46 @@ $uk-colors: (
                 top: 0px;
                 right: 3px;
             }
+        }
+    }
+}
+
+@each $class-name, $color-pallet in $uk-status-color {
+    $fg-color: nth($list: $color-pallet, $n: 1);
+    $bd-color: nth($list: $color-pallet, $n: 2);
+    $bg-color: nth($list: $color-pallet, $n: 3);
+
+    .apply-#{$class-name} {
+        color: $fg-color;
+        border: 1px solid $bd-color;
+        background-color: $bg-color;
+        text-align: center;
+        display: inline-block;
+        border-radius: 0.25rem;
+
+        &.border-0 {
+            border: 0;
+        }
+        &.border-1 {
+            border: 1px solid $bd-color;
+        }
+        &.border-2 {
+            border: 2px solid $bd-color;
+        }
+        &.border-3 {
+            border: 1px solid $bd-color;
+        }
+        &.border-dashed {
+            border-style: dashed;
+        }
+        &.border-dotted {
+            border-style: dotted;
+        }
+        &.border-double {
+            border-style: double;
+        }
+        &.border-ridge {
+            border-style: ridge;
         }
     }
 }

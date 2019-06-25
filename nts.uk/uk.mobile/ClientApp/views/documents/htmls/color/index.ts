@@ -130,4 +130,13 @@ export class DocumentsHtmlsColorComponent extends Vue {
         'saturday',
         'weekdays'
     ];
+
+    public applyColors: Array<string> = [
+        'reflected', 
+        'approved', 
+        'denial', 
+        'return', 
+        'cancel', 
+        'unapproved'
+    ];
 }
