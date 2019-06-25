@@ -28,3 +28,5 @@ componentsに定義したものをここに追加してください。
     <to-top />
 </div>
 ```
+
+**著者：**　Nguyen Van Vuong
