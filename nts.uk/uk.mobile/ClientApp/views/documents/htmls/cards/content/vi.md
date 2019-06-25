@@ -67,7 +67,7 @@ Bạn được tùy ý quyết định cách hiển thị bên trong 2 khối DI
 Mỗi card trong nhóm card hiển thị theo nhóm được khai báo là khối DIV với class là `card card-label`.  
 Tương tự như trường hợp dạng card đơn, bên trong mỗi card sẽ có 2 khối DIV với class là `card-header` và `card-body`.  
 
-Trong `card-header` để tạo cái `"bắt buộc"`, hãy thêm cho nó class `badge badge-warning`, để hiển thị `tùy chọn`, hãy thêm cho nó class `badge badge--info`.
+Trong `card-header` để tạo cái `"bắt buộc"`, hãy thêm cho nó class `badge badge-warning`, để hiển thị `tùy chọn`, hãy thêm cho nó class `badge badge-info`.
 
 Chú ý: Trong trường hợp bên trong `card-body` lại có item con, hãy tham khảo code dưới đây( phần `sub-element`).
 ```html

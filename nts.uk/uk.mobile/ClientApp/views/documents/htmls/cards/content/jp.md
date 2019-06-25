@@ -66,7 +66,7 @@
 グループにあるカードに`card card-label`というクラスを付けてください。  
 `card`のなかにも`card-header`と`card-body`がある。  
 
-`必須`と`任意`アイコンを作るために`badge badge-warning`と`badge badge--info`というクラスを追加してください。
+`必須`と`任意`アイコンを作るために`badge badge-warning`と`badge badge-info`というクラスを追加してください。
 
 **注意**: 子項目がある場合下のソースコードを参照してください。(`sub-element`部分)
 ```html
