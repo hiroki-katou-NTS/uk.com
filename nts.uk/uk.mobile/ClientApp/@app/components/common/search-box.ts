@@ -5,32 +5,32 @@ import { MobilePicker } from '@app/components/picker';
 import { Component } from 'vue-property-decorator';
 import { TimeWithDayHelper } from '@app/components/controls/time-picker';
 @component({
-    template: `
-    <div class="time-range-search-box">
-        <div class="form-control">
-            <span class="start time-input" v-click:1000="selectStartTime">
-                {{displayStartTime}}
-            </span> 
-            <span class="connect-letter">～</span>
-            <span class="end time-input" v-click:1000="selectEndTime">
-                {{ displayEndTime }}
-            </span>   
-
-            <span class="search-button fas fa-search" v-click:500="emitSearch">
-            </span>
-
+    template: `<div class="form-group mb-1">
+        <div class="input-group input-group-time">
+            <div class="form-control">
+                <div class="row m-0">
+                    <div class="col-5 text-center" v-click:1000="selectStartTime">{{displayStartTime}}</div>
+                    <div class="col-2 text-center">～</div>
+                    <div class="col-5 text-center" v-click:1000="selectEndTime">{{displayEndTime}}</div>
+                </div>
+            </div>
+            <div class="input-group-append" v-click:500="emitSearch">
+                <span class="input-group-text" v-bind:class="icon"></span>
+            </div>
         </div>
-    </div>
-    `,
+    </div>`,
     components: {
         'picker': MobilePicker,
     }
 })
 export class TimeRangeSearchBoxComponent extends Vue {
-
     // ========================================= props ============================================================
+    @Prop({ default: 'fa fa-search' })
+    public readonly icon!: string;
+
     @Prop()
     public defaultStartTime: number;
+
     @Prop()
     public defaultEndTime: number;
 
@@ -69,6 +69,11 @@ export class TimeRangeSearchBoxComponent extends Vue {
                 } else {
                     this.startTime = TimeWithDay.fromObject(value).value;
                 }
+            }).then(() => {
+                // emit value to model binding
+                if (this.startTime && this.endTime) {
+                    this.$emit('input', { start: this.startTime, end: this.endTime });
+                }
             });
     }
 
@@ -81,6 +86,11 @@ export class TimeRangeSearchBoxComponent extends Vue {
                     this.endTime = null;
                 } else {
                     this.endTime = TimeWithDay.fromObject(value).value;
+                }
+            }).then(() => {
+                // emit value to model binding
+                if (this.startTime && this.endTime) {
+                    this.$emit('input', { start: this.startTime, end: this.endTime });
                 }
             });
     }
@@ -100,4 +110,5 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 }
 
+Vue.component('nts-time-range', TimeRangeSearchBoxComponent);
 Vue.component('time-range-search-box', TimeRangeSearchBoxComponent);
