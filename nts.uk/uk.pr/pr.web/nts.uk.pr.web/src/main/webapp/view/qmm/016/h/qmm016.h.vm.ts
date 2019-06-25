@@ -49,6 +49,7 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                 let qualificationGroupData = data[0], qualificationInformationData = data[1];
                 self.qualificationGroupList(qualificationGroupData);
                 self.qualificationInformationList(qualificationInformationData);
+                self.sortQualificationInfoList();
                 self.qualificationInformationListInString = JSON.stringify(qualificationInformationData);
                 if (qualificationGroupData.length > 0) {
                     self.selectedQualificationGroupCode(qualificationGroupData[0].qualificationGroupCode);
@@ -84,9 +85,11 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
             $.when(service.getQualificationGroupByCode(qualificationGroupCode), service.getAllQualificationInformation(qualificationGroupCode)).done((groupData, infoData) => {
                 let selectedQualificationGroup: any = groupData;
                 self.selectedEligibleQualificationCode(JSON.parse(self.qualificationInformationListInString).filter(item => selectedQualificationGroup.eligibleQualificationCode.indexOf(item.qualificationCode) >= 0));
+                self.sortQualificationInfoSelected();
                 self.selectedQualification(new model.QualificationGroupSetting(selectedQualificationGroup));
                 self.screenMode(model.SCREEN_MODE.UPDATE);
                 self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
+                self.sortQualificationInfoList();
                 $('#H3_2').focus();
                 block.clear();
             }).fail(function () {
@@ -189,6 +192,7 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
             block.invisible();
             service.getAllQualificationInformation("zzz").done(infoData => {
                 self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
+                self.sortQualificationInfoList();
                 $('#H3_1').focus();
             }).fail(error => {
                 dialog.alertError(error);
@@ -196,6 +200,18 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                 block.clear();
             });
             
+        }
+
+        sortQualificationInfoList(){
+            let self = this;
+            let listSorted = _.sortBy(self.qualificationInformationList(), ['qualificationCode']);
+            self.qualificationInformationList(listSorted)
+        }
+
+        sortQualificationInfoSelected(){
+            let self = this;
+            let listSorted = _.sortBy(self.selectedEligibleQualificationCode(), ['qualificationCode']);
+            self.selectedEligibleQualificationCode(listSorted)
         }
     }
 }

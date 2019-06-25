@@ -201,6 +201,7 @@ module nts.uk.at.view.kaf005.b {
             
             initData(data: any) {
                 var self = this;
+                self.requiredReason(data.requireAppReasonFlg);
                 self.version = data.application.version;
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
@@ -208,7 +209,6 @@ module nts.uk.at.view.kaf005.b {
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
-                self.requiredReason(data.displayAppReasonContentFlg);
                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
                 self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                 self.displayBonusTime(data.displayBonusTime);
@@ -640,8 +640,13 @@ module nts.uk.at.view.kaf005.b {
                         }
                     }
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });
+                    if(nts.uk.util.isNullOrEmpty(res.errors)){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });       
+                    } else {
+                        nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });      
+                    }
                 });
             }
             

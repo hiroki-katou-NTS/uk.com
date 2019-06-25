@@ -19,6 +19,10 @@ public class AgreementTimeImport {
 	private Optional<AgreeTimeOfMonthExport> confirmed;
 	/** 申請反映後情報 */
 	private Optional<AgreeTimeOfMonthExport> afterAppReflect;
+	/** 確定限度情報 */
+	private Optional<AgreMaxTimeOfMonthExport> confirmedMax;
+	/** 申請反映後限度情報 */
+	private Optional<AgreMaxTimeOfMonthExport> afterAppReflectMax;
 	/** エラーメッセージ */
 	private Optional<String> errorMessage;
 	

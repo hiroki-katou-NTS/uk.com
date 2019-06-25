@@ -20,5 +20,5 @@ public interface Time36UpperLimitCheck {
 	 * 19.３６時間の上限チェック(照会)
 	 */
 	Time36UpperLimitCheckResult checkUpdate(String companyId, Optional<AppOvertimeDetail> appOvertimeDetailOpt,
-			String employeeId, ApplicationType appType, List<AppTimeItem> appTimeItems);
+			String employeeId, GeneralDate appDate, ApplicationType appType, List<AppTimeItem> appTimeItems);
 }

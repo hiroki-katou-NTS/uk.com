@@ -28,19 +28,23 @@ public class WageTableQualificationFinder {
      * @param isInitScreen isInitScreen
      * @return 資格_賃金テーブル作成
      */
-    public List<WageTableQualificationDto> createWageTableQualification(String historyId, boolean isInitScreen) {
-        //ドメインモデル「資格情報」を取得する
-        List<QualificationInformation> qualificationInformation = this.qualificationInformationRepository.getQualificationGroupSettingByCompanyID();
-        if (qualificationInformation.isEmpty()) return Collections.emptyList();
+	public List<WageTableQualificationDto> createWageTableQualification(String historyId, boolean isInitScreen) {
+		// ドメインモデル「資格情報」を取得する
+		List<QualificationInformation> qualificationInformation = this.qualificationInformationRepository
+				.getQualificationGroupSettingByCompanyID();
+		if (qualificationInformation.isEmpty())
+			return Collections.emptyList();
 
-        //ドメインモデル「賃金テーブル内容」を取得する
-        List<WageTableQualification> wageTableContent        = this.wageTableContentRepository.getWageTableQualification(historyId);
-        List<WageTableQualification> wageTableContentDefault = this.wageTableContentRepository.getDefaultWageTableQualification();
-
-        if (isInitScreen)
-            return wageTableContent.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
-        return wageTableContentDefault.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
-//        if (wageTableContent.isEmpty())
-//            return Collections.emptyList();
-    }
+		// ドメインモデル「賃金テーブル内容」を取得する
+		if (isInitScreen) {
+			List<WageTableQualification> wageTableContent = this.wageTableContentRepository
+					.getWageTableQualification(historyId);
+			return wageTableContent.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
+		} else {
+			List<WageTableQualification> wageTableContentDefault = this.wageTableContentRepository
+					.getDefaultWageTableQualification();
+			return wageTableContentDefault.stream().map(WageTableQualificationDto::fromDomain)
+					.collect(Collectors.toList());
+		}
+	}
 }

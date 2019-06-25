@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
+        //申請理由が必須
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
@@ -200,7 +201,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.checkRequiredOvertimeHours();
-                $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
@@ -332,6 +332,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
@@ -749,8 +750,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }                    
                 }
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }
             });
         }
         //登録処理を実行

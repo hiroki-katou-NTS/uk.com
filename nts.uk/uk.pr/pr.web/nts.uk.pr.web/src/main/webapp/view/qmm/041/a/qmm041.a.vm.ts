@@ -83,7 +83,8 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -520,6 +521,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
 
         /** Advanced search properties */
         showEmployment?: boolean; // 雇用条件
+        showDepartment?: boolean; // 部門条件
         showWorkplace?: boolean; // 職場条件
         showClassification?: boolean; // 分類条件
         showJobTitle?: boolean; // 職位条件
@@ -581,11 +583,11 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
     }
 
     export class SystemType {
-        static EMPLOYMENT = 1;
-        static SALARY = 2;
-        static PERSONNEL = 3;
+        static PERSONNEL = 1;
+        static EMPLOYMENT = 2;
+        static SALARY = 3;
         static ACCOUNTING = 4;
-        static OH = 6;
+        static ADMIN = 6;
     }
 
     interface IHistoryModel {

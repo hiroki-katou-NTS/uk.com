@@ -80,8 +80,14 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 			if (context.getCommand().getWageTableContent() != null) {
 				context.getCommand().getWageTableContent()
 						.setHistoryID(context.getCommand().getHistory().getHistoryID());
-				wageContentRepo.addOrUpdate(context.getCommand().getWageTableContent().fromCommandToDomain(), companyId,
-						context.getCommand().getWageTableCode());
+				if (context.getCommand().getWageTableContent().isBrandNew()) {
+					wageContentRepo.addOrUpdate(context.getCommand().getWageTableContent().fromCommandToDomain(),
+							companyId, context.getCommand().getWageTableCode());
+				} else {
+					wageContentRepo.updateListPayment(context.getCommand().getHistory().getHistoryID(), companyId,
+							context.getCommand().getWageTableCode(),
+							context.getCommand().getWageTableContent().fromCommandToDomain().getPayments());
+				}
 			}
 
 			return context.getCommand().getHistory().getHistoryID();

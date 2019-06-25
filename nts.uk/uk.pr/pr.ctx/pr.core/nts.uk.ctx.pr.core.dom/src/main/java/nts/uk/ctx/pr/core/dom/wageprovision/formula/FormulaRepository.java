@@ -34,7 +34,7 @@ public interface FormulaRepository {
 
     void updateFormulaHistory (String formulaCode, YearMonthHistoryItem yearMonth);
 
-    void removeFormulaHistory (String historyID);
+    int removeFormulaHistory (String historyID);
 
     void removeByFormulaCode (String formulaCode);
 

@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             let self = this;
             self.ccgcomponent = {
                 showEmployeeSelection: true, // 検索タイプ
-                systemType: 1,
+                systemType: 3,
                 showQuickSearchTab: false,
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
@@ -56,7 +56,8 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true, // 雇用条件
-                showWorkplace: true, // 職場条件
+                showDepartment: true,
+                showWorkplace: false, // 職場条件
                 showClassification: true, // 分類条件
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件

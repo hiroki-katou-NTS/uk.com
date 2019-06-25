@@ -2,7 +2,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<div style="width: 857px">
+<div>
     <div class="flex valign-center tab-row">
         <div style="width: 110px;"
              data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
@@ -21,14 +21,14 @@
     </div>
     <hr></hr>
     <div class="tab-row">
-        <div style="width: 50px; vertical-align: top"
+        <div style="width: 70px; vertical-align: top"
              data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
         <div class="fixed-table-container">
             <table class="custom-fixed-table normal-fixed-table">
                 <colgroup>
                     <col width="30px"/>
-                    <col width="220px"/>
-                    <col width="380px"/>
+                    <col width="163px"/>
+                    <col width="360px"/>
                     <col width="170px"/>
                 </colgroup>
                 <thead>
@@ -59,7 +59,7 @@
 	                            		value: rangeLowerLimit, 
 	                            		name: '#[QMM016_30]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+	                            <div>#{i18n.getText('QMM016_31')}</div>
 	                            <input tabindex="13" id="F2_10" data-bind="ntsNumberEditor: { 
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
@@ -95,7 +95,7 @@
 	                            		value: rangeLowerLimit, 
 	                            		name: '#[QMM016_30]', 
 	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
-	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+	                            <div>#{i18n.getText('QMM016_31')}</div>
 	                            <input tabindex="16" id="F2_17" data-bind="ntsNumberEditor: { 
 	                            		required: true, 
 	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(), 
@@ -139,14 +139,14 @@
     </div>
     <div class="tab-row" style="margin-top: 40px;">
         <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-        <button tabindex="19" style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+        <button tabindex="19" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
     <div class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length > 0">
         <table>
 			<thead>
 				<tr>
-					<td rowspan="2" style="border: none;"><img src="../resource/＃QMM017_6.png"></img></td>
+					<td rowspan="2" style="border: none; width: 150px"><img src="../resource/＃QMM017_6.png"></img></td>
 					<td style="border: none; padding: 0 0px">
 						<div style="display: inline-block; background-color: #CFF1A5; border: 1px solid #CCC; font-weight: bold; color: #000;">
 							<div style="width: 150px; display: inline-block;">
@@ -171,75 +171,18 @@
 					<td style="border: none;"></td>
 				</tr>
 				<tr>
-					<th class="ui-widget-header" style="height: 32px">
+					<th class="ui-widget-header" style="background-color: #CFF1A5; height: 32px">
 						<div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement">
 	                        <div data-bind="text: elementName"></div>
 	                    </div>
 	                </th>
-					<td rowspan="2" style="border: none;"><img src="../resource/＃QMM017_7.png"></img></td>
-				</tr>
-				<tr>
-					<th class="ui-widget-header">
-						<div data-bind="with: $vm.selectedWageTable().elementInformation().oneDimensionElement">
-		                    <div data-bind="text: elementName"></div>
-		                </div>
-					</th>
-					<th style="padding: 0 0px">
-						<div id="elem2-wrapper" style="width: 590px; overflow-x: hidden; overflow-y: scroll">
-							<table id="elem2-table">
-								<tbody>
-					                <tr>
-	                                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
-				                    		<th class="ui-widget-header" style="height: 32px;">
-				                    			<div style="width: 150px;" class="limited-label" data-bind="text: name"></div>
-			                    			</th>
-				                    	</com:ko>
-			                    	</tr>
-	           					</tbody>
-							</table>
-						</div>
-					</th>
+					<td style="border: none;"><img src="../resource/＃QMM017_7.png"></img></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td style="padding: 0 0px">
-						<div id="elem1-wrapper" style="height: 348px; overflow-x: scroll; overflow-y: hidden;">
-							<table id="elem1-table">
-								<tbody data-bind="foreach: $vm.wageTableContent2dData">
-					                <tr>
-					                    <th class="ui-widget-header" style="height: 32px;">
-						                    <div style="width: 150px;">
-						                    	<span class="limited-label" data-bind="text: displayText"></span>
-						                    </div>
-					                    </th>
-					                </tr>
-				                </tbody>
-							</table>
-							<div style="height: 17px"></div>
-						</div>
-					</td>
-					<td style="padding: 0 0px">
-						<div id="content-wrapper" style="width: 590px; height: 348px; overflow: scroll;">
-							<table id="content-table">
-								<tbody data-bind="foreach: $vm.wageTableContent2dData">
-					                <tr>
-					                    <com:ko bind="listSecondDms" tag="foreach">
-								            <td style="border: 1px solid #CCC; vertical-align: middle;">
-					 				            <div style="height: 32px; width: 150px; text-align: center;">
-					 				            	<input class="input-amount" data-bind="ntsNumberEditor: {
-						  								option: { grouplength: 3, width: '120px' }, 
-						   								name: '#[QMM016_39]', 
-						   								value: paymentAmount, 
-						   								constraint: 'WageTablePaymentAmount', 
-						   								required: true}" /> 
-					 				            </div>
-								            </td>
-								        </com:ko>
-					                </tr>
-				                </tbody>
-							</table>
-						</div>
+					<td colspan="2">
+						<table id="grid2"></table>
 					</td>
 					<td style="border: none;"></td>
 				</tr>

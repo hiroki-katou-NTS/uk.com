@@ -782,7 +782,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 if (endFunctionIndex == -1) {
-                    self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
+                    self.setErrorToFormula('MsgQ_231', []);
                     break;
                 }
                 replaceValue = self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));

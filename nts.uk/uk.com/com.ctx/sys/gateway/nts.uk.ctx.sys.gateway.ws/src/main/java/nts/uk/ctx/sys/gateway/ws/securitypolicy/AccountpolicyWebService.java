@@ -38,6 +38,4 @@ public class AccountpolicyWebService {
 	public void updateAccountPolicy(UpdateAccountPolicyCommand updateAccountPolicyCommand){
 		 this.updateAccountPolicyCommandHandler.handle(updateAccountPolicyCommand);
 	}
-	
-
 }

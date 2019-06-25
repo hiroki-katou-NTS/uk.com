@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author HungTT - 銀行名
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class BankName extends StringPrimitiveValue<BankName> {
 
 	/**

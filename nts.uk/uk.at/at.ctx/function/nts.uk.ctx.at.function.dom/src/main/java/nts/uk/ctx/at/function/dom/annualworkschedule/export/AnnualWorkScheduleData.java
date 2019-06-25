@@ -59,6 +59,8 @@ public class AnnualWorkScheduleData {
 	private Integer maxDigitAfterDecimalPoint = null;
 
 	private boolean agreementTime;
+	
+	private boolean check36MaximumAgreement = false;
 
 	public void setMonthlyData(ItemData item, YearMonth ym) {
 		int monthIndex = (int) this.startYm.until(ym, ChronoUnit.MONTHS);
@@ -154,9 +156,17 @@ public class AnnualWorkScheduleData {
 		case TIMES:
 		case AMOUNT:
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 1, RoundingMode.HALF_UP);
+			//KWR008 Update export excel ver11 set bg gray
+			if(this.check36MaximumAgreement) {
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+			}
 			break;
 		case TIME:
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 0, RoundingMode.HALF_UP);
+			//KWR008 Update export excel ver11 set bg gray
+			if(this.check36MaximumAgreement) {
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+			}
 			break;
 		}
 		return this;
@@ -298,6 +308,8 @@ public class AnnualWorkScheduleData {
 		case EXCESS_LIMIT_ALARM_SP:
 			// No57: #F6F636 = 16184886
 			return 16184886;
+		case EXCESS_BG_GRAY:
+			return 11119017;
 		default:
 			return null;
 		}
@@ -430,15 +442,18 @@ public class AnnualWorkScheduleData {
 			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
 			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
 			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
-			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header) {
+			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header, boolean check36MaximumAgreement) {
 		
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
-		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
-		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		if (!check36MaximumAgreement) {
+			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
+			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		}
+		annualWorkScheduleData.setCheck36MaximumAgreement(check36MaximumAgreement);
 		annualWorkScheduleData.setAgreementTime(true);
 		listAgreementTimeBymonth.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().v());

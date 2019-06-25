@@ -39,7 +39,7 @@
                         data-bind="enable: false">#{i18n.getText('QMM016_3')}</button>
                 <!--A1_4 Excel出力-->
                 <button id="A1_4" tabindex="4"
-                        data-bind="enable: false">#{i18n.getText('QMM016_4')}</button>
+                        data-bind="click : exportExcel,enable: true">#{i18n.getText('QMM016_4')}</button>
                 <!--A1_5 資格グループの設定-->
                 <button id="A1_5" tabindex="5"
                         data-bind="click: settingQualificationGroup">#{i18n.getText('QMM016_5')}</button>
@@ -53,11 +53,11 @@
         <div id="contents-area" class="fixed-flex-layout">
             <div style="margin-left: 10px; margin-top: 20px;" class="fixed-flex-layout-left">
                 <!--A2_1 賃金テーブル一覧パネル-->
-                <div data-bind="ntsPanel:{width: '335px', height: '485px', direction: 'right', showIcon: true, visible: true}"
+                <div data-bind="ntsPanel:{width: '290px', height: '485px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <!--A2_2 検索コード/名称-->
                     <!--A2_3 検索-->
-                    <div style="width: 335px" tabindex="7" data-bind="ntsSearchBox: {
+                    <div style="width: 290px" tabindex="7" data-bind="ntsSearchBox: {
                                 label: '#{i18n.getText('QMM016_8')}',
                                 targetKey: 'identifier',
                                 mode:'igTree',
@@ -79,7 +79,7 @@
                     <div style="margin-top: 15px;">
                         <!--A2_6 賃金テーブル一覧	-->
                         <table id="A2_6" tabindex="10" data-bind="ntsTreeGridView:{
-                               width: 335,
+                               width: 290,
                                rows: 15,
                                dataSource: wageTableTreeList,
                                value: selectedWageTableIdentifier,
@@ -234,10 +234,13 @@
 	                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
 	                                            <!--A8_11 参照ボタン3-->
 	                                            <button tabindex="18" class="small" id="A8_11"
-	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
+	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode(), visible: elementSetting() == 2">#{i18n.getText('QMM016_23')}</button>
 	                                            <!--A8_12 選択要素3-->
-	                                            <div data-bind="with: elementInformation().threeDimensionElement">
-	                                                <div data-bind="text: elementName"></div>
+	                                            <div data-bind="if: elementSetting() == 2">
+	                                                <div data-bind="text: elementInformation().threeDimensionElement().elementName"></div>
+	                                            </div>
+	                                            <div data-bind="if: elementSetting() == 4">
+	                                                <div>#{i18n.getText('QMM016_53')}</div>
 	                                            </div>
 	                                        </td>
 	                                    </tr>

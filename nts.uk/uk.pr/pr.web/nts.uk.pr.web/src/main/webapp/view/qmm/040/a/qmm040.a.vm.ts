@@ -312,7 +312,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1, // システム区分
+                systemType: 3, // システム区分
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -339,7 +339,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -390,6 +391,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         /** Advanced search properties */
         showEmployment?: boolean; // 雇用条件
+        showDepartment?: boolean; // 部門条件
         showWorkplace?: boolean; // 職場条件
         showClassification?: boolean; // 分類条件
         showJobTitle?: boolean; // 職位条件

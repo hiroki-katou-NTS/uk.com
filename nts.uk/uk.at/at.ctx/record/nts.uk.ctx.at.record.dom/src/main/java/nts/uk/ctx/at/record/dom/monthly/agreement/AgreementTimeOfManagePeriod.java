@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
@@ -180,48 +179,26 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 			{
 				// 合計時間の計算
 				Integer totalMinutes = 0;
-				List<YearMonth> existYm = new ArrayList<>();
 				for (val procYm : period.yearMonthsBetween()) {
 					
 					// 労働時間の合計
 					if (agreTimeOfMngPeriodMap.containsKey(procYm)) {
 						val breakdown = agreTimeOfMngPeriodMap.get(procYm).getAgreementMaxTime().getBreakdown();
 						totalMinutes += breakdown.getTotalTime().v();
-						existYm.add(procYm);
 					}
 				}
 
-				// 期間内の結果がある場合のみ
-				if (existYm.size() > 0) {
-
-					// 有効期間の計算
-					YearMonthPeriod existPeriod = new YearMonthPeriod(existYm.get(0), existYm.get(existYm.size()-1));
-					
-					// 合計時間を有効期間の月数で除算
-					Integer existMons = existPeriod.yearMonthsBetween().size();
-					Double averageMinutes = 0.0;
-					if (existMons != 0) {
-						if (totalMinutes >= 0) {
-							averageMinutes = Math.ceil(totalMinutes.doubleValue() / existMons.doubleValue());
-						}
-						else {
-							averageMinutes = -Math.ceil(-totalMinutes.doubleValue() / existMons.doubleValue());
-						}
-					}
-					
-					// 36協定上限各月平均時間を作成
-					AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
-							existPeriod,
-							new AttendanceTimeYear(totalMinutes),
-							new AttendanceTimeMonth(averageMinutes.intValue()),
-							AgreMaxTimeStatusOfMonthly.NORMAL);
-					
-					// 36協定複数月平均時間の状態チェック
-					agreMaxAveTime.errorCheck(result.getMaxTime());
-					
-					// 36協定上限各月平均時間を返す
-					result.getAverageTimeList().add(agreMaxAveTime);
-				}
+				// 36協定上限各月平均時間を作成
+				AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
+						period,
+						new AttendanceTimeYear(totalMinutes),
+						AgreMaxTimeStatusOfMonthly.NORMAL);
+				
+				// 36協定複数月平均時間の状態チェック
+				agreMaxAveTime.errorCheck(result.getMaxTime());
+				
+				// 36協定上限各月平均時間を返す
+				result.getAverageTimeList().add(agreMaxAveTime);
 			}
 		}
 		

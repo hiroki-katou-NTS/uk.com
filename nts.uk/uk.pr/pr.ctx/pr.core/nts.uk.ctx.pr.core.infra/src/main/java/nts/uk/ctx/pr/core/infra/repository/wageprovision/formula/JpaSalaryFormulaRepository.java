@@ -79,8 +79,8 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     }
 
     @Override
-    public void removeFormulaHistory(String historyID) {
-        this.getEntityManager().createQuery(DELETE_FORMULA_HISTORY_BY_ID).setParameter("historyID", historyID).executeUpdate();
+    public int removeFormulaHistory(String historyID) {
+        return this.getEntityManager().createQuery(DELETE_FORMULA_HISTORY_BY_ID).setParameter("historyID", historyID).executeUpdate();
     }
 
     @Override

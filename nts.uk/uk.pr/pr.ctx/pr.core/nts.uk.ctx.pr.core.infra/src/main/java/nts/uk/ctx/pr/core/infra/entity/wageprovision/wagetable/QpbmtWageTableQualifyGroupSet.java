@@ -44,15 +44,11 @@ public class QpbmtWageTableQualifyGroupSet extends UkJpaEntity {
 		return this.pk;
 	}
 
-	// public static QualificationGroupSettingContent
-	// toDomain(List<QpbmtWageTableQualifyGroupSet> listEntity) {
-	// return new
-	// QualificationGroupSettingContent(listEntity.get(0).pk.qualificationGroupCode,
-	// listEntity.get(0).qualificationGroupName,
-	// listEntity.get(0).paymentMethod,
-	// listEntity.stream().map(i ->
-	// i.pk.elegibleQualificationCode).collect(Collectors.toList()));
-	// }
+	public static QualificationGroupSettingContent toDomain(QpbmtWageTableQualifyGroupSet entity) {
+		return new QualificationGroupSettingContent(entity.pk.qualificationGroupCode, entity.qualificationGroupName,
+				entity.paymentMethod, entity.eligibleQualificationCodes.stream()
+						.map(i -> i.pk.eligibleQualificationCode).collect(Collectors.toList()));
+	}
 
 	public static QpbmtWageTableQualifyGroupSet fromDomain(QualificationGroupSettingContent domain, String companyId,
 			String wageTableCode, String historyId) {

@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
            let self = this;
             self.ccg001ComponentOption = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 3,
                 showEmployeeSelection: true,
                 showQuickSearchTab: false,
                 showAdvancedSearchTab: true,
@@ -90,7 +90,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: true,
                 showJobTitle: true,
                 showWorktype: true,
@@ -221,6 +222,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.mode(model.MODE.UPDATE);
                 } else {
                     self.listStateCorrelationHis([]);
+					self.hisIdSelected(null);
                     self.clearStateLinkSettingMasterIndividual();
                     self.mode(model.MODE.NO_REGIS);
                 }

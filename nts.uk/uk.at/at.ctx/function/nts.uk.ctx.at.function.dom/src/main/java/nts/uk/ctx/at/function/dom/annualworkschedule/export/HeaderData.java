@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 
 @Setter
 @Getter
@@ -24,9 +25,12 @@ public class HeaderData {
 	private String empInfoLabel;
 	/** C1_2 */
 	private List<String> months;
-	/** C2_2 or C2_4*/
-	private OutputAgreementTime outputAgreementTime;
+	/** C2_2 or C2_4 or C2_6*/
+	private Optional<MonthsInTotalDisplay> monthsInTotalDisplay;
+	
+	private boolean maximumAgreementTime = false;
 	/** C2_3 or C2_5 */
 	private List<String> monthPeriodLabels;
+	
 	private PrintFormat printFormat;
 }

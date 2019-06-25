@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm035.a {
 
             isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(false);
-            isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
+            isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(true);
             isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -32,7 +32,9 @@ module nts.uk.pr.view.qmm035.a {
                 value: ko.observable(''),
                 nts.uk.pr.view.qmm035.a.service.defaultData().done(function(response) {
                     block.invisible();
-
+                    if(response.length == 0){
+                        self.isEnableBtnPdf(false);
+                    }
                     for (let i = 0; i < response.length; i++) {
                         self.items.push(new CompanyStatutoryWriteOverView(response[i].code, response[i].name));
                         self.isEnableBtnDelete(true);
@@ -72,6 +74,7 @@ module nts.uk.pr.view.qmm035.a {
                 self.currentCode.subscribe(function(codeId) {
                     nts.uk.ui.errors.clearAll();
                     if (codeId) {
+                        self.isEnableBtnPdf(true);
                         self.setTabIndex();
                         nts.uk.pr.view.qmm035.a.service.findByCode(codeId).done(function(response) {
                             self.isEnableBtnDelete(true);
@@ -93,10 +96,28 @@ module nts.uk.pr.view.qmm035.a {
                                 $("#A4_5").focus();
                             });
                         }, 800);*/
+                    }else{
+                        self.isEnableBtnPdf(false);
                     }
 
                 });
 
+            }
+
+            exportExcel(){
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let data = {
+
+                };
+                service.exportExcel().done(()=>{
+
+                }).fail((err)=>{
+                    if (err)
+                        dialog.alertError(err);
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                });
             }
 
             /**
@@ -129,6 +150,7 @@ module nts.uk.pr.view.qmm035.a {
                                 self.items.push(new CompanyStatutoryWriteOverView(response.companies[i].code, response.companies[i].name));
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
                             });
                             self.currentCode(response.codeSelected);
                             self.isEnableCode(false);

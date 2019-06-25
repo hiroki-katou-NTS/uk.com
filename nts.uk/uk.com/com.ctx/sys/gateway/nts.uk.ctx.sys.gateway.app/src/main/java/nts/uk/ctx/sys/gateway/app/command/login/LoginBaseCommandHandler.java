@@ -406,7 +406,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the old password
 	 * @return true, if successful
 	 */
-	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
+	protected CheckChangePassDto checkAfterLogin(UserImportNew user, String oldPassword) {
 		if (user.getPassStatus() != PassStatus.Reset.value) {
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
@@ -416,9 +416,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Event Check
 				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
-			return true;
+			return new CheckChangePassDto(false, null, false);
 		} else {
-			return false;
+			return new CheckChangePassDto(true, "Msg_283", false);
 		}
 	}
 
@@ -433,7 +433,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the old password
 	 * @return true, if successful
 	 */
-	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
+	protected CheckChangePassDto checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
 		// Check passwordPolicy isUse
 		if (passwordPolicy.isUse()) {
 			// Check Change Password at first login
@@ -441,7 +441,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Check state
 				if (user.getPassStatus() == PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					return false;
+					return new CheckChangePassDto(true, "Msg_282", false);
 				}
 			}
 
@@ -450,12 +450,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			if (mess.isError()) {
 				if (passwordPolicy.isLoginCheck()) {
-					return false;
+					return new CheckChangePassDto(true, "Msg_284", false);
 				}
-				return true;
+				return new CheckChangePassDto(false, null, false);
 			}
 		}
-		return true;
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -763,22 +763,32 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		//Request No.280
 		StatusOfEmploymentImport employmentStatus = this.statusEmploymentAdapter.getStatusOfEmployment(employeeId,
 				GeneralDate.today());
-
+			int empStatus = employmentStatus.getStatusOfEmployment();
 		// check status = before_join
-		if (employmentStatus == null
-				|| employmentStatus.getStatusOfEmployment() == StatusOfEmployment.BEFORE_JOINING.value) {
+			if (employmentStatus == null || empStatus == StatusOfEmployment.BEFORE_JOINING.value
+					|| empStatus == StatusOfEmployment.RETIREMENT.value) {
+				
+				String errorCode = "";
+				if (employmentStatus == null || empStatus == StatusOfEmployment.BEFORE_JOINING.value) {
+					errorCode = "Msg_286";
+				}
+				if (empStatus == StatusOfEmployment.RETIREMENT.value) {
+					errorCode = "Msg_287";
+				}
 			Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
 			if (isSignon) {
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_286"), employeeId);
+					TextResource.localize(errorCode), employeeId);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
-
-			throw new BusinessException("Msg_286");
+				
+			throw new BusinessException(errorCode);
 			}
+		
+		
 		}
 		//update EA修正履歴 No.3054
 		Optional<UserImportNew> opUserImport = userAdapter.findByUserId(userId);

@@ -461,6 +461,21 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 });
             return dfd.promise();
         }
+        exportExcel(){
+            let self = this;
+            nts.uk.ui.block.grayout();
+            let data = {
+
+            };
+            service.exportExcel(data).done(()=>{
+
+            }).fail((err)=>{
+                if (err)
+                    dialog.alertError(err);
+            }).always(()=>{
+                nts.uk.ui.block.clear();
+            });
+        }
         register(){
             let self = this;
             let monthSalaryPerDay, monthlySalary,hourlyPay,aDayPayee,targetClass;

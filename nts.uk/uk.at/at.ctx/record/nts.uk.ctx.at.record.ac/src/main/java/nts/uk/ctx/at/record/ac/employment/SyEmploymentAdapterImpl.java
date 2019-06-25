@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
@@ -44,6 +45,13 @@ public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 	public List<SyEmploymentImport> findByCid(String companyId) {
 		return this.syEmploymentPub.findAll(companyId).stream()
 				.map(x -> new SyEmploymentImport(null, x.getCode(), x.getName(), null)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public Map<String, List<SyEmploymentImport>> finds(List<String> employeeId, DatePeriod baseDate) {
+		return syEmploymentPub.findByListSidAndPeriod(employeeId, baseDate).stream().collect(Collectors.toMap(c -> c.getEmployeeId(), 
+					c -> c.getLstEmpCodeandPeriod().stream().map(h -> new SyEmploymentImport(c.getEmployeeId(), h.getEmploymentCode(), "", h.getDatePeriod()))
+				.collect(Collectors.toList())));
 	}
 
 }

@@ -40,6 +40,17 @@
 	margin-top: -7px;
 }
 
-#content-table tr:hover td { 
-	background-color: #C5F1F7; 
+.custom-ntsgrid-header { 
+	background-color: #CFF1A5;
+	height: 28px !important;
+	font-weight: bold; 
+}
+
+.nts-grid-sheet-buttons {
+	display: none;
+}
+
+#grid2_container {
+	margin-left: -2px !important;
+	margin-right: -2px !important;
 }

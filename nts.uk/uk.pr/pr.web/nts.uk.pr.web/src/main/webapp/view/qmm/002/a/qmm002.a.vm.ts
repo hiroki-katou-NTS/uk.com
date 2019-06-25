@@ -66,6 +66,19 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                 self.totalBranchesDisplay(getText("QMM002_12", [val]));
             });
         }
+
+        exportFile(){
+            let self = this;
+            nts.uk.ui.block.grayout();
+            service.exportFile().done(()=>{
+
+            }).fail((err)=>{
+                if (err)
+                    nts.uk.ui.dialog.alertError(err);
+            }).always(()=>{
+                nts.uk.ui.block.clear();
+            });
+        }
         
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -104,6 +117,8 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
 
         register() {
             let self = this;
+            if (self.updateMode() && self.selectedCode().length < 5)
+                return;
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();

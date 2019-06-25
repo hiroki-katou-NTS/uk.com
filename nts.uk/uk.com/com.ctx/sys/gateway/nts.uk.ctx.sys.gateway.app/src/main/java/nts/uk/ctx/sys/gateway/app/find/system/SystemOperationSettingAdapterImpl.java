@@ -5,10 +5,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
@@ -35,39 +34,50 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 
 	@Inject
 	private StopByCompanyRepository stopByComRepo;
+	
+	@Inject
+	private RoleAdapter roleAdapter;
 
+	/**
+	 * CCG020_メニュー.システム利用停止の警告確認
+	 * @return
+	 */
 	@Override
 	public SystemOperationSetting getSetting() {
-
-		/** IF STOP ALL SYSTEM */
-		/** IF BEFORE STOP ALL SYSTEM AND COMPANY IS NOT STOP */
 		String contractCd = AppContexts.user().contractCode();
-		Optional<StopBySystem> sys = stopBySysRepo.findByKey(contractCd);
-		Optional<StopByCompany> com = stopByComRepo.findByKey(contractCd, AppContexts.user().companyCode());
-		if(sys.isPresent() && 
-				((sys.get().getSystemStatus().equals(SystemStatusType.STOP)) ||//SYSTEM: stop
-				(sys.get().getSystemStatus().equals(SystemStatusType.IN_PROGRESS) //system: in progress
-					&& com.isPresent() && !com.get().getSystemStatus().equals(SystemStatusType.STOP)))){//company != stop
-			StopBySystem sysSet = sys.get();
-			return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, 
-					EnumAdaptor.valueOf(sysSet.getSystemStatus().value, SystemOperationMode.class), 
-					sysSet.getStopMode() == null ? null : EnumAdaptor.valueOf(sysSet.getStopMode().value, SystemStopMode.class),
-					sysSet.getStopMessage() == null ? "" : sysSet.getStopMessage().v(),
-					sysSet.getUsageStopMessage() == null ? "" : sysSet.getUsageStopMessage().v()); 
-
+		String companyCd = AppContexts.user().companyCode();
+		//ドメインモデル「システム全体の利用停止の設定」を取得する
+//		検索条件：
+//		　契約コード＝「ログイン共通変数の契約コード」
+//		　システム利用状態＝「利用停止前段階」
+		Optional<StopBySystem> sys = stopBySysRepo.findByCdStatus(contractCd, SystemStatusType.IN_PROGRESS.value);
+		//ドメインモデル「会社単位の利用停止の設定」を取得する
+//		検索条件：
+//		　契約コード＝ログイン共通変数の「契約コード」
+//		　会社コード＝ログイン共通変数の「会社コード」
+//		　システム利用状態＝「利用停止前段階」
+		Optional<StopByCompany> com = stopByComRepo.findByCdStt(contractCd, companyCd, SystemStatusType.IN_PROGRESS.value);
+		//レコードが取得できたか判別
+		if(!sys.isPresent() && !com.isPresent()){//どちらもレコードが取得できない場合
+			//state = 0 (RUNNING or STOP ),  msg = null
+			return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
 		}
-
-		/** IF STOP COMPANY */
-		/** IF STOP COMPANY */
-		if(com.isPresent() && com.get().getSystemStatus().equals(SystemStatusType.STOP)){
-			StopByCompany comSet = com.get();
-			return SystemOperationSetting.setting(SystemStopType.COMPANY, 
-					EnumAdaptor.valueOf(comSet.getSystemStatus().value, SystemOperationMode.class), 
-					comSet.getStopMode() == null ? null : EnumAdaptor.valueOf(comSet.getStopMode().value, SystemStopMode.class),
-					comSet.getStopMessage() == null ? "" : comSet.getStopMessage().v(),
-					comSet.getUsageStopMessage() == null ? "" : comSet.getUsageStopMessage().v()); 
+		//1件または2件のレコードが取得できた場合
+		//取得した「停止予告メッセージ」を編集する
+		String msgSys = "";
+		String msgCom = "";
+		if(sys.isPresent()){
+			msgSys = sys.get().getUsageStopMessage().v() + "　　　　　";
 		}
-		return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
+		if(com.isPresent()){
+			msgCom = com.get().getUsageStopMessage().v() + "　　　　　";
+		}
+		String msgFull = msgSys + msgCom;
+		//文字列に「改行」が含まれる場合は「改行」を外して代わりに「＿」（全角スペース）に置き換える。
+		msgFull = msgFull.replaceAll("\\r\\n", "　").replaceAll("\\r", "　").replaceAll("\\n", "　")
+				.replaceAll("\\\\r\\\\n", "　").replaceAll("\\\\n", "　").replaceAll("\\\\r", "　");
+		
+		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.IN_PROGRESS, SystemStopMode.ADMIN_MODE, null, msgFull);
 	}
 
 	@Override
@@ -77,7 +87,7 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 			return Optional.empty();
 		}
 
-		BusinessState businessState = isBusinessPerson(role) ? checkBusinessStateForAdmin() : checkBusinessState();
+		BusinessState businessState = roleAdapter.isEmpWhetherLoginerCharge() ? checkBusinessStateForAdmin() : checkBusinessState();
 
 		if (businessState.canDoBusiness) {
 			return Optional.empty();
@@ -85,11 +95,6 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 			return Optional.of(businessState.stopMessage);
 		}
 
-	}
-
-	private boolean isBusinessPerson(LoginUserRoles role) {
-		return role.forAttendance() != null || role.forPayroll() != null || role.forPersonnel() != null
-				|| role.forOfficeHelper() != null;
 	}
 
 	/**

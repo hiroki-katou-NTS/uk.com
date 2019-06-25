@@ -130,6 +130,13 @@ public class StatementLayoutPrint {
 				}
 				this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
 				this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
+			} else {
+				String errorSet = TextResource.localize("QMM019_239");
+				errorSet += "なし";
+				String alarmSet = TextResource.localize("QMM019_240");
+				alarmSet += "なし";
+				this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+				this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
 			}
 
 		}
@@ -245,7 +252,14 @@ public class StatementLayoutPrint {
                 }
                 this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
                 this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
-            }
+            } else {
+				String errorSet = TextResource.localize("QMM019_239");
+				errorSet += "なし";
+				String alarmSet = TextResource.localize("QMM019_240");
+				alarmSet += "なし";
+				this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+				this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
+			}
 		}
 		return this.deductionRow.getRowCount();
 	}
@@ -279,7 +293,14 @@ public class StatementLayoutPrint {
                 }
                 this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
                 this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
-            }
+            } else {
+				String errorSet = TextResource.localize("QMM019_239");
+				errorSet += "なし";
+				String alarmSet = TextResource.localize("QMM019_240");
+				alarmSet += "なし";
+				this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
+				this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
+			}
 		}
 		return this.attendRow.getRowCount();
 	}

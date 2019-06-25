@@ -47,20 +47,34 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "OUT_NUM_EXCEED_TIME_36_AGR")
 	public int outNumExceedTime36Agr;
-
-	/**
-	* 表示形式
-	*/
-	@Basic(optional = false)
-	@Column(name = "DISPLAY_FORMAT")
-	public int displayFormat;
 	
 	/*
 	 * 年間勤務表印刷形式
 	 */
 	@Basic(optional = false)
 	@Column(name = "PRINT_FORM")
-	public int printForm;
+	public int printForm;	
+	
+	/**
+	* 複数月表示
+	*/
+	@Basic(optional = false)
+	@Column(name = "MULTI_MON_DISP")
+	public int multiMonthDisplay;
+	
+	/**
+	* 合計表示の月数
+	*/
+	@Basic(optional = true)
+	@Column(name = "SUM_DISP_MONTHS")
+	public Integer monthsInTotalDisplay;
+	
+	/**
+	* 合計平均表示
+	*/
+	@Basic(optional = false)
+	@Column(name = "SUM_AVG_DISP")
+	public int totalAverageDisplay;
 
 	@Override
 	protected Object getKey() {
@@ -72,16 +86,18 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	public List<KfnrtItemOutTblBook> listItemOutTblBook;
 
 	public SetOutItemsWoSc toDomain() {
-		return SetOutItemsWoSc.createFromJavaType(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd,
-													this.name, this.outNumExceedTime36Agr == 1? true: false,
-													this.displayFormat, this.printForm,
-			this.listItemOutTblBook.stream().map(m-> m.toDomain()).collect(Collectors.toList()));
+		return SetOutItemsWoSc.createFromJavaType(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd, this.name,
+				this.outNumExceedTime36Agr == 1 ? true : false, this.printForm,
+				this.listItemOutTblBook.stream().map(m -> m.toDomain()).collect(Collectors.toList()),
+				this.multiMonthDisplay == 1 ? true : false, this.monthsInTotalDisplay, this.totalAverageDisplay);
 	}
 
 	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
 										domain.getName().v(), domain.isOutNumExceedTime36Agr()? 1: 0,
-										domain.getDisplayFormat().value, domain.getPrintForm(),
+										domain.getPrintForm().value, domain.isMultiMonthDisplay()? 1:0,
+										domain.getMonthsInTotalDisplay().isPresent()?domain.getMonthsInTotalDisplay().get().value:null,
+										domain.getTotalAverageDisplay().value,
 			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
 	}
 }

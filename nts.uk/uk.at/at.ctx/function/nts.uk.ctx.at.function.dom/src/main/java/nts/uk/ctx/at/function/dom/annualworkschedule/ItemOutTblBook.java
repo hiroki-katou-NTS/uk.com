@@ -10,11 +10,14 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBo
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName;
 
 /**
-* 帳表に出力する項目
+* 年間勤務表の月次表示項目
 */
 @Getter
 public class ItemOutTblBook extends DomainObject {
+	
 	private final static String CD_36_AGREEMENT_TIME = "01";
+	
+	private final static String CD_36_AGREEMENT_AVERAGE_TIME = "02";
 	/**
 	* 会社ID
 	*/
@@ -55,7 +58,7 @@ public class ItemOutTblBook extends DomainObject {
 	 * 36協定時間
 	 */
 	public boolean isItem36AgreementTime() {
-		return CD_36_AGREEMENT_TIME.equals(this.cd.v());
+		return CD_36_AGREEMENT_TIME.equals(this.cd.v()) || CD_36_AGREEMENT_AVERAGE_TIME.equals(this.cd.v());
 	}
 
 	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, boolean useClass,

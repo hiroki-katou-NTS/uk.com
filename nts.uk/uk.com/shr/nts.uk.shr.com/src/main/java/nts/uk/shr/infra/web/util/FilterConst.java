@@ -30,6 +30,8 @@ public class FilterConst {
 	public static final String REFERED_REQUEST = "referer";
 	
 	public static final String JUMP_FROM_MENU = "startfrommenu";
+	
+	public static final String CONTENT_LANG = "Content-Language";
 
 	/** Web app map. */
 	public static final Map<WebAppId, String> webApps = new HashMap<>();
@@ -37,5 +39,6 @@ public class FilterConst {
 		webApps.put(WebAppId.COM, "nts.uk.com.web");
 		webApps.put(WebAppId.PR, "nts.uk.pr.web");
 		webApps.put(WebAppId.AT, "nts.uk.at.web");
+		webApps.put(WebAppId.MOBI, "nts.uk.mobile.web");
 	};
 }
