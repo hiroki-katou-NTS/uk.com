@@ -1,13 +1,20 @@
-##### 2. Hướng dẫn
-> `step-wizard` là một `component` không thuộc dạng `common`, nó được sử dụng để biểu thị một thao tác nào đó trong một tập các bước thao tác. Để sử dụng `step-wizard`, chúng ta cần import `StepwizardComponent` từ `@app/components` vào `component` hoặc `viewmodel` mà mọi người cần sử dụng theo ví dụ dưới đây.
+##### 2. Giải thích
 
-###### 2.1 Typescript
+<nav class="nav nav-pills nav-step-wizard nav-justified">
+    <a href="javascript:void(0)" class="nav-item nav-link disabled active"><span>1</span> <span>Bước 1</span></a>
+    <a href="javascript:void(0)" class="nav-item nav-link disabled">2</a>
+    <a href="javascript:void(0)" class="nav-item nav-link disabled">3</a>
+    <a href="javascript:void(0)" class="nav-item nav-link disabled">4</a>
+</nav>
+
+`Step-wizard` là component để hiển thị thanh steps( phần trên cùng của sample).  
+##### 3. ViewModel
+Để sử dụng `step-wizard`, trước tiên hãy import `StepwizardComponent` từ `@app/components` vào, sau đó khai báo nó trong property 'components' của `@Component`.  
+
 ```typescript
-import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
-// import step component vào 
+...
+// import StepwizardComponent vào 
 import { StepwizardComponent } from '@app/components';
-
 @component({
     components: {
         // khai báo name cho step component
@@ -15,46 +22,88 @@ import { StepwizardComponent } from '@app/components';
     }
 })
 export class ViewModel extends Vue {
-    // active step
-    private step: string = 'step_1';
 
-    public prevStep() {
-        // xử lý để quay về bước trước đó nếu có
-    }
+    public step = 'step_1';
+    ...
+}
+```
 
-    public nextStep() {
-        // xử lý để chuyển sang bước tiếp theo
+##### 4. HTML
+Ở file template, hãy sử dụng thẻ `step-wizard` vừa được định nghĩa trong 'components' để tạo step-wizard.    
+Truyền vào cho component này 2 thuộc tính là `items` và `selected`,
+- items: là một Array<String> chứa danh sách các bước trong step-wizard.
+- selected: lưu giá trị của step đang được chọn. nó có giá trị là biến `step` trong ViewModel.
+
+```html
+<step-wizard v-bind:items="['step_1', 'step_2', 'step_3', 'step_4']" v-bind:selected="step" />
+```
+##### 5. Resources.json
+Đừng quên định nghĩa tên các bước trong file resources.json
+```json
+{
+    "jp": {
+        "step_1": "勤務情報",
+        "step_2": "申請時間",
+        "step_3": "確認",
+        "step_4": "完了"
+    },
+    "vi": {
+        "step_1": "Bước 1",
+        "step_2": "Bước 2",
+        "step_3": "Bước 3",
+        "step_4": "Bước 4"
     }
 }
 ```
-###### 2.2 Html
+---
+---
+##### 6. Tạo **button** để thay đổi các step
+Sau khi làm theo cách bước ở trên, bạn đã tạo ra một `step-wizard`. Tuy nhiên, bạn vẫn chưa chuyển qua lại được các steps.  
+Để làm điều này, hãy tạo các button tương ứng với từng step như sau:
+
 ```html
-<!-- sử dụng name đã khai báo ở view model để tạo virtual dom-->
-<step-wizard v-bind:items="['step_1', 'step_2', 'step_3', 'step_4']" v-bind:selected="step" />
-<!-- phần thân của view tương ứng với từng step -->
-<div class="mt-3 mb-3">
-    <div v-if="step == 'step_1'">
-        <!-- nếu step_1 được chọn -->
-    </div>
-    <div v-if="step == 'step_2'">
-        <!-- nếu step_2 được chọn -->
-    </div>
-    <div v-if="step == 'step_3'">
-        <!-- nếu step_3 được chọn -->
-    </div>
-    <div v-if="step == 'step_4'">
-        <!-- nếu step_4 được chọn -->
-    </div>
-</div>
-<!-- các nút điều hướng -->
-<div class="text-center mt-4 mb-4">
-    <button class="btn btn-secondary mr-2" v-bind:disabled="numb <= 0" v-on:click="prevStep">{{'step_back' | i18n}}</button>
-    <button class="btn btn-primary btn-lg" v-bind:disabled="numb >= 3" v-on:click="nextStep">{{'step_forward' | i18n}}</button>
+<div>
+    <!-- next buttons-->
+    <button v-show="step == 'step_1'" v-on:click="nextToStep2">Next</button>
+    <button v-show="step == 'step_2'" v-on:click="nextToStep3">Next</button>
+    <button v-show="step == 'step_3'" v-on:click="nextToStep4">Next</button>
+    <button v-show="step == 'step_4'" v-on:click="done">Done</button>
+
+    <!-- back buttons-->
+    <button v-show="step == 'step_2'" v-on:click="backToStep1">Back</button>
+    <button v-show="step == 'step_3'" v-on:click="backToStep2">Back</button>
+    <button v-show="step == 'step_4'" v-on:click="backToStep3">Back</button>
 </div>
 ```
-> **Chú ý**: `step-wizard` là một component có 2 thuộc tính được truyền vào. Thuộc tính `items` là mảng các chuỗi khóa (`string key`) đại diện cho các `step`, mỗi `string key` phải được đảm bảo tính duy nhất. Thuộc tính `selected` là chuỗi khóa đại diện cho `step` đang được chọn.
+Bằng cách sử dụng `v-show`, các button này sẽ được hiển thị tương ứng với từng step trong Step-wizard.  
+Gán sự kiện cho từng button bằng `v-on:click`. Trong từng sự kiện next hoặc back, ngoài việc sử lý nghiệm vụ, hãy thay đổi biến `step` của ViewModel.  
 
-> **Mẹo**: Hãy sử dụng `resources id` được cung cấp bởi đội thiết kế để làm `key` cho các `step` vì các `resources id` này đã đảm bảo được tính duy nhất của các `string key` trong `step-wizard`.
-<hr class="mt-5">
+```typescript
+export class ViewModel extends Vue {
+    
+    public step = 'step_1';
 
-> **Người viết**: Nguyễn Văn Vương
+    public nextToStep2() {
+        // xử lý nghiệp vụ trước khi chuyển sang step-2
+
+        this.step = 'step_2';
+    }
+
+    .....
+}
+```
+
+##### 7. Tạo **nội dung** của từng step
+Để hiển thị nội dung tương ứng với từng step, hãy sử dụng `v-if` như sau. 
+```html
+<div>
+    <div v-if="step == 'step_1'">Nội dung của step 1</div>
+    <div v-if="step == 'step_2'">Nội dung của step 2</div>
+    <div v-if="step == 'step_3'">Nội dung của step 3</div>
+    <div v-if="step == 'step_4'">Nội dung của step 4</div>
+</div>
+```
+
+
+
+**Tạo bởi**: Nguyễn Văn Vương

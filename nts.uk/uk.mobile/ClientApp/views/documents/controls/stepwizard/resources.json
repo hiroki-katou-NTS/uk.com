@@ -11,7 +11,11 @@
         "forward_in_4": "登録した申請を確認する",
         "back_in_2": "戻る1",
         "back_in_3": "戻る2",
-        "back_in_4": "申請一覧へ"
+        "back_in_4": "申請一覧へ",
+        "step_1_content": "勤務情報の内容",
+        "step_2_content": "申請時間の内容",
+        "step_3_content": "確認メッセージ",
+        "step_4_content": "登録しました。"
     },
     "vi": {
         "documentscontrolsstepwizard": "Step wizard",
@@ -25,6 +29,10 @@
         "forward_in_4": "Xong",
         "back_in_2": "Quay lại",
         "back_in_3": "Quay lại",
-        "back_in_4": "Xem danh sách"
+        "back_in_4": "Xem danh sách",
+        "step_1_content": "Nội dung step 1",
+        "step_2_content": "Nội dung step 2",
+        "step_3_content": "Nội dung step 3",
+        "step_4_content": "Nội dung step 4"
     }
 }
