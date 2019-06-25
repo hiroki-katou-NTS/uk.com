@@ -84,12 +84,18 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 			return new  GridPeregDomainDto(d.getEmployeeId(), pid, PeregStampCardDto.createFromDomain(d));
 		}).collect(Collectors.toList());
 		
-		if(!CollectionUtil.isEmpty(resultDataExist)) result.addAll(resultDataExist);
+		if(!CollectionUtil.isEmpty(resultDataExist)) {
+			result.addAll(resultDataExist);
+		}
+		
 		List<GridPeregDomainDto> resultDistinct = resultDataExist.stream().filter(distinctByKey(GridPeregDomainDto::getEmployeeId)).collect(Collectors.toList());
-		query.getEmpInfos().stream().forEach(c ->{
-			Optional<GridPeregDomainDto> gridDto = resultDistinct.stream().filter(r ->r.getEmployeeId().equals(c)).findFirst();
+		
+		query.getEmpInfos().stream().forEach(c -> {
+			Optional<GridPeregDomainDto> gridDto = resultDistinct.stream().filter(r -> r.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			
 			if(!gridDto.isPresent()) {
 				GridPeregDomainDto dto = new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null);
+				
 				result.add(dto);
 			}
 		});
