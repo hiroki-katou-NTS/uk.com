@@ -116,7 +116,10 @@ body {
                 &:hover {
                     cursor: pointer;
                     text-decoration: none;
-                    background-color: darken($color: $bg-menu-color, $amount: 5);
+                    background-color: darken($color: $bg-menu-color, $amount: 5%);
+                }
+                &.active {
+                    background-color: darken($color: $bg-menu-color, $amount: 10%);
                 }
             }
 
