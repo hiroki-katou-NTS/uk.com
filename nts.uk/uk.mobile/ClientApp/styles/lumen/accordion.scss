@@ -68,7 +68,7 @@
     &.show {
       .card-header {
         &:before {
-          transform: rotate(180deg) translate(2px, 2px);
+          transform: rotate(180deg) translate(0px, 2px);
         }
       }
       .collapse {

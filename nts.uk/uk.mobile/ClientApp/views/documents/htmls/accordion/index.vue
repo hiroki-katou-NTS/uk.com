@@ -4,7 +4,7 @@
 
     <div class="accordion">
       <div class="card show">
-        <div class="card-header db-caret-down">
+        <div class="card-header">
           <button class="btn btn-link" type="button">Collapsible Group Item #1</button>
         </div>
         <div class="collapse">
