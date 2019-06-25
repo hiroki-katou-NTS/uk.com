@@ -17,7 +17,7 @@ export const InfinityPicker = {
                     'transform': transform,
                     'margin-top': marginTop
                 }">
-                    <li class v-for="(item, ik) in items" v-bind:key="ik">{{ item ? (optionText ? item[optionText] : item) : '' }}</li>
+                    <li class v-for="(item, ik) in items" v-bind:key="ik">{{ (item ? (optionText ? item[optionText] : item) : '') | i18n }}</li>
                 </ul>
             </div>
         </div>
