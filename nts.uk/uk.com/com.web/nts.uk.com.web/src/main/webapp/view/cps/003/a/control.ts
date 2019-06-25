@@ -747,24 +747,41 @@ module cps003 {
             }
         },
         STRING = {
-            CS00002_IS00003: (i, k, v, o) => {
+            CS00002_IS00003: (required, i, k, v, o) => {
                 let dfd = $.Deferred();
-                dfd.resolve(spaceCheck(i, k, v, o));
+                if (!required && (v === "" || _.isNil(v))) {
+                    dfd.resolve();
+                } else {
+                    dfd.resolve(spaceCheck(i, k, v, o));
+                }
                 return dfd.promise();
             },
-            CS00002_IS00004: (i, k, v, o) => {
+            CS00002_IS00004: (required, i, k, v, o) => {
                 let dfd = $.Deferred();
-                dfd.resolve(spaceCheck(i, k, v, o));
+                if (!required && (v === "" || _.isNil(v))) {
+                    dfd.resolve();
+                } else {
+                    dfd.resolve(spaceCheck(i, k, v, o));
+                }
                 return dfd.promise();
             },
-            CS00002_IS00015: (i, k, v, o) => {
+            CS00002_IS00015: (required, i, k, v, o) => {
                 let dfd = $.Deferred();
-                dfd.resolve(spaceCheck(i, k, v, o));
+                if (!required && (v === "" || _.isNil(v))) {
+                    dfd.resolve();
+                } else {
+                    dfd.resolve(spaceCheck(i, k, v, o));
+                }
+                
                 return dfd.promise();
             },
-            CS00002_IS00016: (i, k, v, o) => {
+            CS00002_IS00016: (required, i, k, v, o) => {
                 let dfd = $.Deferred();
-                dfd.resolve(spaceCheck(i, k, v, o));
+                if (!required && (v === "" || _.isNil(v))) {
+                    dfd.resolve();
+                } else {
+                    dfd.resolve(spaceCheck(i, k, v, o));
+                }
                 return dfd.promise();
             }  
         },

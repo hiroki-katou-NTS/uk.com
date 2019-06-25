@@ -326,8 +326,10 @@ module cps003.a.vm {
                 $grid.mGrid("validate", false, data => data.register);
                 let errObj = {}, dataToG,
                     dataSource = $grid.mGrid("dataSource"),
+                    regCount = 0,
                     itemErrors = _.filter($grid.mGrid("errors"), e => {
                         let d = dataSource[e.index];
+                        if (d.register) regCount++;
                         return d && d.register;
                     });
                 
@@ -402,7 +404,7 @@ module cps003.a.vm {
                 service.push.register(command).done((errorList) => {
                     if (dataToG && dataToG.length > 0) {
                         setShared("CPS003G_ERROR_LIST", dataToG);
-                        let msgId = _.keys(errObj).length === dataSource.length ? "Msg_1462" : "Msg_1461";
+                        let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
                         alertError({ messageId: msgId }).then(() => {
                             forEach(updateDone, d => {
                                 $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
@@ -557,7 +559,7 @@ module cps003.a.vm {
                     setShared('CPS003B_PARAM', sharedParam);
                     modal("/view/cps/003/c/index.xhtml").onClosed(() => {
                         if (getShared("CPS003C_REG_DONE")) {
-                            self.requestData();
+                            self.requestData(null, null, getShared("CPS003C_REG_EMPID"));
                         }
                     });
                 }
@@ -668,14 +670,29 @@ module cps003.a.vm {
             }).create();
         }
 
-        requestData(settingData: ISettingData, employeeSelect: any) {
+        requestData(settingData: ISettingData, employeeSelect: any, regEmpIds: any) {
             // { categoryId: 'COM1_00000000000000000000000_CS00020', lstEmployee: [], standardDate: '2818/01/01' };
             let self = this;
             if ($("#base-date").ntsError("hasError")) return;
             if (!employeeSelect) block();
             
-            let employeeIds = _.map(self.employees(), e => e.employeeId),
-                param = { categoryId: self.category.catId(), lstEmployee: employeeIds, standardDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString() };
+            let employeeIds = [];
+            if (!regEmpIds || regEmpIds.length == 0) {
+                employeeIds = _.map(self.employees(), e => e.employeeId);
+            } else {
+                let tmpSet = new Set();
+                forEach(self.employees(), e => {
+                    tmpSet.add(e.employeeId);
+                });
+                
+                forEach(regEmpIds, e => {
+                    tmpSet.add(e);
+                });
+                
+                tmpSet.forEach(e => employeeIds.push(e));
+            }
+            
+            let param = { categoryId: self.category.catId(), lstEmployee: employeeIds, standardDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString() };
             
             if (self.category.catCode()) {
                 param.categoryCode = self.category.catCode();
@@ -1366,7 +1383,7 @@ module cps003.a.vm {
                     }
                     
                     let spaceCheck = cps003.control.STRING[self.category.catCode() + "_" + item.key];
-                    if (spaceCheck) item.inputProcess = spaceCheck;
+                    if (spaceCheck) item.inputProcess = spaceCheck.bind(null, item.required);
                     sort.columnKey = item.key;
                     sort.allowSorting = true;
                     if (!item.hidden) self.batchSettingItems.push(item.itemId);
@@ -1689,7 +1706,8 @@ module cps003.a.vm {
                         }
                     }
                 } else if (_.isArray(replaceValue.targetItem) && _.find(self.specialItems.workTime, it => it === replaceValue.targetItem[0])) {
-                    _.forEach(replaceValue.targetItem, (item, i) => {
+                    for (let i = replaceValue.targetItem.length - 1; i >= 0; i--) {
+                        let item = replaceValue.targetItem[i];
                         let replaced = replaceValue.replaceValue[i], dt = self.dataTypes[item];
                         if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced)) {
                             replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
@@ -1701,7 +1719,7 @@ module cps003.a.vm {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === rec[replaceValue.targetItem[0]]; 
                         }, () => replaced);
-                    });
+                    }
                 } else if (self.specialItems.holidayLimit[0] === replaceValue.targetItem) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
                         let replaced = nts.uk.time.parseTime(replaceValue.replaceValue, true).format();

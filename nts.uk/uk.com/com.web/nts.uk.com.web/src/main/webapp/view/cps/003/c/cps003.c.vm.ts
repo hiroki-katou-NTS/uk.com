@@ -121,10 +121,10 @@ module cps003.c.vm {
                         let name;
                         
                         if (_.isNil(d.itemParentCode) || d.itemParentCode === "") {
-                            parent[d.itemCode] = d.itemName + d.itemCode;
-                            name = d.itemName + d.itemCode;
+                            parent[d.itemCode] = d.itemName /*+ d.itemCode*/;
+                            name = d.itemName /*+ d.itemCode*/;
                         } else {
-                            name = parent[d.itemParentCode] + "-" + d.itemName + d.itemCode;
+                            name = parent[d.itemParentCode] + "-" + d.itemName /*+ d.itemCode*/;
                             parent[d.itemCode] = name;
                         }
                         
@@ -666,6 +666,8 @@ module cps003.c.vm {
                         item.constraint = { primitiveValue: "EmployeeCode" };
                     }
                     
+                    let spaceCheck = cps003.control.STRING[self.category.catCode() + "_" + item.key];
+                    if (spaceCheck) item.inputProcess = spaceCheck.bind(null, item.required);
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     item.dataType = "number";
@@ -802,8 +804,11 @@ module cps003.c.vm {
                 let updates = $("#grid").mGrid("updatedCells");
                 if (updates.length === 0) return;
                 block();
-                let dataSource = $("#grid").mGrid("dataSource"); 
-                _.forEach(dataSource, d => recId[d.id] = d);
+                let dataSource = $("#grid").mGrid("dataSource"), regCount = 0; 
+                _.forEach(dataSource, d => {
+                    recId[d.id] = d;
+                    if (d.register) regCount++;
+                });
                 let cateName, cateType, regId = {}, updateDone = [];
                 if (self.category.cate()) {
                     cateName = self.category.cate().categoryName;
@@ -840,25 +845,40 @@ module cps003.c.vm {
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
                 service.push.register(command).done((errorList) => {
+                    let regEmployeeIds = [];
                     if (dataToG && dataToG.length > 0) {
                         setShared("CPS003G_ERROR_LIST", dataToG);
-                        let msgId = _.keys(errObj).length === dataSource.length ? "Msg_1462" : "Msg_1461";
+                        let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
                         alertError({ messageId: msgId }).then(() => {
                             forEach(updateDone, d => {
                                 $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
                                 if (!_.has(errObj, d.rowId)) {
                                     $grid.mGrid("updateCell", d.rowId, "register", false, true);
-                                } 
+                                }
+                                
+                                let recData: Record = recId[d.rowId];
+                                regEmployeeIds.push(recData.employeeId);
                             });
                             
                             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
-                                
+                                setTimeout(() => {
+                                    if (regEmployeeIds.length > 0) {
+                                        setShared("CPS003C_REG_DONE", true);
+                                        setShared("CPS003C_REG_EMPID", regEmployeeIds);
+                                    }
+                                }, 1);
                             });
                         });
                     } else {
                         info({ messageId: "Msg_15" }).then(() => {
                             unblock();
                             setShared("CPS003C_REG_DONE", true);
+                            forEach(updateDone, d => {
+                                let recData: Record = recId[d.rowId];
+                                regEmployeeIds.push(recData.employeeId);
+                            });
+                            
+                            setShared("CPS003C_REG_EMPID", regEmployeeIds);
                             self.close();
                         });
                     }
