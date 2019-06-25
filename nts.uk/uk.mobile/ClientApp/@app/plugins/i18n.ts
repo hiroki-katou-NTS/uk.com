@@ -19,7 +19,10 @@ const resources: {
         'plz_wait': 'お待ちください',
         'cancel': 'キャンセル',
         'remove': '削除',
-        'accept': '設定'
+        'accept': '設定',
+        'yes': 'はい',
+        'no': 'いいえ',
+        'close': '閉じる'
     },
     vi: {
         'jp': '日本',
@@ -28,7 +31,10 @@ const resources: {
         'plz_wait': 'Vui lòng chờ trong giây lát...',
         'cancel': 'Hủy bỏ',
         'remove': 'Xóa',
-        'accept': 'Đồng ý'
+        'accept': 'Chấp nhận',
+        'yes': 'Đồng ý',
+        'no': 'Không',
+        'close': 'Đóng'
     }
 };
 
