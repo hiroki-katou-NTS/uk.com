@@ -37,6 +37,9 @@ Truyền vào cho component này 2 thuộc tính là `items` và `selected`,
 ```html
 <step-wizard v-bind:items="['step_1', 'step_2', 'step_3', 'step_4']" v-bind:selected="step" />
 ```
+
+ **Mẹo**: Hãy sử dụng `resources id` được cung cấp bởi đội thiết kế để làm `key` cho các `step`, vì các `resources id` này đã đảm bảo được tính duy nhất của các `string key` trong `step-wizard`.
+
 ##### 5. Resources.json
 Đừng quên định nghĩa tên các bước trong file resources.json
 ```json
