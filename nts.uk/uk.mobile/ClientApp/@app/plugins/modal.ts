@@ -283,11 +283,14 @@ const modal = {
 
                                     window.addEventListener('resize', resize);
                                 },
+                                beforeDestroy() {
+                                    let self = this;
+
+                                    window.removeEventListener('resize', dom.data.get(self.$el, '__wzeri'));
+                                },
                                 destroyed() {
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
-
-                                    window.removeEventListener('resize', dom.data.get(self.$el, '__wzeri'));
 
                                     // restore all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
@@ -320,7 +323,7 @@ const modal = {
                                                     <div class="modal-header" v-bind:key="hasTitle">
                                                         <h4 class="modal-title">
                                                             <template v-if="brsize" key="'mobilesize'">
-                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false"></i>
+                                                                <i class="fas fa-angle-left close mr-1" v-on:click="show = false"></i>
                                                             </template>
                                                             <template v-else key="'mobilesizedesktopsize_2'"></template>
                                                             <span>{{title | i18n}}</span>
