@@ -341,6 +341,9 @@ $material-colors: (
           .text-#{$color-name} {
               color: #{$hex-value};
           }
+          .border-#{$color-name} {
+            border-color: #{$hex-value} !important;
+          }
           .bg-#{$color-name} {
               background-color: #{$hex-value};
 

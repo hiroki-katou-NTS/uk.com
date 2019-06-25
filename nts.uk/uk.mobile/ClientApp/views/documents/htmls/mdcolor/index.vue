@@ -1,8 +1,8 @@
 <template>
-  <div class="card mb-5">
-    <ul class="nav nav-tabs card-header">
+  <div class="card mb-5 border-light-blue-900">
+    <ul class="nav nav-tabs card-header border-light-blue-900 bg-light-blue-800">
       <li class="nav-item" v-for="(m, k) in ['background', 'text']" v-bind:key="k">
-        <a class="nav-link" :href="'#' + m" :class="{ 'active': !k }">{{m}}</a>
+        <a class="nav-link border-light-blue-900 text-grey-50" :href="'#' + m" :class="{ 'active': !k }">{{m}}</a>
       </li>
     </ul>
     <div class="tab-content">
@@ -22,7 +22,9 @@
                 v-for="(l, j) in gradents"
                 v-bind:key="j"
                 v-bind:class="'bg-' + c + '-' + l"
-              >{{'bg-' + c + '-' + l}}</div>
+              >
+              <pre class="m-0">{{'bg-' + c + '-' + l}}</pre>
+              </div>
             </div>
           </div>
         </template>
@@ -33,15 +35,18 @@
               v-for="(c,x) in colorNames"
               v-bind:key="x"
             >
-              <div class="swatch-title text-swatch" v-bind:class="'text-' + c">
+              <div class="swatch-title text-swatch mb-0 border" v-bind:class="'text-' + c + ' border-' + c">
                 <h3>{{c}}</h3>
               </div>
               <div
                 class="color-swatch text-swatch"
                 v-for="(l,z) in gradents"
                 v-bind:key="z"
-                v-bind:class="'text-' + c + '-' + l"
-              >{{'text-' + c + '-' + l}}</div>
+                v-bind:class="'border border-top-0 border-' + c + '-' + l"
+              >
+              <pre class="m-0" v-bind:class="'text-' + c + '-' + l">{{'text-' + c + '-' + l}}</pre>
+              <pre class="m-0" v-bind:class="'text-' + c + '-' + l">{{'border-' + c + '-' + l}}</pre>
+              </div>
             </div>
           </div>
         </template>
