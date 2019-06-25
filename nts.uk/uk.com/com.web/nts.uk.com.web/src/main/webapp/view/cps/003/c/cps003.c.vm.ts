@@ -760,7 +760,7 @@ module cps003.c.vm {
                 virtualization: true,
                 virtualizationMode: "continuous",
                 enter: "right",
-                autoFitWindow: true,
+                autoFitWindow: false,
                 errorColumns: [ "employeeId", "employeeCode", "employeeName", "rowNumber" ],
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 notice: () => {
