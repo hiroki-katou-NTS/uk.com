@@ -560,6 +560,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                                 if (cachedData) {
                                     let data = JSON.parse(cachedData);
                                     payments[i].listFirstDms = self.convertSourceData(data);
+                                } else {
+                                    payments[i].listFirstDms = ko.toJS(self.wageTableContent2dData());
                                 }
                             } else {
                                 let cachedInputData = localStorage.getItem("ThirdDimensionUpdate" + i);
@@ -588,6 +590,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                                 if (cachedData) {
                                     let data = JSON.parse(cachedData);
                                     payments[i].listFirstDms = self.convertSourceData(data);
+                                } else {
+                                    payments[i].listFirstDms = ko.toJS(self.wageTableContent2dData());
                                 }
                             } else {
                                 let cachedInputData = localStorage.getItem("ThirdDimensionUpdate" + i);
