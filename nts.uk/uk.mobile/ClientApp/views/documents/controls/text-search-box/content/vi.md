@@ -4,7 +4,7 @@
 
 | Tên Thuộc tính| Type | Mặc định | Mô tả |
 | --------------|------| -------- | ------|
-| placeholder | string | '' | Ghi chú cho thẻ input |
+| placeholder | string | '' | Ghi chú cho thẻ input (có thể dùng resources id) |
 | class-input | string | '' | Class css sẽ gắn vào thẻ input |
 | class-container | string | '' | Class css sẽ gắn vào container/thẻ bao của thẻ input |
 
