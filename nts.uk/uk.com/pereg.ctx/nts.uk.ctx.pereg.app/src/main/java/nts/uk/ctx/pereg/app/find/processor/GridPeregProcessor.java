@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.processor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -163,7 +164,18 @@ public class GridPeregProcessor {
 					}
 					
 					if(grantDayOpt.isPresent()) {
-						grantDays = (Double) grantDayOpt.get().getValue();
+						if(grantDayOpt.get().getValue() instanceof Integer) {
+							grantDays = new Double (grantDayOpt.get().getValue().toString());
+						}
+						
+						if(grantDayOpt.get().getValue() instanceof Double) {
+							grantDays = (Double) grantDayOpt.get().getValue();
+						}
+						
+						if(grantDayOpt.get().getValue() instanceof BigDecimal) {
+							grantDays = (Double) grantDayOpt.get().getValue();
+						}
+						
 					}
 					if(grantTableOpt.isPresent()) {
 						grantTable = (String) grantTableOpt.get().getValue();

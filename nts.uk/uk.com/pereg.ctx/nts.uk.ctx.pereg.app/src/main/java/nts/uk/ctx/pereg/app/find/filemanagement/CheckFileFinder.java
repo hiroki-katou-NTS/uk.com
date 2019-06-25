@@ -437,7 +437,7 @@ public class CheckFileFinder {
 					value = cell.getValue().getText();
 					break;
 				case NUMBER:
-					value = String.valueOf(cell.getValue().getDecimal());
+					value = value == ""? null:String.valueOf(cell.getValue().getDecimal());
 					break;
 				case DATE:
 					value = cell.getValue().getDate().toString();
@@ -661,7 +661,7 @@ public class CheckFileFinder {
 	 * @param value
 	 * @param contraint
 	 */
-	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, Object value, Object contraint) {
+	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, String value, Object contraint) {
 		if (gridHead.getItemTypeState().getItemType() == 2) {
 			SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
 			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
@@ -669,7 +669,7 @@ public class CheckFileFinder {
 			itemDto.setDataType(dataTypeState.getDataTypeValue());
 			switch (itemValueType) {
 			case STRING:
-				itemDto.setValue(value == null? null: value.toString());
+				itemDto.setValue(value == null? null: value);
 				//StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value == null) {
@@ -698,7 +698,7 @@ public class CheckFileFinder {
 				break;
 			case NUMERIC:
 			case NUMBERIC_BUTTON:
-				itemDto.setValue(value == null ? null : new BigDecimal(value.toString()));
+				itemDto.setValue(value == null ? null : new BigDecimal(value));
 //				NumericConstraint numberContraint = (NumericConstraint) contraint;
 //				if (gridHead.isRequired()) {
 //					if (value == null) {
@@ -722,7 +722,7 @@ public class CheckFileFinder {
 //				}
 				break;
 			case DATE:
-				itemDto.setValue(value == null || value == "" ? null : value.toString());
+				itemDto.setValue(value == null || value == "" ? null : value);
 //				DateConstraint dateContraint = (DateConstraint) contraint;
 //				if (gridHead.isRequired()) {
 //					if (value == null || value == "") {
@@ -752,15 +752,15 @@ public class CheckFileFinder {
 						itemDto.setError(true);
 						break;
 					} else {
-						String[] stringSplit = value.toString().split(":");
+						String[] stringSplit = value.split(":");
 						if(stringSplit.length >= 1  && stringSplit.length < 3) {
 							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
-								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
 							}else {
-								itemDto.setValue(value.toString());
+								itemDto.setValue(value);
 							}
 						}else {
-							itemDto.setValue(value.toString());
+							itemDto.setValue(value);
 						}
 						break;
 //						Optional<String> string = timeContraint.validateString(value.toString());
@@ -771,15 +771,15 @@ public class CheckFileFinder {
 					}
 				} else {
 					if (value != null && value != "") {
-						String[] stringSplit = value.toString().split(":");
+						String[] stringSplit = value.split(":");
 						if(stringSplit.length >= 1 && stringSplit.length < 3) {
 							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
-								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
 							}else {
-								itemDto.setValue(value.toString());
+								itemDto.setValue(value);
 							}
 						}else {
-							itemDto.setValue(value.toString());
+							itemDto.setValue(value);
 						}
 //						Optional<String> string = timeContraint.validateString(value.toString());
 //						if (string.isPresent()) {
@@ -793,7 +793,7 @@ public class CheckFileFinder {
 				//TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value.toString()));
+						itemDto.setValue(convertTimepoint(value));
 //						Optional<String> string = timePointContraint.validateString(value.toString());
 //						if (string.isPresent()) {
 //							itemDto.setError(true);
@@ -805,7 +805,7 @@ public class CheckFileFinder {
 					break;
 				} else {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value.toString()));
+						itemDto.setValue(convertTimepoint(value));
 //						Optional<String> string = timePointContraint.validateString(value.toString());
 //						if (string.isPresent()) {
 //							itemDto.setError(true);

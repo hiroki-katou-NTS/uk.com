@@ -402,10 +402,11 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			//パラメータ「特別休暇適用設定」≠所定の条件を適用する　の場合
 			//パラメータ「付与テーブルコード」		
 			if(c.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED) {
-				if(!c.getGrantTblCd().isPresent()) {
+				if (!c.getGrantTblCd().isPresent()) {
 					result.put(c.getSid(), outputData);
+				} else {
+					elapseYearPre = elapseYearMap.get(c.getGrantTblCd().get());
 				}
-				elapseYearPre = elapseYearMap.get(c.getGrantTblCd().get());
 			}else {
 				//パラメータ「特別休暇適用設定」＝所定の条件を適用する　の場合
 				//　規定のテーブルとする＝TRUE
