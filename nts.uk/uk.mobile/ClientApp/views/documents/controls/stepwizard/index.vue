@@ -9,15 +9,14 @@
             <div v-if="step == 'step_4'"><h2>{{'step_4' | i18n}}</h2></div>
         </div>
         <div class="text-center mt-4 mb-4">
+            <button class="btn btn-primary btn-block btn-lg" v-show="step == 'step_1'" v-on:click="nextStep">{{'forward_in_1' | i18n}}</button>
+            <button class="btn btn-primary btn-block btn-lg" v-show="step == 'step_2'" v-on:click="nextStep">{{'forward_in_2' | i18n}}</button>
+            <button class="btn btn-primary btn-block btn-lg" v-show="step == 'step_3'" v-on:click="nextStep">{{'forward_in_3' | i18n}}</button>
+            <button class="btn btn-primary btn-block btn-lg" v-show="step == 'step_4'" v-on:click="nextStep">{{'forward_in_4' | i18n}}</button>
 
-            <button class="btn btn-primary btn-block btn-lg" v-if="step == 'step_1'" v-on:click="nextStep">{{'forward_in_1' | i18n}}</button>
-            <button class="btn btn-primary btn-block btn-lg" v-if="step == 'step_2'" v-on:click="nextStep">{{'forward_in_2' | i18n}}</button>
-            <button class="btn btn-primary btn-block btn-lg" v-if="step == 'step_3'" v-on:click="nextStep">{{'forward_in_3' | i18n}}</button>
-            <button class="btn btn-primary btn-block btn-lg" v-if="step == 'step_4'" v-on:click="nextStep">{{'forward_in_4' | i18n}}</button>
-
-            <button class="btn btn-secondary btn-block mr-2" v-if="step == 'step_2'" v-on:click="prevStep">{{'back_in_2' | i18n}}</button>
-            <button class="btn btn-secondary btn-block mr-2" v-if="step == 'step_3'" v-on:click="prevStep">{{'back_in_3' | i18n}}</button>
-            <button class="btn btn-secondary btn-block mr-2" v-if="step == 'step_4'" v-on:click="prevStep">{{'back_in_4' | i18n}}</button>
+            <button class="btn btn-secondary btn-block mr-2" v-show="step == 'step_2'" v-on:click="prevStep">{{'back_in_2' | i18n}}</button>
+            <button class="btn btn-secondary btn-block mr-2" v-show="step == 'step_3'" v-on:click="prevStep">{{'back_in_3' | i18n}}</button>
+            <button class="btn btn-secondary btn-block mr-2" v-show="step == 'step_4'" v-on:click="prevStep">{{'back_in_4' | i18n}}</button>
         </div>
         <markdown />
     </div>
