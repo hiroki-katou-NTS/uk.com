@@ -1,30 +1,50 @@
-##### 2. Khai báo trong index.html
+> `nts-search-box` hay `text-search-box` là `control` phục vụ cho các sự kiện liên quan tới tìm kiếm dữ liệu trong danh sách. Control này chỉ xử lý từ khóa (`keyword`) và đẩy từ khóa này ra thông qua 2 `event` là `input` và `search`. Event `input` được thực thi liên tục mỗi khi có ký tự mới được nhập vào `search-box`, event `search` được thực thi mỗi khi người dùng chạm/nhấp chuột vào icon <span class="fa fa-search"></span>.
 
+**Các prop binding** được hỗ trợ trong `nts-search-box`.
+
+| Tên Thuộc tính| Type | Mặc định | Mô tả |
+| --------------|------| -------- | ------|
+| placeholder | string | '' | Ghi chú cho thẻ input |
+| class-input | string | '' | Class css sẽ gắn vào thẻ input |
+| class-container | string | '' | Class css sẽ gắn vào container/thẻ bao của thẻ input |
+
+##### 2. Code
+**View**:
 ```html
-    <text-search-box 
-        placeholder="勤務種類コード/勤務種類名称"
-        v-on:search="searchList"/>
+<nts-search-box
+    placeholder="勤務種類コード/勤務種類名称"
+    v-bind:class-input=""
+    v-bind:class-container=""
+    v-on:input="inputEvent"
+    v-on:search="searchEvent"/>
+```
+hoặc
+```html
+<text-search-box 
+    placeholder="勤務種類コード/勤務種類名称"
+    v-bind:class-input=""
+    v-bind:class-container=""
+    v-on:input="inputEvent"
+    v-on:search="searchEvent"/>
 ```
 
-Ở HTML, tạo thẻ <text-search-box> với attribute v-on:search ứng với tên 1 function trong file ts
-trong trường hợp này là hàm searchList.  
-  
-Thêm vào placeholder nếu muốn, placeholder mặc định là kí tự rỗng ''
+**View model**:
+```typescript
+import { Vue } from '@app/provider';
+import { component } from '@app/core/component';
 
-##### 3. Khai báo trong index.ts
-
-Tại file ts, tạo hàm có tên giống với tên đã khai báo trong file html.   
-Hàm này có nhiệm vụ xử lý sự kiện khi người dùng click vào button search hoặc 'enter' của component.
-Nếu người dùng chưa nhập, giá trị trả ra sẽ là 'null'.
-
-```ts
-export class ViewModel extends Vue {
-    *
-    *
-    public searchList(value: string) {
+@component({
+})
+export class SampleViewModel extends Vue {
+    // xử lý event search khi nhập xong một ký tự bất kỳ tại đây
+    public inputEvent(value: string) {
         // process the event 'search'
     }
-    *
-    *
+
+    // xử lý event search khi click vào icon search tại đây
+    public searchEvent(value: string) {
+        // process the event 'search'
+    }
 }
 ```
+> **Chú ý**: Chỉ sử dụng một trong 2 event `search` hoặc `input` tùy vào yêu cầu của thuật toán (`đã giải thích ý nghĩa event ở trên`).
