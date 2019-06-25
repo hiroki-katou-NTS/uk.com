@@ -2,6 +2,8 @@ module nts.uk.pr.view.qmm038.a {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
+    import errors = nts.uk.ui.errors;
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -84,7 +86,7 @@ module nts.uk.pr.view.qmm038.a {
                 let height = $(window).height() - 90 - 285;
                 let width = $(window).width() + 20 - 1170;
                 new nts.uk.ui.mgrid.MGrid($("#gridStatement")[0], {
-                    width: '807px',
+                    width: '1000px',
                     height: '350px',
                     subWidth: width + 'px',
                     subHeight: height + 'px',
@@ -101,23 +103,23 @@ module nts.uk.pr.view.qmm038.a {
                     errorsOnPage: false,
                     columns: [
                         {
-                            headerText: getText("QMM038_7"), key: 'employeeCode', dataType: 'string', width: '150px',
+                            headerText: getText("QMM038_7"), key: 'employeeCode', dataType: 'string', width: '200px',
                             ntsControl: "Label"
                         },
                         {
-                            headerText: getText("QMM038_8"), key: 'businessName', dataType: 'string', width: "150px",
+                            headerText: getText("QMM038_8"), key: 'businessName', dataType: 'string', width: "200px",
                             ntsControl: "Label"
                         },
                         {
-                            headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: "150px",
+                            headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: "200px",
                             ntsControl: "Label"
                         },
                         {
-                            headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: "150px",
+                            headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: "200px",
                             ntsControl: "Label"
                         },
                         {
-                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: "207px",
+                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: "200px",
                             columnCssClass: 'currency-symbol',
                             constraint: {
                                 cDisplayType: "Currency",
@@ -150,7 +152,7 @@ module nts.uk.pr.view.qmm038.a {
                         },
                         {
                             name: 'Paging',
-                            pageSize: 20,
+                            pageSize: 100,
                             currentPageIndex: 0
                         },
                     ]
@@ -160,7 +162,9 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
+                errors.clearAll();
                 $('#A2_4').ntsError('check');
+                if(errors.hasError()) return;
                 block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
@@ -169,8 +173,10 @@ module nts.uk.pr.view.qmm038.a {
                 };
                 service.findByEmployee(command).done(function (response) {
                     self.statementItems = [];
-                    self.statementItems = response.map(x => new DataScreen(x));
-                    self.statementItems = _.sortBy(self.statementItems, ["employeeCode"]);
+                    if(response && response.length) {
+                        self.statementItems = response.map(x => new DataScreen(x));
+                        self.statementItems = _.sortBy(self.statementItems, ["employeeCode"]);
+                    }
                     $("#gridStatement").mGrid("destroy");
                     self.loadMGrid();
                 }).always(() => {
@@ -191,7 +197,7 @@ module nts.uk.pr.view.qmm038.a {
                 block.invisible();
                 // update
                 self.dataUpdate = [];
-                _.forEach($("#gridStatement").mGrid("dataSource", false), (item: DataScreen) => {
+                _.forEach($("#gridStatement").mGrid("dataSource", true), (item: DataScreen) => {
                     self.dataUpdate.push(new UpdateEmployee(item.employeeId, item.averageWage));
                 });
                 let command = {
