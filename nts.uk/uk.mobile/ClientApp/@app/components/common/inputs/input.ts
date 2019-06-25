@@ -54,9 +54,6 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:disabled="disabled"
                         v-bind:readonly="!editable"
                         v-bind:value="rawValue"
-                        v-bind:min="minValue"
-                        v-bind:max="maxValue"
-                        v-bind:max-length="maxLength"
                         v-bind:tabindex="tabindex"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
@@ -73,21 +70,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                 <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
             </div>
         </div>
-    </div>`,
-    resource: {
-        vi: {
-            before_today: 'Hôm qua',
-            today: 'Hôm nay',
-            after_today: 'Ngày mai',
-            next_after_tody: 'Ngày kia'
-        },
-        jp: {
-            before_today: '前日',
-            today: '当日',
-            after_today: '翌日',
-            next_after_tody: '翌々日'
-        }
-    }
+    </div>`
 });
 
 export class InputComponent extends Vue {
@@ -133,24 +116,6 @@ export class InputComponent extends Vue {
 
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     public readonly columns!: { title: string; input: string };
-
-    @Prop({ default: () => undefined })
-    public readonly min: string | number | Date | undefined;
-
-    @Prop({ default: () => undefined })
-    public readonly max: string | number | Date | undefined;
-
-    get minValue() {
-        return undefined;
-    }
-
-    get maxValue() {
-        return undefined;
-    }
-
-    get maxLength() {
-        return undefined;
-    }
 
     get iconsClass() {
         let self = this,
