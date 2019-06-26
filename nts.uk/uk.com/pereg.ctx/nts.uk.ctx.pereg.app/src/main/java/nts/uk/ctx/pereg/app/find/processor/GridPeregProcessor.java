@@ -24,7 +24,6 @@ import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
 import nts.uk.ctx.pereg.app.find.common.GetYearHolidayInfo;
 import nts.uk.ctx.pereg.app.find.common.NextTimeEventDto;
 import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
-import nts.uk.ctx.pereg.app.find.common.YearHolidayInfoResult;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;

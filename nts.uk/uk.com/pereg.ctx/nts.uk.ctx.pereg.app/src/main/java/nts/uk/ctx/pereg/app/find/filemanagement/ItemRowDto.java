@@ -38,13 +38,4 @@ public class ItemRowDto {
 		 this.update = value == defValue? false: true;
 		 this.lstComboBoxValue = lstComboBoxValue;
 	 }
-	 
-	 private void setDefValue(boolean update, Object value, Object defValue) {
-		 this.value = update;
-		 if(update == true) {
-			 this.value = value;
-			 this.defValue = defValue;
-		 }
-	 }
-
 }

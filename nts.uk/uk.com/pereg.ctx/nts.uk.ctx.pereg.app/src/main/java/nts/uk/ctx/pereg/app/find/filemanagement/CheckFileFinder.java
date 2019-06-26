@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.excel.ExcelFileTypeException;
 import nts.gul.excel.NtsExcelCell;
@@ -100,8 +99,8 @@ public class CheckFileFinder {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
 	
-	@Inject
-	private ManagedParallelWithContext parallel;
+//	@Inject
+//	private ManagedParallelWithContext parallel;
 	
 	@Inject
 	private PeregProcessor layoutProcessor;
@@ -111,7 +110,7 @@ public class CheckFileFinder {
 	
 	private static String header;
 	
-	private final static List<String> itemSpecialLst = Arrays.asList("IS00003","IS00004");
+//	private final static List<String> itemSpecialLst = Arrays.asList("IS00003","IS00004");
 	
 	private static final Map<String, String> startDateItemCodes;
 	static {
@@ -355,16 +354,46 @@ public class CheckFileFinder {
 						if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
 							itemDto.setValue(item.getValue());
 						}
-						if(itemDto.getValue() == null) itemDto.setValue("");//Object value = itemDto.getValue() == null? "": itemDto.getValue();
-						if(itemDto.getValue().equals(item.getValue())) {
+						Object valueDb = item.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), item.getValue().toString());
+						Object valueExcel = itemDto.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), itemDto.getValue().toString());
+						if(isEqual(valueExcel, valueDb) == true) {
 							itemDto.setUpdate(false);
 							itemDto.setDefValue(itemDto.getValue());
+							if(item.getType()== 1 || item.getType()== 3) return; 
+							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
+							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
+									|| item.getItem().getDataTypeValue() == 8) {
+								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue().toString())).findFirst();
+								if(textOpt.isPresent()) {
+									itemDto.setTextValue(textOpt.get().getOptionText());
+									itemDto.setDefText(textOpt.get().getOptionText());
+								}
+							
+							} else {
+								itemDto.setTextValue(attr.format(valueDb));
+								itemDto.setDefText(attr.format(valueDb));
+							}
+							
 						}else {
 							itemDto.setUpdate(true);
 							itemDto.setDefValue(item.getValue());
-							if(item.getType()== 1 || item.getType()== 3) return; 
+							if(item.getType()== 1 || item.getType()== 3) return;
 							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
-							itemDto.setDefText(attr.format(item.getValue()));
+							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
+									|| item.getItem().getDataTypeValue() == 8) {
+								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue().toString())).findFirst();
+								Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue().toString())).findFirst();
+								if(textOpt.isPresent()) {
+									itemDto.setTextValue(textOpt.get().getOptionText());
+								}
+								
+								if(defTextOpt.isPresent()) {
+									itemDto.setDefText(defTextOpt.get().getOptionText());
+								}
+							} else {
+								itemDto.setDefText(attr.format(valueDb));
+								itemDto.setTextValue(attr.format(valueExcel));
+							}
 						}
 					}
 				});
@@ -494,11 +523,6 @@ public class CheckFileFinder {
 					empBody.setItemName(headerGrid.getItemName());
 					empBody.setItemOrder(headerGrid.getItemOrder());
 					empBody.setValue(selectionCode);
-//					if (headerGrid.isRequired()) {
-//						if(cell.getValue() == null) {
-//							empBody.setError(true); 
-//						}
-//					}
 					List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
 					// thuật toán lấy selectionId, workplaceId, codeName,...
 					Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
@@ -677,8 +701,6 @@ public class CheckFileFinder {
 			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
 			DataTypeValue itemValueType = EnumAdaptor.valueOf(dataTypeState.getDataTypeValue(), DataTypeValue.class);
 			itemDto.setDataType(dataTypeState.getDataTypeValue());
-			itemDto.setTextValue(value);
-			itemDto.setDefText(value);
 			switch (itemValueType) {
 			case STRING:
 				itemDto.setValue(value == null? null: value); break;
@@ -744,23 +766,23 @@ public class CheckFileFinder {
 	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 	
-	/**
-	 * validate những item đặc biệt của category CS0002
-	 * validateItemOfCS0002
-	 * @param itemDto
-	 * @param value
-	 */
-	private void validateItemOfCS0002(ItemRowDto itemDto, String value){
-		for (String itemCode : itemSpecialLst) {
-			if (itemDto.getItemCode().equals(itemCode)) {
-				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
-						|| !value.contains(JP_SPACE)) {
-					//itemDto.setError(true);
-					break;
-				}
-			}
-		}
-	}
+//	/**
+//	 * validate những item đặc biệt của category CS0002
+//	 * validateItemOfCS0002
+//	 * @param itemDto
+//	 * @param value
+//	 */
+//	private void validateItemOfCS0002(ItemRowDto itemDto, String value){
+//		for (String itemCode : itemSpecialLst) {
+//			if (itemDto.getItemCode().equals(itemCode)) {
+//				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
+//						|| !value.contains(JP_SPACE)) {
+//					//itemDto.setError(true);
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	/**
 	 * danh cho item kieu timepoint - 5
@@ -793,7 +815,37 @@ public class CheckFileFinder {
 		}
 		return value;
 	}
+	
+	private Object convertValue(int valueType, String value) {
+		ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
 		
+		if (value == null || value.equals("")) return null;
+		
+		switch (itemValueType) {
+		case STRING:
+		case SELECTION: 
+		case SELECTION_BUTTON:
+		case SELECTION_RADIO:
+		case READONLY:
+		case READONLY_BUTTON:
+		case RELATE_CATEGORY:
+			if(value.equals("")) return null;
+			return value;
+		case TIME:
+		case TIMEPOINT:
+			return new Integer(new BigDecimal(value).intValue());
+		case NUMBERIC_BUTTON:
+		case NUMERIC:
+			if(value.equals("")) return new BigDecimal(0);
+			return new BigDecimal(value);
+		case DATE:
+			return GeneralDate.fromString(value, "yyyy/MM/dd");
+		default:
+			return null;
+		}
+
+	}
+	
 	private DataValueAttribute converType(int valueType) {
 		
 		ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
@@ -819,6 +871,17 @@ public class CheckFileFinder {
 		default:
 			return DataValueAttribute.of(-1);
 
+		}
+	}
+	private boolean isEqual(Object valueExcel, Object valueDb) {
+		if(valueExcel != null) {
+			return valueExcel.equals(valueDb);
+		}else {
+			if(valueExcel == null && valueDb == null){ 
+				return true;
+			}
+
+			return valueDb.equals(valueExcel);
 		}
 	}
 	
