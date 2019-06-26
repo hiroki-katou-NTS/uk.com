@@ -336,7 +336,7 @@ module nts.uk.pr.view.qmm016.share.model {
         paymentAmount: KnockoutObservable<number> = ko.observable(null);
         displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
-            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
+            this.masterCode(params && params.masterCode ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
@@ -366,7 +366,7 @@ module nts.uk.pr.view.qmm016.share.model {
         displayText: KnockoutObservable<string> = ko.observable(null);
         
         constructor (params: any) {
-            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
+            this.masterCode(params && params.masterCode ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
@@ -395,7 +395,7 @@ module nts.uk.pr.view.qmm016.share.model {
         listFirstDms: KnockoutObservableArray<TwoDmsElementItem> = ko.observableArray([]);
         displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
-            this.masterCode(params && params.masterCode && !params.frameNumber ? params.masterCode : null);
+            this.masterCode(params && params.masterCode ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);

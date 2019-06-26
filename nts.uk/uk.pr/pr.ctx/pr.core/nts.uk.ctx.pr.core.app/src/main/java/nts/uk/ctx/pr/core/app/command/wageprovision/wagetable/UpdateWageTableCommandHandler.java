@@ -28,6 +28,8 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<UpdateWageTableCommand, String> {
 
+	private static final String NEW_HIST_ID = "zzzzzz10";
+	
 	@Inject
 	private WageTableRepository wageRepo;
 
@@ -47,7 +49,7 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 
 		if (context.getCommand().getHistory() != null) {
 			// neu them moi lich su
-			if (context.getCommand().getHistory().getHistoryID().equals("zzzzzz10")) {
+			if (context.getCommand().getHistory().getHistoryID().equals(NEW_HIST_ID)) {
 				context.getCommand().getHistory().setHistoryID(IdentifierUtil.randomUniqueId());
 				Optional<WageTableHistory> optWageHist = wageHistRepo.getWageTableHistByCode(companyId,
 						context.getCommand().getWageTableCode());

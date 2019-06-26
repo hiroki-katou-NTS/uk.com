@@ -109,26 +109,7 @@ public class WageTableContentDto {
 					|| optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
 				ElementRangeSettingDto elemRange = ElementRangeSettingDto.fromDomainToDto(optSetting.get());
 				elemRange.setWageTableCode(optWage.get().getWageTableCode().v());
-				if (optWage.get().getElementSetting() == ElementSetting.FINE_WORK
-						|| (optWage.get().getElementInformation().getThreeDimensionalElement().isPresent()
-								&& optWage.get().getElementInformation().getThreeDimensionalElement().get()
-										.getFixedElement().isPresent()
-								&& optWage.get().getElementInformation().getThreeDimensionalElement().get()
-										.getFixedElement().get().value.equals(ElementType.FINE_WORK.value))) {
-					elemRange.setThirdElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
-				}
-				if (optWage.get().getElementInformation().getTwoDimensionalElement().isPresent()
-						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
-								.isPresent()
-						&& optWage.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement()
-								.get().value.equals(ElementType.FINE_WORK.value)) {
-					elemRange.setSecondElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
-				}
-				if (optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement().isPresent()
-						&& optWage.get().getElementInformation().getOneDimensionalElement().getFixedElement()
-								.get().value.equals(ElementType.FINE_WORK.value)) {
-					elemRange.setFirstElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
-				}
+				
 				WageTableContentDto temp = wageContentCreater.createThreeDimensionWageTable(elemRange);
 				this.list3dElements = temp.list3dElements;
 				this.list2dElements = temp.list2dElements;
@@ -239,7 +220,7 @@ public class WageTableContentDto {
 				if (payment.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()) {
 					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
 							.getMasterCode();
-					String masterName = mapMaster.get(masterCode);
+					String masterName = isWorkLevel ? masterCode : mapMaster.get(masterCode);
 					ElementItemDto item = new ElementItemDto(masterCode, masterName, null, null, null,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -250,15 +231,15 @@ public class WageTableContentDto {
 							.get().getFrameLowerLimit();
 					BigDecimal upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem()
 							.get().getFrameUpperLimit();
-					ElementItemDto item = new ElementItemDto(isWorkLevel ? "M007" : null, null, frameNumber, lowerLimit,
-							upperLimit, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
+							payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				}
 			} else {
 				if (payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().isPresent()) {
 					String masterCode = payment.getElementAttribute().getSecondElementItem().get()
 							.getMasterElementItem().get().getMasterCode();
-					String masterName = mapMaster.get(masterCode);
+					String masterName = isWorkLevel ? masterCode : mapMaster.get(masterCode);
 					ElementItemDto item = new ElementItemDto(masterCode, masterName, null, null, null,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -270,8 +251,8 @@ public class WageTableContentDto {
 							.getNumericElementItem().get().getFrameLowerLimit();
 					BigDecimal upperLimit = payment.getElementAttribute().getSecondElementItem().get()
 							.getNumericElementItem().get().getFrameUpperLimit();
-					ElementItemDto item = new ElementItemDto(isWorkLevel ? "M007" : null, null, frameNumber, lowerLimit,
-							upperLimit, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
+							payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				}
 			}
@@ -291,14 +272,14 @@ public class WageTableContentDto {
 			Collections.sort(list2ndDmsElements, comparator);
 			if (key.getMasterElementItem().isPresent()) {
 				String masterCode = key.getMasterElementItem().get().getMasterCode();
-				String masterName = mapMaster1.get(masterCode);
+				String masterName = isFirstWorkLevel ? masterCode : mapMaster1.get(masterCode);
 				result.add(new TwoDmsElementItemDto(masterCode, masterName, null, null, null, list2ndDmsElements));
 			} else if (key.getNumericElementItem().isPresent()) {
 				long frameNumber = key.getNumericElementItem().get().getFrameNumber();
 				BigDecimal frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
 				BigDecimal frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
-				result.add(new TwoDmsElementItemDto(isFirstWorkLevel ? "M007" : null, null, frameNumber, frameLower,
-						frameUpper, list2ndDmsElements));
+				result.add(
+						new TwoDmsElementItemDto(null, null, frameNumber, frameLower, frameUpper, list2ndDmsElements));
 			}
 		}
 		return result;
