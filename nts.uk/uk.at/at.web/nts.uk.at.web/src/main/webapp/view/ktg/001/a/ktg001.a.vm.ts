@@ -35,8 +35,6 @@ module nts.uk.at.view.ktg001.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
 
-
-
             return dfd.promise();
         }
 

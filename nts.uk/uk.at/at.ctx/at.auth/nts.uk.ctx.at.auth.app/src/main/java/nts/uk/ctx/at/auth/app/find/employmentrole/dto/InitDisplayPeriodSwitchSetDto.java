@@ -5,6 +5,7 @@ package nts.uk.ctx.at.auth.app.find.employmentrole.dto;
 
 import java.util.List;
 
+import lombok.Data;
 import lombok.Value;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Value;
  *
  */
 @Value
+@Data
 public class InitDisplayPeriodSwitchSetDto {
 
 	private int currentOrNextMonth;

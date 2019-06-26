@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTrackRecordApprovalDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
@@ -23,6 +24,9 @@ public class KTG001QueryProcessor {
 
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 
 	public boolean checkDataDayPerConfirm3(String employeeId) {
 		String CID = AppContexts.user().companyId();
@@ -44,18 +48,22 @@ public class KTG001QueryProcessor {
 		return result;
 	}
 
-	public boolean checkDataDayPerConfirm(int currentOrNextMonth) {
+	public boolean checkDataDayPerConfirm(Integer currentOrNextMonth) {
 		String employeeID = AppContexts.user().employeeId();
+		boolean result = true;
 		// ユーザー固有情報「トップページ表示年月」を取得する
 		// Lấy thong tin user " Month year hiển thị top page"
-		
-
-		// 日別実績確認すべきデータ有無取得
-		// Lấy có không có tất cả data xác nhận kết quả các ngày
-		boolean result = dataDailyResults(employeeID, currentOrNextMonth);
-
+		//[RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
+		if(currentOrNextMonth == null){
+			InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
+			result = checkTrackRecordApprovalDay.checkTrackRecordApprovalDay(AppContexts.user().companyId(), employeeID, rq609.getListDateProcessed()
+					.stream().map(x -> new CheckTarget(x.getClosureID(), x.getTargetDate())).collect(Collectors.toList()));
+		}else{
+			// 日別実績確認すべきデータ有無取得
+			// Lấy có không có tất cả data xác nhận kết quả các ngày
+			result = dataDailyResults(employeeID, currentOrNextMonth);
+		}
 		return result;
-
 	}
 
 	public boolean dataDailyResults(String employeeID, int yearmonth) {
@@ -73,6 +81,7 @@ public class KTG001QueryProcessor {
 						.add(new CheckTargetItem(closure.getClosureId().value, closure.getCurrentMonth().addMonths(1)));
 			}
 		}
+		// request list 593
 		boolean result = checkTrackRecordApprovalDay.checkTrackRecordApprovalDay(CID, employeeID, listCheckTargetItem
 				.stream().map(c -> new CheckTarget(c.getClosureId(), c.getYearMonth())).collect(Collectors.toList()));
 
