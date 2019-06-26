@@ -325,7 +325,10 @@ const $ = {
                     $.extend(item, {
                         $h: {
                             parent: parent || null,
-                            childs: item[childProp] || []
+                            childs: item[childProp] || [],
+                            refresh() {
+                                items.push(items.pop());
+                            }
                         }
                     });
 

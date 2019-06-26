@@ -43,8 +43,11 @@
             .collapse {
                 display: block;
                 position: absolute;
-                top: calc(50% - 7px);
-                left: 10px;
+                top: calc(50% - 10px);
+                left: 15px;
+                text-align: center;
+                width: 20px;
+                line-height: 20px;
             }
             .selection {
                 right: 10px;
@@ -62,7 +65,7 @@
                 padding-left: #{$i * 30}px;
                 
                 .collapse {
-                    left: #{$i * 30 - 20}px;
+                    left: #{$i * 30 - 22}px;
                 }
             }
         }

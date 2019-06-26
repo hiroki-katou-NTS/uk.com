@@ -3,7 +3,7 @@ import { Vue, DirectiveBinding } from '@app/provider';
 
 Vue.directive('tree', {
     inserted(el: HTMLElement, binding: DirectiveBinding) {
-        let item: { $h: { rank: number; childs: Array<any>; collapse: boolean; } } = binding.value;
+        let item: { $h: { rank: number; childs: Array<any>; collapse: boolean; refresh: () => void; } } = binding.value;
 
         if (item && item.$h) {
             // init indent class
@@ -13,13 +13,17 @@ Vue.directive('tree', {
                 let $col = dom.create('i', { class: 'fas fa-chevron-down collapse' });
                 el.prepend($col);
 
-                dom.registerEventHandler($col, 'click', () => {
+                // tslint:disable-next-line: no-string-literal
+                dom.registerEventHandler($col, 'click', el['_uk_c_evt'] = () => {
                     item.$h.collapse = !item.$h.collapse;
-                    
+
+                    // refresh item
+                    item.$h.refresh();
+
                     if (item.$h.collapse) {
                         dom.setAttr($col, 'class', 'fas fa-chevron-down collapse');
                     } else {
-                        dom.setAttr($col, 'class', 'fas fa-chevron-right collapse');                        
+                        dom.setAttr($col, 'class', 'fas fa-chevron-right collapse');
                     }
                 });
             }
@@ -38,5 +42,9 @@ Vue.directive('tree', {
             // init indent class
             dom.addClass(el, `indent-${(item.$h.rank || 0) + 1}`);
         }
+    },
+    unbind(el: HTMLElement) {
+        // tslint:disable-next-line: no-string-literal
+        dom.removeEventHandler(el, 'click', el['_uk_c_evt']);
     }
 });
