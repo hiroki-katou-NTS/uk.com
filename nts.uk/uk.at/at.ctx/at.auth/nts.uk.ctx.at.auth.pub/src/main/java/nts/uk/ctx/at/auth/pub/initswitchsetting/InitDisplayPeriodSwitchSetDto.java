@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.auth.app.find.employmentrole.dto;
+package nts.uk.ctx.at.auth.pub.initswitchsetting;
 
 import java.util.List;
 
