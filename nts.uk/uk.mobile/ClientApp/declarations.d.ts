@@ -177,8 +177,8 @@ declare module "vue/types/vue" {
                 (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }): Promise<{}>;
             };
             confirm: {
-                (msg: string, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
-                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<{}>;
+                (msg: string, style?: 'normal' | 'process' | 'danger'): Promise<'yes' | 'no'>;
+                (resource: { messageId: string, messageParams?: string[] | { [key: string]: string } }, style?: 'normal' | 'process' | 'danger'): Promise<'yes' | 'no'>;
             }
         };
         $picker: {
