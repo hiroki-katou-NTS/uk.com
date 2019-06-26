@@ -708,7 +708,7 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
-                            if ((_.isNil(value.replaceValue) || value.matchValue) && mode == 0) {
+                            if ((value.replaceValue || value.matchValue) && mode == 0) {
                                 if (mode == 0) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
@@ -721,10 +721,18 @@ module cps003.f.vm {
                                     });
                                 }
                             } else {
-                                alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
-                                    setShared('CPS003F_VALUE', null);
-                                    //close();
-                                });
+                                if(mode == 0){
+                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                        setShared('CPS003F_VALUE', null);
+                                        //close();
+                                    });                                    
+                                    
+                                }else{
+                                    alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
+                                        setShared('CPS003F_VALUE', null);
+                                        //close();
+                                    });                                    
+                                }
                             }
                         } else {
                             // 画面モード＝時間年休上限モードの場合
