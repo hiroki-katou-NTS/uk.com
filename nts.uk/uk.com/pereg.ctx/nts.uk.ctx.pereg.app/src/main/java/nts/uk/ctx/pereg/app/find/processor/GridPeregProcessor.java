@@ -169,7 +169,6 @@ public class GridPeregProcessor {
 						if(grantDateOpt.isPresent()) {
 							standardDate = (GeneralDate) grantDateOpt.get().getValue();
 						}
-						if(standardDate == null) return null;
 						if(grantTableOpt.isPresent()) {
 							grantTable = (String) grantTableOpt.get().getValue();
 						}
