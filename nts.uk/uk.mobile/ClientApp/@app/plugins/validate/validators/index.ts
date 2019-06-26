@@ -5,3 +5,4 @@ export * from '@app/plugins/validate/validators/mantissaMaxLength';
 export * from '@app/plugins/validate/validators/maxLength';
 export * from '@app/plugins/validate/validators/charType';
 export * from '@app/plugins/validate/validators/valueType';
+export * from '@app/plugins/validate/validators/timeRange';

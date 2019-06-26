@@ -21,6 +21,7 @@ declare interface IRule {
     mantissaMaxLength?: number;
     minLength?: number;
     maxLength?: number;
+    timeRange?: boolean;
     constraint?: string;
     charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric' | 'Numeric';
     valueType?: 'String' | 'Decimal' | 'Integer' | 'HalfInt' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint' | 'TimeRange' | 'DateRange';
