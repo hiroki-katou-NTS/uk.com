@@ -36,7 +36,7 @@ export class DocumentsHtmlsListTreeComponent extends Vue {
                 children: [{
                     id: 5,
                     text: 'Sub Folder 5'
-                },{
+                }, {
                     id: 6,
                     text: 'Sub Folder 6'
                 }]
@@ -50,7 +50,7 @@ export class DocumentsHtmlsListTreeComponent extends Vue {
                 children: [{
                     id: 7,
                     text: 'Sub Folder 7'
-                },{
+                }, {
                     id: 8,
                     text: 'Sub Folder 8'
                 }]

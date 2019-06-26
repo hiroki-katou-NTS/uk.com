@@ -26,7 +26,7 @@ Vue.directive('tree', {
         }
     },
     update(el: HTMLElement, binding: DirectiveBinding) {
-        let item: { $h: { show: boolean; } } = binding.value;
+        let item: { $h: { rank: number; show: boolean; } } = binding.value;
 
         if (item && item.$h) {
             if (!item.$h.show) {
@@ -34,6 +34,9 @@ Vue.directive('tree', {
             } else {
                 dom.removeClass(el, 'd-none');
             }
+
+            // init indent class
+            dom.addClass(el, `indent-${(item.$h.rank || 0) + 1}`);
         }
     }
 });

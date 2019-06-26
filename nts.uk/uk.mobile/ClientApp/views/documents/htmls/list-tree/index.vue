@@ -12,7 +12,7 @@
       </label>
     </div>
     <ul class="list-group list-group-tree">
-      <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item">
+      <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item" v-bind:class="{ 'active': single ? item === selected : selecteds.indexOf(item) > -1 }">
         <span>{{item.id}}&nbsp;&nbsp;&nbsp;{{item.text}}</span>
         <template v-if="single">
             <input class="selection" type="radio" name="abc" v-model="selected" v-bind:value="item">
