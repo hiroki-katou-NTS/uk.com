@@ -334,7 +334,6 @@ module cps003.a.vm {
                     });
                 
                 if (itemErrors && itemErrors.length > 0) {
-                    self.hasError(true);
                     dataToG = _.map(itemErrors, err => {
                         if (_.has(errObj, err.rowId)) {
                             errObj[err.rowId].push(err.columnKey);
@@ -342,7 +341,7 @@ module cps003.a.vm {
                             errObj[err.rowId] = [ err.columnKey ];
                         }
                         
-                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                        return { rowId: err.rowId, employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
                                  isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
                     });
                 }
@@ -368,14 +367,19 @@ module cps003.a.vm {
                     });
                 }
                 
+                let regChecked = [];
                 _.forEach(updates, item => {
-                    if (item.columnKey === "register"
-                        || _.find(errObj[item.rowId], it => it === item.columnKey)) return;
+                    if (item.columnKey === "register") {
+                        if (item.value) regChecked.push(item.rowId);
+                        return;
+                    }
+                    
+                    if (_.find(errObj[item.rowId], it => it === item.columnKey)) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
                     updateDone.push(item);
                     if (!regEmp) {
-                        regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                        regEmp = { rowId: item.rowId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                         regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData instanceof Record ? recData.id : null, delete: false, items: [] };
                         regId[recData.id] = regEmp;
                         employees.push(regEmp);
@@ -398,6 +402,18 @@ module cps003.a.vm {
                 if (employees.length === 0) {
                     unblock();
                     return;
+                }
+                
+                dataToG = _.filter(dataToG, d => {
+                    return _.find(regChecked, r => r === d.rowId);
+                }); 
+                
+                employees = _.filter(employees, e => {
+                    return _.find(regChecked, r => r === e.rowId);
+                });
+                
+                if (dataToG && dataToG.length > 0) {
+                    self.hasError(true);
                 }
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
@@ -490,7 +506,7 @@ module cps003.a.vm {
                         return res;
                     }
                 case ITEM_SINGLE_TYPE.DATE:
-                    if (value instanceof moment && !value.isValid()) {
+                    if (_.isNil(value) || (value instanceof moment && !value.isValid())) {
                         return { value: null, text: null };    
                     }
                     
@@ -663,6 +679,20 @@ module cps003.a.vm {
                 errorColumns: [ "employeeId", "employeeCode", "employeeName", "rowNumber" ],
                 errorOccurred: () => self.hasError(true),
                 errorResolved: () => self.hasError(false),
+                errorDismissed: () => {
+                    let $grid = $("#grid");
+                    let dataSource = $grid.mGrid("dataSource"),
+                        itemErrors = _.filter($grid.mGrid("errors"), e => {
+                        let d = dataSource[e.index];
+                        return d && d.register;
+                    });
+                    
+                    if (itemErrors.length > 0) {
+                        self.hasError(true);
+                    } else {
+                        self.hasError(false);
+                    }
+                },
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 columns: self.gridOptions.columns,
                 features: self.gridOptions.features,
@@ -776,7 +806,24 @@ module cps003.a.vm {
                 ];
                 
                 self.gridOptions.ntsControls = [
-                    { name: 'RegCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    { name: 'RegCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true,
+                        onChange: (i, k, v, d) => {
+                            if (!v || !self.hasError()) {
+                                let $grid = $("#grid");
+                                let dataSource = $grid.mGrid("dataSource"),
+                                    itemErrors = _.filter($grid.mGrid("errors"), e => {
+                                    let d = dataSource[e.index];
+                                    return d && d.register;
+                                });
+                                
+                                if (itemErrors.length > 0) {
+                                    self.hasError(true);
+                                } else {
+                                    self.hasError(false);
+                                }
+                            }
+                        }    
+                    },
 //                    { name: 'PrintCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: "ImageShow", source: "hidden-button", controlType: "Image" },
                     { name: "RowAdd", source: "plus-button", cssClass: "blue-color", controlType: "Image", copy: 2 }];
@@ -944,7 +991,7 @@ module cps003.a.vm {
                                 dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
                             }
                             
-                            self.combobox(record.id, item, states);
+                            self.combobox(record.id, item, states, record);
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.SEL_BUTTON) {
                             dt.specs.pattern.push(item.lstComboBoxValue);
                             dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
@@ -1051,7 +1098,7 @@ module cps003.a.vm {
             $("#grid").mGrid("showHiddenRows");
         }
         
-        combobox(id: any, item: IColumnData, states) {
+        combobox(id: any, item: IColumnData, states, record: any) {
             switch (this.category.catCode()) {
                 case "CS00020":
                     switch (item.itemCode) {
@@ -1072,6 +1119,7 @@ module cps003.a.vm {
                             }
                             break;
                         case "IS00123":
+                            if (record.IS00121 === "0") break;
                             if (item.value === "0") {
                                 _.remove(states, s => s.rowId === id && (s.columnKey === "IS00124" || s.columnKey === "IS00125" || s.columnKey === "IS00126"));
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {

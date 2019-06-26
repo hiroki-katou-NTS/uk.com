@@ -245,7 +245,7 @@ module cps003.c.vm {
                                 dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
                             }
                             
-                            self.combobox(record.id, item, states);
+                            self.combobox(record.id, item, states, record);
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.SEL_BUTTON) {
                             dt.specs.pattern.push(item.lstComboBoxValue);
                             dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
@@ -336,7 +336,7 @@ module cps003.c.vm {
             return dfd.promise();
         }
         
-        combobox(id: any, item: ItemRowDto, states) {
+        combobox(id: any, item: ItemRowDto, states, record: any) {
             switch (this.category.cate().categoryCode) {
                 case "CS00020":
                     switch (item.itemCode) {
@@ -357,30 +357,31 @@ module cps003.c.vm {
                             }
                             break;
                         case "IS00123":
+                            if (record.IS00121 === "0") break;
                             if (item.value === "0") {
-                                _.remove(states, s => s.columnKey === "IS00124" || s.columnKey === "IS00125" || s.columnKey === "IS00126");
-                                if (!_.find(states, s => s.columnKey === "IS00127")) {
+                                _.remove(states, s => s.rowId === id && (s.columnKey === "IS00124" || s.columnKey === "IS00125" || s.columnKey === "IS00126"));
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
                                 }
                             } else if (item.value === "1") {
-                                if (!_.find(states, s => s.columnKey === "IS00124")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00125")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
-                                _.remove(states, s => s.columnKey === "IS00126" || s.columnKey === "IS00127");
+                                _.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
                             } else if (item.value === "2") {
-                                if (!_.find(states, s => s.columnKey === "IS00124")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00125")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00126")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00126")) {
                                     states.push(new State(id, "IS00126", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.columnKey === "IS00127")) {
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
                                 }   
                             }
@@ -796,7 +797,7 @@ module cps003.c.vm {
                             errObj[err.rowId] = [ err.columnKey ];
                         }
                         
-                        return { employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
+                        return { rowId: err.rowId, employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
                                  isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
                     });
                 }
@@ -815,14 +816,19 @@ module cps003.c.vm {
                     cateType = self.category.cate().categoryType;
                 }
                 
+                let regChecked = [];
                 _.forEach(updates, item => {
-                    if (item.columnKey === "register"
-                        || _.find(errObj[item.rowId], it => it === item.columnKey)) return;
+                    if (item.columnKey === "register") {
+                        if (item.value) regChecked.push(item.rowId);
+                        return;
+                    }
+                    
+                    if (_.find(errObj[item.rowId], it => it === item.columnKey)) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
                     updateDone.push(item);
                     if (!regEmp) {
-                        regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                        regEmp = { rowId: item.rowId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                         regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
                         regId[recData.id] = regEmp;
                         employees.push(regEmp);
@@ -840,6 +846,14 @@ module cps003.c.vm {
                         
                         regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
                     }
+                });
+                
+                dataToG = _.filter(dataToG, d => {
+                    return _.find(regChecked, r => r === d.rowId);
+                });
+                
+                employees = _.filter(employees, e => {
+                    return _.find(regChecked, r => r === e.rowId);
                 });
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
@@ -899,7 +913,7 @@ module cps003.c.vm {
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
                 case ITEM_SINGLE_TYPE.DATE:
-                    if (value instanceof moment && !value.isValid()) {
+                    if (_.isNil(value) || (value instanceof moment && !value.isValid())) {
                         return { value: null, text: null };    
                     }
                     
