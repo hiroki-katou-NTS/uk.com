@@ -619,7 +619,8 @@ module cps003.f.vm {
             } else { // 一致する社員のみ（F1_009）が選択されている場合
                 if (value.matchValue) {
                     if (mode == null) {
-                        if (value.replaceValue) {
+                        let replaceValue = Array.isArray(value.replaceValue) == true? value.replaceValue[0]: value.replaceValue;
+                        if (replaceValue) {
                             let valueText = value.matchValue;
                             if(item.itemData.dataType == 6 || item.itemData.dataType == 8){
                                let itemX = _.filter(item.itemData.selectionItems, function(x){return x.optionValue == value.matchValue});
@@ -695,7 +696,8 @@ module cps003.f.vm {
                     }
                 } else {
                     if (mode == null) {
-                        if (value.replaceValue) {
+                        let replaceValue = Array.isArray(value.replaceValue) == true? value.replaceValue[0]: value.replaceValue;
+                        if (replaceValue) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
@@ -708,7 +710,7 @@ module cps003.f.vm {
                         }
                     } else {
                         if (item.itemData.amount) {
-                            if ((_.isNil(value.replaceValue) || value.matchValue) && mode == 0) {
+                            if ((value.replaceValue || value.matchValue) && mode == 0) {
                                 if (mode == 0) {
                                     confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
@@ -721,10 +723,18 @@ module cps003.f.vm {
                                     });
                                 }
                             } else {
-                                alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
-                                    setShared('CPS003F_VALUE', null);
-                                    //close();
-                                });
+                                if(mode == 0){
+                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                        setShared('CPS003F_VALUE', null);
+                                        //close();
+                                    });                                    
+                                    
+                                }else{
+                                    alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
+                                        setShared('CPS003F_VALUE', null);
+                                        //close();
+                                    });                                    
+                                }
                             }
                         } else {
                             // 画面モード＝時間年休上限モードの場合
