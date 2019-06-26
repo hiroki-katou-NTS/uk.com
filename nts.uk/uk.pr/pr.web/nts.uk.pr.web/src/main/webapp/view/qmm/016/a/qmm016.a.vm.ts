@@ -145,7 +145,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                                 });
                             }
                         }
-//						$(".input-amount")[0].focus();
                     }
                 }
             });
@@ -258,8 +257,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 }
             }).fail(error => {
                 dialog.alertError(error);
-            }).always(() => {
-//                block.clear();
             });
         }
 
@@ -307,32 +304,26 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                                 }
                             }
                             self.wageTableContent2dData(contentData.list2dElements.map(item => new model.TwoDmsElementItem(item)));
-                            if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION) {
-                                self.listThirdDimension(lst3rd.map(i => {
-                                    if (i.masterCode != null && i.frameNumber != null) {
-                                        return {value: i.frameNumber, name: i.frameLowerLimit};
-                                    } else if (i.frameNumber == null) {
-                                        return {value: i.masterCode, name: i.masterName};
-                                    } else {
-                                        return {
-                                            value: i.frameNumber,
-                                            name: formatNumber(i.frameLowerLimit, new NumberEditorOption({
-                                                grouplength: 3,
-                                                decimallength: 2
-                                            }))
-                                            + getText("QMM016_31")
-                                            + formatNumber(i.frameUpperLimit, new NumberEditorOption({
-                                                grouplength: 3,
-                                                decimallength: 2
-                                            }))
-                                        };
-                                    }
-                                }));
-                            } else {
-                                self.listThirdDimension(lst3rd.map(i => {
+                            self.listThirdDimension(lst3rd.map(i => {
+                                if (i.masterCode != null && i.frameNumber != null) {
                                     return {value: i.frameNumber, name: i.frameLowerLimit};
-                                }));
-                            }
+                                } else if (i.frameNumber == null) {
+                                    return {value: i.masterCode, name: i.masterName};
+                                } else {
+                                    return {
+                                        value: i.frameNumber,
+                                        name: formatNumber(i.frameLowerLimit, new NumberEditorOption({
+                                            grouplength: 3,
+                                            decimallength: 2
+                                        }))
+                                        + getText("QMM016_31")
+                                        + formatNumber(i.frameUpperLimit, new NumberEditorOption({
+                                            grouplength: 3,
+                                            decimallength: 2
+                                        }))
+                                    };
+                                }
+                            }));
                             self.wageTableContent(new model.WageTableContent(contentData));
                             self.displayGrid(items, columns);
                         } else if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.ONE_DIMENSION && !_.isEmpty(contentData.list1dElements)) { // one dimension
@@ -388,7 +379,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 if ((self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION
                         || self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.FINE_WORK) && self.updateMode()) {
                     let validators = $("#grid2").data("ntsValidators");
-
                     for (var i = 0; i < self.wageTableContent().payment().length; i++) {
                         let gridData = [];
                         listErrorMsg = [];
@@ -426,7 +416,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 } else if (!_.isEmpty($("#grid2").ntsGrid("errors"))) {
                     dimensionCheck = false;
                 }
-
                 if (!nts.uk.ui.errors.hasError() && dimensionCheck) {
                     if (self.updateMode()) {
                         self.updateData();
@@ -468,9 +457,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 command.elementInformation.oneDimensionElement.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
                 command.elementInformation.oneDimensionElement.optionalAdditionalElement = "F204";
                 command.elementInformation.twoDimensionElement.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
-                command.elementInformation.twoDimensionElement.optionalAdditionalElement = "F208";
-                command.elementInformation.threeDimensionElement.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
-                command.elementInformation.threeDimensionElement.optionalAdditionalElement = "M007";
+                command.elementInformation.twoDimensionElement.optionalAdditionalElement = "F217";
+                command.elementInformation.threeDimensionElement.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.MASTER_FIELD;
+                command.elementInformation.threeDimensionElement.fixedElement = "M007";
             }
             service.addNewWageTable(command).done((histId: string) => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
@@ -853,7 +842,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             });
         }
 
-        createThreeDimensionWageTable() {
+        createThreeDimensionWageTable(isWorkLevel?: boolean) {
             let self = this;
             nts.uk.ui.errors.clearAll();
             if ($("#grid2").data("igGrid")) {
@@ -875,31 +864,47 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 secondElementRange: null,
                 thirdElementRange: null
             };
-            if (self.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification()
-                == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
-                // D2_8、D2_10、D2_11の状態を取得
+            if (isWorkLevel == true) {
+                // F2_8、F2_10、F2_11の状態を取得
                 let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
-                params.firstElementRange = self.getElementRange(firstElementRange, $("#D2_8"), $("#D2_10"), $("#D2_11"));
+                params.firstElementRange = self.getElementRange(firstElementRange, $("#F2_8"), $("#F2_10"), $("#F2_11"));
                 if (params.firstElementRange == null) {
                     return;
                 }
-            }
-            if (self.selectedWageTable().elementInformation().twoDimensionElement().masterNumericClassification()
-                == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
-                // D2_15、D2_17、D2_18の状態を取得
+    
+                // F2_15、F2_17、F2_18の状態を取得
                 let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
-                params.secondElementRange = self.getElementRange(secondElementRange, $("#D2_15"), $("#D2_17"), $("#D2_18"));
+                params.secondElementRange = self.getElementRange(secondElementRange, $("#F2_15"), $("#F2_17"), $("#F2_18"));
                 if (params.secondElementRange == null) {
                     return;
                 }
-            }
-            if (self.selectedWageTable().elementInformation().threeDimensionElement().masterNumericClassification()
-                == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
-                // D2_22、D2_24、D2_25の状態を取得
-                let thirdElementRange = ko.toJS(self.elementRangeSetting).thirdElementRange;
-                params.thirdElementRange = self.getElementRange(thirdElementRange, $("#D2_22"), $("#D2_24"), $("#D2_25"));
-                if (params.thirdElementRange == null) {
-                    return;
+            } else {
+                if (self.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification()
+                    == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
+                    // D2_8、D2_10、D2_11の状態を取得
+                    let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
+                    params.firstElementRange = self.getElementRange(firstElementRange, $("#D2_8"), $("#D2_10"), $("#D2_11"));
+                    if (params.firstElementRange == null) {
+                        return;
+                    }
+                }
+                if (self.selectedWageTable().elementInformation().twoDimensionElement().masterNumericClassification()
+                    == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
+                    // D2_15、D2_17、D2_18の状態を取得
+                    let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
+                    params.secondElementRange = self.getElementRange(secondElementRange, $("#D2_15"), $("#D2_17"), $("#D2_18"));
+                    if (params.secondElementRange == null) {
+                        return;
+                    }
+                }
+                if (self.selectedWageTable().elementInformation().threeDimensionElement().masterNumericClassification()
+                    == model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM) {
+                    // D2_22、D2_24、D2_25の状態を取得
+                    let thirdElementRange = ko.toJS(self.elementRangeSetting).thirdElementRange;
+                    params.thirdElementRange = self.getElementRange(thirdElementRange, $("#D2_22"), $("#D2_24"), $("#D2_25"));
+                    if (params.thirdElementRange == null) {
+                        return;
+                    }
                 }
             }
             block.invisible();
@@ -942,12 +947,23 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 }
             }).fail(error => {
                 dialog.alertError(error).then(() => {
-                    if (error.messageId == "MsgQ_251")
-                        $("#D2_8").focus();
-                    if (error.messageId == "MsgQ_252")
-                        $("#D2_15").focus();
-                    if (error.messageId == "MsgQ_253")
+                    if (error.messageId == "MsgQ_251") {
+                        if (isWorkLevel == true) {
+                            $("#F2_8").focus();
+                        } else {
+                            $("#D2_8").focus();
+                        }
+                    }
+                    if (error.messageId == "MsgQ_252") {
+                        if (isWorkLevel == true) {
+                            $("#F2_15").focus();
+                        } else {
+                            $("#D2_15").focus();
+                        }
+                    }
+                    if (error.messageId == "MsgQ_253") {
                         $("#D2_22").focus();
+                    }
                 });
             }).always(() => {
                 block.clear();
@@ -973,65 +989,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         createWorkLevelWageTable() {
             let self = this;
-            nts.uk.ui.errors.clearAll();
-            self.wageTableContent(new model.WageTableContent(null));
-            self.listThirdDimension([]);
-            self.listSecondDimension([]);
-            self.wageTableContent2dData([]);
-            let params = {
-                historyID: self.selectedHistory().historyID(),
-                wageTableCode: self.selectedWageTable().wageTableCode(),
-                firstElementRange: null,
-                secondElementRange: null,
-                thirdElementRange: null
-            };
-
-            // F2_8、F2_10、F2_11の状態を取得
-            let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
-            params.firstElementRange = self.getElementRange(firstElementRange, $("#F2_8"), $("#F2_10"), $("#F2_11"));
-            if (params.firstElementRange == null) {
-                return;
-            }
-
-            // F2_15、F2_17、F2_18の状態を取得
-            let secondElementRange = ko.toJS(self.elementRangeSetting).secondElementRange;
-            params.secondElementRange = self.getElementRange(secondElementRange, $("#F2_15"), $("#F2_17"), $("#F2_18"));
-            if (params.secondElementRange == null) {
-                return;
-            }
-
-            params.thirdElementRange = {rangeLowerLimit: 1, rangeUpperLimit: 5, stepIncrement: null};
-
-            block.invisible();
-            service.createThreeDimentionWageTable(params).done(data => {
-                if (!_.isEmpty(data)) {
-                    self.elementRangeSetting().historyID(params.historyID);
-                    self.elementRangeSetting().firstElementRange().valueChanged = false;
-                    self.elementRangeSetting().secondElementRange().valueChanged = false;
-                    self.elementRangeSetting().thirdElementRange().valueChanged = false;
-                    let lst2nd: Array<any> = data.list2dElements[0].listSecondDms;
-                    let items = self.convertGridDataSource(data.list2dElements), columns = self.getGridColumns(lst2nd);
-                    self.wageTableContent2dData(data.list2dElements.map(item => new model.TwoDmsElementItem(item)));
-                    let lst3rd: Array<any> = data.list3dElements;
-                    for (let index = 0; index < lst3rd.length; index++) {
-                        localStorage.setItem("ThirdDimension" + index, JSON.stringify(self.convertGridDataSource(data.list2dElements)));
-                        let i = lst3rd[index], item = {value: i.frameNumber, name: i.frameLowerLimit};
-                        self.listThirdDimension.push(item);
-                    }
-                    self.wageTableContent(new model.WageTableContent(data));
-                    self.displayGrid(items, columns);
-                    $("#grid2_container").focus();
-                }
-            }).fail(error => {
-                dialog.alertError(error).then(() => {
-                    if (error.messageId == "MsgQ_251")
-                        $("#F2_8").focus();
-                    if (error.messageId == "MsgQ_252")
-                        $("#F2_15").focus();
-                });
-            }).always(() => {
-                block.clear();
-            });
+            self.createThreeDimensionWageTable(true);
         }
 
         getElementRange(elementRange, controlLower, controlUpper, controlStep): any {
@@ -1128,11 +1086,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let items = [];
             data.forEach(d => {
                 let columnKey = d.masterCode, columnName = d.masterName;
-                if (d.masterCode != null && d.frameNumber != null) {
-                    // work level
-                    columnKey = d.frameNumber;
-                    columnName = d.frameLowerLimit;
-                } else if (d.frameNumber != null) {
+                if (d.frameNumber != null) {
                     columnKey = d.frameNumber;
                     columnName = formatNumber(d.frameLowerLimit, new NumberEditorOption({
                             grouplength: 3,
@@ -1217,11 +1171,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             ];
             data.forEach(i => {
                 let columnKey = "secondFrameNo" + i.masterCode, columnName = _.escape(i.masterName);
-                if (i.masterCode != null && i.frameNumber != null) {
-                    // work level
-                    columnKey = "secondFrameNo" + i.frameNumber;
-                    columnName = i.frameLowerLimit;
-                } else if (i.frameNumber != null) {
+                if (i.frameNumber != null) {
                     columnKey = "secondFrameNo" + i.frameNumber;
                     columnName = formatNumber(i.frameLowerLimit, new NumberEditorOption({
                             grouplength: 3,
@@ -1240,7 +1190,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     constraint: {
                         min: -9999999999,
                         max: 9999999999,
-//                        required: true, 
                         decimalLength: 0,
                         integer: true,
                         cDisplayType: "Currency"
@@ -1273,7 +1222,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     constraint: {
                         min: -9999999999,
                         max: 9999999999,
-//                        required: true,
                         decimalLength: 0,
                         integer: true,
                         cDisplayType: "Currency"

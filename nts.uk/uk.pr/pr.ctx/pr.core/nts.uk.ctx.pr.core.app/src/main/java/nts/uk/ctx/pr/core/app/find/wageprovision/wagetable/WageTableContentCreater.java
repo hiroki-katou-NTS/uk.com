@@ -127,35 +127,27 @@ public class WageTableContentCreater {
 
 	private List<ElementItemDto> getNumericRange(ElementRangeDto rangeDto) {
 		List<ElementItemDto> result = new ArrayList<>();
-		if (rangeDto.getStepIncrement() == null) { // screen F: enum 精皆勤レベル
-			for (long i = 1; i <= 5; i++) {
-				result.add(new ElementItemDto("M007", null, i, new BigDecimal(i), new BigDecimal(i), new Long(0)));
+		long frameNum = 1;
+		if (rangeDto.getStepIncrement().compareTo(new BigDecimal(0)) > 0) {
+			while (rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement())
+					.compareTo(rangeDto.getRangeUpperLimit()) < 0) {
+				result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
+						rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()).subtract(new BigDecimal(0.01)),
+						new Long(0)));
+				rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()));
+				frameNum++;
 			}
-		} else {
-			long frameNum = 1;
-			if (rangeDto.getStepIncrement().compareTo(new BigDecimal(0)) > 0) {
-				while (rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement())
-						.compareTo(rangeDto.getRangeUpperLimit()) < 0) {
-					result.add(
-							new ElementItemDto(null, null, frameNum,
-									rangeDto.getRangeLowerLimit(), rangeDto.getRangeLowerLimit()
-											.add(rangeDto.getStepIncrement()).subtract(new BigDecimal(0.01)),
-									new Long(0)));
-					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()));
-					frameNum++;
-				}
-			}
-			result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-					rangeDto.getRangeUpperLimit(), new Long(0)));
 		}
+		result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
+				rangeDto.getRangeUpperLimit(), new Long(0)));
 		return result;
 	}
 
 	private List<ElementItemDto> getMasterElementItems(String master, String companyId) {
 		List<ElementItemDto> result = new ArrayList<>();
 		if (ElementType.FINE_WORK.value.equals(master)) {
-			for (long i = 1; i <= 5; i++) {
-				result.add(new ElementItemDto(master, null, i, new BigDecimal(i), new BigDecimal(i), new Long(0)));
+			for (int i = 1; i <= 5; i++) {
+				result.add(new ElementItemDto(i + "", i + "", null, null, null, new Long(0)));
 			}
 		} else {
 			Map<String, String> mapMaster = getMasterItems(master, companyId);

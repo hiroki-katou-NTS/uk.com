@@ -467,19 +467,20 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
-                showOnlyMe: false,
+                showOnlyMe: true,
                 showSameWorkplace: false,
                 showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
-                showEmployment: false,
+                showEmployment: true,
                 showWorkplace: false,
-                showDepartment: false,
-                showClassification: false,
-                showJobTitle: false,
+                showDepartment: true,
+                showClassification: true,
+                showJobTitle: true,
                 showWorktype: false,
                 isMutipleCheck: true,
-                tabindex: 2,
+                tabindex: 3,
+
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     nts.uk.ui.errors.clearAll();
