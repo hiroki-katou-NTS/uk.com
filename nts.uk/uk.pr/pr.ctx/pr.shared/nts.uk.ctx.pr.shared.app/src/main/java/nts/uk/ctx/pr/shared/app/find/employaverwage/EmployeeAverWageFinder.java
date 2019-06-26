@@ -39,6 +39,7 @@ public class EmployeeAverWageFinder {
     }
 
     public List<EmployeeInfoDto> getEmpInfoDept(EmployeeComand param) {
+        long defaultAvgWage = 0L;
         // ドメインモデル「所属部門」をすべて取得する
         return employeeInformationAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(param.getEmployeeIds(), GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"),
@@ -62,7 +63,7 @@ public class EmployeeAverWageFinder {
                     } else {
                         dto.setDepartmentName("");
                     }
-                    Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
+                    Optional<EmployAverWage> employAverWage = param.getGiveCurrTreatYear().equals("Invalid date") ? Optional.empty() : employAverWageRepository.getEmployAverWageById(x.getEmployeeId(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
                     dto.setAverageWage(employAverWage.map(e -> e.getAverageWage().v()).orElse(0L));
                     return dto;
                 }).collect(Collectors.toList());

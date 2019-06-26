@@ -162,9 +162,6 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
-                errors.clearAll();
-                $('#A2_4').ntsError('check');
-                if(errors.hasError()) return;
                 block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
@@ -191,7 +188,8 @@ module nts.uk.pr.view.qmm038.a {
 
             updateStatementItemName() {
                 let self = this;
-                if (nts.uk.ui.errors.hasError() || !self.isValidForm()) {
+                $('.nts-input').trigger('validate');
+                if (errors.hasError() || !self.isValidForm()) {
                     return;
                 }
                 block.invisible();
