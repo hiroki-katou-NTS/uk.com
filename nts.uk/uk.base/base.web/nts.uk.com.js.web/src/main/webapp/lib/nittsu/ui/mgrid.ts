@@ -5505,7 +5505,7 @@ module nts.uk.ui.mgrid {
                         if (_.isNil(date)) date = null;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                         $.data($cell, v.DATA, date);
-                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
+                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? "" : mDate._i)) : txt;
                     }
                 }
                 
