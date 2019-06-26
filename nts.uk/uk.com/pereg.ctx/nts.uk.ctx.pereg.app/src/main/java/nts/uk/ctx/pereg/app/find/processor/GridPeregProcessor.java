@@ -18,9 +18,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
+import nts.uk.ctx.pereg.app.find.common.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
+import nts.uk.ctx.pereg.app.find.common.GetYearHolidayInfo;
+import nts.uk.ctx.pereg.app.find.common.NextTimeEventDto;
 import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
+import nts.uk.ctx.pereg.app.find.common.YearHolidayInfoResult;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
@@ -46,6 +50,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.GridComboBoxSettingQuery;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
@@ -87,19 +92,28 @@ public class GridPeregProcessor {
 	@Inject
 	private GetSPHolidayNextGrantDate getSPHolidayNextGrantDate;
 	
-	private static final List<String>  specialCode = Arrays.asList("CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
+	@Inject 
+	private GetYearHolidayInfo getYearHolidayInfo;
+	
+	//chứa cả CS00024 - 年休情報
+	private static final List<String>  specialCode = Arrays.asList("CS00024", "CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
 			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
 			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058");
+	
 	//特別休暇付与基準日
-	private static final List<String> grantDateLst =  Arrays.asList("IS00295","IS00302","IS00309","IS00316","IS00323","IS00330","IS00337","IS00344","IS00351","IS00358","IS00559","IS00566","IS00573","IS00580","IS00587","IS00594","IS00601","IS00608","IS00615","IS00622");
+	private static final List<String> grantDateLst =  Arrays.asList("IS00279", "IS00295","IS00302","IS00309","IS00316","IS00323","IS00330","IS00337","IS00344","IS00351","IS00358","IS00559","IS00566","IS00573","IS00580","IS00587","IS00594","IS00601","IS00608","IS00615","IS00622");
 	//付与設定
 	private static final List<String> appSetLst = Arrays.asList("IS00297","IS00304","IS00311","IS00318","IS00325","IS00332","IS00339","IS00346","IS00353","IS00360","IS00561","IS00568","IS00575","IS00582","IS00589","IS00596","IS00603","IS00610","IS00617","IS00624");
 	//付与日数
 	private static final List<String> grantDayLst = Arrays.asList("IS00298","IS00305","IS00312","IS00319","IS00326","IS00333","IS00340","IS00347","IS00354","IS00361","IS00562","IS00569","IS00576","IS00583","IS00590","IS00597","IS00604","IS00611","IS00618","IS00625");
 	//特休付与テーブルコード
-	private static final List<String> grantTableLst = Arrays.asList("IS00299","IS00306","IS00313","IS00320","IS00327","IS00334","IS00341","IS00348","IS00355","IS00362","IS00563","IS00570","IS00577","IS00584","IS00591","IS00598","IS00605","IS00612","IS00619","IS00626");
-	//次回付与日
-	private static final List<String> nextGrantDateLst = Arrays.asList("IS00300","IS00307","IS00314","IS00321","IS00328","IS00335","IS00342","IS00349","IS00356","IS00363","IS00564","IS00571","IS00578","IS00585","IS00592","IS00599","IS00606","IS00613","IS00620","IS00627");
+	private static final List<String> grantTableLst = Arrays.asList("IS00280", "IS00299","IS00306","IS00313","IS00320","IS00327","IS00334","IS00341","IS00348","IS00355","IS00362","IS00563","IS00570","IS00577","IS00584","IS00591","IS00598","IS00605","IS00612","IS00619","IS00626");
+	//次回付与日 - nextTimeGrantDays
+	private static final List<String> nextGrantDateLst = Arrays.asList("IS00281", "IS00300","IS00307","IS00314","IS00321","IS00328","IS00335","IS00342","IS00349","IS00356","IS00363","IS00564","IS00571","IS00578","IS00585","IS00592","IS00599","IS00606","IS00613","IS00620","IS00627");
+	//次回年休付与日数 - nextTimeGrantDays IS00282
+	private static final List<String> nextGrantDayLst = Arrays.asList("IS00282");
+	// 次回時間年休付与上限 - nextTimeMaxTime
+	private static final List<String> nextTimeMaxTimeLst = Arrays.asList("IS00283");
 	public GridEmployeeDto getGridLayout(PeregGridQuery query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
@@ -146,51 +160,96 @@ public class GridPeregProcessor {
 			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
 			
 			if(specialCode.contains(query.getCategoryCode())) {
-				List<SpecialleaveInformation> params = layouts.stream().map(c ->  {
-					GeneralDate grantDate =null;
-					int appSet = 0;
-					Double grantDays = null;
-					String grantTable = null;
-					Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
-					Optional<GridEmpBody> appSetOpt = c.getItems().stream().filter(item -> appSetLst.contains(item.getItemCode())).findFirst();
-					Optional<GridEmpBody> grantDayOpt = c.getItems().stream().filter(item -> grantDayLst.contains(item.getItemCode())).findFirst();
-					Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
-					if(grantDateOpt.isPresent()) {
-						grantDate = (GeneralDate) grantDateOpt.get().getValue();
-					}
-					if(grantDate == null) return null;
-					if(appSetOpt.isPresent()) {
-						appSet = Integer.valueOf((String) appSetOpt.get().getValue()).intValue();
-					}
+				if(query.getCategoryCode().equals("CS00024")) {
+					//アルゴリズム「次回年休情報を取得する」
+					List<AnnLeaEmpBasicInfo> params = layouts.stream().map(c ->  {
+						GeneralDate standardDate =null;
+						String grantTable = null;
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
+						if(grantDateOpt.isPresent()) {
+							standardDate = (GeneralDate) grantDateOpt.get().getValue();
+						}
+						if(standardDate == null) return null;
+						if(grantTableOpt.isPresent()) {
+							grantTable = (String) grantTableOpt.get().getValue();
+						}
+						return new AnnLeaEmpBasicInfo(c.getEmployeeId(),
+								standardDate, grantTable,
+								new DatePeriod(null, null), null, null);
+					}).collect(Collectors.toList());
 					
-					if(grantDayOpt.isPresent()) {
-						if(grantDayOpt.get().getValue() instanceof Integer) {
-							grantDays = new Double (grantDayOpt.get().getValue().toString());
+					Map<String, NextTimeEventDto> yearHolidayMap = getYearHolidayInfo.getAllYearHolidayInfoBySids(params);
+					layouts.stream().forEach(c ->{
+						//nextGrantDateLst
+						Optional<GridEmpBody> nextTimeGrantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> nextTimeGrantDaysOpt = c.getItems().stream().filter(item -> nextGrantDayLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> nextTimeMaxTimeOpt = c.getItems().stream().filter(item -> nextTimeMaxTimeLst.contains(item.getItemCode())).findFirst();
+
+						
+						NextTimeEventDto nextTimeEventDto = yearHolidayMap.get(c.getEmployeeId());
+						if(nextTimeGrantDateOpt.isPresent()) {
+							nextTimeGrantDateOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeGrantDate());
 						}
 						
-						if(grantDayOpt.get().getValue() instanceof Double) {
-							grantDays = (Double) grantDayOpt.get().getValue();
+						if(nextTimeGrantDaysOpt.isPresent()) {
+							nextTimeGrantDaysOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeGrantDays());
 						}
 						
-						if(grantDayOpt.get().getValue() instanceof BigDecimal) {
-							grantDays = (Double) grantDayOpt.get().getValue();
+						if(nextTimeMaxTimeOpt.isPresent()) {
+							nextTimeMaxTimeOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeMaxTime());
+						}
+					});	
+					
+				}else {
+					List<SpecialleaveInformation> params = layouts.stream().map(c ->  {
+						GeneralDate grantDate =null;
+						int appSet = 0;
+						Double grantDays = null;
+						String grantTable = null;
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> appSetOpt = c.getItems().stream().filter(item -> appSetLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantDayOpt = c.getItems().stream().filter(item -> grantDayLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
+						if(grantDateOpt.isPresent()) {
+							grantDate = (GeneralDate) grantDateOpt.get().getValue();
+						}
+						if(grantDate == null) return null;
+						if(appSetOpt.isPresent()) {
+							appSet = Integer.valueOf((String) appSetOpt.get().getValue()).intValue();
 						}
 						
-					}
-					if(grantTableOpt.isPresent()) {
-						grantTable = (String) grantTableOpt.get().getValue();
-					}
-					return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
-				}).collect(Collectors.toList());
-				Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params.stream().filter(c -> c!= null).collect(Collectors.toList()));
-				layouts.stream().forEach(c ->{
-					//nextGrantDateLst
-					Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
-					GeneralDate nextGrantDateOpt = nextGrantDateMap.get(c.getEmployeeId());
-					if(grantDateOpt.isPresent()) {
-						grantDateOpt.get().setValue(nextGrantDateOpt == null? null: nextGrantDateOpt.toString());
-					}
-				});
+						if(grantDayOpt.isPresent()) {
+							if(grantDayOpt.get().getValue() instanceof Integer) {
+								grantDays = new Double (grantDayOpt.get().getValue().toString());
+							}
+							
+							if(grantDayOpt.get().getValue() instanceof Double) {
+								grantDays = (Double) grantDayOpt.get().getValue();
+							}
+							
+							if(grantDayOpt.get().getValue() instanceof BigDecimal) {
+								grantDays = (Double) grantDayOpt.get().getValue();
+							}
+							
+						}
+						if(grantTableOpt.isPresent()) {
+							grantTable = (String) grantTableOpt.get().getValue();
+						}
+						return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
+					}).collect(Collectors.toList());
+					Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params.stream().filter(c -> c!= null).collect(Collectors.toList()));
+					layouts.stream().forEach(c ->{
+						//nextGrantDateLst
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
+						GeneralDate nextGrantDateOpt = nextGrantDateMap.get(c.getEmployeeId());
+						if(grantDateOpt.isPresent()) {
+							grantDateOpt.get().setValue(nextGrantDateOpt == null? null: nextGrantDateOpt.toString());
+						}
+					});					
+					
+				}
+
 			}
 						
 			if (!CollectionUtil.isEmpty(layouts)) {
