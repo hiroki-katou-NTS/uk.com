@@ -8,4 +8,5 @@ import './ripple';
 import './float';
 import './toolbar';
 import './number';
+import './tree';
 import './fxtable';

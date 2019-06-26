@@ -37,4 +37,34 @@
             }
         }
     }
+    &-tree {
+        .list-group-item {
+            position: relative;
+            .collapse {
+                display: block;
+                position: absolute;
+                top: calc(50% - 7px);
+                left: 10px;
+            }
+            .selection {
+                right: 10px;
+                top: calc(50% - 9px);
+                position: absolute;
+            }
+        }
+    }
+}
+
+@for $i from 1 through 10 {
+    .list-group-tree {
+        .list-group-item {
+            &.indent-#{$i} {
+                padding-left: #{$i * 30}px;
+                
+                .collapse {
+                    left: #{$i * 30 - 20}px;
+                }
+            }
+        }
+    }
 }

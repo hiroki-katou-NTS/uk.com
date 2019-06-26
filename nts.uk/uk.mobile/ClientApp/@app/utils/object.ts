@@ -1,3 +1,5 @@
+import { Vue } from '@app/provider';
+
 const $ = {
     range(startOrLength: number, end?: number): number[] {
         let length = Math.abs((end || 0) - startOrLength);
@@ -308,6 +310,83 @@ const $ = {
     },
     isNullOrEmpty(target: any): target is null {
         return (target === undefined || target === null || target.length == 0);
+    },
+    hierarchy(items: Array<any>, childProp: string, parent?: any) {
+        if (!items || items.length == 0 || !childProp) {
+            return items;
+        } else {
+            let $hier = [],
+                defReact = Vue.util.defineReactive;
+
+            items.forEach((item: any) => {
+                $hier.push(item);
+
+                if (!$.has(item, '$h')) {
+                    $.extend(item, {
+                        $h: {
+                            parent: parent || null,
+                            childs: item[childProp] || []
+                        }
+                    });
+
+                    // get rank of item
+                    Object.defineProperty(item.$h, 'rank', {
+                        get() {
+                            const $rank = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return 0;
+                                } else {
+                                    return 1 + $rank(item.$h.parent);
+                                }
+                            };
+
+                            return $rank(item);
+                        }
+                    });
+
+                    // get root of item
+                    Object.defineProperty(item.$h, 'root', {
+                        get() {
+                            const $root = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return item;
+                                } else {
+                                    return $root(item.$h.parent);
+                                }
+                            };
+
+                            return $root(item);
+                        }
+                    });
+
+                    defReact(item.$h, 'collapse', true);
+
+                    Object.defineProperty(item.$h, 'show', {
+                        get() {
+                            const $collapse = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return true;
+                                } else {
+                                    if (!item.$h.parent.$h.collapse) {
+                                        return false;
+                                    } else {
+                                        return $collapse(item.$h.parent);
+                                    }
+                                }
+                            };
+
+                            return $collapse(item);
+                        }
+                    });
+                }
+
+                if ($.isArray(item[childProp])) {
+                    $hier = [...$hier, ...$.hierarchy(item[childProp], childProp, item)];
+                }
+            });
+
+            return $hier;
+        }
     }
 };
 

@@ -6,4 +6,5 @@ import './color';
 import './float';
 import './hidden-element';
 import './list-group';
+import './list-tree';
 import './mdcolor';

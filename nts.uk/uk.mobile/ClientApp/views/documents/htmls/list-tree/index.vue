@@ -1,0 +1,39 @@
+<template>
+  <div class="documentshtmlslist-tree">
+    <h5>1. {{'sample' | i18n}}</h5>
+    <div class="btn-group btn-group-toggle mb-3">
+      <label class="btn btn-primary">
+        <input type="radio" name="options" v-model="single" v-bind:value="true">
+        Radio mode
+      </label>
+      <label class="btn btn-primary">
+        <input type="radio" name="options" v-model="single" v-bind:value="false">
+        Checkbox mode
+      </label>
+    </div>
+    <ul class="list-group list-group-tree">
+      <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item">
+        <span>{{item.id}}&nbsp;&nbsp;&nbsp;{{item.text}}</span>
+        <template v-if="single">
+            <input class="selection" type="radio" name="abc" v-model="selected" v-bind:value="item">
+        </template>
+        <template v-else>
+            <input class="selection" type="checkbox" name="abc" v-model="selecteds" v-bind:value="item">
+        </template>
+      </li>
+    </ul>
+    <h6 class="mt-2">{{'selected_value' | i18n}}</h6>
+    <template v-if="single">
+        <ul class="list-group mt-2 mb-2">
+            <li class="list-group-item p-1">{{selected.id}}&nbsp;&nbsp;&nbsp;{{selected.text}}</li>
+        </ul>
+    </template>
+    <template v-else>
+        <ul class="list-group mt-2 mb-2">
+            <li class="list-group-item p-1" v-for="(item, k) in selecteds" v-bind:key="k">{{item.id}}&nbsp;&nbsp;&nbsp;{{item.text}}</li>
+        </ul>
+    </template>
+    <hr />
+    <markdown />
+  </div>
+</template>
