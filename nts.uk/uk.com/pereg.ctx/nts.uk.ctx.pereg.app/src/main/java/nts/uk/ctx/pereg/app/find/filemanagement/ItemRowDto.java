@@ -23,15 +23,28 @@ public class ItemRowDto {
 	 private int itemOrder;
 	 private ActionRole actionRole;
 	 private List<ComboBoxObject> lstComboBoxValue;
-	 private boolean error;
+	 private boolean update;
+	 private Object defValue;
+	 private String defText;
 	 
-	 public ItemRowDto(String itemCode, String itemName, Object value, String textValue, int itemOrder, List<ComboBoxObject> lstComboBoxValue) {
+	 public ItemRowDto(String itemCode, String itemName, Object value, String textValue, int itemOrder, List<ComboBoxObject> lstComboBoxValue, String defValue, String defText) {
 		 this.itemCode = itemCode;
 		 this.itemName = itemName;
 		 this.value = value;
 		 this.textValue = textValue;
+		 this.defValue = defValue;
+		 this.defText = defText;
 		 this.itemOrder = itemOrder;
+		 this.update = value == defValue? false: true;
 		 this.lstComboBoxValue = lstComboBoxValue;
+	 }
+	 
+	 private void setDefValue(boolean update, Object value, Object defValue) {
+		 this.value = update;
+		 if(update == true) {
+			 this.value = value;
+			 this.defValue = defValue;
+		 }
 	 }
 
 }

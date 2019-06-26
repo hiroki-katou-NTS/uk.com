@@ -65,6 +65,7 @@ import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.validate.constraint.implement.DateConstraint;
 import nts.uk.shr.com.validate.constraint.implement.DateType;
 import nts.uk.shr.com.validate.constraint.implement.NumericConstraint;
@@ -73,6 +74,7 @@ import nts.uk.shr.com.validate.constraint.implement.StringConstraint;
 import nts.uk.shr.com.validate.constraint.implement.TimeConstraint;
 import nts.uk.shr.com.validate.constraint.implement.TimePointConstraint;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @Stateless
@@ -297,7 +299,7 @@ public class CheckFileFinder {
 		List<GridEmpHead> header =  new ArrayList<GridEmpHead>();
 		header.addAll(headerReal);
 		HashMap<String, Object> contraintList = generateContraint(header);
-		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
+		List<EmployeeRowDto> employeeDtos = Collections.synchronizedList(new ArrayList<>());
 		List<ItemRowDto> itemErrors = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
 		// đọc dữ liệu từ file import
@@ -306,7 +308,8 @@ public class CheckFileFinder {
 		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
-		this.parallel.forEach(employeeDtos, pdt -> {
+		
+		employeeDtos.parallelStream().forEach(pdt -> {
 
 			// Miss infoId (get infoId by baseDate)
 			PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
@@ -330,7 +333,7 @@ public class CheckFileFinder {
 					if(h.getItemId().equals(item.getItemDefId())) {
 						// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
 						ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
-								item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false);
+								item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false,"","");
 						itemDtos.add(dto);
 					}
 				});
@@ -352,10 +355,17 @@ public class CheckFileFinder {
 						if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
 							itemDto.setValue(item.getValue());
 						}
-						if(itemDto.isError()) {
-							itemErrors.add(itemDto);
+						if(itemDto.getValue() == null) itemDto.setValue("");//Object value = itemDto.getValue() == null? "": itemDto.getValue();
+						if(itemDto.getValue().equals(item.getValue())) {
+							itemDto.setUpdate(false);
+							itemDto.setDefValue(itemDto.getValue());
+						}else {
+							itemDto.setUpdate(true);
+							itemDto.setDefValue(item.getValue());
+							if(item.getType()== 1 || item.getType()== 3) return; 
+							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
+							itemDto.setDefText(attr.format(item.getValue()));
 						}
-						
 					}
 				});
 			});
@@ -484,11 +494,11 @@ public class CheckFileFinder {
 					empBody.setItemName(headerGrid.getItemName());
 					empBody.setItemOrder(headerGrid.getItemOrder());
 					empBody.setValue(selectionCode);
-					if (headerGrid.isRequired()) {
-						if(cell.getValue() == null) {
-							empBody.setError(true); 
-						}
-					}
+//					if (headerGrid.isRequired()) {
+//						if(cell.getValue() == null) {
+//							empBody.setError(true); 
+//						}
+//					}
 					List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
 					// thuật toán lấy selectionId, workplaceId, codeName,...
 					Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
@@ -667,91 +677,19 @@ public class CheckFileFinder {
 			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
 			DataTypeValue itemValueType = EnumAdaptor.valueOf(dataTypeState.getDataTypeValue(), DataTypeValue.class);
 			itemDto.setDataType(dataTypeState.getDataTypeValue());
+			itemDto.setTextValue(value);
+			itemDto.setDefText(value);
 			switch (itemValueType) {
 			case STRING:
-				itemDto.setValue(value == null? null: value);
-				//StringConstraint stringContraint = (StringConstraint) contraint;
-				if (gridHead.isRequired()) {
-					if (value == null) {
-						itemDto.setError(true);
-						break;
-					} else {
-//						Optional<String> string = stringContraint.validateString(value.toString());
-//						validateItemOfCS0002(itemDto, value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-						break;
-					}
-				} else {
-					if (value != null) {
-//						Optional<String> string = stringContraint.validateString(value.toString());
-//						validateItemOfCS0002(itemDto, value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-						break;
-					}
-				}
-				break;
+				itemDto.setValue(value == null? null: value); break;
 			case NUMERIC:
 			case NUMBERIC_BUTTON:
-				itemDto.setValue(value == null ? null : new BigDecimal(value));
-//				NumericConstraint numberContraint = (NumericConstraint) contraint;
-//				if (gridHead.isRequired()) {
-//					if (value == null) {
-//						itemDto.setError(true);
-//						break;
-//					} else {
-//						Optional<String> string = numberContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-//					}
-//				} else {
-//					if (value != null && value != "") {
-//						Optional<String> string = numberContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-//					}
-//				}
-				break;
+				itemDto.setValue(value == null || value == "" ? null : new BigDecimal(value)); break;
 			case DATE:
-				itemDto.setValue(value == null || value == "" ? null : value);
-//				DateConstraint dateContraint = (DateConstraint) contraint;
-//				if (gridHead.isRequired()) {
-//					if (value == null || value == "") {
-//						itemDto.setError(true);
-//						break;
-//					} else {
-//						Optional<String>  string = dateContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-//					}
-//				} else {
-//					if (value != null && value != "") {
-//						Optional<String>  string = dateContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-//					}
-//				}
-				break;
+				itemDto.setValue(value == null || value == "" ? null : value); break;
 			case TIME:
-				//TimeConstraint timeContraint = (TimeConstraint) contraint;
 				if (gridHead.isRequired()) {
-					if (value == null) {
-						itemDto.setError(true);
-						break;
-					} else {
+						if (value != null  && value != "") {
 						String[] stringSplit = value.split(":");
 						if(stringSplit.length >= 1  && stringSplit.length < 3) {
 							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
@@ -762,12 +700,6 @@ public class CheckFileFinder {
 						}else {
 							itemDto.setValue(value);
 						}
-						break;
-//						Optional<String> string = timeContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
 					}
 				} else {
 					if (value != null && value != "") {
@@ -781,49 +713,24 @@ public class CheckFileFinder {
 						}else {
 							itemDto.setValue(value);
 						}
-//						Optional<String> string = timeContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
 					}
 				}
 				break;
 			case TIMEPOINT:
-				//TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value));
-//						Optional<String> string = timePointContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-					} else {
-						itemDto.setError(true);
-					}
-					break;
+						itemDto.setValue(convertTimepoint(value)); break;
+					} 
+					
 				} else {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value));
-//						Optional<String> string = timePointContraint.validateString(value.toString());
-//						if (string.isPresent()) {
-//							itemDto.setError(true);
-//							break;
-//						}
-						break;
+						itemDto.setValue(convertTimepoint(value)); break;
 					}
 				}
 				break;
-				
 			case SELECTION:
 			case SELECTION_BUTTON:
 			case SELECTION_RADIO:
-				if (gridHead.isRequired()) {
-					if(value == null || value == "") {
-						itemDto.setError(true); break;
-					}
-				}
 				break;
 			default:
 				break;
@@ -848,7 +755,7 @@ public class CheckFileFinder {
 			if (itemDto.getItemCode().equals(itemCode)) {
 				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
 						|| !value.contains(JP_SPACE)) {
-					itemDto.setError(true);
+					//itemDto.setError(true);
 					break;
 				}
 			}
@@ -885,6 +792,34 @@ public class CheckFileFinder {
 			}
 		}
 		return value;
+	}
+		
+	private DataValueAttribute converType(int valueType) {
+		
+		ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
+		
+		switch (itemValueType) {
+		case STRING:
+		case SELECTION: 
+		case SELECTION_BUTTON:
+		case SELECTION_RADIO:
+		case READONLY:
+		case READONLY_BUTTON:
+		case RELATE_CATEGORY:
+			return DataValueAttribute.STRING;
+		case NUMBERIC_BUTTON:
+		case NUMERIC:
+			return DataValueAttribute.COUNT;
+		case DATE:
+			return DataValueAttribute.DATE;
+		case TIME:
+			return DataValueAttribute.TIME;
+		case TIMEPOINT:
+			return DataValueAttribute.CLOCK;	
+		default:
+			return DataValueAttribute.of(-1);
+
+		}
 	}
 	
 	@RequiredArgsConstructor
