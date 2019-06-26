@@ -43,17 +43,17 @@ public class ResidentTaxPayeeIntegrationCommandHandler extends CommandHandler<Rt
 	@Override
 	protected void handle(CommandHandlerContext<RtpIntegrationCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		List<String> sourceCode = context.getCommand().getSourceCode();
+		List<String> sourceCodes = context.getCommand().getSourceCode();
 		String destinationCode = context.getCommand().getDestinationCode();
 
-		List<ResidentTaxPayee> listRsdtTax = residentTaxRepo.getListResidentTaxPayee(companyId, sourceCode);
+		List<ResidentTaxPayee> listRsdtTax = residentTaxRepo.getListResidentTaxPayee(companyId, sourceCodes);
 		for (ResidentTaxPayee taxPayee : listRsdtTax) {
 			taxPayee.setReportCd(Optional.of(new ResidentTaxPayeeCode(destinationCode)));
 			residentTaxRepo.update(taxPayee);
 		}
 
 		List<String> lstEmp = employeeAdapter.getListEmpIdOfLoginCompany(companyId);
-		List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayee = empRsdtTaxAdapter.getEmpRsdtTaxPayeeInfo(lstEmp);
+		List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayee = empRsdtTaxAdapter.getEmpRsdtTaxPayeeInfo(lstEmp, sourceCodes);
 		for (EmployeeResidentTaxPayeeInfoImport rtp : listEmpRsdtTaxPayee) {
 			List<YearMonthHistoryItem> historyItems = rtp.getHistoryItems().stream()
 					.filter(i -> i.end().v() >= context.getCommand().getTargetYm()).collect(Collectors.toList());
