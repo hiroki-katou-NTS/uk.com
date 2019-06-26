@@ -296,7 +296,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 return;
             }
             service.salIndAmountUpdateAll({
-                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", false)
+                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {

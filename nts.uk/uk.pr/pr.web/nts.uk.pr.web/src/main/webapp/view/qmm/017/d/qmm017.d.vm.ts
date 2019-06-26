@@ -586,9 +586,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         validateSyntaxOnClick() {
             let self = this;
             self.validateSyntax();
-            if (self.displayDetailCalculationFormula().trim().length == 0) {
-                self.setErrorToFormula('MsgQ_236', []);
-            }
             if (!nts.uk.ui.errors.hasError()) {
                 dialog.info({messageId: "MsgQ_249"});
                 self.extractFormulaElement();
@@ -598,12 +595,20 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         validateSyntax() {
             let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
+            self.checkBlankFormula(formula);
             self.checkOperatorAndDivideZero(formula);
             self.checkResultIsNotNumber(formula);
             self.checkBracket(formula);
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
             self.checkFunctionOperator(formula);
+        }
+
+        checkBlankFormula(formula) {
+            let self = this;
+            if (formula.trim().length == 0) {
+                self.setErrorToFormula('MsgQ_236', []);
+            }
         }
 
         checkOperatorAndDivideZero(formula) {
@@ -621,7 +626,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                         && !((currentChar == self.HALF_SIZE_COMMA_CHAR || currentChar == self.COMMA_CHAR) && (nextChar == self.SUBTRACT || nextChar == self.HALF_SIZE_SUBTRACT))) {
                         self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
                     }
-                    if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
+                    if ((currentChar == self.DIVIDE || currentChar == self.PROGRAMING_DIVIDE) && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
                 }
                 if (nextChar == self.OPEN_BRACKET && !currentChar.contains(self.FUNCTION) && currentChar.slice(-1) == '}') {
                     self.setErrorToFormula('MsgQ_255', []);
