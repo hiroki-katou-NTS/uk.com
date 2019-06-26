@@ -38,29 +38,11 @@ Truyền vào cho component này 2 thuộc tính là `items` và `selected`,
 <step-wizard v-bind:items="['step_1', 'step_2', 'step_3', 'step_4']" v-bind:selected="step" />
 ```
 
- **Mẹo**: Hãy sử dụng `resources id` được cung cấp bởi đội thiết kế để làm `key` cho các `step`, vì các `resources id` này đã đảm bảo được tính duy nhất của các `string key` trong `step-wizard`.
+ **Chú ý**: Trong thực tế, thay vì dùng `['step_1', 'step_2', ...]`, hãy sử dụng `resources id` được cung cấp bởi đội thiết kế, vì các `resources id` này đã đảm bảo được tính duy nhất của các `string key` trong `step-wizard`. Ví dụ: `['KAFS05_2', 'KAFS05_3']`.
 
-##### 5. Resources.json
-Đừng quên định nghĩa tên các bước trong file resources.json
-```json
-{
-    "jp": {
-        "step_1": "勤務情報",
-        "step_2": "申請時間",
-        "step_3": "確認",
-        "step_4": "完了"
-    },
-    "vi": {
-        "step_1": "Bước 1",
-        "step_2": "Bước 2",
-        "step_3": "Bước 3",
-        "step_4": "Bước 4"
-    }
-}
-```
 ---
 ---
-##### 6. Tạo **button** để thay đổi các step
+##### 5. Tạo **button** để thay đổi các step
 Sau khi làm theo cách bước ở trên, bạn đã tạo ra một `step-wizard`. Tuy nhiên, bạn vẫn chưa chuyển qua lại được các steps.  
 Để làm điều này, hãy tạo các button tương ứng với từng step như sau:
 
@@ -96,7 +78,7 @@ export class ViewModel extends Vue {
 }
 ```
 
-##### 7. Tạo **nội dung** của từng step
+##### 6. Tạo **nội dung** của từng step
 Để hiển thị nội dung tương ứng với từng step, hãy sử dụng `v-if` như sau. 
 ```html
 <div>

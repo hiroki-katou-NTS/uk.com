@@ -37,21 +37,9 @@ HTMLでは`@Component`のcomponentsに定義した`step-wizard`を使ってく�
 ```html
 <step-wizard v-bind:items="['step_1', 'step_2', 'step_3', 'step_4']" v-bind:selected="step" />
 ```
-##### 5. Resources.json
-ステップ名をresources.jsonファイルに定義してください。
-```json
-{
-    "jp": {
-        "step_1": "勤務情報",
-        "step_2": "申請時間",
-        "step_3": "確認",
-        "step_4": "完了"
-    }
-}
-```
----
----
-##### 6. 「次へ」と「戻る」などステップを変更するボタンを作る
+ >**注意**: 実際には`['step_1', 'step_2', ...]`を使わないで設計書にある`resources id`使ってください。例えば： `['KAFS05_2', 'KAFS05_3']`.
+
+##### 5. 「次へ」と「戻る」などステップを変更するボタンを作る
 そうすると`step-wizard`を作ったがまだステップをできない。そうするために各ボタンを作りましょう。
 
 ```html
@@ -87,7 +75,7 @@ export class ViewModel extends Vue {
 }
 ```
 
-##### 7. ステップの内容を作る
+##### 6. ステップの内容を作る
 ステップによる内容を表示するために`v-if`を使ってください。
 ```html
 <div>
