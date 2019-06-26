@@ -9,6 +9,7 @@ import './input-string';
 import './input-time';
 import './input-year-month';
 import './text-area';
+import './input-time-range';
 
 // form-check group
 import './radio';
