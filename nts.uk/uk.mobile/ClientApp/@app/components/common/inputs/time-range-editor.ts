@@ -53,4 +53,4 @@ export class TimeRangeEditorComponent extends InputComponent {
     }
 }
 
-Vue.component('nts-time-range', TimeRangeEditorComponent);
+Vue.component('nts-time-range-input', TimeRangeEditorComponent);
