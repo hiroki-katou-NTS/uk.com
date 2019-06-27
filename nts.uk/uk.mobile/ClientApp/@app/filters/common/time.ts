@@ -1,7 +1,14 @@
 import { Vue } from '@app/provider';
+import { TimeWithDay, TimePoint, TimeDuration} from '@app/utils/time';
 
-// xử lý chuyển đổi một giá trị của time từ number sang string tại đây
-Vue.filter('time', (value: number) => value);
+// time-with-day: number ➡ string
+Vue.filter('timewd', (value: number) => TimeWithDay.toString(value));
 
-// xử lý chuyển đổi một giá trị của time từ number sang string tại đây
-Vue.filter('timewd', (value: number) => value);
+// time-point: number ➡ string
+Vue.filter('timept', (value: number) => TimePoint.toString(value));
+
+// time-duration: number ➡ string
+Vue.filter('timedr', (value: number) => TimeDuration.toString(value));
+
+
+
