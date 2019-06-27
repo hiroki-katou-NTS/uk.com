@@ -78,12 +78,15 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             //var fromScreen = "login"; 
+            if(fromScreen == "login"){
+                character.remove("currentOrNextMonth").done(function () {
+                    self.selectedSwitch(null);
+                });  
+            }
             self.topPageCode(code);
             character.restore('currentOrNextMonth').done((obj)=>{
-                if(!obj){
-                    self.selectedSwitch(0);   
-                }else{
-                    self.selectedSwitch(obj);                    
+                if(obj){
+                    self.selectedSwitch(obj);
                 }
                 nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
             })

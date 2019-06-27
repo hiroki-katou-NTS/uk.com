@@ -18,7 +18,7 @@ public class KTG001WebService extends WebService {
 	
 	@POST
 	@Path("checkDisplay/{ym}")
-	public boolean checkDisplay(@PathParam("ym")int ym){
+	public boolean checkDisplay(@PathParam("ym")Integer ym){
 		return queryProcessor.checkDataDayPerConfirm(ym);
 		
 	}

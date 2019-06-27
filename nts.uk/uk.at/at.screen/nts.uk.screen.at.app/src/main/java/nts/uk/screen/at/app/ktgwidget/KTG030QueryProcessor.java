@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTargetItemDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTrackRecord;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
@@ -22,6 +22,9 @@ public class KTG030QueryProcessor {
 
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 	/**
 	 *  月別実績確認すべきデータ有無取得
 	 * @author tutk
@@ -45,15 +48,20 @@ public class KTG030QueryProcessor {
 		return result;
 	}
 	
-	public boolean checkDataMonPerConfirm(int currentOrNextMonth){
+	public boolean checkDataMonPerConfirm(Integer currentOrNextMonth){
 		String employeeID = AppContexts.user().employeeId();
-
+		boolean result = true;
 		//ユーザー固有情報「トップページ表示年月」を取得する
 		//Lấy thông tin  user " Month year hiển thị top page"
+		if(currentOrNextMonth == null){
+			InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
+			result = checkTrackRecord.checkTrackRecord(AppContexts.user().companyId(), employeeID, rq609.getListDateProcessed()
+					.stream().map(x -> new CheckTargetItemDto(x.getClosureID(), x.getTargetDate())).collect(Collectors.toList()));
+		}
 		
 		//月別実績確認すべきデータ有無取得
 		//Lấy tất cả data xác nhận kết quả các ngày có hay không có
-		boolean result = dataMonthlyResult(employeeID, currentOrNextMonth);
+		result = dataMonthlyResult(employeeID, currentOrNextMonth);
 		return result;
 	}
 	public boolean dataMonthlyResult(String employeeID ,int yearmonth){
