@@ -13,7 +13,7 @@ const vm = Vue.extend({
         opacity: null,
         className: ''
     }),
-    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-bind:class="className" v-on:touchmove="preventTouch" v-on:click="onClick">
+    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-bind:class="className" v-on:touchstart.stop.prevent="onClick" v-on:click.stop.prevent="onClick">
         <template v-if="message">
             <div ref="spinner" class="spinner">
                 <div></div>
@@ -38,14 +38,6 @@ const vm = Vue.extend({
             if (this.callback.click) {
                 this.callback.click();
             }
-
-            evt.preventDefault();
-            evt.stopPropagation();
-        },
-        preventTouch(evt: TouchEvent) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            evt.stopImmediatePropagation();
         }
     },
     watch: {
