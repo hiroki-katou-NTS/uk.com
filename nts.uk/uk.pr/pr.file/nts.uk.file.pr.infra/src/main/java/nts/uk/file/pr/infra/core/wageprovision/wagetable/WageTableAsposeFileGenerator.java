@@ -109,7 +109,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     /*QualificationPaymentMethod*/
     private String enumQualificationPaymentMethod(WageTablelData e, int index) {
-        if (e.getQualificationName().isEmpty()) {
+        if(e.getQualificationName().isEmpty()) {
             return "";
         }
 
@@ -117,32 +117,32 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
     }
 
     private String getFixedValue1(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if (e.getElementSet() == ElementSetting.QUALIFICATION.value) {
+        if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return TextResource.localize("QMM016_49");
         }
         if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return TextResource.localize("QMM016_53");
         }
-        if (!e.getFixElement1().isEmpty()) {
+        if(!e.getFixElement1().isEmpty()) {
             return enumElementType(e.getFixElement1());
         }
-        if (!e.getOptAddElement1().isEmpty()) {
+        if(!e.getOptAddElement1().isEmpty()) {
             return getItemName(dataName, e.getOptAddElement1());
         }
         return "";
     }
 
     private String getFixedValue2(WageTablelData e, List<ItemDataNameExport> dataName) {
-        if (e.getElementSet() == ElementSetting.QUALIFICATION.value) {
+        if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return TextResource.localize("QMM016_50");
         }
         if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return "欠勤日数";
         }
-        if (!e.getFixElement2().isEmpty()) {
+        if(!e.getFixElement2().isEmpty()) {
             return enumElementType(e.getFixElement2());
         }
-        if (!e.getOptAddElement2().isEmpty()) {
+        if(!e.getOptAddElement2().isEmpty()) {
             return getItemName(dataName, e.getOptAddElement2());
         }
         return "";
@@ -152,10 +152,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if(e.getElementSet() == ElementSetting.FINE_WORK.value) {
             return "遅刻・早退回数";
         }
-        if (!e.getFixElement3().isEmpty()) {
+        if(!e.getFixElement3().isEmpty()) {
             return enumElementType(e.getFixElement3());
         }
-        if (!e.getOptAddElement3().isEmpty()) {
+        if(!e.getOptAddElement3().isEmpty()) {
             return getItemName(dataName, e.getOptAddElement3());
         }
         return "";
@@ -200,7 +200,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_8(List<ItemDataNameExport> data, WageTablelData e) {
         if(ElementType.FINE_WORK.value.equals(e.getFixElement1()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement1())){
-            return e.getFrameNumber1();
+            return e.getMasterCd1();
         }
         if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return  "".equals(e.getQualifiGroupName()) ? "".equals(e.getQualificationName()) ? "" : "なし" : e.getQualifiGroupName();
@@ -208,10 +208,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if(e.getMasterNumAtr1() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement1() , e.getMasterCd1().trim());
         }
-        if (e.getElementSet() == ElementSetting.ONE_DIMENSION.value && e.getFixElement1().startsWith("M")) {
+        if(e.getElementSet() == ElementSetting.ONE_DIMENSION.value && e.getFixElement1().startsWith("M")) {
             return enumElementType(e.getFixElement1());
         }
-        if (!e.getLowerLimit1().isEmpty()) {
+        if(!e.getLowerLimit1().isEmpty()) {
             return e.getLowerLimit1() + TextResource.localize("QMM016_31") + e.getUpperLimit1();
         }
         return "";
@@ -219,7 +219,7 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_9(List<ItemDataNameExport> data, WageTablelData e) {
         if(ElementType.FINE_WORK.value.equals(e.getFixElement2()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement2())){
-            return e.getFrameNumber2();
+            return e.getMasterCd2();
         }
         if(e.getElementSet() == ElementSetting.QUALIFICATION.value) {
             return e.getQualificationName();
@@ -227,10 +227,10 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
         if(e.getMasterNumAtr2() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement2() , e.getMasterCd2().trim());
         }
-        if (e.getFixElement2().startsWith("M")) {
+        if(e.getFixElement2().startsWith("M")) {
             return enumElementType(e.getFixElement2());
         }
-        if (!e.getLowerLimit2().isEmpty()) {
+        if(!e.getLowerLimit2().isEmpty()) {
             return e.getLowerLimit2() + TextResource.localize("QMM016_31") + e.getUpperLimit2();
         }
         return "";
@@ -238,15 +238,15 @@ public class WageTableAsposeFileGenerator extends AsposeCellsReportGenerator
 
     private String getR2_10(List<ItemDataNameExport> data, WageTablelData e) {
         if(ElementType.FINE_WORK.value.equals(e.getFixElement3()) || ElementType.FINE_WORK.value.equals(e.getOptAddElement3())){
-            return e.getFrameNumber3();
+            return e.getMasterCd3();
         }
         if(e.getMasterNumAtr3() == MasterNumericAtr.MASTER_ITEM.value) {
             return getNameMaster(data, e.getFixElement3() , e.getMasterCd3().trim());
         }
-        if (e.getFixElement3().startsWith("M")) {
+        if(e.getFixElement3().startsWith("M")) {
             return enumElementType(e.getFixElement3());
         }
-        if (!e.getLowerLimit3().isEmpty()) {
+        if(!e.getLowerLimit3().isEmpty()) {
             return e.getLowerLimit3() + TextResource.localize("QMM016_31") + e.getUpperLimit3();
         }
         return "";
