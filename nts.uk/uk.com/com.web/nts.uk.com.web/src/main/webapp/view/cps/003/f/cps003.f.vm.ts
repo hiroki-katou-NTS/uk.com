@@ -36,12 +36,12 @@ module cps003.f.vm {
         constructor() {
             let self = this,
                 data: IModelDto = getShared('CPS003F_PARAM') || { id: '', baseDate: '', itemsDefIds: [] };
-            
+
             self.baseDate = data.baseDate;
 
             // sample data
             if (data.id) {
-                service.fetch.setting({categoryId : data.id, itemIds: data.itemsDefIds}).done(resp => {
+                service.fetch.setting({ categoryId: data.id, itemIds: data.itemsDefIds }).done(resp => {
                     let excs = resp.perInfoData.map(m => m.itemParentCD),
                         items = _(resp.perInfoData)
                             .filter(f => excs.indexOf(f.itemCD) == -1)
@@ -85,7 +85,7 @@ module cps003.f.vm {
                         let dts = item.itemTypeState.dataTypeState,
                             itemData: IItemData = {
                                 constraint: '',
-                                constraint_filter:'',
+                                constraint_filter: '',
                                 itemName: item.itemName,
                                 itemCode: item.itemCode,
                                 dataType: dts.dataTypeValue,
@@ -105,7 +105,7 @@ module cps003.f.vm {
                             }, constraint_filter: any = {
                                 itemName: item.itemName,
                                 itemCode: item.itemCode + "_filter",
-                                required : false
+                                required: false
                             };
 
                         // set name for display on F2_004
@@ -133,13 +133,13 @@ module cps003.f.vm {
                                             constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                             constraint_filter.itemCode = 'StampNumber';
                                             constraint_filter.charType = 'AnyHalfWidth';
-                                            constraint_filter.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;                                            
+                                            constraint_filter.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                             break;
                                         case ITEM_STRING_TYPE.EMPLOYEE_CODE:
                                             constraint.itemCode = 'EmployeeCode';
                                             constraint.charType = 'AnyHalfWidth';
                                             constraint_filter.itemCode = 'EmployeeCode';
-                                            constraint_filter.charType = 'AnyHalfWidth';                                            
+                                            constraint_filter.charType = 'AnyHalfWidth';
                                             break;
                                         case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                             constraint.charType = 'AnyHalfWidth';
@@ -170,14 +170,14 @@ module cps003.f.vm {
                                         constraint.valueType = "Decimal";
                                         constraint.mantissaMaxLength = dts.decimalPart;
                                         constraint_filter.valueType = "Decimal";
-                                        constraint_filter.mantissaMaxLength = dts.decimalPart;                                        
+                                        constraint_filter.mantissaMaxLength = dts.decimalPart;
                                     }
-                                    
+
                                     let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
                                     constraint.min = dts.numericItemMin || 0;
                                     constraint.max = dts.numericItemMax || max;
                                     constraint_filter.min = dts.numericItemMin || 0;
-                                    constraint_filter.max = dts.numericItemMax || max;                                    
+                                    constraint_filter.max = dts.numericItemMax || max;
                                     break;
                                 case ITEM_SINGLE_TYPE.DATE:
                                     constraint.valueType = "Date";
@@ -185,7 +185,7 @@ module cps003.f.vm {
                                     constraint.min = parseTime(dts.min, true).format() || '';
                                     constraint_filter.valueType = "Date";
                                     constraint_filter.max = parseTime(dts.max, true).format() || '';
-                                    constraint_filter.min = parseTime(dts.min, true).format() || '';                                    
+                                    constraint_filter.min = parseTime(dts.min, true).format() || '';
                                     break;
                                 case ITEM_SINGLE_TYPE.TIME:
                                     constraint.valueType = "Time";
@@ -193,7 +193,7 @@ module cps003.f.vm {
                                     constraint.min = parseTime(dts.min, true).format();
                                     constraint_filter.valueType = "Time";
                                     constraint_filter.max = parseTime(dts.max, true).format();
-                                    constraint_filter.min = parseTime(dts.min, true).format();                                    
+                                    constraint_filter.min = parseTime(dts.min, true).format();
                                     break;
                                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                                     constraint.valueType = "Clock";
@@ -201,7 +201,7 @@ module cps003.f.vm {
                                     constraint.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
                                     constraint_filter.valueType = "Clock";
                                     constraint_filter.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
-                                    constraint_filter.min = parseTimeWidthDay(dts.timePointItemMin).shortText;                                    
+                                    constraint_filter.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
                                     break;
                                 case ITEM_SINGLE_TYPE.SELECTION:
                                     constraint.valueType = "Selection";
@@ -237,9 +237,9 @@ module cps003.f.vm {
                             _.extend(constraint, {
                                 formatOption: __viewContext.primitiveValueConstraints.EmployeeCode.formatOption
                             });
-                             _.extend(constraint_filter, {
+                            _.extend(constraint_filter, {
                                 formatOption: __viewContext.primitiveValueConstraints.EmployeeCode.formatOption
-                            });                           
+                            });
                         }
 
                         writeConstraint(constraint.itemCode, constraint);
@@ -253,20 +253,20 @@ module cps003.f.vm {
                         } else {
                             // get selection options
                             service.fetch.getCbxOptions(command).done(items => {
-                                itemData.selectionItem_filters =  items;
-                                if(!!item.isRequired  == true){
-                                   itemData.selectionItems =  _.filter(items, function(value){ return value.optionValue !="";})
-                                }else{
-                                   itemData.selectionItems = items; 
+                                itemData.selectionItem_filters = items;
+                                if (!!item.isRequired == true) {
+                                    itemData.selectionItems = _.filter(items, function(value) { return value.optionValue != ""; })
+                                } else {
+                                    itemData.selectionItems = items;
                                 }
 
                                 self.currentItem.itemData(itemData);
                                 //self.currentItem.filter.valueHasMutated();
                             });
                         }
-                        
+
                         if (["IS00003", "IS00004", "IS00015", "IS00015"].indexOf(self.currentItem.itemData().itemCode) > -1) {
-                                validation.initCheckErrorSpecialItem(self.currentItem);             
+                            validation.initCheckErrorSpecialItem(self.currentItem);
                         }
                     } else {
                         self.currentItem.itemData({ itemCode: '', dataType: 0, amount: 0, selectionItems: [] });
@@ -355,14 +355,14 @@ module cps003.f.vm {
                     replaceValue: undefined,
                     replaceFormat: undefined
                 };
-           nts.uk.ui.errors.clearAll();
-           $('input:not([disabled])').trigger('validate');
-           validation.initCheckError(self.currentItem);
-           validation.checkError(self.currentItem);
+            nts.uk.ui.errors.clearAll();
+            $('input:not([disabled])').trigger('validate');
+            validation.initCheckError(self.currentItem);
+            validation.checkError(self.currentItem);
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             switch (item.itemData.dataType) {
                 default:
                     break;
@@ -384,6 +384,14 @@ module cps003.f.vm {
                         'IS00608', 'IS00615',
                         'IS00622'].indexOf(item.itemData.itemCode) > -1) {
                         value.mode = APPLY_MODE.GRANDDATE;
+                        let i = 0,
+                            optionsText = $(".grant-selection-group").find(".ntsRadioBox");
+                        for (i = 0; i < optionsText.length; i++) {
+                            if (i == mode) {
+                                item.itemName_grant = optionsText[i].innerText; break;
+                            }
+                        }
+                        console.log(item.itemName_grant);
                         switch (mode) {
                             case 0:
                                 value.replaceFormat = REPLACE_FORMAT.HIRE_DATE;
@@ -437,9 +445,9 @@ module cps003.f.vm {
                     value.replaceFormat = REPLACE_FORMAT.VALUE;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
-                if(value.matchValue != null){
-                    value.matchValue = Number(value.matchValue);
-                 }
+                    if (value.matchValue != null) {
+                        value.matchValue = Number(value.matchValue);
+                    }
                     if (!item.itemData.amount) {
                         value.mode = APPLY_MODE.NUMBER;
                         if (item.value.value0) {
@@ -597,8 +605,19 @@ module cps003.f.vm {
                                 }
                             }
                         } else {
-                            if ([0, 1, 2].indexOf(mode) > -1) {
-                                confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                            if ([0, 1].indexOf(mode) > -1) {
+                                confirm({ messageId: 'Msg_633', messageParams: [item.name, item.itemName_grant] }).ifYes(() => {
+                                    setShared('CPS003F_VALUE', value);
+                                    close();
+                                });
+                            } else if (mode == 2) {
+                                let options = [{ optionValue: '0', optionText: text('CPS003_131') },
+                                    { optionValue: '1', optionText: text('CPS003_132') },
+                                    { optionValue: '2', optionText: text('CPS003_133') }],
+                                    optionTextSeleted = _.filter(options, c => { return c.optionValue == item.value.value0;}),
+                                    month = Math.floor(item.value.value1 / 100),
+                                    day = item.value.value1 % 100;
+                                confirm({ messageId: 'Msg_633', messageParams: [item.name, optionTextSeleted[0].optionText + month + "月" + day + "日"]}).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
@@ -621,16 +640,16 @@ module cps003.f.vm {
             } else { // 一致する社員のみ（F1_009）が選択されている場合
                 if (value.matchValue) {
                     if (mode == null) {
-                        let replaceValue = Array.isArray(value.replaceValue) == true? value.replaceValue[0]: value.replaceValue;
+                        let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
                         if (replaceValue) {
                             let valueText = value.matchValue;
-                            if(item.itemData.dataType == 6 || item.itemData.dataType == 8){
-                               let itemX = _.filter(item.itemData.selectionItems, function(x){return x.optionValue == value.matchValue});
-                                if(itemX.length > 0){
+                            if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
+                                let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
+                                if (itemX.length > 0) {
                                     valueText = itemX[0].optionText;
                                 }
-                            }else if(item.itemData.dataType == 5){
-                               valueText =  parseTimeWidthDay(value.matchValue).fullText;
+                            } else if (item.itemData.dataType == 5) {
+                                valueText = parseTimeWidthDay(value.matchValue).fullText;
                             }
                             confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
@@ -643,9 +662,9 @@ module cps003.f.vm {
                                 if (itemX.length > 0) {
                                     valueTextMatch = itemX[0].optionText;
                                 }
-                            }else if(item.itemData.dataType == 5){
-                               valueTextMatch =  parseTimeWidthDay(value.matchValue).fullText;
-                            }else{
+                            } else if (item.itemData.dataType == 5) {
+                                valueTextMatch = parseTimeWidthDay(value.matchValue).fullText;
+                            } else {
                                 valueTextMatch = value.matchValue;
                             }
                             confirm({ messageId: 'Msg_636', messageParams: [item.name, valueTextMatch] }).ifYes(() => {
@@ -698,7 +717,7 @@ module cps003.f.vm {
                     }
                 } else {
                     if (mode == null) {
-                        let replaceValue = Array.isArray(value.replaceValue) == true? value.replaceValue[0]: value.replaceValue;
+                        let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
                         if (replaceValue) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
@@ -725,17 +744,17 @@ module cps003.f.vm {
                                     });
                                 }
                             } else {
-                                if(mode == 0){
+                                if (mode == 0) {
                                     alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
                                         setShared('CPS003F_VALUE', null);
                                         //close();
-                                    });                                    
-                                    
-                                }else{
+                                    });
+
+                                } else {
                                     alert({ messageId: 'Msg_1069', messageParams: [] }).then(() => {
                                         setShared('CPS003F_VALUE', null);
                                         //close();
-                                    });                                    
+                                    });
                                 }
                             }
                         } else {
@@ -781,19 +800,31 @@ module cps003.f.vm {
                                     }
                                 }
                             } else {
-                                if ([0, 1, 2].indexOf(mode) > -1) {
-                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                if ([0, 1].indexOf(mode) > -1) {
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.itemName_grant] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
-                                } else {
+                                } else if(mode == 2){
+                                let options = [{ optionValue: '0', optionText: text('CPS003_131') },
+                                    { optionValue: '1', optionText: text('CPS003_132') },
+                                    { optionValue: '2', optionText: text('CPS003_133') }],
+                                    optionTextSeleted = _.filter(options, c => { return c.optionValue == item.value.value0;}),
+                                    month = Math.floor(item.value.value1 / 100),
+                                    day = item.value.value1 % 100;       
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, optionTextSeleted[0].optionText + month + "月" + day + "日"] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });                                
+                                
+                                }else {
                                     if (value.replaceValue) {
-                                        confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                        confirm({ messageId: 'Msg_637', messageParams: [item.name, value.replaceValue] }).ifYes(() => {
                                             setShared('CPS003F_VALUE', value);
                                             close();
                                         });
                                     } else {
-                                        alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                        alert({ messageId: 'Msg_638', messageParams: [item.name, value.replaceValue] }).then(() => {
                                             setShared('CPS003F_VALUE', null);
                                             //close();
                                         });
@@ -891,7 +922,7 @@ module cps003.f.vm {
         // 置換形式 
         replaceFormat: REPLACE_FORMAT;
     }
-    
+
     enum APPLY_MODE {
         DATE = 1,
         STRING = 2,
