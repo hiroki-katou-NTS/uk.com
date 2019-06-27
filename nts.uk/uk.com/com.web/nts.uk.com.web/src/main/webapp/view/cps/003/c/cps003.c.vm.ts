@@ -29,6 +29,7 @@ module cps003.c.vm {
         gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
         initDs: Array<Record>;
         dataTypes: any = {};
+        updatedDatas: any = {};
         
         constructor() {
             let self = this;
@@ -206,6 +207,14 @@ module cps003.c.vm {
                     let record = new Record(d), disItems = _.cloneDeep(displayItems);
                     _.forEach(d.items, (item: ItemRowDto) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
+                        if (item.update) {
+                            if (_.has(self.updatedDatas, record.id)) {
+                                self.updatedDatas[record.id].push(item);
+                            } else {
+                                self.updatedDatas[record.id] = [ item ];
+                            }
+                        }
+                        
                         if (!dt) return;
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
@@ -846,6 +855,28 @@ module cps003.c.vm {
                         
                         regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
                     }
+                });
+                
+                _.forEach(regChecked, r => {
+                    let items: Array<ItemRowDto> = self.updatedDatas[r];
+                    _.forEach(items, (item: ItemRowDto) => {
+                        if (_.find(errObj[item.recordId], it => it === item.itemCode)) return;
+                        let recData: Record = recId[item.recordId];
+                        let regEmp = regId[recData.id];
+                        
+                        if (!regEmp) {
+                            regEmp = { rowId: item.recordId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                            regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
+                            regId[recData.id] = regEmp;
+                            employees.push(regEmp);
+                        }
+                        
+                        let col = _.find(self.gridOptions.columns, column => column.key === item.itemCode);
+                        if (col && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY_BUTTON && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY
+                            && !_.find(regEmp.input.items, it => it.itemCode === item.itemCode)) {
+                            regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue }); 
+                        }
+                    });
                 });
                 
                 dataToG = _.filter(dataToG, d => {
