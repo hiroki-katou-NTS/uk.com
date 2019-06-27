@@ -22,7 +22,11 @@ const resources: {
         'accept': '設定',
         'yes': 'はい',
         'no': 'いいえ',
-        'close': '閉じる'
+        'close': '閉じる',
+        'warn': 'エラー',
+        'info': '情報',
+        'error': 'エラー',
+        'confirm': '確認'
     },
     vi: {
         'jp': '日本',
@@ -34,7 +38,11 @@ const resources: {
         'accept': 'Chấp nhận',
         'yes': 'Đồng ý',
         'no': 'Không',
-        'close': 'Đóng'
+        'close': 'Đóng',
+        'warn': 'Cảnh báo',
+        'info': 'Thông báo',
+        'error': 'Cảnh báo lỗi',
+        'confirm': 'Xác nhận'
     }
 };
 
