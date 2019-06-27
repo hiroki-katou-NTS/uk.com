@@ -29,30 +29,30 @@ export class DocumentsHtmlsListTreeComponent extends Vue {
         children: [
             {
                 id: 2,
-                text: 'Sub Folder 1',
+                text: 'Sub Folder 1.1',
                 state: {
                     selected: false
                 },
                 children: [{
                     id: 5,
-                    text: 'Sub Folder 5'
+                    text: 'Sub Folder 1.1.1'
                 }, {
                     id: 6,
-                    text: 'Sub Folder 6'
+                    text: 'Sub Folder 1.1.2'
                 }]
             },
             {
                 id: 3,
-                text: 'Sub Folder 2',
+                text: 'Sub Folder 1.2',
                 state: {
                     selected: false
                 },
                 children: [{
                     id: 7,
-                    text: 'Sub Folder 7'
+                    text: 'Sub Folder 1.2.1'
                 }, {
                     id: 8,
-                    text: 'Sub Folder 8'
+                    text: 'Sub Folder 1.2.2'
                 }]
             }
         ]
@@ -69,4 +69,5 @@ export class DocumentsHtmlsListTreeComponent extends Vue {
     get flatten() {
         return obj.hierarchy(this.items, 'children');
     }
+
 }

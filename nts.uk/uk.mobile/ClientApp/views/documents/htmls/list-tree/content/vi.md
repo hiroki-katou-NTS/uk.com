@@ -1,47 +1,75 @@
 ##### 2. Diễn giải
-> `tree-list` là danh sách các đối tượng có quan hệ phân cấp (`hierarchy`) cha con. Để hiển thị danh sách dạng này, chúng ta cần sử dụng một hàm (`hierachy`) được cung cấp trong thư viện `utils/object` theo ví dụ dưới đây.
+`tree-list` là danh sách các đối tượng có quan hệ phân cấp cha con. 
+##### 3. ViewModel
+
+Trước tiên bạn cần có một list các item lưu ở dạng cây(, có thể tự khai báo hoặc lấy về từ server).  
+Dàn phẳng cây này ra bằng cách dùng method `utils/object/hierarchy()`. Method này nhận vào 2 tham số:
+- **items**: là list các item của bạn.
+- **childProp**: là tên property chứa danh sách các item con của một item. (trong ví dụ này, nó là `children`).
+
+> Chú ý: Hàm `hierarchy` trong `utils` tính toán danh sách các đối tượng cần hiển thị nhưng *có làm thay đổi các đối tượng ban đầu.
 
 ```typescript
 import { obj } from '@app/utils';
 
-export class SampleViewModel {
+export class ViewModel {
     // danh sách item cần hiển thị dạng tree list
-    public items: Array<any> = [];
+    public items: Array<any> = [
+        {
+            name: 'item1', 
+            children: [
+                {
+                    name: 'item 1-1',
+                    children: []
+                }
+            ]
+        }, {
+            name: 'item2'
+            children: []
+        }
+
+    ];
 
     // sử dụng computed của vue để tính toán các item cần hiển thị
     get flatten() {
-        /**
-         *  Hàm này nhận vào danh sách các item cần hiển thị dạng tree-list
-         * params
-         *      items: danh sách item cần hiển thị dạng tree-list
-         *      childProp: tên thuộc tính danh sách các item con cần hiển thị
-         */ 
-
-        return obj.hierarchy(this.items, 'childs');
+        return obj.hierarchy(this.items, 'children');
     }
 }
 ```
-> Sau khi tính toán được danh sách các item cần hiển thị từ `viewmodel` ta dựng `view` theo ví dụ dưới đây.
+
+##### 4. HTML
+
+ Sau khi tính toán được danh sách các item cần hiển thị từ `viewmodel` ta dựng `view` theo ví dụ dưới đây.
+
+ 1, Tạo thẻ &lt;ul&gt; với class=`"list-group list-group-tree"`.  
+ 2, Trong thẻ ul, dùng `v-for` để tạo ra một list các thẻ &lt;li&gt; với class=`"list-group-item"`, v-bind:key=`"k"` và v-tree=`"item"`  
+
+Bạn tùy ý thiết kế nội dung hiển thị bên trong một thẻ &lt;li&gt;. Dưới đây là template mẫu cho trường hợp hiển thị cây dạng radio và checkbox.  
+
+Template cho cây dạng **radio**. `selected` là biến trong ViewModel để chứa giá trị được select.
 
 ```html
 <ul class="list-group list-group-tree">
-    <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item">
+    <li v-for="(item, k) in flatten" class="list-group-item" v-bind:key="k" v-tree="item">
         <span>{{item.id}} {{item.text}}</span>
-        <input class="selection" type="radio" name="abc" v-model="selected" v-bind:value="item">
+        <input class="selection" type="radio" v-model="selected" v-bind:value="item">
     </li>
 </ul>
 ```
-> Các điểm cần chú ý:
-- Ở thẻ root của tree-view, class `list-group-tree` là bắt buộc.
-- Danh sách item được lặp là danh sách các đối tượng được tính toán từ hàm get (`computed`) của `viewmodel`.
-- Ở các thẻ con, `directive: v-tree` là bắt buộc, nó nhận vào item được lặp trong danh sách.
-- Để sử dụng `checkbox` hoặc `radio`, sử dụng `input tag` với `type` tương ứng như ví dụ, class `selection` là bắt buộc với thẻ này. 
 
-> **Đặc biệt chú ý**: Hàm `hierarchy` trong `utils` tính toán danh sách các đối tượng cần hiển thị nhưng *có làm thay đổi các đối tượng ban đầu*.
+Template cho cây dạng **checkbox**. `selecteds` là biến trong ViewModel.
+
+```html
+<ul class="list-group list-group-tree">
+    <li v-for="(item, k) in flatten" class="list-group-item" v-bind:key="k" v-tree="item">
+        <span>{{item.id}} {{item.text}}</span>
+        <input class="selection" type="checkbox" v-model="selecteds" v-bind:value="item">
+    </li>
+</ul>
+```
+
+> Chú ý: class `selection` của thẻ &lt;input&gt; là bắt buộc.  
 
 > Có thể sử dụng thêm 2 class `list-group-xs` hoặc `list-group-sm` trong thẻ root để thay đổi kích thước của các item trong list group để tăng không gian hiển thị.
 
-<div class="mt-3"></div>
-
-Viết bởi: **Nguyễn Văn Vương**.
-<div class="mb-3"></div>
+Tạo bởi: **Nguyễn Văn Vương**.
