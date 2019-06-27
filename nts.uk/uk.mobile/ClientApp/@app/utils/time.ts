@@ -7,17 +7,6 @@ export enum DAYS {
     TwoDaysLater = '翌々日',
 }
 
-export interface TimeWithDayPoint {
-    day: string;
-    hour: number;
-    minute: number;
-}
-
-export interface TimeDurationPoint {
-    hour: number;
-    minute: number;
-}
-
 export enum TimeInputType {
     TimeWithDay = 'time-with-day',
     TimePoint = 'time-point',
