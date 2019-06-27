@@ -39,6 +39,8 @@ export class SampleViewModel {
 
 > **Đặc biệt chú ý**: Hàm `hierarchy` trong `utils` tính toán danh sách các đối tượng cần hiển thị nhưng *có làm thay đổi các đối tượng ban đầu*.
 
+> Có thể sử dụng thêm 2 class `list-group-xs` hoặc `list-group-sm` trong thẻ root để thay đổi kích thước của các item trong list group để tăng không gian hiển thị.
+
 <div class="mt-3"></div>
 
 Viết bởi: **Nguyễn Văn Vương**.
