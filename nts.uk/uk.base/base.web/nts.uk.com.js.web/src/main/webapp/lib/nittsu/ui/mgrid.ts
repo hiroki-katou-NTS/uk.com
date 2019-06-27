@@ -5759,14 +5759,14 @@ module nts.uk.ui.mgrid {
             removeInsertions: function() {
                 v.eliminRows(_.cloneDeep(v._encarRows).sort((a, b) => b - a));
             },
-            validate: function(lock) {
+            validate: function(lock, check) {
                 let errors = [];
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef) return;
                     _.forEach(_mafollicle[k].dataSource, (data, i) => {
                         _.forEach(_cstifle(), c => {
                             let validator = _validators[c.key];
-                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)
+                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key) || (_.isFunction(check) && !check(data))
                                 || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock))) return; 
                             let res = validator.probe(data[c.key], data[_pk]);
                             if (res && !res.isValid) {
@@ -10399,6 +10399,22 @@ module nts.uk.ui.mgrid {
             }
             
             return cloneArr;
+        }
+         
+        export function forEach(arr: Array<any>, loop: any) {
+            if (_.isNil(arr)) return;
+            if (_.isObject(arr) && !_.isArray(arr)) {
+                let keys = _.keys(arr);
+                for (let i = 0; i < keys.length; i++) {
+                    if (loop(arr[keys[i]], keys[i]) === false) break;    
+                }
+                
+                return;
+            }
+            
+            for (let i = 0; i < arr.length; i++) {
+                if (loop(arr[i], i) === false) break;
+            }
         }
          
         export function isZero(value: any, name: any) {
