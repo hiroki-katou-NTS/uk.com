@@ -113,7 +113,8 @@ const _SideMenu = Vue.observable({
         },
         iphone: {
             get() {
-                return browser.ios ? 'iphone' : '';
+                // show side menu not in iphone mode
+                return '';// browser.ios ? 'iphone' : '';
             }
         },
         visible: {
