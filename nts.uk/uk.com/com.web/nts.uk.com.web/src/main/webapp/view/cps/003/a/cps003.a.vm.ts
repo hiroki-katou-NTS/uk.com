@@ -1837,13 +1837,19 @@ module cps003.a.vm {
                     }, () => replaceValue.replaceValue);
                 } else {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
-                    if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced) && replaced !== "") {
-                        replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
+                    if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT) {
+                        if (!_.isNil(replaced) && replaced !== "") {
+                            replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
+                        }
+                        
                         if (!replaceValue.replaceAll && !_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
                             replaceValue.matchValue = nts.uk.time.minutesBased.clock.dayattr.create(replaceValue.matchValue).shortText;
                         }
-                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced) && replaced !== "") {
-                        replaced = nts.uk.time.parseTime(replaced, true).format();
+                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME) {
+                        if (!_.isNil(replaced) && replaced !== "") {
+                            replaced = nts.uk.time.parseTime(replaced, true).format();
+                        }
+                        
                         if (!replaceValue.replaceAll && !_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
                             replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
                         }
