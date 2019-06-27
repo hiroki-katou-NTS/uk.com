@@ -26,6 +26,7 @@ module.exports = (env) => {
             alias: {
                 'vue$': 'vue/dist/vue.common.js',
                 '@app': path.join(__dirname, 'ClientApp', '@app'),
+                'views': path.join(__dirname, 'ClientApp', 'views'),
                 '@views': path.join(__dirname, 'ClientApp', 'views')
             }
         },
