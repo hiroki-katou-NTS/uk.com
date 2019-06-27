@@ -12,6 +12,8 @@
 <div class="sample">
     <span>{{ new Date() | date }}</span>
     <!-- kết quả dạng: 2019/01/01 -->
+    <span>{{ new Date() | date('dd-mm-yyyy') }}</span>
+    <!-- kết quả dạng: 01-01-2019 -->
     <span>{{ 720 | timept }}</span>
     <!-- kết quả dạng: 12:00 -->
     <span>{{ 720 | timedr }}</span>
