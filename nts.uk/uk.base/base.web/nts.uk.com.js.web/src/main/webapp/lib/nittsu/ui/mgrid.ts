@@ -274,6 +274,7 @@ module nts.uk.ui.mgrid {
                 if (tn.isEnable(self.features, tn.COPY)) _copie = true;
                 _$grid.mGrid("option", "errOccurred", self.errorOccurred);
                 _$grid.mGrid("option", "errResolved", self.errorResolved);
+                _$grid.mGrid("option", "errDismissed", self.errorDismissed);
             }
         }
         
@@ -5767,7 +5768,7 @@ module nts.uk.ui.mgrid {
                         _.forEach(_cstifle(), c => {
                             let validator = _validators[c.key];
                             if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key) || (_.isFunction(check) && !check(data))
-                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock))) return; 
+                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock || st === color.Disable))) return; 
                             let res = validator.probe(data[c.key], data[_pk]);
                             if (res && !res.isValid) {
                                 let err = { id: data[_pk], index: i, columnKey: c.key, message: res.errorMessage };
@@ -9932,10 +9933,17 @@ module nts.uk.ui.mgrid {
                 return rowId === e.rowId && key === e.columnKey;
             });
             
-            if (removed.length > 0 && errors.length === 0) {
-                let resolved = _$grid.mGrid("option", "errResolved");
-                if (_.isFunction(resolved)) {
-                    resolved();
+            if (removed.length > 0) {
+                if (errors.length === 0) {
+                    let resolved = _$grid.mGrid("option", "errResolved");
+                    if (_.isFunction(resolved)) {
+                        resolved();
+                    }
+                } else {
+                    let dismiss = _$grid.mGrid("option", "errDismissed");
+                    if (_.isFunction(dismiss)) {
+                        dismiss();
+                    }
                 }
             }
         }
