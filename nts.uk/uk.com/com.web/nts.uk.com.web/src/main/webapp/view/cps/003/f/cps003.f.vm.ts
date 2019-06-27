@@ -437,7 +437,9 @@ module cps003.f.vm {
                     value.replaceFormat = REPLACE_FORMAT.VALUE;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
-                value.matchValue = Number(value.matchValue);
+                if(value.matchValue != null){
+                    value.matchValue = Number(value.matchValue);
+                 }
                     if (!item.itemData.amount) {
                         value.mode = APPLY_MODE.NUMBER;
                         if (item.value.value0) {
