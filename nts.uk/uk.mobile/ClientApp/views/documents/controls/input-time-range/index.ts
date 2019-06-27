@@ -14,7 +14,10 @@ import { component } from '@app/core/component';
         jp: require('./content/jp.md')
     }, 
     validations: {
-        timeRangeValue: {
+        timeRangeValue1: {
+            timeRange: true
+        },
+        timeRangeValue2: {
             timeRange: true,
             required: true
         }
@@ -22,7 +25,8 @@ import { component } from '@app/core/component';
 })
 export class DocumentsControlsInputTimeRangeComponent extends Vue {
 
-    public timeRangeValue: { start: number, end: number} = null;
+    public timeRangeValue1: { start: number, end: number} = null;
+    public timeRangeValue2: { start: number, end: number} = null;
 
     public validate() {
         this.$validate();

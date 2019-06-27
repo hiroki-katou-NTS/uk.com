@@ -3,7 +3,7 @@ import { IRule } from 'declarations';
 
 export const timeRange = function (value: { start: Number, end: Number }, checkOr: boolean, rule: IRule) {
 
-    if (value === undefined || value === null) {
+    if (value === undefined || value === null || value.start === null || value.end === null) {
         return false;
     }
 
