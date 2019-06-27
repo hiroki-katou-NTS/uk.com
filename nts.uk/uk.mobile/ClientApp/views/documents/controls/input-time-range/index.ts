@@ -2,7 +2,7 @@ import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    name: 'Time Range Input',
+    name: 'documentscontrolsinput-time-range',
     route: { 
         url: '/controls/input-time-range',
         parent: '/documents'
@@ -15,7 +15,8 @@ import { component } from '@app/core/component';
     }, 
     validations: {
         timeRangeValue: {
-            timeRange: true
+            timeRange: true,
+            required: true
         }
     }
 })
