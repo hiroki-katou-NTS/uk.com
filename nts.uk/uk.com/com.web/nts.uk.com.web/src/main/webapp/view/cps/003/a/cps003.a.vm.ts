@@ -1803,7 +1803,9 @@ module cps003.a.vm {
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
-                        }, () => replaceValue.replaceValue);
+                        }, () => {
+                            return !_.isNil(replaceValue.replaceValue) ? replaceValue.replaceValue : null;
+                        });
                     }
                 } else if (_.find(self.specialItems.workplace, it => it === replaceValue.targetItem)) {
                     let wpName = {}, promises = [], dates = [];
