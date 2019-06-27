@@ -75,7 +75,63 @@ export class ModalComponent extends Vue {
     ...
 }
 ```
+**Một số sample `modal-header`**
+> Đây là modal-header mặc định, nếu developer không tự khai báo, kiban sẽ hiển thị dialog header mặc định như ví dụ dưới đây.
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+    </div>
+</div>
 
+```html
+<div class="modal-header rounded-0 d-block p-0">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+            <span>{{ 'dialog' | i18n }}</span>
+        </h4>
+    </div>
+</div>
+```
+> modal-header có searchbox
+
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+    </div>
+    <div class="uk-bg-headline p-2 pb-1">
+        <label>resources_id</label>
+        <div class="form-group mb-1 bg-grey-100">
+            <div class="input-group input-group-transparent input-group-search">
+                <div class="input-group-append">
+                    <span class="input-group-text fa fa-search"></span>
+                </div>
+                <input placeholder="resources_id" type="text" class="form-control">
+            </div>
+        </div>
+    </div>
+</div>
+
+```html
+<div class="modal-header rounded-0 d-block p-0">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+            <span>{{ 'dialog' | i18n }}</span>
+        </h4>
+    </div>
+    <div class="uk-bg-headline p-2 pb-1">
+        <label>{{ 'resources_id' | i18n }}</label>
+        <nts-search-box class="bg-grey-100" placeholder="resources_id" />
+    </div>
+</div>
+```
 
 ##### 3. Hộp thông báo.
 
