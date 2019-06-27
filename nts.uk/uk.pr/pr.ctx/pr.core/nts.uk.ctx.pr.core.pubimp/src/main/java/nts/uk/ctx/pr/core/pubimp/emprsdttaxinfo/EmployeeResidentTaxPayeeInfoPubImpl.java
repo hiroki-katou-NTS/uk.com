@@ -26,8 +26,8 @@ public class EmployeeResidentTaxPayeeInfoPubImpl implements EmployeeResidentTaxP
     }
 
 	@Override
-	public List<EmployeeResidentTaxPayeeInfoExport> getEmpRsdtTaxPayeeInfo(List<String> listSId) {
-		return empRsdtTaxPayeeInfoRepo.getEmpRsdtTaxPayeeInfo(listSId).stream().map(x -> {
+	public List<EmployeeResidentTaxPayeeInfoExport> getEmpRsdtTaxPayeeInfo(List<String> listSId, List<String> taxPayeeCodes) {
+		return empRsdtTaxPayeeInfoRepo.getEmpRsdtTaxPayeeInfo(listSId, taxPayeeCodes).stream().map(x -> {
             EmployeeResidentTaxPayeeInfoExport export = new EmployeeResidentTaxPayeeInfoExport();
             export.setSid(x.getSid());
             export.setHistoryItems(x.items());

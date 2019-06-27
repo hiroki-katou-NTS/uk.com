@@ -36,7 +36,3 @@
     padding-left: 4px;
 }
 
-/*fix screen flashing when change tab*/
-.sidebar-content {
-    overflow: inherit;
-}
