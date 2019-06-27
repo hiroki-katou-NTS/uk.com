@@ -320,8 +320,8 @@ const modal = {
                                         <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
                                             <div class="modal-content">
                                                 <template v-if="hasTitle">
-                                                    <div class="modal-header" v-bind:key="hasTitle">
-                                                        <h4 class="modal-title">
+                                                    <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
+                                                        <h4 class="modal-title text-white">
                                                             <template v-if="brsize" key="'mobilesize'">
                                                                 <i class="fas fa-angle-left mr-1" v-on:click="show = false"></i>
                                                             </template>
