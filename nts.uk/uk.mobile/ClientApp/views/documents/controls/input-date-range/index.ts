@@ -16,7 +16,7 @@ import { component } from '@app/core/component';
     validations: {
         dateRange: {
             required: true,
-            valueType: 'DateRange'
+            dateRange: true
         }
     }
 })
