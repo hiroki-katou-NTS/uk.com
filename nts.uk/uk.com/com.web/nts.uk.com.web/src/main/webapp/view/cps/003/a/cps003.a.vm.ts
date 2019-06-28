@@ -413,7 +413,6 @@ module cps003.a.vm {
                 self.validateSpecial(regChecked, dataSource);
                 itemErrors = _.filter($grid.mGrid("errors"), e => {
                     let d = dataSource[e.index];
-                    if (d.register) regCount++;
                     return d && d.register;
                 });
                 
