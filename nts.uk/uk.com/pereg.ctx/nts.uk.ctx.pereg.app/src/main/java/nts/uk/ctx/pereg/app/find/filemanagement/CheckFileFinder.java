@@ -354,12 +354,12 @@ public class CheckFileFinder {
 						if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
 							itemDto.setValue(item.getValue());
 						}
+						if(item.getType()== 1 || item.getType()== 3) return; 
 						Object valueDb = item.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), item.getValue().toString());
 						Object valueExcel = itemDto.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), itemDto.getValue().toString());
-						if(isEqual(valueExcel, valueDb) == true) {
+						if(isEqual(valueExcel, valueDb, item.getItem().getDataTypeValue()) == true) {
 							itemDto.setUpdate(false);
 							itemDto.setDefValue(itemDto.getValue());
-							if(item.getType()== 1 || item.getType()== 3) return; 
 							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
 							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
 									|| item.getItem().getDataTypeValue() == 8) {
@@ -377,7 +377,6 @@ public class CheckFileFinder {
 						}else {
 							itemDto.setUpdate(true);
 							itemDto.setDefValue(item.getValue());
-							if(item.getType()== 1 || item.getType()== 3) return;
 							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
 							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
 									|| item.getItem().getDataTypeValue() == 8) {
@@ -873,16 +872,37 @@ public class CheckFileFinder {
 
 		}
 	}
-	private boolean isEqual(Object valueExcel, Object valueDb) {
-		if(valueExcel != null) {
-			return valueExcel.equals(valueDb);
-		}else {
-			if(valueExcel == null && valueDb == null){ 
-				return true;
+	/**
+	 * type = giá trị kiểu 
+	 * @param valueExcel
+	 * @param valueDb
+	 * @param type
+	 * @return
+	 */
+	private boolean isEqual(Object valueExcel, Object valueDb, int type) {
+		if(type == 2 || type == 11) {
+			BigDecimal valEx = (BigDecimal) valueExcel;
+			BigDecimal valDb = (BigDecimal) valueDb;
+			if(valueExcel != null) {
+				return valEx.compareTo(valDb) == 0? true: false;
+			}else {
+				if(valueExcel == null && valueDb == null){ 
+					return true;
+				}
+				return valDb.compareTo(valEx) == 0? true: false;
 			}
+		}else {
+			if(valueExcel != null) {
+				return valueExcel.equals(valueDb);
+			}else {
+				if(valueExcel == null && valueDb == null){ 
+					return true;
+				}
 
-			return valueDb.equals(valueExcel);
+				return valueDb.equals(valueExcel);
+			}
 		}
+
 	}
 	
 	@RequiredArgsConstructor
