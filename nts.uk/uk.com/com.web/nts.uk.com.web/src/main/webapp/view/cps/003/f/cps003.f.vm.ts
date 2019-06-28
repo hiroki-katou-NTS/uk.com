@@ -544,7 +544,8 @@ module cps003.f.vm {
             // 画面項目「対象者選択（F1_007）」の状態をチェックする
             if (value.replaceAll) { // 全員（F1_008）が選択されている場合
                 if (mode == null) {
-                    if (value.replaceValue) {
+                    let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
+                    if (replaceValue) {
                         confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                             setShared('CPS003F_VALUE', value);
                             close();
