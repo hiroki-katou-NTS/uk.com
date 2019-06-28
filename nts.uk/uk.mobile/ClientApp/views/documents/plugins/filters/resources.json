@@ -1,8 +1,16 @@
 {
     "jp": {
-        "documentspluginsfilters": "Common filter"
+        "documentspluginsfilters": "Common filter",
+        "date": "日付",
+        "time_with_day": "日区分付き時刻",
+        "time_point": "時刻",
+        "time_duration": "時間"
     },
     "vi": {
-        "documentspluginsfilters": "Bộ lọc hiển thị"
+        "documentspluginsfilters": "Bộ lọc hiển thị",
+        "date": "Ngày tháng",
+        "time_with_day": "Thời điểm kèm ngày",
+        "time_point": "Thời điểm",
+        "time_duration": "Thời gian"
     }
 }
