@@ -34,8 +34,8 @@ module nts.uk.pr.view.qmm038.a {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+                    periodStartDate: null,
+                    periodEndDate: null,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
@@ -166,7 +166,7 @@ module nts.uk.pr.view.qmm038.a {
                 let command = {
                     employeeIds: self.employeeIds,
                     baseDate: self.baseDate(),
-                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
+                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM", true).format("YYYY/MM")
                 };
                 if (command.giveCurrTreatYear == 'Invalid date') {
                     dialog.alertError({messageId:'MsgQ_257'});
