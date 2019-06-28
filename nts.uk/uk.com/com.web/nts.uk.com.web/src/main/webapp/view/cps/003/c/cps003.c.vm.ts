@@ -140,6 +140,13 @@ module cps003.c.vm {
                             if (combo) {
                                 control.inputProcess = combo;
                             }
+                            
+                            if (control.controlType === "DatePicker") {
+                                let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];
+                                if (dp) {
+                                    control.inputProcess = dp.bind(null, d.required, control.format);
+                                }
+                            }
                         }
                         
                         if (d.required) {
@@ -713,6 +720,8 @@ module cps003.c.vm {
                     item.columnCssClass = "halign-right";
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
+                    let timeRange = cps003.control.TIME_RANGE[self.category.catCode() + "_" + item.key];
+                    if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -796,7 +805,7 @@ module cps003.c.vm {
                 command, employees = [], recId = {}, $grid = $("#grid");
             
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
-                $grid.mGrid("validate");
+                $grid.mGrid("validate", false, data => data.register);
                 let itemErrors = $grid.mGrid("errors"), errObj = {}, dataToG;
                 if (itemErrors && itemErrors.length > 0) {
                     dataToG = _.map(itemErrors, err => {
@@ -879,12 +888,28 @@ module cps003.c.vm {
                     });
                 });
                 
-                dataToG = _.filter(dataToG, d => {
-                    return _.find(regChecked, r => r === d.rowId);
-                });
-                
                 employees = _.filter(employees, e => {
                     return _.find(regChecked, r => r === e.rowId);
+                });
+                
+                self.validateSpecial(regChecked, dataSource);
+                itemErrors = $grid.mGrid("errors");
+                errObj = {};
+                if (itemErrors && itemErrors.length > 0) {
+                    dataToG = _.map(itemErrors, err => {
+                        if (_.has(errObj, err.rowId)) {
+                            errObj[err.rowId].push(err.columnKey);
+                        } else {
+                            errObj[err.rowId] = [ err.columnKey ];
+                        }
+                        
+                        return { rowId: err.rowId, employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.index + 1, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
+                    });
+                }
+                
+                dataToG = _.filter(dataToG, d => {
+                    return _.find(regChecked, r => r === d.rowId);
                 });
                 
                 command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
@@ -933,6 +958,47 @@ module cps003.c.vm {
             }).ifNo(() => {});
         }
         
+        validateSpecial(regChecked: any, dataSource: any) {
+            let self = this, dateRanges, timeRanges;
+            forEach(dataSource, (data, i) => {
+                if (i == 0) {
+                    dateRanges = findAll(cps003.control.dateRange, range => self.category.catCode() === range.ctgCode);
+                    timeRanges = findAll(cps003.control.timeRange, range => self.category.catCode() === range.ctgCode);
+                }
+                
+                if (_.isNil(find(regChecked, r => r === data.id))) return;
+                
+                forEach(dateRanges, range => {
+                    let column = find(self.gridOptions.columns, c => c.key === range.start);
+                    if (column) {
+                        let control = find(self.gridOptions.ntsControls, c => c.name === column.ntsControl);
+                        if (control) {
+                            let vd = cps003.control.DATE_RANGE[range.ctgCode + "_" + range.start];
+                            if (_.isFunction(vd)) vd(column.required, control.format, data[range.start], data);
+                        }
+                    }
+                });
+                
+                forEach(timeRanges, range => {
+                    let column = find(self.gridOptions.columns, c => c.key === range.start);
+                    if (column) {
+                        let vd = cps003.control.TIME_RANGE[range.ctgCode + "_" + range.start];
+                        if (_.isFunction(vd)) vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data);
+                    }
+                });
+                
+                if (self.category.catCode() === "CS00002") {
+                    forEach([ "IS00003", "IS00004", "IS00015", "IS00016" ], item => {
+                        let column = find(self.gridOptions.columns, c => c.key === item);
+                        if (column) {
+                            let vd = cps003.control.STRING[self.category.catCode() + "_" + item];
+                            if (_.isFunction(vd)) vd(column.required, data.id, item, data[item], data);
+                        } 
+                    });
+                }
+            });
+        }
+        
         getText(perInfoTypeState: any, value: any, id: any, itemCode: any, $grid: any) {
             if (!perInfoTypeState) return value;
             switch (perInfoTypeState.dataTypeValue) {
@@ -969,8 +1035,20 @@ module cps003.c.vm {
         
         checkError() {
             let self = this, $grid = $("#grid");
-            $grid.mGrid("validate");
-            let errors = $grid.mGrid("errors");
+            $grid.mGrid("validate", false, data => data.register);
+            let dataSource = $grid.mGrid("dataSource"), regChecked = [];
+            forEach($grid.mGrid("updatedCells"), item => {
+                if (item.columnKey === "register" && item.value) {
+                    regChecked.push(item.rowId);
+                }
+            });
+            
+            self.validateSpecial(regChecked, dataSource);
+            let errors = _.filter($grid.mGrid("errors"), e => {
+                let d = dataSource[e.index];
+                return d && d.register;
+            });
+            
             if (errors.length === 0) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_1463" });
                 return;
@@ -994,6 +1072,25 @@ module cps003.c.vm {
         for (let i = 0; i < arr.length; i++) {
             if (jb(arr[i], i) === false) break;
         }
+    }
+    
+    function find(arr, jb) {
+        if (!arr) return;
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i)) return arr[i];
+        }
+        
+        return null;
+    }
+    
+    function findAll(arr, jb) {
+        if (!arr) return;
+        let result = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i)) result.push(arr[i]);
+        }
+        
+        return result;
     }
     
     class State {

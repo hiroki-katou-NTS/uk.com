@@ -113,6 +113,8 @@ module cps003.a.vm {
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         hasError: KnockoutObservable<boolean> = ko.observable(false);
+        fixedColumns = [ "rowNumber", "register", "print", "showControl", "employeeCode", "employeeName", 
+                        "rowAdd", "deptName", "workplaceName", "positionName", "employmentName", "className" ];
 
         constructor() {
             let self = this;
@@ -404,12 +406,33 @@ module cps003.a.vm {
                     return;
                 }
                 
-                dataToG = _.filter(dataToG, d => {
-                    return _.find(regChecked, r => r === d.rowId);
-                }); 
-                
                 employees = _.filter(employees, e => {
                     return _.find(regChecked, r => r === e.rowId);
+                });
+                
+                self.validateSpecial(regChecked, dataSource);
+                itemErrors = _.filter($grid.mGrid("errors"), e => {
+                    let d = dataSource[e.index];
+                    if (d.register) regCount++;
+                    return d && d.register;
+                });
+                
+                errObj = {};
+                if (itemErrors && itemErrors.length > 0) {
+                    dataToG = _.map(itemErrors, err => {
+                        if (_.has(errObj, err.rowId)) {
+                            errObj[err.rowId].push(err.columnKey);
+                        } else {
+                            errObj[err.rowId] = [ err.columnKey ];
+                        }
+                        
+                        return { rowId: err.rowId, employeeId: err.employeeId, empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, 
+                                 isDisplayRegister: true, errorType: 0, itemName: err.columnName, message: err.message }; 
+                    });
+                }
+                
+                dataToG = _.filter(dataToG, d => {
+                    return _.find(regChecked, r => r === d.rowId);
                 });
                 
                 if (dataToG && dataToG.length > 0) {
@@ -453,6 +476,47 @@ module cps003.a.vm {
                 });
             }).ifNo(() => {
                 
+            });
+        }
+        
+        validateSpecial(regChecked: any, dataSource: any) {
+            let self = this, dateRanges, timeRanges;
+            forEach(dataSource, (data, i) => {
+                if (i == 0) {
+                    dateRanges = findAll(cps003.control.dateRange, range => self.category.catCode() === range.ctgCode);
+                    timeRanges = findAll(cps003.control.timeRange, range => self.category.catCode() === range.ctgCode);
+                }
+                
+                if (_.isNil(find(regChecked, r => r === data.id))) return;
+                
+                forEach(dateRanges, range => {
+                    let column = find(self.gridOptions.columns, c => c.key === range.start);
+                    if (column) {
+                        let control = find(self.gridOptions.ntsControls, c => c.name === column.ntsControl);
+                        if (control) {
+                            let vd = cps003.control.DATE_RANGE[range.ctgCode + "_" + range.start];
+                            if (_.isFunction(vd)) vd(column.required, control.format, data[range.start], data);
+                        }
+                    }
+                });
+                
+                forEach(timeRanges, range => {
+                    let column = find(self.gridOptions.columns, c => c.key === range.start);
+                    if (column) {
+                        let vd = cps003.control.TIME_RANGE[range.ctgCode + "_" + range.start];
+                        if (_.isFunction(vd)) vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data);
+                    }
+                });
+                
+                if (self.category.catCode() === "CS00002") {
+                    forEach([ "IS00003", "IS00004", "IS00015", "IS00016" ], item => {
+                        let column = find(self.gridOptions.columns, c => c.key === item);
+                        if (column) {
+                            let vd = cps003.control.STRING[self.category.catCode() + "_" + item];
+                            if (_.isFunction(vd)) vd(column.required, data.id, item, data[item], data);
+                        } 
+                    });
+                }
             });
         }
         
@@ -532,11 +596,19 @@ module cps003.a.vm {
         checkError() {
             let self = this, $grid = $("#grid");
             $grid.mGrid("validate", false, data => data.register);
-            let dataSource = $grid.mGrid("dataSource"),
-                errors = _.filter($grid.mGrid("errors"), e => {
-                    let d = dataSource[e.index];
-                    return d && d.register;
-                });
+            let dataSource = $grid.mGrid("dataSource"), regChecked = [];
+            
+            forEach($grid.mGrid("updatedCells"), item => {
+                if (item.columnKey === "register" && item.value) {
+                    regChecked.push(item.rowId);
+                }
+            });
+            
+            self.validateSpecial(regChecked, dataSource);
+            let errors = _.filter($grid.mGrid("errors"), e => {
+                let d = dataSource[e.index];
+                return d && d.register;
+            });
             
             if (errors.length === 0) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_1463" });
@@ -923,8 +995,7 @@ module cps003.a.vm {
                 self.gridOptions.features = [{ name: "Resizing" }, { name: "ColumnMoving" }, { name: "Copy" }, { name: "Tooltip", error: true }, { name: "WidthSaving", reset: true }];
                 // TODO: Get fixed columns
                 let columnFixing = { name: "ColumnFixing", columnSettings: [] };
-                forEach([ "rowNumber", "register", "print", "showControl", "employeeCode", "employeeName", 
-                            "rowAdd", "deptName", "workplaceName", "positionName", "employmentName", "className" ], f => {
+                forEach(self.fixedColumns, f => {
                     columnFixing.columnSettings.push({ columnKey: f, isFixed: true });
                 });
                 
@@ -1708,7 +1779,16 @@ module cps003.a.vm {
                                     }, (value, rec) => {
                                         let histItem = groupByEmpId[rec.employeeId];
                                         if (!_.isNil(histItem)) {
-                                            return histItem[0].startDate;
+                                            let month = Math.floor(replaceValue.replaceValue[1] / 100),
+                                                day = replaceValue.replaceValue[1] % 100,
+                                                year = moment(histItem[0].startDate).year(),
+                                                date = moment([ year, month - 1, day ]);
+                                            
+                                            if (!date.isValid()) {
+                                                return moment([ year, month - 1, day - 1 ]).format("YYYY/MM/DD");
+                                            }
+                                            
+                                            return date.format("YYYY/MM/DD");
                                         }
                                     });
                                 } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
@@ -1757,9 +1837,9 @@ module cps003.a.vm {
                     for (let i = replaceValue.targetItem.length - 1; i >= 0; i--) {
                         let item = replaceValue.targetItem[i];
                         let replaced = replaceValue.replaceValue[i], dt = self.dataTypes[item];
-                        if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced)) {
+                        if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(replaced) && replaced !== "") {
                             replaced = nts.uk.time.minutesBased.clock.dayattr.create(replaced).shortText;
-                        } else if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced)) {
+                        } else if (dt && dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIME && !_.isNil(replaced) && replaced !== "") {
                             replaced = nts.uk.time.parseTime(replaced, true).format();
                         }
                         
@@ -1879,6 +1959,16 @@ module cps003.a.vm {
         }
         
         return null;
+    }
+    
+    function findAll(arr, jb) {
+        if (!arr) return;
+        let result = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (jb(arr[i], i)) result.push(arr[i]);
+        }
+        
+        return result;
     }
     
     function forEach(arr, jb) {
@@ -2292,8 +2382,8 @@ module cps003.a.vm {
     }
     
     enum YEAR_OF_JOIN {
-        NEXT = 0, //翌年
-        SAME = 1, //同年
-        PREV = 2  //前年
+        SAME = 0, //同年
+        PREV = 1,  //前年
+        NEXT = 2 //翌年
     }
 }
