@@ -8,11 +8,12 @@ Vue.directive('float-action', {
         $vm.$mask('hide');
     },
     inserted(el: HTMLElement, binding: DirectiveBinding, vnode: VNode, oldVnode: VNode) {
-        let $vm = vnode.context;
+        let $vm = vnode.context,
+            params: { icon?: string; background?: string; forceground?: string; } = binding.value || {};
 
         el.appendChild(dom.create('a', {
-            html: '<i class="fas fa-plus"></i>',
-            'class': 'btn btn-danger btn-lg btn-floating'
+            html: `${ params && params.icon ? `<i class="${params.icon} ${params.forceground}"></i>` : '' }<i class="fas fa-plus ${params.forceground}"></i>`,
+            'class': `btn btn-danger ${params.background} btn-lg btn-floating`
         }));
 
         dom.addClass(el, 'fixed-action-btn');
