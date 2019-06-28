@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm038.a {
             statementItems: Array<DataScreen> = [];
             ccg001ComponentOption: GroupOption = null;
             baseDate: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM/DD"));
-            giveCurrTreatYear: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM"));
+            giveCurrTreatYear: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM"));
             employeeIds: Array<any>;
             numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", {required: true});
             dataUpdate: Array<UpdateEmployee> = [];
@@ -163,16 +163,16 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
-                let command = {
-                    employeeIds: self.employeeIds,
-                    baseDate: self.baseDate(),
-                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM", true).format("YYYY/MM")
-                };
-                if (command.giveCurrTreatYear == 'Invalid date') {
+                if ($('#A2_3').ntsError('hasError')) {
                     dialog.alertError({messageId:'MsgQ_257'});
                     $('#A2_3').focus();
                     return;
                 }
+                let command = {
+                    employeeIds: self.employeeIds,
+                    baseDate: self.baseDate(),
+                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
+                };
                 block.invisible();
                 service.findByEmployee(command).done(function (response) {
                     self.statementItems = [];
