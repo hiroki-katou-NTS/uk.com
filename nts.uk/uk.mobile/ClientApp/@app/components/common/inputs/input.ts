@@ -5,7 +5,7 @@ import { component, Prop, Watch } from '@app/core/component';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
-        <template v-if="showTitle && showTitle !== 'false'">
+        <template v-if="showTitle && showTitle !== 'false' && name" v-bind:key="'showtitle'">
             <div v-bind:class="columns.title">
                 <nts-label 
                     v-bind:constraint="constraints"
@@ -14,6 +14,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                     >{{ name | i18n }}</nts-label>
             </div>
         </template>
+        <template v-else v-bind:key="'hidetitle'"></template>
         <div v-bind:class="columns.input">
             <div class="input-group input-group-transparent">                
                 <template v-if="icons.before" key="show">
@@ -55,6 +56,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:readonly="!editable"
                         v-bind:value="rawValue"
                         v-bind:tabindex="tabindex"
+                        v-bind:placeholder="placeholder"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
@@ -72,7 +74,6 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
         </div>
     </div>`
 });
-
 export class InputComponent extends Vue {
     public click() { }
 
@@ -116,6 +117,9 @@ export class InputComponent extends Vue {
 
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     public readonly columns!: { title: string; input: string };
+
+    @Prop({ default: '' })
+    public readonly placeholder!: string;
 
     get iconsClass() {
         let self = this,

@@ -1,25 +1,22 @@
-// label
-import './label';
-
+// form-check group
 // input group
+// label
+// search-box group
+// special
+import './checkbox';
 import './dropdown';
 import './input-date';
+import './input-date-range';
 import './input-number';
 import './input-string';
 import './input-time';
-import './input-year-month';
-import './text-area';
 import './input-time-range';
-
-// form-check group
+import './input-year-month';
+import './label';
 import './radio';
-import './checkbox';
+import './stepwizard';
 import './switchbox';
-
-// search-box group
+import './text-area';
 import './text-search-box';
 import './time-range-search-box';
-
-// special
-import './stepwizard';
 import './to-top';

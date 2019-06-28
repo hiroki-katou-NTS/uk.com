@@ -6,3 +6,4 @@ export * from '@app/plugins/validate/validators/maxLength';
 export * from '@app/plugins/validate/validators/charType';
 export * from '@app/plugins/validate/validators/valueType';
 export * from '@app/plugins/validate/validators/timeRange';
+export * from '@app/plugins/validate/validators/dateRange';
