@@ -18,8 +18,12 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsTextSearchBoxComponent extends Vue {
+
+    public manualText: string = null;
+
+    public autoText: string = null;
     
     public searchList(value: string) {
-        alert(`search with ${value}`);
+        this.manualText = value;
     }
 }

@@ -1,30 +1,52 @@
-##### 2. ビューでの定義
+##### 2. 説明
+`nts-text-search`検索のためのコンポーネントである。  
 
-```html
-<nts-text-search v-on:search="searchList"/>
-```
+検索タイプは２ある:  
+- 手動検索: 検索ボタン<span class="fa fa-search"></span>を押したら検索する.
+- 自動検索: 入力すると検索.
 
-HTMLでは`v-on:search="searchList"`がある`nts-text-search`のタグを作ってください。  
-`searchList`はビューモデルにある関数である。  
+##### 3. 手動検索
 
-##### 3. ビューモデルでの定義
+ViewModelでは検索のために新しいメソッドを作ってください。このメソッドはパラメータが１ある。
 
-ViewModelにはビューで使った関数を定義してください。  
-ユーザーが「検索」ボタンをクリックするとこの関数が呼ばれる。
-
-```ts
+**ViewModel**
+```typescript
 export class ViewModel extends Vue {
-    *
-    *
-    public searchList(value: string) {
-        // 「search」エベントを処理
+
+    // 検索ボタンを押すとき検索する
+    public searchEvent(value: string) {
+        
     }
-    *
-    *
 }
 ```
 
-##### 4. 補足情報
+HTMLでは`v-on:search`属性を持つ`nts-text-search`タグを作ってください。
+
+**HTML**
+```html
+<nts-text-search v-on:search="searchEvent"/>
+```
+
+##### 4. 自動検索
+
+ViewModelでは新しい変数を作ってください。
+
+**ViewModel**
+```typescript
+export class ViewModel extends Vue {
+
+    public searchText: string = null;
+}
+```
+
+HTMLでは`v-model`を持つ`nts-text-search`タグを作ってください。
+
+**HTML**
+```html
+<nts-text-search v-model="searchText"/>
+```
+
+##### 5. 補足情報
 
 | 属性名　| 種類 | 初期値 | 説明 |
 | --------------|------| -------- | ------|
