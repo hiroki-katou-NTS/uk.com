@@ -1,8 +1,10 @@
 {
     "jp": {
-        "documentshtmlsicons": "Icons"
+        "documentshtmlsicons": "Icons",
+        "message11": "HexaコードやCSSクラス名で検索してください。"
     },
     "vi": {
-        "documentshtmlsicons": "Icons"
+        "documentshtmlsicons": "Icons",
+        "message11" : "Tìm kiếm bằng code hoặc tên class."
     }
 }

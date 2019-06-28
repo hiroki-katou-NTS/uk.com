@@ -1,1 +1,3 @@
-> UK mobile sử dụng hệ thống icons miễn phí `font-awesome` version 5. Developer có thể sử dụng mã `hexa` đội thiết kế cung cấp để tìm các class tương ứng từ khung tìm kiếm dưới đây.
+UKモバイルは`font-awesome`のアイコンのシステムを使っています。  
+設計チームは`hexa`コードを設計書に書きます。例えば：`\F2B9`。
+実装者は`hexa`コードを使ってここで検索してCSSのクラスを取ります。

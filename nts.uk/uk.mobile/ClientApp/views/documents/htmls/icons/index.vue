@@ -2,9 +2,15 @@
   <div class="documentshtmlsicons">
     <markdown />
     <div class="row justify-content-md-center">
-      <div class="col-md-3 mb-5">
+      <div class="col-md-4">
         <nts-search-box v-model="keyword"/>
       </div>
+      
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4 mb-5">
+            <i>{{ 'message11' | i18n }}</i>
+        </div>
     </div>
     <div class="row">
       <div class="col-6 col-sm-4 col-md-3 col-lg-1 text-center uk-icons" v-for="(item, k) in filtereds" v-bind:key="k">
