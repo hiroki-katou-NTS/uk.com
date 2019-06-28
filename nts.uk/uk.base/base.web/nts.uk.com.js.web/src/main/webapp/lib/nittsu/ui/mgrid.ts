@@ -5404,7 +5404,7 @@ module nts.uk.ui.mgrid {
                             if (item) content = item[controlDef.optionsText || "name"];
                         }
                         
-                        txt.innerHTML = content;
+                        txt.innerHTML = _.isNil(content) ? "" : content;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                         $.data($cell, v.DATA, val);
                     }
@@ -7232,6 +7232,11 @@ module nts.uk.ui.mgrid {
                     if (!result.isValid) {
                         khl.set(cell, result.errorMessage);
                     }
+                    
+                    if (khl._infobulle) {
+                        ti.remove(khl._infobulle);
+                        dkn.closeDD(khl._infobulle, true);
+                    }
                 }
                 
                 formatted = su.format(col[0], data);
@@ -7291,6 +7296,11 @@ module nts.uk.ui.mgrid {
                         
                         if (!result.isValid) {
                             khl.set(cell, result.errorMessage);
+                        }
+                        
+                        if (khl._infobulle) {
+                            ti.remove(khl._infobulle);
+                            dkn.closeDD(khl._infobulle, true);
                         }
                     }
                     
