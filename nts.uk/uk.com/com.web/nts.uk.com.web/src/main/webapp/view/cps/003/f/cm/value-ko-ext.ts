@@ -183,7 +183,6 @@ module nts.custombinding {
                     openDialog: () => {
                         let itemData = ko.toJS(accessor.itemData),
                             value = ko.toJS(accessor.value().value0);
-
                         if (['IS00131', 'IS00140',
                             'IS00158', 'IS00167',
                             'IS00176', 'IS00149',

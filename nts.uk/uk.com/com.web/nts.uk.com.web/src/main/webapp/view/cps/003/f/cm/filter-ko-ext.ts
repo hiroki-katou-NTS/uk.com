@@ -88,7 +88,7 @@ module nts.custombinding {
                             setShared("kml001multiSelectMode", false);
                             setShared("kml001selectedCodeList", _.isNil(value) ? [] : [value]);
                             setShared("kml001isSelection", true);
-                            setShared("kml001selectAbleCodeList", itemData.selectionItem_filters.map(x => x.optionValue), true);
+                            setShared("kml001selectAbleCodeList", itemData.selectionItems.map(x => x.optionValue), true);
 
                             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('kml001selectedTimes');
@@ -124,7 +124,7 @@ module nts.custombinding {
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
                                         vm.value(output);
-                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItem_filters), value => {return value.optionValue == output;}); 
+                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItem), value => {return value.optionValue == output;}); 
                                         vm.textValue(`${selectedValue.length > 0? selectedValue[0].optionText: ""}`);
                                     }
                                 });
@@ -135,7 +135,7 @@ module nts.custombinding {
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
                             setShared("KDL002_SelectedItemId", [vm.value()], true);
-                            setShared("KDL002_AllItemObj", itemData.selectionItem_filters.map(x => x.optionValue), true);
+                            setShared("KDL002_AllItemObj", itemData.selectionItems.map(x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
@@ -160,7 +160,7 @@ module nts.custombinding {
                 read: () => {
                     let value = ko.toJS(accessor.value),
                         enable = !!ko.toJS(accessor.enable);
-
+                    nts.uk.ui.errors.clearAll()
                     // update obsr
                     vm.enable(enable);
                     vm.textValue('');
@@ -214,7 +214,7 @@ module nts.custombinding {
                     vm.required = itemData.required;
 
                     // bind items to dropdownList (if avaiable)
-                    vm.itemOptions(itemData.selectionItem_filters || []);
+                    vm.itemOptions(itemData.selectionItem || []);
 
                     // clean binding
                     ko.cleanNode(element);

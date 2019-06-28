@@ -253,13 +253,7 @@ module cps003.f.vm {
                         } else {
                             // get selection options
                             service.fetch.getCbxOptions(command).done(items => {
-                                itemData.selectionItem_filters = items;
-                                if (!!item.isRequired == true) {
-                                    itemData.selectionItems = _.filter(items, function(value) { return value.optionValue != ""; })
-                                } else {
-                                    itemData.selectionItems = items;
-                                }
-
+                                itemData.selectionItems = items;
                                 self.currentItem.itemData(itemData);
                                 //self.currentItem.filter.valueHasMutated();
                             });
@@ -885,7 +879,6 @@ module cps003.f.vm {
         required?: boolean;
         decimalLength?: number;
         selectionItems?: Array<any>;
-        selectionItem_filters?: Array<any>;
     }
 
     interface ICurrentItem {
