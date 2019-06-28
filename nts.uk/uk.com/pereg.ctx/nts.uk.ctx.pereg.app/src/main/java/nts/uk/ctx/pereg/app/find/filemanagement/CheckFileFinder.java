@@ -363,7 +363,7 @@ public class CheckFileFinder {
 							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
 							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
 									|| item.getItem().getDataTypeValue() == 8) {
-								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue().toString())).findFirst();
+								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":itemDto.getValue().toString())).findFirst();
 								if(textOpt.isPresent()) {
 									itemDto.setTextValue(textOpt.get().getOptionText());
 									itemDto.setDefText(textOpt.get().getOptionText());
@@ -381,8 +381,8 @@ public class CheckFileFinder {
 							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
 							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
 									|| item.getItem().getDataTypeValue() == 8) {
-								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue().toString())).findFirst();
-								Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue().toString())).findFirst();
+								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":item.getValue().toString())).findFirst();
+								Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null?"": itemDto.getValue().toString())).findFirst();
 								if(textOpt.isPresent()) {
 									itemDto.setTextValue(textOpt.get().getOptionText());
 								}

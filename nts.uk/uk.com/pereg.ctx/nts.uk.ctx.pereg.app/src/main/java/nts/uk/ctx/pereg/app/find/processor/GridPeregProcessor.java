@@ -169,6 +169,7 @@ public class GridPeregProcessor {
 						if(grantDateOpt.isPresent()) {
 							standardDate = (GeneralDate) grantDateOpt.get().getValue();
 						}
+						
 						if(grantTableOpt.isPresent()) {
 							grantTable = (String) grantTableOpt.get().getValue();
 						}
@@ -177,13 +178,12 @@ public class GridPeregProcessor {
 								new DatePeriod(null, null), null, null);
 					}).collect(Collectors.toList());
 					
-					Map<String, NextTimeEventDto> yearHolidayMap = getYearHolidayInfo.getAllYearHolidayInfoBySids(params);
+					Map<String, NextTimeEventDto> yearHolidayMap = getYearHolidayInfo.getAllYearHolidayInfoBySids(params.stream().filter(c -> c.getGrantDate() != null).collect(Collectors.toList()));
 					layouts.stream().forEach(c ->{
 						//nextGrantDateLst
 						Optional<GridEmpBody> nextTimeGrantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
 						Optional<GridEmpBody> nextTimeGrantDaysOpt = c.getItems().stream().filter(item -> nextGrantDayLst.contains(item.getItemCode())).findFirst();
 						Optional<GridEmpBody> nextTimeMaxTimeOpt = c.getItems().stream().filter(item -> nextTimeMaxTimeLst.contains(item.getItemCode())).findFirst();
-
 						
 						NextTimeEventDto nextTimeEventDto = yearHolidayMap.get(c.getEmployeeId());
 						if(nextTimeGrantDateOpt.isPresent()) {

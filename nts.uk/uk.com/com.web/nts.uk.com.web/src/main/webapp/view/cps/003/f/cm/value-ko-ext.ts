@@ -306,32 +306,33 @@ module nts.custombinding {
                                 'IS00608', 'IS00615',
                                 'IS00622'].indexOf(itemData.itemCode) > -1) {
                                 switch (mode) {
-                                    case '1':
+                                    case '0':
                                         textView = vm.i18n('CPS003_88', [vm.itemNames()['IS00020']]);
                                         break;
-                                    case '2':
+                                    case '1':
                                         textView = vm.i18n('CPS003_88', [vm.itemNames()['IS00279']]);
-                                        break;
-                                    case '3':
+                                        break;  
+                                    case '2':
                                         if (value1) {
                                             switch (value) {
-                                                case "1":
+                                                case "0":
                                                     textView = vm.i18n('CPS003_131') + nts.uk.time.formatMonthDayLocalized(value1);
                                                     break;
-                                                case "2":
+                                                case "1":
                                                     textView = vm.i18n('CPS003_132') + nts.uk.time.formatMonthDayLocalized(value1);
                                                     break;
-                                                case "3":
+                                                case "2":
                                                     textView = vm.i18n('CPS003_133') + nts.uk.time.formatMonthDayLocalized(value1);
                                                     break;
                                             }
                                         }
                                         break;
-                                    case '4':
+                                    case '3':
                                         if (value2) {
                                             textView = moment.utc(value2).format('YYYY/MM/DD');
                                         }
                                         break;
+                                    default: break;
                                 }
                             } else {
                                 textView = moment.utc(value).format('YYYY/MM/DD');
