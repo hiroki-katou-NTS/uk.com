@@ -32,12 +32,13 @@ public class JpaEmployeeResidentTaxPayeeInfoRepository extends JpaRepository
 	}
 
 	@Override
-	public List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId) {
-		if (listSId == null || listSId.isEmpty())
+	public List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId, List<String> taxPayeeCodes) {
+		if (listSId == null || listSId.isEmpty() || taxPayeeCodes == null || taxPayeeCodes.isEmpty())
 			return Collections.emptyList();
-		String query = SELECT_ALL_QUERY_STRING + " WHERE  f.empRsdtTaxPayeePk.sid IN :listSId";
-		return QpbmtEmpRsdtTaxPayee.toDomain(
-				this.queryProxy().query(query, QpbmtEmpRsdtTaxPayee.class).setParameter("listSId", listSId).getList());
+		String query = SELECT_ALL_QUERY_STRING
+				+ " WHERE  f.empRsdtTaxPayeePk.sid IN :listSId AND f.residentTaxPayeeCd IN :listTaxPayeeCode";
+		return QpbmtEmpRsdtTaxPayee.toDomain(this.queryProxy().query(query, QpbmtEmpRsdtTaxPayee.class)
+				.setParameter("listSId", listSId).setParameter("listTaxPayeeCode", taxPayeeCodes).getList());
 	}
 
 	@Override

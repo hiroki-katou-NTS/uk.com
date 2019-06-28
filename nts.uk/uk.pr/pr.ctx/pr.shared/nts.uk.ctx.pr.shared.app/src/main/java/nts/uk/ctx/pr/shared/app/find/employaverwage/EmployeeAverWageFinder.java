@@ -63,7 +63,7 @@ public class EmployeeAverWageFinder {
                     } else {
                         dto.setDepartmentName("");
                     }
-                    Optional<EmployAverWage> employAverWage = param.getGiveCurrTreatYear().equals("Invalid date") ? Optional.empty() : employAverWageRepository.getEmployAverWageById(x.getEmployeeId(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
+                    Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
                     dto.setAverageWage(employAverWage.map(e -> e.getAverageWage().v()).orElse(0L));
                     return dto;
                 }).collect(Collectors.toList());

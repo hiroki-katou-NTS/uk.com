@@ -8,6 +8,6 @@ public interface EmployeeResidentTaxPayeeInfoPub {
 
     List<EmployeeResidentTaxPayeeInfoExport> getEmpRsdtTaxPayeeInfo(List<String> listSId, YearMonth periodYM);
     
-    List<EmployeeResidentTaxPayeeInfoExport> getEmpRsdtTaxPayeeInfo(List<String> listSId);
+    List<EmployeeResidentTaxPayeeInfoExport> getEmpRsdtTaxPayeeInfo(List<String> listSId, List<String> taxPayeeCodes);
     
 }
