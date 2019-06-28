@@ -53,9 +53,11 @@ export class DocumentIndex extends Vue {
         this.items = SideMenu.items;
 
         SideMenu.items = menu.sample;
+        SideMenu.document = true;
     }
 
     public destroyed() {
         SideMenu.items = this.items;
+        SideMenu.document = false;
     }
 }

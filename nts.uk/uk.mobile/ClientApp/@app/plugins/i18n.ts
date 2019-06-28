@@ -26,7 +26,8 @@ const resources: {
         'warn': 'エラー',
         'info': '情報',
         'error': 'エラー',
-        'confirm': '確認'
+        'confirm': '確認',
+        'filter_menu': 'Enter keyword for filter menu'
     },
     vi: {
         'jp': '日本',
@@ -42,7 +43,8 @@ const resources: {
         'warn': 'Cảnh báo',
         'info': 'Thông báo',
         'error': 'Cảnh báo lỗi',
-        'confirm': 'Xác nhận'
+        'confirm': 'Xác nhận',
+        'filter_menu': 'Nhập ký tự bất kỳ để lọc menu'
     }
 };
 
