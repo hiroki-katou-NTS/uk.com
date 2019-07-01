@@ -27,7 +27,8 @@ import { dom } from '@app/utils';
       </div>
     </div>`,
     style: `.uk-approveds .arrow:after { border-bottom-color: #eee; }
-    .uk-approveds .popover { z-index: 1039; }`
+    .uk-approveds .popover { z-index: 1039; }
+    .uk-approveds .row>.col:not(:last-child):after { position: absolute; content: '\\F0DA'; font-family: 'Font Awesome 5 Free'; font-weight: 900; font-size: 1.8rem; right: -6px; color: #666; }`
 })
 export class ApprovedComponent extends Vue {
     @Prop({ default: 0 })
