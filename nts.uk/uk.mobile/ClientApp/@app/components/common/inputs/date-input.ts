@@ -45,7 +45,7 @@ class DateComponent extends InputComponent {
                 } else if (select === null) {
                     this.$emit('input', null);
                 } else {
-                    let momentValue = moment(`${select.year}-${select.month}-${select.date}`, 'YYYY-MM-DD');
+                    let momentValue = moment.utc(`${select.year}-${select.month}-${select.date}`, 'YYYY-MM-DD');
                     this.$emit('input', momentValue.toDate());
                 }
             });
