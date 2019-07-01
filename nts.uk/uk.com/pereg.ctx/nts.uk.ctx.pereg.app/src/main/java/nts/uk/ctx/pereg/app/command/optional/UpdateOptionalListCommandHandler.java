@@ -87,7 +87,13 @@ implements PeregUserDefListUpdateCommandHandler{
 					if(itemUpdateOpt.isPresent()) {
 						updateLst.add(itemData);
 					}else {
-						insertLst.add(itemData);
+						Optional<PersonInfoItemData> insertOpt = insertLst.stream()
+								.filter(insert -> insert.getPerInfoItemDefId().equals(item.definitionId())
+										&& insert.getRecordId().equals(c.getRecordId()))
+								.findFirst();
+						if(!insertOpt.isPresent()) {
+							insertLst.add(itemData);
+						}
 					}
 				}
 
@@ -120,11 +126,15 @@ implements PeregUserDefListUpdateCommandHandler{
 					if(itemUpdateOpt.isPresent()) {
 						itemUpdateLst.add(itemData);
 					}else {
-						itemInsertLst.add(itemData);
+						Optional<EmpInfoItemData> insertOpt = itemInsertLst.stream()
+								.filter(insert -> insert.getPerInfoDefId().equals(item.definitionId())
+										&& insert.getRecordId().equals(c.getRecordId()))
+								.findFirst();
+						if(!insertOpt.isPresent()) {
+							itemInsertLst.add(itemData);
+						}
 					}
 				}
-				
-
 			});
 		});
 		
