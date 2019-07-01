@@ -86,7 +86,7 @@ export class TimeComponent extends InputComponent {
             helper.onSelect, 
             { 
                 title : utils.toString(value), 
-                required: this.constraints.required,
+                required: this.constraints && this.constraints.required,
                 className
             })
         .then((select: any) => {
