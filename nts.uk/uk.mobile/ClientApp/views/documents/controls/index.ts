@@ -3,6 +3,7 @@
 // label
 // search-box group
 // special
+import './approved-status';
 import './checkbox';
 import './dropdown';
 import './input-date';
