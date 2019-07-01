@@ -132,6 +132,51 @@ export class ModalComponent extends Vue {
     </div>
 </div>
 ```
+> modal-header có menu
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2 row m-0">
+        <h4 class="modal-title text-white col-4 p-0">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+        <div class="text-right col-8 p-0">
+            <button class="btn btn-link text-white">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-link dropdown-toggle btn-no-content text-white">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-item">New</li>
+                <li class="dropdown-item">Delete</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+```html
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2 row m-0">
+        <h4 class="modal-title text-white col-4 p-0">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+        <div class="text-right col-8 p-0">
+            <button class="btn btn-link text-white">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-link dropdown-toggle btn-no-content text-white">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-item">New</li>
+                <li class="dropdown-item">Delete</li>
+            </ul>
+        </div>
+    </div>
+</div>
+```
+
 
 ##### 3. Hộp thông báo.
 

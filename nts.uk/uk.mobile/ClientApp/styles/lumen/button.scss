@@ -57,5 +57,10 @@
             font-weight: 600;
         }
     }
+    &-no-content {
+        &:after {
+            content: none;
+        }
+    }
 }
 

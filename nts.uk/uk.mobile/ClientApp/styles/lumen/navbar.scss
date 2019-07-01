@@ -105,6 +105,12 @@ body {
             .btn-link {
                 color: #fff;
                 text-decoration: none;
+                
+                &.dropdown-toggle {
+                    &:after{ 
+                        content: none;
+                    }
+                }
             }
         }
     }

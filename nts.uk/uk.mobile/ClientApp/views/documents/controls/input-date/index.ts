@@ -16,10 +16,13 @@ import { date } from '@app/utils';
     },
     validations: {
         date: {
-            required: true
         }
     }
 })
 export class DocumentsControlsInputDateComponent extends Vue {
-    public date: Date = date.from('2019-02-28', 'yyyy-mm-dd', true);
+    public date: Date = null; //date.from('2019-02-28', 'yyyy-mm-dd', true);
+
+    public validate() {
+        this.$validate();
+    }
 }

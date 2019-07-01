@@ -7,6 +7,7 @@
       </i>
     </label>
     <nts-date-input v-model="date" name='Date Item'/>
+    <button class="btn btn-primary btn-block" v-on:click="validate">Validate</button>
     <markdown/>
   </div>
 </template>
