@@ -331,7 +331,6 @@ module cps003.a.vm {
                     regCount = 0,
                     itemErrors = _.filter($grid.mGrid("errors"), e => {
                         let d = dataSource[e.index];
-                        if (d.register) regCount++;
                         return d && d.register;
                     });
                 
@@ -349,7 +348,10 @@ module cps003.a.vm {
                 }
                 
                 block();
-                _.forEach($grid.mGrid("dataSource"), d => recId[d.id] = d);
+                _.forEach($grid.mGrid("dataSource"), d => {
+                    recId[d.id] = d;
+                    if (d.register) regCount++;
+                });
                 let cateName, cateType, regId = {};
                 if (self.category.cate()) {
                     cateName = self.category.cate().categoryName;
