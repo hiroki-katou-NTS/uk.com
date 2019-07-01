@@ -22,6 +22,7 @@ import { InputComponent } from '@app/components/common/inputs/input';
                 v-bind:default-start-time="startTime"
                 v-bind:default-end-time="endTime"
                 v-bind:icons="iconsClass"
+                v-bind:disabled="disabled"
                 v-on:input="onInput" />
             <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
         </div>

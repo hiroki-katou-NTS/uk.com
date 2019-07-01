@@ -42,6 +42,9 @@ export class TimeRangeSearchBoxComponent extends Vue {
     @Prop({ default: false })
     public readonly required!: boolean;
 
+    @Prop({ default: () => false })
+    public readonly disabled?: boolean;
+
     @Prop()
     public defaultStartTime: number;
 
@@ -89,6 +92,10 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 
     public selectStartTime() {
+        if (this.disabled) {
+            return;
+        }
+
         this.showPicker(this.startTime)
             .then((value: any) => {
                 if (value === undefined) {
@@ -105,6 +112,10 @@ export class TimeRangeSearchBoxComponent extends Vue {
     }
 
     public selectEndTime() {
+        if (this.disabled) {
+            return;
+        }
+
         this.showPicker(this.endTime)
             .then((value: any) => {
                 if (value === undefined) {
