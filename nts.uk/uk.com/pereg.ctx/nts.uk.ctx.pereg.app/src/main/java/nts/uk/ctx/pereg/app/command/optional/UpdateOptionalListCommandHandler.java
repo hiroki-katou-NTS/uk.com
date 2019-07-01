@@ -39,7 +39,12 @@ implements PeregUserDefListUpdateCommandHandler{
 		
 		List<PeregUserDefUpdateCommand> errorLst = new ArrayList<>();
 		List<PeregUserDefUpdateCommand> addLst = new ArrayList<>();
-		List<String> itemIds = command.get(0).getItems().stream().map(item  -> item.definitionId()).collect(Collectors.toList());
+		List<String> itemIds = new ArrayList<>();
+		command.stream().forEach(c ->{
+			c.getItems().forEach(item  ->{
+				itemIds.add(item.definitionId());
+			});
+		});
 		List<String> recordIds = new ArrayList<>();
 		// do itemId của các employee trong cung một công ty giống nhau  - ta sẽ lấy nhân viên đầu tiên để lấy ra được itemId
 		
@@ -63,10 +68,10 @@ implements PeregUserDefListUpdateCommandHandler{
 		}
 		// In case of person
 		if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			List<PersonInfoItemData> itemUpdate = perInfoItemDataRepository.getAllInfoItemByRecordIdsAndItemIds(itemIds, recordIds);
+			List<PersonInfoItemData> itemUpdate = perInfoItemDataRepository.getAllInfoItemByRecordIdsAndItemIds(itemIds.stream().distinct().collect(Collectors.toList()), recordIds);
 			updatePerson(ctg.get(), addLst, itemUpdate);
 		} else if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-			List<EmpInfoItemData> itemUpdate = empInfoItemDataRepository.getAllInfoItemByRecordId(itemIds, recordIds);
+			List<EmpInfoItemData> itemUpdate = empInfoItemDataRepository.getAllInfoItemByRecordId(itemIds.stream().distinct().collect(Collectors.toList()), recordIds);
 			updateEmployee(ctg.get(), addLst, itemUpdate);
 		}
 		
