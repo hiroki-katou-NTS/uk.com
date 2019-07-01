@@ -883,12 +883,14 @@ public class CheckFileFinder {
 		if(type == 2 || type == 11) {
 			BigDecimal valEx = (BigDecimal) valueExcel;
 			BigDecimal valDb = (BigDecimal) valueDb;
-			if(valueExcel != null) {
+			if(valEx != null) {
+				if(valDb == null) return false;
 				return valEx.compareTo(valDb) == 0? true: false;
 			}else {
-				if(valueExcel == null && valueDb == null){ 
+				if(valEx == null && valueDb == null){ 
 					return true;
 				}
+				if(valEx == null && valueDb != null) return false;
 				return valDb.compareTo(valEx) == 0? true: false;
 			}
 		}else {
