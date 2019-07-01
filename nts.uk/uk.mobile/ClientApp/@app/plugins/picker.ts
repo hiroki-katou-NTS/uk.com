@@ -17,6 +17,38 @@ const vm = Vue
             className() {
                 return `plugin ${this.options.className}`.trim();
             }
+        },
+        beforeMount() {
+            // remove all tabindex of item below modal-backdrop
+            let inputs = document.querySelectorAll('a, input, select, button, textarea');
+
+            [].slice.call(inputs).forEach((element: HTMLElement) => {
+                if (!element.getAttribute('data-tabindex')) {
+                    let tabindex = element.getAttribute('tabindex');
+
+                    element.setAttribute('tabindex', '-1');
+
+                    if (tabindex) {
+                        element.setAttribute('data-tabindex', tabindex);
+                    }
+                }
+            });
+        },
+        beforeDestroy() {
+            // restore all tabindex of item below modal-backdrop
+            let inputs = document.querySelectorAll('a, input, select, button, textarea');
+
+            [].slice.call(inputs).forEach((element: HTMLElement) => {
+                let tabindex = element.getAttribute('data-tabindex');
+
+                element.removeAttribute('data-tabindex');
+
+                if (!tabindex) {
+                    element.removeAttribute('tabindex');
+                } else {
+                    element.setAttribute('tabindex', tabindex);
+                }
+            });
         }
     }), picker = {
         install(vue: VueConstructor<Vue>) {
@@ -33,7 +65,8 @@ const vm = Vue
                     onSelect?: Function;
                     title?: string;
                 } = { text: 'text', value: 'value', required: false }) {
-                let self = this;
+                let self = this,
+                    focused = document.querySelector(':focus') as HTMLElement;
 
                 value = obj.cloneObject(value);
                 options = obj.cloneObject(options);
@@ -58,7 +91,9 @@ const vm = Vue
                     Picker.options = obj.cloneObject(options);
                     Picker.dataSources = obj.cloneObject(dataSources);
 
-                    Picker.$nextTick(() => Picker.show = true);
+                    Picker.$nextTick(() => {
+                        Picker.show = true;
+                    });
 
                     Picker
                         .$on('select', (value) => {
@@ -68,9 +103,18 @@ const vm = Vue
                                 options.onSelect.apply(self, [obj.cloneObject(value), Picker]);
                             }
                         })
-                        .$on('close', () => resolve())
-                        .$on('remove', () => resolve(null))
-                        .$on('finish', (value: any) => resolve(value));
+                        .$on('close', () => {
+                            resolve();
+                            focused.focus();
+                        })
+                        .$on('remove', () => {
+                            resolve(null);
+                            focused.focus();
+                        })
+                        .$on('finish', (value: any) => {
+                            resolve(value);
+                            focused.focus();
+                        });
                 });
             };
         }

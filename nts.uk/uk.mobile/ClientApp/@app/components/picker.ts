@@ -24,12 +24,12 @@ export const MobilePicker = {
                                 v-on:input="value => onInput(value, idx)" />
                         </div>
                         <div class="ipkr-navbar">
-                            <a class="ipkr-navbar-btn text-grey-800" ref="close" v-on:click="close">{{'cancel' | i18n}}</a>
+                            <button class="btn btn-link ipkr-navbar-btn text-grey-800" ref="close" v-focus v-on:click="close">{{'cancel' | i18n}}</button>
                             <template v-if="deleteAble" v-bind:key="'deleteAble'">
-                                <a class="ipkr-navbar-btn text-danger" v-on:click="remove">{{'remove' | i18n}}</a>
+                                <button class="btn btn-link ipkr-navbar-btn text-danger" v-on:click="remove">{{'remove' | i18n}}</button>
                             </template>
                             <template v-else v-bind:key="'notDeleteAble'" />
-                            <a class="ipkr-navbar-btn text-primary" v-on:click="finish">{{'accept' | i18n}}</a>
+                            <button class="btn btn-link ipkr-navbar-btn text-primary" v-on:click="finish">{{'accept' | i18n}}</button>
                         </div>
                     </div>
                 </div>
