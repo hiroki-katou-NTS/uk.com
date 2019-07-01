@@ -307,8 +307,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
-			sql = sql.replace("WORKPLACE_ID_VAL", "'" + c.getWorkplaceId() + "'");
-			sql = sql.replace("NORMAL_WORKPLACE_ID_VAL","'" +  c.getNormalWorkplaceId() + "'");
+			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null? "null": "'" + c.getWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_WORKPLACE_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
 			
 			sb.append(sql);
 		});
@@ -336,8 +336,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			
-			sql = sql.replace("WORKPLACE_ID_VAL", "'" + c.getWorkplaceId() + "'");
-			sql = sql.replace("NORMAL_ID_VAL","'" +  c.getNormalWorkplaceId() + "'");
+			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null? "null" : "'" + c.getWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
 			
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");

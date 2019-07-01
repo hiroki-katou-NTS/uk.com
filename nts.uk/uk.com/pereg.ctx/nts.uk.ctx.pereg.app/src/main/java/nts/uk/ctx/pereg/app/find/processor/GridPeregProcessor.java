@@ -254,7 +254,7 @@ public class GridPeregProcessor {
 				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
 				query.getLstEmployee().stream().forEach(c ->{
-					List<EmpMainCategoryDto> layoutOpt = layouts.parallelStream().filter(x -> x.getEmployeeId().equals(c)).collect(Collectors.toList());
+					List<EmpMainCategoryDto> layoutOpt = layouts.stream().filter(x -> x.getEmployeeId().equals(c)).collect(Collectors.toList());
 					if(CollectionUtil.isEmpty(layoutOpt)) return;
 					layoutOpt.stream().forEach(l ->{
 						personDatas.stream().filter(p -> p.getEmployeeId().equals(l.getEmployeeId())).findFirst()
