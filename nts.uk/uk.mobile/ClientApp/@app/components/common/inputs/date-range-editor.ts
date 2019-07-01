@@ -21,6 +21,8 @@ import { InputComponent } from '@app/components/common/inputs/input';
                 <nts-date-input
                     v-model="start"
                     v-bind:icons="icons"
+                    v-bind:disabled="disabled"
+                    v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
                     v-bind:placeholder="placeholder"
                     class="form-group-date mb-0"
@@ -30,6 +32,8 @@ import { InputComponent } from '@app/components/common/inputs/input';
                 <nts-date-input
                     v-model="end"
                     v-bind:icons="icons"
+                    v-bind:disabled="disabled"
+                    v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
                     v-bind:placeholder="placeholder"
                     class="form-group-date mb-0" 
