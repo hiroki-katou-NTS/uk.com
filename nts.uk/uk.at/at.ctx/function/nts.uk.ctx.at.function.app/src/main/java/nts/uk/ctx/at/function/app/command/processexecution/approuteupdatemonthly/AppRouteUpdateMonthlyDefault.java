@@ -76,6 +76,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	@Override
 	public boolean checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
 		String companyId = AppContexts.user().companyId();
+		boolean checkError1552 = false;
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
 		for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
@@ -95,7 +96,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				}
 			}
 			processExecutionLogRepo.update(procExecLog);
+<<<<<<< HEAD
 			return false;
+=======
+			return checkError1552;
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		}
 		System.out.println("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
@@ -141,10 +146,8 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 						procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
 						Optional.of(listClosureEmploymentCode));
 			} catch (Exception e) {
-				List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
-				for(String employeeId : listManagementId) {
-					appDataInfoMonthlyRepo.addAppDataInfoMonthly(new AppDataInfoMonthly(employeeId, execId, new ErrorMessageRC(TextResource.localize("Msg_1552"))));
-				}
+				appDataInfoMonthlyRepo.addAppDataInfoMonthly(new AppDataInfoMonthly("System", execId, new ErrorMessageRC(TextResource.localize("Msg_1552"))));
+				checkError1552 = true;
 				break;
 			}
 >>>>>>> b313ded... fixbug kbt002 : #108218
@@ -192,8 +195,12 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		}
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
+<<<<<<< HEAD
 		return false;
 
+=======
+		return checkError1552;
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 	}
 
 }

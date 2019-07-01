@@ -1,19 +1,14 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.eclipse.persistence.exceptions.DatabaseException;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +27,7 @@ import nts.gul.error.ThrowableAnalyzer;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.AppRouteUpdateDailyService;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
-import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
@@ -70,7 +62,6 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateSchedu
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
@@ -97,6 +88,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeServic
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDailyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
@@ -604,8 +596,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				context.getCommand().getExecItemCd(), execId);
 
 		boolean checkErrAppDaily = false;
+		boolean checkError1552Daily = false;
 		try {
 			// 承認ルート更新（日次）
+<<<<<<< HEAD
 			boolean checkStop = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
 			if (checkStop) {
 				// 各処理の終了状態 ＝ [承認ルート更新（日次）、強制終了]
@@ -614,8 +608,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 				return true;
 			}
+=======
+			checkError1552Daily = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		} catch (Exception e) {
 			checkErrAppDaily = true;
+			appDataInfoDailyRepo.addAppDataInfoDaily(new AppDataInfoDaily("System", execId, new ErrorMessageRC(TextResource.localize("Msg_1339"))));
 		}
 
 		if (procExec.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr() == NotUseAtr.USE) {
@@ -662,9 +660,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					// 実行内容 ＝ 月別実績の集計
 					paramDaily.setExecutionContent(AlarmCategoryFn.APPROVAL_DAILY);
 					if (listErrorApprovalDaily.isEmpty()) {
+<<<<<<< HEAD
 						for (String managementId : listManagementId) {
 							listErrorAndEmpIdDaily.add(
 									new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+=======
+						if(!checkError1552Daily) {
+							for (String managementId : listManagementId) {
+								listErrorAndEmpIdDaily.add(
+										new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+							}
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 						}
 					} else {
 						for (AppDataInfoDaily appDataInfoDaily : listErrorApprovalDaily) {
@@ -680,8 +686,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		}
 
 		boolean checkErrAppMonth = false;
+		boolean checkError1552Monthly = false;
 		try {
 			// 承認ルート更新（月次）
+<<<<<<< HEAD
 			boolean checkStop = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec,
 					procExecLog);
 			if (checkStop) {
@@ -689,8 +697,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.FORCE_END);
 				return true;
 			}
+=======
+			checkError1552Monthly = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		} catch (Exception e) {
 			checkErrAppMonth = true;
+			appDataInfoMonthlyRepo.addAppDataInfoMonthly(new AppDataInfoMonthly("System", execId, new ErrorMessageRC(TextResource.localize("Msg_1339"))));
 		}
 		if (procExec.getExecSetting().getAppRouteUpdateMonthly() == NotUseAtr.USE) {
 			List<AppDataInfoMonthly> listErrorApprovalMonthly = appDataInfoMonthlyRepo
@@ -737,9 +749,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					// 実行内容 ＝ 月別実績の集計
 					paramMonthly.setExecutionContent(AlarmCategoryFn.APPROVAL_MONTHLY);
 					if (listErrorApprovalMonthly.isEmpty()) {
+<<<<<<< HEAD
 						for (String managementId : listManagementId) {
 							listErrorAndEmpIdMonthly.add(
 									new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+=======
+						if(!checkError1552Monthly) {
+							for (String managementId : listManagementId) {
+								listErrorAndEmpIdMonthly.add(
+										new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+							}
+>>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 						}
 					} else {
 						for (AppDataInfoMonthly appDataInfoMonthly : listErrorApprovalMonthly) {
@@ -956,7 +976,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //			// 実行ログエラー詳細 ＝ 取得したエラーメッセージ情報（社員ID, エラーメッセージ ）（List）
 //
 //			if (listError.isEmpty()) {
-				this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, "System", "Msg_1552");
+			this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, "System", "Msg_1552");
 //				for (String managementId : listManagementId) {
 //					listErrorAndEmpId
 //							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), managementId));
@@ -1362,6 +1382,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			ProcessExecutionLog procExecLog) {
 		ExecuteProcessExecutionCommand command = context.getCommand();
 		String companyId = command.getCompanyId();
+		boolean checkError1552 = false;
 		// ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, null);
 		this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, null);
@@ -1463,6 +1484,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					// calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds,
 					// typeExecution,dailyCreateLog);
 					try {
+						log.info("更新処理自動実行_日別実績の作成_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 						boolean dailyPerformanceCreation = this.dailyPerformanceCreation(companyId, context, procExec,
 								empCalAndSumExeLog, listEmp, calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds,
 								typeExecution, dailyCreateLog);
@@ -1591,6 +1613,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 					ExecutionContent.DAILY_CALCULATION, GeneralDate.today(),
 					new ErrMessageContent(TextResource.localize("Msg_1552"))));
+			checkError1552 =true;
 		}
 <<<<<<< HEAD
 		log.info("更新処理自動実行_日別実績の計算_END_" + procExec.getExecItemCd() + "_" + GeneralDateTime.now());
@@ -1619,17 +1642,20 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			param.setExistenceError(1);
 			// 実行内容 ＝ 日別実績の作成
 			param.setExecutionContent(AlarmCategoryFn.CREATE_DAILY_REPORT);
-
 			if (listErrDailyCreation.isEmpty()) {
-				// アルゴリズム「エラーログ書き込み」を実行する
-				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
-						ExecutionContent.DAILY_CREATION, GeneralDate.today(),
-						new ErrMessageContent(TextResource.localize("Msg_1339"))));
-				for (String managementId : listManagementId) {
-					listErrorAndEmpId
-							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+				if(!checkError1552) {
+					// アルゴリズム「エラーログ書き込み」を実行する
+					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
+							ExecutionContent.DAILY_CREATION, GeneralDate.today(),
+							new ErrMessageContent(TextResource.localize("Msg_1339"))));
+					for (String managementId : listManagementId) {
+						listErrorAndEmpId
+								.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+					}
+				}else {
+						listErrorAndEmpId
+								.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), "System"));
 				}
-
 			} else {
 				for (ErrMessageInfo errMessageInfo : listErrDailyCreation) {
 					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
@@ -2103,6 +2129,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
 		int size = taskLogLists.size();
 		boolean existExecutionTaskLog = false;
+		boolean checkError1552 = false;
 		for (int i = 0; i < size; i++) {
 			ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
 			// 承認結果反映
@@ -2209,6 +2236,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 							ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
 							new ErrMessageContent(TextResource.localize("Msg_1552"))));
+					checkError1552  = true;
 					break;
 				}
 				
@@ -2288,14 +2316,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			param.setExistenceError(1);
 			// 実行内容 ＝ 承認結果の反映
 			param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
-
 			if (listErrReflrct.isEmpty()) {
-				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
-						ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
-						new ErrMessageContent(TextResource.localize("Msg_1339"))));
-				for (String managementId : listManagementId) {
-					listErrorAndEmpId
-							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+				if(!checkError1552) {
+					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
+							ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
+							new ErrMessageContent(TextResource.localize("Msg_1339"))));
+					for (String managementId : listManagementId) {
+						listErrorAndEmpId
+								.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+					}
+				}else {
+					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), "System"));
 				}
 			} else {
 				for (ErrMessageInfo errMessageInfo : listErrReflrct) {
@@ -2304,7 +2335,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				}
 
 			}
-
 			param.setTargerEmployee(listErrorAndEmpId);
 			// アルゴリズム「実行ログ登録」を実行する 2290 Done
 			executionLogAdapterFn.updateExecuteLog(param);
@@ -2350,6 +2380,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
 		int size = taskLogLists.size();
 		boolean existExecutionTaskLog = false;
+		boolean checkError1552 = false;
 		for (int i = 0; i < size; i++) {
 			ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
 			// 月別集計
@@ -2442,6 +2473,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
 							ExecutionContent.MONTHLY_AGGREGATION, GeneralDate.today(),
 							new ErrMessageContent(TextResource.localize("Msg_1552"))));
+					checkError1552 = true;
 					break;
 				}
 				
@@ -2529,14 +2561,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			param.setExistenceError(1);
 			// 実行内容 ＝ 月別実績の集計
 			param.setExecutionContent(AlarmCategoryFn.AGGREGATE_RESULT_MONTH);
-
 			if (listErrMonthlyAggregation.isEmpty()) {
-				this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
-						ExecutionContent.MONTHLY_AGGREGATION, GeneralDate.today(),
-						new ErrMessageContent(TextResource.localize("Msg_1339"))));
-				for (String managementId : listManagementId) {
-					listErrorAndEmpId
-							.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+				if(!checkError1552) {
+					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
+							ExecutionContent.MONTHLY_AGGREGATION, GeneralDate.today(),
+							new ErrMessageContent(TextResource.localize("Msg_1339"))));
+					for (String managementId : listManagementId) {
+						listErrorAndEmpId
+								.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
+					}
+				}else {
+					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), "System"));
 				}
 			} else {
 				for (ErrMessageInfo errMessageInfo : listErrMonthlyAggregation) {
