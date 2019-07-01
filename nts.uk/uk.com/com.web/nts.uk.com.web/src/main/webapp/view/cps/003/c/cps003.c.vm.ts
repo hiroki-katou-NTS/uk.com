@@ -862,7 +862,7 @@ module cps003.c.vm {
                             defText = self.getText(col.perInfoTypeState, defValue, item.rowId, col.key, $grid);
                         }
                         
-                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: _.isObject(text) ? text.value : val, text: _.isObject(text) ? text.text : text, defValue: _.isObject(defText) ? defText.value : defValue, defText: _.isObject(defText) ? defText.text : defText, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
                     }
                 });
                 
@@ -956,6 +956,41 @@ module cps003.c.vm {
                     alert(res.message);
                 });
             }).ifNo(() => {});
+        }
+        
+        convertType(perInfoTypeState: any, value: any) {
+            if (!perInfoTypeState) return 1;
+            switch (perInfoTypeState.dataTypeValue) {
+                case ITEM_SINGLE_TYPE.STRING:
+                    return 1;
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                case ITEM_SINGLE_TYPE.TIME:
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    return 2;
+                case ITEM_SINGLE_TYPE.DATE:
+                    return 3;
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    switch (perInfoTypeState.referenceType) {
+                        case ITEM_SELECT_TYPE.ENUM:
+                            return 2;
+                        case ITEM_SELECT_TYPE.CODE_NAME:
+                            return 1;
+                        case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                                return 2;
+                            }
+                            return 1;
+                    }
+                case ITEM_SINGLE_TYPE.READONLY:
+                case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                    return null;
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    return 2;
+            }
         }
         
         validateSpecial(regChecked: any, dataSource: any) {
