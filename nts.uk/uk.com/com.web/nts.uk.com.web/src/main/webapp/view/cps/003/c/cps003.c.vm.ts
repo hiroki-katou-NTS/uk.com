@@ -883,7 +883,7 @@ module cps003.c.vm {
                         let col = _.find(self.gridOptions.columns, column => column.key === item.itemCode);
                         if (col && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY_BUTTON && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY
                             && !_.find(regEmp.input.items, it => it.itemCode === item.itemCode)) {
-                            regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue }); 
+                            regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: self.convertType(col.perInfoTypeState, item.value), logType: col.perInfoTypeState.dataTypeValue }); 
                         }
                     });
                 });
