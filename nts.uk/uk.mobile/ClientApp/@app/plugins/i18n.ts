@@ -1,5 +1,5 @@
 import { obj, dom, storage } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { Vue, VueConstructor, moment } from '@app/provider';
 
 const style = dom.create('style', {
     type: 'text/css',
@@ -60,8 +60,13 @@ const language = new Vue({
             handler(lg: string) {
                 if (lg === 'jp') {
                     document.head.appendChild(style);
+                    // update locale of moment
+                    moment.updateLocale('ja', { weekdays: ['月', '火', '水', '木', '金', '土', '日'] });
+
                 } else if (document.head.contains(style)) {
                     document.head.removeChild(style);
+                    // update locale of moment
+                    moment.updateLocale(lg, { weekdays: lg !== 'vi' ? [] : ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'] });
                 }
             }
         },
