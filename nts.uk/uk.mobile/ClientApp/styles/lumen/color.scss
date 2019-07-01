@@ -145,7 +145,7 @@ $uk-status-color: (
         }
     }
     .uk-bg-#{$color-name}:hover {        
-        background-color: lighten($color: $hex-value, $amount: 10%);
+        background-color: lighten($color: $hex-value, $amount: 10%) !important;
     }
 }
 
@@ -189,7 +189,7 @@ $uk-status-color: (
     }
 
     .uk-bg-#{$color-name} {        
-        background-color: #{$hex-value};
+        background-color: #{$hex-value} !important;
         &.uk-color-swatch {
             &:before {
                 content: '#{$hex-value}';
@@ -227,8 +227,8 @@ $uk-status-color: (
     .apply-#{$class-name},
     .uk-apply-#{$class-name} {
         color: $fg-color;
-        border: 1px solid $bd-color;
-        background-color: $bg-color;
+        border: 1px solid $bd-color !important;
+        background-color: $bg-color !important;
         text-align: center;
         display: inline-block;
         border-radius: 0.25rem;
@@ -236,21 +236,21 @@ $uk-status-color: (
         &:hover,
         &:focus {
             color: $fg-color;
-            border: 1px solid $bd-color;
-            background-color: $bg-color;            
+            border: 1px solid $bd-color !important;
+            background-color: $bg-color !important;            
         }
 
         &.border-0 {
             border: 0;
         }
         &.border-1 {
-            border: 1px solid $bd-color;
+            border: 1px solid $bd-color !important;
         }
         &.border-2 {
-            border: 2px solid $bd-color;
+            border: 2px solid $bd-color !important;
         }
         &.border-3 {
-            border: 1px solid $bd-color;
+            border: 1px solid $bd-color !important;
         }
         &.border-dashed {
             border-style: dashed;
