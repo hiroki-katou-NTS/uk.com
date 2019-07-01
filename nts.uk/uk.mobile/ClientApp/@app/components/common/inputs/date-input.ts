@@ -37,7 +37,7 @@ class DateComponent extends InputComponent {
             helper.getDataSource(this.value),
             helper.onSelect, {
                 title: `${selecteds.year}年${selecteds.month}月${selecteds.date}日`,
-                required: this.constraints.required
+                required: this.constraints && this.constraints.required
             })
             .then( (select: any) => {
                 if ( select === undefined) {
