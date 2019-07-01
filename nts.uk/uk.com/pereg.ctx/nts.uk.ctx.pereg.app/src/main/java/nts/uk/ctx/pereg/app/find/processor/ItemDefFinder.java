@@ -123,7 +123,7 @@ public class ItemDefFinder {
 		
 		setItemDefValueCPS003(empLst, perInfoCtg,  query);
 		
-		empLst.entrySet().parallelStream().forEach(c ->{
+		empLst.entrySet().stream().forEach(c ->{
 			result.put(c.getKey(), c.getValue().getItems());
 		});
 		

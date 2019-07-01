@@ -221,7 +221,7 @@ public class PeregCommonCommandFacade {
 			if(modeUpdate == 1) {
 				updateInputForAdd(containerAdds);
 			}
-			setParamsForCPS001(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
+			setParamsForCPS003(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
 			
 		});
 		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
@@ -271,7 +271,7 @@ public class PeregCommonCommandFacade {
 		val handler = this.addHandlers.get(itemFirstByCtg.getCategoryCd());
 		
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
-			val result = handler.handlePeregCommand(containerAdds);
+			handler.handlePeregCommand(containerAdds);
 		    // xử lí cho những item optional
 			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
@@ -303,7 +303,7 @@ public class PeregCommonCommandFacade {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			// đoạn này viết log
 			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
-				setParamsForCPS001(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
+				setParamsForCPS003(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate);
 			});
 
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
@@ -351,7 +351,7 @@ public class PeregCommonCommandFacade {
 	 * @param inputs
 	 * @param target
 	 */
-	private void setParamsForCPS001(List<PeregInputContainerCps003> containerLst,  PersonInfoProcessAttr isAdd, List<PersonCorrectionLogParameter> targets, GeneralDate standardDate) {
+	private void setParamsForCPS003(List<PeregInputContainerCps003> containerLst,  PersonInfoProcessAttr isAdd, List<PersonCorrectionLogParameter> targets, GeneralDate standardDate) {
 		if (targets.size() > 0 && !containerLst.isEmpty()) {
 			List<PersonCorrectionLogInter> matrixLogs = new ArrayList<>();
 			
@@ -364,7 +364,7 @@ public class PeregCommonCommandFacade {
 				empInfos.add(new PeregEmpInfoQuery(c.getPersonId(),  c.getEmployeeId(), c.getInputs().getRecordId()));
 			});
 			PeregQueryByListEmp queryByListEmp = PeregQueryByListEmp.createQueryLayout(firstEmp.getInputs().getCategoryId(), firstEmp.getInputs().getCategoryCd(), standardDate, empInfos);
-			Map<String, List<ItemValue>> itemValueBySids = this.getItemInvisiblesCPS003(queryByListEmp, firstEmp.getInputs() , isAdd);
+			Map<String, List<ItemValue>> itemValueBySids = this.getItemInvisiblesCPS003(queryByListEmp, containerLst , isAdd);
 			
 			containerLst.stream().forEach(c ->{
 				
@@ -612,14 +612,13 @@ public class PeregCommonCommandFacade {
 				inputContainer.getInputs().getCategoryId(), inputContainer.getInputs().getCategoryCd(), standardDate,
 				empInfos);
 		// Add item invisible to list
-		Map<String, List<ItemValue>> invisibles = this.getItemInvisiblesCPS003(queryByListEmp, inputContainer.getInputs() , PersonInfoProcessAttr.UPDATE);
+		Map<String, List<ItemValue>> invisibles = this.getItemInvisiblesCPS003(queryByListEmp, containerLst , PersonInfoProcessAttr.UPDATE);
 		containerLst.stream().forEach(c ->{
 			List<ItemValue> items = invisibles.get(c.getEmployeeId());
 			if(CollectionUtil.isEmpty(items)) return;
 			c.getInputs().getItems().addAll(items);
 		});
 	}
-	
 	/**
 	 * dùng cho màn cps003
 	 * lấy ra những item không được hiển thị trên màn hình layouts
@@ -627,19 +626,26 @@ public class PeregCommonCommandFacade {
 	 * @param itemByCategory
 	 * @return
 	 */
-	private Map<String, List<ItemValue>> getItemInvisiblesCPS003(PeregQueryByListEmp query, ItemsByCategory itemFirst, PersonInfoProcessAttr isAdd){
+	private Map<String, List<ItemValue>> getItemInvisiblesCPS003(PeregQueryByListEmp query, List<PeregInputContainerCps003> containers, PersonInfoProcessAttr isAdd){
 		Map<String, List<ItemValue>> result = new HashMap<>();
 		if(isAdd == PersonInfoProcessAttr.UPDATE) {
 			// Do số lượng item của các nhân viên đều giống nhau nên mình sẽ lấy ra
 			// itemsByCtg của nhân viên đầu tiên rồi lọc ra itemCode được hiển thị trên màn hình
-			List<String> visibleItemCodes = itemFirst.getItems().stream().map(ItemValue::itemCode)
-					.collect(Collectors.toList());
+			Map<String, List<String>> visibleItemCodeMaps = new HashMap<>();
+			containers.stream().forEach(c ->{
+				visibleItemCodeMaps.put(c.getEmployeeId(), c.getInputs().getItems().stream().map(ItemValue::itemCode)
+					.collect(Collectors.toList()));
+			});
+
 			Map<String, List<ItemValue>> fullItems = itemDefFinder.getFullListItemDefCPS003(query);
 			fullItems.entrySet().stream().forEach(c ->{
-				List<ItemValue> items = c.getValue().stream().filter(i -> {
-					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-				}).collect(Collectors.toList());
-				result.put(c.getKey(), items);
+				List<String> visibleItemCodes = visibleItemCodeMaps.get(c.getKey());
+				if(visibleItemCodes != null) {
+					List<ItemValue> items = c.getValue().stream().filter(i -> {
+						return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+					}).collect(Collectors.toList());
+					result.put(c.getKey(), items);
+				}
 			});
 		}
 		return result;
