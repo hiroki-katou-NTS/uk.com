@@ -71,7 +71,11 @@ export class YearMonthComponent extends InputComponent {
             required: this.constraints.required
         })
             .then((select: any) => {
-                if (select != undefined) {
+                if (select === undefined) {
+                    
+                } else if (select === null) {
+                    self.$emit('input', null);
+                } else {
                     self.$emit('input', select.year + this.padStart2(select.month));
                 }
 
