@@ -15,6 +15,9 @@
 <div>{{resourceid | i18n({key1: value1, key2: value2}) }}</div>
 <!-- hoặc dùng như một hàm mixin global -->
 <div>{{ $i18n(resourceid, [param1, param2]) }}</div>
+
+<!-- các input muốn chỉ định name với resource_id -->
+<nts-text-editor name='resourceid'/>
 ```
 ##### 2.1 Code (`viewmodel`)
 > Hàm `$i18n` là một hàm global nên ta có thể gọi trực tiếp hàm này từ `view-model` như ví dụ dưới đây.
