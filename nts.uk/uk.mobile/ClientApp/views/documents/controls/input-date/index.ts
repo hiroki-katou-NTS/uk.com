@@ -13,6 +13,11 @@ import { date } from '@app/utils';
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
+    },
+    validations: {
+        date: {
+            required: true
+        }
     }
 })
 export class DocumentsControlsInputDateComponent extends Vue {

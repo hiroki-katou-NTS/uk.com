@@ -1,12 +1,13 @@
 import { $ } from '@app/utils';
-import { Vue } from '@app/provider';
+import { Vue, moment } from '@app/provider';
 import { input, InputComponent } from './input';
+import { DateHelper as helper} from '@app/components/controls/date-picker';
 
 @input()
 class DateComponent extends InputComponent {
-    public type: string = 'date';
+    public type: string = 'string';
 
-    public editable: boolean = true;
+    public editable: boolean = false;
 
     public mounted() {
         this.icons.after = 'far fa-calendar-alt';
@@ -30,41 +31,26 @@ class DateComponent extends InputComponent {
         return year + '-' + monthText + '-' + dateText;
     }
 
-    public input() {
-        let value = ( this.$refs.input as HTMLInputElement).value;
+    public click() {
+        let selecteds = helper.computeSelecteds(this.value);
+        this.$picker(selecteds, 
+            helper.getDataSource(this.value),
+            helper.onSelect, {
+                title: `${selecteds.year}年${selecteds.month}月${selecteds.date}日`,
+                required: this.constraints.required
+            })
+            .then( (select: any) => {
+                if ( select === undefined) {
 
-        if (value) {
-            let numb = new Date(value);
-
-            if (numb.getFullYear() < 1000) {
-                return;
-            }
-
-            if (isNaN(numb.getTime())) {
-                return;
-            }
-
-            this.$emit('input', numb);
-        }
+                } else if (select === null) {
+                    this.$emit('input', null);
+                } else {
+                    let momentValue = moment(`${select.year}-${select.month}-${select.date}`, 'YYYY-MM-DD');
+                    this.$emit('input', momentValue.toDate());
+                }
+            });
 
     }
-
-    // click() {
-    //     this.$modal('datepicker', {
-    //         value: this.value
-    //     }, {
-    //             type: "popup",
-    //             title: this.name,
-    //             animate: {
-    //                 show: 'zoomIn',
-    //                 hide: 'zoomOut'
-    //             }
-    //         }).onClose(v => {
-    //             if (v !== undefined) {
-    //                 this.$emit('input', v);
-    //             }
-    //         });
-    // }
 }
 
 Vue.component('nts-date-input', DateComponent);
