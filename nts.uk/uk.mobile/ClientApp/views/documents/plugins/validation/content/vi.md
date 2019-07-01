@@ -32,11 +32,15 @@ Có 2 kiểu validate là:
 
 
 ##### 3. Fixed validators
-Validator | type | Giải thích
-----|----|---------------------
-required | Boolean | Có require hay không? 
-min | Number | Giá trị nhỏ nhất của biến
-max | Number | Giá trị lớn nhất của biến
+Validator | type | Mặc định |Giải thích
+----|----|---------| ------------
+required | Boolean | false | Có require hay không? 
+min | Number | undefined | Giá trị nhỏ nhất của biến
+max | Number | undefined | Giá trị lớn nhất của biến
+charType | String | undefined |Validate giá trị text nhập vào. CharType là một trong số: Kana, AnyHalfWidth, AlphaNumeric, Numeric, Any
+dateRange | Boolean | false |Dữ liệu có phải kiểu date-range hay không?
+timeRange | Boolean | false |Dữ liệu có phải kiểu time-range hay không?
+
 
 ##### 4. Custom validators
 Ví dụ để validate biến `textValue` ở trên ta khai báo trong thuộc tính `validations` như sau:  
