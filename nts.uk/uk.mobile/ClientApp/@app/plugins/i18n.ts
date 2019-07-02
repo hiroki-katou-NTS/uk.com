@@ -1,6 +1,9 @@
 import { obj, dom, storage } from '@app/utils';
 import { Vue, VueConstructor, moment } from '@app/provider';
 
+import 'moment/locale/ja';
+import 'moment/locale/vi';
+
 const style = dom.create('style', {
     type: 'text/css',
     rel: 'stylesheet',
@@ -59,14 +62,15 @@ const language = new Vue({
             immediate: true,
             handler(lg: string) {
                 if (lg === 'jp') {
+                    // update locale of moment
+                    moment.locale('ja');
+                    
                     document.head.appendChild(style);
-                    // update locale of moment
-                    moment.updateLocale('ja', { weekdays: ['月', '火', '水', '木', '金', '土', '日'] });
-
                 } else if (document.head.contains(style)) {
-                    document.head.removeChild(style);
                     // update locale of moment
-                    moment.updateLocale(lg, { weekdays: lg !== 'vi' ? [] : ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'] });
+                    moment.locale(lg);
+
+                    document.head.removeChild(style);
                 }
             }
         },
