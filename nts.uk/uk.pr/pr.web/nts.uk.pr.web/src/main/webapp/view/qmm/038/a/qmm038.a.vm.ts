@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm038.a {
     import block = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
     import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export module viewmodel {
 
@@ -10,7 +11,7 @@ module nts.uk.pr.view.qmm038.a {
             statementItems: Array<DataScreen> = [];
             ccg001ComponentOption: GroupOption = null;
             baseDate: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM/DD"));
-            giveCurrTreatYear: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM"));
+            giveCurrTreatYear: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM"));
             employeeIds: Array<any>;
             numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", {required: true});
             dataUpdate: Array<UpdateEmployee> = [];
@@ -19,7 +20,7 @@ module nts.uk.pr.view.qmm038.a {
                 let self = this;
 
                 // CCG001
-                self.ccg001ComponentOption = <GroupOption>{
+                self.ccg001ComponentOption = {
                     /** Common properties */
                     systemType: 3,
                     showEmployeeSelection: true,
@@ -32,9 +33,9 @@ module nts.uk.pr.view.qmm038.a {
                     periodFormatYM: false,
 
                     /** Required parameter */
-                    baseDate: moment().format("YYYY/MM/DD"),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+                    baseDate: moment().toISOString(),
+                    periodStartDate: null,
+                    periodEndDate: null,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
@@ -162,12 +163,17 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
-                block.invisible();
+                if ($('#A2_3').ntsError('hasError')) {
+                    dialog.alertError({messageId:'MsgQ_257'});
+                    $('#A2_3').focus();
+                    return;
+                }
                 let command = {
                     employeeIds: self.employeeIds,
                     baseDate: self.baseDate(),
                     giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                 };
+                block.invisible();
                 service.findByEmployee(command).done(function (response) {
                     self.statementItems = [];
                     if(response && response.length) {
@@ -281,6 +287,8 @@ module nts.uk.pr.view.qmm038.a {
         showWorktype?: boolean; // 勤種条件
         isMutipleCheck?: boolean; // 選択モード
         isTab2Lazy?: boolean;
+        showOnStart?: boolean;
+        tabindex?: number;
 
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -296,13 +304,20 @@ module nts.uk.pr.view.qmm038.a {
         }
     }
 
+    export interface EmployeeSearchDto {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        affiliationId: string;
+        affiliationName: string;
+    }
+
     export interface Ccg001ReturnedData {
-        employeeId: string; // 基準日
-        employeeCode: string; // 社員コード
-        businessName: string; // ビジネスネーム
-        departmentName: string; // 所属部門
-        employmentName: string; // 所属雇用
-        averageWage: string; // 所属雇用
+        baseDate: string; // 基準日
+        closureId?: number; // 締めID
+        periodStart: string; // 対象期間（開始)
+        periodEnd: string; // 対象期間（終了）
+        listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
 }
