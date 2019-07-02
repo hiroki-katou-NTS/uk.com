@@ -23168,6 +23168,7 @@ var nts;
                                 _copie = true;
                             _$grid.mGrid("option", "errOccurred", self.errorOccurred);
                             _$grid.mGrid("option", "errResolved", self.errorResolved);
+                            _$grid.mGrid("option", "errDismissed", self.errorDismissed);
                         }
                     };
                     /**
@@ -28172,7 +28173,7 @@ var nts;
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }
-                                    txt.innerHTML = content;
+                                    txt.innerHTML = _.isNil(content) ? "" : content;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                     $.data($cell, v.DATA, val);
                                 }
@@ -28279,7 +28280,7 @@ var nts;
                                         date = null;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                                     $.data($cell, v.DATA, date);
-                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
+                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? "" : mDate._i)) : txt;
                                 }
                             }
                             return idx;
@@ -28541,7 +28542,7 @@ var nts;
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
                         },
-                        validate: function (lock) {
+                        validate: function (lock, check) {
                             var errors = [];
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef)
@@ -28549,8 +28550,8 @@ var nts;
                                 _.forEach(_mafollicle[k].dataSource, function (data, i) {
                                     _.forEach(_cstifle(), function (c) {
                                         var validator = _validators[c.key];
-                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; })
-                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock; })))
+                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; }) || (_.isFunction(check) && !check(data))
+                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock || st === color.Disable; })))
                                             return;
                                         var res = validator.probe(data[c.key], data[_pk]);
                                         if (res && !res.isValid) {
@@ -30095,6 +30096,10 @@ var nts;
                                 if (!result.isValid) {
                                     khl.set(cell, result.errorMessage);
                                 }
+                                if (khl._infobulle) {
+                                    ti.remove(khl._infobulle);
+                                    dkn.closeDD(khl._infobulle, true);
+                                }
                             }
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
@@ -30151,6 +30156,10 @@ var nts;
                                     khl.clear(cell);
                                     if (!result.isValid) {
                                         khl.set(cell, result.errorMessage);
+                                    }
+                                    if (khl._infobulle) {
+                                        ti.remove(khl._infobulle);
+                                        dkn.closeDD(khl._infobulle, true);
                                     }
                                 }
                                 formatted = su.format(pointCol[0], c);
@@ -32709,10 +32718,18 @@ var nts;
                         var removed = _.remove(errors, function (e) {
                             return rowId === e.rowId && key === e.columnKey;
                         });
-                        if (removed.length > 0 && errors.length === 0) {
-                            var resolved = _$grid.mGrid("option", "errResolved");
-                            if (_.isFunction(resolved)) {
-                                resolved();
+                        if (removed.length > 0) {
+                            if (errors.length === 0) {
+                                var resolved = _$grid.mGrid("option", "errResolved");
+                                if (_.isFunction(resolved)) {
+                                    resolved();
+                                }
+                            }
+                            else {
+                                var dismiss = _$grid.mGrid("option", "errDismissed");
+                                if (_.isFunction(dismiss)) {
+                                    dismiss();
+                                }
                             }
                         }
                     }
@@ -33184,6 +33201,23 @@ var nts;
                         return cloneArr;
                     }
                     ti.cloneArray = cloneArray;
+                    function forEach(arr, loop) {
+                        if (_.isNil(arr))
+                            return;
+                        if (_.isObject(arr) && !_.isArray(arr)) {
+                            var keys = _.keys(arr);
+                            for (var i = 0; i < keys.length; i++) {
+                                if (loop(arr[keys[i]], keys[i]) === false)
+                                    break;
+                            }
+                            return;
+                        }
+                        for (var i = 0; i < arr.length; i++) {
+                            if (loop(arr[i], i) === false)
+                                break;
+                        }
+                    }
+                    ti.forEach = forEach;
                     function isZero(value, name) {
                         var col = _secColumn[name];
                         if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
