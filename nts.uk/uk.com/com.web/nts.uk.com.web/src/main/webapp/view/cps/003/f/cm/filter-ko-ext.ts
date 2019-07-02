@@ -58,7 +58,7 @@ module nts.custombinding {
                                 columns: [
                                     { prop: 'optionText', length: 10 }
                                 ]}"></div>`,
-                    button: `<button id="button-filter" data-bind="text: i18n('CPS001_106'), enable: enable, click: openDialog"></button>
+                    button: `<button id="button-filter" data-bind="text: i18n('CPS003_87'), enable: enable, click: openDialog"></button>
                              <label id="button-filter-value" class="value-text readonly" data-bind="html: textValue"></label>`
                 }, vm = {
                     i18n: nts.uk.resource.getText,
