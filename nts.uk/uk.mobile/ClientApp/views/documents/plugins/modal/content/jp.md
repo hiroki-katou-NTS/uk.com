@@ -44,6 +44,108 @@ declare interface IModalOptions {
     opacity?: number;
 }
 ```
+**Some sample `modal-header`**
+> default header
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+    </div>
+</div>
+
+```html
+<div class="modal-header rounded-0 d-block p-0">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+            <span>{{ 'dialog' | i18n }}</span>
+        </h4>
+    </div>
+</div>
+```
+> modal-header with searchbox
+
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+    </div>
+    <div class="uk-bg-headline p-2 pb-1">
+        <label>resources_id</label>
+        <div class="form-group mb-1 bg-grey-100">
+            <div class="input-group input-group-transparent input-group-search">
+                <div class="input-group-append">
+                    <span class="input-group-text fa fa-search"></span>
+                </div>
+                <input placeholder="resources_id" type="text" class="form-control">
+            </div>
+        </div>
+    </div>
+</div>
+
+```html
+<div class="modal-header rounded-0 d-block p-0">
+    <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+            <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+            <span>{{ 'dialog' | i18n }}</span>
+        </h4>
+    </div>
+    <div class="uk-bg-headline p-2 pb-1">
+        <label>{{ 'resources_id' | i18n }}</label>
+        <nts-search-box class="bg-grey-100" placeholder="resources_id" />
+    </div>
+</div>
+```
+> modal-header has menu
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2 row m-0">
+        <h4 class="modal-title text-white col-4 p-0">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+        <div class="text-right col-8 p-0">
+            <button class="btn btn-link text-white">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-link dropdown-toggle btn-no-content text-white">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-item">New</li>
+                <li class="dropdown-item">Delete</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+```html
+<div class="modal-header rounded-0 d-block p-0 mb-2">
+    <div class="uk-bg-teal p-2 row m-0">
+        <h4 class="modal-title text-white col-4 p-0">
+            <i class="fas fa-angle-left mr-1"></i>
+            <span>dialog</span>
+        </h4>
+        <div class="text-right col-8 p-0">
+            <button class="btn btn-link text-white">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-link dropdown-toggle btn-no-content text-white">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-item">New</li>
+                <li class="dropdown-item">Delete</li>
+            </ul>
+        </div>
+    </div>
+</div>
+```
+
 ##### 4. 特別なモーダル
 
 <span style="color: #1ba4d6">**information**</span>, 

@@ -177,7 +177,6 @@ export class ModalComponent extends Vue {
 </div>
 ```
 
-
 ##### 3. Hộp thông báo.
 
 Có thể khởi tạo modal ở các dạng hiển thị đặc biệt như 
