@@ -16,7 +16,7 @@ HTMLで`v-model="yearMonth"`を使えるためViewModelの中は`yearMonth`と�
 export class ViewModel extends Vue {
     *
     *
-    yearMonth: string = '201905';
+    public yearMonth: number = 201905;
     *
     *
 }

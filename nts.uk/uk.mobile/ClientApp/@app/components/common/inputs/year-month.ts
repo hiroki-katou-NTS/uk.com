@@ -42,11 +42,11 @@ export class YearMonthComponent extends InputComponent {
     // Functions
 
     private get year(): Number {
-        return this.value ? +this.value.slice(0, 4) : null;
+        return this.value ? + Math.floor(this.value / 100) : null;
     }
 
     private get month(): Number {
-        return this.value ? +this.value.slice(4, 6) : null;
+        return this.value ? + Math.floor(this.value % 100) : null;
     }
 
     get selected() {
@@ -76,7 +76,7 @@ export class YearMonthComponent extends InputComponent {
                 } else if (select === null) {
                     self.$emit('input', null);
                 } else {
-                    self.$emit('input', select.year + this.padStart2(select.month));
+                    self.$emit('input', select.year * 100 + select.month);
                 }
 
             });

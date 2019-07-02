@@ -27,11 +27,11 @@ import { component } from '@app/core/component';
     }
 })
 export class DocumentsControlsInputYearMonthComponent extends Vue {
-    public yearMonth1: string = null;
+    public yearMonth1: number = null;
 
-    public yearMonth2: string = null;
+    public yearMonth2: number = null;
 
-    public yearMonth3: string = null;
+    public yearMonth3: number = null;
 
     public validate(): void {
         this.$validate();

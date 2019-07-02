@@ -10,13 +10,13 @@
 ## 3. Khai báo trong index.ts
 
 Khai báo một biến 'yearMonth' trong class chính để bind vào giá trị 'yearMonth' trong v-model="yearMonth"  
-Giá trị của yearMonth là kiểu string, có dạng 'yyyymm'.
+Giá trị của yearMonth là kiểu **number**, có dạng 'yyyymm'.
 
 ```ts
 export class ViewModel extends Vue {
     *
     *
-    yearMonth: string = '201905';
+    public yearMonth: number = 201905;
     *
     *
 }
