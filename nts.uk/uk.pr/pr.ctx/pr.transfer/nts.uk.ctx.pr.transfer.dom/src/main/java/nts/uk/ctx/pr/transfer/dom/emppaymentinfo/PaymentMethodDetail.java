@@ -118,14 +118,11 @@ public class PaymentMethodDetail {
 		 * 支払按分区分 = 全額 のデータが必ず1件存在する #MsgQ_165
 		 *  （存在する範囲は履歴ID＆利用区分 = 利用する 内）
 		 */
-		if (listPaymentMethod.isEmpty()) {
-			throw new BusinessException("MsgQ_165");
-		}
 		List<PaymentMethodDetail> fullAmountData = listPaymentMethod.stream()
 				.filter(p -> p.getPaymentProportionAtr().isPresent()
 						&& p.getPaymentProportionAtr().get() == PaymentProportionAtr.FULL_AMOUNT)
 				.collect(Collectors.toList());
-		if (fullAmountData.size() != 1)
+		if (fullAmountData.isEmpty())
 			throw new BusinessException("MsgQ_165");
 		/**
 		 * 支給優先順位：重複不可 #MsgQ_164
