@@ -9,6 +9,9 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.transfer.dom.adapter.employment.EmploymentHistImport;
+import nts.uk.ctx.pr.transfer.dom.adapter.employment.TransEmploymentHistAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.wageprovision.processdatecls.CurrProcessYmAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.wageprovision.processdatecls.CurrProcessYmImport;
 import nts.uk.ctx.pr.transfer.dom.bank.BankBranchRepository;
@@ -49,6 +52,9 @@ public class TransferSourceBankFinder {
 
 	@Inject
 	private EmployeePaymentMethodRepository empPayMethodRepo;
+	
+	@Inject
+	private TransEmploymentHistAdapter employmentAdapter;
 
 	public List<TransferSourceBankDto> getAll() {
 		String companyId = AppContexts.user().companyId();
@@ -70,31 +76,34 @@ public class TransferSourceBankFinder {
 
 	public void checkBeforeDelete(String code) {
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 		Optional<CurrProcessYmImport> optCurProcYm = currProcYmAdapter.getCurrentSalaryProcessYm(companyId, 1);
 		if (optCurProcYm.isPresent()) {
-			Optional<EmployeeSalaryPaymentInfor> optEmpSalInfo = empPayInfoRepo.getEmpSalPaymentInfo(employeeId);
-			if (optEmpSalInfo.isPresent()) {
-				List<EmployeeSalaryPaymentMethod> lstSalPayMethod = empPayMethodRepo
-						.getSalPayMethodByHistoryId(optEmpSalInfo.get().items().stream()
-								.filter(h -> h.contains(optCurProcYm.get().getCurrentYm())).map(h -> h.identifier())
-								.collect(Collectors.toList()))
-						.stream().filter(m -> checkPaymentMethodDetailOfSelectedBrach(m, code))
-						.collect(Collectors.toList());
-				if (!lstSalPayMethod.isEmpty()) {
-					throw new BusinessException("Msg_17", "QMM006_50");
+			List<EmploymentHistImport> lstEmpHist = employmentAdapter.findByCidAndDate(companyId, GeneralDate.today());
+			for (EmploymentHistImport empHist : lstEmpHist) {
+				String employeeId = empHist.getEmployeeId();
+				Optional<EmployeeSalaryPaymentInfor> optEmpSalInfo = empPayInfoRepo.getEmpSalPaymentInfo(employeeId);
+				if (optEmpSalInfo.isPresent()) {
+					List<EmployeeSalaryPaymentMethod> lstSalPayMethod = empPayMethodRepo
+							.getSalPayMethodByHistoryId(optEmpSalInfo.get().items().stream()
+									.filter(h -> h.contains(optCurProcYm.get().getCurrentYm())).map(h -> h.identifier())
+									.collect(Collectors.toList()))
+							.stream().filter(m -> checkPaymentMethodDetailOfSelectedBrach(m, code))
+							.collect(Collectors.toList());
+					if (!lstSalPayMethod.isEmpty()) {
+						throw new BusinessException("Msg_17", "QMM006_50");
+					}
 				}
-			}
-			Optional<EmployeeBonusPaymentInfor> optEmpBonusInfo = empPayInfoRepo.getEmpBonusPaymentInfo(employeeId);
-			if (optEmpBonusInfo.isPresent()) {
-				List<EmployeeBonusPaymentMethod> lstBonusPayMethod = empPayMethodRepo
-						.getBonusPayMethodByHistoryId(optEmpBonusInfo.get().items().stream()
-								.filter(h -> h.contains(optCurProcYm.get().getCurrentYm())).map(h -> h.identifier())
-								.collect(Collectors.toList()))
-						.stream().filter(m -> checkPaymentMethodDetailOfSelectedBrach(m, code))
-						.collect(Collectors.toList());
-				if (!lstBonusPayMethod.isEmpty()) {
-					throw new BusinessException("Msg_17", "QMM006_50");
+				Optional<EmployeeBonusPaymentInfor> optEmpBonusInfo = empPayInfoRepo.getEmpBonusPaymentInfo(employeeId);
+				if (optEmpBonusInfo.isPresent()) {
+					List<EmployeeBonusPaymentMethod> lstBonusPayMethod = empPayMethodRepo
+							.getBonusPayMethodByHistoryId(optEmpBonusInfo.get().items().stream()
+									.filter(h -> h.contains(optCurProcYm.get().getCurrentYm())).map(h -> h.identifier())
+									.collect(Collectors.toList()))
+							.stream().filter(m -> checkPaymentMethodDetailOfSelectedBrach(m, code))
+							.collect(Collectors.toList());
+					if (!lstBonusPayMethod.isEmpty()) {
+						throw new BusinessException("Msg_17", "QMM006_50");
+					}
 				}
 			}
 		}

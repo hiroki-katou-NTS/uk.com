@@ -66,11 +66,6 @@ public class PaymentMethodDetail {
 		super();
 		this.useAtr = PaymentUseAtr.of(useAtr);
 		this.paymentMethodNo = paymentMethodNo;
-		if (this.paymentMethodNo == 1) {
-			useAtr = true;
-			paymentPriority = null;
-			paymentProportionAtr = null;
-		}
 		if (useAtr) {
 			this.paymentMethod = Optional
 					.ofNullable(paymentMethodTransfer == null ? null : SalaryPaymentMethod.of(paymentMethodTransfer));
@@ -113,6 +108,11 @@ public class PaymentMethodDetail {
 		}
 	}
 
+	/**
+	 * ONLY use by 社員給与支払方法 (Employee salary payment method), 社員賞与支払方法 (Employee bonus payment method)
+	 * NOT use by 社員還付金支払方法 (Employee Refund Payment Method)
+	 * @param listPaymentMethod
+	 */
 	public static void validate(List<PaymentMethodDetail> listPaymentMethod) {
 		/**
 		 * 支払按分区分 = 全額 のデータが必ず1件存在する #MsgQ_165
