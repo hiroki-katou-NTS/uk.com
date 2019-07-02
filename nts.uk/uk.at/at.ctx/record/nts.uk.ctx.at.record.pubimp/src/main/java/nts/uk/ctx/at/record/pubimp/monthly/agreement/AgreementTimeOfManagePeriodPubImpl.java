@@ -2,9 +2,11 @@ package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -119,21 +121,26 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 			YearMonthPeriod period) {
 		
 		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, period.yearMonthsBetween());
-		Map<String, Map<YearMonth, AttendanceTimeMonth>> result = new HashMap<>();
-		List<String> employeeIdsError = srcAgreementTimeList.stream().map( e->e.getEmployeeId()).distinct().collect(Collectors.toList());
+//		Map<String, Map<YearMonth, AttendanceTimeMonth>> result = new HashMap<>();
+//		List<String> employeeIdsError = srcAgreementTimeList.stream().map( e->e.getEmployeeId()).distinct().collect(Collectors.toList());
 		
-		for(String employeeId: employeeIdsError) {			
-			Map<YearMonth, AttendanceTimeMonth> mapAttendanceTime = new HashMap<>();
-			val agreementTimeList = srcAgreementTimeList.stream().filter( e->e.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
-			
-			for (val srcAgreementTime : agreementTimeList){
-				mapAttendanceTime.put(srcAgreementTime.getYearMonth(),
-						srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
-			}
-			
-			result.put(employeeId, mapAttendanceTime);
-		}
+		Map<String, Map<YearMonth, AttendanceTimeMonth>> data =  srcAgreementTimeList.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+				Collectors.collectingAndThen(Collectors.toList(), 
+						list -> list.stream().collect(Collectors.toMap(c -> c.getYearMonth(), 
+									c -> c.getAgreementTime().getAgreementTime().getAgreementTime())))));
+		
+//		for(String employeeId: employeeIdsError) {			
+//			Map<YearMonth, AttendanceTimeMonth> mapAttendanceTime = new HashMap<>();
+//			val agreementTimeList = srcAgreementTimeList.stream().filter( e->e.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
+//			
+//			for (val srcAgreementTime : agreementTimeList){
+//				mapAttendanceTime.put(srcAgreementTime.getYearMonth(),
+//						srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
+//			}
+//			
+//			result.put(employeeId, mapAttendanceTime);
+//		}
 
-		return result;
+		return data;
 	}
 }
