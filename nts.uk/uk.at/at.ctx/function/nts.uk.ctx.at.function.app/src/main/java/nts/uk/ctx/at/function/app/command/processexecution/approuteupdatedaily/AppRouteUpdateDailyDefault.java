@@ -106,7 +106,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			return checkError1552;
 >>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		}
-		System.out.println("更新処理自動実行_承認ルート更新（日次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		log.info("更新処理自動実行_承認ルート更新（日次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		
 		/**ドメインモデル「就業締め日」を取得する(lấy thông tin domain ル「就業締め日」)*/
 		List<Closure> listClosure = closureRepository.findAllActive(procExec.getCompanyId(),UseClassification.UseClass_Use);
@@ -196,10 +196,14 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		
 
 		log.info("承認ルート更新(日別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
+<<<<<<< HEAD
 		System.out.println("更新処理自動実行_承認ルート更新（日次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		if(checkStop.get()) {
 			return true;
 		}
+=======
+		log.info("更新処理自動実行_承認ルート更新（日次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+>>>>>>> 036519e... fixbug kbt002 :#108239 ver 2
 		boolean checkError = false;
 		/*終了状態で「エラーあり」が返ってきたか確認する*/
 		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
