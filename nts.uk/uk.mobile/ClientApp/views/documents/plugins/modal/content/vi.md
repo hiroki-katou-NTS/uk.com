@@ -180,9 +180,9 @@ export class ModalComponent extends Vue {
 ##### 3. Hộp thông báo.
 
 Có thể khởi tạo modal ở các dạng hiển thị đặc biệt như 
-<span style="color: #1ba4d6">**information**</span>, 
-<span style="color: #ffaa00">**warning**</span>, 
-<span style="color: #ff1c30">**error**</span>, 
+<span class="text-info">**information**</span>,&nbsp;
+<span class="text-warning">**warning**</span>,&nbsp;
+<span class="text-danger">**error**</span>,&nbsp;
 **confirm** bằng các cách sau.
 ``` typescript
 $modal.info('Nội dung message');
