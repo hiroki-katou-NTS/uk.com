@@ -108,6 +108,8 @@ td.red-color {
 tr.blue-color {
 	color: #0000FF;
 }
-.nts-help-button-image{
-	width:303px !important;
+
+.nts-help-button-image span {
+	font-size: 0.99rem;
 }
+
