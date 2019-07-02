@@ -4,13 +4,14 @@ UKモバイルはこれらのフィルタを提供している：
 - `timewd`: 日区分付き時刻
 - `timept`: 時刻
 - `timedr`: 時間
-
+- `yearmonth`: 対象月
 
 フィルタのインプットの種類はフィルタによって違う：
 - `date`: `Date`
 - `timewd`: `number`
 - `timept`: `number`
 - `timedr`: `number`
+- `yearmonth`: `number`
 
 **HTML Code:**
 ```html
@@ -26,6 +27,10 @@ UKモバイルはこれらのフィルタを提供している：
     <!-- Output: -23:50 -->
     <span>{{ -10 | timedr }}</span>
     <!-- Output: -00:10 -->
+    <span>{{ 201904 | yearmonth }}</span>
+    <!-- Output: 2019/04 -->
+    <span>{{ 201904 | yearmonth('YYYY-MM') }}</span>
+    <!-- Output: 2019-04 -->
     
 </div>
 ```

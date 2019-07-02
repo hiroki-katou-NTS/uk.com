@@ -4,6 +4,7 @@ UK mobile cung cấp một số filter sau:
 - `timewd`: Thời điểm kèm theo ngày
 - `timept`: Thời điểm
 - `timedr`: Khoảng thời gian
+- `timedr`: Dữ liệu tháng năm
 
 Developer cần chỉ định `filter` tương ứng với giá trị cần hiển thị thì giá trị hiển thị sẽ được hiển thị đúng với format của hệ thống.
 
@@ -12,6 +13,7 @@ Developer cần chỉ định `filter` tương ứng với giá trị cần hi�
 - `timewd`: `number`
 - `timept`: `number`
 - `timedr`: `number`
+- `yearmonth`: `number`
 
 **HTML Code:**
 ```html
@@ -27,6 +29,10 @@ Developer cần chỉ định `filter` tương ứng với giá trị cần hi�
     <!-- kết quả dạng: -23:50 -->
     <span>{{ -10 | timedr }}</span>
     <!-- kết quả dạng: -00:10 -->
+    <span>{{ 201904 | yearmonth }}</span>
+    <!-- kết quả dạng: 2019/04 -->
+    <span>{{ 201904 | yearmonth('YYYY-MM') }}</span>
+    <!-- kết quả dạng: 2019-04 -->
     
 </div>
 ```

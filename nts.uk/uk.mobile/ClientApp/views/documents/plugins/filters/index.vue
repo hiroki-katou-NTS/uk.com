@@ -24,13 +24,21 @@
             <div class="col-6 col-md-4" style="line-height: 35px">
                 {{ -10 | timept }}
             </div>
-        </div>     
+        </div>
         <div class="row mb-2">
             <div class="col-6 col-md-3">
                 <nts-label>{{ 'time_duration' | i18n }}</nts-label>
             </div>
             <div class="col-6 col-md-4" style="line-height: 35px">
                 {{ -10 | timedr }}
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-6 col-md-3">
+                <nts-label>{{ 'year_month' | i18n }}</nts-label>
+            </div>
+            <div class="col-6 col-md-4" style="line-height: 35px">
+                {{ 201901 | yearmonth('YYYY - MM') }}
             </div>
         </div>
 
