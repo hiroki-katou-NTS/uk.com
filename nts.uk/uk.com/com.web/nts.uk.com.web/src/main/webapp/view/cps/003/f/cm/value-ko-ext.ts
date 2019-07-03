@@ -155,7 +155,7 @@ module nts.custombinding {
                                     { prop: 'optionText', length: 10 },
                                 ]}"></div>
                             <button data-bind="ntsHelpButton: { textId: 'CPS003_118', position: 'bottom right' }">？</button>`,
-                    button: `<button id="buttonWt-value" data-bind="text: i18n('"CPS003_87"'), enable: true, click: openDialog"></button>
+                    button: `<button id="buttonWt-value" data-bind="text: i18n('CPS003_87'), enable: true, click: openDialog"></button>
                              <label class="value-text readonly" data-bind="html: textValue"></label>`,
                     buttonWt: `<button id="buttonWt-value" data-bind="text: i18n('CPS003_87'), enable: true, click: openDialog"></button>
                                <div class="worktime">
