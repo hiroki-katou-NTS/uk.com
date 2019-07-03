@@ -26,7 +26,7 @@ export class YearMonthComponent extends InputComponent {
         let self = this,
             { year, month } = self;
 
-        if (!self.value) {
+        if (_.isNil(self.value)) {
             return this.$i18n('year_month', ['----', '--']);
         }
 
