@@ -30,7 +30,8 @@ const resources: {
         'info': '情報',
         'error': 'エラー',
         'confirm': '確認',
-        'filter_menu': 'Enter keyword for filter menu'
+        'filter_menu': 'Enter keyword for filter menu',
+        'year_month': '{0}年{1}月'
     },
     vi: {
         'jp': '日本',
@@ -47,7 +48,8 @@ const resources: {
         'info': 'Thông báo',
         'error': 'Cảnh báo lỗi',
         'confirm': 'Xác nhận',
-        'filter_menu': 'Nhập ký tự bất kỳ để lọc menu'
+        'filter_menu': 'Nhập ký tự bất kỳ để lọc menu',
+        'year_month': 'tháng {1} năm {0}'
     }
 };
 

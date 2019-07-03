@@ -105,15 +105,15 @@ const vm = Vue
                         })
                         .$on('close', () => {
                             resolve();
-                            focused.focus();
+                            focused && focused.focus();
                         })
                         .$on('remove', () => {
                             resolve(null);
-                            focused.focus();
+                            focused && focused.focus();
                         })
                         .$on('finish', (value: any) => {
                             resolve(value);
-                            focused.focus();
+                            focused && focused.focus();
                         });
                 });
             };
