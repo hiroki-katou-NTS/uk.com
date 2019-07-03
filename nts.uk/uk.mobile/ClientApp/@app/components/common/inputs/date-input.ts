@@ -71,7 +71,7 @@ class DateComponent extends InputComponent {
             }, {
                 title: self.titlePicker({ year, month, date }),
                 required: self.constraints && self.constraints.required
-            }).then((select: { year: number; month: number; date: number; }) => {
+            }).then((select: ISelected) => {
                 if (select === undefined) {
 
                 } else if (select === null) {
@@ -89,7 +89,7 @@ class DateComponent extends InputComponent {
 Vue.component('nts-date-input', DateComponent);
 
 interface ISelected {
-    [key: string]: any;
+    [key: string]: number;
 }
 
 interface IDataSource {
