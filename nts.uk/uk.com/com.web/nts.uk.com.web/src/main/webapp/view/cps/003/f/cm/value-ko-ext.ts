@@ -574,8 +574,6 @@ module nts.custombinding {
                                 vm.mode('0');
                                 ko.utils.setHtml(element, template.amount);
                                 vm.options.grouplength = 3;
-                                vm.options.currencyformat = "JPY";
-                                vm.options.unitID = "JPY";
                             }
 
                             vm.options.decimallength = itemData.decimalLength;
