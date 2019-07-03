@@ -31,7 +31,8 @@ const resources: {
         'error': 'エラー',
         'confirm': '確認',
         'filter_menu': 'Enter keyword for filter menu',
-        'year_month': '{0}年{1}月'
+        'year_month': '{0}年{1}月',
+        'nts_date_format': '{0}年{1}月{2}日'
     },
     vi: {
         'jp': '日本',
@@ -49,7 +50,8 @@ const resources: {
         'error': 'Cảnh báo lỗi',
         'confirm': 'Xác nhận',
         'filter_menu': 'Nhập ký tự bất kỳ để lọc menu',
-        'year_month': 'tháng {1} năm {0}'
+        'year_month': 'tháng {1} năm {0}',
+        'nts_date_format': 'ngày {2} tháng {1} năm {0}'
     }
 };
 
