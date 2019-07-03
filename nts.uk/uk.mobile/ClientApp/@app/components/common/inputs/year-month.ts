@@ -8,7 +8,7 @@ export class YearMonthComponent extends InputComponent {
 
     private get dataSource() {
         return {
-            year: _.range(1900, 9999, 1).map((value: number) => ({ value, text: `${value}` })),
+            year: _.range(1900, 10000, 1).map((value: number) => ({ value, text: `${value}` })),
             month: _.range(1, 12, 1).map((value: number) => ({ value, text: _.padStart(`${value}`, 2, '0') }))
         };
     }
