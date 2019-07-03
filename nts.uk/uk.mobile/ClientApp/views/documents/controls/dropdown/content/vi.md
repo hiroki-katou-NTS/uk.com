@@ -7,7 +7,7 @@
 - `name` là binding nhận vào một `string`, chỉ định rõ tên của component là gì (*phục vụ cho trường hợp hiển thị nhãn và lỗi*).
 - `v-model` là binding liên kết với `model` khai báo trong `view-model`, thông qua binding này, mọi thay đổi giữa `view` và `model` sẽ được đồng bộ.
 
-> **Chú ý:** `nts-dropdown` được render thành `select` tag nên component này sử dụng các tags `option` và `optgroup` tương tự như `select` tag. Chi tiết cách sử dụng xem ví dụ html bên dưới.
+> **Chú ý:** `nts-dropdown` được render thành `select` tag nên component này sử dụng các tags `option` và `optgroup` tương tự như `select` tag và giá trị bind vào `value` của `option` tag là kiểu string. Chi tiết cách sử dụng xem ví dụ html bên dưới.
 
 ```html
 <nts-dropdown name="DropDown Item" v-model="selectedValue">
@@ -24,20 +24,20 @@
 ```typescript
 export class ViewModel extends Vue {
     // model được bind vào nts-dropdown
-    selectedValue: number = 3;
+    selectedValue: string = '3';
     
     // datasource để bind vào các option
     dropdownList: Array<Object> = [{
-        code: 1,
+        code: '1',
         text: "The First"
     }, {
-        code: 2,
+        code: '2',
         text: "The Second"
     }, {
-        code: 3,
+        code: '3',
         text: "The Third"
     }, {
-        code: 4,
+        code: '4',
         text: "The Fourth"
     },{
         code: 5,

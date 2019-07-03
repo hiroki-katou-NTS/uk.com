@@ -17,21 +17,21 @@ import { component } from '@app/core/component';
 export class DocumentsControlsDropdownComponent extends Vue {
 
     public dropdownList: Array<Object> = [{
-        code: 1,
+        code: '1',
         text: 'The First'
     }, {
-        code: 2,
+        code: '2',
         text: 'The Second'
     }, {
-        code: 3,
+        code: '3',
         text: 'The Third'
     }, {
-        code: 4,
+        code: '4',
         text: 'The Fourth'
     }, {
-        code: 5,
+        code: '5',
         text: 'The Fifth'
     }];
 
-    public selectedValue: number = 3;
+    public selectedValue: string = '3';
 }

@@ -19,23 +19,23 @@
 ```typescript
 export class ViewModel extends Vue {
     // nts-dropdownにバインドされる値
-    selectedValue: number = 3;
+    selectedValue: string = '3';
     
     // 各オプションにバインドされるデータソース
     dropdownList: Array<Object> = [{
-        code: 1,
+        code: '1',
         text: "The First"
     }, {
-        code: 2,
+        code: '2',
         text: "The Second"
     }, {
-        code: 3,
+        code: '3',
         text: "The Third"
     }, {
-        code: 4,
+        code: '4',
         text: "The Fourth"
     },{
-        code: 5,
+        code: '5',
         text: "The Fifth"
     }];
 }
