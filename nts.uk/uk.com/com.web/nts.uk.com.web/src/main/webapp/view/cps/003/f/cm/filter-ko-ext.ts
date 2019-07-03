@@ -214,7 +214,7 @@ module nts.custombinding {
                     vm.required = itemData.required;
 
                     // bind items to dropdownList (if avaiable)
-                    vm.itemOptions(itemData.selectionItem || []);
+                    vm.itemOptions(itemData.selectionItems || []);
 
                     // clean binding
                     ko.cleanNode(element);
