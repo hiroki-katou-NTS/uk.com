@@ -155,9 +155,9 @@ module nts.custombinding {
                                     { prop: 'optionText', length: 10 },
                                 ]}"></div>
                             <button data-bind="ntsHelpButton: { textId: 'CPS003_118', position: 'bottom right' }">？</button>`,
-                    button: `<button id="buttonWt-value" data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
+                    button: `<button id="buttonWt-value" data-bind="text: i18n('"CPS003_87"'), enable: true, click: openDialog"></button>
                              <label class="value-text readonly" data-bind="html: textValue"></label>`,
-                    buttonWt: `<button id="buttonWt-value" data-bind="text: i18n('CPS001_106'), enable: true, click: openDialog"></button>
+                    buttonWt: `<button id="buttonWt-value" data-bind="text: i18n('CPS003_87'), enable: true, click: openDialog"></button>
                                <div class="worktime">
                                  <label class="value-text readonly" data-bind="html: textValue"></label>
                                  <label class="value-text readonly" data-bind="html: textWtValue1"></label>
@@ -366,7 +366,7 @@ module nts.custombinding {
                             } else {
                                 if (mode == '0') {
                                     if (value && !isNaN(Number(value))) {
-                                        textView = Number(value).toLocaleString('ja-JP', { useGrouping: true });
+                                        textView = Number(value).toLocaleString('ja-JP', { useGrouping: true })+ vm.i18n('CPS003_122');
                                     }
                                 } else {
                                     if (value2 && !isNaN(Number(value2))) {
@@ -574,7 +574,6 @@ module nts.custombinding {
                                 vm.mode('0');
                                 ko.utils.setHtml(element, template.amount);
                                 vm.options.grouplength = 3;
-                                vm.options.currencyformat = "JPY";
                             }
 
                             vm.options.decimallength = itemData.decimalLength;
