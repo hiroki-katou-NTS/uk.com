@@ -18,7 +18,6 @@ import nts.uk.ctx.at.function.app.command.processexecution.ListLeaderOrNotEmpOut
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.transfereeperson.TransfereePerson;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
-import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.CreateperApprovalDailyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.OutputCreatePerAppDailyImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
@@ -31,9 +30,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoExec;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDailyRepository;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -41,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -69,12 +64,6 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 	
 	@Inject
 	private ListEmpAutoExec listEmpAutoExec;
-	
-	@Inject
-	private AppDataInfoDailyRepository appDataInfoDailyRepo;
-	
-	@Inject
-	private EmployeeManageAdapter employeeManageAdapter;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -113,7 +102,8 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		//取得した就業締め日の数(so du lieu 就業締め日 lay duoc)　＝　回数
-		for(Closure itemClosure :  listClosure) {
+		listClosure.forEach(itemClosure -> {
+			if(checkStop.get()) return;
 		//for(Closure closure : listClosure) {
 			log.info("承認ルート更新(日別) 締め: " + itemClosure.getClosureId());
 			/**締め開始日を取得する*/
@@ -133,20 +123,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			workplaceIdList.forEach(x -> {
 				workplaceIds.add(x.getWkpId());
 			});
-			List<String> listEmp = new ArrayList<>();
-			try {
-				listEmp = listEmpAutoExec.getListEmpAutoExec(companyId,
-						new DatePeriod(startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")),
-						procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
-						Optional.of(listClosureEmploymentCode));
-			} catch (Exception e) {
-				List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
-				for(String employeeId : listManagementId) {
-					appDataInfoDailyRepo.addAppDataInfoDaily(new AppDataInfoDaily(employeeId, execId, new ErrorMessageRC(TextResource.localize("Msg_1552"))));
-				}
-				break;
-			}
-			
+			List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, new DatePeriod(startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")), procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIds), Optional.of(listClosureEmploymentCode));
 			if(procExec.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
 				//通常実行の場合
 				/**「対象社員を取得する」で取得した社員IDを社員ID（List）とする*/
@@ -172,11 +149,13 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			if(checkStop.get()) return;
 			OutputCreatePerAppDailyImport check = createperApprovalDailyAdapter.createperApprovalDaily(procExec.getCompanyId(), procExecLog.getExecId(),
 					listEmp.stream().distinct().collect(Collectors.toList()), procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate(),closureData.getClosureEndDate());
-
-			listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check));
-		
-		
-		};
+			if(check.isCheckStop()) {
+				checkStop.set(true);
+				return;
+			}
+			
+			listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check.isCreateperApprovalDaily()));	
+		});
 		
 
 		log.info("承認ルート更新(日別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
