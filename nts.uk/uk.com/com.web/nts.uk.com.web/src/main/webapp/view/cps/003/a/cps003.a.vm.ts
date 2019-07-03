@@ -700,12 +700,23 @@ module cps003.a.vm {
         }
         
         saveWidth() {
-            let self = this, width = nts.uk.localStorage.getItem(nts.uk.request.location.current.rawUrl + "/grid"), items = [];
+            let self = this, width = nts.uk.localStorage.getItem(nts.uk.request.location.current.rawUrl + "/grid"), items = [], invalid;
             width.ifPresent(w => {
                 w = JSON.parse(w);
                 _.forEach(self.settings.perInfoData(), (info: IPersonInfoSetting) => {
                     let itemWidth = w && w.default && w.default[info.itemCD];
-                    if (!info.regulationAtr || _.isNil(itemWidth)) return; 
+                    if (!info.regulationAtr || _.isNil(itemWidth)) return;
+                    if (itemWidth < 20 || itemWidth > 9999) {
+                        let column = find(self.gridOptions.columns, c => c.key === info.itemCD);
+                        if (column) {
+                            let msg = nts.uk.resource.getMessage("Msg_1467", [ column.headerText ]);
+                            $("#grid").ntsError("set", msg, "Msg_1467");
+                            invalid = true;
+                        }
+                        
+                        return;
+                    }
+                     
                     items.push({ 
                         pInfoCategoryID: self.category.catId(), 
                         pInfoItemDefiID: info.perInfoItemDefID, 
@@ -714,7 +725,7 @@ module cps003.a.vm {
                     });
                 });
                 
-                if (items.length > 0) {
+                if (items.length > 0 && !invalid) {
                     cps003.a.service.push.setting({
                         personInfoItems: items
                     });
@@ -728,6 +739,8 @@ module cps003.a.vm {
                             self.settings.perInfoData(data.perInfoData);
                         }
                     });
+                    
+                    $("#grid").ntsError("clear");
                 }
             });
         }
