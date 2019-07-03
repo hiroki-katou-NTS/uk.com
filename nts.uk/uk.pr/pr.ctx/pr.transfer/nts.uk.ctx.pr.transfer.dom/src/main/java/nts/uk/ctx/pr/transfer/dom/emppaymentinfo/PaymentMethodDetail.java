@@ -66,11 +66,6 @@ public class PaymentMethodDetail {
 		super();
 		this.useAtr = PaymentUseAtr.of(useAtr);
 		this.paymentMethodNo = paymentMethodNo;
-		if (this.paymentMethodNo == 1) {
-			useAtr = true;
-			paymentPriority = null;
-			paymentProportionAtr = null;
-		}
 		if (useAtr) {
 			this.paymentMethod = Optional
 					.ofNullable(paymentMethodTransfer == null ? null : SalaryPaymentMethod.of(paymentMethodTransfer));
@@ -113,19 +108,21 @@ public class PaymentMethodDetail {
 		}
 	}
 
+	/**
+	 * ONLY use by 社員給与支払方法 (Employee salary payment method), 社員賞与支払方法 (Employee bonus payment method)
+	 * NOT use by 社員還付金支払方法 (Employee Refund Payment Method)
+	 * @param listPaymentMethod
+	 */
 	public static void validate(List<PaymentMethodDetail> listPaymentMethod) {
 		/**
 		 * 支払按分区分 = 全額 のデータが必ず1件存在する #MsgQ_165
 		 *  （存在する範囲は履歴ID＆利用区分 = 利用する 内）
 		 */
-		if (listPaymentMethod.isEmpty()) {
-			throw new BusinessException("MsgQ_165");
-		}
 		List<PaymentMethodDetail> fullAmountData = listPaymentMethod.stream()
 				.filter(p -> p.getPaymentProportionAtr().isPresent()
 						&& p.getPaymentProportionAtr().get() == PaymentProportionAtr.FULL_AMOUNT)
 				.collect(Collectors.toList());
-		if (fullAmountData.size() != 1)
+		if (fullAmountData.isEmpty())
 			throw new BusinessException("MsgQ_165");
 		/**
 		 * 支給優先順位：重複不可 #MsgQ_164
