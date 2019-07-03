@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthl
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,10 +16,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.CheckCreateperApprovalClosure;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
-import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.OutputCreatePerAppMonImport;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -68,13 +65,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	@Inject
 	private AppDataInfoMonthlyRepository appDataInfoMonthlyRepo;
 	
-	@Inject
-	private EmployeeManageAdapter employeeManageAdapter;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	@Override
-	public boolean checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	public OutputAppRouteMonthly checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
 		String companyId = AppContexts.user().companyId();
 		boolean checkError1552 = false;
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
@@ -96,28 +91,18 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				}
 			}
 			processExecutionLogRepo.update(procExecLog);
-<<<<<<< HEAD
-			return false;
-=======
-			return checkError1552;
->>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
+			return new OutputAppRouteMonthly(false,checkError1552);
 		}
 		log.info("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
-		AtomicBoolean checkStop = new AtomicBoolean(false);
 		/** ドメインモデル「就業締め日」を取得する(lấy thông tin domain ル「就業締め日」) */
 		List<Closure> listClosure = closureRepository.findAllActive(procExec.getCompanyId(),
 				UseClassification.UseClass_Use);
 		
 		log.info("承認ルート更新(月別) START PARALLEL (締めループ数:" + listClosure.size() + ")");
 		long startTime = System.currentTimeMillis();
-<<<<<<< HEAD
-		
-		listClosure.forEach(itemClosure -> {
-			if(checkStop.get()) return;
-=======
+
 		for(Closure itemClosure :  listClosure) {
->>>>>>> b313ded... fixbug kbt002 : #108218
 			log.info("承認ルート更新(月別) 締め: " + itemClosure.getClosureId());
 			
 			/** 締め開始日を取得する */
@@ -135,10 +120,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			workplaceIdList.forEach(x -> {
 				workplaceIds.add(x.getWkpId());
 			});
-<<<<<<< HEAD
-			List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, new DatePeriod(startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")), procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIds), Optional.of(listClosureEmploymentCode));
 
-=======
 			List<String> listEmp = new ArrayList<>();
 			try {
 				listEmp = listEmpAutoExec.getListEmpAutoExec(companyId,
@@ -150,7 +132,6 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				checkError1552 = true;
 				break;
 			}
->>>>>>> b313ded... fixbug kbt002 : #108218
 			/** アルゴリズム「日別実績の承認ルート中間データの作成」を実行する */
 			OutputCreatePerAppMonImport check = createperApprovalMonthlyAdapter.createperApprovalMonthly(procExec.getCompanyId(),
 			 procExecLog.getExecId(),
@@ -159,23 +140,13 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			 closureData.getClosureEndDate());
 			
 			if(check.isCheckStop()) {
-				checkStop.set(true);
-				return;
+				return new OutputAppRouteMonthly(true,checkError1552);
 			}
 			 listCheckCreateApp.add(new CheckCreateperApprovalClosure(itemClosure.getClosureId().value,check.isCreateperApprovalMon()));
-			
-//		}
 		};
 		
 		log.info("承認ルート更新(月別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
-<<<<<<< HEAD
-		System.out.println("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
-		if(checkStop.get()) {
-			return true;
-		}
-=======
 		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
->>>>>>> 036519e... fixbug kbt002 :#108239 ver 2
 		boolean checkError = false;
 		/*終了状態で「エラーあり」が返ってきたか確認する*/
 		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
@@ -184,6 +155,9 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				checkError = true;
 				break;
 			}
+		}
+		if(checkError1552) {
+			checkError = true;
 		}
 		for(ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			//【条件 - dieu kien】 各処理の終了状態.更新処理　＝　承認ルート更新（月次）
@@ -199,12 +173,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		}
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
-<<<<<<< HEAD
-		return false;
-
-=======
-		return checkError1552;
->>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
+		return new OutputAppRouteMonthly(false,checkError1552);
 	}
 
 }

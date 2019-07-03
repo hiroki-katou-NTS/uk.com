@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -30,7 +29,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.AppRouteUpdateDailyService;
+import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.OutputAppRouteDaily;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
+import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.OutputAppRouteMonthly;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
@@ -603,22 +604,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				context.getCommand().getExecItemCd(), execId);
 
 		boolean checkErrAppDaily = false;
-		boolean checkError1552Daily = false;
+		OutputAppRouteDaily outputAppRouteDaily = new OutputAppRouteDaily(); 
 		try {
 			// 承認ルート更新（日次）
-<<<<<<< HEAD
-			boolean checkStop = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
-			if(checkStop) {
+			outputAppRouteDaily = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+			if(outputAppRouteDaily.isCheckStop()) {
 				// 各処理の終了状態 ＝ [承認ルート更新（日次）、強制終了]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.FORCE_END);
 				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 				return true;
 			}
-=======
-			
-			checkError1552Daily = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
->>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		} catch (Exception e) {
 			checkErrAppDaily = true;
 			appDataInfoDailyRepo.addAppDataInfoDaily(new AppDataInfoDaily("System", execId, new ErrorMessageRC(TextResource.localize("Msg_1339"))));
@@ -668,7 +664,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					// 実行内容 ＝ 月別実績の集計
 					paramDaily.setExecutionContent(AlarmCategoryFn.APPROVAL_DAILY);
 					if (listErrorApprovalDaily.isEmpty()) {
-						if(!checkError1552Daily) {
+						if(!outputAppRouteDaily.isCheckError1552Daily()) {
 							for (String managementId : listManagementId) {
 								listErrorAndEmpIdDaily.add(
 										new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
@@ -688,19 +684,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 
 		boolean checkErrAppMonth = false;
-		boolean checkError1552Monthly = false;
+		OutputAppRouteMonthly outputAppRouteMonthly = new OutputAppRouteMonthly(); 
 		try {
 			// 承認ルート更新（月次）
-<<<<<<< HEAD
-			boolean checkStop = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
-			if(checkStop) {
+			outputAppRouteMonthly = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
+			if(outputAppRouteMonthly.isCheckStop()) {
 				// 各処理の終了状態 ＝ [承認ルート更新（月次）、強制終了]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.FORCE_END);
 				return true;
 			}
-=======
-			checkError1552Monthly = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
->>>>>>> a1daff4... fixbug kbt002 :#108218 ver 2
 		} catch (Exception e) {
 			checkErrAppMonth = true;
 			appDataInfoMonthlyRepo.addAppDataInfoMonthly(new AppDataInfoMonthly("System", execId, new ErrorMessageRC(TextResource.localize("Msg_1339"))));
@@ -750,7 +742,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					// 実行内容 ＝ 月別実績の集計
 					paramMonthly.setExecutionContent(AlarmCategoryFn.APPROVAL_MONTHLY);
 					if (listErrorApprovalMonthly.isEmpty()) {
-						if(!checkError1552Monthly) {
+						if(!outputAppRouteMonthly.isCheckError1552Monthly()) {
 							for (String managementId : listManagementId) {
 								listErrorAndEmpIdMonthly.add(
 										new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
