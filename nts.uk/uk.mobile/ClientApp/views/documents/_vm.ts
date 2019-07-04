@@ -6,8 +6,8 @@ import { component } from '@app/core/component';
 
 @component({
     route: '/documents',
-    template: `<div class="markdown-content">
-        <div v-bind:class="{ 'mb-2': showQuote }">
+    template: `<div>
+        <div class="markdown-content" v-bind:class="{ 'mb-2': showQuote }">
             <h5 v-on:click="() => showQuote = !showQuote">
                 {{'show_or_hide_qt' | i18n}}
                 <i class="ml-2 fas fa-angle-down" v-bind:class="{ 'fas fa-angle-up': showQuote, 'fas fa-angle-down': !showQuote }"></i>
