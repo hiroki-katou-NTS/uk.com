@@ -24,9 +24,9 @@
         <!--radio-->
         <div class="col-md-8">
 
-            <nts-radio v-for="radio in radios"
+            <nts-radio v-for="(radio, k) in radios"
                 v-model="checked2"
-                v-bind:value="radio.id">
+                v-bind:value="radio.id" v-bind:key="k" class="form-check-inline">
                 {{radio.name}}
             </nts-radio>
             <pre>Value selected: {{checked2}}</pre>

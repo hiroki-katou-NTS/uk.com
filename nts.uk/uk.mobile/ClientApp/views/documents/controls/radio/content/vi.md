@@ -19,6 +19,7 @@ Bạn cũng có thể sử dụng v-for để tự động sinh ra một list `<
     {{radio.name}}
 </nts-radio>
 ```
+> Để sử dụng inline radio, chỉ cần thêm class `form-check-inline` vào `nts-radio` tương ứng.
 
 ##### 3. Code ViewModel
 ```typescript

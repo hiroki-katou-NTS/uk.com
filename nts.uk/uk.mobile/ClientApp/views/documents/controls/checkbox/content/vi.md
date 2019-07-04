@@ -18,7 +18,7 @@ Bạn cũng có thể sử dụng v-for để tự động sinh ra một list `<
         {{option.name}}
 </nts-checkbox>
 ```
-
+> Để sử dụng inline checkbox, chỉ cần thêm class `form-check-inline` vào `nts-checkbox` tương ứng.
 ##### 3. Code ViewModel
 ```typescript
 export class FormCheckComponent extends Vue {

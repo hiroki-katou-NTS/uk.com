@@ -18,6 +18,7 @@
     {{radio.name}}
 </nts-radio>
 ```
+> Use inline radio, add class `form-check-inline` to `nts-radio`.
 
 ##### 3. ビューモデル
 ```typescript

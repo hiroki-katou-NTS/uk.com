@@ -18,6 +18,7 @@
         {{option.name}}
 </nts-checkbox>
 ```
+> Use inline checkbox, add class `form-check-inline` to `nts-checkbox`.
 
 ##### 3. ビューモデル
 ```typescript

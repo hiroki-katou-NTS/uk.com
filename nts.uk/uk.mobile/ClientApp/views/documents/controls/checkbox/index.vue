@@ -20,9 +20,9 @@
             <v-label v-bind:constraint="{}">{{ 'checked2s' | i18n }}</v-label>
         </div>
         <div class="col-md-8">
-            <nts-checkbox v-for="option in datasource" 
+            <nts-checkbox v-for="(option, k) in datasource" 
                 v-model="checked2s" 
-                v-bind:value="option.id" >
+                v-bind:value="option.id" v-bind:key="k" class="form-check-inline">
                     {{option.name}}
             </nts-checkbox>
             Selecteds: {{checked2s}}
