@@ -527,10 +527,10 @@ module cps003.f.vm {
                             }
                             value.replaceValue = [
                                 values.selectedWorkTimeCode,
-                                values.first == undefined ? "" : values.first.start,
-                                values.first == undefined ? "" : values.first.end,
-                                values.second == undefined ? "" : values.second.start,
-                                values.second == undefined ? "" : values.second.end];
+                                values.first == undefined ? null : values.first.start,
+                                values.first == undefined ? null : values.first.end,
+                                values.second == undefined ? null : values.second.start,
+                                values.second == undefined ? null : values.second.end];
                             value.replaceFormat = REPLACE_FORMAT.VALUE;
                         } else {
                             value.mode = APPLY_MODE.SELECTION;
@@ -544,13 +544,19 @@ module cps003.f.vm {
             // 画面項目「対象者選択（F1_007）」の状態をチェックする
             if (value.replaceAll) { // 全員（F1_008）が選択されている場合
                 if (mode == null) {
-                    let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
+                         let checkArray = Array.isArray(value.replaceValue),
+                            replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
                     if (replaceValue) {
                         confirm({ messageId: 'Msg_633', messageParams: [item.name, item.replacer] }).ifYes(() => {
                             setShared('CPS003F_VALUE', value);
                             close();
                         });
                     } else {
+                        if(checkArray == true){
+                            value.replaceValue[0] = null;
+                        }else{
+                            value.replaceValue = null;
+                        }                        
                         confirm({ messageId: 'Msg_634', messageParams: [item.name] }).ifYes(() => {
                             setShared('CPS003F_VALUE', value);
                             close();
@@ -635,7 +641,8 @@ module cps003.f.vm {
             } else { // 一致する社員のみ（F1_009）が選択されている場合
                 if (value.matchValue) {
                     if (mode == null) {
-                        let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
+                        let checkArray = Array.isArray(value.replaceValue),
+                            replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
                         if (replaceValue) {
                             let valueText = value.matchValue;
                             if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
@@ -652,6 +659,11 @@ module cps003.f.vm {
                             });
                         } else {
                             let valueTextMatch = item.replacer;
+                            if(checkArray == true){
+                                value.replaceValue[0] = null;
+                            }else{
+                                value.replaceValue = null;
+                            }
                             if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
                                 let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
                                 if (itemX.length > 0) {
@@ -712,13 +724,19 @@ module cps003.f.vm {
                     }
                 } else {
                     if (mode == null) {
-                        let replaceValue = Array.isArray(value.replaceValue) == true ? value.replaceValue[0] : value.replaceValue;
+                        let checkArray = Array.isArray(value.replaceValue),
+                            replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
                         if (replaceValue) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
                             });
                         } else {
+                            if(checkArray == true){
+                                value.replaceValue[0] = null;
+                            }else{
+                                value.replaceValue = null;
+                            }
                             alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
                                 setShared('CPS003F_VALUE', null);
                                 //close();
