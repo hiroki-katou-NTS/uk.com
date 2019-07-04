@@ -47,7 +47,7 @@ class DateComponent extends InputComponent {
             month,
             date
         }, {
-                year: _.range(1900, 10000, 1).map((value: number) => ({ text: value.toString(), value })),
+                year: _.range(1900, 2101, 1).map((value: number) => ({ text: value.toString(), value })),
                 month: _.range(1, 13, 1).map((value: number) => ({ text: _.padStart(`${value}`, 2, '0'), value })),
                 date: _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }))
             }, (select: ISelected, pkr: IPicker) => {
