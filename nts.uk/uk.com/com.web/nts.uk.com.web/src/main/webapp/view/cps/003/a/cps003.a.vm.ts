@@ -1865,6 +1865,10 @@ module cps003.a.vm {
                 } else if (self.specialItems.holidayLimit[0] === replaceValue.targetItem) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
                         let replaced = nts.uk.time.parseTime(replaceValue.replaceValue, true).format();
+                        if (!_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
+                            replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
+                        }
+                        
                         $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
