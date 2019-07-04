@@ -12,7 +12,7 @@
         padding: 0 1em;
     }
 
-    table {
+    table:not(.table) {
         width: 100%;
         margin-bottom: 1rem;
         color: #222;

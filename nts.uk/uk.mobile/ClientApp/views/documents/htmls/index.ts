@@ -10,3 +10,4 @@ import './icons';
 import './list-group';
 import './list-tree';
 import './mdcolor';
+import './tables';
