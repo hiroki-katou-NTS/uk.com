@@ -1,9 +1,9 @@
-import { $ } from '@app/utils';
+import { $, TimeInputType } from '@app/utils';
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { InputComponent } from '@app/components/common/inputs/input';
 
-@component({
+const range = (tagName: string) => component({
     template: `<div class="form-group row">
     <template v-if="showTitle && showTitle !== 'false' && name" v-bind:key="'showtitle'">
         <div v-bind:class="columns.title">
@@ -18,38 +18,53 @@ import { InputComponent } from '@app/components/common/inputs/input';
     <div v-bind:class="columns.input">
         <div class="row form-group form-group-range mb-0" v-bind:class="{ 'is-invalid': invalid }">
             <div class="col-6">
-                <nts-date-input
+                <${tagName}
                     v-model="start"
                     v-bind:icons="icons"
                     v-bind:disabled="disabled"
                     v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
+                    v-bind:errors="$errors"
+                    v-bind:show-error="false"
                     v-bind:placeholder="placeholder"
+                    v-bind:time-input-type="timeInputType"
                     class="form-group-date mb-0"
                     v-bind:key="'startrange'" />
             </div>
             <div class="col-6">
-                <nts-date-input
+                <${tagName}
                     v-model="end"
                     v-bind:icons="icons"
                     v-bind:disabled="disabled"
                     v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
+                    v-bind:errors="$errors"
+                    v-bind:show-error="false"
                     v-bind:placeholder="placeholder"
+                    v-bind:time-input-type="timeInputType"
                     class="form-group-date mb-0" 
                     v-bind:key="'endrange'" />
             </div>
         </div>
-        <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+        <template v-if="showError" v-bind:key="'showError'">
+            <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+        </template>
+        <template v-else v-bind:key="'hideError'"></template>
     </div>
 </div>`
-})
-export class DateRangeEditorComponent extends InputComponent {
+});
+
+export class RangeEditorComponent extends InputComponent {
+    @Prop({
+        default: TimeInputType.TimeWithDay
+    })
+    public timeInputType: TimeInputType;
+
     get start() {
         return this.value && this.value.start || null;
     }
 
-    set start(start: Date) {
+    set start(start: Date | number) {
         this.$emit('input', {
             start,
             end: this.end
@@ -60,7 +75,7 @@ export class DateRangeEditorComponent extends InputComponent {
         return this.value && this.value.end || null;
     }
 
-    set end(end: Date) {
+    set end(end: Date | number) {
         this.$emit('input', {
             start: this.start,
             end
@@ -68,8 +83,15 @@ export class DateRangeEditorComponent extends InputComponent {
     }
 
     get invalid() {
-        return $.size(this.$errors) || $.size(this.errorsAlways);
+        return !!($.size(this.$errors) || $.size(this.errorsAlways));
     }
 }
 
+@range('nts-date-input')
+export class DateRangeEditorComponent extends RangeEditorComponent { }
+
+@range('nts-time-editor')
+export class TimeRangeEditorComponent extends RangeEditorComponent { }
+
 Vue.component('nts-date-range-input', DateRangeEditorComponent);
+Vue.component('nts-time-range-input', TimeRangeEditorComponent);

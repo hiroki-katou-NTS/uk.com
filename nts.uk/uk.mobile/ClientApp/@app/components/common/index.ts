@@ -15,6 +15,6 @@ import './inputs/number-editor';
 
 import './inputs/date-input';
 import './inputs/time-editor';
-import './inputs/time-range-editor';
-import './inputs/date-range-editor';
 import './inputs/year-month';
+
+import './inputs/range-editor';

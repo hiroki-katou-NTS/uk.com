@@ -40,6 +40,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                             v-bind:tabindex="tabindex"
                             v-bind:disabled="disabled"
                             v-bind:value="rawValue"
+                            v-bind:class="classInput"
                             v-on:change="input()">
                         <slot />
                     </select>`
@@ -57,6 +58,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:value="rawValue"
                         v-bind:tabindex="tabindex"
                         v-bind:placeholder="placeholder"
+                        v-bind:class="classInput"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
@@ -69,7 +71,10 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:dblclick="evt => $emit('dblclick', evt)"
                     />`
         }
-                <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+                <template v-if="showError" v-bind:key="'showError'">
+                    <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+                </template>
+                <template v-else v-bind:key="'hideError'"></template>
             </div>
         </div>
     </div>`
@@ -118,8 +123,14 @@ export class InputComponent extends Vue {
     @Prop({ default: () => ({ title: 'col-md-12', input: 'col-md-12' }) })
     public readonly columns!: { title: string; input: string };
 
-    @Prop({ default: '' })
+    @Prop({ default: () => '' })
     public readonly placeholder!: string;
+
+    @Prop({ default: () => '' })
+    public readonly classInput!: string;
+
+    @Prop({ default: () => true })
+    public readonly showError!: boolean;
 
     get iconsClass() {
         let self = this,

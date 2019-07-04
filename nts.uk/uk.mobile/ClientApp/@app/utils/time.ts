@@ -13,7 +13,6 @@ export enum TimeInputType {
     TimeDuration = 'time-duration'
 }
 
-
 export class TimeWithDay {
     public value: number | undefined = undefined;
 
