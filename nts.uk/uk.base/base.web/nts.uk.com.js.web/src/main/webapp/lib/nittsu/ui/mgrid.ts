@@ -6666,7 +6666,7 @@ module nts.uk.ui.mgrid {
             let column = _columnsMap[coord.columnKey];
             
             if (column && _.toLower(column[0].dataType) === "number") {
-                cellValue = cellValue === "" ? null : parseFloat(cellValue);
+                cellValue = (_.isNil(cellValue) || cellValue === "") ? null : parseFloat(cellValue);
             }
            
             if (reset) {
