@@ -354,6 +354,8 @@ input[type="checkbox"],
 
 @mixin radio($class, $color) {
 
+    input[type="radio"].radio-#{$class},
+    input[type="radio"].form-check-#{$class},
     .radio-#{$class} input[type="radio"],
     .form-check-#{$class} input[type="radio"] {
         &:not(:disabled) {
@@ -366,6 +368,10 @@ input[type="checkbox"],
 
     }
 
+    input[type="radio"].radio-#{$class},
+    input[type="checkbox"].checkbox-#{$class},
+    input[type="radio"].form-check-#{$class},
+    input[type="checkbox"].form-check-#{$class},
     .radio-#{$class} input[type="radio"],
     .checkbox-#{$class} input[type="checkbox"],
     .form-check-#{$class} input[type="radio"],
