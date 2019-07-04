@@ -61,9 +61,9 @@ import { component } from '@app/core/component';
             'directives': 'Directive',
             'important_document': 'Important documents',
             'sample': 'サンプル',
-            'uk_quote': `Khác với triết lý thiết kế của UK, UK mobile được sáng tạo ra bởi những con người tâm huyết và có tầm nhìn chiến lược rộng mở. Chính vì thế, UK mobile là sản phẩm đầu tiên hướng đến việc trao quyền thiết kế tổng thể một giao diện chương trình vào tay các developer.`,
-            'uk_comment': 'Đội ngũ thiết kế (30%), đội ngũ xây dựng core (10%) và các developers (60%) là những người quyết định chất lượng của sản phẩm này. Chính vì điều ấy, kính mong tất cả mọi người hãy làm việc bằng tâm huyết và tư duy của những người sáng tạo để chúng ta có thể có được một sản phẩm tốt trao tới tận tay người sử dụng. Chân thành cảm ơn mọi người!',
-            'uk_comment_docs': 'Tài liệu này viết ra để mọi người hiểu rõ hơn và code tốt hơn, rất mong mọi người đọc kỹ tài liệu trước khi hỏi bất cứ một câu hỏi nào liên quan tới những vấn đề đã được đề cập trong tài liệu.'
+            'uk_quote': ``,
+            'uk_comment': '',
+            'uk_comment_docs': ''
         }
     }
 })
