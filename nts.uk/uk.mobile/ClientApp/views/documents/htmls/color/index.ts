@@ -21,6 +21,7 @@ export class DocumentsHtmlsColorComponent extends Vue {
         'accordion',
         'reflect',
         'stripped',
+        'quote',
         'dark-gray',
         'sub-label',
         'over-time',
