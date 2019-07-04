@@ -202,12 +202,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			List<Integer> checkItem = hdManagement.getListItemsOutput().getSpecialHoliday();
 			boolean listSpecialHoliday = true;
 			for (Integer item : checkItem) {
-				for(SpecialHoliday list : varVacaCtr.getListSpecialHoliday()){
-				if(list.getSpecialHolidayCode().v().equals(item)){
-					listSpecialHoliday = true;
-					break;
-				}
-				else listSpecialHoliday= false;
+				for (SpecialHoliday list : varVacaCtr.getListSpecialHoliday()) {
+					if (list.getSpecialHolidayCode().v().equals(item)) {
+						listSpecialHoliday = true;
+						break;
+					} else {
+						listSpecialHoliday = false;
+					}
 				}
 				
 			}
