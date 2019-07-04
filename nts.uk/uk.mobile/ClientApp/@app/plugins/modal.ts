@@ -318,7 +318,7 @@ const modal = {
                                 template: `<transition apear v-bind:name="animate" v-on:after-leave="afterLeave">
                                     <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
                                         <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
-                                            <div class="modal-content">
+                                            <div class="modal-content uk-bg-silver">
                                                 <template v-if="hasTitle">
                                                     <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
                                                         <h4 class="modal-title text-white">
