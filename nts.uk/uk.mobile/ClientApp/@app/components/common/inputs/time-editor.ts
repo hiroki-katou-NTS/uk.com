@@ -1,4 +1,4 @@
-import { Vue, moment } from '@app/provider';
+import { _, Vue, moment } from '@app/provider';
 import { TimeInputType, TimeWithDay, TimePoint, TimeDuration, obj } from '@app/utils';
 import { input, InputComponent } from './input';
 import { Prop, Emit } from '@app/core/component';
@@ -16,21 +16,26 @@ export class TimeComponent extends InputComponent {
     public timeInputType: TimeInputType;
 
     get rawValue() {
-
-
-        if (obj.isNil(this.value)) {
-            return '';
-        }
-
-        switch (this.timeInputType) {
-            case TimeInputType.TimeWithDay:
-                return TimeWithDay.toString(this.value);
-
-            case TimeInputType.TimePoint:
-                return TimePoint.toString(this.value);
-            case TimeInputType.TimeDuration:
-            default:
-                return TimeDuration.toString(this.value);
+        if (_.isNil(this.value)) {
+            switch (this.timeInputType) {
+                default:
+                case TimeInputType.TimeDuration:
+                    return '--:--';
+                case TimeInputType.TimeWithDay:
+                    return '-- --:--';
+                case TimeInputType.TimePoint:
+                    return '--:--';
+            }
+        } else {
+            switch (this.timeInputType) {
+                default:
+                case TimeInputType.TimeDuration:
+                    return TimeDuration.toString(this.value);
+                case TimeInputType.TimeWithDay:
+                    return TimeWithDay.toString(this.value);
+                case TimeInputType.TimePoint:
+                    return TimePoint.toString(this.value);
+            }
         }
     }
 
@@ -56,7 +61,7 @@ export class TimeComponent extends InputComponent {
     }
 
     public click() {
-        
+
         let helper = null;
         let utils = null;
         let className = null;
@@ -81,23 +86,23 @@ export class TimeComponent extends InputComponent {
 
         let value = this.computeValue();
 
-        this.$picker(helper.computeSelecteds(value), 
-            helper.getDataSource(value), 
-            helper.onSelect, 
-            { 
-                title : utils.toString(value), 
+        this.$picker(helper.computeSelecteds(value),
+            helper.getDataSource(value),
+            helper.onSelect,
+            {
+                title: utils.toString(value),
                 required: this.constraints && this.constraints.required,
                 className
             })
-        .then((select: any) => {
-            if (select === undefined) {
-                //
-            } else if (select === null) {
-                this.$emit('input', null);
-            } else {
-                this.$emit('input', utils.fromObject(select).value);
-            }
-        });
+            .then((select: any) => {
+                if (select === undefined) {
+                    //
+                } else if (select === null) {
+                    this.$emit('input', null);
+                } else {
+                    this.$emit('input', utils.fromObject(select).value);
+                }
+            });
     }
 
     private computeValue(): number {

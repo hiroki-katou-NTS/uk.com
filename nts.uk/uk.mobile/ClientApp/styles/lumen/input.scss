@@ -160,3 +160,10 @@
     padding-right: 3px;
   }
 }
+
+
+.was-validated 
+.form-control:invalid, 
+.form-control.is-invalid {
+  background-image: none;
+}
