@@ -124,7 +124,7 @@ module nts.custombinding {
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
                                         vm.value(output);
-                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItem), value => {return value.optionValue == output;}); 
+                                        let selectedValue = _.filter(ko.toJS(__viewContext.viewModel.currentItem.itemData().selectionItems), value => {return value.optionValue == output;}); 
                                         vm.textValue(`${selectedValue.length > 0? selectedValue[0].optionText: ""}`);
                                     }
                                 });
