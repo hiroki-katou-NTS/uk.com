@@ -1878,6 +1878,10 @@ module cps003.a.vm {
                         let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
                         service.fetch.contractTime({ baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), listEmpID: empIdList }).done(contractTimes => {
                             let groupByEmpId = _.groupBy(contractTimes, "employeeID");
+                            if (!_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
+                                replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
+                            }
+                            
                             $grid.mGrid("replace", replaceValue.targetItem, (value) => {
                                 if (replaceValue.replaceAll) return true;
                                 return replaceValue.matchValue === value;
