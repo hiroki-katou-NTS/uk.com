@@ -25,7 +25,7 @@ const required = function (value: any, checkOr: boolean, rule: IRule) {
         }
     }
 
-    return !msg ? null : 'MsgB_1';
+    return !msg ? null : 'MsgB_30';
 };
 
 export { required };

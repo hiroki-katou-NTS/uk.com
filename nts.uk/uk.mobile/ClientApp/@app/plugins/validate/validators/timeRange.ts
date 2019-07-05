@@ -8,7 +8,7 @@ export const timeRange = function (value: { start: Number, end: Number }, checkO
     }
 
     if ( value.end < value.start ) {
-        return 'MsgB_21';
+        return 'MsgB_49';
     }
     
 };

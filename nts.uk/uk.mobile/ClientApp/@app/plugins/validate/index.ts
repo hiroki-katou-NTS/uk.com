@@ -428,11 +428,9 @@ const DIRTY = 'dirty',
                             data = self.data;
 
                         if (!$.isArray(data)) {
-                            return [self.name];
+                            return [];
                         } else {
-                            let $data = data.slice(1);
-
-                            return [self.name, ...$data];
+                            return data.slice(1);
                         }
                     },
                     resource() {

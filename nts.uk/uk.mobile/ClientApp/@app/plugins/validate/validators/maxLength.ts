@@ -7,15 +7,15 @@ const maxLength = function (value: string, length: number, rule: IRule) {
 
         switch (rule.charType) {
             case 'Any':
-                return ['MsgB_4', cl];
+                return ['MsgB_33', cl];
             case 'Kana':
-                return ['MsgB_7', cl];
+                return ['MsgB_36', cl];
             case 'Numeric':
-                return ['MsgB_5', cl];
+                return ['MsgB_34', cl];
             case 'AlphaNumeric':
-                return ['MsgB_6', cl];
+                return ['MsgB_35', cl];
             case 'AnyHalfWidth':
-                return ['MsgB_4', cl];
+                return ['MsgB_33', cl];
             default:
                 break;
         }

@@ -6,7 +6,7 @@ const mantissaMaxLength = function (value: number, mantiss: number, rule?: IRule
         $regex = new RegExp(`\\.\\d{0,${mantiss}}$`);
 
     if ($value && $value.indexOf('.') > -1 && !$regex.test(`${value}`)) {
-        return ['MsgB_12', `${max.split('.')[0].length}`, `${mantiss}`];
+        return ['MsgB_41', `${max.split('.')[0].length}`, `${mantiss}`];
     }
 
     return null;
