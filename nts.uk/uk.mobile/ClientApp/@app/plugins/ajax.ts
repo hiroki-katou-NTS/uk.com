@@ -67,7 +67,7 @@ const WEB_APP_NAME = {
                                 case 'json':
                                     setHeaders({ 'Content-Type': 'application/json' });
 
-                                    return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data);
+                                    return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data).replace(/^"|"$/g, '');
                                 default:
                                     return opt.data;
                             }
