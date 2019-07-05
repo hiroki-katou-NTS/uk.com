@@ -40,7 +40,7 @@ class UKStorage {
     constructor(private storage: Storage) { }
 
     public hasItem(name: string): boolean {
-        return !!this.storage.getItem(name);
+        return !!this.storage.getItem(`${prefix}.${name}`);
     }
 
     public getItem(name: string): null | string | number | Date | Object {
