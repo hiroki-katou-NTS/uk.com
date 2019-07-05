@@ -192,7 +192,7 @@ const dom = {
             dom.removeEventHandler(element, eventType, handlerWrapper);
         });
     },
-    registerOnceClickOutEventHandler(element: HTMLElement, handler: () => any) {
+    registerOnceClickOutEventHandler(element: HTMLElement, handler: (evt: MouseEvent) => void) {
         dom.registerOnceEventHandler(document, 'click', (evt: MouseEvent) => {
             let clo,
                 target = event.target as HTMLElement;
@@ -210,7 +210,7 @@ const dom = {
             }
         });
     },
-    registerGlobalEventHandler(element: Document | HTMLElement, eventName: string, matcher: string, handler: (evt: any) => any) {
+    registerGlobalEventHandler(element: Document | HTMLElement, eventName: string, matcher: string, handler: (evt: any) => void) {
         dom.registerEventHandler(element, eventName, (event: any) => {
             [].slice.call(element.querySelectorAll(matcher))
                 .forEach((match) => {
@@ -218,13 +218,7 @@ const dom = {
 
                     while (target && target !== element) {
                         if (target === match) {
-                            Object.defineProperty(event,
-                                'target', {
-                                    value: match,
-                                    writable: false
-                                });
-
-                            return handler.call(match, event);
+                            dom.dispatchEvent(target, event, handler);
                         }
 
                         target = target.parentNode as HTMLElement;
@@ -257,17 +251,12 @@ const dom = {
                 });
         });
     },
-    dispatchEvent(element: HTMLElement, event: Event, handler: (evt: Event) => any) {
-        // try {
-        Object.defineProperty(event,
-            'target', {
-                value: element,
-                writable: false
-            });
-        // } catch {
-        // }
-
-        return handler.call(element, event);
+    dispatchEvent(element: HTMLElement, event: Event, handler: (evt: Event) => void) {
+        Object.assign(event, {
+            toTarget: element
+        });
+        
+        handler.call(element, event);
     },
     data: (function () {
         const dsName = `__nts__${new Date().getTime()}`,
