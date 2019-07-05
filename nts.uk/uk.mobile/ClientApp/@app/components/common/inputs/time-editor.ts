@@ -17,15 +17,7 @@ export class TimeComponent extends InputComponent {
 
     get rawValue() {
         if (_.isNil(this.value)) {
-            switch (this.timeInputType) {
-                default:
-                case TimeInputType.TimeDuration:
-                    return '--:--';
-                case TimeInputType.TimeWithDay:
-                    return '-- --:--';
-                case TimeInputType.TimePoint:
-                    return '--:--';
-            }
+            return '';
         } else {
             switch (this.timeInputType) {
                 default:
@@ -36,6 +28,22 @@ export class TimeComponent extends InputComponent {
                 case TimeInputType.TimePoint:
                     return TimePoint.toString(this.value);
             }
+        }
+    }
+
+    get $placeholder() {
+        if (this.placeholder) {
+            return this.placeholder;
+        }
+
+        switch (this.timeInputType) {
+            default:
+            case TimeInputType.TimeDuration:
+                return '--:--';
+            case TimeInputType.TimeWithDay:
+                return '-- --:--';
+            case TimeInputType.TimePoint:
+                return '--:--';
         }
     }
 

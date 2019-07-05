@@ -24,7 +24,8 @@ const range = (tagName: string) => component({
                     v-bind:disabled="disabled"
                     v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
-                    v-bind:errors="$errors"
+                    v-bind:errors="$rangeErrors.start"
+                    v-bind:constraint="constraints"
                     v-bind:show-error="false"
                     v-bind:placeholder="placeholder"
                     v-bind:time-input-type="timeInputType"
@@ -38,7 +39,8 @@ const range = (tagName: string) => component({
                     v-bind:disabled="disabled"
                     v-bind:readonly="!editable"
                     v-bind:tabindex="tabindex"
-                    v-bind:errors="$errors"
+                    v-bind:errors="$rangeErrors.end"
+                    v-bind:constraint="constraints"
                     v-bind:show-error="false"
                     v-bind:placeholder="placeholder"
                     v-bind:time-input-type="timeInputType"
@@ -84,6 +86,23 @@ export class RangeEditorComponent extends InputComponent {
 
     get invalid() {
         return !!($.size(this.$errors) || $.size(this.errorsAlways));
+    }
+
+    get $rangeErrors() {
+        let self = this,
+            $errors: { required: string } = self.$errors;
+
+        if ($errors && $errors.required) {
+            return {
+                start: this.start ? {} : $errors,
+                end: this.end ? {} : $errors
+            };
+        }
+
+        return {
+            start: $errors,
+            end: $errors
+        };
     }
 }
 

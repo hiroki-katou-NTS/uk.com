@@ -33,6 +33,10 @@ class DateComponent extends InputComponent {
         return moment(this.value).format('YYYY-MM-DD');
     }
 
+    get $placeholder() {
+        return this.placeholder || 'yyyy-mm-dd';
+    }
+
     private titlePicker(selecteds: { year: number; month: number; date: number; }) {
         return this.$i18n('nts_date_format', [selecteds.year.toString(), selecteds.month.toString(), selecteds.date.toString()]);
     }

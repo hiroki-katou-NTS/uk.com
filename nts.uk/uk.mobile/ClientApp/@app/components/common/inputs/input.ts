@@ -57,7 +57,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:readonly="!editable"
                         v-bind:value="rawValue"
                         v-bind:tabindex="tabindex"
-                        v-bind:placeholder="placeholder"
+                        v-bind:placeholder="$placeholder"
                         v-bind:class="classInput"
                         v-on:click="click()"
                         v-on:keydown.13="click()"
@@ -143,6 +143,10 @@ export class InputComponent extends Vue {
             before: isClass(self.icons.before) ? self.icons.before : '',
             after: isClass(self.icons.after) ? self.icons.after : ''
         };
+    }
+
+    get $placeholder() {
+        return this.placeholder;
     }
 
     public readonly $errors: any = {};
