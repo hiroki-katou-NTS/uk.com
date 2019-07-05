@@ -1,7 +1,7 @@
 import { _ } from '@app/provider';
 import { IRule } from 'declarations';
 
-const required = function (value: any, checkOr: boolean, rule: IRule) {
+export const required = function (value: any, checkOr: boolean, rule: IRule) {
     let msg = false;
 
     if (checkOr) {
@@ -27,5 +27,3 @@ const required = function (value: any, checkOr: boolean, rule: IRule) {
 
     return !msg ? null : 'MsgB_30';
 };
-
-export { required };

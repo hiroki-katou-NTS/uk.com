@@ -10,7 +10,6 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                     let min = `${rule.min}`,
                         max = `${rule.max}`;
 
-
                     if (rule.mantissaMaxLength) {
                         if (!min.match(/\./) && !max.match(/\./)) {
                             return ['MsgB_40', min, max, `${rule.mantissaMaxLength}`];

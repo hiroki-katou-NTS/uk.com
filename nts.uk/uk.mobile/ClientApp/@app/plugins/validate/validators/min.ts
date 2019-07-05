@@ -2,7 +2,7 @@ import { IRule } from 'declarations';
 import { constraint } from '@app/utils';
 import { TimeWithDay, TimeDuration, TimePoint } from '@app/utils/time';
 
-const min = function (value: number | Date, min: number | Date, rule: IRule) {
+export const min = function (value: number | Date, min: number | Date, rule: IRule) {
     let lgt: boolean = value < min,
         constr: string = constraint.getMinMax(rule);
 
@@ -38,5 +38,3 @@ const min = function (value: number | Date, min: number | Date, rule: IRule) {
 
     return null;
 };
-
-export { min };

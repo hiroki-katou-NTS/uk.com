@@ -1,6 +1,6 @@
 import { IRule } from 'declarations';
 
-const mantissaMaxLength = function (value: number, mantiss: number, rule?: IRule) {
+export const mantissaMaxLength = function (value: number, mantiss: number, rule?: IRule) {
     let max = `${rule.max}`,
         $value = `${value}`,
         $regex = new RegExp(`\\.\\d{0,${mantiss}}$`);
@@ -11,5 +11,3 @@ const mantissaMaxLength = function (value: number, mantiss: number, rule?: IRule
 
     return null;
 };
-
-export { mantissaMaxLength };

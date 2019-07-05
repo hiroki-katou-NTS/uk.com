@@ -1,7 +1,7 @@
 import { IRule } from 'declarations';
 import { text, constraint } from '@app/utils';
 
-const maxLength = function (value: string, length: number, rule: IRule) {
+export const maxLength = function (value: string, length: number, rule: IRule) {
     if (value.length && text.countHalf(value) > Number(length)) {
         let cl: string = `${constraint.getCharLength(rule)}`;
 
@@ -23,5 +23,3 @@ const maxLength = function (value: string, length: number, rule: IRule) {
 
     return null;
 };
-
-export { maxLength };
