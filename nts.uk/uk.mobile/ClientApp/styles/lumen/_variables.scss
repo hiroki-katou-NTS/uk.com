@@ -12,5 +12,5 @@ $warning: #fb3 !default;
 
 $default: #2bbbad !default;
 
-$bg-menu-color: #5DA797;
+$bg-menu-color: map-get($map: $uk-colors, $key: teal);
 $color-required: #FFD966;

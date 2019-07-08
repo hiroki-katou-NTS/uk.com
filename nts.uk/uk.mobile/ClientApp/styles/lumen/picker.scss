@@ -104,11 +104,11 @@
   &.default {
     background-color: #f7f7f7;
     .ipkr-header {
-      color: #4eccc4;
+      color: map-get($map: $uk-colors, $key: teal);
     }
     .ipkr-wheel {
-      border-top: 1px solid #4eccc4;
-      border-bottom: 1px solid #4eccc4;
+      border-top: 1px solid map-get($map: $uk-colors, $key: teal);
+      border-bottom: 1px solid map-get($map: $uk-colors, $key: teal);
     }
     .ipkr-caption-item {
       color: rgb(59, 59, 59);
@@ -120,7 +120,7 @@
       color: rgb(191, 191, 191);
     }
     .ipkr-navbar-btn {
-      color: #4eccc4;
+      color: map-get($map: $uk-colors, $key: teal);
     }
   }
   &.dark {
@@ -129,8 +129,8 @@
       color: #50ccc4;
     }
     .ipkr-wheel {
-      border-top: 1px solid #50ccc4;
-      border-bottom: 1px solid #50ccc4;
+      border-top: 1px solid map-get($map: $uk-colors, $key: teal);
+      border-bottom: 1px solid map-get($map: $uk-colors, $key: teal);
     }
     .ipkr-caption-item {
       color: rgb(201, 203, 204);
@@ -144,7 +144,7 @@
       }
     }
     .ipkr-navbar-btn {
-      color: #50ccc4;
+      color: map-get($map: $uk-colors, $key: teal);
     }
   }
   &.ios {
@@ -216,8 +216,8 @@
     background-color: #f5f5f5;
 
     .ipkr-header {
-      color: #31b6e7;
-      border-bottom: 2px solid #31b6e7;
+      color: map-get($map: $uk-colors, $key: teal);
+      border-bottom: 2px solid map-get($map: $uk-colors, $key: teal);
     }
     .ipkr-col {
       margin: 0 0.625em;
@@ -240,14 +240,14 @@
       );
     }
     .ipkr-wheel {
-      border-top: 2px solid #31b6e7;
-      border-bottom: 2px solid #31b6e7;
+      border-top: 2px solid map-get($map: $uk-colors, $key: teal);
+      border-bottom: 2px solid map-get($map: $uk-colors, $key: teal);
     }
 
     .ipkr-caption {
-      border-bottom: 2px solid #31b6e7;
+      border-bottom: 2px solid map-get($map: $uk-colors, $key: teal);
       .ipkr-caption-item {
-        color: #31b6e7;
+        color: map-get($map: $uk-colors, $key: teal);
         font-weight: 600;
       }
     }
