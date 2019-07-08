@@ -70,4 +70,43 @@ export class DocumentsHtmlsListTreeComponent extends Vue {
         return obj.hierarchy(this.items, 'children');
     }
 
+    public addTopItem() {
+        this.items.unshift({
+            id: Math.random() * 100, text: 'Add new item',
+            state: {
+                selected: false
+            },
+            children: [{
+                id: 7,
+                text: 'Sub Folder 1.2.1'
+            }, {
+                id: 8,
+                text: 'Sub Folder 1.2.2'
+            }]
+        });
+    }
+
+    public addBottomItem() {
+        this.items.push({
+            id: Math.random() * 100, text: 'Add new item',
+            state: {
+                selected: false
+            },
+            children: [{
+                id: 7,
+                text: 'Sub Folder 1.2.1'
+            }, {
+                id: 8,
+                text: 'Sub Folder 1.2.2'
+            }]
+        });
+    }
+
+    public removeTopItem() {
+        this.items.shift();
+    }
+
+    public removeBottomItem() {
+        this.items.pop();
+    }
 }

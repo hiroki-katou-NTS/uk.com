@@ -1,7 +1,7 @@
 <template>
   <div class="documentshtmlslist-tree">
     <h5>1. {{'sample' | i18n}}</h5>
-    <div class="btn-group btn-group-toggle mb-3">
+    <div class="btn-group btn-group-toggle d-flex mb-3">
       <label class="btn btn-primary">
         <input type="radio" name="options" v-model="single" v-bind:value="true">
         Radio mode
@@ -10,6 +10,12 @@
         <input type="radio" name="options" v-model="single" v-bind:value="false">
         Checkbox mode
       </label>
+    </div>
+    <div class="btn-group mb-2 d-flex">
+      <button class="btn btn-secondary" v-on:click="addTopItem">Add top</button>
+      <button class="btn btn-secondary" v-on:click="addBottomItem">Add bottom</button>
+      <button class="btn btn-secondary" v-on:click="removeTopItem">Remove top</button>
+      <button class="btn btn-secondary" v-on:click="removeBottomItem">Remove bottom</button>
     </div>
     <ul class="list-group list-group-tree">
       <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item" v-bind:class="{ 'active': single ? item === selected : selecteds.indexOf(item) > -1 }">

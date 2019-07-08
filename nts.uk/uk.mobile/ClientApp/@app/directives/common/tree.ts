@@ -1,50 +1,68 @@
 import { dom } from '@app/utils';
 import { Vue, DirectiveBinding } from '@app/provider';
 
-Vue.directive('tree', {
-    inserted(el: HTMLElement, binding: DirectiveBinding) {
-        let item: { $h: { rank: number; childs: Array<any>; collapse: boolean; refresh: () => void; } } = binding.value;
+interface IHierarchy {
+    show: boolean;
+    rank: number;
+    childs: any[];
+    collapse: boolean;
+    refresh: () => void;
+}
 
-        if (item && item.$h) {
-            // init indent class
-            dom.addClass(el, `indent-${(item.$h.rank || 0) + 1}`);
+const bind = (el: HTMLElement, binding: DirectiveBinding) => {
+    let item: { $h: IHierarchy } = binding.value;
 
-            if (item.$h.childs.length) {
-                let $col = dom.create('i', { class: 'fas fa-chevron-down collapse' });
-                el.prepend($col);
+    unbind(el);
 
-                // tslint:disable-next-line: no-string-literal
-                dom.registerEventHandler($col, 'click', el['_uk_c_evt'] = () => {
-                    item.$h.collapse = !item.$h.collapse;
+    if (item && item.$h) {
+        // init indent class
+        dom.addClass(el, `indent-${(item.$h.rank || 0) + 1}`);
 
-                    // refresh item
-                    item.$h.refresh();
-
-                    if (item.$h.collapse) {
-                        dom.setAttr($col, 'class', 'fas fa-chevron-down collapse');
-                    } else {
-                        dom.setAttr($col, 'class', 'fas fa-chevron-right collapse');
-                    }
-                });
-            }
+        if (!item.$h.show) {
+            dom.addClass(el, 'd-none');
+        } else {
+            dom.removeClass(el, 'd-none');
         }
-    },
-    update(el: HTMLElement, binding: DirectiveBinding) {
-        let item: { $h: { rank: number; show: boolean; } } = binding.value;
 
-        if (item && item.$h) {
-            if (!item.$h.show) {
-                dom.addClass(el, 'd-none');
-            } else {
-                dom.removeClass(el, 'd-none');
-            }
+        if (item.$h.childs.length) {
+            let $col = dom.create('i', {
+                class: `fas ${item.$h.collapse ? 'fa-chevron-down' : 'fa-chevron-right'} collapse`
+            });
 
-            // init indent class
-            dom.addClass(el, `indent-${(item.$h.rank || 0) + 1}`);
+            el.prepend($col);
+
+            let event = () => {
+                item.$h.collapse = !item.$h.collapse;
+
+                // refresh item
+                item.$h.refresh();
+
+                if (item.$h.collapse) {
+                    dom.setAttr($col, 'class', 'fas fa-chevron-down collapse');
+                } else {
+                    dom.setAttr($col, 'class', 'fas fa-chevron-right collapse');
+                }
+            };
+
+            dom.data.set(el, '_havy_c_evt', event);
+
+            dom.registerEventHandler($col, 'click', event);
         }
-    },
-    unbind(el: HTMLElement) {
-        // tslint:disable-next-line: no-string-literal
-        dom.removeEventHandler(el, 'click', el['_uk_c_evt']);
     }
+}, unbind = (el: HTMLElement) => {
+    let collapse = el.querySelector('.fas.collapse') as HTMLElement;
+
+    if (collapse) {
+        el.removeChild(collapse);
+
+        dom.removeEventHandler(collapse, 'click', dom.data.get(el, '_havy_c_evt'));
+    }
+
+    dom.removeClass(el, [...Array(11).keys()].join(' indent-'));
+};
+
+Vue.directive('tree', {
+    inserted: bind,
+    componentUpdated: bind,
+    unbind
 });
