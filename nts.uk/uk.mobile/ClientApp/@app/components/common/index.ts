@@ -1,5 +1,6 @@
 import './label';
 import './search';
+import './fa-font';
 import './search-box';
 
 import './selects/radio';

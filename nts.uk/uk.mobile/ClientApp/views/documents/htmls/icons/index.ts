@@ -14,19 +14,16 @@ import { component } from '@app/core/component';
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
     },
-    style: `
-        .uk-icons i {
-            font-size: 2rem;
-        }
-        .uk-icons .uk-icons-name {
-            font-size: 0.75rem;
-            font-family: Tahoma;
-        }
+    style: `.uk-icons .uk-icons-name {
+        font-size: 0.75rem;
+        font-family: Tahoma;
+    }
     `
 })
 export class DocumentsHtmlsIconsComponent extends Vue {
+    public size: string = '2';
     public keyword: string = '';
-    public icons: Array<{ code: string; class: string; }> = require('./data-icons.json');
+    public icons: Array<{ code: string; class: string; }> = require('@app/components/common/font-awesome.json');
 
     get filtereds() {
         let kw: string = this.keyword.toUpperCase();
