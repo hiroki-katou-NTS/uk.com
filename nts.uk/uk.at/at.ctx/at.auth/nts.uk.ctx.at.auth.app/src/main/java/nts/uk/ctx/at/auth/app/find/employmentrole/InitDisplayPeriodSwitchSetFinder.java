@@ -28,6 +28,7 @@ public class InitDisplayPeriodSwitchSetFinder {
 	private ClosureService closureService;
 
 	public InitDisplayPeriodSwitchSetDto targetDateFromLogin() {
+		//RQ609 Đang viết ở App chứ không phải là ở Pub
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		String attendanceID = AppContexts.user().roles().forAttendance();
