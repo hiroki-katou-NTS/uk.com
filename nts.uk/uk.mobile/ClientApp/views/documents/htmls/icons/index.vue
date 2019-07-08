@@ -23,7 +23,7 @@
     </div>
     <div class="row">
       <div class="col-6 col-sm-4 col-md-3 col-lg-1 text-center uk-icons" v-for="(item, k) in filtereds" v-bind:key="k">
-        <fa-font v-bind:icon="item.code" v-bind:size="size" />
+        <i v-bind:class="faClass(item)"></i>
         <p class="uk-icons-name m-0 p-0">{{item.code}}</p>
         <p class="uk-icons-name">{{item.class}}</p>
       </div>
