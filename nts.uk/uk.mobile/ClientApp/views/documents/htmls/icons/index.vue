@@ -3,7 +3,7 @@
     <markdown />
     <div class="row justify-content-md-center">
       <div class="col-md-4">
-        <nts-search-box v-model="keyword"/>
+        <nts-search-box v-model="keyword" v-focus/>
       </div>
       
     </div>
