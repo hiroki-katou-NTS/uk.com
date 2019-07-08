@@ -80,7 +80,7 @@ declare module "vue/types/vue" {
     interface Vue {
         pgName: string;
         readonly $valid: boolean;
-        $http: {
+        readonly $http: {
             get(url: string): Promise<{}>;
             get(pg: 'at' | 'pr' | 'hr' | 'com', url: string): Promise<{}>;
             post(url: string, data?: any): Promise<{}>;
@@ -97,7 +97,7 @@ declare module "vue/types/vue" {
             enum(enumNames?: Array<String>): Promise<{}>;
             readonly resources: Promise<{}>;
         };
-        $auth: {
+        readonly $auth: {
             login: (data: any) => Promise<{}>;
             logout: () => Promise<{}>;
             readonly user: Promise<null | {
@@ -140,6 +140,14 @@ declare module "vue/types/vue" {
                 on: (click: () => void, hide?: () => void) => void;
             };
         };
+        readonly $dt: {
+            (value: Date, format?: string): string;
+            date(value: Date, format?: string): string;
+            timewd(value: Date): string;
+            timedr(value: Date): string;
+            timept(value: Date): string;
+            yearmonth(value: number, format?: string): string;
+        }
         $goto: {
             (name: string): void;
             (name: string, params: { [key: string]: any; }): void;
@@ -210,7 +218,7 @@ declare module "vue/types/vue" {
                     className?: 'clock' | 'time' | 'time-day';
                 }): Promise<{}>;
         };
-        $errors: {
+        readonly $errors: {
             [name: string]: {
                 [rule: string]: string;
             }
@@ -224,7 +232,7 @@ declare module "vue/types/vue" {
             (rule: IRule): void;
             (name: string, rule: IRule): void;
         };
-        validations: {
+        readonly validations: {
             [name: string]: IRule;
         };
         toJS: (value: any) => any;

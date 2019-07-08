@@ -14,6 +14,7 @@ import {
     modal,
     dialog,
     picker,
+    datetime,
     validate,
     Language,
     LanguageBar
@@ -35,7 +36,7 @@ Vue.use(dialog);
 Vue.use(i18n);
 Vue.use(mask);
 Vue.use(picker);
-
+Vue.use(datetime);
 Vue.use(validate);
 
 Vue.use(Vuex);

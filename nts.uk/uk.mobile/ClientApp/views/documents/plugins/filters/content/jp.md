@@ -13,6 +13,14 @@ UKモバイルはこれらのフィルタを提供している：
 - `timedr`: `number`
 - `yearmonth`: `number`
 
+**Bonus:** UK mobile has some mixin function `date`, `timewd`, `timedr`, `timept`, `yearmonth` of `$dt` for get string format of primtive value.
+- `$dt(value: Date, format: string): string`
+- `$dt.date(value: Date, format: string): string`
+- `$dt.timewd(value: number): string`
+- `$dt.timedr(value: number): string`
+- `$dt.timept(value: number): string`
+- `$dt.yearmonth(value: number): string`
+
 **HTML Code:**
 ```html
 <div class="sample">

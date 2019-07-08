@@ -15,6 +15,14 @@ Developer cần chỉ định `filter` tương ứng với giá trị cần hi�
 - `timedr`: `number`
 - `yearmonth`: `number`
 
+**Ngoài ra:** UK mobile còn có các hàm mixin sau để lấy ra giá trị hiển thị của các kiểu dữ liệu `date`, `timewd`, `timedr`, `timept`, `yearmonth` từ model `$dt`.
+- `$dt(value: Date, format: string): string`
+- `$dt.date(value: Date, format: string): string`
+- `$dt.timewd(value: number): string`
+- `$dt.timedr(value: number): string`
+- `$dt.timept(value: number): string`
+- `$dt.yearmonth(value: number): string`
+
 **HTML Code:**
 ```html
 <div class="sample">
