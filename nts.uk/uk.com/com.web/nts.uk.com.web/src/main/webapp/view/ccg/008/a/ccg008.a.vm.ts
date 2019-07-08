@@ -79,19 +79,22 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             //var fromScreen = "login"; 
             if(fromScreen == "login"){
-                character.remove("currentOrNextMonth").done(function () {
-                    self.selectedSwitch(null);
-                });  
+                service.getCache().done((data: any) => {
+                    character.save('currentOrNextMonth', data.currentOrNextMonth);
+                    console.log(data.currentOrNextMonth);
+                })  
             }
             self.topPageCode(code);
-            character.restore('currentOrNextMonth').done((obj)=>{
-                if(obj){
-                    self.selectedSwitch(obj);
-                }
-                nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
-            })
+            _.defer(() => { 
+                character.restore('currentOrNextMonth').done((obj)=>{
+                    if(obj){
+                        self.selectedSwitch(obj);
+                    }
+                    nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
+                })
+            });
+            
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                //console.log(data);
                 self.dataSource(data);
                 var topPageUrl = "/view/ccg/008/a/index.xhtml";
                 if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
