@@ -149,24 +149,22 @@ declare module "vue/types/vue" {
             yearmonth(value: number, format?: string): string;
         }
         $goto: {
-            (name: string): void;
-            (name: string, params: { [key: string]: any; }): void;
-            (name: string, params: { [key: string]: any; }, onComplete: Function): void;
-            (name: string, params: { [key: string]: any; }, onComplete: Function, onAbort: ErrorHandler): void;
-            (location: { name: string, params?: { [key: string]: any; } }, onComplete?: Function, onAbort?: ErrorHandler): void;
-            home(): void;
-            home(params: any): void;
-            login(): void;
-            login(params: any): void;
+            (name: string): Promise<{}>;
+            (name: string, params: { [key: string]: any; }): Promise<{}>;
+            (location: { name: string, params?: { [key: string]: any; } }): Promise<{}>;
+            home(): Promise<{}>;
+            home(params: any): Promise<{}>;
+            login(): Promise<{}>;
+            login(params: any): Promise<{}>;
             password: {
-                change(): void;
-                change(params: any): void;
-                forget(): void;
-                forget(params: any): void;
-                reset(): void;
-                reset(params: any): void;
-                mail(): void;
-                mail(params: any): void;
+                change(): Promise<{}>;
+                change(params: any): Promise<{}>;
+                forget(): Promise<{}>;
+                forget(params: any): Promise<{}>;
+                reset(): Promise<{}>;
+                reset(params: any): Promise<{}>;
+                mail(): Promise<{}>;
+                mail(params: any): Promise<{}>;
             }
         };
         $modal: {
@@ -251,22 +249,21 @@ declare module "vue/types/vue" {
 declare module "vue-router/types/router" {
     export interface VueRouter {
         goto: {
-            (location: { name: string; params: { [key: string]: any } }): void;
-            (location: { name: string; params: { [key: string]: any } }, onComplete: Function): void;
-            (location: { name: string; params: { [key: string]: any } }, onComplete: Function, onAbort: ErrorHandler): void;
-            home(): void;
-            home(params: any): void;
-            login(): void;
-            login(params: any): void;
+            (location: { name: string }): Promise<{}>;
+            (location: { name: string; params?: { [key: string]: any } }): Promise<{}>;
+            home(): Promise<{}>;
+            home(params: any): Promise<{}>;
+            login(): Promise<{}>;
+            login(params: any): Promise<{}>;
             password: {
-                change(): void;
-                change(params: any): void;
-                forget(): void;
-                forget(params: any): void;
-                reset(): void;
-                reset(params: any): void;
-                mail(): void;
-                mail(params: any): void;
+                change(): Promise<{}>;
+                change(params: any): Promise<{}>;
+                forget(): Promise<{}>;
+                forget(params: any): Promise<{}>;
+                reset(): Promise<{}>;
+                reset(params: any): Promise<{}>;
+                mail(): Promise<{}>;
+                mail(params: any): Promise<{}>;
             }
         }
     }

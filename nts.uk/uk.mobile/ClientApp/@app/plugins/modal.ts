@@ -1,7 +1,6 @@
 import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
-import { ErrorHandler } from 'vue-router/types/router';
 
 const modal = {
     install(vue: VueConstructor<Vue>) {
@@ -15,58 +14,60 @@ const modal = {
 
                 if (self && self.$router) {
                     obj.extend(self.$router, {
-                        goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
-                            (self.$router as any).push({
-                                name: location.name,
-                                params: {
-                                    params: location.params
-                                }
-                            }, onComplete, onAbort);
+                        goto(location: { name: string; params: { [key: string]: any } }) {
+                            return new Promise((resolve, reject) => {
+                                (self.$router as any).push({
+                                    name: location.name,
+                                    params: {
+                                        params: location.params
+                                    }
+                                }, () => resolve(), () => reject());
+                            });
                         }
                     });
 
                     obj.extend(self.$goto, {
                         home(params?: any) {
-                            self.$goto('ccg008a', params);
+                            return self.$goto('ccg008a', params);
                         },
                         login(params?: any) {
-                            self.$goto('ccg007b', params);
+                            return self.$goto('ccg007b', params);
                         },
                         password: {
                             change(params?: any) {
-                                self.$goto('ccg007c', params);
+                                return self.$goto('ccg007c', params);
                             },
                             forget(params?: any) {
-                                self.$goto('ccg007d', params);
+                                return self.$goto('ccg007d', params);
                             },
                             reset(params?: any) {
-                                self.$goto('ccg007e', params);
+                                return self.$goto('ccg007e', params);
                             },
                             mail(params?: any) {
-                                self.$goto('ccg007f', params);
+                                return self.$goto('ccg007f', params);
                             }
                         }
                     });
 
                     obj.extend(self.$router.goto, {
                         home(params?: any) {
-                            self.$goto.home(params);
+                            return self.$goto.home(params);
                         },
                         login(params?: any) {
-                            self.$goto.login(params);
+                            return self.$goto.login(params);
                         },
                         password: {
                             change(params?: any) {
-                                self.$goto.password.change(params);
+                                return self.$goto.password.change(params);
                             },
                             forget(params?: any) {
-                                self.$goto.password.forget(params);
+                                return self.$goto.password.forget(params);
                             },
                             reset(params?: any) {
-                                self.$goto.password.reset(params);
+                                return self.$goto.password.reset(params);
                             },
                             mail(params?: any) {
-                                self.$goto.password.mail(params);
+                                return self.$goto.password.mail(params);
                             }
                         }
                     });
@@ -74,24 +75,24 @@ const modal = {
             }
         });
 
-        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, paramsOronComplete?: { [key: string]: any; } | Function, onCompleteOronAbort?: Function | ErrorHandler, onAbort?: ErrorHandler) {
+        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, params?: { [key: string]: any; }) {
             let self = this;
 
-            if (typeof nameOrLocation !== 'string') {
-                self.$router.push({
-                    name: nameOrLocation.name,
-                    params: {
-                        params: nameOrLocation.params
-                    }
-                }, paramsOronComplete, onCompleteOronAbort);
-            } else {
-                self.$router.push({
-                    name: nameOrLocation,
-                    params: {
-                        params: paramsOronComplete
-                    }
-                }, onCompleteOronAbort, onAbort);
-            }
+            return new Promise((resolve, reject) => {
+                if (typeof nameOrLocation !== 'string') {
+                    self.$router.push({
+                        name: nameOrLocation.name,
+                        params: {
+                            params: nameOrLocation.params
+                        }
+                    }, () => resolve(), () => reject);
+                } else {
+                    self.$router.push({
+                        name: nameOrLocation,
+                        params: { params }
+                    }, () => resolve(), () => reject());
+                }
+            });
         };
 
         vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
