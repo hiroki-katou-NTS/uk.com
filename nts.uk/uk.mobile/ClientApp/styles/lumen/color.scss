@@ -229,11 +229,12 @@ $uk-status-color: (
     .apply-#{$class-name},
     .uk-apply-#{$class-name} {
         color: $fg-color;
+        border: 1px solid $bd-color;
         border-color: $bd-color !important;
         background-color: $bg-color !important;
         text-align: center;
         display: inline-block;
-        // border-radius: 0.25rem;
+        border-radius: 0.25rem;
 
         &:hover,
         &:focus {
