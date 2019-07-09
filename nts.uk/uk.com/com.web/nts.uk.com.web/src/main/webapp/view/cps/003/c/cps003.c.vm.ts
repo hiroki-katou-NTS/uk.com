@@ -55,7 +55,8 @@ module cps003.c.vm {
                     self.loadGrid();
                     self.initDs = _.cloneDeep(self.gridOptions.dataSource);
                     let $grid = $("#grid");
-                    $grid.mGrid("validate");
+                    $grid.mGrid("validate", null, () => true);
+                    self.validateSpecial(null, self.gridOptions.dataSource);
                     let errors = $grid.mGrid("errors");
                     if (errors.length > 0) {
                         let errGroup = _.groupBy(errors, "rowId");
@@ -789,7 +790,11 @@ module cps003.c.vm {
                         if (matches) {
                             $grid.mGrid("updateCell", arguments[1], "status", Number(matches[1]) - 1 == 0 ? "正常" : "エラー(" + (Number(matches[1]) - 1) + "件)", true);
                         }
-                    } else {
+                        
+                        return;
+                    } 
+                    
+                    if (!arguments[3]) {
                         let matches = /(\d+)/.exec(arguments[2].status), status;
                         $grid.mGrid("updateCell", arguments[0], "status", "エラー(" + (matches ? (Number(matches[1]) + 1) : 1) + "件)", true);
                     }
@@ -1001,7 +1006,7 @@ module cps003.c.vm {
                     timeRanges = findAll(cps003.control.timeRange, range => self.category.catCode() === range.ctgCode);
                 }
                 
-                if (_.isNil(find(regChecked, r => r === data.id))) return;
+                if (regChecked && _.isNil(find(regChecked, r => r === data.id))) return;
                 
                 forEach(dateRanges, range => {
                     let column = find(self.gridOptions.columns, c => c.key === range.start);
