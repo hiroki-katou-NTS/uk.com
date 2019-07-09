@@ -11,6 +11,7 @@ import {
     resources,
     i18n,
     mask,
+    goto,
     modal,
     dialog,
     picker,
@@ -30,6 +31,7 @@ Vue.use(auth);
 
 Vue.use(tojs);
 Vue.use(bstrp);
+Vue.use(goto);
 Vue.use(modal);
 Vue.use(dialog);
 
