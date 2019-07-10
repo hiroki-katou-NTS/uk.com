@@ -1,5 +1,3 @@
-import { Vue } from '@app/provider';
-
 const $ = {
     range(startOrLength: number, end?: number): number[] {
         let length = Math.abs((end || 0) - startOrLength);
@@ -315,8 +313,7 @@ const $ = {
         if (!items || items.length == 0 || !childProp) {
             return items;
         } else {
-            let $hier = [],
-                defReact = Vue.util.defineReactive;
+            let $hier = [];
 
             items.forEach((item: any) => {
                 $hier.push(item);
@@ -325,10 +322,7 @@ const $ = {
                     $.extend(item, {
                         $h: {
                             parent: parent || null,
-                            childs: item[childProp] || [],
-                            refresh() {
-                                items.push(items.pop());
-                            }
+                            childs: item[childProp] || []
                         }
                     });
 
@@ -361,8 +355,6 @@ const $ = {
                             return $root(item);
                         }
                     });
-
-                    defReact(item.$h, 'collapse', true);
 
                     Object.defineProperty(item.$h, 'show', {
                         get() {

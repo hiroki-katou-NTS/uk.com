@@ -1,15 +1,14 @@
 import { dom } from '@app/utils';
-import { Vue, DirectiveBinding } from '@app/provider';
+import { Vue, DirectiveBinding, VNode } from '@app/provider';
 
 interface IHierarchy {
     show: boolean;
     rank: number;
     childs: any[];
     collapse: boolean;
-    refresh: () => void;
 }
 
-const bind = (el: HTMLElement, binding: DirectiveBinding) => {
+const bind = (el: HTMLElement, binding: DirectiveBinding, vnode: VNode) => {
     let item: { $h: IHierarchy } = binding.value;
 
     unbind(el);
@@ -34,8 +33,10 @@ const bind = (el: HTMLElement, binding: DirectiveBinding) => {
             let event = () => {
                 item.$h.collapse = !item.$h.collapse;
 
-                // refresh item
-                item.$h.refresh();
+                // update component
+                if (vnode.context) {
+                    vnode.context.$forceUpdate();
+                }
 
                 if (item.$h.collapse) {
                     dom.setAttr($col, 'class', 'fas fa-chevron-down collapse');
