@@ -321,6 +321,7 @@ const $ = {
                 if (!$.has(item, '$h')) {
                     $.extend(item, {
                         $h: {
+                            collapse: true,
                             parent: parent || null,
                             childs: item[childProp] || []
                         }
