@@ -794,7 +794,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				if(!lstAppPre.isEmpty()){
-					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", null, reasonAppPre, appPre, null, null,"","");
+					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID,new ArrayList<>(),"","","","", null, reasonAppPre, appPre, null, null,"","");
 				}
 			}
 			//承認一覧表示設定.休出の実績
