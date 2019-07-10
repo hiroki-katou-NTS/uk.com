@@ -128,10 +128,9 @@ module nts.custombinding {
                                         constraint: '',
                                         option: {
                                             width: '80px',
-                                            defaultValue: 0,
                                             unitID: 'DAYS'
                                         },
-                                        required: m1,
+                                        required: true,
                                         enable: m1
                                     }" />
                                 </div>
@@ -345,7 +344,7 @@ module nts.custombinding {
                                 if (mode == '0') {
                                     textView = vm.i18n('CPS003_91', [vm.itemNames()['IS00253']]) + ' ' + value;
                                 } else {
-                                    textView = parseTime(Number(value1), true).format();
+                                    textView = value1 == null? "": parseTime(Number(value1), true).format();
                                 }
                             } else {
                                 if (value && !isNaN(Number(value))) {

@@ -18,6 +18,7 @@ module nts.custombinding {
 
     interface IItemData {
         constraint: string;
+        constraint_filter: string;
         itemCode: string;
         dataType: ITEM_SINGLE_TYPE;
         amount: number;
@@ -211,7 +212,8 @@ module nts.custombinding {
                     vm.value('');
 
                     vm.constraint = itemData.constraint;
-                    vm.required = itemData.required;
+                    vm.constraint_filter = itemData.constraint_filter;
+                    vm.required = false; //itemData.required;
 
                     // bind items to dropdownList (if avaiable)
                     vm.itemOptions(itemData.selectionItems || []);

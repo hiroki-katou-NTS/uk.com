@@ -103,7 +103,7 @@ module cps003.f.vm {
                                 itemCode: item.itemCode,
                                 required: !!item.isRequired// !!x.isRequired
                             }, constraint_filter: any = {
-                                itemName: item.itemName,
+                                itemName: item.itemName + "_filter",
                                 itemCode: item.itemCode + "_filter",
                                 required: false
                             };
@@ -294,7 +294,7 @@ module cps003.f.vm {
                                         if (!itemData.amount) {
                                             value = filter;
                                         } else {
-                                            value = Number(filter).toLocaleString('ja-JP', { useGrouping: true });
+                                            value = Number(filter).toLocaleString('ja-JP', { useGrouping: true })+ text('CPS003_122');
                                         }
                                     }
                                     break;
@@ -578,7 +578,7 @@ module cps003.f.vm {
                             }
                         } else { // 加減算（F1_027）が選択されている場合
                             if (value.replaceValue) {
-                                confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue)] }).ifYes(() => {
+                                confirm({ messageId: 'Msg_679', messageParams: [item.name, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue) + text('CPS003_122')] }).ifYes(() => {
                                     setShared('CPS003F_VALUE', value);
                                     close();
                                 });
@@ -652,6 +652,8 @@ module cps003.f.vm {
                                 }
                             } else if (item.itemData.dataType == 5) {
                                 valueText = parseTimeWidthDay(value.matchValue).fullText;
+                            } else if (item.itemData.dataType == 4) {
+                                valueText = parseTime(value.matchValue, true).format();
                             }
                             confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
@@ -671,6 +673,8 @@ module cps003.f.vm {
                                 }
                             } else if (item.itemData.dataType == 5) {
                                 valueTextMatch = parseTimeWidthDay(value.matchValue).fullText;
+                            } else if (item.itemData.dataType == 4) {
+                                valueTextMatch = parseTime(value.matchValue, true).format();
                             } else {
                                 valueTextMatch = value.matchValue;
                             }
@@ -683,12 +687,12 @@ module cps003.f.vm {
                         if (item.itemData.amount) {
                             if (mode == 0) { // 通常置換（F1_026）が選択されている場合
                                 if (value.replaceValue) {
-                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue + text('CPS003_122') , item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
                                 } else {
-                                    confirm({ messageId: 'Msg_636', messageParams: [item.name, value.matchValue] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_636', messageParams: [item.name, value.matchValue + text('CPS003_122')] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
@@ -703,10 +707,21 @@ module cps003.f.vm {
                             }
                         } else {
                             if ([0, 1, 2].indexOf(mode) > -1) {
-                                confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, item.replacer] }).ifYes(() => {
-                                    setShared('CPS003F_VALUE', value);
-                                    close();
-                                });
+                                let valueTextMatch = value.matchValue;
+                                if (item.itemData.dataType == 4) {
+                                    valueTextMatch = parseTime(value.matchValue, true).format();
+                                }
+                                if (value.replaceValue) {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, valueTextMatch, item.replacer] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                } else {
+                                    confirm({ messageId: 'Msg_636', messageParams: [item.name, valueTextMatch] }).ifYes(() => {
+                                        setShared('CPS003F_VALUE', value);
+                                        close();
+                                    });
+                                }
                             } else {
                                 if (value.replaceValue) {
                                     confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue, value.replaceValue] }).ifYes(() => {
@@ -746,19 +761,19 @@ module cps003.f.vm {
                         if (item.itemData.amount) {
                             if ((value.replaceValue || value.matchValue) && mode == 0) {
                                 if (mode == 0) {
-                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer + text('CPS003_122')] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
                                 } else {
-                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer + text('CPS003_122')] }).then(() => {
                                         setShared('CPS003F_VALUE', null);
                                         //close();
                                     });
                                 }
                             } else {
                                 if (mode == 0) {
-                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer] }).then(() => {
+                                    alert({ messageId: 'Msg_638', messageParams: [item.name, item.replacer + text('CPS003_122')] }).then(() => {
                                         setShared('CPS003F_VALUE', null);
                                         //close();
                                     });
